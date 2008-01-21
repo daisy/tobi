@@ -8,8 +8,11 @@ h1, h2, h3, h4 {
  letter-spacing: 0;
 }
 h1 {
- border-bottom: .2em solid #B8DB94;
+ background: #eed;
+ border-left: 1em solid #6EA437;
+ border-bottom: 1px solid #6EA437;
  margin-bottom: 1.4em;
+ padding-left: 0.3em;
 }
 h2 {
  border-left: 1em solid #B8DB94;
@@ -25,16 +28,18 @@ h2 {
 #mainnav {
  border: none;
  background: #f7f7f7 url(nop.png) 0 0;
- padding-bottom: 0.6em;
+ padding-bottom: 0.4em;
  /* margin: .66em 0 .33em; */
  margin: 0;
  margin-top: 1em;
  margin-bottom: 1em;
+ /* border-bottom: 1px dashed #B8DB94; */
+ border-bottom: .2em solid #B8DB94;
 }
 #mainnav li {
  font-size: 1.3em;
  border-top: 1px dashed #B8DB94;
- border-bottom: 1px dashed #B8DB94;
+ /* border-bottom: 2px dashed #B8DB94; */
  padding: 0;
  padding-top: 0.3em;
  padding-bottom: 0.3em;
@@ -63,11 +68,13 @@ h2 {
  background: #eed;
  color: #333333;
  border: 2px solid #6EA437;
+ border-bottom: .4em solid white;
 }
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
  background: #6EA437;
  color: #ffffff;
  border: 2px solid #6EA437;
+ border-bottom: .4em solid white;
 }
 dt em {
  color: #6EA437;
@@ -84,7 +91,7 @@ h1 :link, h1 :visited {
 div.blog-calendar {
  background: #eed;
  border: 1px solid #B8DB94;
- border-left: 3px solid #B8DB94;
+ border-right: 0.5em solid #B8DB94;
 }
 div.blog-calendar .missing {
 	background: none;
@@ -95,7 +102,7 @@ tr.blog-calendar-current {
 .wiki-toc {
  background: #eed;
  border: 1px solid #B8DB94;
- border-left: 3px solid #B8DB94;
+ border-right: 0.5em solid #B8DB94;
 }
 .wiki-toc ol li, .wiki-toc ul li {
  padding: 0.3em;
