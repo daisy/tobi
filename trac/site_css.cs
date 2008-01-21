@@ -8,19 +8,31 @@ h1, h2, h3, h4 {
  letter-spacing: 0;
 }
 h1 {
- background: #eed;
  border-left: 1em solid #6EA437;
  border-bottom: 1px solid #6EA437;
- margin-bottom: 1.4em;
+ margin-bottom: 1em;
  padding-left: 0.3em;
 }
 h2 {
+ margin-top: 1em;
  border-left: 1em solid #B8DB94;
  border-bottom: 1px dashed #B8DB94;
  padding-left: 0.3em;
 }
 :link, :visited {
- color: #376D37;
+ color: #333399;
+ border-bottom: 1px dashed #FFAD5C;
+}
+a:link:hover, a:visited:hover {
+ border-bottom: 2px solid #FFAD5C;
+ background-color: transparent;
+}
+dl dt :link:hover, dl dt :visited:hover {
+ border: none;
+ background-color: #eed;
+}
+table tbody tr td :link:hover, table tbody tr td :visited:hover {
+ border: none;
 }
 .nav li {
  white-space: normal;
@@ -29,17 +41,14 @@ h2 {
  border: none;
  background: #f7f7f7 url(nop.png) 0 0;
  padding-bottom: 0.4em;
- /* margin: .66em 0 .33em; */
  margin: 0;
  margin-top: 1em;
  margin-bottom: 1em;
- /* border-bottom: 1px dashed #B8DB94; */
  border-bottom: .2em solid #B8DB94;
 }
 #mainnav li {
  font-size: 1.3em;
  border-top: 1px dashed #B8DB94;
- /* border-bottom: 2px dashed #B8DB94; */
  padding: 0;
  padding-top: 0.3em;
  padding-bottom: 0.3em;
@@ -51,30 +60,30 @@ h2 {
 #mainnav :link, #mainnav :visited {
  background: url(nop.gif) 0 0 no-repeat;
  border: none;
- /* border-left: 1px solid #B8DB94; */
  padding-left: 0.5em;
  padding-right: 0.5em;
  padding-top: .2em;
  padding-bottom: .2em;
+ color: #6B6B6B;
 }
 #mainnav :link:hover, #mainnav :visited:hover {
- background: #6EA437;
- color: #ffffff;
+ background: #D9FF80;
+ color: #333333;
  border: none;
- /* border-left: 1px solid #B8DB94; */
 }
 #mainnav .active :link, #mainnav .active :visited {
  background: url(nop.png) 0 0 repeat-x;
  background: #eed;
- color: #333333;
+ color: #000000;
  border: 2px solid #6EA437;
- border-bottom: .4em solid white;
+ border-bottom: .4em solid #eed;
+ font-weight: normal;
 }
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
- background: #6EA437;
- color: #ffffff;
+ background: #C2FF33;
+ color: #333333;
  border: 2px solid #6EA437;
- border-bottom: .4em solid white;
+ border-bottom: .35em solid #6EA437;
 }
 dt em {
  color: #6EA437;
@@ -91,7 +100,6 @@ h1 :link, h1 :visited {
 div.blog-calendar {
  background: #eed;
  border: 1px solid #B8DB94;
- border-right: 0.5em solid #B8DB94;
 }
 div.blog-calendar .missing {
 	background: none;
@@ -102,7 +110,6 @@ tr.blog-calendar-current {
 .wiki-toc {
  background: #eed;
  border: 1px solid #B8DB94;
- border-right: 0.5em solid #B8DB94;
 }
 .wiki-toc ol li, .wiki-toc ul li {
  padding: 0.3em;
@@ -131,5 +138,5 @@ fieldset.ticketbox legend {
  color: #6EA437;
 }
 table.progress td.closed {
-  background: #fd8;
+ background: #FFAD5C;
 }
