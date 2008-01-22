@@ -17,7 +17,7 @@ h1 {
  /* border-left: 1em solid #C2FF33;
     padding-left: 0.3em;
  */
- border-bottom: 1px solid #FFAD5C;
+ border-bottom: 2px solid #FFAD5C;
  margin-bottom: 1em;
 }
 h2 {
@@ -65,13 +65,12 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
 }
 #mainnav li {
  font-size: 1.3em;
- border-top: 1px dashed #B8DB94;
  padding: 0;
 /*
+ border-top: 1px dashed #B8DB94;
  padding-top: 0.3em;
  padding-bottom: 0.3em;
 */
- border-right: 1px solid #B8DB94;
 }
 #mainnav li.first {
  border-left: 1px solid #B8DB94;
@@ -80,6 +79,7 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  background: url(nop.gif) 0 0 no-repeat;
  background: #eed;
  border: none;
+ border-right: 1px solid #B8DB94;
  padding-left: 0.5em;
  padding-right: 0.5em;
  padding-top: .2em;
@@ -90,16 +90,16 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  background: white;
  color: #333333;
  border: none;
+ border-right: 1px solid #B8DB94;
  border-top: 1px solid #6EA437;
-
 }
 #mainnav .active :link, #mainnav .active :visited {
  background: url(nop.png) 0 0 repeat-x;
  background: white;
  color: #000000;
- border-top: 2px solid #B8DB94;
- border-left: 3px solid #B8DB94;
- border-right: 3px solid #B8DB94;
+ border-top: 2px solid #6EA437;
+ border-left: 3px solid #6EA437;
+ border-right: 3px solid #6EA437;
  border-bottom: .35em solid white;
  font-weight: normal;
 }
@@ -128,7 +128,7 @@ h1 :link, h1 :visited {
 }
 div.blog-calendar {
  background: #eed;
- border: 1px solid #B8DB94;
+ border: 2px solid #B8DB94;
 }
 div.blog-calendar .missing {
 	background: none;
@@ -138,7 +138,7 @@ tr.blog-calendar-current {
 }
 .wiki-toc {
  background: #eed;
- border: 1px solid #B8DB94;
+ border: 2px solid #B8DB94;
 }
 .wiki-toc ol li, .wiki-toc ul li {
  padding: 0.3em;
@@ -159,12 +159,12 @@ input[type=button], input[type=submit], input[type=reset] {
  border: 1px solid #B8DB94;
 }
 fieldset.ticketbox {
- border: 1px solid #B8DB94;
- border-left: 2px solid #B8DB94;
- border-right: 2px solid #B8DB94;
+ border: 1px solid #FFAD5C;
+ border-left: 2px solid #FFAD5C;
+ border-right: 2px solid #FFAD5C;
 }
 fieldset.ticketbox legend {
- color: #6EA437;
+ color: #6B6B6B;
 }
 table.progress td.closed {
  background: #3399cc;
