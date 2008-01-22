@@ -23,7 +23,7 @@ h1 {
 h2 {
  font-family: verdana, tahoma, helvetica, arial, sans-serif;
  font-weight: bold;
- color: #000000;
+ color: #003300;
  margin-top: 1em;
 /*
  border-left: 1em solid #ffcc66;
@@ -122,6 +122,9 @@ h1 :link, h1 :visited {
 }
 .wiki-toc .active {
  background: #B8DB94;
+}
+.wiki-toc h4 {
+ margin-bottom: 0.7em;
 }
 div.blog-calendar {
  background: #eed;
