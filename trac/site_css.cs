@@ -2,26 +2,42 @@
 ##################################################################
 # Site CSS - Place custom CSS, including overriding styles here.
 ?>
-
+ul {
+ list-style: square;
+}
 h1, h2, h3, h4 {
  font-family: "Trebuchet MS", "Lucida Sans", Lucida, "Lucida Grande", Verdana, Helvetica, Arial, 'Bitstream Vera Sans',sans-serif;
  letter-spacing: 0;
 }
 h1 {
- border-left: 1em solid #6EA437;
- border-bottom: 1px solid #6EA437;
+ font-family: verdana, tahoma, helvetica, arial, sans-serif;
+ font-weight: bold;
+ color: #333333;
+ /* 6EA437 */
+ /* border-left: 1em solid #C2FF33;
+    padding-left: 0.3em;
+ */
+ border-bottom: 1px solid #FFAD5C;
  margin-bottom: 1em;
- padding-left: 0.3em;
 }
 h2 {
+ font-family: verdana, tahoma, helvetica, arial, sans-serif;
+ font-weight: bold;
+ color: #000000;
  margin-top: 1em;
- border-left: 1em solid #B8DB94;
- border-bottom: 1px dashed #B8DB94;
+/*
+ border-left: 1em solid #ffcc66;
  padding-left: 0.3em;
+*/
+ border-bottom: 1px dashed #B8DB94;
+}
+h2::before {
+ content: "\2022\A0";
+ display: inline;
 }
 :link, :visited {
  color: #333399;
- border-bottom: 1px dashed #FFAD5C;
+ border-bottom: 1px dashed #6699cc;
 }
 a:link:hover, a:visited:hover {
  border-bottom: 2px solid #FFAD5C;
@@ -40,6 +56,7 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
 #mainnav {
  border: none;
  background: #f7f7f7 url(nop.png) 0 0;
+ background: white;
  padding-bottom: 0.4em;
  margin: 0;
  margin-top: 1em;
@@ -50,8 +67,10 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  font-size: 1.3em;
  border-top: 1px dashed #B8DB94;
  padding: 0;
+/*
  padding-top: 0.3em;
  padding-bottom: 0.3em;
+*/
  border-right: 1px solid #B8DB94;
 }
 #mainnav li.first {
@@ -59,6 +78,7 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
 }
 #mainnav :link, #mainnav :visited {
  background: url(nop.gif) 0 0 no-repeat;
+ background: #eed;
  border: none;
  padding-left: 0.5em;
  padding-right: 0.5em;
@@ -67,23 +87,29 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  color: #6B6B6B;
 }
 #mainnav :link:hover, #mainnav :visited:hover {
- background: #D9FF80;
+ background: white;
  color: #333333;
  border: none;
+ border-top: 1px solid #6EA437;
+
 }
 #mainnav .active :link, #mainnav .active :visited {
  background: url(nop.png) 0 0 repeat-x;
- background: #eed;
+ background: white;
  color: #000000;
- border: 2px solid #6EA437;
- border-bottom: .4em solid #eed;
+ border-top: 2px solid #B8DB94;
+ border-left: 3px solid #B8DB94;
+ border-right: 3px solid #B8DB94;
+ border-bottom: .35em solid white;
  font-weight: normal;
 }
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
- background: #C2FF33;
+ background: #eed;
  color: #333333;
- border: 2px solid #6EA437;
- border-bottom: .35em solid #6EA437;
+ border-top: 2px solid #6EA437;
+ border-left: 3px solid #6EA437;
+ border-right: 3px solid #6EA437;
+ border-bottom: .35em solid white;
 }
 dt em {
  color: #6EA437;
@@ -138,5 +164,11 @@ fieldset.ticketbox legend {
  color: #6EA437;
 }
 table.progress td.closed {
- background: #FFAD5C;
+ background: #3399cc;
+}
+table.progress td.open {
+ background: #99cccc;
+}
+table.progress {
+ border: 1px solid #336699;
 }
