@@ -2,6 +2,9 @@
 ##################################################################
 # Site CSS - Place custom CSS, including overriding styles here.
 ?>
+#content {
+ margin-left: 2em;
+}
 ul {
  list-style: square;
 }
@@ -12,24 +15,27 @@ h1, h2, h3, h4 {
 h1 {
  font-family: verdana, tahoma, helvetica, arial, sans-serif;
  font-weight: bold;
- color: #333333;
+ color: #6EA437;
  /* 6EA437 */
  /* border-left: 1em solid #C2FF33;
     padding-left: 0.3em;
  */
  border-bottom: 2px solid #FFAD5C;
- margin-bottom: 1em;
+ margin-bottom: 1.5em;
 }
 h2 {
  font-family: verdana, tahoma, helvetica, arial, sans-serif;
  font-weight: bold;
  color: #003300;
- margin-top: 1em;
+ margin-top: 1.5em;
 /*
  border-left: 1em solid #ffcc66;
  padding-left: 0.3em;
 */
  border-bottom: 1px dashed #B8DB94;
+}
+h3 {
+ font-weight: bold;
 }
 h2::before {
  content: "\2022\A0";
@@ -77,8 +83,9 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
 }
 #mainnav :link, #mainnav :visited {
  background: url(nop.gif) 0 0 no-repeat;
- background: #eed;
+ background: white;
  border: none;
+ border-top: 1px dashed #B8DB94;
  border-right: 1px solid #B8DB94;
  padding-left: 0.5em;
  padding-right: 0.5em;
@@ -87,7 +94,7 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  color: #6B6B6B;
 }
 #mainnav :link:hover, #mainnav :visited:hover {
- background: white;
+ background: #eed;
  color: #333333;
  border: none;
  border-right: 1px solid #B8DB94;
