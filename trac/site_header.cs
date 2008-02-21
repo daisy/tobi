@@ -1,3 +1,19 @@
+<?cs if:title == "guidelines/SourceCode" ?>
+
+<script type="text/javascript" src="/tobi/chrome/uploads/daniel-weck/shCore.js"></script>
+<script type="text/javascript" src="/tobi/chrome/uploads/daniel-weck/shBrushCSharp.js"></script>
+<script type="text/javascript" src="/tobi/chrome/uploads/daniel-weck/shBrushXml.js"></script>
+<script type="text/javascript" src="/tobi/chrome/uploads/daniel-weck/shBrushJava.js"></script>
+
+<script type="text/javascript">
+<!--
+dp.SyntaxHighlighter.HighlightAll('code');
+window.onload=function(){dp.SyntaxHighlighter.HighlightAll('code');}
+//-->
+</script>
+
+<?cs /if ?>
+
 <?cs
 ####################################################################
 # Site header - Contents are automatically inserted above Trac HTML
