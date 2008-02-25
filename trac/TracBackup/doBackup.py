@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+# Good source of help: http://www.fieldguidetoprogrammers.com/blog/python/feedextractor-a-quick-and-dirty-python-script-to-grab-lots-of-feeds-from-web-pages/
+
 from BeautifulSoup import BeautifulSoup
 import urllib2
 from xml.dom import minidom
