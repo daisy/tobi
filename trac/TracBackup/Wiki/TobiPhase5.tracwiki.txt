@@ -1,0 +1,27 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase5">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 5])]]
+
+
+= Phase 5 =
+
+'''1st January 2009 - 1st April 2009'''
+
+(previous: [wiki:TobiPhase4 Phase 4], next: [wiki:TobiPhase6 Phase 6])
+
+== Tobi stage 2 (better text, more audio) ==
+
+=== Description of Deliverable ===
+
+ * This is a continuation of the previous phase, with increased emphasis on audio editing.
+ * Basic audio recording ability is required, as well as simple split and merge. Fine-grained audio selection is not required at this stage, as well as complex audio processing features (e.g. phrase detection, normalization, etc.).
+ * Text editing is improved based on feedback from previous phase.
+
+=== Remarks ===
+
+ * Adjustments to the management process may be required based on the experience from the previous phase.

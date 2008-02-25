@@ -1,0 +1,26 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase6">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 6])]]
+
+
+= Phase 6 =
+
+'''1st April 2009 - 1st July 2009'''
+
+(previous: [wiki:TobiPhase5 Phase 5], next: [wiki:TobiPhase7 Phase 7])
+
+== Tobi stage 3 ==
+
+=== Description of Deliverable ===
+
+ * Support for document extensions (i.e. MathML / Braille).
+ * The Tobi application remains pretty much organization-agnostic, with a single generic packaging/deployment method.
+
+=== Remarks ===
+
+ * Objectives and description of deliverable are intentionally under-specified. Refinements will be provided as progress is made through the previous increments.

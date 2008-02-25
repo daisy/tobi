@@ -1,0 +1,32 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase3">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 3])]]
+
+
+= Phase 3 =
+
+'''1st July 2008 - 1st October 2008'''
+
+(previous: [wiki:TobiPhase2 Phase 2], next: [wiki:TobiPhase4 Phase 4])
+
+__Note:__ this phase is actually shorter than 3 months, because of the typically slow summer holiday season in Europe.
+
+
+== Technical study and election of programming language + application framework ==
+
+=== Description of Deliverable ===
+
+ * Final decision for Tobi's programming language and application framework. The current assumption is that this will be the same as the existing SDK implementation and Obi (i.e. C#.NET). However, some issues need to be investigated thoroughly to ensure the technical choice is optimal for the task at hand.
+ * Formal rationale for the decision: this will be the formal document to backup the decision and to describe how the consensus is reached.
+ * In case it is decided to make a port from the current C# implementation to another language, it is estimated that the associated cost (including testing) should not be more than 10 working days with 2 FTE developers. This load may need to be offset onto the next phase, requiring additional planning.
+
+=== Remarks ===
+
+ * This activity includes a feasibility study and some prototyping with various candidate technologies.
+ * The criteria to evaluate include audio latency, availability of plugin/modular framework, online update mechanism, rich-text WYSIWYG widget support, XML processing libraries, etc. The previous 2 phases have already produced sufficient requirements data to support this work.
+

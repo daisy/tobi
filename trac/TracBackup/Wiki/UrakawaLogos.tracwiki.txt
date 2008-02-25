@@ -1,0 +1,38 @@
+= Urakawa Logos =
+
+Various drawings / logos made by our resident artist(s):
+
+== Obi Logo 1 (main) - Julien ==
+
+{{{
+#!html
+<img src="http://urakawa.sourceforge.net/images/ObiLogo.png"
+ title="logo"/>
+}}}
+
+== Obi Logo 2 (tutorial / help) - Julien ==
+
+{{{
+#!html
+<img src="http://urakawa.sourceforge.net/images/obird_bobi.png"
+ title="logo"/>
+}}}
+
+
+== "Bird riding elephant" - Julien ==
+
+{{{
+#!html
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/TobiLogo_Elephant.png"
+ title="logo"/>
+}}}
+
+
+== Tobi Logo proposal (Daniel) ==
+
+{{{
+#!html
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/TobiLogo_TopBanner.png"
+ title="logo"/>
+}}}
+

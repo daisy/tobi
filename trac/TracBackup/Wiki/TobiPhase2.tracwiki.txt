@@ -1,0 +1,54 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase2">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 2])]]
+
+
+= Phase 2 =
+
+'''1st April 2008 - 1st July 2008'''
+
+(previous: [wiki:TobiPhase1 Phase 1], next: [wiki:TobiPhase3 Phase 3])
+
+__Note:__ this following [A] and [B] sections are '''2 independent parallel tracks''', which are both continued from the previous phase.
+
+== [A] Tobi requirements gathering, usability study (continued from previous phase) ==
+
+=== Description of Deliverable ===
+
+ * The expected outcome is the same as the previous phase. The emphasis is on producing a final and feature-complete set of requirements, that will form the basis for making the decision on the Tobi application framework and programming language. Demonstrable proof-of-concepts should be provided in addition to static mockups (e.g. GUI with no backend).
+
+
+=== Staffing ===
+
+(Total = '''1.0''' FTE)
+
+|| '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
+|| ''Daniel Weck'' || DFA || '''0.3''' || Activity Lead (also allocated in track B) ||
+|| ''John Worsfold'' || RNIB || '''0.2''' || Main RNIB contributor ||
+|| ''David Gordon'' || RNIB || '''0.2''' || Second RNIB contributor ||
+|| ''Miki Azuma'' || DFA || '''0.1''' || Contributes remotely (no face-to-face required) ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.1''' || Also allocated in track B ||
+|| ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||
+
+
+== [B] XML text support in SDK (continued from previous phase) ==
+
+=== Description of Deliverable ===
+
+ * The expected outcome is the same as the previous phase. The XML-text extensions must be feature-complete (full read/write capabilities). Good coverage is required for unit-tests.
+
+
+
+=== Staffing ===
+
+(Total = '''1.0''' FTE)
+
+|| '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
+|| ''Daniel Weck'' || DFA || '''0.2''' || Activity Lead, Architect and Programmer (also allocated in track A) ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.4''' || Architect and Programmer, also allocated in track A ||
+|| ''Stephen Hibbert'' || RNIB || '''0.4''' || Architect and Programmer ||

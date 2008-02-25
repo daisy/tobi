@@ -1,0 +1,11 @@
+= GUI mock-ups =
+
+The following mock-ups were created during the inception meeting
+
+== Simple recording Screen ==
+
+[[Image(TOBI_04.png)]]
+
+== Simple Editting Screen ==
+
+[[Image(TOBI_05.png)]]

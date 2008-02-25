@@ -1,0 +1,25 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase7">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 7])]]
+
+
+= Phase 7 =
+
+'''1st July 2009 - 1st October 2009'''
+
+(previous: [wiki:TobiPhase6 Phase 6], next: [wiki:TobiPhase8 Phase 8])
+
+== Tobi stage 4 ==
+
+=== Description of Deliverable ===
+
+ * Product packaging: Online updates, plugins, organization-specific distributions.
+
+=== Remarks ===
+
+ * Objectives and description of deliverable are intentionally under-specified. Refinements will be provided as progress is made through the previous increments.

@@ -1,0 +1,14 @@
+
+
+= My Second Post ! =
+== Hello again ! ==
+
+This is just a ''test'' of the Trac blog functionality. '''Sweet''' !
+
+==== Comment by daniel-weck on Wed Jan  9 22:45:13 2008 ====
+This is a test comment.
+
+==== Comment by daniel-weck on Wed Jan  9 22:45:26 2008 ====
+Ok, it works fine.
+
+[[AddComment]]
