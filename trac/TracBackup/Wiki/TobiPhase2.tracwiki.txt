@@ -14,41 +14,48 @@
 
 (previous: [wiki:TobiPhase1 Phase 1], next: [wiki:TobiPhase3 Phase 3])
 
-__Note:__ this following [A] and [B] sections are '''2 independent parallel tracks''', which are both continued from the previous phase.
+__Note:__ the following [A] and [B] sections are '''2 independent and parallel tracks''', which are both continued from the previous phase.
 
-== [A] Tobi requirements gathering, usability study (continued from previous phase) ==
+
+== [A] Requirements gathering, Usability and Workflow (second part, continued from previous phase) ==
 
 === Description of Deliverable ===
 
- * The expected outcome is the same as the previous phase. The emphasis is on producing a final and feature-complete set of requirements, that will form the basis for making the decision on the Tobi application framework and programming language. Demonstrable proof-of-concepts should be provided in addition to static mockups (e.g. GUI with no backend).
+Continuation (improvement and completion) of the previous phase's deliverables:
 
+ * Graphical User Interface (GUI) mockups: images with accessible descriptions (screenshots and/or montages).
+ * User Interface (UI) prototype(s): real executable user-interface (preferably graphical) that demonstrates authoring workflows.
+
+New item:
+
+ * Formal specification of the authoring workflows to target during the implementation phase.
 
 === Staffing ===
 
-(Total = '''1.0''' FTE)
+(Total = '''1.3''' FTE)
 
 || '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
 || ''Daniel Weck'' || DFA || '''0.3''' || Activity Lead (also allocated in track B) ||
-|| ''John Worsfold'' || RNIB || '''0.2''' || Main RNIB contributor ||
+|| ''John Worsfold'' || RNIB || '''0.5''' || Main RNIB contributor ||
 || ''David Gordon'' || RNIB || '''0.2''' || Second RNIB contributor ||
 || ''Miki Azuma'' || DFA || '''0.1''' || Contributes remotely (no face-to-face required) ||
 || ''Ole Holst Andersen'' || DAISY || '''0.1''' || Also allocated in track B ||
 || ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||
 
-
-== [B] XML text support in SDK (continued from previous phase) ==
+== [B] Architecture Specification (second part, continued from previous phase) ==
 
 === Description of Deliverable ===
 
- * The expected outcome is the same as the previous phase. The XML-text extensions must be feature-complete (full read/write capabilities). Good coverage is required for unit-tests.
+Continuation (improvement and completion) of the previous phase's deliverables:
 
-
+ * Formal specification (submission draft) of a modular and extensible architecture (plugin-based) that allows incremental updates, custom application packaging, feature add-ons, etc.
 
 === Staffing ===
 
-(Total = '''1.0''' FTE)
+(Total = '''1.2''' FTE)
 
 || '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
-|| ''Daniel Weck'' || DFA || '''0.2''' || Activity Lead, Architect and Programmer (also allocated in track A) ||
+|| ''Daniel Weck'' || DFA || '''0.4''' || Activity Lead, Architect and Programmer (also allocated in track A) ||
 || ''Ole Holst Andersen'' || DAISY || '''0.4''' || Architect and Programmer, also allocated in track A ||
 || ''Stephen Hibbert'' || RNIB || '''0.4''' || Architect and Programmer ||
+

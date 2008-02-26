@@ -17,16 +17,21 @@
 __Note:__ this phase is actually shorter than 3 months, because of the typically slow summer holiday season in Europe.
 
 
-== Technical study and election of programming language + application framework ==
+== Technical implementation of application framework: drafting and evaluation of resource requirements ==
 
 === Description of Deliverable ===
 
- * Final decision for Tobi's programming language and application framework. The current assumption is that this will be the same as the existing SDK implementation and Obi (i.e. C#.NET). However, some issues need to be investigated thoroughly to ensure the technical choice is optimal for the task at hand.
- * Formal rationale for the decision: this will be the formal document to backup the decision and to describe how the consensus is reached.
- * In case it is decided to make a port from the current C# implementation to another language, it is estimated that the associated cost (including testing) should not be more than 10 working days with 2 FTE developers. This load may need to be offset onto the next phase, requiring additional planning.
+ * Implementation draft of the application architecture (untested, incomplete). Choice of technologies on top of C#.NET to minimize the development costs by re-using prior art.
+ * Evaluation of development costs for the required Urakawa SDK (data model and API) increments to support full-text full-audio.
+ * Estimated resource plan to ensure completion of both core and GUI implementations (to be submitted to the board for decision about staff allocation).
 
-=== Remarks ===
+=== Staffing ===
 
- * This activity includes a feasibility study and some prototyping with various candidate technologies.
- * The criteria to evaluate include audio latency, availability of plugin/modular framework, online update mechanism, rich-text WYSIWYG widget support, XML processing libraries, etc. The previous 2 phases have already produced sufficient requirements data to support this work.
+(Total = '''1.6''' FTE)
 
+|| '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
+|| ''Daniel Weck'' || DFA || '''0.3''' || Activity Co-Lead ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.4''' || Activity Co-Lead ||
+|| ''Stephen Hibbert'' || RNIB || '''0.4''' || Architect and Programmer ||
+|| ''Avneesh Singh'' || DAISY || '''0.4''' || Architect and Programmer ||
+|| ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||

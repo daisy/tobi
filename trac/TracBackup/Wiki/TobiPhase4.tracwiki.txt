@@ -28,4 +28,16 @@
 === Remarks ===
 
  * This is the start of the active development work (i.e. the end of the inception period). From this point onwards, proper Scrum process management must take place. Prioritization of the "Product Backlog" must be done by the "Product Owner" (i.e. DAISY / Markus). Iteration planning is based on the realization of the "Sprint Backlog". The process should remain light at this stage, therefore the use of metrics for refining estimates is not required (i.e. "Burndown Graph").
- * The software produced here is likely to include modules developed during the previous phase (GUI components tested during evaluation).
+
+=== Staffing ===
+
+(Total = '''3.2''' FTE)
+
+|| '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
+|| ''Daniel Weck'' || DFA || '''0.8''' || Activity Lead ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.5''' || Programmer ||
+|| ''Stephen Hibbert'' || RNIB || '''0.5''' || Programmer ||
+|| ''Avneesh Singh'' || DAISY || '''0.7''' || Programmer ||
+|| ''John Worsfold'' || RNIB || '''0.5''' || User-level documentation writing and Workflow/Usability checking ||
+|| ''David Gordon'' || RNIB || '''0.1''' || Workflow/Usability checking ||
+|| ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||

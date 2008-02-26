@@ -25,3 +25,16 @@
 === Remarks ===
 
  * Adjustments to the management process may be required based on the experience from the previous phase.
+
+=== Staffing ===
+
+(Total = '''3.2''' FTE)
+
+|| '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
+|| ''Daniel Weck'' || DFA || '''0.8''' || Activity Lead ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.5''' || Programmer ||
+|| ''Stephen Hibbert'' || RNIB || '''0.5''' || Programmer ||
+|| ''Avneesh Singh'' || DAISY || '''0.7''' || Programmer ||
+|| ''John Worsfold'' || RNIB || '''0.5''' || User-level documentation writing and Workflow/Usability checking ||
+|| ''David Gordon'' || RNIB || '''0.2''' || Workflow/Usability checking ||
+|| ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||
