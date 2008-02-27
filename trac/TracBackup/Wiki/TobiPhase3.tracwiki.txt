@@ -32,6 +32,6 @@ __Note:__ this phase is actually shorter than 3 months, because of the typically
 || '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
 || ''Daniel Weck'' || DFA || '''0.3''' || Activity Co-Lead ||
 || ''Ole Holst Andersen'' || DAISY || '''0.4''' || Activity Co-Lead ||
-|| ''Stephen Hibbert'' || RNIB || '''0.4''' || Architect and Programmer ||
+|| ''Stephen Hibberd'' || RNIB || '''0.4''' || Architect and Programmer ||
 || ''Avneesh Singh'' || DAISY || '''0.4''' || Architect and Programmer ||
 || ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||

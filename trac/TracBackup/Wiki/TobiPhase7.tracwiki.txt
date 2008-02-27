@@ -18,7 +18,7 @@
 
 === Description of Deliverable ===
 
- * Product packaging: Online updates, plugins, organization-specific distributions.
+ * Increased emphasis on product packaging and customization: online updates, plugins that extend functionality, organization-specific distributions. Ability to let an IT department control the install/update process internally, to meet organization-specific needs in terms of system integration.
 
 === Remarks ===
 

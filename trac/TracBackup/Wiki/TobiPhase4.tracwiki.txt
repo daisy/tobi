@@ -14,14 +14,15 @@
 
 (previous: [wiki:TobiPhase3 Phase 3], next: [wiki:TobiPhase5 Phase 5])
 
-== Tobi stage 1 (text but poor audio) ==
+== Tobi stage 1 (text and structure editing, but basic audio support) ==
 
 === Description of Deliverable ===
 
  * Installable and usable barebone application, with synchronized text and audio views.
- * The application implements at least one method to select and edit text, at the structure and at the character level.
- * Audio display (i.e. waveform blocks) should be used to represent text/audio synchronization, but it is not required to be editable (record or edit functions). There is basically no complex requirement for audio at this stage (e.g. zoom in/out), but playback would be a bonus feature.
- * Sample content must be provided to facilitate testing by users. At this stage, there is no requirement for the supported format (i.e. can be XUK or DAISY 3/DTBook). The emphasis should be on opening existing content, not on creating content from scratch.
+ * Implements a way to represent imported XML content (i.e. DTBook), and showcases a few rudimentary editing workflows.
+ * Basic audio display (i.e. waveform blocks) is used to represent text/audio synchronization, and a simple recording function exists to allow live narration.
+ * A preview/playback WYSIWYG function is available to test the authored content directly within the editing environment.
+ * Sample content is provided to facilitate testing by users. At this stage, there is no requirement for the supported format (i.e. can be XUK or DAISY 3/DTBook). The emphasis should be on opening existing text/structure content, not on creating from scratch.
  * High-level documentation must be written to explain how to use the application, and its limitations (John).
  * Some time must be allocated to evaluate the (albeit simple) editing process offered by this initial release (John+David).
 
@@ -36,7 +37,7 @@
 || '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
 || ''Daniel Weck'' || DFA || '''0.8''' || Activity Lead ||
 || ''Ole Holst Andersen'' || DAISY || '''0.5''' || Programmer ||
-|| ''Stephen Hibbert'' || RNIB || '''0.5''' || Programmer ||
+|| ''Stephen Hibberd'' || RNIB || '''0.5''' || Programmer ||
 || ''Avneesh Singh'' || DAISY || '''0.7''' || Programmer ||
 || ''John Worsfold'' || RNIB || '''0.5''' || User-level documentation writing and Workflow/Usability checking ||
 || ''David Gordon'' || RNIB || '''0.1''' || Workflow/Usability checking ||

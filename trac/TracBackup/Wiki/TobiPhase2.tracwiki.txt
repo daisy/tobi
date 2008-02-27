@@ -55,7 +55,7 @@ Continuation (improvement and completion) of the previous phase's deliverables:
 (Total = '''1.2''' FTE)
 
 || '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
-|| ''Daniel Weck'' || DFA || '''0.4''' || Activity Lead, Architect and Programmer (also allocated in track A) ||
-|| ''Ole Holst Andersen'' || DAISY || '''0.4''' || Architect and Programmer, also allocated in track A ||
-|| ''Stephen Hibbert'' || RNIB || '''0.4''' || Architect and Programmer ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.4''' || Activity Lead, Architect and Programmer (also allocated in track A) ||
+|| ''Daniel Weck'' || DFA || '''0.4''' || Architect and Programmer (also allocated in track A) ||
+|| ''Stephen Hibberd'' || RNIB || '''0.4''' || Architect and Programmer ||
 

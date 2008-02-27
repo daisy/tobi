@@ -18,8 +18,8 @@
 
 === Description of Deliverable ===
 
- * Support for document extensions (i.e. MathML / Braille).
- * The Tobi application remains pretty much organization-agnostic, with a single generic packaging/deployment method.
+ * Support for various document types and XML extensions. Improved import/export functionality. Concrete goals will depend on Z-next developments (reference implementation). Integration with Pipeline services is likely (interoperable distribution and authoring formats).
+ * At this stage, the application remains organization-agnostic, with a single generic packaging/deployment method, and a fixed set of plugins (extension modules).
 
 === Remarks ===
 
