@@ -1,6 +1,0 @@
-
-
-= First Inception Phase Meeting Report =
-The first formal meeting of the Tobi inception phase has been a great success. It took place at RNIB in Peterborough, and the design/dev team has been very productive in producing requirements and setting-up a systematic process.
-
-The meetings notes are here: [wiki:meetings/2008-02-14]
