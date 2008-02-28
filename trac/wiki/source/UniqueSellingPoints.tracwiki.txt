@@ -1,0 +1,6 @@
+= Unique Selling Points for Tobi =
+
+ * Mulitiple projects presented at the same time
+ * Non distructive editing
+ * Unlimited undo/redo 
+ * Plug-in cabability

@@ -1,0 +1,32 @@
+= Existing Authoring Tools =
+
+== DBB's STD ==
+
+Image taken from here: [http://www.dbb.dk/Software/std.asp]
+
+[[Image(http://www.dbb.dk/Software/STDeditor.jpg)]]
+
+== Sigtuna DAR ==
+
+Lots of small screenshots here: [http://www.daisy.org/dkn/paths/all-modules-by-topic.html#12]
+
+[[Image(http://www.daisy.org/dkn/modules/daisy.tools.production.sdar3.new.project.synchronized/images/f06-18.png)]]
+
+[[Image(http://www.daisy.org/dkn/modules/daisy.tools.production.overview.2004.11/images/sigtunaDAR3.png)]]
+
+== LP Studio PRO ==
+
+[[Image(http://www.daisy.org/publications/specifications/d202skiprec/RecordingWindow01.PNG)]]
+
+== Dolphin's Ease Publisher ==
+
+Features: [http://www.yourdolphin.com/productdetail.asp?id=12&z=1]
+
+Image taken from here: [http://www.daisy.org/dkn/modules/daisy.tools.production.overview.2005/page11.html]
+
+[[Image(http://www.daisy.org/dkn/modules/daisy.tools.production.overview.2005/images/EasePublisher.gif)]]
+
+Image taken from here: [http://www.yourdolphin.com/productdetail.asp?id=12&z=6]
+
+[[Image(http://www.yourdolphin.com/screenshots/EPstartwindow.jpg)]]
+
