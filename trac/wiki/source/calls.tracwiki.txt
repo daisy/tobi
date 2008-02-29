@@ -2,6 +2,10 @@
 
 = Conference Calls =
 
+== History ==
+
+[[SubWiki(calls/)]]
+
 == Skype Contact List ==
 
  * '''Daniel Weck''' [danoulz]
@@ -45,7 +49,3 @@
 <br/>
 <a href="skype:ohandersen?call"><img src="http://mystatus.skype.com/balloon/ohandersen" style="border: none;" width="150" height="60" alt="Skype status" /></a>
 }}}
-
-== History ==
-
-[[SubWiki(calls/)]]

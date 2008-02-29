@@ -5,7 +5,7 @@
 
 <p></p>
 <div class="system-message"><strong>Note:</strong>
-this page was created for internal purposes only, for quick-aggregating existing Wiki content into a single HTML page. The end-result is available <a href="https://daisy-browse.cvsdude.com/vvc/tobi/wikidumps/Tobi_Roadmap_Summary/">in the SVN repository</a>.
+this page was created for internal purposes only, for quick-aggregating existing Wiki content into a single HTML page. The end-result is available <a href="https://daisy-browse.cvsdude.com/vvc/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html?view=co">in the SVN repository</a>, with all the unnecessary Wiki data stripped-out.
 </div>
 <p></p>
 

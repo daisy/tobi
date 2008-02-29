@@ -1,5 +1,10 @@
 = Staffing Plan =
 
+Some of the resources in this plan are allocated tentatively, i.e.:
+
+ * with FTE estimates to be confirmed for a particular staff member.
+ * with well-defined FTE requirements, but no committed assignment yet.
+
 ''Note'': Full Time Equivalent (FTE) figures are given for indication only: they are estimates of average over the full project life-time. Resource requirements are detailed on a per-activity basis, in the [wiki:TobiPhase1 roadmap].
 
 == Resources from the DAISY Consortium ==
@@ -23,6 +28,8 @@ Allocation chart (Total = '''1.2''' FTE):
 
 || '''Name''' || '''Role(s)''' || '''Allocation (FTE)''' || '''Remarks''' ||
 || ''Pete Long'' || RNIB Contact Person || '''0.1''' || To report and coordinate on RNIB's side. ||
-|| ''Stephen Hibberd'' || RNIB Software Programmer || '''0.4''' || To contribute in architecture and programming tasks. ||
-|| ''John Worsfold'' || RNIB Usability / Workflow Expert, Documentation Writer, Acceptance Tester. || '''0.5''' || To help with usability/accessibility study, to help write workflow specifications, to write high-level documentation, and to help with acceptance tests. ||
-|| ''David Gordon'' || RNIB Usability / Workflow Expert, Documentation Reviewer, Acceptance Tester. || '''0.2''' || To provide input during usability/accessibility study, to review high-level workflow specifications, and to contribute in acceptance testing. ||
+|| ''Stephen Hibberd'' || RNIB Software Programmer || '''0.4''' (pending confirmation) || To contribute in architecture and programming tasks. ||
+|| ''John Worsfold'' || RNIB Usability / Workflow Expert, Documentation Writer, Acceptance Tester. || '''0.5''' (pending confirmation) || To help with usability/accessibility study, to help write workflow specifications, to write high-level documentation, and to help with acceptance tests. ||
+|| ''David Gordon'' || RNIB Usability / Workflow Expert, Documentation Reviewer, Acceptance Tester. || '''0.2''' (pending confirmation) || To provide input during usability/accessibility study, to review high-level workflow specifications, and to contribute in acceptance testing. ||
+|| ''TBD'' || Vision Australia || '''1.0''' (pending confirmation) || C# architect and developer ||
+|| ''TBD'' || TBD || '''1.0''' || C# programmer ||

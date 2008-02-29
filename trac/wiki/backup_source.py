@@ -74,6 +74,11 @@ def downloadpages(links):
 		url = link['url']
 		print 'Reading URL [' + url + ']...'
 		source = urllib2.urlopen(url).read()
+		
+		#TODO: analyze source for image attachments + download actual image (should work with any binary, really)
+		#e.g. [[Image(TOBI_04.png)]]
+		#http://daisy-trac.cvsdude.com/tobi/attachment/wiki/inception/Mockups/TOBI_04.png?format=raw
+		
 		print 'Writing file [' + filename + ']...'
 		fp.write(source)
 		fp.close()

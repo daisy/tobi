@@ -1,0 +1,48 @@
+[[TOC]]
+
+= Follow-up Conference Call =
+
+== Schedule ==
+
+ * '''Date''': 2008-02-29 (Friday)
+ * '''Time''': 14:00 UTC/GMT
+ * '''Duration''': 30mn
+
+== Venue ==
+
+Skype (maximum number of participants: 5)
+
+== Participants ==
+
+ * Daniel Weck (DFA) '''CONFIRMED'''
+ * Ole Holst Andersen (DAISY) '''CONFIRMED'''
+ * Stephen Hibberd (RNIB) '''CONFIRMED'''
+ * John Worsfold (RNIB) '''CONFIRMED'''
+ * David Gordon (RNIB) '''REGRETS'''
+
+== Objectives ==
+
+This is a follow-up of the [wiki:calls/2008-02-22 previous call], to keep track of objectives.
+
+== Agenda ==
+
+ 1. Present updated Tobi roadmap, give link to public Obi roadmap.
+ 2. Talk about general staffing issues and future directions.
+ 3. Introduce Ole as the lead of the Tobi architecture specification task force.
+ 4. Mention the upcoming meeting in Copenhagen for the technical architecture team.
+
+== Minutes ==
+
+ * John and Stephen FTEs to be confirmed (John's busy on Braille project until the summer), some external 1.0 FTE contribution from Vision Australia is expected, hopefully 1.0 FTE from another party as well (Pending, depending on budget).
+ * Next week: we need to get some velocity into the requirements gathering and mockup production. This week, not much work has been done remotely, bar some Wiki re-organization and cleanup. Daniel added [wiki:inception/ExistingSoftware], 
+ * Problems with anonymous RSS feed from the Timeline section of Trac. To be fixed by Daniel. See here for some bookmark links: [http://daisy-trac.cvsdude.com/tobi/wiki/CvsDudeLinks#RSSfeeds]
+ * Skype is politically problematic from within RNIB, but technically it worked fine for this call. There is an ongoing discussion to enable Skype officially.
+ * Tobi roadmap is available as a single HTML page here: [https://daisy-browse.cvsdude.com/vvc/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html?view=co], but it's in fact a cleaned-up version of a [wiki:TobiPhases real Wiki page].
+ * Obi public roadmap is here: [http://urakawa.svn.sourceforge.net/viewvc/*checkout*/urakawa/trunk/urakawa/application/docs/plan.html]
+ * John and David will alpha-test Obi and will work-out the UI design features that can/should be re-used in Tobi.
+
+== Action Items ==
+
+ * '''DONE''' (Daniel): fix RSS feed (enable anonymous users to view the Timeline section). See here: [http://node11.cvsdude.com/tracrss/daisy/tobi/timeline?format=rss]
+ * (All): read the [wiki:inception/Requirements list of requirements] before next week's call, and re-organize if necessary.
+ * (John): contact Julien to ask about Obi UI design specifications and to get binary for alpha-testing.
