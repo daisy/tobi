@@ -16,7 +16,7 @@ The project plan is available in Trac format, in the [/tobi/roadmap "Roadmap" se
 
 The staffing requirements are specified for each milestone. In addition, an overall staffing plan is available [wiki:StaffingPlan here].
 
-For your informatiom ,the original (and obsolete) HTML version of the roadmap is [http://urakawa.sourceforge.net/tobi/Roadmap_2008-2010_v6_Simplified.html still alive].
+For your convenience, a summary has been compiled into a single page, and is available [https://daisy-browse.cvsdude.com/vvc/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html?view=co here].
 
 == Development Process ==
 

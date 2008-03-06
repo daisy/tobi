@@ -2,8 +2,6 @@
 
 = Conference Calls =
 
-== History ==
-
 [[SubWiki(calls/)]]
 
 == Skype Contact List ==

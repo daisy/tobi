@@ -14,10 +14,10 @@ Skype (maximum number of participants: 5)
 
 == Participants ==
 
- * Daniel Weck (DFA) '''CONFIRMED'''
- * Ole Holst Andersen (DAISY) '''CONFIRMED'''
- * Stephen Hibberd (RNIB) '''CONFIRMED'''
- * John Worsfold (RNIB) '''CONFIRMED'''
+ * Daniel Weck (DFA)
+ * Ole Holst Andersen (DAISY)
+ * Stephen Hibberd (RNIB)
+ * John Worsfold (RNIB)
  * David Gordon (RNIB) '''REGRETS'''
 
 == Objectives ==

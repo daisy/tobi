@@ -4,12 +4,12 @@
 
 == Face-to-face Meetings ==
 
- * Monday 10, Tuesday 11 March 2008 (at DBB, Copenhagen, architecture specification task-force)
+ * [wiki:meetings/2008-03-11]
  * Monday 7, Tuesday 8 April 2008 (at RNIB, mainly for requirements-gathering, mockups, etc.)
 
 == Conference Calls ==
 
- * Sometime between 3-7 March 2008
+ * [wiki:calls/2008-03-07]
 
 = Past Events =
 

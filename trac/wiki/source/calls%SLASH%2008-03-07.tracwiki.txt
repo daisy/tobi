@@ -1,0 +1,41 @@
+[[TOC]]
+
+= "Velocity" Conference Call =
+
+== Schedule ==
+
+ * '''Date''': 2008-03-07 (Friday)
+ * '''Time''': 14:00 UTC/GMT
+ * '''Duration''': 40-60mn
+
+== Venue ==
+
+Skype (maximum number of participants: 5)
+
+== Participants ==
+
+ * Daniel Weck (DFA) '''CONFIRMED'''
+ * Ole Holst Andersen (DAISY) '''TBD'''
+ * Stephen Hibberd (RNIB) '''TBD'''
+ * John Worsfold (RNIB) '''TBD'''
+ * David Gordon (RNIB) '''TBD'''
+
+== Objectives ==
+
+The [wiki:calls/2008-02-29 previous call] was mainly about logistics, so not much progress was made then. The goal now is to overcome the challenges of multi-organization remote collaboration and to put some velocity into the project.
+
+The preparation task for this conference call was to review the existing [wiki:inception/Requirements requirements] and come-up with ideas for improvements (additions and alterations). For example, categories need some re-organization, and there are missing requirements in several buckets.
+
+== Agenda ==
+
+Any action items from the [wiki:calls/2008-02-29 previous call] ?
+
+Go through the [wiki:inception/Requirements list of requirements] and re-organize things around to make it more readable. One suggestion is to brake it down into several pages, one for each major area. This categorization may not be suitable for requirements that seem to belong to more than one area, but the goal is indeed to disambiguate topics so that the translation to actual development goals is straight-forward. Simpler is better. 
+
+== Minutes ==
+
+NONE YET.
+
+== Action Items ==
+
+NONE YET.

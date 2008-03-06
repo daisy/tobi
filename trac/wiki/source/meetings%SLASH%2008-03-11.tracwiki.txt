@@ -1,0 +1,56 @@
+[[TOC]]
+
+= Inception Phase Meeting 2 =
+
+Note: this is the first face-to-face meeting of the architecture task-force.
+
+== Dates ==
+
+ * 2008-03-11 (Tuesday)
+ * 2008-03-12 (Wednesday)
+
+== Venue ==
+
+Kindly hosted by DBB, in Copenhagen (Denmark).
+
+== Participants ==
+
+ * Ole Holst Andersen (DAISY)
+ * Markus Gylling(DAISY)
+ * Daniel Weck (DFA)
+ * Stephen Hibberd (RNIB)
+ * Romain Deltour (DAISY)
+
+== Objectives ==
+
+This 2-day session is a workshop, where participants interact in brainstorming mode.
+
+The expected outcome is a draft specification of the main components of the application architecture for Tobi. The documentation produced will be available in this Wiki, in the usual [wiki:inception inception bucket]. 
+
+Some preliminary material is available in the [wiki:inception/Requirements list of requirements] established so far. This list is a good starting point to conceptualize the low-level technical details of the application, but we may also expect to inject back some new functional objectives into the initial list.
+
+== Agenda ==
+
+=== DAY 1 ===
+
+ * Markus to introduce the meeting's objectives and a reminder of his [wiki:inception/ArchitectureRationale technical write-up] about componentization and plugin-style architecture (modularization and extensibility).
+ * Ole to talk about his role as the lead of this task force, and his C# experience of application frameworks.
+ * Romain to present a selection of features from the RCP framework that are worth implementing for Tobi, and a brief overview of the main component model (an interactive demonstration of Eclipse would be great here).
+ * Discussions and decisions about the Tobi architecture.
+ * To rationalize in a structured way, maybe we should use mind-mapping (e.g. !FreeMind).
+ * Daniel can take notes and feed the Wiki in live mode. Daniel can also quickly produce graphical diagrams, if it helps.
+
+=== DAY 2 ===
+
+ * Continuation of day 1.
+ * Produce organized material to present as the formal outcome of this meeting.
+ * Define the action plan for the next few weeks until the meeting at RNIB in April.
+ * Ole to take responsibility for the conference calls. Define date for next Skype interaction.
+
+== Minutes ==
+
+NONE YET.
+
+== Action Items ==
+
+NONE YET.

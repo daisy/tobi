@@ -15,16 +15,16 @@ We're therefore using the RNIB/BT conference call facility.
 
 == Participants ==
 
- * Markus Gylling (DAISY) '''CONFIRMED'''
- * Daniel Weck (DFA) '''CONFIRMED'''
- * Ole Holst Andersen (DAISY) '''CONFIRMED'''
- * Romain Deltour (DAISY) '''CONFIRMED'''
+ * Markus Gylling (DAISY)
+ * Daniel Weck (DFA)
+ * Ole Holst Andersen (DAISY)
+ * Romain Deltour (DAISY)
 
 Most RNIB staff is unavailable between 2-3pm.
 
- * Ian Greenow (RNIB) '''CONFIRMED'''
- * Stephen Hibberd (RNIB) '''CONFIRMED'''
- * John Worsfold (RNIB) '''CONFIRMED'''
+ * Ian Greenow (RNIB)
+ * Stephen Hibberd (RNIB)
+ * John Worsfold (RNIB)
  * Pete Long (RNIB) '''REGRETS'''
  * Mark Frodsham (RNIB) '''REGRETS'''
  * Stephen Phippen (RNIB) '''REGRETS'''
