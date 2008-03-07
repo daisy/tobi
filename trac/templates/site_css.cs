@@ -184,11 +184,6 @@
 .dp-highlighter .keyword { color: #069; font-weight: bold; background-color: inherit; }
 .dp-highlighter .preprocessor { color: gray; background-color: inherit; }
 
-
-<?cs
-##################################################################
-# Site CSS - Place custom CSS, including overriding styles here.
-?>
 #content {
  margin-left: 2em;
 }
@@ -218,8 +213,8 @@ h2 {
 /*
  border-left: 1em solid #ffcc66;
  padding-left: 0.3em;
-*/
  border-bottom: 1px dashed #B8DB94;
+*/
 }
 h3 {
  font-weight: bold;

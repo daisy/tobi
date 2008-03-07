@@ -1,6 +1,6 @@
 [[TOC]]
 
-= Welcome to Tobi's home ! =
+= Welcome ! =
 
 == What is the Tobi project ? ==
 
