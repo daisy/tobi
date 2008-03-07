@@ -238,7 +238,7 @@ a:link:hover, a:visited:hover {
 }
 dl dt :link:hover, dl dt :visited:hover {
  border: none;
- background-color: #eed;
+ background-color: #eef8ed;
 }
 table tbody tr td :link:hover, table tbody tr td :visited:hover {
  border: none;
@@ -281,7 +281,7 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  color: #6B6B6B;
 }
 #mainnav :link:hover, #mainnav :visited:hover {
- background: #eed;
+ background: #eef8ed;
  color: #333333;
  border: none;
  border-right: 1px solid #B8DB94;
@@ -298,7 +298,7 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  font-weight: normal;
 }
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
- background: #eed;
+ background: #eef8ed;
  color: #333333;
  border-top: 2px solid #6EA437;
  border-left: 3px solid #6EA437;
@@ -321,7 +321,7 @@ h1 :link, h1 :visited {
  margin-bottom: 0.7em;
 }
 div.blog-calendar {
- background: #eed;
+ background: #eef8ed;
  border: 2px solid #B8DB94;
 }
 div.blog-calendar .missing {
@@ -331,22 +331,22 @@ tr.blog-calendar-current {
  background: #B8DB94;
 }
 .wiki-toc {
- background: #eed;
+ background: #eef8ed;
  border: 2px solid #B8DB94;
 }
 .wiki-toc ol li, .wiki-toc ul li {
  padding: 0.3em;
 }
 input[type=button], input[type=submit], input[type=reset] {
- background: #eed;
+ background: #eef8ed;
  border: 1px solid #B8DB94;
 }
 #ticket {
- background: #eed;
+ background: #eef8ed;
  border: 1px solid #B8DB94;
 }
 #prefs {
- background: #eed;
+ background: #eef8ed;
  border: 1px solid #B8DB94;
 }
 #changelog {
