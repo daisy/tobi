@@ -2,7 +2,28 @@
 
 In this current state, this page is just meant for testing the dynamic syntax highlighting with CSharp, Java and XML. The source code below is completely random and should not be considered useful.
 
-== CSharp ==
+== C# ==
+
+Using the built-in support
+
+{{{
+#!c#
+
+using urakawa;
+using urakawa.core;
+using urakawa.properties.channel;
+using urakawa.examples;
+
+public class Program
+{
+    [STAThread]
+    static void Main(string[] args)
+    {
+    ]
+}
+}}}
+
+Using !JavaScript
 
 {{{
 #!html
@@ -35,6 +56,35 @@ public class Program
 }}}
 
 == Java ==
+
+Using the built-in support
+
+{{{
+#!java
+package org.daisy.urakawa;
+
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+...
+
+/**
+ * Reference implementation of the interface.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ */
+public class ProjectImpl extends XukAbleAbstractImpl implements Project {
+	private DataModelFactory mDataModelFactory;
+}
+}}}
+
+Using !JavaScript
 
 {{{
 #!html
@@ -80,6 +130,103 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 }}}
 
 == XML ==
+
+Using build-in support
+
+{{{
+#!xml
+<Xuk
+	xmlns="http://www.daisy.org/urakawa/xuk/1.0"
+	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Project>
+    <mPresentations>
+      <Presentation>
+        <mChannelsManager>
+          <ChannelsManager>
+            <mChannels>
+              <mChannelItem uid="c1">
+                <Channel name="EnglishVoice"/>
+              </mChannelItem>
+              <mChannelItem uid="c2">
+                <Channel name="DanishVoice"/>
+              </mChannelItem>
+              <mChannelItem uid="c3">
+                <Channel name="DanishText"/>
+              </mChannelItem>
+              <mChannelItem uid="c4">
+                <Channel name="Custom channel"/>
+              </mChannelItem>
+              <mChannelItem uid="c5">
+                <Channel name="Video channel"/>
+              </mChannelItem>
+              <mChannelItem uid="c6">
+                <Channel name="Image channel"/>
+              </mChannelItem>
+            </mChannels>
+          </ChannelsManager>
+        </mChannelsManager>
+        <mDataProviderManager />
+        <mMediaDataManager />
+        <mMetadata>
+          <Metadata name="dc:Author" content="Laust Skat Nielsen" />
+          <Metadata name="dc:Author" content="Ole Holst Andersen" />
+          <Metadata name="dc:Title" content="Simple XUK sample" />
+          <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
+        </mMetadata>
+        <mRootNode>
+          <TreeNode>
+            <mProperties>
+              <XmlProperty localName="body" namespaceUri="http://www.daisy.org/urakawa/test">
+                <mXmlAttributes>
+                  <XmlAttribute localName="class">DAISY</XmlAttribute>
+                </mXmlAttributes>
+              </XmlProperty>
+              <ChannelsProperty>
+                <mChannelMappings>
+                  <mChannelMapping channel="c1">
+                    <SequenceMedia>
+                      <mSequence>
+                        <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:03" src="english.mp3" />
+                        <ExternalAudioMedia clipBegin="00:00:06" clipEnd="00:00:09" src="english.mp3" />
+                      </mSequence>
+                    </SequenceMedia>
+                  </mChannelMapping>
+                  <mChannelMapping channel="c2">
+                    <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:05" src="danish.mp3" />
+                  </mChannelMapping>
+                  <mChannelMapping channel="c3">
+                    <TextMedia>
+                      <mText>Hallå</mText>
+                    </TextMedia>
+                  </mChannelMapping>
+                  <mChannelMapping channel="c4">
+                    <CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>
+                  </mChannelMapping>
+                  <mChannelMapping channel="c5">
+                    <ExternalVideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"  src="snip.dvi" />
+                  </mChannelMapping>
+                  <mChannelMapping channel="c6">
+                    <ExternalImageMedia height="50" width="50" src="icon.svg" />
+                  </mChannelMapping>
+                </mChannelMappings>
+              </ChannelsProperty>
+            </mProperties>
+            <mChildren>
+              <TreeNode>
+                <mProperties/>
+                <mChildren/>
+              </TreeNode>
+            </mChildren>
+          </TreeNode>
+        </mRootNode>
+      </Presentation>
+    </mPresentations>
+  </Project>
+</Xuk>
+}}}
+
+Using !JavaScript
 
 {{{
 #!html

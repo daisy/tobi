@@ -1,0 +1,13 @@
+= Tobi architecture overview draft =
+
+== Minimal OSGi ==
+
+[wiki:inception/architecture/MinimalOSGi]
+
+== C# .Net specifics ==
+
+[wiki:inception/architecture/DotNetPluginSupport]
+
+== Native Tobi plugins ==
+
+[wiki:inception/architecture/NativePluginList]

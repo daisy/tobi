@@ -1,0 +1,47 @@
+= Tobi Plugin Examples =
+This page contains descriptions of a series of developer-perspective examples of functionality/features that are added through a plugin/SOA framework. 
+
+We need to aim for plugins being contributed using any of these patterns (in any combination):
+
+ '''Plugins that replace existing functionality'''::
+  Example: replace the existing VU-meter
+ '''Plugins that refine existing functionality''':: 
+  Equals the refinement of an existing plugin.
+  Example: add a new "merge sections" method to a tree-based TOC Editor plugin
+ '''Plugins that provide entirely new functionality'''::
+  Example: add a noise reduction feature to an audio editor
+
+== Adding a project annotation feature ==
+ ''The developer will want to:''
+
+ * Introduce "add anotation", "delete anotation" and "view annotation" actions, with activators (buttons) appearing in 1-n already existing(widgets) toolbars/menus;
+ * When the add or view actions are invoked, pop a dialog that allows entering textual or audiotorial data;
+ * When this dialog is closed, add this as a custom AnnotationProperty in the SDK tree;
+ * Add a view that lists existing annotations and and allows navigating to presentation position, allows removing select annotations;
+ * Show existing annotations as lines with a custom color in existing wave form view(s);
+ * Add the add/delete/view actions to the context menu of the wave form view;
+ * Persist the annotations at save project time;
+ * Reinstantiate the annotations at project load time;
+ * Add an "Export Annotations as Zed Bookmark File" action appearing in application main menu bar File;
+
+== Adding a physical-level audio manipulation feature ==
+(think noise reduction)
+ ''The developer will want to:''
+
+ * Be able to define a wizard, and give access to it in existing menus. Used to noise-reduce sets of files in one batch operation;
+ * Get access to current selection in a wave view;
+ * Get access to action population of local menus/context menus in relevant views (where a shortcut "noise reduce current selection" appears);
+ * Get access to assett management to get/replace wave assets
+
+== Adding support for the remote control Sony RCS-2 mkIII ==
+ ''The developer will want to:''
+ * Append a new tab "remote control setup" to the existing configuration dialog;
+ * Get read access to application state (recording, playing, paused, etc);
+ * Get access to application state modification (start recording, stop recording, play, etc);
+ * Get access to presentation (SDK tree navigation) features (next, previous, first, last, ff, rew)
+
+== Adding support for a new Save As option ==
+ ''The developer will want to:''
+ * Append a new Save As XYZ to the existing File menu item in the main application menu;
+ * Be able to pop an options dialog/options wizard that is invoked by the save as XYZ action;
+ * Get access to the SDK data tree when serializing.

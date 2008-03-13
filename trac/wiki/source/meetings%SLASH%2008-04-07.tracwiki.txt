@@ -36,7 +36,7 @@ Second, we must define the key objectives for this second and final major iterat
   
   The focus will need to be on prioritization of the functional requirements inside the so-called "Product Backlog", which is a term for the entire application specification to be implemented (Scrum is the agile development process we are using to manage the Tobi software project, thus the specific terminology).
   
-  At implementation stage, this product configuration will incrementally be broken-down into successive 1-month development iterations (called "Sprints"), each of which will consist in realizing the so-called "Spring Backlog". In other words, the Product Backlog is gradually "emptied" by translating requirements into concrete programming tasks for each iteration (Sprint Backlog).
+  At implementation stage, this product configuration will incrementally be broken-down into successive 1-month development iterations (called "Sprints"), each of which will consist in realizing the so-called "Sprint Backlog". In other words, the Product Backlog is gradually "emptied" by translating requirements into concrete programming tasks for each iteration (Sprint Backlog).
   
   To summarize, the prioritized items in the Product Backlog define the order of deliverables in the implementation process. Everyone must agree on what matters more in the early alpha and beta stages.
   
