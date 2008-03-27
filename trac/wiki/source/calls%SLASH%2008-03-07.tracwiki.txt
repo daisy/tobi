@@ -45,7 +45,7 @@ We agree that reqs need to be re-organized because the current document lacks re
 == Action Items ==
 
  * DANIEL: sort (prioritize) and re-organize [wiki:inception/Requirements existing list]. Cross-check with D3PT-reqs that apply to Tobi.
- * OLE: focus on Architecture from now on: [wiki:TobiPhase1 Track B of the roadmap]. Less important role in Track A. Read (and update) Markus' original [wiki:inception/ArchitectureRationale architecture document]. More discussions in Copenhagen next week.
+ * OLE: focus on Architecture from now on: [wiki:TobiPhase1 Track B of the roadmap]. Less important role in Track A. Read (and update) Markus' original [wiki:inception/architecture/PluginRationale architecture document]. More discussions in Copenhagen next week.
  * STEPHEN: to work on C#.NET GUI prototyping (!WinForms).
  * STEPHEN: template from RNIB for User Stories (Workflow structure).
  * STEPHEN: usability folks at RNIB (UI testing).
