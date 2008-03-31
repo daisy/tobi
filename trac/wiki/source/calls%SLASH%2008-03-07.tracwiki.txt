@@ -46,7 +46,7 @@ We agree that reqs need to be re-organized because the current document lacks re
 
  * DANIEL: sort (prioritize) and re-organize [wiki:inception/Requirements existing list]. Cross-check with D3PT-reqs that apply to Tobi.
  * OLE: focus on Architecture from now on: [wiki:TobiPhase1 Track B of the roadmap]. Less important role in Track A. Read (and update) Markus' original [wiki:inception/architecture/PluginRationale architecture document]. More discussions in Copenhagen next week.
- * STEPHEN: to work on C#.NET GUI prototyping (!WinForms).
- * STEPHEN: template from RNIB for User Stories (Workflow structure).
- * STEPHEN: usability folks at RNIB (UI testing).
+ * #20 STEPHEN: to work on C#.NET GUI prototyping (!WinForms).
+ * #19 STEPHEN: template from RNIB for User Stories (Workflow structure).
+ * #7 STEPHEN: usability folks at RNIB (UI testing).
  * DAVID and JOHN: read the D3PT [TobiDaisyProdToolReqs use cases] that relate to Tobi, in order to flesh them out into User Stories that we can use to formally describe Authoring Workflow. e.g. DTBook is master is likely the most important user-case for Tobi, out of the total 10 use-cases.

@@ -1,5 +1,7 @@
 = Specification of Authoring Workflow =
 
+'''These notes are for brainstorming only, they are not meant to be used as a reference.'''
+
 The starting point is often called "User Stories", where a top-to-bottom approach is used to describe a workflow in terms of actions (not requirements).
 
 To goal is to describe possible scenarios (sequence of actions+results), from the user's perspective, in the form of a graph (with alternate paths depending on the decisions made throughout time). The graph describes all the possible execution scenarios (well, the ones that are relevant for defining implementation requirements), including going back to a previous action/state.

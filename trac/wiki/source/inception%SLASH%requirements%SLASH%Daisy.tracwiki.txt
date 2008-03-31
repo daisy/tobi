@@ -1,0 +1,29 @@
+= Requirements: DAISY =
+
+== Standards ==
+
+Supporting a particular specification not only implies import and export functionality, but also means that the application provides tools and integrated editing features that ease the authoring of all parts of a multimedia document (using visual and/or accessible metaphors, etc.).
+
+ * "Native" support: DAISY 3 2005 (ANSI/NISO Z39.86)
+ * Additional support (via plugin, Pipeline, etc.): DAISY 2.02
+ * NON-requirement (or at least optional for the baseline application): import and processing of non-valid content.
+ * Application ALWAYS generates valid content.
+
+== Features ==
+
+ * Supports the full DAISY navigation model:
+  * Table Of Content (!NavMap).
+  * Skippability.
+  * Escapability.
+  * Page numbering.
+  * Custom navigation lists.
+ * Supports the full DTBook DTD:
+  * Producer notes.
+  * Foot notes.
+  * Side bars.
+  * Tables.
+  * Lists.
+  * etc.
+ * Supports bookmarks (including import and export of DAISY bookmarks).
+ * Supports metadata.
+ * Supports resource files.

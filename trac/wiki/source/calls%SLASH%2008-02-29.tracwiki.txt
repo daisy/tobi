@@ -44,5 +44,5 @@ This is a follow-up of the [wiki:calls/2008-02-22 previous call], to keep track 
 == Action Items ==
 
  * '''DONE''' (Daniel): fix RSS feed (enable anonymous users to view the Timeline section). See here: [http://node11.cvsdude.com/tracrss/daisy/tobi/timeline?format=rss]
- * (All): read the [wiki:inception/Requirements list of requirements] before next week's call, and re-organize if necessary.
- * (John): contact Julien to ask about Obi UI design specifications and to get binary for alpha-testing.
+ * '''DONE''' (All): read the [wiki:inception/Requirements list of requirements] before next week's call, and re-organize if necessary.
+ * '''DONE''' (John): contact Julien to ask about Obi UI design specifications and to get binary for alpha-testing.

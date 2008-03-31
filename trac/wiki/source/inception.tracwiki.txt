@@ -1,4 +1,16 @@
 = Inception Phase Notes =
 
-[[SubWiki(inception/)]]
 
+== Architecture-specific ==
+
+[[SubWiki(inception/architecture/)]]
+
+
+== Requirements ==
+
+[[SubWiki(inception/requirements/)]]
+
+
+== All items ==
+
+[[SubWiki(inception/)]]

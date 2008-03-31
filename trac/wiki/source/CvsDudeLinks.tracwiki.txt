@@ -1,8 +1,6 @@
 [[TOC]]
 
-= Useful Service Links =
-
-This Trac environment is provided by CVS-Dude. A few additional services come with this hosting solution. To optimize your workflow, you may want to bookmark some of the following links.
+= Useful Links =
 
 == General ==
 
@@ -24,7 +22,7 @@ This Trac environment is provided by CVS-Dude. A few additional services come wi
 
 == Bugzilla ==
 
-There's one instance only for the whole "daisy" project.
+There's one instance only for the whole "daisy" project (sub-projects are configured from within the tracker).
 
  * [https://daisy-bugz.cvsdude.com]
 
@@ -38,24 +36,16 @@ Paste the URL directly in the web-browser, or in supported file !WebDav client (
 
 == RSS feeds ==
 
-Any modern web-browser should show a feed icon when a Trac page contains an RSS feed.
+When a Trac page contains an RSS feed, an orange icon that says "RSS XML feed" is displayed at the bottom of the page.
 
-Here are direct links:
+The most useful feed is the "Timeline", as it notifies of any changes in the Wiki, SVN repository, Issue Tracker / Tickets and Roadmap / Milestones: [http://daisy-trac.cvsdude.com/tobi/timeline?changeset=on&wiki=on&ticket=on&ticket_details=on&milestone=on&format=rss]
 
- * Blog: [http://node11.cvsdude.com/tracrss/daisy/tobi/blog?format=rss]
- * Wiki (also received the Blog updates): [http://node11.cvsdude.com/tracrss/daisy/tobi/timeline?wiki=on&max=50&daysback=90&format=rss]
- * Timeline (any of Wiki, SVN commits, Tickets and Milestone changes): [http://node11.cvsdude.com/tracrss/daisy/tobi/timeline?format=rss]
- * Active Tickets: [http://node11.cvsdude.com/tracrss/daisy/tobi/report/1?format=rss]
- * All Tickets: [http://node11.cvsdude.com/tracrss/daisy/tobi/report/6?format=rss]
- * Revision Log ("/" root of the repository): [http://node11.cvsdude.com/tracrss/daisy/tobi/log/?limit=100&mode=stop_on_copy&format=rss]
- * Revision Log (for "/first_commit-test.html"): [http://node11.cvsdude.com/tracrss/daisy/tobi/log/first_commit-test.html?limit=100&mode=stop_on_copy&format=rss]
+Here are other examples of direct links:
 
-Although it's not useful right now, there are authenticated feeds. For the sake of keeping records of links, here's an example with the Blog:
-
- * Secure HTTPS: [https://daisy-trac.cvsdude.com/rss/tobi/blog?format=rss]
- * Plain HTTP: [http://daisy-trac.cvsdude.com/rss/tobi/blog?format=rss]
- * Secure HTTPS: [https://daisy-trac.cvsdude.com/tobi/blog?format=rss]
- * Plain HTTP: [http://daisy-trac.cvsdude.com/tobi/blog?format=rss]
+ * Blog: [http://daisy-trac.cvsdude.com/tobi/blog?year=2008&format=rss]
+ * Active Tickets: [http://daisy-trac.cvsdude.com/tobi/report/1?format=rss]
+ * Revision Log ("/" root of the repository): [http://daisy-trac.cvsdude.com/tobi/log/?limit=100&mode=stop_on_copy&format=rss]
+ * Revision Log (for the "/trac/" directory): [http://daisy-trac.cvsdude.com/tobi/log/trac/?limit=100&mode=stop_on_copy&format=rss]
 
 == Advanced ==
 
@@ -66,3 +56,4 @@ Although it's not useful right now, there are authenticated feeds. For the sake 
  * The CSS and JS files are in the "chrome" directory, e.g.: [http://daisy-trac.cvsdude.com/tobi/chrome/common/css/wiki.css] and [http://daisy-trac.cvsdude.com/tobi/chrome/common/js/trac.js]. For built-in plugins, there are separate chrome folders, e.g.: [http://daisy-trac.cvsdude.com/tobi/chrome/blog/css/blog.css] and [http://daisy-trac.cvsdude.com/tobi/chrome/tags/css/tractags.css] and [http://daisy-trac.cvsdude.com/tobi/chrome/admin/css/admin.css]
 
  * Unverified: [http://PROJECT-trac.cvsdude.com/MODULE/wiki-macros/CsvMacro.py]
+

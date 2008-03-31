@@ -4,12 +4,11 @@
 
 == Face-to-face Meetings ==
 
- * [wiki:meetings/2008-03-11]
- * Monday 7, Tuesday 8 April 2008 (at RNIB, mainly for requirements-gathering, mockups, etc.)
+ * [wiki:meetings/2008-04-07]
 
 == Conference Calls ==
 
- * [wiki:calls/2008-03-07]
+ * none planned until the above face-to-face meeting.
 
 = Past Events =
 
