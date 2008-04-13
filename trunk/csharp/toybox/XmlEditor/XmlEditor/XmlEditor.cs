@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace XmlEditor
 {
@@ -14,6 +8,24 @@ namespace XmlEditor
         public XmlEditor()
         {
             InitializeComponent();
+            mWebBrowser.DocumentText = "<html><head></head><body></body></html>";
+        }
+
+        private void Document_OnChange(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.Print("onchange from "+sender.GetType().FullName);
+        }
+
+        private mshtml.IHTMLDocument2 mHTMLDocument
+        {
+            get
+            {
+                if (mWebBrowser.Document != null)
+                {
+                    return mWebBrowser.Document.DomDocument as mshtml.IHTMLDocument2;
+                }
+                return null;
+            }
         }
 
         private void mNavigateButton_Click(object sender, EventArgs e)
@@ -43,23 +55,26 @@ namespace XmlEditor
 
         private void Edit()
         {
-            if (mWebBrowser.Document!=null)
+            if (mHTMLDocument != null)
             {
-                mshtml.IHTMLDocument2 htmlDoc = mWebBrowser.Document.DomDocument as mshtml.IHTMLDocument2;
-                if (htmlDoc != null)
+                if (mHTMLDocument.designMode == "On")
                 {
-                    if (htmlDoc.designMode == "On")
-                    {
-                        htmlDoc.designMode = "Off";
-                        mEditButton.Text = "Edit";
-                    }
-                    else
-                    {
-                        htmlDoc.designMode = "On";
-                        mEditButton.Text = "Quit";
-                    }
+                    mHTMLDocument.designMode = "Off";
+                    mEditButton.Text = "Edit";
+                    //MessageBox.Show(mWebBrowser.DocumentText);
+                }
+                else
+                {
+                    mHTMLDocument.designMode = "On";
+                    mEditButton.Text = "Quit";
+
                 }
             }
+        }
+
+        void docEvents_onafterupdate(mshtml.IHTMLEventObj pEvtObj)
+        {
+            //throw new NotImplementedException();
         }
 
         private void mCloseButton_Click(object sender, EventArgs e)
