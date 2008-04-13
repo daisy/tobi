@@ -30,10 +30,10 @@
         {
             this.mMainSplitContainer = new System.Windows.Forms.SplitContainer();
             this.mWebBrowser = new System.Windows.Forms.WebBrowser();
-            this.mEditButton = new System.Windows.Forms.Button();
-            this.mCloseButton = new System.Windows.Forms.Button();
-            this.mUrlTextBox = new System.Windows.Forms.TextBox();
             this.mNavigateButton = new System.Windows.Forms.Button();
+            this.mUrlTextBox = new System.Windows.Forms.TextBox();
+            this.mCloseButton = new System.Windows.Forms.Button();
+            this.mEditButton = new System.Windows.Forms.Button();
             this.mMainSplitContainer.Panel1.SuspendLayout();
             this.mMainSplitContainer.Panel2.SuspendLayout();
             this.mMainSplitContainer.SuspendLayout();
@@ -57,8 +57,8 @@
             this.mMainSplitContainer.Panel2.Controls.Add(this.mUrlTextBox);
             this.mMainSplitContainer.Panel2.Controls.Add(this.mCloseButton);
             this.mMainSplitContainer.Panel2.Controls.Add(this.mEditButton);
-            this.mMainSplitContainer.Size = new System.Drawing.Size(632, 413);
-            this.mMainSplitContainer.SplitterDistance = 360;
+            this.mMainSplitContainer.Size = new System.Drawing.Size(802, 597);
+            this.mMainSplitContainer.SplitterDistance = 544;
             this.mMainSplitContainer.TabIndex = 0;
             // 
             // mWebBrowser
@@ -67,39 +67,13 @@
             this.mWebBrowser.Location = new System.Drawing.Point(0, 0);
             this.mWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.mWebBrowser.Name = "mWebBrowser";
-            this.mWebBrowser.Size = new System.Drawing.Size(632, 360);
+            this.mWebBrowser.Size = new System.Drawing.Size(802, 544);
             this.mWebBrowser.TabIndex = 0;
-            // 
-            // mEditButton
-            // 
-            this.mEditButton.Location = new System.Drawing.Point(12, 14);
-            this.mEditButton.Name = "mEditButton";
-            this.mEditButton.Size = new System.Drawing.Size(75, 23);
-            this.mEditButton.TabIndex = 0;
-            this.mEditButton.Text = "Edit";
-            this.mEditButton.UseVisualStyleBackColor = true;
-            this.mEditButton.Click += new System.EventHandler(this.mEditButton_Click);
-            // 
-            // mCloseButton
-            // 
-            this.mCloseButton.Location = new System.Drawing.Point(545, 14);
-            this.mCloseButton.Name = "mCloseButton";
-            this.mCloseButton.Size = new System.Drawing.Size(75, 23);
-            this.mCloseButton.TabIndex = 1;
-            this.mCloseButton.Text = "Close";
-            this.mCloseButton.UseVisualStyleBackColor = true;
-            this.mCloseButton.Click += new System.EventHandler(this.mCloseButton_Click);
-            // 
-            // mUrlTextBox
-            // 
-            this.mUrlTextBox.Location = new System.Drawing.Point(94, 14);
-            this.mUrlTextBox.Name = "mUrlTextBox";
-            this.mUrlTextBox.Size = new System.Drawing.Size(207, 20);
-            this.mUrlTextBox.TabIndex = 2;
             // 
             // mNavigateButton
             // 
-            this.mNavigateButton.Location = new System.Drawing.Point(307, 14);
+            this.mNavigateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.mNavigateButton.Location = new System.Drawing.Point(634, 12);
             this.mNavigateButton.Name = "mNavigateButton";
             this.mNavigateButton.Size = new System.Drawing.Size(75, 23);
             this.mNavigateButton.TabIndex = 3;
@@ -107,12 +81,44 @@
             this.mNavigateButton.UseVisualStyleBackColor = true;
             this.mNavigateButton.Click += new System.EventHandler(this.mNavigateButton_Click);
             // 
+            // mUrlTextBox
+            // 
+            this.mUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mUrlTextBox.Location = new System.Drawing.Point(94, 14);
+            this.mUrlTextBox.Name = "mUrlTextBox";
+            this.mUrlTextBox.Size = new System.Drawing.Size(534, 20);
+            this.mUrlTextBox.TabIndex = 2;
+            this.mUrlTextBox.Text = "C:\\Documents and Settings\\oha\\Dokumenter\\Urakawa\\d3pt\\d3pt-reqs.xml";
+            // 
+            // mCloseButton
+            // 
+            this.mCloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.mCloseButton.Location = new System.Drawing.Point(715, 11);
+            this.mCloseButton.Name = "mCloseButton";
+            this.mCloseButton.Size = new System.Drawing.Size(75, 23);
+            this.mCloseButton.TabIndex = 1;
+            this.mCloseButton.Text = "Close";
+            this.mCloseButton.UseVisualStyleBackColor = true;
+            this.mCloseButton.Click += new System.EventHandler(this.mCloseButton_Click);
+            // 
+            // mEditButton
+            // 
+            this.mEditButton.Location = new System.Drawing.Point(12, 12);
+            this.mEditButton.Name = "mEditButton";
+            this.mEditButton.Size = new System.Drawing.Size(75, 23);
+            this.mEditButton.TabIndex = 0;
+            this.mEditButton.Text = "Edit";
+            this.mEditButton.UseVisualStyleBackColor = true;
+            this.mEditButton.Click += new System.EventHandler(this.mEditButton_Click);
+            // 
             // XmlEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(632, 413);
+            this.ClientSize = new System.Drawing.Size(802, 597);
             this.Controls.Add(this.mMainSplitContainer);
+            this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "XmlEditor";
             this.Text = "XmlEditor";
             this.mMainSplitContainer.Panel1.ResumeLayout(false);
