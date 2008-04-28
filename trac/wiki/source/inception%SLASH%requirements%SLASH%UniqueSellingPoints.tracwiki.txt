@@ -1,0 +1,89 @@
+= Unique Selling Points =
+
+ - Free baseline application (core product: full-text, full-audio DAISY authoring tool). Extensible functionality via plugins.
+ - Maintained by the DAISY Consortium collaboratively with international partners.
+ - Open to commercial / proprietary extensions (i.e. MathML, SVG, Braille, etc.).
+ - Flexible authoring workflows designed to maximize the content throughput and minimize the production costs.
+ - Easy to use and intuitive tools for users new to the technology.
+ - Non-destructive authoring, full undo-redo support: never loose your data anymore !
+ - Tight integration with the DAISY-Pipeline for automated data conversion.
+
+= 15mn pitch: Key Features =
+
+== Extensible functionality ==
+
+ * Plugin-based architecture: easy to upgrade, prepared for evolution of standards, tools, etc.
+ * Online repositories of third-party plugins.
+ * Business-friendly development model / commercial plugins.
+ * Input / Output devices (e.g. foot-pedal, studio lights)
+ * Multimedia: text, audio, video, image, MathML, SVG, etc.
+
+== Deployment, Installation ==
+
+ * Adaptable / flexible configuration and packaging.
+ * Individual "desktop-mode": 
+ * Individual desktop user or centralized intranet administration (for managing organization-specific access rights).
+ * Keep up to date with automatic background updates of currently installed features.
+	
+== Support for multiple document formats ==
+
+ * Import/Export (via plugins): WAV/MP3 audio playlist, MSWord, PDF, NIMAS/DTBOOK, SMIL, RSS/ATOM, XHTML, DAISY 2.02, DAISY 3.0 (ANSI/NISO Z39.86), custom XML Schemas, etc.
+ * Integration with the DAISY-Pipeline automated conversion services.
+ * Internally, future-proof multimedia data model: guaranteed backward-compatibility.
+ * Possibility of opening "broken" (e.g. invalid) content, for manual editing.
+
+== Community-centric experience ==
+
+ * Open strategy
+  * Source code
+  * Standards
+  * Development process
+ * Online
+  * Forum / Wiki / Issue Tracker.
+  * Activity monitored daily by the development team => quick turnaround.
+  * Bug reports.
+  * Feature requests.
+  * Ideas for improvements.
+ * Built-in, in-application
+  * User-made custom templates, help-files, tutorials, production guidelines, editing tips.
+  * User-contributed tools/features (plugins).
+
+== Stability, Robustness ==
+
+ * Unlimited and persistent undo/redo: edit with confidence, no risk of loosing data.
+ * Built-in crash-reporter, with [email_address], [description], [execution trace] => immediate reception acknowledgment => personalized reply, hopefully with fix and update instructions.
+ * Formal testing, with dedicated test teams.
+
+== Content Quality ==
+
+ * Document-type awareness (e.g. DAISY 2.02 vs 3.0): Inline / live / as-you-type / on-the-fly validation, quick-fix proposals for: document grammar, spell-checking, style suggestions, structure guidance.
+ * Intuitive context-sensitive suggestions / assisted edits.
+ * Integrated Thesaurus, Dictionary, Translation.
+ * Full-quality master document, output/export to multiple formats/media with different encoding/bandwidth requirements, and multi-volume content.
+ * Audio quality limited by system capabilities only. e.g. 16-bit/44.1kHz, 24-bit/96kHz linear PCM high-resolution, low-noise recording.
+
+== Usability, Productivity increase ==
+
+ * Intuitive, easy to use user-interface.
+ * On-demand contextual help.
+ * Integrated how-to guides, tutorials.
+ * Optimized workflow: pre-defined and/or custom user-interface layouts (e.g. minimalist narrator view for live recording, with custom text rendering option).
+ * Media synchronization tools: phrase detection, text / audio aligner (based on TTS and spectrum matching).
+ * Integration with existing products: MSWord and !OpenOffice "Save as DAISY XML", Obi, DAISY-Pipeline, etc.
+ * Integrated support for VST audio plugins/filters.
+
+== Speed, Performance ==
+
+ * Audio processing/recording.
+ * Large books text rendering.
+ * Progress bar/report for lengthy tasks.
+ * Support for authoring over network drives (i.e. I/O latency).
+
+== Personalized Authoring Experience ==
+ 
+ * Per-user preferences (profile).
+ * Multilingual (localized) user-interface.
+ * Customizable font / color theme.
+ * Configurable layout (e.g. edition views, toolbars).
+ * Live-switching (no reboot) of user-interface look and feel.
+ * User-interface designed to be accessible to screen-readers.

@@ -1,15 +1,16 @@
 = Inception Phase Notes =
 
-
-== Architecture-specific ==
+== Architecture ==
 
 [[SubWiki(inception/architecture/)]]
 
+== Technology ==
+
+[[SubWiki(inception/technology/)]]
 
 == Requirements ==
 
 [[SubWiki(inception/requirements/)]]
-
 
 == All items ==
 

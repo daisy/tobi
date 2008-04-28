@@ -59,7 +59,16 @@ Second, we must define the key objectives for this second and final major iterat
 
 == Minutes ==
 
-NONE YET.
+Some notes here:
+
+[wiki:inception/requirements/UniqueSellingPoints]
+
+Flip-chart fun :)
+
+[[Image(PICT0001.jpg)]]
+
+
+[[Image(PICT0002.jpg)]]
 
 == Action Items ==
 

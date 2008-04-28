@@ -11,3 +11,49 @@
 == Native Tobi plugins ==
 
 [wiki:inception/architecture/NativePluginList]
+
+
+== Plugin Framework Features ==
+
+[wiki:inception/architecture/PluginFrameworkFeatures]
+
+== Terminology ==
+
+Objective: To disambiguate the terms
+
+ * !AddIn (Microsoft)
+ * !AddOn (Firefox)
+ * Plugin (Firefox, Eclipse)
+ * Extension (Firefox)
+ * Bundle (OSGi, !TextMate)
+ * Feature (Eclipse)
+
+== References ==
+
+"Java Module System" (aka JSR 277):
+
+http://jcp.org/en/jsr/detail?id=277
+http://www.osgi.org/blog/2006/10/jsr-277-review.html
+
+JSR 291 "Dynamic Component Support for Java SE":
+
+http://jcp.org/en/jsr/detail?id=291
+
+Netbeans "Lookup":
+
+API (client code):
+http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/lookup/doc-files/lookup-api.html
+
+SPI (deployment code):
+http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/lookup/doc-files/lookup-spi.html
+
+Homepage:
+http://openide.netbeans.org/lookup/
+
+Java 6 "!ServiceLoader":
+
+http://java.sun.com/javase/6/docs/api/java/util/ServiceLoader.html
+
+Summary:
+
+http://java.sun.com/developer/technicalArticles/javase/extensible/index.html 

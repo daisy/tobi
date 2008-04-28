@@ -14,6 +14,10 @@ Lots of small screenshots here: [http://www.daisy.org/dkn/paths/all-modules-by-t
 
 [[Image(http://www.daisy.org/dkn/modules/daisy.tools.production.overview.2004.11/images/sigtunaDAR3.png)]]
 
+Linear list-view of text "events":
+
+[[Image(http://www.daisy.org/dkn/modules/daisy.tools.production.sdar3.edit.screen/images/f08-15.png)]]
+
 == LP Studio PRO ==
 
 [[Image(http://www.daisy.org/publications/specifications/d202skiprec/RecordingWindow01.PNG)]]
@@ -30,3 +34,93 @@ Image taken from here: [http://www.yourdolphin.com/productdetail.asp?id=12&z=6]
 
 [[Image(http://www.yourdolphin.com/screenshots/EPstartwindow.jpg)]]
 
+== !SlideShare (slide + audio synchronization) ==
+
+Note the full versus partial waveform audio view:
+
+[[Image(http://bp3.blogger.com/_Fu4btjxiaYE/RrI0KuclhWI/AAAAAAAAAGU/uyCEbc4xkZE/s1600-h/slidesyncsample.png)]]
+
+[[Image(http://www.disruptiveconversations.com/WindowsLiveWriter/image_37.png)]]
+
+== Video authoring ==
+
+Note the timeline + channels metaphor:
+
+[[Image(http://www.mediachance.com/video/layout6big.jpg)]]
+
+
+Note the navigator view at the top, which provides a higher abstraction level to the timeline (full overview):
+
+[[Image(http://www.mediachance.com/video/navigatorview.jpg)]]
+
+== !HyperEngine-AV (multiple windows) ==
+
+[[Image(http://sourceforge.net/dbimage.php?id=20337)]]
+
+== Acoustic Labs (multiple panes) ==
+
+[[Image(http://www.acoustic-labs.com/audio-editor-2.jpg)]]
+
+== !LimSee2 (generic/non-specialized SMIL authoring) ==
+
+[[Image(http://limsee3.gforge.inria.fr/public-site/docs/limsee2.png)]]
+
+== Transcriber: the inverse authoring scenario ==
+
+[[Image(http://trans.sourceforge.net/img/transcreen3.jpg)]]
+
+== !SoundSlides ==
+
+[[Image(http://www.soundslides.com/screenshots/02_l.jpg)]]
+
+== generic XML editing: tags and TOC (Syntex Serna) ==
+
+[[Image(http://www.syntext.com/products/serna/screenshots/large-doc-support.png)]]
+
+[[Image(http://www.syntext.com/products/serna/screenshots/cycle-snapshot.png)]]
+
+[[Image(http://www.cmsreview.com/XML/Editors/images/SernaUI.gif)]]
+
+[[Image(http://www.syntext.com/products/serna/screenshots/tag_mode_l_2r.png)]]
+
+[[Image(http://www.syntext.com/products/serna/screenshots/report-large.png)]]
+
+[[Image(http://docs.syntext.com/users_guide/paginated-view.png)]]
+
+== Oxygen XML editor ==
+
+!DocBook mode:
+
+[[Image(http://www.oxygenxml.com/img/docbook_editor_big.gif)]]
+
+[[Image(http://www.oxygenxml.com/img/dita_editor_big.gif)]]
+
+== !XmlMind !DocBook + MathML ==
+
+[[Image(http://www.xmlmind.com/xmleditor/screenshots/MathMLSupport.png)]]
+
+Note the spell-checking:
+
+[[Image(http://www.xmlmind.com/xmleditor/images/winvista.gif)]]
+
+== List of XML editors ==
+
+WYSIWYG vs WYSIWYM
+
+[[Image(http://www.freesoftwaremagazine.com/files/www.freesoftwaremagazine.com/nodes/1137/xml_editors.jpg)]]
+
+== More to see and read ==
+
+http://www.sydock.com/asp/products/info/features.asp?mode=all
+
+http://www.oxygenxml.com/wysiwyg_xml_editor.html
+
+http://www.liquid-technologies.com/Product_XmlStudio_ScreenShots.aspx
+
+http://www.altova.com/products/xmlspy/xml_editing.html
+
+http://www.editix.com/gallery.html
+
+http://www.epcedit.com/Products/Description/Technical/Screen_Shots/screen_shots.html
+
+http://www.xmlmind.com/xmleditor/screenshots.html
