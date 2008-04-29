@@ -1,0 +1,20 @@
+﻿<Window x:Class="FlowDocumentXmlEditor.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:custom="clr-namespace:FlowDocumentXmlEditor"
+    Title="MainWindow" Height="393" Width="542">
+    <DockPanel Height="auto" Name="mMainDockPanel" Width="auto">
+        <Menu Name="mMainMenu" DockPanel.Dock="Top">
+            <MenuItem Name="mInsertMenuItem" Header="Insert">
+                <MenuItem Name="mInsertTableMenuItem" />
+                <MenuItem Name="mInsertColumnMenuItem"/>
+                <MenuItem Name="mInsertRowMenuItem"/>
+            </MenuItem>
+        </Menu>
+        <RichTextBox Name="mXmlRichTextBox">
+            <FlowDocument>
+                <Paragraph/>
+            </FlowDocument>
+        </RichTextBox>
+    </DockPanel>
+</Window>
