@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlEditor", "XmlEditor\XmlEditor.csproj", "{ED7E50B2-22A2-4CCA-B74F-41A284E1999D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowDocumentXmlEditor", "FlowDocumentXmlEditor\FlowDocumentXmlEditor.csproj", "{B2D7A247-3585-422E-9F44-BABFF53FCEB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{ED7E50B2-22A2-4CCA-B74F-41A284E1999D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED7E50B2-22A2-4CCA-B74F-41A284E1999D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED7E50B2-22A2-4CCA-B74F-41A284E1999D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2D7A247-3585-422E-9F44-BABFF53FCEB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D7A247-3585-422E-9F44-BABFF53FCEB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D7A247-3585-422E-9F44-BABFF53FCEB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2D7A247-3585-422E-9F44-BABFF53FCEB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
