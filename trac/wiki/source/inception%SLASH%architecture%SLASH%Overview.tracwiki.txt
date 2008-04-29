@@ -57,3 +57,7 @@ http://java.sun.com/javase/6/docs/api/java/util/ServiceLoader.html
 Summary:
 
 http://java.sun.com/developer/technicalArticles/javase/extensible/index.html 
+
+OSGi vs Google's Android:
+
+http://www.adon-line.de/kunden/prosystBlog/?p=18

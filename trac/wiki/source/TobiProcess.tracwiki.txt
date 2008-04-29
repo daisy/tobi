@@ -45,7 +45,8 @@ There are Trac plugins to help with iteration planning, tracking and reporting (
  * [http://trac-hacks.org/wiki/ScrumBurndownPlugin]
  * [http://trac-hacks.org/wiki/ScrumPlugin]
  * [http://jeffsutherland.com/scrum/2007/03/scrum-burndown-using-trac.html]
- * This wiki (also a CVS-Dude Trac instance) provides interesting information about their project's Scrum implementation (process state-chart, custom ticket fields and queries for iteration tracking and planning): [https://clearcanvas-trac.cvsdude.com/source/wiki/Developers]
+ * This wiki (also a CVS-Dude Trac instance) provides interesting information about their project's Scrum implementation (process state-chart, custom ticket fields and queries for iteration tracking and planning): [https://clearcanvas-trac.cvsdude.com/source/wiki/Developers] [https://clearcanvas-trac.cvsdude.com/source/wiki/SprintDevelopmentProcess] [https://clearcanvas-trac.cvsdude.com/source/wiki/SprintValidationProcess]
+
 
 [[FootNote]]
 

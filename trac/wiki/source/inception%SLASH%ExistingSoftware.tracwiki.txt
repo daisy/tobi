@@ -109,6 +109,10 @@ WYSIWYG vs WYSIWYM
 
 [[Image(http://www.freesoftwaremagazine.com/files/www.freesoftwaremagazine.com/nodes/1137/xml_editors.jpg)]]
 
+== Narrator (just a nice UI) ==
+
+[[Image(http://www.dejal.com/narrator/images/overview-580px.png)]]
+
 == More to see and read ==
 
 http://www.sydock.com/asp/products/info/features.asp?mode=all
@@ -124,3 +128,4 @@ http://www.editix.com/gallery.html
 http://www.epcedit.com/Products/Description/Technical/Screen_Shots/screen_shots.html
 
 http://www.xmlmind.com/xmleditor/screenshots.html
+

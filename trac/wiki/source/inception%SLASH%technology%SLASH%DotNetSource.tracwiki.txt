@@ -1,0 +1,18 @@
+= "Open-Source" .NET Framework =
+
+Microsoft Reciprocal License (Ms-RL), approved by OSI:
+
+http://www.opensource.org/node/207
+
+"
+Reference License
+
+The .NET Framework source is being released under a read-only reference license. When we announced that we were releasing the source back in October, some people had concerns about the potential impact of their viewing the source. To help clarify and address these concerns, we made a small change to the license to specifically call out that the license does not apply to users developing software for a non-Windows platform that has “the same or substantially the same features or functionality” as the .NET Framework. If the software you are developing is for Windows platforms, you can look at the code, even if that software has "the same or substantially the same features or functionality" as the .NET Framework.
+"
+
+http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6&displaylang=en#RelatedLinks
+
+Sources: (search for "Mono" in the first link)
+
+http://weblogs.asp.net/scottgu/archive/2008/01/16/net-framework-library-source-code-now-available.aspx
+http://blogs.msdn.com/sburke/archive/2008/01/16/configuring-visual-studio-to-debug-net-framework-source-code.aspx
