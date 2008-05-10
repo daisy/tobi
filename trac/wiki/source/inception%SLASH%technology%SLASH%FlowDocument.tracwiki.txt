@@ -5,6 +5,20 @@ Part of .NET WPF (Windows Presentation Foundation)
 A rich-text viewer can be created programmatically, or by
 loading a XAML file directly.
 
+[[Image(FlowDocument_RTL_1.png)]]
+
+[[Image(FlowDocument_RTL_2.png)]]
+
+[[Image(http://www.xtabvbcity.plus.com/Blogs/FlowDoc1.jpg)]]
+
+[[Image(http://www.tmssoftware.com/Images/xv.png)]]
+
+[[Image(http://blog.kirupa.com/images/kWordpadFinished_ABC9/kWordpad_ss22.png)]]
+
+[[Image(http://dotnetslackers.com/images/ArticleImages/FlowDocumentReaderMultipleColumns.jpg)]]
+
+[[Image(http://daron.yondem.com/tr/content/binary/20102007_4.png)]]
+
 This could be a good starting point to implement the data binding
 between the Urakawa-SDK data model and the text viewer. It would be
 read-only though, and I'm not sure about selection, highlighting, etc.
@@ -12,7 +26,26 @@ read-only though, and I'm not sure about selection, highlighting, etc.
 Examples here:
 
 http://msdn2.microsoft.com/en-us/library/aa970909.aspx
+
 http://www.codeproject.com/KB/WPF/OpenFlowDoc.aspx
+
+Accessibility:
+
+http://msdn.microsoft.com/en-us/library/ms753388(VS.85).aspx
+
+Built-in Annotations framework !
+
+http://msdn.microsoft.com/en-us/library/ms748864.aspx
+
+http://blogs.microsoft.co.il/blogs/tamir/archive/2007/05/29/WPF-_2B00_-UISpy-_3D00_-Accessibility-testing.aspx
+
+Multithreading:
+
+http://chrismylonas.blogspot.com/2007/12/flowdocument-and-multiple-threads.html
+
+Search algorithm and text range selection:
+
+http://shevaspace.spaces.live.com/blog/cns!FD9A0F1F8DD06954!638.entry
 
 The !RichTextBox editor control is limited compared to !FlowDocument, but
 I think that the data binding with the Urakawa-SDK data model would work
@@ -42,3 +75,39 @@ http://msdn2.microsoft.com/en-us/library/system.windows.documents.textselection.
 A great example of how to implement the GoF Command Design Pattern in a WPF rich-text editor:
 
 http://www.codeproject.com/KB/WPF/WpfCommandPatternApplied.aspx 
+
+More links:
+
+http://hashbucket.wordpress.com/2007/09/04/building-a-simple-text-editor/
+
+http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=3092330&SiteID=1
+
+http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=2197339&SiteID=1
+
+http://blog.spencen.com/2008/01/19/html-to-flowdocument-converter.aspx
+
+http://blog.spencen.com/2008/04/23/handling-images-with-the-htmltoxamlconverter.aspx
+
+http://dedjo.blogspot.com/2008/04/wordml-to-flowdocument-how-to-convert.html
+
+http://blogs.microsoft.co.il/blogs/tamir/archive/2008/04/17/converting-fixeddocument-xpsdocument-too-to-flowdocument.aspx
+
+http://dedjo.blogspot.com/2008/04/converting-fixeddocument-xpsdocument.html
+
+http://www.devcity.net/PrintArticle.aspx?ArticleID=351
+
+http://blogs.msdn.com/llobo/archive/2007/06/05/wpf-blog-writer.aspx
+
+http://blogs.msdn.com/prajakta/archive/2006/11/28/auto-detecting-hyperlinks-in-richtextbox-part-ii.aspx
+
+http://blogs.msdn.com/prajakta/archive/2006/11/01/navigate-words-in-richtextbox.aspx
+
+http://blogs.msdn.com/prajakta/archive/2007/01/03/printing-contents-of-wpf-richtextbox.aspx
+
+http://blogs.msdn.com/prajakta/archive/2006/10/12/customize-richtextbox-to-allow-only-plain-text-input.aspx
+
+http://www.devx.com/dotnet/Article/34644
+
+http://blogs.msdn.com/jfoscoding/archive/2006/01/14/512825.aspx
+
+http://blogs.msdn.com/jfoscoding/archive/2006/01/16/513383.aspx

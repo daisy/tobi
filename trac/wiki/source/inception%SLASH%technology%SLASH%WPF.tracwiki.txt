@@ -1,0 +1,25 @@
+Design patterns, MVC stuff in particular:
+
+http://blogs.sqlxml.org/bryantlikes/archive/2006/09/27/WPF-Patterns.aspx
+
+MVC and the Mediator pattern:
+
+http://marlongrech.wordpress.com/2008/03/20/more-than-just-mvc-for-wpf/
+
++follow-up:
+
+http://marlongrech.wordpress.com/2008/03/21/creating-a-file-explorer-in-wpf-using-mvcm/
+
+Silverlight and WPF, custom controls:
+
+http://weblogs.asp.net/scottgu/archive/2008/04/04/tip-trick-creating-and-using-silverlight-and-wpf-user-controls.aspx
+
+Disabled button Tooltip:
+
+http://dedjo.blogspot.com/2008/04/two-quick-wpf-tricks-show-tooltip-on.html
+
+Commands:
+
+http://blogs.vertigo.com/personal/alanl/Blog/Lists/Posts/Post.aspx?ID=17
+
+http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1809894&SiteID=1
