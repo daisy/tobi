@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ elementFormDefault="qualified"
+ targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns="http://www.daisy.org/urakawa/xuk/1.0">
+	<xs:include schemaLocation="xuk.xsd"/>
+	<xs:element name="ChannelFactory">
+		<xs:annotation>
+			<xs:documentation>
+				The ChannelFactory element represents a ChannelFactory
+				- since the ChannelFactory has no persistable data, the element is empty
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType/>
+	</xs:element>
+	<xs:element name="ChannelsManager">
+		<xs:annotation>
+			<xs:documentation>
+				The ChannelsManager element represents a ChannelsManager
+				- conatins a single mChannels child element conatining the managed Channels
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mChannels" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChannels">
+		<xs:annotation>
+			<xs:documentation>
+				Container for the Channels managed by a ChannelsManager
+				- each contained in a mChannelItem container mapping the Channel to a uid value
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mChannelItem" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChannelItem">
+		<xs:annotation>
+			<xs:documentation>
+				The mChannelItem maps a Channel to a uid value
+				- The Channel (or Channel derived type) is contained as the single child
+				and the uid value is supplied in the uid attribute
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="Channel"/>
+				<xs:element ref="AudioChannel"/>
+				<xs:element ref="ManagedAudioChannel"/>
+				<xs:element ref="TextChannel"/>
+				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
+			<xs:attribute name="uid" type="xs:NCName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Channel" type="ChannelType">
+		<xs:annotation>
+			<xs:documentation>The Channel element represents a Channel</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AudioChannel" type="ChannelType">
+		<xs:annotation>
+			<xs:documentation>The AudioChannel element represents a AudioChannel</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ManagedAudioChannel" type="ChannelType">
+		<xs:annotation>
+			<xs:documentation>The ManagedAudioChannel element represents a ManagedAudioChannel</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TextChannel" type="ChannelType">
+		<xs:annotation>
+			<xs:documentation>The ManagedAudioChannel element represents a ManagedAudioChannel</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ChannelType">
+		<xs:annotation>
+			<xs:documentation>Common type for elements representing classes in the Channel rooted heirachy</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="language" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="ChannelsProperty">
+		<xs:annotation>
+			<xs:documentation>
+				Represents a ChannelsProperty
+				- contains a single mChannelMappings element conatining the IMedia to Channel mappings for the ChannelsProperty
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mChannelMappings" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChannelMappings">
+		<xs:annotation>
+			<xs:documentation>Container for the mChannelMappings of a ChannelsProperty</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mChannelMapping" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChannelMapping">
+		<xs:annotation>
+			<xs:documentation>
+				Represents a mapping between a Channel and an IMedia
+				- the IMedia is the single child element and the channel is identified via. it's uid in the channel attribute
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="ExternalAudioMedia"/>
+				<xs:element ref="ManagedAudioMedia"/>
+				<xs:element ref="ExternalTextMedia"/>
+				<xs:element ref="ExternalImageMedia"/>
+				<xs:element ref="ExternalVideoMedia"/>
+				<xs:element ref="TextMedia"/>
+				<xs:element ref="SequenceMedia"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+			<xs:attribute name="channel" type="xs:NCName" use="required"/>
+		</xs:complexType>
+		<xs:keyref name="channelMappingKeyRef" refer="channelItemKey">
+			<xs:selector xpath="."/>
+			<xs:field xpath="@channel"/>
+		</xs:keyref>
+	</xs:element>
+</xs:schema>

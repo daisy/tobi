@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ elementFormDefault="qualified"
+ targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns="http://www.daisy.org/urakawa/xuk/1.0">
+	<xs:include schemaLocation="xuk.xsd"/>
+	<xs:element name="MediaDataFactory">
+		<xs:complexType/>
+	</xs:element>
+	<xs:element name="MediaDataManager">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mDefaultPCMFormat" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="mMediaData" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="enforceSinglePCMFormat" type="xs:boolean" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mDefaultPCMFormat">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PCMFormatInfo" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mMediaData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mMediaDataItem" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mMediaDataItem">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="WavAudioMediaData"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+			<xs:attribute name="uid" type="xs:NCName"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="WavAudioMediaData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mPCMFormat" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="mWavClips" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mPCMFormat">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PCMFormatInfo" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mWavClips">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="WavClip" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="WavClip">
+		<xs:complexType>
+			<xs:attributeGroup ref="clippedAttrGrp"/>
+			<xs:attribute name="dataProvider" type="xs:NCName" use="required"/>
+		</xs:complexType>
+		<xs:keyref name="wavClipDataProviderRef" refer="dataProviderItemKey">
+			<xs:selector xpath="."/>
+			<xs:field xpath="@dataProvider"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="PCMFormatInfoType">
+		<xs:attribute name="numberOfChannels" type="xs:unsignedShort"/>
+		<xs:attribute name="sampleRate" type="xs:unsignedInt"/>
+		<xs:attribute name="bitDepth" type="xs:unsignedShort"/>
+	</xs:complexType>
+	<xs:element name="PCMFormatInfo" type="PCMFormatInfoType"/>
+	<xs:complexType name="PCMDataInfoType">
+		<xs:complexContent>
+			<xs:extension base="PCMFormatInfoType">
+				<xs:attribute name="dataLength" type="xs:unsignedInt"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="PCMDataInfo" type="PCMDataInfoType"/>
+	<xs:element name="DataProviderFactory">
+		<xs:complexType/>
+	</xs:element>
+	<xs:element name="FileDataProviderManager">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mDataProviders" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="dataFileDirectoryPath" type="xs:anyURI"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mDataProviders">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mDataProviderItem" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mDataProviderItem">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="FileDataProvider"/>
+				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
+			<xs:attribute name="uid" type="xs:NCName"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FileDataProvider">
+		<xs:complexType>
+			<xs:attribute name="dataFileRelativePath" type="xs:anyURI" use="required"/>
+			<xs:attribute name="mimeType" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
