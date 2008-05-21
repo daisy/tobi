@@ -23,8 +23,16 @@ namespace FlowDocumentXmlEditor
         public RoutedUICommand InsertRowCommand = new RoutedUICommand();
         public RoutedUICommand InsertParagraphCommand = new RoutedUICommand();
 
-        static MainWindow()
+        public FlowDocument EditedDocument
         {
+            get
+            {
+                return mXmlRichTextBox.Document;
+            }
+            set
+            {
+                mXmlRichTextBox.Document = value;
+            }
         }
 
         public MainWindow()
@@ -45,6 +53,16 @@ namespace FlowDocumentXmlEditor
             mInsertRowMenuItem.Command = InsertRowCommand;
             this.CommandBindings.Add(new CommandBinding(
                 InsertRowCommand, InsertRowCommand_Executed, InsertRowCommand_CanExecute));
+
+            mXmlRichTextBox.TextInput += new TextCompositionEventHandler(XmlRichTextBox_TextInput);
+        }
+
+        void XmlRichTextBox_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(String.Format(
+                "{0}: {1}",
+                e.OriginalSource.GetType().Name,
+                e.ControlText));
         }
 
         private T GetContaining<T>(DependencyObject elem) where T : DependencyObject

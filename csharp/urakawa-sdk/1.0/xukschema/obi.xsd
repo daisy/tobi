@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ elementFormDefault="qualified" 
+ targetNamespace="http://www.daisy.org/urakawa/obi/1.0"
+ xmlns="http://www.daisy.org/urakawa/obi/1.0">
+ <xs:element name="info">
+		<xs:complexType>
+			<xs:attribute name="id" type="xs:integer"/>
+			<xs:attribute name="type" type="xs:string"/>
+			<xs:attribute name="status" type="xs:string"/>
+		</xs:complexType>
+ </xs:element>
+</xs:schema>
