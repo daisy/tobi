@@ -73,8 +73,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HtmlBlockExtractionVisitor.cs" />
-    <Compile Include="HtmlInlineExtractionVisitor.cs" />
+    <Compile Include="FlowDocumentExtraction\GenericExtractionVisitor.cs" />
+    <Compile Include="FlowDocumentExtraction\Html\HtmlBlockExtractionVisitor.cs" />
+    <Compile Include="FlowDocumentExtraction\Html\HtmlGenericExtractionVisitor.cs" />
+    <Compile Include="FlowDocumentExtraction\Html\HtmlInlineExtractionVisitor.cs" />
+    <Compile Include="FlowDocumentExtraction\Html\HtmlListItemEntractionVisitor.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -109,6 +112,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UrakawaFlowDocument\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
