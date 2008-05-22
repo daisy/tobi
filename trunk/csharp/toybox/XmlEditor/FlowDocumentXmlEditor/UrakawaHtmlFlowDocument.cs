@@ -6,6 +6,7 @@ using System.Windows.Documents;
 using urakawa;
 using urakawa.property.channel;
 using urakawa.core;
+using FlowDocumentXmlEditor.FlowDocumentExtraction.Html;
 
 namespace FlowDocumentXmlEditor
 {

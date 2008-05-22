@@ -4,6 +4,7 @@
     xmlns:custom="clr-namespace:FlowDocumentXmlEditor"
     Title="MainWindow" Height="480" Width="640">
     <DockPanel Height="auto" Name="mMainDockPanel" Width="auto">
+        <!--
         <Menu Name="mMainMenu" DockPanel.Dock="Top">
             <MenuItem Name="mInsertMenuItem" Header="Insert">
                 <MenuItem Name="mInsertTableMenuItem" />
@@ -11,7 +12,8 @@
                 <MenuItem Name="mInsertRowMenuItem"/>
             </MenuItem>
         </Menu>
-        <RichTextBox Name="mXmlRichTextBox">
+        -->
+        <RichTextBox Name="mXmlRichTextBox" AcceptsReturn="False">
             <FlowDocument>
                 <Paragraph/>
             </FlowDocument>

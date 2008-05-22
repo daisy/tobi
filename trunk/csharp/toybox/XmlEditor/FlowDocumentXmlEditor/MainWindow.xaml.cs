@@ -39,20 +39,20 @@ namespace FlowDocumentXmlEditor
         {
             InitializeComponent();
 
-            InsertTableCommand.Text = "Insert Table";
-            mInsertTableMenuItem.Command = InsertTableCommand;
-            this.CommandBindings.Add(new CommandBinding(
-                InsertTableCommand, InsertTableCommand_Executed, InsertTableCommand_CanExecute));
+            //InsertTableCommand.Text = "Insert Table";
+            //mInsertTableMenuItem.Command = InsertTableCommand;
+            //this.CommandBindings.Add(new CommandBinding(
+            //    InsertTableCommand, InsertTableCommand_Executed, InsertTableCommand_CanExecute));
 
-            InsertColumnCommand.Text = "Insert Table Column";
-            mInsertColumnMenuItem.Command = InsertColumnCommand;
-            this.CommandBindings.Add(new CommandBinding(
-                InsertColumnCommand, InsertColumnCommand_Executed, InsertColumnCommand_CanExecute));
+            //InsertColumnCommand.Text = "Insert Table Column";
+            //mInsertColumnMenuItem.Command = InsertColumnCommand;
+            //this.CommandBindings.Add(new CommandBinding(
+            //    InsertColumnCommand, InsertColumnCommand_Executed, InsertColumnCommand_CanExecute));
 
-            InsertRowCommand.Text = "Insert Table Row";
-            mInsertRowMenuItem.Command = InsertRowCommand;
-            this.CommandBindings.Add(new CommandBinding(
-                InsertRowCommand, InsertRowCommand_Executed, InsertRowCommand_CanExecute));
+            //InsertRowCommand.Text = "Insert Table Row";
+            //mInsertRowMenuItem.Command = InsertRowCommand;
+            //this.CommandBindings.Add(new CommandBinding(
+            //    InsertRowCommand, InsertRowCommand_Executed, InsertRowCommand_CanExecute));
 
             mXmlRichTextBox.TextInput += new TextCompositionEventHandler(XmlRichTextBox_TextInput);
         }
