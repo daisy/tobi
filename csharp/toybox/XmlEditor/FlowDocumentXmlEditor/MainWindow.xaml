@@ -1,7 +1,6 @@
 ﻿<Window x:Class="FlowDocumentXmlEditor.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:custom="clr-namespace:FlowDocumentXmlEditor"
     Title="MainWindow" Height="480" Width="640">
     <DockPanel Height="auto" Name="mMainDockPanel" Width="auto">
         <!--
@@ -13,10 +12,10 @@
             </MenuItem>
         </Menu>
         -->
-        <RichTextBox Name="mXmlRichTextBox" AcceptsReturn="False">
+        <FlowDocumentScrollViewer Name="mFlowViewer">
             <FlowDocument>
                 <Paragraph/>
             </FlowDocument>
-        </RichTextBox>
+        </FlowDocumentScrollViewer>
     </DockPanel>
 </Window>

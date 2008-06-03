@@ -16,7 +16,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         public HtmlBlockExtractionVisitor(Channel textCh) : base(textCh) { }
 
-        protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Run nodeRun)
+        protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
             switch (xmlProp.getLocalName())
             {
@@ -71,7 +71,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
             return ContainsHtmlBlockChild(node);
         }
 
-        private void HandleListItems(ListItemCollection destItemColl, TreeNode node, Run nodeRun)
+        private void HandleListItems(ListItemCollection destItemColl, TreeNode node, Inline nodeRun)
         {
             if (nodeRun != null) destItemColl.Add(new ListItem(new Paragraph(nodeRun)));
             if (node.getChildCount() > 0)
@@ -85,7 +85,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
             }
         }
 
-        protected override void HandleNodeRun(Run nodeRun)
+        protected override void HandleNodeRun(Inline nodeRun)
         {
             ExtractedBlocks.Add(new Paragraph(nodeRun));
         }

@@ -27,11 +27,11 @@ namespace FlowDocumentXmlEditor
         {
             get
             {
-                return mXmlRichTextBox.Document;
+                return mFlowViewer.Document;
             }
             set
             {
-                mXmlRichTextBox.Document = value;
+                mFlowViewer.Document = value;
             }
         }
 
@@ -54,7 +54,7 @@ namespace FlowDocumentXmlEditor
             //this.CommandBindings.Add(new CommandBinding(
             //    InsertRowCommand, InsertRowCommand_Executed, InsertRowCommand_CanExecute));
 
-            mXmlRichTextBox.TextInput += new TextCompositionEventHandler(XmlRichTextBox_TextInput);
+            //mXmlRichTextBox.TextInput += new TextCompositionEventHandler(XmlRichTextBox_TextInput);
         }
 
         void XmlRichTextBox_TextInput(object sender, TextCompositionEventArgs e)
@@ -109,98 +109,98 @@ namespace FlowDocumentXmlEditor
 
 
 
-        private void mInsertTableButton_Click(object sender, RoutedEventArgs e)
-        {
-            TableCell curCell = GetContaining<TableCell>(mXmlRichTextBox.Selection.Start.Parent);
-            if (curCell != null)
-            {
-                InsertColumn(curCell);
-            }
-            else
-            {
-                InsertTable(mXmlRichTextBox.Selection.End);
-            }
-        }
+        //private void mInsertTableButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    TableCell curCell = GetContaining<TableCell>(mXmlRichTextBox.Selection.Start.Parent);
+        //    if (curCell != null)
+        //    {
+        //        InsertColumn(curCell);
+        //    }
+        //    else
+        //    {
+        //        InsertTable(mXmlRichTextBox.Selection.End);
+        //    }
+        //}
 
-        private void InsertColumn(RichTextBox rtb)
-        {
-            InsertColumn(GetContaining<TableCell>(rtb.Selection.End.Parent) as TableCell);
-        }
+        //private void InsertColumn(RichTextBox rtb)
+        //{
+        //    InsertColumn(GetContaining<TableCell>(rtb.Selection.End.Parent) as TableCell);
+        //}
 
-        private void InsertColumn(TableCell curCell)
-        {
-            TableRow curRow = curCell.Parent as TableRow;
-            int colIndex = curRow.Cells.IndexOf(curCell);
-            Table curTable = GetContaining<Table>(curRow.Parent);
-            foreach (TableRow tr in GetContaining<TableRowGroup>(curCell.Parent).Rows)
-            {
-                tr.Cells.Insert(colIndex, CreateNewTableCell(""));
-            }
-        }
+        //private void InsertColumn(TableCell curCell)
+        //{
+        //    TableRow curRow = curCell.Parent as TableRow;
+        //    int colIndex = curRow.Cells.IndexOf(curCell);
+        //    Table curTable = GetContaining<Table>(curRow.Parent);
+        //    foreach (TableRow tr in GetContaining<TableRowGroup>(curCell.Parent).Rows)
+        //    {
+        //        tr.Cells.Insert(colIndex, CreateNewTableCell(""));
+        //    }
+        //}
 
-        private void InsertTableCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = false;
-            RichTextBox rtb = e.Source as RichTextBox;
-            if (rtb != null)
-            {
-                e.CanExecute = (GetContaining<Table>(rtb.Selection.End.Parent)==null);
-            }
-        }
+        //private void InsertTableCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        //{
+        //    e.CanExecute = false;
+        //    RichTextBox rtb = e.Source as RichTextBox;
+        //    if (rtb != null)
+        //    {
+        //        e.CanExecute = (GetContaining<Table>(rtb.Selection.End.Parent)==null);
+        //    }
+        //}
 
-        private void InsertTableCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            InsertTable(e.Source as RichTextBox);
-        }
+        //private void InsertTableCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    InsertTable(e.Source as RichTextBox);
+        //}
 
-        private void InsertColumnCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = false;
-            RichTextBox rtb = e.Source as RichTextBox;
-            if (rtb != null)
-            {
-                e.CanExecute = (GetContaining<TableCell>(rtb.Selection.End.Parent) != null);
-            }
-        }
+        //private void InsertColumnCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        //{
+        //    e.CanExecute = false;
+        //    RichTextBox rtb = e.Source as RichTextBox;
+        //    if (rtb != null)
+        //    {
+        //        e.CanExecute = (GetContaining<TableCell>(rtb.Selection.End.Parent) != null);
+        //    }
+        //}
 
-        private void InsertColumnCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            InsertColumn(e.Source as RichTextBox);
-        }
+        //private void InsertColumnCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    InsertColumn(e.Source as RichTextBox);
+        //}
 
-        private void InsertRow(RichTextBox rtb)
-        {
-        }
+        //private void InsertRow(RichTextBox rtb)
+        //{
+        //}
 
-        private void InsertParagraph(RichTextBox rtb)
-        {
-            TextPointer ins = rtb.Selection.End.InsertParagraphBreak();
-            rtb.Selection.Select(ins, ins);
-        }
+        //private void InsertParagraph(RichTextBox rtb)
+        //{
+        //    TextPointer ins = rtb.Selection.End.InsertParagraphBreak();
+        //    rtb.Selection.Select(ins, ins);
+        //}
 
-        private void InsertRowCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = false;
-            RichTextBox rtb = e.Source as RichTextBox;
-            if (rtb != null)
-            {
-                e.CanExecute = (GetContaining<TableCell>(rtb.Selection.End.Parent) != null);
-            }
-        }
+        //private void InsertRowCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        //{
+        //    e.CanExecute = false;
+        //    RichTextBox rtb = e.Source as RichTextBox;
+        //    if (rtb != null)
+        //    {
+        //        e.CanExecute = (GetContaining<TableCell>(rtb.Selection.End.Parent) != null);
+        //    }
+        //}
 
-        private void InsertRowCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            InsertRow(e.Source as RichTextBox);
-        }
+        //private void InsertRowCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    InsertRow(e.Source as RichTextBox);
+        //}
 
-        private void InsertParagraphCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = (e.Source is RichTextBox);
-        }
+        //private void InsertParagraphCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        //{
+        //    e.CanExecute = (e.Source is RichTextBox);
+        //}
 
-        private void InsertParagraphCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            InsertParagraph(e.Source as RichTextBox);
-        }
+        //private void InsertParagraphCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    InsertParagraph(e.Source as RichTextBox);
+        //}
     }
 }

@@ -8,6 +8,7 @@ using urakawa.property.channel;
 using System.Windows.Documents;
 using urakawa.media;
 using urakawa.property.xml;
+using System.Windows.Controls;
 
 namespace FlowDocumentXmlEditor.FlowDocumentExtraction
 {
@@ -21,7 +22,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
             mTextChannel = textCh;
         }
 
-        public Run GetRun(TreeNode node)
+        public Inline GetTextInline(TreeNode node)
         {
             if (TextChannel != null)
             {
@@ -31,7 +32,22 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
                     TextMedia text = chProp.getMedia(TextChannel) as TextMedia;
                     if (text != null)
                     {
-                        return new Run(text.getText());
+                        //BindableRun run = new BindableRun();
+                        //TextMediaBinding binding = new TextMediaBinding();
+                        //binding.BoundTextMedia = text;
+                        //binding.Mode = System.Windows.Data.BindingMode.TwoWay;
+                        //run.SetBinding(BindableRun.BoundTextProperty, binding);
+                        //return run;
+
+                        TextBox tb = new TextBox();
+                        TextMediaBinding binding = new TextMediaBinding();
+                        binding.BoundTextMedia = text;
+                        binding.Mode = System.Windows.Data.BindingMode.TwoWay;
+                        tb.SetBinding(TextBox.TextProperty, binding);
+                        tb.Text = text.getText();
+                        tb.Focusable = true;
+                        InlineUIContainer res = new InlineUIContainer(tb);
+                        return res;
                     }
                 }
             }
@@ -47,7 +63,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
 
         public virtual bool preVisit(TreeNode node)
         {
-            Run nodeRun = GetRun(node);
+            Inline nodeRun = GetTextInline(node);
             XmlProperty xmlProp = node.getProperty<XmlProperty>();
             if (xmlProp!=null)
             {
@@ -59,8 +75,8 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
 
         #endregion
 
-        protected abstract bool HandleXmlElement(XmlProperty xmlProp, TreeNode node, Run nodeRun);
+        protected abstract bool HandleXmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun);
 
-        protected abstract void HandleNodeRun(Run nodeRun);
+        protected abstract void HandleNodeRun(Inline nodeRun);
     }
 }

@@ -121,5 +121,10 @@ namespace FlowDocumentXmlEditor
             }
             mw.Show();
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+        }
     }
 }
