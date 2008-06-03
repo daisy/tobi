@@ -17,7 +17,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         public HtmlInlineExtractionVisitor(Channel textCh) : base(textCh) { }
 
-        protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Run nodeRun)
+        protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
             switch (xmlProp.getLocalName())
             {
@@ -51,7 +51,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
             }
         }
 
-        protected override void HandleNodeRun(Run nodeRun)
+        protected override void HandleNodeRun(Inline nodeRun)
         {
             ExtractedInlines.Add(nodeRun);
         }

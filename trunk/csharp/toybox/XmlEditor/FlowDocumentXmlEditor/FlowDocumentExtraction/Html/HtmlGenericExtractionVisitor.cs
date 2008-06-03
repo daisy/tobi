@@ -14,7 +14,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
         public HtmlGenericExtractionVisitor(Channel textCh) : base(textCh) { }
 
         public static string HtmlNamespace = "http://www.w3.org/1999/xhtml";
-        protected override bool HandleXmlElement(XmlProperty xmlProp, TreeNode node, Run nodeRun)
+        protected override bool HandleXmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
             if (xmlProp.getNamespaceUri()==HtmlNamespace)
             {
@@ -23,9 +23,9 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
             return true;
         }
 
-        protected abstract bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Run nodeRun);
+        protected abstract bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun);
 
-        protected void HandleInlines(InlineCollection destInlineColl, TreeNode node, Run nodeRun)
+        protected void HandleInlines(InlineCollection destInlineColl, TreeNode node, Inline nodeRun)
         {
             if (nodeRun != null) destInlineColl.Add(nodeRun);
             if (node.getChildCount() > 0)
@@ -39,7 +39,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
             }
         }
 
-        protected void HandleBlocks(BlockCollection destBlockColl, TreeNode node, Run nodeRun)
+        protected void HandleBlocks(BlockCollection destBlockColl, TreeNode node, Inline nodeRun)
         {
             if (nodeRun != null) destBlockColl.Add(new Paragraph(nodeRun));
             if (node.getChildCount() > 0)

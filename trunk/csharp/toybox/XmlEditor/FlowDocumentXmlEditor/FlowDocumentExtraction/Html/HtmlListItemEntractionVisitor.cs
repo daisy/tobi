@@ -16,7 +16,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
         private List<ListItem> mExtractedListItems = new List<ListItem>();
         public List<ListItem> ExtractedListItems { get { return mExtractedListItems; } }
 
-        protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Run nodeRun)
+        protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
             switch (xmlProp.getLocalName())
             {
@@ -40,7 +40,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
             return true;
         }
 
-        protected override void HandleNodeRun(Run nodeRun)
+        protected override void HandleNodeRun(Inline nodeRun)
         {
             ExtractedListItems.Add(new ListItem(new Paragraph(nodeRun)));
         }
