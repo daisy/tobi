@@ -35,6 +35,8 @@ namespace FlowDocumentXmlEditor
             }
         }
 
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -106,7 +108,6 @@ namespace FlowDocumentXmlEditor
             }
             return newCell;
         }
-
 
 
         //private void mInsertTableButton_Click(object sender, RoutedEventArgs e)

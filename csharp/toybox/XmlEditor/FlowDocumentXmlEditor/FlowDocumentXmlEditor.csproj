@@ -73,7 +73,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindingRun.cs" />
+    <Compile Include="BindableRun.cs" />
     <Compile Include="FlowDocumentExtraction\GenericExtractionVisitor.cs" />
     <Compile Include="FlowDocumentExtraction\Html\HtmlBlockExtractionVisitor.cs" />
     <Compile Include="FlowDocumentExtraction\Html\HtmlGenericExtractionVisitor.cs" />

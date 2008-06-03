@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using urakawa.media;
 using urakawa.property.xml;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace FlowDocumentXmlEditor.FlowDocumentExtraction
 {
@@ -32,14 +33,9 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
                     TextMedia text = chProp.getMedia(TextChannel) as TextMedia;
                     if (text != null)
                     {
-                        //BindableRun run = new BindableRun();
-                        //TextMediaBinding binding = new TextMediaBinding();
-                        //binding.BoundTextMedia = text;
-                        //binding.Mode = System.Windows.Data.BindingMode.TwoWay;
-                        //run.SetBinding(BindableRun.BoundTextProperty, binding);
-                        //return run;
-
                         TextBox tb = new TextBox();
+                        tb.BorderThickness = new Thickness(1);
+                        
                         TextMediaBinding binding = new TextMediaBinding();
                         binding.BoundTextMedia = text;
                         binding.Mode = System.Windows.Data.BindingMode.TwoWay;
