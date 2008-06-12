@@ -1,5 +1,11 @@
 = Inception Phase Notes =
 
+== Requirements ==
+
+[[SubWiki(inception/requirements/)]]
+
+'''Useful additional reading''': [wiki:TobiDaisyProdToolReqs how] Tobi relates to the Daisy 3 Production Tools Requirements ("D3PT Reqs").
+
 == Architecture ==
 
 [[SubWiki(inception/architecture/)]]
@@ -8,10 +14,6 @@
 
 [[SubWiki(inception/technology/)]]
 
-== Requirements ==
-
-[[SubWiki(inception/requirements/)]]
-
-== All items ==
+== All items (including the above) ==
 
 [[SubWiki(inception/)]]

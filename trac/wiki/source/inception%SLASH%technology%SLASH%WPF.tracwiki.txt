@@ -1,6 +1,10 @@
+http://joshsmithonwpf.wordpress.com/a-guided-tour-of-wpf/
+
 Design patterns, MVC stuff in particular:
 
 http://blogs.sqlxml.org/bryantlikes/archive/2006/09/27/WPF-Patterns.aspx
+
+http://dotnet.org.za/rudi/archive/2008/01/22/datamodel-view-viewmodel-used-in-a-wpf-application.aspx
 
 MVC and the Mediator pattern:
 
@@ -23,3 +27,37 @@ Commands:
 http://blogs.vertigo.com/personal/alanl/Blog/Lists/Posts/Post.aspx?ID=17
 
 http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1809894&SiteID=1
+
+
+Audio FFT C++ and WPF:
+
+http://blogs.windowsclient.net/ricciolocristian/archive/2008/02/16/audio-spectrum-using-wpf-and-c-cli.aspx
+
+Media player in WPF:
+
+http://www.interact-sw.co.uk/iangblog/2008/01/25/wpf-concurrent-audio
+
+Service registry use:
+
+http://alexshed.spaces.live.com/blog/cns!71C72270309CE838!161.entry
+
+Threading:
+
+http://dotnet.org.za/rudi/archive/2007/10/05/threading-in-wpf.aspx
+
+UI Automation Accessibility:
+
+http://msdn.microsoft.com/en-us/library/ms727247.aspx
+
+Hosting !WinForm elements inside WPF:
+
+http://msdn.microsoft.com/en-us/library/ms742875.aspx
+
+Blog community:
+
+http://windowsclient.net/community/featured-blogs.aspx
+
+Localization:
+
+http://www.odewit.net/ArticleContent.aspx?id=WpfLocalization&format=html&lang=en
+
