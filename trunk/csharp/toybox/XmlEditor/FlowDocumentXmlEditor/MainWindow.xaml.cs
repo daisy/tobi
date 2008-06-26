@@ -59,15 +59,7 @@ namespace FlowDocumentXmlEditor
             //mXmlRichTextBox.TextInput += new TextCompositionEventHandler(XmlRichTextBox_TextInput);
         }
 
-        void XmlRichTextBox_TextInput(object sender, TextCompositionEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine(String.Format(
-                "{0}: {1}",
-                e.OriginalSource.GetType().Name,
-                e.ControlText));
-        }
-
-        private T GetContaining<T>(DependencyObject elem) where T : DependencyObject
+        private static T GetContaining<T>(DependencyObject elem) where T : DependencyObject
         {
             if (elem == null) return null;
             if (elem is T) return elem as T;
@@ -80,7 +72,7 @@ namespace FlowDocumentXmlEditor
             rtb.Selection.Select(cell.ContentStart, cell.ContentEnd);
         }
 
-        private TableCell CreateNewTableCell(string text)
+        private static TableCell CreateNewTableCell(string text)
         {
             TableCell newCell = new TableCell(new Paragraph(new Run(text)));
             newCell.BorderThickness = new Thickness(1);

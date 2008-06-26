@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using urakawa.core.visitor;
+﻿using urakawa.core.visitor;
 using urakawa.core;
 using urakawa.property.channel;
 using System.Windows.Documents;
@@ -18,7 +14,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
         private Channel mTextChannel;
         public Channel TextChannel { get { return mTextChannel; } }
 
-        public GenericExtractionVisitor(Channel textCh)
+        protected GenericExtractionVisitor(Channel textCh)
         {
             mTextChannel = textCh;
         }
