@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using urakawa;
 using urakawa.property.channel;
+using urakawa.xuk;
 
 namespace FlowDocumentXmlEditor
 {
@@ -62,15 +64,16 @@ namespace FlowDocumentXmlEditor
         private bool ParseCommandLineArguments(string[] args, out string errMsg)
         {
             errMsg = "";
-            string name, val;
             foreach (string arg in args)
             {
+                string name, val;
                 if (ParseArgument(arg, out name, out val))
                 {
                     switch (name.ToLower())
                     {
                         case "xuk":
-                            mProjectUri = new Uri(val, UriKind.Relative);
+                            Uri baseUri = new Uri(Directory.GetCurrentDirectory()+"\\");
+                            mProjectUri = new Uri(baseUri, new Uri(val, UriKind.Relative));
                             break;
                         default:
                             errMsg = String.Format("Invalid argument {0}", arg);
@@ -101,7 +104,14 @@ namespace FlowDocumentXmlEditor
             mProject = new Project();
             if (mProjectUri != null)
             {
-                mProject.openXUK(mProjectUri);
+                OpenXukAction action = new OpenXukAction(mProjectUri, mProject);
+                bool wasCancelled;
+                ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
+                if (wasCancelled)
+                {
+                    Shutdown(-1);
+                    return;
+                }
             }
             if (mProject.getNumberOfPresentations() > 0)
             {
@@ -120,11 +130,6 @@ namespace FlowDocumentXmlEditor
 
             }
             mw.Show();
-        }
-
-        protected override void OnExit(ExitEventArgs e)
-        {
-            base.OnExit(e);
         }
     }
 }
