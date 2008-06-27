@@ -113,6 +113,24 @@ namespace FlowDocumentXmlEditor
                     return;
                 }
             }
+
+            if (mProjectUri != null && mProjectUri.IsFile)
+            {
+                string strPath = mProjectUri.LocalPath;
+                int indexOfLastSlash = strPath.LastIndexOf('\\');
+                string strFile = strPath.Substring(indexOfLastSlash);
+                Uri projectUri = new Uri(strPath.Remove(indexOfLastSlash) + strFile + ".out.xuk");
+                //FileStream fs = new FileStream(projectUri.LocalPath, FileMode.Create, FileAccess.Write);
+
+                SaveXukAction action = new SaveXukAction(projectUri, mProject);
+                bool wasCancelled;
+                ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
+                if (wasCancelled)
+                {
+                    Shutdown(-1);
+                    return;
+                }
+            }
             if (mProject.getNumberOfPresentations() > 0)
             {
                 Presentation pres = mProject.getPresentation(0);
