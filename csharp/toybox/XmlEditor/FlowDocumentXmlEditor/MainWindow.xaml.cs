@@ -59,47 +59,47 @@ namespace FlowDocumentXmlEditor
             //mXmlRichTextBox.TextInput += new TextCompositionEventHandler(XmlRichTextBox_TextInput);
         }
 
-        private static T GetContaining<T>(DependencyObject elem) where T : DependencyObject
-        {
-            if (elem == null) return null;
-            if (elem is T) return elem as T;
-            return GetContaining<T>(LogicalTreeHelper.GetParent(elem));
-        }
+        //private static T GetContaining<T>(DependencyObject elem) where T : DependencyObject
+        //{
+        //    if (elem == null) return null;
+        //    if (elem is T) return elem as T;
+        //    return GetContaining<T>(LogicalTreeHelper.GetParent(elem));
+        //}
 
-        private void InsertTable(RichTextBox rtb)
-        {
-            TableCell cell = InsertTable(rtb.Selection.End);
-            rtb.Selection.Select(cell.ContentStart, cell.ContentEnd);
-        }
+        //private void InsertTable(RichTextBox rtb)
+        //{
+        //    TableCell cell = InsertTable(rtb.Selection.End);
+        //    rtb.Selection.Select(cell.ContentStart, cell.ContentEnd);
+        //}
 
-        private static TableCell CreateNewTableCell(string text)
-        {
-            TableCell newCell = new TableCell(new Paragraph(new Run(text)));
-            newCell.BorderThickness = new Thickness(1);
-            newCell.BorderBrush = Brushes.Black;
-            return newCell;
-        }
+        //private static TableCell CreateNewTableCell(string text)
+        //{
+        //    TableCell newCell = new TableCell(new Paragraph(new Run(text)));
+        //    newCell.BorderThickness = new Thickness(1);
+        //    newCell.BorderBrush = Brushes.Black;
+        //    return newCell;
+        //}
 
-        private TableCell InsertTable(TextPointer pointer)
-        {
-            Table newTable = new Table();
-            newTable.CellSpacing = 0;
-            newTable.RowGroups.Add(new TableRowGroup());
-            TableRow newRow = new TableRow();
-            TableCell newCell = CreateNewTableCell("...");
-            newRow.Cells.Add(newCell);
-            newTable.RowGroups[0].Rows.Add(newRow);
-            if (pointer.Parent is FlowDocument)
-            {
-                ((FlowDocument)pointer.Parent).Blocks.Add(newTable);
-            }
-            else
-            {
-                Block curBlock = GetContaining<Block>(pointer.Parent);
-                curBlock.SiblingBlocks.InsertAfter(curBlock, newTable);
-            }
-            return newCell;
-        }
+        //private TableCell InsertTable(TextPointer pointer)
+        //{
+        //    Table newTable = new Table();
+        //    newTable.CellSpacing = 0;
+        //    newTable.RowGroups.Add(new TableRowGroup());
+        //    TableRow newRow = new TableRow();
+        //    TableCell newCell = CreateNewTableCell("...");
+        //    newRow.Cells.Add(newCell);
+        //    newTable.RowGroups[0].Rows.Add(newRow);
+        //    if (pointer.Parent is FlowDocument)
+        //    {
+        //        ((FlowDocument)pointer.Parent).Blocks.Add(newTable);
+        //    }
+        //    else
+        //    {
+        //        Block curBlock = GetContaining<Block>(pointer.Parent);
+        //        curBlock.SiblingBlocks.InsertAfter(curBlock, newTable);
+        //    }
+        //    return newCell;
+        //}
 
 
         //private void mInsertTableButton_Click(object sender, RoutedEventArgs e)

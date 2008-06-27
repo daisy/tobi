@@ -53,8 +53,25 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
             //Do nothing
         }
 
+        private long mTotalNumberOfNodes = -1;
+        private long mCurrentNodeIndex = -1;
+
+        private void countTotalNodes(TreeNode node, long currentNumberOfNodes, out long totalNumberOfNodes)
+        {
+            totalNumberOfNodes = currentNumberOfNodes + 1;
+            foreach (TreeNode child in node.getListOfChildren()) {
+                countTotalNodes(child, totalNumberOfNodes, out totalNumberOfNodes);
+            }
+        }
         public virtual bool preVisit(TreeNode node)
         {
+            if (mTotalNumberOfNodes == -1 && node.getParent() == null)
+            {
+                countTotalNodes(node, mTotalNumberOfNodes, out mTotalNumberOfNodes);
+            }
+            
+            mCurrentNodeIndex++;
+
             Inline nodeRun = GetTextInline(node);
             XmlProperty xmlProp = node.getProperty<XmlProperty>();
             if (xmlProp!=null)

@@ -30,6 +30,17 @@ namespace FlowDocumentXmlEditor
             Blocks.Clear();
             if (RootTreeNode != null)
             {
+                /*
+                LoadFromRootAction action = new LoadFromRootAction();
+                bool wasCancelled;
+                ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
+                if (wasCancelled)
+                {
+                    Shutdown(-1);
+                    return;
+                }
+                */
+
                 HtmlBlockExtractionVisitor blockVisitor = new HtmlBlockExtractionVisitor(TextChannel);
                 RootTreeNode.acceptDepthFirst(blockVisitor);
                 Blocks.AddRange(blockVisitor.ExtractedBlocks);
