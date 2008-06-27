@@ -17,6 +17,7 @@ namespace FlowDocumentXmlEditor
         }
 
         private bool mCancelPressed = false;
+        private string mActionDescription = "";
 
         public static void ExecuteProgressAction(ProgressAction action, out bool wasCancelled)
         {
@@ -25,7 +26,8 @@ namespace FlowDocumentXmlEditor
             action.progress += new System.EventHandler<urakawa.events.progress.ProgressEventArgs>(w.action_progress);
             action.finished += new System.EventHandler<urakawa.events.progress.FinishedEventArgs>(w.action_finished);
             action.cancelled += new System.EventHandler<urakawa.events.progress.CancelledEventArgs>(w.action_cancelled);
-            w.Title = action.getShortDescription();
+            w.mActionDescription = action.getShortDescription();
+            w.Title = w.mActionDescription;
             Thread executeThread = new Thread(ExecuteWorker);
             executeThread.Start(action);
             bool? result = w.ShowDialog();
@@ -74,12 +76,13 @@ namespace FlowDocumentXmlEditor
             if (val != mVal || max != mMax || 0 != mMin)
             {
                 mMin = 0;
-                mVal = e.Current;
-                mMax = e.Total;
+                mVal = val;
+                mMax = max;
+                //Debug.Print("Progress: Current={0:0}, Total={1:0}, IsCancelled={2}", val, max, e.IsCancelled);
+                //Thread.Sleep(10);
                 UpdateUI();
             }
             if (mCancelPressed) e.Cancel();
-            Debug.Print("Progress: Current={0:0}, Total={1:0}, IsCancelled={2}", e.Current, e.Total, e.IsCancelled);
         }
 
         private double mVal = 0;
@@ -93,6 +96,7 @@ namespace FlowDocumentXmlEditor
                 mProgressBar.Value = mVal;
                 mProgressBar.Minimum = mMin;
                 mProgressBar.Maximum = mMax;
+                this.Title = string.Format("\"{2}\" {0:0}/{1:0}", mVal, mMax, mActionDescription);
             }
             else
             {

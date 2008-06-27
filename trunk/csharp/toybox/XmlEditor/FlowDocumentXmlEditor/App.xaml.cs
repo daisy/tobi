@@ -127,7 +127,6 @@ namespace FlowDocumentXmlEditor
                 }
                 UrakawaHtmlFlowDocument doc = new UrakawaHtmlFlowDocument(pres.getRootNode(), textCh);
                 mw.EditedDocument = doc;
-
             }
             mw.Show();
         }
