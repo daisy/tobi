@@ -8,6 +8,7 @@ using System.Windows;
 using urakawa;
 using urakawa.property.channel;
 using urakawa.xuk;
+using FlowDocumentXmlEditor.FlowDocumentExtraction;
 
 namespace FlowDocumentXmlEditor
 {
@@ -100,7 +101,9 @@ namespace FlowDocumentXmlEditor
                 this.Shutdown(-1);
                 return;
             }
-            MainWindow mw = new MainWindow();
+            //MainWindow mw1 = new MainWindow();
+            MainWindow mw2 = new MainWindow();
+
             mProject = new Project();
             if (mProjectUri != null)
             {
@@ -113,6 +116,29 @@ namespace FlowDocumentXmlEditor
                     return;
                 }
             }
+
+            if (mProject.getNumberOfPresentations() > 0)
+            {
+                Presentation pres = mProject.getPresentation(0);
+                TextChannel textCh = null;
+                foreach (Channel ch in pres.getChannelsManager().getListOfChannels())
+                {
+                    if (ch is TextChannel) 
+                    {
+                        textCh = (TextChannel)ch;
+                        break;
+                    }
+                }
+                //UrakawaHtmlFlowDocument doc1 = new UrakawaHtmlFlowDocument(pres.getRootNode(), textCh);
+                //mw1.EditedDocument = doc1;
+
+                GenericExtractionVisitor.USE_TEXT_BOX_UIELEMENT = false;
+                UrakawaHtmlFlowDocument doc2 = new UrakawaHtmlFlowDocument(pres.getRootNode(), textCh);
+                mw2.EditedDocument = doc2;
+            }
+            //mw1.Show();
+            mw2.Show();
+
 
             if (mProjectUri != null && mProjectUri.IsFile)
             {
@@ -131,22 +157,7 @@ namespace FlowDocumentXmlEditor
                     return;
                 }
             }
-            if (mProject.getNumberOfPresentations() > 0)
-            {
-                Presentation pres = mProject.getPresentation(0);
-                TextChannel textCh = null;
-                foreach (Channel ch in pres.getChannelsManager().getListOfChannels())
-                {
-                    if (ch is TextChannel) 
-                    {
-                        textCh = (TextChannel)ch;
-                        break;
-                    }
-                }
-                UrakawaHtmlFlowDocument doc = new UrakawaHtmlFlowDocument(pres.getRootNode(), textCh);
-                mw.EditedDocument = doc;
-            }
-            mw.Show();
+
         }
     }
 }

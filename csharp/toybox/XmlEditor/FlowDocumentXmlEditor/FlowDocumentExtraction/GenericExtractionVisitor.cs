@@ -9,6 +9,7 @@ using System.Windows;
 
 namespace FlowDocumentXmlEditor.FlowDocumentExtraction
 {
+    
     public abstract class GenericExtractionVisitor : ITreeNodeVisitor
     {
         private Channel mTextChannel;
@@ -18,6 +19,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
         {
             mTextChannel = textCh;
         }
+        public static bool USE_TEXT_BOX_UIELEMENT = true;
 
         public Inline GetTextInline(TreeNode node)
         {
@@ -27,19 +29,29 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
                 if (chProp != null)
                 {
                     TextMedia text = chProp.getMedia(TextChannel) as TextMedia;
+                    
                     if (text != null)
                     {
-                        TextBox tb = new TextBox();
-                        tb.BorderThickness = new Thickness(1);
-                        
-                        TextMediaBinding binding = new TextMediaBinding();
-                        binding.BoundTextMedia = text;
-                        binding.Mode = System.Windows.Data.BindingMode.TwoWay;
-                        tb.SetBinding(TextBox.TextProperty, binding);
-                        tb.Text = text.getText();
-                        tb.Focusable = true;
-                        InlineUIContainer res = new InlineUIContainer(tb);
-                        return res;
+                        if (USE_TEXT_BOX_UIELEMENT)
+                        {
+                            TextBox tb = new TextBox();
+                            tb.BorderThickness = new Thickness(1);
+
+                            TextMediaBinding binding = new TextMediaBinding();
+                            binding.BoundTextMedia = text;
+                            binding.Mode = System.Windows.Data.BindingMode.TwoWay;
+                            tb.SetBinding(TextBox.TextProperty, binding);
+                            tb.Text = text.getText();
+                            tb.Focusable = true;
+                            InlineUIContainer res = new InlineUIContainer(tb);
+                            return res;
+                        }
+                        else {
+                            Run run = new Run();
+                            
+                            run.Text = text.getText();
+                            return run;
+                        }
                     }
                 }
             }
