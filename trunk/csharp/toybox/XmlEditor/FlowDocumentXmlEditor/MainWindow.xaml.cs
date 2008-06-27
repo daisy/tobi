@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Diagnostics;
+using FlowDocumentXmlEditor.FlowDocumentExtraction;
 
 namespace FlowDocumentXmlEditor
 {
@@ -34,8 +36,129 @@ namespace FlowDocumentXmlEditor
                 mFlowViewer.Document = value;
             }
         }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            foreach (Run curRun in UrakawaHtmlFlowDocument.GetChildren<Run>(mFlowViewer.Document, true))
+
+                curRun.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
+
+        }
+        private TextBox mLastInlineBoxed = null;
+
+        void curRun_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+            Point mousePosition = Mouse.GetPosition(mFlowViewer);
+
+            Run senderRun = (Run)sender;
+
+            if (senderRun.Parent is Paragraph)
+            {
+                Paragraph para = senderRun.Parent as Paragraph;
+
+                TextBox tb = new TextBox();
+                tb.BorderThickness = new Thickness(1);
+                tb.Text = senderRun.Text;
+                tb.Focusable = true;
+                tb.SelectAll();
+
+                /*
+                TextMediaBinding binding = new TextMediaBinding();
+                binding.BoundTextMedia = SDK-textmedia;
+                binding.Mode = System.Windows.Data.BindingMode.TwoWay;
+                tb.SetBinding(TextBox.TextProperty, binding);
+                 */
+
+                InlineUIContainer newInlineBoxed = new InlineUIContainer(tb);
+
+                para.Inlines.InsertAfter(senderRun, newInlineBoxed);
+                para.Inlines.Remove(senderRun);
+
+                if (mLastInlineBoxed != null)
+                {
+                    InlineUIContainer container = mLastInlineBoxed.Parent as InlineUIContainer ;
+
+                    if (container.Parent is Paragraph)
+                    {
+
+                        Paragraph paraOld = container.Parent as Paragraph;
+                        Run newRun = new Run();
+
+                        newRun.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
+
+                        newRun.Text = mLastInlineBoxed.Text;
+                        paraOld.Inlines.InsertAfter(container, newRun);
+                        paraOld.Inlines.Remove(container);
+
+                    }
 
 
+               }
+
+                mLastInlineBoxed = tb;
+            }
+            else
+                if (senderRun.Parent is List)
+                {
+
+                    List para = senderRun.Parent as List;
+                }
+                else
+                {
+                    Debug.Print("NOP");
+                }
+
+            TextPointer ptr = UrakawaHtmlFlowDocument.GetPositionFromPoint(senderRun, mousePosition);
+
+            if (ptr != null)
+            {
+
+                string textAfterCursor = ptr.GetTextInRun(LogicalDirection.Forward);
+
+                string textBeforeCursor = ptr.GetTextInRun(LogicalDirection.Backward);
+
+
+
+                string[] textsAfterCursor = textAfterCursor.Split('.', ' ');
+
+                string[] textsBeforeCursor = textBeforeCursor.Split('.', ' ');
+
+
+
+                string currentWord = textsBeforeCursor[textsBeforeCursor.Length - 1] + textsAfterCursor[0];
+
+            }
+
+        }
+
+
+        private void FlowDocument_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            return;
+
+            Point mousePosition = Mouse.GetPosition(mFlowViewer);
+
+            TextPointer ptr = UrakawaHtmlFlowDocument.GetPositionFromPoint(mFlowViewer, mousePosition);
+
+            if (ptr != null)
+            {
+
+                string textAfterCursor = ptr.GetTextInRun(LogicalDirection.Forward);
+
+                string textBeforeCursor = ptr.GetTextInRun(LogicalDirection.Backward);
+                string[] textsAfterCursor = textAfterCursor.Split('.', ' ');
+
+                string[] textsBeforeCursor = textBeforeCursor.Split('.', ' ');
+
+
+
+                string currentWord = textsBeforeCursor[textsBeforeCursor.Length - 1] + textsAfterCursor[0];
+
+
+            }
+
+        }
 
         public MainWindow()
         {
