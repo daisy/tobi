@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using System.Threading;
+using System.Diagnostics;
 
 namespace FlowDocumentXmlEditor
 {
@@ -30,17 +31,22 @@ namespace FlowDocumentXmlEditor
             Keyboard.Focus(this);
         }
 
-        public void InvalidateBinding() {
+        public void InvalidateBinding()
+        {
 
 
             BindingExpression be = GetBindingExpression(TextProperty);
             TextMediaBinding bind = be.ParentBinding as TextMediaBinding;
             bind.RemoveDataModelListener();
+
+            //Loaded -= new RoutedEventHandler(thisLoaded); CRASHES because of Thread ownership
         }
 
         ~TextMediaTextBox()
         {
             InvalidateBinding();
+
+            KeyUp -= new KeyEventHandler(thisKeyUp);
         }
         public TextMediaTextBox(TextMedia originalText)
         {
@@ -62,67 +68,79 @@ namespace FlowDocumentXmlEditor
             SetBinding(TextProperty, binding);
         }
 
-        public TextMediaBindableRun CloseSelf(bool saveContent)
+        private TextMediaBindableRun DoCloseSelf(bool saveContent, InlineUIContainer container, InlineCollection inlines)
         {
 
-            if (Dispatcher.CheckAccess())
+            if (saveContent)
             {
+                BindingExpression be = GetBindingExpression(TextBox.TextProperty);
+                be.UpdateSource();
 
-                InlineUIContainer container = Parent as InlineUIContainer;
+                //mLastInlineBoxed.OriginalText.setText(mLastInlineBoxed.Text);
 
-                if (container.Parent is Paragraph)
+                if (Text != OriginalText.getText())
                 {
-
-                    Paragraph paraOld = container.Parent as Paragraph;
-
-                    if (saveContent)
-                    {
-                        BindingExpression be = GetBindingExpression(TextBox.TextProperty);
-                        be.UpdateSource();
-
-                        //mLastInlineBoxed.OriginalText.setText(mLastInlineBoxed.Text);
-
-                        if (Text != OriginalText.getText())
-                        {
-                            //newRun.Text = mLastInlineBoxed.Text;
-                        }
-                    }
-
-                    TextMediaBindableRun newRun = new TextMediaBindableRun(OriginalText);
-
-                    InvalidateBinding();
-
-                    paraOld.Inlines.InsertAfter(container, newRun);
-                    paraOld.Inlines.Remove(container);
-
-                    return newRun;
-
+                    //newRun.Text = mLastInlineBoxed.Text;
                 }
+            }
 
+            TextMediaBindableRun newRun = new TextMediaBindableRun(OriginalText);
+
+            InvalidateBinding();
+
+            inlines.InsertAfter(container, newRun);
+            inlines.Remove(container);
+
+            return newRun;
+        }
+
+        public TextMediaBindableRun CloseSelf(bool saveContent)
+        {
+            InlineCollection inlines = null;
+
+            InlineUIContainer container = Parent as InlineUIContainer;
+
+
+            if (container.Parent is Span)
+            {
+                Span o = container.Parent as Span;
+                inlines = o.Inlines;
 
 
             }
             else
-            {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(CloseSelf));
-                int i = 0;
-            }
+                if (container.Parent is Paragraph)
+                {
+
+                    Paragraph o = container.Parent as Paragraph;
+
+                    inlines = o.Inlines;
+                }
+                else if (container.Parent is TextBlock)
+                {
+
+                    TextBlock o = container.Parent as TextBlock;
+
+                    inlines = o.Inlines;
+                }
+                else
+                {
+                    Debug.Print("Should never happen");
+                    return null;
+                }
 
 
-            return null;
+            return DoCloseSelf(saveContent, container, inlines);
+
         }
 
         void thisKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter || e.Key == Key.Escape)
             {
-                TextMediaBindableRun run = CloseSelf(true);
+                TextMediaBindableRun run = CloseSelf(e.Key == Key.Enter);
                 App.mw2.addMouseButtonEventHandler(run);
-            }
-            else if (e.Key == Key.Escape)
-            {
-                TextMediaBindableRun run = CloseSelf(false);
-                App.mw2.addMouseButtonEventHandler(run);
+                App.mw2.ResetLastInlineBoxed();
             }
         }
     }

@@ -36,9 +36,18 @@ namespace FlowDocumentXmlEditor
             set
             {
                 mFlowViewer.Document = value;
+
+                mFlowViewer.KeyUp += new KeyEventHandler(thisKeyUp);
             }
         }
 
+        void thisKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                DeactivateLastInlineBoxed();
+            }
+        }
         //public event EventHandler Closed
 
         private void Window_Closed(object sender, EventArgs e)
@@ -71,14 +80,33 @@ namespace FlowDocumentXmlEditor
         }
         private TextMediaTextBox mLastInlineBoxed = null;
 
+        public void ResetLastInlineBoxed()
+        {
+            mLastInlineBoxed = null;
+        }
+
         public void addMouseButtonEventHandler(TextMediaBindableRun run)
         {
             if (run != null)
                 run.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
         }
 
+        private void DeactivateLastInlineBoxed()
+        {
+
+            if (mLastInlineBoxed != null)
+            {
+                TextMediaBindableRun newRun = mLastInlineBoxed.CloseSelf(true);
+
+                addMouseButtonEventHandler(newRun);
+
+                mLastInlineBoxed = null;
+            }
+        }
+
         private void DoMouseDownStuff(TextMediaBindableRun run, InlineCollection inlines)
         {
+            DeactivateLastInlineBoxed();
 
             TextMediaTextBox tb = new TextMediaTextBox(run.TextMedia);
             InlineUIContainer newInlineBoxed = new InlineUIContainer(tb);
@@ -89,29 +117,24 @@ namespace FlowDocumentXmlEditor
             run.MouseDown -= new MouseButtonEventHandler(curRun_MouseDown);
             run.InvalidateBinding();
 
-            if (mLastInlineBoxed != null)
-            {
-                TextMediaBindableRun newRun = mLastInlineBoxed.CloseSelf(true);
-
-                addMouseButtonEventHandler(newRun);
-
-
-            }
-
             mLastInlineBoxed = tb;
         }
         public void curRun_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!(e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2))
+            { return; }
 
             Point mousePosition = Mouse.GetPosition(mFlowViewer);
 
             TextMediaBindableRun senderRun = (TextMediaBindableRun)sender;
 
+            InlineCollection inlines = null;
+
             if (senderRun.Parent is Span)
             {
                 Span o = senderRun.Parent as Span;
+                inlines = o.Inlines;
 
-                DoMouseDownStuff(senderRun, o.Inlines);
 
             }
             else
@@ -119,18 +142,23 @@ namespace FlowDocumentXmlEditor
                 {
 
                     Paragraph o = senderRun.Parent as Paragraph;
+                    inlines = o.Inlines;
+                }
+                else if (senderRun.Parent is TextBlock)
+                {
 
-                    DoMouseDownStuff(senderRun, o.Inlines);
-                } else if (senderRun.Parent is TextBlock)
+                    TextBlock o = senderRun.Parent as TextBlock;
+                    inlines = o.Inlines;
+                }
+                else
+                {
+                    Debug.Print("Should never happen");
+                }
+
+            if (inlines != null)
             {
 
-                TextBlock o = senderRun.Parent as TextBlock;
-
-                DoMouseDownStuff(senderRun, o.Inlines);
-            }
-            else
-            {
-                Debug.Print("Should never happen");
+                DoMouseDownStuff(senderRun, inlines);
             }
 
             TextPointer ptr = UrakawaHtmlFlowDocument.GetPositionFromPoint(senderRun, mousePosition);
