@@ -85,7 +85,7 @@ namespace FlowDocumentXmlEditor
         }
 
 
-        public static TextPointer GetPositionFromPoint(FlowDocumentScrollViewer _this, Point searchForPoint)
+        public static TextPointer GetPositionFromPoint(Control _this, Point searchForPoint)
         {
 
             foreach (Run curRun in GetChildren<Run>(_this, true))
@@ -98,8 +98,6 @@ namespace FlowDocumentXmlEditor
                     return ptr;
 
             }
-
-
 
             return null;
 

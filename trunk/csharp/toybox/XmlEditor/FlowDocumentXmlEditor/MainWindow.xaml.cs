@@ -96,7 +96,7 @@ namespace FlowDocumentXmlEditor
 
             if (mLastInlineBoxed != null)
             {
-                TextMediaBindableRun newRun = mLastInlineBoxed.CloseSelf(true);
+                TextMediaBindableRun newRun = mLastInlineBoxed.CloseSelf(false);
 
                 addMouseButtonEventHandler(newRun);
 

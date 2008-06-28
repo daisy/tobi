@@ -12,10 +12,10 @@
             </MenuItem>
         </Menu>
         -->
-        <FlowDocumentScrollViewer Name="mFlowViewer">
+        <FlowDocumentReader Name="mFlowViewer">
             <FlowDocument MouseDown="FlowDocument_MouseDown">
-                <Paragraph/>
+                <Section FontSize="20"/>
             </FlowDocument>
-        </FlowDocumentScrollViewer>
+        </FlowDocumentReader>
     </DockPanel>
 </Window>
