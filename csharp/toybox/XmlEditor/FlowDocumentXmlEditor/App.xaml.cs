@@ -90,6 +90,7 @@ namespace FlowDocumentXmlEditor
             return true;
         }
 
+        public static MainWindow mw2;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -101,10 +102,12 @@ namespace FlowDocumentXmlEditor
                 this.Shutdown(-1);
                 return;
             }
-            //MainWindow mw1 = new MainWindow();
-            MainWindow mw2 = new MainWindow();
 
             mProject = new Project();
+
+            //MainWindow mw1 = new MainWindow();
+            mw2 = new MainWindow(mProject, mProjectUri);
+
             if (mProjectUri != null)
             {
                 OpenXukAction action = new OpenXukAction(mProjectUri, mProject);
@@ -138,25 +141,6 @@ namespace FlowDocumentXmlEditor
             }
             //mw1.Show();
             mw2.Show();
-
-
-            if (mProjectUri != null && mProjectUri.IsFile)
-            {
-                string strPath = mProjectUri.LocalPath;
-                int indexOfLastSlash = strPath.LastIndexOf('\\');
-                string strFile = strPath.Substring(indexOfLastSlash);
-                Uri projectUri = new Uri(strPath.Remove(indexOfLastSlash) + strFile + ".out.xuk");
-                //FileStream fs = new FileStream(projectUri.LocalPath, FileMode.Create, FileAccess.Write);
-
-                SaveXukAction action = new SaveXukAction(projectUri, mProject);
-                bool wasCancelled;
-                ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
-                if (wasCancelled)
-                {
-                    Shutdown(-1);
-                    return;
-                }
-            }
 
         }
     }
