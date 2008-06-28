@@ -99,6 +99,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TextMediaBindableRun.cs" />
+    <Compile Include="TextMediaTextBox.cs" />
     <Compile Include="UrakawaHtmlFlowDocument.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

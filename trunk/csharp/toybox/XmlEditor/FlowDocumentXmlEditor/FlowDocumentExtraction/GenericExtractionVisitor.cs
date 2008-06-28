@@ -35,21 +35,23 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
                         if (USE_TEXT_BOX_UIELEMENT)
                         {
                             TextBox tb = new TextBox();
-                            tb.BorderThickness = new Thickness(1);
 
                             TextMediaBinding binding = new TextMediaBinding();
                             binding.BoundTextMedia = text;
                             binding.Mode = System.Windows.Data.BindingMode.TwoWay;
                             tb.SetBinding(TextBox.TextProperty, binding);
-                            tb.Text = text.getText();
+
+                            //tb.Text = text.getText();
+
+                            tb.BorderThickness = new Thickness(1);
                             tb.Focusable = true;
                             InlineUIContainer res = new InlineUIContainer(tb);
                             return res;
                         }
                         else {
-                            Run run = new Run();
-                            
-                            run.Text = text.getText();
+                            TextMediaBindableRun run = new TextMediaBindableRun(text);
+
+                            //run.Text = text.getText();
                             return run;
                         }
                     }

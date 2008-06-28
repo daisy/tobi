@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using FlowDocumentXmlEditor.FlowDocumentExtraction;
+using urakawa.xuk;
+using urakawa;
 
 namespace FlowDocumentXmlEditor
 {
@@ -36,78 +38,100 @@ namespace FlowDocumentXmlEditor
                 mFlowViewer.Document = value;
             }
         }
+
+        //public event EventHandler Closed
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+
+            if (ProjectUri != null && ProjectUri.IsFile)
+            {
+                string strPath = ProjectUri.LocalPath;
+                int indexOfLastSlash = strPath.LastIndexOf('\\');
+                string strFile = strPath.Substring(indexOfLastSlash);
+                Uri projectUri = new Uri(strPath.Remove(indexOfLastSlash) + strFile + ".out.xuk");
+                //FileStream fs = new FileStream(projectUri.LocalPath, FileMode.Create, FileAccess.Write);
+
+                SaveXukAction action = new SaveXukAction(projectUri, Project);
+                bool wasCancelled;
+                ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
+                if (wasCancelled)
+                {
+                    return;
+                }
+            }
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            foreach (Run curRun in UrakawaHtmlFlowDocument.GetChildren<Run>(mFlowViewer.Document, true))
+            foreach (TextMediaBindableRun curRun in UrakawaHtmlFlowDocument.GetChildren<TextMediaBindableRun>(mFlowViewer.Document, true))
 
-                curRun.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
+                addMouseButtonEventHandler(curRun);
 
         }
-        private TextBox mLastInlineBoxed = null;
+        private TextMediaTextBox mLastInlineBoxed = null;
 
-        void curRun_MouseDown(object sender, MouseButtonEventArgs e)
+        public void addMouseButtonEventHandler(TextMediaBindableRun run)
+        {
+            if (run != null)
+                run.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
+        }
+
+        private void DoMouseDownStuff(TextMediaBindableRun run, InlineCollection inlines)
+        {
+
+            TextMediaTextBox tb = new TextMediaTextBox(run.TextMedia);
+            InlineUIContainer newInlineBoxed = new InlineUIContainer(tb);
+
+            inlines.InsertAfter(run, newInlineBoxed);
+            inlines.Remove(run);
+
+            run.MouseDown -= new MouseButtonEventHandler(curRun_MouseDown);
+            run.InvalidateBinding();
+
+            if (mLastInlineBoxed != null)
+            {
+                TextMediaBindableRun newRun = mLastInlineBoxed.CloseSelf(true);
+
+                addMouseButtonEventHandler(newRun);
+
+
+            }
+
+            mLastInlineBoxed = tb;
+        }
+        public void curRun_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
             Point mousePosition = Mouse.GetPosition(mFlowViewer);
 
-            Run senderRun = (Run)sender;
+            TextMediaBindableRun senderRun = (TextMediaBindableRun)sender;
 
-            if (senderRun.Parent is Paragraph)
+            if (senderRun.Parent is Span)
             {
-                Paragraph para = senderRun.Parent as Paragraph;
+                Span o = senderRun.Parent as Span;
 
-                TextBox tb = new TextBox();
-                tb.BorderThickness = new Thickness(1);
-                tb.Text = senderRun.Text;
-                tb.Focusable = true;
-                tb.SelectAll();
+                DoMouseDownStuff(senderRun, o.Inlines);
 
-                /*
-                TextMediaBinding binding = new TextMediaBinding();
-                binding.BoundTextMedia = SDK-textmedia;
-                binding.Mode = System.Windows.Data.BindingMode.TwoWay;
-                tb.SetBinding(TextBox.TextProperty, binding);
-                 */
-
-                InlineUIContainer newInlineBoxed = new InlineUIContainer(tb);
-
-                para.Inlines.InsertAfter(senderRun, newInlineBoxed);
-                para.Inlines.Remove(senderRun);
-
-                if (mLastInlineBoxed != null)
-                {
-                    InlineUIContainer container = mLastInlineBoxed.Parent as InlineUIContainer ;
-
-                    if (container.Parent is Paragraph)
-                    {
-
-                        Paragraph paraOld = container.Parent as Paragraph;
-                        Run newRun = new Run();
-
-                        newRun.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
-
-                        newRun.Text = mLastInlineBoxed.Text;
-                        paraOld.Inlines.InsertAfter(container, newRun);
-                        paraOld.Inlines.Remove(container);
-
-                    }
-
-
-               }
-
-                mLastInlineBoxed = tb;
             }
             else
-                if (senderRun.Parent is List)
+                if (senderRun.Parent is Paragraph)
                 {
 
-                    List para = senderRun.Parent as List;
-                }
-                else
-                {
-                    Debug.Print("NOP");
-                }
+                    Paragraph o = senderRun.Parent as Paragraph;
+
+                    DoMouseDownStuff(senderRun, o.Inlines);
+                } else if (senderRun.Parent is TextBlock)
+            {
+
+                TextBlock o = senderRun.Parent as TextBlock;
+
+                DoMouseDownStuff(senderRun, o.Inlines);
+            }
+            else
+            {
+                Debug.Print("Should never happen");
+            }
 
             TextPointer ptr = UrakawaHtmlFlowDocument.GetPositionFromPoint(senderRun, mousePosition);
 
@@ -159,10 +183,28 @@ namespace FlowDocumentXmlEditor
             }
 
         }
+        private Uri mProjectUri = null;
 
-        public MainWindow()
+        public Uri ProjectUri
+        {
+            get { return mProjectUri; }
+            set { mProjectUri = value; }
+        }
+
+        private Project mProject = null;
+
+        public Project Project
+        {
+            get { return mProject; }
+            set { mProject = value; }
+        }
+
+        public MainWindow(Project project, Uri projectUri)
         {
             InitializeComponent();
+
+            Project = project;
+            ProjectUri = projectUri;
 
             //InsertTableCommand.Text = "Insert Table";
             //mInsertTableMenuItem.Command = InsertTableCommand;
