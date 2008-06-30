@@ -52,7 +52,7 @@ namespace FlowDocumentXmlEditor
         {
             OriginalText = originalText;
 
-            BorderThickness = new Thickness(1);
+            BorderThickness = new Thickness(2);
             Focusable = true;
 
             Loaded += new RoutedEventHandler(thisLoaded);

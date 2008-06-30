@@ -88,7 +88,11 @@ namespace FlowDocumentXmlEditor
         public void addMouseButtonEventHandler(TextMediaBindableRun run)
         {
             if (run != null)
+            {
                 run.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
+                run.MouseEnter += new MouseEventHandler(curRun_MouseEnter);
+                run.MouseLeave += new MouseEventHandler(curRun_MouseLeave);
+            }
         }
 
         private void DeactivateLastInlineBoxed()
@@ -115,9 +119,60 @@ namespace FlowDocumentXmlEditor
             inlines.Remove(run);
 
             run.MouseDown -= new MouseButtonEventHandler(curRun_MouseDown);
+            run.MouseEnter -= new MouseEventHandler(curRun_MouseEnter);
+            run.MouseLeave -= new MouseEventHandler(curRun_MouseLeave);
+
             run.InvalidateBinding();
 
             mLastInlineBoxed = tb;
+        }
+
+        TextDecoration mOverTextDecoration = new TextDecoration(
+            TextDecorationLocation.Underline,
+            new Pen(Brushes.Black, 3),
+            1,
+            TextDecorationUnit.FontRecommended,
+            TextDecorationUnit.FontRecommended);
+
+        public void curRun_MouseEnter(object sender, MouseEventArgs e)
+        {
+            TextMediaBindableRun senderRun = (TextMediaBindableRun)sender;
+
+            senderRun.Background = Brushes.Red;
+
+
+            senderRun.TextDecorations.Add(mOverTextDecoration);
+
+            /*
+            DeactivateLastBorder();
+
+            InlineUIContainer newBorderWrap = new InlineUIContainer(tb);
+
+            Border b = new Border();
+            b.BorderThickness = 2;
+            //b.BorderBrush = 
+
+            inlines.InsertAfter(run, newInlineBoxed);
+            inlines.Remove(run);
+
+            run.MouseDown -= new MouseButtonEventHandler(curRun_MouseDown);
+            run.MouseEnter -= new MouseEventHandler(curRun_MouseEnter);
+            run.MouseLeave -= new MouseEventHandler(curRun_MouseLeave);
+
+            run.InvalidateBinding();
+
+            mLastBorder = newBorderWrap;
+            senderRun;
+             */
+
+        }
+        public void curRun_MouseLeave(object sender, MouseEventArgs e)
+        {
+            TextMediaBindableRun senderRun = (TextMediaBindableRun)sender;
+
+            senderRun.Background = Brushes.White;
+
+            senderRun.TextDecorations.Remove(mOverTextDecoration);
         }
         public void curRun_MouseDown(object sender, MouseButtonEventArgs e)
         {
