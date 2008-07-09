@@ -45,6 +45,10 @@ Search algorithm and text range selection:
 
 http://shevaspace.spaces.live.com/blog/cns!FD9A0F1F8DD06954!638.entry
 
+http://shevaspace.blogspot.com/2007/11/how-to-search-text-in-wpf-flowdocument.html
+
+http://blogs.microsoft.co.il/blogs/tamir/archive/2008/05/12/search-and-highlight-any-text-on-wpf-rendered-page.aspx
+
 http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=3258597&SiteID=1
 
 The !RichTextBox editor control is limited compared to !FlowDocument, but
@@ -137,5 +141,19 @@ Typography things:
 
 http://blogs.msdn.com/text/
 
+Mouse click/hover detection:
 
+http://blogs.microsoft.co.il/blogs/justinangel/archive/2008/01/29/tapuz-net-getting-wpf-s-flowdocument-and-flowdoucmentreader-mouseover-text.aspx
+
+Bindable Run:
+
+http://fortes.com/2007/03/20/bindablerun/
+
+http://www.paulstovell.com/blog/attached-bindablerun
+
+http://code.logos.com/blog/2008/01/data_binding_in_a_flowdocument.html
+
+Pagination:
+
+http://forums.msdn.microsoft.com/en-US/wpf/thread/bc71bfd3-b456-4de2-8ac8-70f1d46bcb06
 
