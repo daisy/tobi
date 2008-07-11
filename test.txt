@@ -1,4 +1,5 @@
 testing 
+Testing email notification (seems broken today)
 testing ACLs
 hi from steve
 test daniel from windows
