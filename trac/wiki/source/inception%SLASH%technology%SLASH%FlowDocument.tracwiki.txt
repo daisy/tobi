@@ -9,6 +9,8 @@ loading a XAML file directly.
 
 [[Image(FlowDocument_RTL_2.png)]]
 
+[[Image(http://static.fortes.com/2005/10/number-substitution/number-substitution.gif)]]
+
 [[Image(http://www.xtabvbcity.plus.com/Blogs/FlowDoc1.jpg)]]
 
 [[Image(http://www.tmssoftware.com/Images/xv.png)]]
@@ -141,6 +143,8 @@ Typography things:
 
 http://blogs.msdn.com/text/
 
+http://fortes.com/2005/10/number-substitution/
+
 Mouse click/hover detection:
 
 http://blogs.microsoft.co.il/blogs/justinangel/archive/2008/01/29/tapuz-net-getting-wpf-s-flowdocument-and-flowdoucmentreader-mouseover-text.aspx
@@ -156,4 +160,20 @@ http://code.logos.com/blog/2008/01/data_binding_in_a_flowdocument.html
 Pagination:
 
 http://forums.msdn.microsoft.com/en-US/wpf/thread/bc71bfd3-b456-4de2-8ac8-70f1d46bcb06
+
+Templating:
+
+http://janrep.blog.codeplant.net/WPF-Multipage-Reports--Part-III--Rendering.aspx
+
+Neat/quick summary of content model:
+
+http://fortes.com/2007/03/inline-elements/
+
+http://fortes.com/2007/03/inline-properties/
+
+http://fortes.com/2007/04/block-elements/
+
+White spaces around Run:
+
+http://fortes.com/2007/03/collapsed-spaces-around-run/
 

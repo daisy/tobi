@@ -1,3 +1,11 @@
+Excellent starting point:
+
+http://learnwpf.com/
+
+Exhaustive list of prominent WPF blogs:
+
+http://rhnatiuk.wordpress.com/2008/07/10/wpf-blogs/
+
 WPF, coming from Winforms:
 
 http://www.codeproject.com/KB/WPF/winforms2wpf.aspx
@@ -13,6 +21,10 @@ Design patterns, MVC stuff in particular:
 http://blogs.sqlxml.org/bryantlikes/archive/2006/09/27/WPF-Patterns.aspx
 
 http://www.orbifold.net/default/?p=550
+
+Structuring a WPF UI:
+
+http://pavanpodila.spaces.live.com/blog/cns!9C9E888164859398!368.entry
 
 MVC and the Mediator pattern:
 
@@ -67,6 +79,8 @@ UI Automation Accessibility:
 
 http://msdn.microsoft.com/en-us/library/ms727247.aspx
 
+http://www.mono-project.com/Accessibility:_Architecture
+
 Hosting !WinForm elements inside WPF:
 
 http://msdn.microsoft.com/en-us/library/ms742875.aspx
@@ -81,6 +95,12 @@ Localization:
 
 http://www.odewit.net/ArticleContent.aspx?id=WpfLocalization&format=html&lang=en
 
+http://sachabarber.net/?p=286 + http://joshsmithonwpf.wordpress.com/2007/06/29/how-to-set-a-property-to-a-dynamicresource-reference-in-code/
+
+LocBaml:
+
+http://msdn.microsoft.com/en-us/library/ms771568.aspx
+
 The Visual Tree (very good explanation):
 
 http://blogs.msdn.com/mikehillberg/archive/2008/05/23/Of-logical-and-visual-trees-in-WPF.aspx
@@ -91,13 +111,24 @@ http://www.codeproject.com/KB/WPF/TreeViewWithViewModel.aspx
 
 Optimize TreeView (virtualization, lazy-loading):
 
+http://www.hardcodet.net/2008/01/wpf-treeview
+http://www.codeproject.com/KB/WPF/versatile_treeview.aspx
+
 http://www.beacosta.com/blog/?p=45
 
 http://www.codeproject.com/KB/tree/VTreeView.aspx
 
+Tree and node selection:
+
+http://www.hardcodet.net/2008/03/prevent-wpf-tree-node-selection
+
 Fast font combo box (showcases XAML binding as well)
 
 http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
+
+Alternating color list:
+
+http://blog.pixelingene.com/?p=91
 
 XAML editor:
 
@@ -124,7 +155,13 @@ http://jmorrill.hjtcentral.com/Home/tabid/428/EntryID/247/Default.aspx
 
 Composite apps architecture (dynamic plugin/module loading etc.):
 
+http://www.microsoft.com/downloads/details.aspx?FamilyId=6DD3D0C1-D5B4-453B-B827-98E162E1BD8D&displaylang=en
+
 http://msdn.microsoft.com/en-us/library/cc707878.aspx
+
+http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Knowledge%20Base&referringTitle=Home
+
+http://blogs.msdn.com/erwinvandervalk/archive/2008/06/27/how-to-load-cal-modules-from-a-website-or-other-locations.aspx
 
 http://www.orbifold.net/default/?p=1013
 
@@ -140,6 +177,10 @@ http://dotnet.org.za/rudi/archive/2008/01/22/datamodel-view-viewmodel-used-in-a-
 
 http://www.ekampf.com/blog/2008/03/24/DevelopingARobustDataDrivenUIUsingWPFTheDataModel.aspx
 
+http://blog.lab49.com/archives/2404
+
+http://blogs.msdn.com/francischeung/archive/2008/06/16/poor-man-s-ui-composition.aspx
+
 Caliburn (alternative to the above Composite framework):
 
 http://blog.hightech.ir/2008/05/wpf-composite-application-with-caliburn.html
@@ -150,7 +191,13 @@ System.Addin (too complex compared to the above Composite framework, but worth m
 
 http://blogs.microsoft.co.il/blogs/bursteg/archive/2007/08/13/Build-AddIns-with-System-AddIn.aspx
 
+http://pavanpodila.spaces.live.com/blog/cns!9C9E888164859398!439.entry
+
 Data Binding and Templates:
+
+http://blogs.msdn.com/wpfsdk/archive/2006/10/19/wpf-basic-data-binding-faq.aspx
+
+http://blogs.telerik.com/DeyanVarchev/Posts/08-06-17/WPF_Data_Binding_Unraveling_data_templates.aspx?ReturnURL=%2fBlogs.aspx%3fPage%3d4
 
 http://msdn.microsoft.com/en-us/magazine/cc700358.aspx
 
@@ -159,6 +206,12 @@ http://www.codeproject.com/KB/WPF/SelectDetailLevels.aspx / http://neilmosafi.bl
 http://devlicio.us/blogs/christopher_bennage/archive/2008/07/04/templatebinding-a-bridge-between-styles-and-templates.aspx
 
 http://www.beacosta.com/blog/?p=41
+
+http://www.dev102.com/2008/06/13/why-should-you-use-the-xkey-attribute-in-wpf-datatemplates/
+
+Hierarchical and Advanced Data Binding:
+
+http://msdn.microsoft.com/en-us/magazine/cc700358.aspx
 
 Template tool:
 
@@ -213,3 +266,64 @@ http://blogs.msdn.com/windowssdk/archive/2008/02/22/workaround-installing-win-sd
 Built-in page navigation (with history, etc.):
 
 http://msdn.microsoft.com/en-us/library/ms750478.aspx
+
+Open source controls:
+
+http://www.jastdev.com/site/Products/ControlFramework/tabid/59/Default.aspx
+
+Very good libs (not very useful as is, but good code):
+
+http://www.codeplex.com/fluidkit
+
+DPI resolution independence..what about pixels ?
+
+http://blogs.telerik.com/ManolDonev/Posts/08-06-16/WPF_Line_Drawing_and_the_Device-Pixel-_In_dependence.aspx?ReturnURL=%2fBlogs.aspx%3fPage%3d4
+
+Drag and Drop:
+
+http://blogs.msdn.com/llobo/archive/2008/02/26/drag-drop-library-updated.aspx
+
+http://www.beacosta.com/blog/?p=53
+
+http://blog.pixelingene.com/?p=43
+http://pavanpodila.spaces.live.com/blog/cns!9C9E888164859398!199.entry
+
+http://blogs.gotdotnet.com/jaimer/archive/2007/07/12/drag-drop-in-wpf-explained-end-to-end.aspx
+
+http://blogs.msdn.com/adamroot/archive/2008/02/01/shell-style-drag-and-drop-in-net-wpf-and-winforms.aspx
+
+Tab control customization:
+
+http://blog.paranoidferret.com/index.php/2008/01/18/the-wpf-tab-control-inside-and-out/
+
+http://dotnet.dzone.com/news/stylize-standard-wpf-tabs-into
+
+Spy tools (deep visual introspection) => Reflector and BamlViewer:
+
+http://www.aisto.com/roeder/dotnet/
+
+http://www.codeplex.com/reflectoraddins/Wiki/View.aspx?title=BamlViewer
+
+http://www.codeplex.com/reflectoraddins
+
+Data (preemptive) Validation:
+
+http://www.codegod.de/WebAppCodeGod/wpf-idataerrorinfo-and-databinding-AID416.aspx
+
+http://www.codeproject.com/KB/WPF/wpfErrorProvider.aspx
+
+File selection control:
+
+http://www.hardcodet.net/2008/03/wpf-file-selection-control
+
+Custom Data binding class:
+
+http://www.hardcodet.net/2008/04/wpf-custom-binding-class
+
+Keyboard trap fix:
+
+http://learnwpf.com/Posts/Post.aspx?postId=7c9b4f32-78c5-47d2-89e3-c6082a5d1d1b
+
+Good set of useful classes:
+
+http://www.codeproject.com/KB/WPF/WPFJoshSmith.aspx

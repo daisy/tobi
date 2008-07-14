@@ -109,6 +109,12 @@ WYSIWYG vs WYSIWYM
 
 [[Image(http://www.freesoftwaremagazine.com/files/www.freesoftwaremagazine.com/nodes/1137/xml_editors.jpg)]]
 
+== Mono-Develop (docked UI + addin/plugin repository manager) ==
+
+[[Image(http://primates.ximian.com/~miguel/pictures/1-ooo.png)]]
+
+[[Image(http://primates.ximian.com/~miguel/pictures/2-ooo.png)]]
+
 == Narrator (just a nice UI) ==
 
 [[Image(http://www.dejal.com/narrator/images/overview-580px.png)]]
