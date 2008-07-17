@@ -5,6 +5,8 @@ Part of .NET WPF (Windows Presentation Foundation)
 A rich-text viewer can be created programmatically, or by
 loading a XAML file directly.
 
+[[Image(http://www.xtabvbcity.plus.com/Blogs/FlowDoc1.jpg))]
+
 [[Image(FlowDocument_RTL_1.png)]]
 
 [[Image(FlowDocument_RTL_2.png)]]
@@ -21,9 +23,7 @@ loading a XAML file directly.
 
 [[Image(http://daron.yondem.com/tr/content/binary/20102007_4.png)]]
 
-This could be a good starting point to implement the data binding
-between the Urakawa-SDK data model and the text viewer. It would be
-read-only though, and I'm not sure about selection, highlighting, etc.
+http://www.devcity.net/Articles/351/1/article.aspx http://www.devcity.net/PrintArticle.aspx?ArticleID=351
 
 Examples here:
 
@@ -99,8 +99,6 @@ http://dedjo.blogspot.com/2008/04/wordml-to-flowdocument-how-to-convert.html
 http://blogs.microsoft.co.il/blogs/tamir/archive/2008/04/17/converting-fixeddocument-xpsdocument-too-to-flowdocument.aspx
 
 http://dedjo.blogspot.com/2008/04/converting-fixeddocument-xpsdocument.html
-
-http://www.devcity.net/PrintArticle.aspx?ArticleID=351
 
 http://blogs.msdn.com/llobo/archive/2007/06/05/wpf-blog-writer.aspx
 

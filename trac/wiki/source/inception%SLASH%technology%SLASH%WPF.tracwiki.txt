@@ -2,6 +2,8 @@ Excellent starting point:
 
 http://learnwpf.com/
 
+http://japikse.blogspot.com/2008/07/wpf-layout-panels.html
+
 Exhaustive list of prominent WPF blogs:
 
 http://rhnatiuk.wordpress.com/2008/07/10/wpf-blogs/
@@ -34,6 +36,10 @@ http://marlongrech.wordpress.com/2008/03/20/more-than-just-mvc-for-wpf/
 
 http://marlongrech.wordpress.com/2008/03/21/creating-a-file-explorer-in-wpf-using-mvcm/
 
+Custom control and binding converter:
+
+http://blog.paranoidferret.com/index.php/2008/07/15/wpf-tutorial-binding-converters/
+
 Silverlight and WPF, custom controls:
 
 http://weblogs.asp.net/scottgu/archive/2008/04/04/tip-trick-creating-and-using-silverlight-and-wpf-user-controls.aspx
@@ -49,6 +55,8 @@ Disabled button Tooltip:
 http://dedjo.blogspot.com/2008/04/two-quick-wpf-tricks-show-tooltip-on.html
 
 Commands:
+
+http://www.aspfree.com/c/a/.NET/Commands-Input-and-the-WPF/
 
 http://blogs.vertigo.com/personal/alanl/Blog/Lists/Posts/Post.aspx?ID=17
 
@@ -68,6 +76,8 @@ Service registry use:
 http://alexshed.spaces.live.com/blog/cns!71C72270309CE838!161.entry
 
 Threading / Dispatcher:
+
+http://blog.paranoidferret.com/index.php/2008/06/25/working-with-the-wpf-dispatcher/
 
 http://msdn.microsoft.com/en-us/magazine/cc163328.aspx
 
@@ -121,6 +131,10 @@ http://www.codeproject.com/KB/tree/VTreeView.aspx
 Tree and node selection:
 
 http://www.hardcodet.net/2008/03/prevent-wpf-tree-node-selection
+
+Tree data binding (hierarchical):
+
+http://testdrivendevelopment.wordpress.com/2008/07/15/databinding-wpf-treeview-using-recursion/
 
 Fast font combo box (showcases XAML binding as well)
 
@@ -195,6 +209,8 @@ http://pavanpodila.spaces.live.com/blog/cns!9C9E888164859398!439.entry
 
 Data Binding and Templates:
 
+http://blog.paranoidferret.com/index.php/2008/07/16/wpf-tutorial-how-to-use-a-datatemplateselector/
+
 http://blogs.msdn.com/wpfsdk/archive/2006/10/19/wpf-basic-data-binding-faq.aspx
 
 http://blogs.telerik.com/DeyanVarchev/Posts/08-06-17/WPF_Data_Binding_Unraveling_data_templates.aspx?ReturnURL=%2fBlogs.aspx%3fPage%3d4
@@ -254,6 +270,12 @@ dynamic Skin / Theme switching (visual and structural):
 http://www.codeproject.com/KB/WPF/SkinningInWPF.aspx
 
 http://www.codeproject.com/KB/WPF/podder2.aspx
+
+http://blog.rioterdecker.net/blogs/chaz/archive/2006/03/06/100.aspx
+
+http://blogs.windowsclient.net/nidonocu/archive/2008/02/16/wpf-themes-and-control-libraries.aspx
+
+http://blogs.windowsclient.net/nidonocu/archive/2008/03/03/wpf-themes-and-control-libraries-part-2.aspx
 
 Decorators and Adorners, applied to diagramming:
 
@@ -327,3 +349,14 @@ http://learnwpf.com/Posts/Post.aspx?postId=7c9b4f32-78c5-47d2-89e3-c6082a5d1d1b
 Good set of useful classes:
 
 http://www.codeproject.com/KB/WPF/WPFJoshSmith.aspx
+
+Mouse selection:
+
+http://www.codeproject.com/KB/WPF/wpfmarchingants.aspx
+
+Data binding and Converters:
+
+http://www.scip.be/index.php?Page=ArticlesNET22&Lang=EN
+
+http://www.dev102.com/2008/07/17/wpf-binding-converter-best-practices/
+
