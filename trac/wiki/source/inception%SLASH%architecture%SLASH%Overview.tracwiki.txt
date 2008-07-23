@@ -89,3 +89,10 @@ http://www.adon-line.de/kunden/prosystBlog/?p=18
 Example of app that ships with a rich API for third-party customizations:
 
 http://docs.syntext.com/sapi_guide/sg.html
+
+C# frameworks for Inversion Of Control and Dependency Injection:
+
+http://castleproject.org/container/gettingstarted/index.html
+
+http://structuremap.sourceforge.net/Concepts.htm
+

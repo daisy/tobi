@@ -175,3 +175,6 @@ White spaces around Run:
 
 http://fortes.com/2007/03/collapsed-spaces-around-run/
 
+Tree walking the FlowDocument + pagination:
+
+http://janrep.blog.codeplant.net/WPF-Multipage-Reports--Part-IV--Pagination.aspx

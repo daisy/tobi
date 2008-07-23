@@ -140,6 +140,8 @@ Fast font combo box (showcases XAML binding as well)
 
 http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
 
+http://www.dotnet-blog.com/index.php/2008/03/27/create-a-fonts-combobox-using-wpf/
+
 Alternating color list:
 
 http://blog.pixelingene.com/?p=91
@@ -154,6 +156,8 @@ Speech synth:
 http://franksworld.com/blog/archive/2007/05/25/4656.aspx
 
 Bitmap, image, waveform stuff (WPF is geared towards resolution-independence, so bitmaps are faster but not ideal for magnification for visually-impaired users):
+
+http://genesisconduit.wordpress.com/2008/07/05/wpf-images-and-dpi-independence/
 
 http://msdn.microsoft.com/en-us/library/system.windows.media.imaging.writeablebitmap.aspx
 
@@ -187,6 +191,8 @@ http://www.codeplex.com/CompositeWPF
 
 http://code.google.com/p/cwpfsamples/
 
+http://panesofglass.org/software/composite-wpf-patterns/
+
 http://dotnet.org.za/rudi/archive/2008/01/22/datamodel-view-viewmodel-used-in-a-wpf-application.aspx
 
 http://www.ekampf.com/blog/2008/03/24/DevelopingARobustDataDrivenUIUsingWPFTheDataModel.aspx
@@ -194,6 +200,12 @@ http://www.ekampf.com/blog/2008/03/24/DevelopingARobustDataDrivenUIUsingWPFTheDa
 http://blog.lab49.com/archives/2404
 
 http://blogs.msdn.com/francischeung/archive/2008/06/16/poor-man-s-ui-composition.aspx
+
+Composite and Region registration:
+
+http://blogs.southworks.net/ejadib/2008/07/22/use-the-outlookbar-in-your-compositewpf-prism-applications/
+
+http://blogs.southworks.net/mwoloski/2008/07/22/outlookbar-20-from-winforms-to-wpf/
 
 Caliburn (alternative to the above Composite framework):
 
@@ -277,6 +289,7 @@ http://blogs.windowsclient.net/nidonocu/archive/2008/02/16/wpf-themes-and-contro
 
 http://blogs.windowsclient.net/nidonocu/archive/2008/03/03/wpf-themes-and-control-libraries-part-2.aspx
 
+
 Decorators and Adorners, applied to diagramming:
 
 http://www.codeproject.com/KB/WPF/WPFDiagramDesigner_Part3.aspx
@@ -320,6 +333,8 @@ http://blog.paranoidferret.com/index.php/2008/01/18/the-wpf-tab-control-inside-a
 
 http://dotnet.dzone.com/news/stylize-standard-wpf-tabs-into
 
+http://sachabarber.net/?p=322
+
 Spy tools (deep visual introspection) => Reflector and BamlViewer:
 
 http://www.aisto.com/roeder/dotnet/
@@ -334,6 +349,8 @@ http://www.codegod.de/WebAppCodeGod/wpf-idataerrorinfo-and-databinding-AID416.as
 
 http://www.codeproject.com/KB/WPF/wpfErrorProvider.aspx
 
+http://www.codeproject.com/KB/WPF/WPF_SelfValidatingTextBox.aspx
+
 File selection control:
 
 http://www.hardcodet.net/2008/03/wpf-file-selection-control
@@ -341,6 +358,10 @@ http://www.hardcodet.net/2008/03/wpf-file-selection-control
 Custom Data binding class:
 
 http://www.hardcodet.net/2008/04/wpf-custom-binding-class
+
+Multi-binding:
+
+http://blog.paranoidferret.com/index.php/2008/07/21/wpf-tutorial-using-multibindings/
 
 Keyboard trap fix:
 
@@ -359,4 +380,20 @@ Data binding and Converters:
 http://www.scip.be/index.php?Page=ArticlesNET22&Lang=EN
 
 http://www.dev102.com/2008/07/17/wpf-binding-converter-best-practices/
+
+Animate content between state:
+
+http://blogs.msdn.com/expression/archive/2008/07/18/animating-control-content-between-states.aspx
+
+Basic window layout (menu, statusbar, main) + routed event example:
+
+http://karlshifflett.wordpress.com/2008/01/23/wpf-sample-series-stretch-toolbar-width-of-window/
+
+Advanced data binding using trick for cross-access of XAML content:
+
+http://joshsmithonwpf.wordpress.com/2008/07/22/enable-elementname-bindings-with-elementspy/
+
+Aligning list widget contents:
+
+http://blog.paranoidferret.com/index.php/2008/07/22/wpf-snippet-tutorial-aligning-listview-items/
 
