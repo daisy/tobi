@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B2D7A247-3585-422E-9F44-BABFF53FCEB4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -51,6 +51,7 @@
     <Reference Include="urakawa, Version=1.1.0.29964, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\urakawa-sdk\branches\1.1_before_major_refactor_2.0\csharp\core\bin\Debug\urakawa.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
