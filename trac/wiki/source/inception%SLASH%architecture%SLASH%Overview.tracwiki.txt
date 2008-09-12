@@ -50,6 +50,8 @@ http://blogs.msdn.com/clraddins/
 
 http://sachabarber.net/?p=239
 
+http://blogs.msdn.com/wpfsdk/archive/2008/04/25/databinding-and-add-ins.aspx
+
 WPF Composite Application Guidelines and Library:
 
 http://msdn.microsoft.com/en-us/library/cc707819.aspx

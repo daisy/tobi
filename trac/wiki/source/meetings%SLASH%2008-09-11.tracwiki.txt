@@ -1,0 +1,52 @@
+[[TOC]]
+
+= Tom and Dan Montana Meeting =
+
+Note: this is the first face-to-face meeting between Daniel and Tom. So far we had only exchanged thoughts over a single conference call.
+
+== Dates ==
+
+ * 2008-09-11 (Thursday)
+ * 2008-09-12 (Friday)
+ * 2008-09-13 (Saturday)
+
+== Venue ==
+
+Holiday Inn, Missoula, Montana (USA)
+
+== Participants ==
+
+ * Daniel Weck (DAISY)
+ * Tom !McCartney (RFBnD)
+
+== Objectives ==
+
+This 3-day meeting is an intense accelerated crash course about the Urakawa SDK and the Tobi project. The goal is to support Tom in rapidly gaining a good level of knowledge about the software architecture and design patterns we are using, so that we can work together efficiently in the weeks to come (mostly in remote mode). Tom will also provide feedback to Daniel about his experience of DAISY production (recording), within his organization.
+
+== Agenda + Minutes ==
+
+=== DAY 1 ===
+
+ * Presentations of roles/responsibilities + chat about Tom's organization projects and production processes/needs.
+ * In-depth introduction to the Urakawa SDK data model (white board).
+ * Use of Eclipse to browse the Java source and look at the design patterns in detail (event listener, visitor, navigator, factories, managers, etc.).
+ * DAISY NCX / NCC navigation, challenges (e.g. page numbers in the middle of sentences), discussion about possible authoring metaphors.
+ * Particular focus on the audio backend (media data "asset" management): practical exercise with the !DataProvider.copy() issue (Obi performance / lag problems).
+
+[[Image(WhiteBoard1.jpg)]]
+
+[[Image(WhiteBoard2.jpg)]]
+
+=== DAY 2 ===
+
+ * Morning: C# reference implementation of SDK, first in-depth look + Trac SVN browser / diff + Unit-testing
+ * Afternoon: Tobi plugin architecture (with Markus)
+
+=== DAY 3 ===
+
+ * Morning: Tobi implementation exercises (current toy project: WPF, XAML, VS2008, etc.).
+ * Afternoon (short): wrap-up, action plan for future collaboration.
+
+== Action Items ==
+
+NONE YET.

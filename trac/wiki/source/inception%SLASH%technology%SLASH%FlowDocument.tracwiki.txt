@@ -114,6 +114,8 @@ http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1579232&SiteID=1&pageid=0
 
 http://msdn.microsoft.com/en-us/library/aa970909.aspx
 
+http://www.ddj.com/windows/209800469
+
 !DataBinding:
 
 http://blog.spencen.com/2008/01/19/html-to-flowdocument-converter.aspx
