@@ -78,7 +78,7 @@ namespace FlowDocumentXmlEditor
                 mMin = 0;
                 mVal = val;
                 mMax = max;
-                //Debug.Print("Progress: Current={0:0}, Total={1:0}, IsCancelled={2}", val, max, e.IsCancelled);
+                Debug.Print("Progress: Current={0:0}, Total={1:0}, IsCancelled={2}", val, max, e.IsCancelled);
                 //Thread.Sleep(10);
                 UpdateUI();
             }
