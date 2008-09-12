@@ -122,7 +122,7 @@ namespace FlowDocumentXmlEditor
 
             if (mProject.getNumberOfPresentations() > 0)
             {
-                Presentation pres = mProject.getPresentation(-1); // 0 TODO: restore this
+                Presentation pres = mProject.getPresentation(0);
                 TextChannel textCh = null;
                 foreach (Channel ch in pres.getChannelsManager().getListOfChannels())
                 {
