@@ -62,6 +62,8 @@ http://windowsclient.net/wpf/wpf35/wpf-dg-preview-ctrl-investments.aspx
 
 http://blogs.msdn.com/vinsibal/archive/2008/08/11/net-3-5-sp1-and-wpf-datagrid-ctp-is-out-now.aspx
 
+http://blogs.msdn.com/jgoldb/archive/2008/08/28/improving-microsoft-datagrid-ctp-sorting-performance-part-2.aspx
+
 Disabled button Tooltip:
 
 http://dedjo.blogspot.com/2008/04/two-quick-wpf-tricks-show-tooltip-on.html
@@ -218,12 +220,17 @@ XAML editor:
 http://www.kaxaml.com/
 http://www.codeplex.com/Kaxaml
 
-Speech synth:
+XAML Power Toys:
 
+http://karlshifflett.wordpress.com/xaml-power-toys/
+
+Speech synth:
 
 http://franksworld.com/blog/archive/2007/05/25/4656.aspx
 
 Bitmap, image, waveform stuff (WPF is geared towards resolution-independence, so bitmaps are faster but not ideal for magnification for visually-impaired users):
+
+http://msdnrss.thecoderblogs.com/2008/09/19/wpfxaml-saving-a-window-or-canvas-as-a-png-bitmap/
 
 http://genesisconduit.wordpress.com/2008/07/05/wpf-images-and-dpi-independence/
 
@@ -239,7 +246,15 @@ http://jmorrill.hjtcentral.com/Home/tabid/428/EntryID/16/Default.aspx
 
 http://jmorrill.hjtcentral.com/Home/tabid/428/EntryID/247/Default.aspx
 
+Composite applications and AOP:
+
+http://www.codeplex.com/entlibcontrib/Wiki/View.aspx?title=PostSharp4EntLib
+
+http://blogs.msdn.com/tomholl/archive/2007/02/23/announcing-the-policy-injection-application-block.aspx
+
 Composite apps architecture (dynamic plugin/module loading etc.):
+
+http://msdn.microsoft.com/en-us/magazine/cc785479.aspx?pr=blog
 
 http://hirentechie.wordpress.com/2008/08/27/microsoft-prism-composite-wpf/
 
@@ -275,6 +290,16 @@ http://blog.lab49.com/archives/2404
 
 http://blogs.msdn.com/francischeung/archive/2008/06/16/poor-man-s-ui-composition.aspx
 
+Composite app, with Presentation Model and Attached Bahaviors:
+
+http://blogs.southworks.net/jdominguez/2008/08/icommand-for-silverlight-with-attached-behaviors/
+
+http://blogs.southworks.net/jdominguez/2008/09/presentation-model-with-datatemplates-in-compositewpf-prism-sample/
+
+Composite compared to AddIn in Blend:
+
+http://www.paulstovell.com/blog/expression-framework-versus-composite-wpf
+
 Composite and Region registration:
 
 http://blogs.southworks.net/ejadib/2008/07/22/use-the-outlookbar-in-your-compositewpf-prism-applications/
@@ -299,6 +324,8 @@ http://compilewith.net/2008/07/wpf-data-binding-lesson-in-framework.html
 
 http://www.aspfree.com/c/a/Windows-Scripting/Data-Converstion-and-Task-Addition-with-WPF/
 
+http://www.codeproject.com/KB/WPF/WpfDataBinding1.aspx
+
 Data Binding and Templates:
 
 http://blog.paranoidferret.com/index.php/2008/07/16/wpf-tutorial-how-to-use-a-datatemplateselector/
@@ -306,8 +333,6 @@ http://blog.paranoidferret.com/index.php/2008/07/16/wpf-tutorial-how-to-use-a-da
 http://blogs.msdn.com/wpfsdk/archive/2006/10/19/wpf-basic-data-binding-faq.aspx
 
 http://blogs.telerik.com/DeyanVarchev/Posts/08-06-17/WPF_Data_Binding_Unraveling_data_templates.aspx?ReturnURL=%2fBlogs.aspx%3fPage%3d4
-
-http://msdn.microsoft.com/en-us/magazine/cc700358.aspx
 
 http://www.codeproject.com/KB/WPF/SelectDetailLevels.aspx / http://neilmosafi.blogspot.com/2008/07/selecting-detail-level-to-view-at_06.html
 
@@ -396,6 +421,7 @@ http://blogs.windowsclient.net/nidonocu/archive/2008/03/03/wpf-themes-and-contro
 
 Decorators and Adorners, applied to diagramming:
 
+
 http://www.codeproject.com/KB/WPF/WPFDiagramDesigner_Part3.aspx
 
 Fixing the broken Intellisense for dotNET3.5:
@@ -467,6 +493,14 @@ http://www.hardcodet.net/2008/04/wpf-custom-binding-class
 Multi-binding:
 
 http://blog.paranoidferret.com/index.php/2008/07/21/wpf-tutorial-using-multibindings/
+
+Keyboard focus and tab navigation:
+
+http://www.julmar.com/blog/mark/PermaLink,guid,2974164f-97c1-4e20-85f9-416cf6bed219.aspx
+
+http://www.julmar.com/blog/mark/PermaLink,guid,6e4769e5-a0b3-47b2-a142-6dfefd0c028e.aspx
+
+http://www.julmar.com/blog/mark/PermaLink,guid,03722678-882a-4bb4-928f-4fe0d35f051e.aspx
 
 Keyboard trap fix:
 
@@ -567,4 +601,119 @@ Visual State Manager (from Silverlight):
 http://blogs.msdn.com/johngossman/archive/2008/08/08/visualstatemanager-for-desktop-wpf.aspx
 
 http://scorbs.com/2008/06/11/parts-states-model-with-visualstatemanager-part-1-of
+
+Performance analysis tool:
+
+http://robburke.net/2008/04/21/dont-forget-the-wpf-performance-suit/
+
+WPF/XAML Coding guidelines:
+
+http://www.paulstovell.com/blog/xaml-and-wpf-coding-guidelines
+
+http://blogs.vertigo.com/personal/alanl/Blog/archive/2007/11/26/wpf-resource-organization-organized-as-separate-files-by-type-vs-single-file.aspx
+
+http://windowsclient.net/wpf/white-papers/wpf-app-quality-guide.aspx
+
+
+Some interesting projects:
+
+Essentials:
+
+http://www.codeplex.com/wpf
+
+http://www.codeplex.com/wpfcontrib
+
+http://www.codeplex.com/CompositeWPF
+
+http://www.codeplex.com/CompositeWPFcontrib
+
+Accessories:
+
+http://www.codeplex.com/dynamicdatadisplay
+
+http://www.codeplex.com/WPFDeveloperTools
+
+http://www.codeplex.com/fluidkit
+
+http://www.codeplex.com/AvalonControlsLib
+
+http://www.codeplex.com/wpfpropertygrid
+
+http://www.codeplex.com/wpg
+
+http://www.codeplex.com/AvalonDock
+
+http://www.codeplex.com/VideoRendererElement
+
+http://www.codeplex.com/wpfcap
+
+http://www.codeplex.com/WPFLocalizeExtension
+
+http://www.codeplex.com/art
+
+http://www.codeplex.com/transitionals
+
+http://www.codeplex.com/WPFWindow
+
+http://www.codeplex.com/breadcrumb
+
+http://www.codeplex.com/hypertree
+
+Apps:
+
+http://www.codeplex.com/Kaxaml
+
+http://www.codeplex.com/paperboy
+
+http://www.codeplex.com/viewontv
+
+http://www.codeplex.com/familyshow
+
+http://www.codeplex.com/pixa
+
+http://www.codeplex.com/Intuipic
+
+http://www.codeplex.com/PizzaManiacUI2
+
+http://www.codeplex.com/myHealth
+
+http://www.codeplex.com/mmlsharp
+
+http://www.codeplex.com/PandorasBox
+
+http://www.codeplex.com/slickcodesearch
+
+http://www.codeplex.com/jmcphotogallery
+
+http://www.codeplex.com/vmukti
+
+http://www.codeplex.com/PageTurner
+
+http://www.codeplex.com/Supremacy
+
+http://www.codeplex.com/XPSReader
+
+
+http://www.codeplex.com/AnimeStoreDotNet
+
+http://www.codeplex.com/productkeymanager
+
+http://www.codeplex.com/Islamicsoft
+
+http://www.codeplex.com/aeronotes
+
+http://www.codeplex.com/PicNick
+
+http://www.codeplex.com/amuse
+
+http://www.codeplex.com/suwp
+
+From elsewhere:
+
+http://code.google.com/p/wittytwitter/
+
+http://code.google.com/p/wpf-regex-designer/
+
+http://code.google.com/p/cowbell/
+
 

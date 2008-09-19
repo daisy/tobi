@@ -98,3 +98,7 @@ http://castleproject.org/container/gettingstarted/index.html
 
 http://structuremap.sourceforge.net/Concepts.htm
 
+OASIS SCA (Service Component Architecture):
+
+http://www.oasis-opencsa.org/sca
+

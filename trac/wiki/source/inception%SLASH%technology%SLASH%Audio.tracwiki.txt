@@ -2,7 +2,10 @@
 
 http://codeidol.com/java/swing/Audio/Build-an-Audio-Waveform-Display/
 
-SoundPlayer issues (managed vs un-managed ==> garbage collector mess):
+!SoundPlayer issues (managed vs un-managed ==> garbage collector mess):
 
 http://www.codeproject.com/KB/audio-video/soundplayerbug.aspx
 
+WPF MediaKit:
+
+http://www.codeplex.com/WPFMediaKit

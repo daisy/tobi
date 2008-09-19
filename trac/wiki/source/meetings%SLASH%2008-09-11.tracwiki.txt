@@ -39,13 +39,13 @@ This 3-day meeting is an intense accelerated crash course about the Urakawa SDK 
 
 === DAY 2 ===
 
- * Morning: C# reference implementation of SDK, first in-depth look + Trac SVN browser / diff + Unit-testing
- * Afternoon: Tobi plugin architecture (with Markus)
+ * Morning: C# reference implementation of SDK, first in-depth look. Use of Trac SVN browser / diff + Visual Studio (2005 and 2008) with VisualSVN (+Tortoise) and !ReSharper, Unit-testing with NUnit (short overview of test fixtures). Demonstration of WPF-based prototypes (toys) and discussion.
+ * Afternoon: Tobi plugin architecture (with Markus), quick review of rationale and objectives, use-cases, in-depth exploration WPF-related technologies to enable modularization (Composite Application Guidelines and Library), discussion of January 09 milestone (deliverable demonstrated at ATIA, communication with members regarding extensibility framework). Hands-on with CAG: compilation of CAL + run of unit-tests.
 
 === DAY 3 ===
 
- * Morning: Tobi implementation exercises (current toy project: WPF, XAML, VS2008, etc.).
- * Afternoon (short): wrap-up, action plan for future collaboration.
+ * Morning: Hands-on with the complex architecture concerns of Tobi, using Composite Application for WPF.
+ * Afternoon (short): Practical exercises with Visual Studio 2008 + ReSharper + plugins. Wrap-up, action plan for 10h/week initial collaboration.
 
 == Action Items ==
 
