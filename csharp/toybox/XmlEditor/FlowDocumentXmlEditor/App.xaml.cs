@@ -110,7 +110,7 @@ namespace FlowDocumentXmlEditor
 
             if (mProjectUri != null)
             {
-                OpenXukAction action = new OpenXukAction(mProjectUri, mProject);
+                OpenXukAction action = new OpenXukAction(mProject, mProjectUri);
                 bool wasCancelled;
                 ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
                 if (wasCancelled)
