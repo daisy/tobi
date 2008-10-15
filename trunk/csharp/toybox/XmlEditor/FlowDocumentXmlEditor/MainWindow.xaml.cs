@@ -61,7 +61,7 @@ namespace FlowDocumentXmlEditor
                 Uri projectUri = new Uri(strPath.Remove(indexOfLastSlash) + strFile + ".out.xuk");
                 //FileStream fs = new FileStream(projectUri.LocalPath, FileMode.Create, FileAccess.Write);
 
-                SaveXukAction action = new SaveXukAction(projectUri, Project);
+                SaveXukAction action = new SaveXukAction(Project, projectUri);
                 bool wasCancelled;
                 ProgressWindow.ExecuteProgressAction(action, out wasCancelled);
                 if (wasCancelled)
