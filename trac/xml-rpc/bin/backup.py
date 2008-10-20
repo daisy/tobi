@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Author: Romain Deltour - 2008
+#
+# Created by Romain Deltour on 2008-09-16.
+# Adapted by Daniel Weck on 2008-10-20
+# Copyright (c) 2008 DAISY Consortium. All rights reserved.
 # 
 # Required lib:
 # http://codespeak.net/lxml/installation.html
