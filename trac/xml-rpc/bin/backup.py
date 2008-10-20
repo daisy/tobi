@@ -17,6 +17,9 @@ from optparse import OptionParser
 from lxml import etree
 from glob import glob
 
+FILENAME_SLASH_REPLACE = '**'
+FILENAME_SPACE_REPLACE = '%20'
+
 socket.setdefaulttimeout(30)
 
 outdir_src = os.path.normpath(os.path.join(os.path.dirname(__file__),'..','source'))
@@ -53,15 +56,16 @@ def initserver(server,user,password):
 	
 
 def forPages(pages,func,outdir,excludelist):
+	global FILENAME_SLASH_REPLACE, FILENAME_SPACE_REPLACE
 	global xmlrpc
 	for page in pages: 
 		if not page in excludelist:
-			func(page,outdir)
+			func(page, page.replace('/',FILENAME_SLASH_REPLACE).replace(' ',FILENAME_SPACE_REPLACE),outdir)
 
-def downloadSource(page,outdir):
+def downloadSource(page,pagefile,outdir):
 	global verbose, xmlrpc
 	if verbose: print "- downloading wiki source: " + page
-	fpath = os.path.join(outdir,page+".txt")
+	fpath = os.path.join(outdir,pagefile+".txt")
 	if not os.path.isdir(os.path.dirname(fpath)):
 		os.makedirs(os.path.dirname(fpath))
 	f=open(fpath, 'w')
@@ -73,27 +77,11 @@ def downloadSource(page,outdir):
 	finally:
 		f.close
 
-def downloadAttachments(page,outdir):
-	global verbose, xmlrpc
-	attachments = xmlrpc.wiki.listAttachments(page)
-	for att in attachments:
-		if verbose: print "- downloading attachment: " + att
-		fpath = os.path.join(outdir,att)
-		if not os.path.isdir(os.path.dirname(fpath)):
-			os.makedirs(os.path.dirname(fpath))
-		f=open(fpath, 'wb')
-		try:
-			o = xmlrpc.wiki.getAttachment(att)
-			f.write(o.data)
-		except Exception, inst:
-			print "Error: %s" % inst
-		finally:
-			f.close
 
-def downloadHtml(page,outdir):
+def downloadHtml(page,pagefile,outdir):
 	global verbose, xmlrpc
 	if verbose: print "- downloading html page: " + page
-	fpath = os.path.join(outdir,page+".original.html")
+	fpath = os.path.join(outdir,pagefile+".original.html")
 	if not os.path.isdir(os.path.dirname(fpath)):
 		os.makedirs(os.path.dirname(fpath))
 	f=open(fpath, 'w')
@@ -105,13 +93,33 @@ def downloadHtml(page,outdir):
 	finally:
 		f.close
 
+
+def downloadAttachments(page,pagefile,outdir):
+	global verbose, xmlrpc
+	attachments = xmlrpc.wiki.listAttachments(page)
+	for att in attachments:
+		if verbose: print "- downloading attachment: " + att
+		fpath = os.path.join(outdir,att.replace('/',FILENAME_SLASH_REPLACE).replace(' ',FILENAME_SPACE_REPLACE))
+		if not os.path.isdir(os.path.dirname(fpath)):
+			os.makedirs(os.path.dirname(fpath))
+		f=open(fpath, 'wb')
+		try:
+			o = xmlrpc.wiki.getAttachment(att)
+			f.write(o.data)
+		except Exception, inst:
+			print "Error: %s" % inst
+		finally:
+			f.close
+
 def cleanhtml(pages,dir_html,server,modulename,excludelist):
+	global FILENAME_SLASH_REPLACE, FILENAME_SPACE_REPLACE
 	global verbose
 	xslt_file = os.path.join(os.path.dirname(__file__), "cleanhtml.xsl")
 	xslt_doc = etree.parse(xslt_file)
 	xslt = etree.XSLT(xslt_doc)
 	for page in pages:
 		if page in excludelist: continue
+		page=page.replace('/',FILENAME_SLASH_REPLACE).replace(' ',FILENAME_SPACE_REPLACE)
 		html = os.path.join(dir_html,page+".original.html")
 		htmldest = os.path.join(dir_html,page+".html")
 		if verbose: print '- cleaning html file: ' + html
@@ -119,9 +127,11 @@ def cleanhtml(pages,dir_html,server,modulename,excludelist):
 		try:
 			xml_doc = etree.parse(html)
 			result = xslt(xml_doc,
-			              server="\""+server+"\"",
-			              modulename="\""+modulename+"\"",
-			              pagename="\""+page+"\"")
+						server="\""+server+"\"",
+						modulename="\""+modulename+"\"",
+						pagename="\""+page+"\"",
+						slashreplace="\""+FILENAME_SLASH_REPLACE+"\"",
+						spacereplace="\""+FILENAME_SPACE_REPLACE+"\"")
 			xmldecl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			result.write(htmldest, encoding="utf-8",  xml_declaration=xmldecl),
 		except Exception, inst:

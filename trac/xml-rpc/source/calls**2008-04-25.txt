@@ -1,0 +1,80 @@
+[[TOC]]
+
+= Conference Call =
+
+== Schedule ==
+
+ * '''Date''': 2008-04-25 (Friday)
+ * '''Time''': 13:00 UTC/GMT
+ * '''Duration''': 60mn
+
+== Venue ==
+
+Skype (maximum number of participants: 5)
+
+== Participants ==
+
+ * Daniel Weck (DFA) '''CONFIRMED'''
+ * Ole Holst Andersen (DAISY) '''CONFIRMED'''
+ * Markus Gylling (DAISY) '''CONFIRMED'''
+ * Stephen Hibberd (RNIB) '''ABSENT'''
+
+== Objectives ==
+
+Discuss changes in project strategy due to understaffed situation.
+
+== Agenda ==
+
+ 1. Daniel and Markus to present current staffing situation.
+ 2. Daniel to summarize a proposed plan of action.
+ 3. Collective decision to move forward with the revised roadmap, decide on dates and concrete tasks (concall, face-to-face meetings?).
+ 4. Anything else ?
+
+== Preparatory Material ==
+
+Email sent by Daniel to team members:
+
+  Unfortunately, there is no sign of new staff, at least in the immediate term. Our current "dream-team" looks rather pathetic for a project as ambitious as Tobi, namely: Ole, Daniel and Stephen, all with insufficient FTE (I will personally be pretty busy with AMIS for another month).
+
+  So, let's revise our priorities accordingly, while keeping our legendary positive attitude. <smile>
+
+  The main technical challenge with Tobi is not so much the feature-set for end-users, but the underlying authoring architecture for developers: Urakawa-SDK (extensible multimedia data model) and Application Framework (modular/pluggable edition services).
+
+  These are cornerstone components of the DAISY software development strategy, to facilitate "reference" implementations of the DAISY multimedia standards (present and future). Let's keep that in mind.
+
+  However, given the current circumstances, we have to focus on deliverables that enable us to raise funds and to attract external developers (at least in the short term).
+
+  Our existing limited resources mean that we would have to put less emphasis on the quality of the underlying architecture. Instead, we should invest our efforts into releasing usable prototypes, to increase our visibility, raise our profile and have a positive impact on decision makers.
+
+  Such early prototypes would be limited. Behind the scenes, we would be likely to throw things away after a few increments only. However, we currently have enough additional material for our audience to appreciate the big picture (final product specifications, unique selling points, etc.). We would need a clear communication plan in order to generate the right type of exposure.
+
+  I hope that with this kind of tangible process, we would quickly gain motivation, confidence and momentum, something which is difficult to achieve in the current setup.
+
+  Based on this proposed plan of action, I envision our core developer team (Ole, Stephen, Daniel) to work as a single unit, rather than splitting into separate task-forces.
+
+  The current dichotomy can be reinstated at a later stage, when we decide it's time to focus on the underlying architecture (hopefully then, with more programmers in the team !). 
+
+
+== Minutes ==
+
+The Tobi project as it stands now, with Daniel + Ole + Stephen is essentially a 3-tier project:
+
+ * Urakawa-SDK ("headless" extensible data model and API for generic multimedia authoring)
+ * Application Framework (Tobi-specific foundation for building modular applications, with tool plugins and authoring services)
+ * Baseline Application (DAISY full-text full-audio interactive authoring environment) => main deliverable
+
+The proposed plan of action is to minimize the development cost at the level of the Application Framework, whilst focusing on the Urakawa-SDK 2.0 branch (improve support for structured text authoring, add DAISY navigation, etc.) and with a strong emphasis on application prototyping (to maximize visibility through frequent tangible deliverables).
+
+This plan is agreed by Markus and Ole.
+
+By the end of the summer, the objective remains the same: deliver a resource requirements chart, based on the analysis of development costs performed by the team (whilst experimenting with the implementation technologies and while sub-divising the project into distinct implementation activities).
+
+Stephen would be the main software programmer to target user-interface development (i.e. text / audio renderers and editors), while Ole and Daniel would improve the Urakawa toolkit and data model to support hooks with the GUI controls. The team would work as a unit though, in the sense that there would be weekly integration meetings (i.e. conference calls) to ensure that there are demonstrable builds of the prototypes.
+
+May is a very busy month for both Ole (boss replacement) and Daniel (AMIS work). No face-to-face meeting then. June is better.
+
+== Action Items ==
+
+ * Daniel and Ole will have a conference call on Tuesday 29 April, to discuss and implement a plan for closing the 1.0 branch of the Urakawa-SDK (possibly to coincide with the Obi release). This is a pre-requisite before moving onto SDK 2.0.
+ * No face-to-face meeting is required for now, this is to be determined depending on the progress made in remote working mode.
+ * We need to obtain copies of !VisualStudio 2008 (possibly an MSDN subscription) so we can implement Tobi prototypes using .NET 3.5 bleeding-edge technologies like WPF (Windows Presentation Framework) and the Addin framework.

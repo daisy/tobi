@@ -1,0 +1,21 @@
+!WaveForm:
+
+http://codeidol.com/java/swing/Audio/Build-an-Audio-Waveform-Display/
+
+!SoundPlayer issues (managed vs un-managed ==> garbage collector mess):
+
+http://www.codeproject.com/KB/audio-video/soundplayerbug.aspx
+
+WPF MediaKit:
+
+http://www.codeplex.com/WPFMediaKit
+
+Desirable functionality:
+
+ * Hiss Removal
+ * Background voice removal (select a part of audio with hum or
+sound disturbance and remove audio from complete file that matches that
+sound)
+ * Sound boost and normalisation
+
+=> VST plugins ! (at SDK level ?)

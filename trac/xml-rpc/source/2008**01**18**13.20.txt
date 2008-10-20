@@ -1,0 +1,13 @@
+
+
+= Improved Looks =
+I have introduced a few CSS tweaks and fixes in a custom site_css.cs file, so now this Trac instance is a little bit easier on the eyes. The logo credits go to Julien (cute bird riding an elephant).
+
+Everything is tentative or temporary at this stage, the goal of this small update is essentially to get rid of the ugly red+black color scheme of the default Trac install.
+
+Comments are welcome (below).
+
+==== Comment by daniel-weck on Fri Jan 18 13:39:15 2008 ====
+The attached file is a copy of the ClearSilver file that is effectively used by this Trac instance. It is provided as a courtesy, for the curious souls out-there :) (the entire Trac default CSS style should be overridden to use em instead of px, really...)
+
+[[AddComment]]

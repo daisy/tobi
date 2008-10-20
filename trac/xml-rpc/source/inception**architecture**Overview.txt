@@ -1,0 +1,116 @@
+= Tobi architecture overview draft (plugin framework) =
+
+== Features ==
+
+=== Core Functionality ===
+
+ * Runtime loading of executable code
+ * Allow several versions of the same library to co-exist
+ * Runtime discovery/selection of plugins - service repository
+ * Exception handling (intercept propagation of exceptions from plugins)
+ * Security - ensure that the plugins can not currupt the data model, file system, application state ect.
+ * Plugin dependencies (dependency graph/resulotion of cyclic dependencies/version specific demendencies)
+ * Online updates/discovery/download/installation
+
+=== Deployment Methods ===
+
+ * Install/uninstall/upgrade/downgrade of plugins
+ * Online deployment/upgrading 
+ * Organization specific configuration (deployment server)
+ * No requirement for a push architecture, but there is a requirement for the application instances to query the deployment servers for required upgrades/new plugins at startup and possibly at regular intervals.
+ * Installation history - list of configurations, the ability to roll-back/revert to previous configuration.
+ * Possibly a separate Update Manager application handling updates and configurations.
+ * Running Tobi in safe-mode?
+
+== Terminology ==
+
+Objective: To disambiguate the terms
+
+ * !AddIn (Microsoft)
+ * !AddOn (Firefox)
+ * Plugin (Firefox, Eclipse)
+ * Extension (Firefox)
+ * Bundle (OSGi, !TextMate)
+ * Feature (Eclipse)
+
+== References ==
+
+
+Mono.!AddIn:
+
+http://www.mono-project.com/Mono.Addins
+
+http://www.mono-project.com/Mono.Addins_Reference_Manual
+
+http://www.mono-project.com/Introduction_to_Mono.Addins
+
+System.!AddIn:
+
+http://msdn.microsoft.com/en-us/library/bb384200.aspx
+
+http://www.codeplex.com/clraddins
+
+http://blogs.msdn.com/clraddins/
+
+http://sachabarber.net/?p=239
+
+http://blogs.msdn.com/wpfsdk/archive/2008/04/25/databinding-and-add-ins.aspx
+
+WPF Composite Application Guidelines and Library:
+
+http://msdn.microsoft.com/en-us/library/cc707819.aspx
+
+MEF (Managed Extensibility Framework):
+
+http://www.codeplex.com/MEF
+
+Application Architecture Guidance:
+
+http://www.codeplex.com/AppArch
+
+"Java Module System" (aka JSR 277):
+
+http://jcp.org/en/jsr/detail?id=277
+http://www.osgi.org/blog/2006/10/jsr-277-review.html
+
+JSR 291 "Dynamic Component Support for Java SE":
+
+http://jcp.org/en/jsr/detail?id=291
+
+Netbeans "Lookup":
+
+API (client code):
+http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/lookup/doc-files/lookup-api.html
+
+SPI (deployment code):
+http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/lookup/doc-files/lookup-spi.html
+
+Homepage:
+http://openide.netbeans.org/lookup/
+
+Java 6 "!ServiceLoader":
+
+http://java.sun.com/javase/6/docs/api/java/util/ServiceLoader.html
+
+Summary:
+
+http://java.sun.com/developer/technicalArticles/javase/extensible/index.html 
+
+OSGi vs Google's Android:
+
+http://www.adon-line.de/kunden/prosystBlog/?p=18
+
+Example of app that ships with a rich API for third-party customizations:
+
+http://docs.syntext.com/sapi_guide/sg.html
+
+C# frameworks for Inversion Of Control and Dependency Injection:
+
+http://castleproject.org/container/gettingstarted/index.html
+
+http://structuremap.sourceforge.net/Concepts.htm
+
+OASIS SCA (Service Component Architecture):
+
+http://www.oasis-opencsa.org/sca
+

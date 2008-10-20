@@ -1,0 +1,219 @@
+<html><body><p>
+<div class='wiki-toc'>
+<h4>Table of Contents</h4>
+<ol>
+<li><a href="/tobi/wiki/WikiStart#WhatistheTobiproject">What is the Tobi project ?</a></li>
+<li><a href="/tobi/wiki/WikiStart#WhatistheDAISYConsortium">What is the DAISY Consortium ?</a></li>
+<li><a href="/tobi/wiki/WikiStart#WhatistheUrakawaProject">What is the Urakawa Project ?</a></li>
+<li><a href="/tobi/wiki/WikiStart#GettingStarted">Getting Started</a></li>
+<ol><li><a href="/tobi/wiki/WikiStart#Keepingup-to-date">Keeping up-to-date</a></li>
+<li><a href="/tobi/wiki/WikiStart#Obtaininghelp">Obtaining help</a></li>
+</ol>
+</ol>
+</div>
+
+</p>
+<h1 id="InceptionPhaseMeeting2">Inception Phase Meeting 2</h1>
+<p>
+Note: this is the first face-to-face meeting of the architecture task-force.
+</p>
+<h2 id="Dates">Dates</h2>
+<ul><li>2008-03-11 (Tuesday)
+</li><li>2008-03-12 (Wednesday)
+</li></ul><h2 id="Venue">Venue</h2>
+<p>
+Kindly hosted by DBB, in Copenhagen (Denmark).
+</p>
+<h2 id="Participants">Participants</h2>
+<ul><li>Ole Holst Andersen (DAISY)
+</li><li>Markus Gylling(DAISY)
+</li><li>Daniel Weck (DFA)
+</li><li>Stephen Hibberd (RNIB)
+</li><li>Romain Deltour (DAISY)
+</li></ul><h2 id="Objectives">Objectives</h2>
+<p>
+This 2-day session is a workshop, where participants interact in brainstorming mode.
+</p>
+<p>
+The expected outcome is a draft specification of the main components of the application architecture for Tobi. The documentation produced will be available in this Wiki, in the usual <a class="wiki" href="http://daisy-trac.cvsdude.com/tobi/wiki/inception">inception bucket</a>. 
+</p>
+<p>
+Some preliminary material is available in the <a class="missing wiki" href="http://daisy-trac.cvsdude.com/tobi/wiki/inception/Requirements" rel="nofollow">list of requirements?</a> established so far. This list is a good starting point to conceptualize the low-level technical details of the application, but we may also expect to inject back some new functional objectives into the initial list.
+</p>
+<h2 id="Agenda">Agenda</h2>
+<h3 id="DAY1">DAY 1</h3>
+<ul><li>Markus to introduce the meeting's objectives and a reminder of his <a class="missing wiki" href="http://daisy-trac.cvsdude.com/tobi/wiki/inception/ArchitectureRationale" rel="nofollow">technical write-up?</a> about componentization and plugin-style architecture (modularization and extensibility).
+</li><li>Ole to talk about his role as the lead of this task force, and his C# experience of application frameworks.
+</li><li>Romain to present a selection of features from the RCP framework that are worth implementing for Tobi, and a brief overview of the main component model (an interactive demonstration of Eclipse would be great here).
+</li><li>Discussions and decisions about the Tobi architecture.
+</li><li>To rationalize in a structured way, maybe we should use mind-mapping (e.g. FreeMind).
+</li><li>Daniel can take notes and feed the Wiki in live mode. Daniel can also quickly produce graphical diagrams, if it helps.
+</li></ul><h3 id="DAY2">DAY 2</h3>
+<ul><li>Continuation of day 1.
+</li><li>Meeting deliverable: formal draft specification, decision on formats to use (diagrams, plain-text).
+</li><li>Define the action plan for the next few weeks until the meeting at RNIB in April.
+</li><li>Ole to take responsibility for the conference calls. Define date for next Skype interaction.
+</li></ul><h2 id="Minutes">Minutes</h2>
+<p>
+Service-Oriented Architecture sits on top of the bundle mechanism.
+</p>
+<p>
+Dynamic class loading is different in Java and C#.NET, but runtime loading of components is possible.
+</p>
+<p>
+RCP based on OSGi stack, with XML configuration.
+</p>
+<p>
+Plugin vision: GUI contributions as well as core extension points (added functionality).
+</p>
+<p>
+Goal: hide UI toolkit details, provide developers with an API that relates to the business logic of the application, not to the implementation details.
+</p>
+<p>
+Extension point can be new functionality (algorithms, UI edition views), or help file, or tutorial, or templates, or publisher resources (logos, copyright notices, etc.), etc.
+</p>
+<p>
+2 separate concerns:
+</p>
+<ol><li>base layer (OSGi-like): component model, (un)load "bundles", service registry, versioning and dependencies.
+</li><li>RCP-like extension points: plugin into existing GUI views, adding new views, 
+</li></ol><p>
+Top-down approach: use-cases that encompass the various levels of pluggability.
+</p>
+<p>
+Unsorted list:
+</p>
+<ul><li>Human-interface devices: Input (additional methods to pointing-device(mouse/touch)/keyboard) / Output (giving feedback to user(s))
+<ul><li>Studio lights
+</li><li>Remote control
+</li><li>Voice Control
+</li><li>Self-Voicing
+</li></ul></li><li>UI Views (available in the app, not necessarily loaded)
+<ul><li>Toolbar of actions (controls): always-on or on a per-view basis, configurable
+<ul><li>Navigation bar ("transport")
+</li></ul></li><li>VUMeter
+</li><li>XML
+<ul><li>Text (edition or read-only)
+</li><li>Tree structure, TOC (headings)
+</li></ul></li><li>Wave-form (editable or display-only)
+</li><li>Media library (snippets, templates)
+</li></ul></li><li>Perspective (layout of loaded views)
+<ul><li>Narration only
+</li><li>Screen-reader optimized
+</li></ul></li><li>Audio processing
+<ul><li>Phrase detection
+</li><li>Noise reduction
+</li></ul></li><li>Annotation 
+</li><li>TTS
+</li><li>Import / Export filters (support for distribution formats DAISY/SMIL)
+</li></ul><p>
+Remark: a separate activity for GUI design (abstract widget layer on top of WinForms, XML configurability, etc.)
+</p>
+<p>
+Dynamic class-loading: XUK factories with XML namespace &lt;-&gt; Class mapping is not suitable. We need to have a consistent mechanism in SDK 2.0 and in Tobi application framework, based on XML/Java/C# fully qualified names that uniquely represent a type, and its hierarchy of parent type(s).
+</p>
+<p>
+Problem specific to SDK: degrade gracefully when a Class is unknown by the Factory: attempt to load the parent (super) Class and preserve as much data as possible (and recursively with ancestor types).
+</p>
+<p>
+Problem specific to TAF (Tobi Application Framework): bundles (in the OSGi sense) expose dependency relationships (e.g. BundleA contains Class1 that is the parent of Class2 which is contained in BundleB).
+</p>
+<p>
+XUK that contains extension (e.g. ns:TodoProperty) needs to provide URL to service provider [OPTIONAL] (e.g. <a class="ext-link" href="http://rnib.org/urakawa-sdk/todo"><span class="icon">http://rnib.org/urakawa-sdk/todo</span></a>) as well as type hierarchy (e.g. ns:TodoProperty EXTENDS ns2:TextProperty EXTENDS xuk:Property) [OPTIONAL].
+</p>
+<p>
+Lazy-loading of plugins (bundles) is primordial (see lifecycle Installed-&gt;Resolved-&gt;Loaded).
+</p>
+<p>
+Tobi baseline configuration (full-text, full-audio), Tobi-RNIB configuration (baseline + e.g. Duxbury plugin + RNIB-branded welcome page + RNIB tutorial), and also several configurations per organization (e.g. DTBOOK narration vs Braille QA). This can be deployed via an intranet server (update site, configuration provider).
+</p>
+<p>
+Use the following plugs/hooks between modules/components:
+</p>
+<ol><li>Use APIs for hooking into a well-defined component (introduces tight-coupling)
+<ul><li>Urakawa SDK (maybe with an intermediary facade interface to simplify acess)
+</li><li>Audio processing (e.g. phrase/silence/gaps/tone detection, based on specific threshold / noise reduction)
+</li></ul></li><li>Use services when loose-coupling is required
+<ul><li>Plugins/Addins (standalone or as contributions to extension points defined for existing components)
+</li><li>e.g. SVG/MathML/etc support, TTS, Spell-checking, XML/Structure inline validation (error highlighting, correction proposition, etc.)
+</li></ul></li><li>Use RCP style xml extension points for UI hooks
+<ul><li>For Tobi-defined GUI components (reusable by plugins, simplification of the WinForms API and tight integration in the application framework)
+</li></ul></li></ol><p>
+The bullet points are not exclusive. For example, an multimedia annotation feature (audio, text, image, etc. notes for a cursor location in the document, or a selected (non)contiguous range) could be implemented with (2) and (3).
+</p>
+<p>
+Note: VUMeter access raw data from audio hardware/engine, not streams from SDK data model (as opposed to WaveForm display which is a visual representation of the data model).
+</p>
+<pre class="wiki">using org.daisy.tobi.ApplicationLauncher;
+
+final static void main(args ...) {
+  ApplicationLauncher.LoadConfiguration(path);
+}
+</pre><p>
+List of plugins:
+</p>
+<ul><li>GUI
+<ul><li>Layout/Perspective "Manager" (role: aggregate UI components based on XML config.)
+</li><li>Main Window
+</li><li>Menu Bar
+</li><li>ToolBar
+</li><li>Title Bar display (text)
+</li><li>Status Bar
+</li><li>Boot splash screen
+</li><li>About box (copyright, license and organization-specific logo/information)
+</li><li>Preferences configuration panel
+</li></ul></li><li>Preferences storage mechanism
+</li><li>Plugin reporting console
+</li><li>Welcome screen
+</li><li>Urakawa SDK
+</li><li>App. Preferences
+<ul><li>Shortcuts schemes
+</li></ul></li><li>Views
+<ul><li>Audio WaveForm
+</li><li>Text (edit and/or read-only)
+</li><li>Structure/TOC/Headings
+</li><li>VUMeter / Peak Program meter
+</li><li>Audio Transport bar
+</li></ul></li><li>Audio Services
+<ul><li>Playback engine
+</li><li>Recording engine
+</li><li>Time Scale Modification playback filter
+</li><li>Phrase Detection
+</li><li>Noise Reduction
+</li></ul></li><li>Human-interface devices
+<ul><li>driver for remote control
+</li><li>driver for studio lights controller
+</li></ul></li><li>Message service (status/state information, progress reports, OK/YES/NO/CANCEL prompts, etc.)
+</li><li>Logging service (developer-oriented, file and/or console -based)
+</li><li>Contextual Help
+</li><li>Import / Export filters (conversion between arbitrary formats and SDK data model)
+</li><li>Application/package/feature discovery/update/add
+</li><li>data model verification (error, warning, etc.)
+<ul><li>spell-checking
+</li><li>XML grammar-based validation (inline, at authoring time)
+</li><li>audio verification (clipping, silence, etc.)
+</li></ul></li><li>Dictionary utility (good for sample plugin)
+</li><li>Localization (l10n)
+</li></ul><p>
+<strong>Tobi Über Architecture Diagram</strong>
+</p>
+<p>
+<div class="system-message"><strong>Error: Macro Image(Tobi_Ubber_Architecture_Diagram.jpg) failed</strong><pre>Cannot reference local attachment from here</pre></div>
+</p>
+<h2 id="RelatedDocuments">Related Documents</h2>
+<ul><li><a class="wiki" href="http://daisy-trac.cvsdude.com/tobi/wiki/inception/architecture/Overview">inception/architecture/Overview</a>
+</li><li><a class="wiki" href="http://daisy-trac.cvsdude.com/tobi/wiki/inception/PluginExamples">inception/PluginExamples</a>
+</li><li>C#.NET OSGi implementation: <a class="ext-link" href="https://developer.berlios.de/projects/physalis/"><span class="icon">https://developer.berlios.de/projects/physalis/</span></a>
+</li><li>OSGi specification: <a class="ext-link" href="http://www.osgi.org/Download.Release4V41"><span class="icon">http://www.osgi.org/Download.Release4V41</span></a>
+</li><li>OSGi in a nutshell: <a class="ext-link" href="http://gravity.sourceforge.net/servicebinder/osginutshell.html"><span class="icon">http://gravity.sourceforge.net/servicebinder/osginutshell.html</span></a>
+</li><li>minimalistic description of OSGi runtime: <a class="ext-link" href="http://gravity.sourceforge.net/servicebinder/osginutshell.html"><span class="icon">http://gravity.sourceforge.net/servicebinder/osginutshell.html</span></a>
+</li><li>comparison of OSGi services and Eclipse extensions, with interesting comments on dynamic bundle-loading: <a class="ext-link" href="http://www.eclipsezone.com/articles/extensions-vs-services/"><span class="icon">http://www.eclipsezone.com/articles/extensions-vs-services/</span></a>
+</li><li>Dynamic class loading in C#: <a class="ext-link" href="http://www.c-sharpcorner.com/UploadFile/rmcochran/plug_in_architecture09092007111353AM/plug_in_architecture.aspx"><span class="icon">http://www.c-sharpcorner.com/UploadFile/rmcochran/plug_in_architecture09092007111353AM/plug_in_architecture.aspx</span></a>
+</li><li>VisualStudio replacement (example of complex plugin architecture): <a class="ext-link" href="http://www.icsharpcode.net/OpenSource/SD/"><span class="icon">http://www.icsharpcode.net/OpenSource/SD/</span></a>
+</li><li>System.AddIn information: <a class="ext-link" href="http://blogs.msdn.com/clraddins/archive/2008/01/03/support-for-windows-forms-in-hosts-and-add-ins.aspx"><span class="icon">http://blogs.msdn.com/clraddins/archive/2008/01/03/support-for-windows-forms-in-hosts-and-add-ins.aspx</span></a> <a class="ext-link" href="http://softwaregreenhouses.com/blog/2008/01/13/part-ii-windows-controls-extensibility-with-net-35-clr-add-ins-using-wpf-and-crossbow/"><span class="icon">http://softwaregreenhouses.com/blog/2008/01/13/part-ii-windows-controls-extensibility-with-net-35-clr-add-ins-using-wpf-and-crossbow/</span></a>
+</li></ul><h2 id="ActionItems">Action Items</h2>
+<ul><li><a class="closed ticket" href="http://daisy-trac.cvsdude.com/tobi/ticket/14" title="Create a minimal OSGi profile for Tobi (closed)">#14</a> Create a minimal OSGi profile for Tobi (Romain)
+</li><li><a class="closed ticket" href="http://daisy-trac.cvsdude.com/tobi/ticket/15" title="Research the System.!AddIn namespace in .Net Framework 3.5 (closed)">#15</a> Research the System.<a class="missing wiki" href="http://daisy-trac.cvsdude.com/tobi/wiki/AddIn" rel="nofollow">AddIn?</a> namespace in .Net Framework 3.5 (Stephen)
+</li><li><a class="closed ticket" href="http://daisy-trac.cvsdude.com/tobi/ticket/16" title="Create list of Native Tobi plugins (closed)">#16</a> Create list of Native Tobi plugins (Ole)
+</li><li><a class="closed ticket" href="http://daisy-trac.cvsdude.com/tobi/ticket/17" title="Clean Copenhagen meeting minutes (closed)">#17</a> Clean meeting minutes (Daniel)
+</li></ul></body></html>

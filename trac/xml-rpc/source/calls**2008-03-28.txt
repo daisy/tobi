@@ -1,0 +1,49 @@
+[[TOC]]
+
+= Conference Call =
+
+== Schedule ==
+
+ * '''Date''': 2008-03-28 (Friday)
+ * '''Time''': 15:00 UTC/GMT
+ * '''Duration''': 60mn
+
+== Venue ==
+
+Skype (maximum number of participants: 5)
+
+== Participants ==
+
+ * Daniel Weck (DFA) '''CONFIRMED'''
+ * Stephen Hibberd (RNIB) '''CONFIRMED''' (with fully-working microphone :)
+ * Ole Holst Andersen (DAISY) '''REGRETS''' (vacation)
+ * David Gordon (RNIB) '''REGRETS'''
+ * John Worsfold (RNIB) '''REGRETS'''
+
+== Objectives ==
+
+The [wiki:calls/2008-03-07 previous call] kick-started Ole's lead in the architecture task-force (just before the Copenhagen face-to-face meeting), so we re-distributed tasks a little bit. This objective of this conference call is to check on everybody's progress (use-cases analysis, requirements gathering, plugin-related experimentation work).
+
+== Agenda ==
+
+Action items from the [http://daisy-trac.cvsdude.com/tobi/wiki/calls/2008-03-07#ActionItems previous call].
+
+ 1. Stephen to talk about his .NET 3.5 Addin experimentations (#15).
+ 2. Mockups / UI-prototype: discuss action plan to deliver tangible proof-of-concept by the [wiki:meetings/2008-04-07 Peterborough meeting].
+ 3. Use-cases / stories: can we make the analysis in the D3PT-reqs more specific to Tobi, and deliver implementable, well-scoped scenarios ? (to break-down objectives and costs for planning future iterations).
+ 4. Anything else ?
+
+== Minutes ==
+
+The numbered list below matches the agenda above.
+
+ 1. Summary: interesting and working solution of plug/unplug of core functionality, good security model and exception handling, but more work required with UI side of things (WPF, which is 3.5 only, and a bit slow apparently). New task: get hands-on SVN (e.g. Tortoise and AnkhSVN), add C# code into the /inception/plugin/addin/. Daniel gave a quick-and-dirty crash-course about SVN commands and typical folder organization (trunk, tag, branches). Another task is to use the Wiki to drop ideas, even if things are likely to be dropped.
+ 2. We need to focus on the added-value that Tobi provides for end-users (avoid re-inventing the wheel by presenting a proof-of-concept that looks more or less like Dolphin/other product). Stephen to deliver a multi-perspective UI with basic views and widget layout. At this 
+ 3. Missing participants on the call: we have to skip this item. Daniel will work-out a minimum set of documents for the April deliverable.
+ 4. Stephen is looking at Obi's code to extract valuable design patterns and/or implementations that we should consider in Tobi. Daniel explained how to build, with Urakawa-SDK and !AudioBackend sub-project. Other small point: the page for [milestone:Phase%201] has been improved, to include a list of current active issues (to be resolved).
+
+== Action Items ==
+
+ * Continued: DANIEL: finish polishing-out the [wiki:inception/Requirements requirements list]. Package deliverable for milestone [milestone:Phase%201].
+ * Continued: #20 STEPHEN on C#.NET GUI prototyping (!WinForms).
+ * Continued: #15 STEPHEN on .NET Addin experimentation (added task: SVN checkout and commit, to keep track).

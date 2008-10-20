@@ -11,8 +11,37 @@
 	<xsl:param name="server"/>
 	<xsl:param name="modulename"/>
 	<xsl:param name="pagename"/>
+	<xsl:param name="spacereplace"/>
+	<xsl:param name="slashreplace"/>
+	
 	<xsl:param name="title" select="//h1[1]"/>
-		
+
+	<xsl:template name="stringReplace">
+		<xsl:param name="string" />
+		<xsl:param name="from" />
+		<xsl:param name="to" />
+		<xsl:choose>
+		<xsl:when test="contains($string, $from)">
+			<xsl:value-of select="substring-before($string, $from)" />
+			<xsl:value-of select="$to" />
+			<xsl:call-template name="stringReplace">
+				<xsl:with-param name="string">
+					<xsl:value-of select="substring-after($string, $from)" />
+				</xsl:with-param>
+				<xsl:with-param name="from">
+					<xsl:value-of select="$from" />
+				</xsl:with-param>
+				<xsl:with-param name="to">
+					<xsl:value-of select="$to" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="$string" />
+		</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="/">
 		<xsl:message><xsl:value-of select="$pagename"/></xsl:message>
 		<xsl:message><xsl:value-of select="$modulename"/></xsl:message>
@@ -28,15 +57,119 @@
 			</body>
 		</html>
 	</xsl:template>
+	
+	<xsl:template match="//a[@class='wiki']">
+		<xsl:variable name="hreff">
+			<xsl:call-template name="stringReplace">
+				<xsl:with-param name="string">
+					<xsl:value-of select="substring-after(@href,'wiki/')" />
+				</xsl:with-param>
+				<xsl:with-param name="from">
+					<xsl:value-of select="'/'" />
+				</xsl:with-param>
+				<xsl:with-param name="to">
+					<xsl:value-of select="$slashreplace" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="hrefx">
+			<xsl:call-template name="stringReplace">
+				<xsl:with-param name="string">
+					<xsl:value-of select="$hreff" />
+				</xsl:with-param>
+				<xsl:with-param name="from">
+					<xsl:value-of select="' '" />
+				</xsl:with-param>
+				<xsl:with-param name="to">
+					<xsl:value-of select="$spacereplace" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:element name="a">
+			<xsl:attribute name="href"><xsl:value-of select="$hrefx"/>.html</xsl:attribute>
+			<xsl:attribute name="class">wiki</xsl:attribute>
+			<xsl:value-of select="." />
+		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="//a">
+		
+	<xsl:variable name="prefix"><xsl:value-of select="$modulename" />/wiki/</xsl:variable>
+	
+	<xsl:choose>
+	<xsl:when test="contains(@href, $prefix)">
+
+		<xsl:variable name="hreff">
+			<xsl:call-template name="stringReplace">
+				<xsl:with-param name="string">
+					<xsl:value-of select="substring-after(@href,$prefix)" />
+				</xsl:with-param>
+				<xsl:with-param name="from">
+					<xsl:value-of select="'/'" />
+				</xsl:with-param>
+				<xsl:with-param name="to">
+					<xsl:value-of select="$slashreplace" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="hrefx">
+			<xsl:call-template name="stringReplace">
+				<xsl:with-param name="string">
+					<xsl:value-of select="$hreff" />
+				</xsl:with-param>
+				<xsl:with-param name="from">
+					<xsl:value-of select="' '" />
+				</xsl:with-param>
+				<xsl:with-param name="to">
+					<xsl:value-of select="$spacereplace" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:element name="a">
+			<xsl:attribute name="href"><xsl:value-of select="$hrefx"/>.html</xsl:attribute>
+			<xsl:attribute name="title"><xsl:value-of select="@title"/></xsl:attribute>
+			<xsl:value-of select="." />
+		</xsl:element>
+	</xsl:when>
+	
+	<xsl:when test="starts-with(@href, '/')">
+		<xsl:element name="a">
+			<xsl:attribute name="href"><xsl:value-of select="$server"/><xsl:value-of select="@href"/></xsl:attribute>
+			<xsl:attribute name="title"><xsl:value-of select="@title"/></xsl:attribute>
+			<xsl:value-of select="." />
+		</xsl:element>
+	</xsl:when>
+	
+	<xsl:otherwise>
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates/>
+		</xsl:copy>
+	</xsl:otherwise>
+	</xsl:choose>
+	</xsl:template>
 
 	<xsl:template match="div[@class='system-message']">
-		<!-- /pipeline/attachment/wiki/NextGeneration/Proposal/bridge-support.jpg?format=raw -->
 		<xsl:variable name="imgname" select="substring-before(substring-after(strong,'Image('),') failed')"/>
 		<xsl:element name="img">
-			<xsl:attribute name="src"><xsl:value-of select="substring-after($pagename,'/')"/>/<xsl:value-of select="$imgname"/></xsl:attribute>
-			<xsl:attribute name="alt"><xsl:value-of select="substring-after($pagename,'/')"/>/<xsl:value-of select="substring-before($imgname,'.')"/></xsl:attribute>
 			
+			<xsl:variable name="src">
+				<xsl:call-template name="stringReplace">
+					<xsl:with-param name="string">
+						<xsl:value-of select="$imgname" />
+					</xsl:with-param>
+					<xsl:with-param name="from">
+						<xsl:value-of select="' '" />
+					</xsl:with-param>
+					<xsl:with-param name="to">
+						<xsl:value-of select="$spacereplace" />
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
 			
+			<xsl:attribute name="src"><xsl:value-of select="$pagename"/><xsl:value-of select="$slashreplace"/><xsl:value-of select="$src"/></xsl:attribute>
+			<xsl:attribute name="alt"><xsl:value-of select="substring-before($imgname,'.')"/></xsl:attribute>
+
 		</xsl:element>
 	</xsl:template>
 

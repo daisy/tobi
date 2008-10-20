@@ -1,0 +1,26 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase8">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 8])]]
+
+
+= Phase 8 =
+
+'''1st October 2009 - 1st January 2010'''
+
+(previous: [wiki:TobiPhase7 Phase 7])
+
+== Tobi stage 4 ==
+
+=== Description of Deliverable ===
+
+ * The Tobi application must be ready for third-party extensions, and commercial developments around the proposed application framework.
+ * A complete distribution and support platform (i.e. web-based) is available for users and developers.
+
+=== Remarks ===
+
+ * Objectives and description of deliverable are intentionally under-specified. Refinements will be provided as progress is made through the previous increments.

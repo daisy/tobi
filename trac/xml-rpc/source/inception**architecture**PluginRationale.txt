@@ -1,0 +1,73 @@
+[[TOC]]
+
+= Rationale for a Plugin-Based Architecture =
+
+This document also notes some design constraints that need to be considered for the approach to be successful.
+
+
+== Concerns ==
+
+The Tobi application will be a fully fledged DAISY multimedia authoring tool, initially focusing on DAISY audio and text media types. As such, Tobi will live in a context where it needs to deal gracefully with the following business and architectural concerns:
+
+=== Local adaption ===
+
+ * Tobi will be deployed globally in organisations with widely varying use cases, and widely varying workflows within each use case. As previous experience within the field of software engineering has shown, the attempt to cover all use cases and all types of workflows within a single static application, is prone to become costly and yield suboptimal results. Essentially, the result will by design be a set of compromises that (in the best case) consist of a "middle road" solution to the heterogenous expectations of the user community.
+ * Cost increase in part is a result of the tendency towards feature creep caused by the users reaction to the compromised design, and by the fact that a static application inherently will become increasingly complex ("feature-laden"). 
+
+=== Business incentive ===
+
+ * One of the primary strategical imperatives for The DAISY Consortiums Open Source effort is to provide components and tools that help stimulate business. The Tobi application is no exception: it must, not only through licensing but also by design, provide means for commercial incentives.
+
+== A plug-in approach as a solution ==
+
+Plug-in based architectures is nothing new. An example of an application framework successfully built using this approach is the Eclipse framework. In short, Eclipse is entirely built on plug-ins, and allows both functionality extension and functionality replacement.
+
+Within the Eclipse community, an ecosystem has evolved that serves as proof that this approach works both technically and practically as a means of creating extensible applications that intertwine well with the commercial sector. Many companies are selling plugins for incorporation into the Eclipse framework. Other companies are using the replacement/extension features of the Eclipse RCP framework to create entirely new applications. See for example www.eclipseplugincentral.com
+
+Even if DAISY and Tobi reaches towards a much smaller sector than the one of Eclipse, we believe that the plug-in approach is a sound and effective way to adress the concerns raised above. Further, the approach can also help the Tobi development to achieve shorter release cycles(including the intitial usable release); as at least a chosen set of features are replaceable/extensible, these features do not necessarily need to be functionally ultimate in their initial form. (And as indicated, a functionally non-ultimate plug-in is in essence a business opportunity.)
+
+== Examples ==
+
+Here are some examples of how the plug-in approach could be used in Tobi.
+
+=== Trivial example: studio lights ===
+
+    During the development of LP Studio/Pro, the inclusion of recording studio light/lamp support was a feature that caused a lot of headaches, and (way too) much time was spent on both sides until the feature actually settled. The approach taken was static; the application was expected to natively provide all the hooks needed to support the heterogenous expectations of studios and audio technicians around the world.
+
+    The plug-in approach applied to this example would be as follows
+
+        * A studio light "extension point" (API) is defined by the Tobi team
+        * Relevant application state events are fed to this point (regardless of whether the point is populated or not)
+        * Zero implementations of the extension point are provided by the Tobi team
+        * Instead, implementations of the extension point that support the local studio light setup are written by local developers, or provided by 3d party companies
+
+=== Trivial example: Peak Meter ===
+
+    Same as the above, however, a default peak meter could be included in the base distribution.
+
+=== Complex example: XML editing ===
+
+    The activity of XML editing is more complex, as they ways of implementing it can vary widely: either use inline editing in the Urakawa SDK tree model, or use an extract-import model where the XML nodes of the Urakawa tree are serialized in to an XML document proper, edited in a dedicated XML editor and then (using change event communications or other means) imported back into the tree. Consequently this plug-in API would be far more complex than the simple "listener" type APIs that would probably be used in the trivial examples above.
+
+=== Complex example: !CoDec support ===
+
+    Adding support for a new !CoDec is likely to be an example of where it would be needed to implement a set of plugins: one for encoding/decoding, one for waveform display, one for editing etc.
+
+== Design Implications ==
+
+=== Enforce the plug-on mechanism ===
+
+    There are many examples of applications being written with the intention of extensibility/pluggability, which eventually fail because of inadequate use of pattern enforcing mechanisms. If the plug-in development pattern is not enforced, there is an obvious risk of dependencies starting to meander across the application, making replacing a part synonomous to refactoring the whole. 
+
+=== Dynamic population of services and service providers ===
+
+    One essential feature of a well-designed extensibility/plug-in API is that it needs to be dynamic: ie not tied to definitions at compile-time. The application needs to go through a discovery cycle at launch time. This is a part of enforcing extensibility, but also allowing local adaptations of an existing installation (and as a side effect, this also means that software updates are made possible that do not require reinstallation of the entire product).
+
+=== Existing Plug-in/runtime SOA APIs (for .NET) ===
+
+    An advance guess is that the OSGi framework could be ideal for use in the Tobi context. It means that DAISY will not have to invent their own API, but use an existing and will-established API instead. If an implementation does not already exist for .NET, it is assumed that a port of the relevant parts (from for example Eclipse Equinox) would be quite straight forward.
+
+=== Everything is a plug-in? ===
+
+    In the Eclipse/RCP example, everything is a plugin. It is not necessarily so that this concept needs to inherited in Tobi. One can imagine a static core (including the SDK and a basic shell) on top of which a set of extension points are defined. The requirement here (see "enforce" above) is that there should be no other way to contribute to the core than through the extension/plug-in API.
+

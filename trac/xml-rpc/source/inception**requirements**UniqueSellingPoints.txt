@@ -1,0 +1,125 @@
+= Unique Selling Points =
+
+ - Free baseline application (core product: full-text, full-audio DAISY authoring tool). Extensible functionality via plugins.
+ - Maintained by the DAISY Consortium collaboratively with international partners.
+ - Open to commercial / proprietary extensions (i.e. MathML, SVG, Braille, etc.).
+ - Flexible authoring workflow designed to maximize the content throughput and minimize the production costs.
+ - Easy to use and intuitive user-interface for users new to the concepts or technology.
+ - Non-destructive authoring, full undo-redo support => never loose any data.
+ - Clipboard (cut/copy/paste) across multiple documents, for simple and complex media types (individual audio, text or entire book fragments).
+ - Tight integration with the DAISY-Pipeline for automated data conversion.
+ - User interface consistent with Obi (the DAISY structured audio recording tool), to minimize the learning curve during the transition from audio-only to full-text full-audio authoring.
+
+= 20mn pitch: Key Features =
+
+== Support for DAISY 3 2005 (ANSI/NISO Z39.86) ==
+
+Integrated editing features to handle the various modalities of a multimedia document:
+
+ * Navigation model
+  * Table Of Content (!NavMap)
+  * Skippability
+  * Escapability
+  * Page numbering
+  * Custom navigation lists
+ * DTBook DTD
+  * Producer notes
+  * Foot notes
+  * Side bars
+  * Tables
+  * Lists
+  * etc. (e.g. MathML)
+ * Bookmarks (including import and export of DAISY bookmarks)
+ * Metadata
+ * Resource files
+
+Possible "downgrade" to DAISY 2.02 via the Pipeline conversion services.
+
+== Support for multiple document formats ==
+
+ * Based on the Urakawa multimedia SDK: prepared against evolving standards (one core authoring data model, several distribution formats).
+ * Import/Export of full documents of fragments only: WAV/MP3 audio playlist, MSWord, PDF, NIMAS/DTBOOK, SMIL, RSS/ATOM, XHTML, DAISY 2.02, DAISY 3.0 (ANSI/NISO Z39.86), custom XML Schemas, etc.
+ * Integration with the DAISY-Pipeline automated conversion services (e.g. audio encoding, TTS-automated narration).
+ * Possibility of opening "broken" (e.g. invalid) content, for manually correcting existing assets.
+
+== Extensible functionality ==
+
+ * Plugin-based architecture: "stay up-to-date" for tools, help/documentation, built-in templates, etc.
+ * Online repositories of third-party plugins (categorized and searchable).
+ * Business-friendly development model / commercial plugins.
+ * Multimedia formats: not just text, image and audio, but also video, MathML, SVG, etc.
+ * Hardware drivers for input / output devices: foot-pedal, studio lights, etc.
+ * Integrated support for VST audio filters.
+ * Example of complex plugin scenario: multi-user editing across network.
+
+== Deployment, installation ==
+
+ * Adaptable / flexible configuration and packaging (e.g. lightweight vs full-featured).
+ * Individual desktop user mode vs centralized intranet administration (for allowing organizations to manage their specific packages, access rights, etc.).
+ * Automatic background online updates of currently installed features.
+
+== Community-centric experience ==
+
+ * Open strategy
+  * Source code
+  * Standards
+  * Development process
+ * World-wide online presence
+  * Forum / Wiki / Issue Tracker.
+  * Activity monitored daily by the development team => quick turnaround.
+  * Bug reports.
+  * Feature requests.
+  * Ideas for improvements.
+ * Application customization
+  * User-made templates, help-files, tutorials, production guidelines, editing tips.
+  * User-contributed custom tools/features (plugins).
+
+== Stability, Robustness ==
+
+ * Unlimited and persistent undo/redo: edit with confidence, no risk of loosing data.
+ * Automatic save function: regularly makes a snapshot of the authoring session.
+ * Built-in crash-reporting process: [email_address], [description], [execution trace] => immediate reception acknowledgment => personalized reply => fix release broadcast via the online update mechanism.
+ * Plugins isolation: internal crashes do not propagate to the whole application.
+ * Visibility and accountability: public formal testing procedures and reports.
+
+== Content Quality ==
+
+ * Document-type awareness (e.g. DAISY 2.02 vs 3.0): Inline / live / as-you-type / on-the-fly validation, error-highlighting + quick-fix proposals for: document grammar, spell-checking, style suggestions, structure guidance.
+ * Intuitive context-sensitive suggestions / assisted edits (auto-completion).
+ * Integrated Thesaurus, Dictionary, Translation for text content.
+ * Full-quality master document, export to multiple formats depending on storage-media (e.g. multi-volume content) and encoding/bandwidth requirements.
+ * Audio recording e.g. 16-bit/44.1kHz, 24-bit/96kHz linear PCM high-resolution, low-noise recording (limited by system capabilities only).
+ * Connectivity with external audio editor (for tweaking the recorded data).
+ * "Play with..." feature: playback with an external DAISY player.
+ * Author "markers" feature: authoring annotations for flagging in-progress fragments of the document.
+
+== Usability, Productivity increase ==
+
+ * Intuitive, easy to use user-interface ("less is more").
+ * On-demand contextual help.
+ * Integrated how-to guides, tutorials and wizards for creating content from scratch or from design templates.
+ * Optimized workflow: pre-defined and/or custom user-interface layouts: e.g. narrator view for live recording (text-editing is disabled) to maximize the reader's comfort and minimize distraction (display only necessary UI for this authoring mode).
+ * Automatic audio synchronization tools: phrase detection, text / audio aligner (based on TTS and spectrum matching).
+ * Connectivity with existing products: MSWord and !OpenOffice "Save as DAISY XML", Obi, DAISY-Pipeline, etc.
+ * Open multiple documents at the same time to re-use/exchange assets/snippets across multimedia presentations.
+ * Multilevel clipboard (cut/copy/paste), for raw (individual audio, text, image) or complex media types (entire fragments).
+ * Integrated text (content and structure) and audio editing: intuitive synchronization concepts that do not require knowledge of the underlying specifics of the DAISY standard (SMIL, NCX, etc.).
+ * Asset library to allow re-using predefined snippets of content (e.g. copyright notice, document metadata, etc.).
+ * Instant preview: playback of document from inside the authoring environment.
+
+== Speed, Performance ==
+
+ * Audio processing/recording.
+ * Rendering and navigation of large books.
+ * Responsive UI: progress feedback for lengthy tasks.
+ * Support for authoring over network drives (i.e. management of I/O latency).
+
+== Personalized Authoring Experience ==
+ 
+ * Per-user preferences (profiles).
+ * Multilingual (localized) user-interface.
+ * Customizable font / color UI themes.
+ * Configurable layout (e.g. edition views, toolbars).
+ * Live-switching (no reboot) of user-interface look and feel.
+ * User-interface designed from the outset to be accessible to screen-readers (wherever additional TTS output is acceptable).
+ * Consistency with operating system context (e.g. UI color settings, "My Documents/etc" folders)

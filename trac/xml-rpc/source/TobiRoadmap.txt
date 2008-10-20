@@ -1,0 +1,23 @@
+[[TOC]]
+
+= Tobi Roadmap =
+
+== Overview ==
+
+Tobi is an ambitious software project, with a a relatively aggressive schedule of 2/2.5 years to reach mature state (stable and complete feature set).
+
+The proposed roadmap spans from January 2008 to January 2010, and is (hopefully) an efficient development program covering inception, design and implementation.
+
+Please note that in this plan, the objectives from April 2009 onwards are intentionally under-specified. The rationale is that circumstances may (and probably will) change: product requirements, resources, industry-standards, etc. We will re-assess goals and resources nearer the time.
+
+== Objectives, Project Plan ==
+
+The project plan is available in Trac format, in the [/tobi/roadmap "Roadmap" section]. Alternatively, the milestones and their full deliverable specifications are directly accessible [wiki:TobiPhase1 here].
+
+The staffing requirements are specified for each milestone. In addition, an overall staffing plan is available [wiki:StaffingPlan here].
+
+For your convenience, a summary has been compiled into a single page, and is available [http://daisy-trac.cvsdude.com/tobi/browser/trac/wiki/special/Tobi_Roadmap_Summary.html?format=raw here].
+
+== Development Process ==
+
+Details about ''how'' to meet the targets set-out by the above roadmap are [TobiProcess available here].
