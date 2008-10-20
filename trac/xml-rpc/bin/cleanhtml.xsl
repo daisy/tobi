@@ -149,10 +149,11 @@
 	</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="div[@class='system-message']">
-		<xsl:variable name="imgname" select="substring-before(substring-after(strong,'Image('),') failed')"/>
+
+	<xsl:template name="writeImage">
+		<xsl:param name="imgname" />
+		
 		<xsl:element name="img">
-			
 			<xsl:variable name="src">
 				<xsl:call-template name="stringReplace">
 					<xsl:with-param name="string">
@@ -171,6 +172,27 @@
 			<xsl:attribute name="alt"><xsl:value-of select="substring-before($imgname,'.')"/></xsl:attribute>
 
 		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="div[@class='system-message']">
+		<xsl:variable name="imgnamex" select="substring-before(substring-after(strong,'Image('),') failed')"/>
+		
+		<xsl:choose>
+		<xsl:when test="substring($imgnamex, (string-length($imgnamex) - string-length('%')) + 1) = '%'">
+			<xsl:call-template name="writeImage">
+				<xsl:with-param name="imgname">
+					<xsl:value-of select="substring-before($imgnamex,',')" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:call-template name="writeImage">
+				<xsl:with-param name="imgname">
+					<xsl:value-of select="$imgnamex" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="p[div]">
