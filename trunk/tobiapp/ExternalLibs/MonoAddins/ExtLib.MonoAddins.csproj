@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F6891269-5C62-4E08-AC8E-71E1CFFDCECB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mono.Addins</RootNamespace>
+    <AssemblyName>Mono.Addins</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode, Version=0.85.5.452, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ICSharpCode\bin\Debug\ICSharpCode.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Mono.Addins.Database\AddinDatabase.cs" />
+    <Compile Include="Mono.Addins.Database\AddinHostIndex.cs" />
+    <Compile Include="Mono.Addins.Database\AddinScanFolderInfo.cs" />
+    <Compile Include="Mono.Addins.Database\AddinScanner.cs" />
+    <Compile Include="Mono.Addins.Database\AddinScanResult.cs" />
+    <Compile Include="Mono.Addins.Database\AddinUpdateData.cs" />
+    <Compile Include="Mono.Addins.Database\DatabaseConfiguration.cs" />
+    <Compile Include="Mono.Addins.Database\FileDatabase.cs" />
+    <Compile Include="Mono.Addins.Database\ProcessProgressStatus.cs" />
+    <Compile Include="Mono.Addins.Database\SetupProcess.cs" />
+    <Compile Include="Mono.Addins.Database\Util.cs" />
+    <Compile Include="Mono.Addins.Description\AddinDependency.cs" />
+    <Compile Include="Mono.Addins.Description\AddinDescription.cs" />
+    <Compile Include="Mono.Addins.Description\AssemblyDependency.cs" />
+    <Compile Include="Mono.Addins.Description\ConditionTypeDescription.cs" />
+    <Compile Include="Mono.Addins.Description\ConditionTypeDescriptionCollection.cs" />
+    <Compile Include="Mono.Addins.Description\Dependency.cs" />
+    <Compile Include="Mono.Addins.Description\DependencyCollection.cs" />
+    <Compile Include="Mono.Addins.Description\Extension.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionCollection.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionNodeDescription.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionNodeDescriptionCollection.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionNodeSet.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionNodeSetCollection.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionNodeType.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionNodeTypeCollection.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionPoint.cs" />
+    <Compile Include="Mono.Addins.Description\ExtensionPointCollection.cs" />
+    <Compile Include="Mono.Addins.Description\ModuleDescription.cs" />
+    <Compile Include="Mono.Addins.Description\ModuleDescriptionCollection.cs" />
+    <Compile Include="Mono.Addins.Description\NativeDependency.cs" />
+    <Compile Include="Mono.Addins.Description\NodeTypeAttribute.cs" />
+    <Compile Include="Mono.Addins.Description\NodeTypeAttributeCollection.cs" />
+    <Compile Include="Mono.Addins.Description\ObjectDescription.cs" />
+    <Compile Include="Mono.Addins.Description\ObjectDescriptionCollection.cs" />
+    <Compile Include="Mono.Addins.Localization\GettextDomain.cs" />
+    <Compile Include="Mono.Addins.Localization\GettextLocalizer.cs" />
+    <Compile Include="Mono.Addins.Localization\IAddinLocalizer.cs" />
+    <Compile Include="Mono.Addins.Localization\IAddinLocalizerFactory.cs" />
+    <Compile Include="Mono.Addins.Localization\IPluralAddinLocalizer.cs" />
+    <Compile Include="Mono.Addins.Localization\NullLocalizer.cs" />
+    <Compile Include="Mono.Addins.Localization\StringResourceLocalizer.cs" />
+    <Compile Include="Mono.Addins.Localization\StringTableLocalizer.cs" />
+    <Compile Include="Mono.Addins.Serialization\BinaryXmlReader.cs" />
+    <Compile Include="Mono.Addins.Serialization\BinaryXmlTypeMap.cs" />
+    <Compile Include="Mono.Addins.Serialization\BinaryXmlWriter.cs" />
+    <Compile Include="Mono.Addins.Serialization\IBinaryXmlElement.cs" />
+    <Compile Include="Mono.Addins.Setup.ProgressMonitoring\ConsoleProgressMonitor.cs" />
+    <Compile Include="Mono.Addins.Setup.ProgressMonitoring\LogTextWriter.cs" />
+    <Compile Include="Mono.Addins.Setup.ProgressMonitoring\NullProgressMonitor.cs" />
+    <Compile Include="Mono.Addins.Setup.ProgressMonitoring\ProgressStatusMonitor.cs" />
+    <Compile Include="Mono.Addins.Setup.ProgressMonitoring\ProgressTracker.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinInfo.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinInfoCollection.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinPackage.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinRepositoryEntry.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinStore.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinSystemConfiguration.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinSystemConfigurationReaderWriter.cs" />
+    <Compile Include="Mono.Addins.Setup\AddinSystemConfigurationSerializer.cs" />
+    <Compile Include="Mono.Addins.Setup\ConsoleAddinInstaller.cs" />
+    <Compile Include="Mono.Addins.Setup\InstallException.cs" />
+    <Compile Include="Mono.Addins.Setup\IProgressMonitor.cs" />
+    <Compile Include="Mono.Addins.Setup\Package.cs" />
+    <Compile Include="Mono.Addins.Setup\PackageCollection.cs" />
+    <Compile Include="Mono.Addins.Setup\ReferenceRepositoryEntry.cs" />
+    <Compile Include="Mono.Addins.Setup\Repository.cs" />
+    <Compile Include="Mono.Addins.Setup\RepositoryEntry.cs" />
+    <Compile Include="Mono.Addins.Setup\RepositoryEntryCollection.cs" />
+    <Compile Include="Mono.Addins.Setup\RepositoryReaderWriter.cs" />
+    <Compile Include="Mono.Addins.Setup\RepositoryRecord.cs" />
+    <Compile Include="Mono.Addins.Setup\RepositoryRegistry.cs" />
+    <Compile Include="Mono.Addins.Setup\RepositorySerializer.cs" />
+    <Compile Include="Mono.Addins.Setup\SetupService.cs" />
+    <Compile Include="Mono.Addins.Setup\SetupTool.cs" />
+    <Compile Include="Mono.Addins\Addin.cs" />
+    <Compile Include="Mono.Addins\AddinAttribute.cs" />
+    <Compile Include="Mono.Addins\AddinDependencyAttribute.cs" />
+    <Compile Include="Mono.Addins\AddinErrorEventArgs.cs" />
+    <Compile Include="Mono.Addins\AddinEventArgs.cs" />
+    <Compile Include="Mono.Addins\AddinInfo.cs" />
+    <Compile Include="Mono.Addins\AddinLocalizer.cs" />
+    <Compile Include="Mono.Addins\AddinManager.cs" />
+    <Compile Include="Mono.Addins\AddinRegistry.cs" />
+    <Compile Include="Mono.Addins\AddinRootAttribute.cs" />
+    <Compile Include="Mono.Addins\AddinSessionService.cs" />
+    <Compile Include="Mono.Addins\ConditionType.cs" />
+    <Compile Include="Mono.Addins\ConsoleProgressStatus.cs" />
+    <Compile Include="Mono.Addins\ExtensionAttribute.cs" />
+    <Compile Include="Mono.Addins\ExtensionContext.cs" />
+    <Compile Include="Mono.Addins\ExtensionNode.cs" />
+    <Compile Include="Mono.Addins\ExtensionNodeAttribute.cs" />
+    <Compile Include="Mono.Addins\ExtensionNodeChildAttribute.cs" />
+    <Compile Include="Mono.Addins\ExtensionNodeList.cs" />
+    <Compile Include="Mono.Addins\ExtensionPointAttribute.cs" />
+    <Compile Include="Mono.Addins\ExtensionTree.cs" />
+    <Compile Include="Mono.Addins\GettextCatalog.cs" />
+    <Compile Include="Mono.Addins\IAddinInstaller.cs" />
+    <Compile Include="Mono.Addins\InstanceExtensionNode.cs" />
+    <Compile Include="Mono.Addins\IProgressStatus.cs" />
+    <Compile Include="Mono.Addins\MissingDependencyException.cs" />
+    <Compile Include="Mono.Addins\NodeAttributeAttribute.cs" />
+    <Compile Include="Mono.Addins\NodeElement.cs" />
+    <Compile Include="Mono.Addins\RuntimeAddin.cs" />
+    <Compile Include="Mono.Addins\TreeNode.cs" />
+    <Compile Include="Mono.Addins\TreeNodeCollection.cs" />
+    <Compile Include="Mono.Addins\TypeExtensionNode.cs" />
+    <Compile Include="Mono.Addins\TypeExtensionPointAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
