@@ -57,9 +57,9 @@
     <Compile Include="Sizes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Wpf\ExtLib.Composite.Wpf.csproj">
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Wpf\Composite.Wpf.csproj">
       <Project>{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D}</Project>
-      <Name>ExtLib.Composite.Wpf</Name>
+      <Name>Composite.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

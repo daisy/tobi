@@ -13,29 +13,40 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi", "Tobi.csproj", "{64F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK", "..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Infrastructure", "Tobi.Infrastructure\Tobi.Infrastructure.csproj", "{698E4C51-9506-4CC5-94E2-31F5FD90532E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Tobi.Infrastructure\Infrastructure.csproj", "{698E4C51-9506-4CC5-94E2-31F5FD90532E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtLib.Composite", "ExternalLibs\CAL\Composite\ExtLib.Composite.csproj", "{77138947-1D13-4E22-AEE0-5D0DD046CA34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Composite", "ExternalLibs\CAL\Composite\Composite.csproj", "{77138947-1D13-4E22-AEE0-5D0DD046CA34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtLib.Composite.UnityExtensions", "ExternalLibs\CAL\Composite.UnityExtensions\ExtLib.Composite.UnityExtensions.csproj", "{17831F3B-6B82-4916-BD2B-2CE2071EA622}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Composite.UnityExtensions", "ExternalLibs\CAL\Composite.UnityExtensions\Composite.UnityExtensions.csproj", "{17831F3B-6B82-4916-BD2B-2CE2071EA622}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D} = {F807062D-6FC9-4FF0-A9F5-5F94653EDC4D}
 		{77138947-1D13-4E22-AEE0-5D0DD046CA34} = {77138947-1D13-4E22-AEE0-5D0DD046CA34}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtLib.Composite.Wpf", "ExternalLibs\CAL\Composite.Wpf\ExtLib.Composite.Wpf.csproj", "{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Composite.Wpf", "ExternalLibs\CAL\Composite.Wpf\Composite.Wpf.csproj", "{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{77138947-1D13-4E22-AEE0-5D0DD046CA34} = {77138947-1D13-4E22-AEE0-5D0DD046CA34}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtLib.ICSharpCode", "ExternalLibs\ICSharpCode\ExtLib.ICSharpCode.csproj", "{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode", "ExternalLibs\ICSharpCode\ICSharpCode.csproj", "{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtLib.MonoAddins", "ExternalLibs\MonoAddins\ExtLib.MonoAddins.csproj", "{F6891269-5C62-4E08-AC8E-71E1CFFDCECB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoAddins", "ExternalLibs\MonoAddins\MonoAddins.csproj", "{F6891269-5C62-4E08-AC8E-71E1CFFDCECB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D} = {CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.StatusBar", "Tobi.Modules.StatusBar\Tobi.Modules.StatusBar.csproj", "{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatusBar", "Tobi.Modules.StatusBar\StatusBar.csproj", "{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtLibs", "ExtLibs", "{8D1B1AFE-DCBB-46BB-993C-75D31133EBE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{AC06D001-8D7E-42AA-8435-782C032FA4DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{F9A17086-9580-4931-95EA-472513A81E10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{30BA149A-9CD8-4D1B-B919-2B882D5702C9}"
+	ProjectSection(SolutionItems) = preProject
+		Images\TobiLogoNew_TopBanner.png = Images\TobiLogoNew_TopBanner.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,5 +112,15 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F6891269-5C62-4E08-AC8E-71E1CFFDCECB} = {8D1B1AFE-DCBB-46BB-993C-75D31133EBE7}
+		{77138947-1D13-4E22-AEE0-5D0DD046CA34} = {8D1B1AFE-DCBB-46BB-993C-75D31133EBE7}
+		{17831F3B-6B82-4916-BD2B-2CE2071EA622} = {8D1B1AFE-DCBB-46BB-993C-75D31133EBE7}
+		{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D} = {8D1B1AFE-DCBB-46BB-993C-75D31133EBE7}
+		{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D} = {8D1B1AFE-DCBB-46BB-993C-75D31133EBE7}
+		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {AC06D001-8D7E-42AA-8435-782C032FA4DD}
+		{30BA149A-9CD8-4D1B-B919-2B882D5702C9} = {AC06D001-8D7E-42AA-8435-782C032FA4DD}
+		{9E582F82-E3C9-45CD-B189-4DFEDDF030FB} = {F9A17086-9580-4931-95EA-472513A81E10}
 	EndGlobalSection
 EndGlobal
