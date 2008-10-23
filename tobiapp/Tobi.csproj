@@ -142,9 +142,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Tobi.Modules.StatusBar\Tobi.Modules.StatusBar.csproj">
+    <ProjectReference Include="Tobi.Modules.StatusBar\StatusBar.csproj">
       <Project>{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}</Project>
-      <Name>Tobi.Modules.StatusBar</Name>
+      <Name>StatusBar</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

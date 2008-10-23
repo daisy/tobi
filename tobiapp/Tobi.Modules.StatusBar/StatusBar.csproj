@@ -82,9 +82,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tobi.Infrastructure\Tobi.Infrastructure.csproj">
+    <ProjectReference Include="..\Tobi.Infrastructure\Infrastructure.csproj">
       <Project>{698E4C51-9506-4CC5-94E2-31F5FD90532E}</Project>
-      <Name>Tobi.Infrastructure</Name>
+      <Name>Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
