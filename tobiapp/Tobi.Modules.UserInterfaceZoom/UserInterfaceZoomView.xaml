@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Tobi.Modules.UserInterfaceZoom.UserInterfaceZoomView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
+    xmlns:local="clr-namespace:Tobi.Modules.UserInterfaceZoom">
+
+  <UserControl.Resources>
+    <LinearGradientBrush x:Key="brushLinearGradient1" EndPoint="0.5,1" StartPoint="0.5,0">
+      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
+      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
+      <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
+    </LinearGradientBrush>
+  </UserControl.Resources>
+
+  <Slider x:Name="ZoomSlider" Value="1" Width="Auto" Height="Auto" Minimum="{Binding MinimumZoom}" Maximum="{Binding MaximumZoom}" Orientation="Vertical" Background="{StaticResource brushLinearGradient1}"/>
+
+</UserControl>

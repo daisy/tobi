@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="Tobi.Modules.MenuBar.MenuBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
+    xmlns:local="clr-namespace:Tobi.Modules.MenuBar">
+
+  <Menu Width="Auto" Height="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+
+    <!-- File Menu -->
+    <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_File}">
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_New}"
+                InputGestureText="{Binding NewCommand.KeyGestureText}"
+                Command="{Binding NewCommand}"
+                CommandParameter="{Binding}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Open}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Save}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_SaveAs}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Close}"/>
+      <Separator/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Exit}"
+                InputGestureText="{Binding ExitCommand.KeyGestureText}"
+                Command="{Binding ExitCommand}"/>
+    </MenuItem>
+
+    <!-- Edit Menu -->
+    <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Edit}">
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Undo}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Redo}"/>
+      <Separator/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Copy}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Cut}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Paste}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Delete}"/>
+    </MenuItem>
+
+    <!-- Tools Menu -->
+    <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Tools}">
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Options}"/>
+      <Separator/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Addins}"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Logging}"/>
+    </MenuItem>
+
+    <!-- View Menu -->
+    <MenuItem x:Name="MenuView" Header="{x:Static infra:UserInterfaceStrings.Menu_View}">
+
+      <!-- TODO: this menu container should be empty here. It is filled by modules dynamically, as they register their UI views. -->
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_ToolBars}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_StatusBar}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_DocumentPane}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_AudioPane}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_NavigationPane}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      
+      <MenuItem x:Name="ZoomMenuItem"
+                Header="{x:Static infra:UserInterfaceStrings.Menu_Zoom}"
+                IsCheckable="True"
+                IsChecked="True"
+                InputGestureText="{Binding ZoomToggleCommand.KeyGestureText}"
+                Command="{Binding ZoomToggleCommand}"
+                CommandParameter="{Binding ElementName=ZoomMenuItem, Path=IsChecked}"/>
+    </MenuItem>
+
+    <!-- Help Menu -->
+    <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Help}">
+      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_About}"/>
+    </MenuItem>
+
+  </Menu>
+
+</UserControl>

@@ -3,10 +3,20 @@ using System;
 
 namespace Tobi.Infrastructure
 {
-    public class Sizes
+    ///<summary>
+    /// Application-wide predefined sizes
+    /// TODO: Move this stuff to a separate module, with a 'preferences' service available in the DI container
+    ///</summary>
+    public static class Sizes
     {
-        public const string DefaultWindowWidth = "800";
-        public const string DefaultWindowHeight = "600";
-        public const Double DefaultFontSize = 12;
+        ///<summary>
+        /// Default window height
+        ///</summary>
+        public const double DefaultWindowWidth = 800;
+
+        ///<summary>
+        /// Default window width
+        ///</summary>
+        public const double DefaultWindowHeight = 600;
     }
 }

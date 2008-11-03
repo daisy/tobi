@@ -3,15 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure">
   <Application.Resources>
-    <LinearGradientBrush x:Key="brushLinearGradient1" EndPoint="0.5,1" StartPoint="0.5,0">
-      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
-      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
-      <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
-    </LinearGradientBrush>
-    <Style x:Key="styleWindow" TargetType="{x:Type Window}" >
-      <Setter Property="Background" Value="{StaticResource brushLinearGradient1}" />
-      <Setter Property="Width" Value="{x:Static infra:Sizes.DefaultWindowWidth}" />
-      <Setter Property="Margin" Value="{x:Static infra:Sizes.DefaultWindowHeight}" />
-    </Style>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="TobiResource.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </Application.Resources>
 </Application>

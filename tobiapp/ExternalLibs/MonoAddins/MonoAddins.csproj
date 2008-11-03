@@ -48,12 +48,15 @@
     <Compile Include="Mono.Addins.Database\AddinScanResult.cs" />
     <Compile Include="Mono.Addins.Database\AddinUpdateData.cs" />
     <Compile Include="Mono.Addins.Database\DatabaseConfiguration.cs" />
+    <Compile Include="Mono.Addins.Database\DefaultAssemblyReflector.cs" />
     <Compile Include="Mono.Addins.Database\FileDatabase.cs" />
+    <Compile Include="Mono.Addins.Database\IAssemblyReflector.cs" />
     <Compile Include="Mono.Addins.Database\ProcessProgressStatus.cs" />
     <Compile Include="Mono.Addins.Database\SetupProcess.cs" />
     <Compile Include="Mono.Addins.Database\Util.cs" />
     <Compile Include="Mono.Addins.Description\AddinDependency.cs" />
     <Compile Include="Mono.Addins.Description\AddinDescription.cs" />
+    <Compile Include="Mono.Addins.Description\AddinFlags.cs" />
     <Compile Include="Mono.Addins.Description\AssemblyDependency.cs" />
     <Compile Include="Mono.Addins.Description\ConditionTypeDescription.cs" />
     <Compile Include="Mono.Addins.Description\ConditionTypeDescriptionCollection.cs" />
@@ -104,6 +107,7 @@
     <Compile Include="Mono.Addins.Setup\ConsoleAddinInstaller.cs" />
     <Compile Include="Mono.Addins.Setup\InstallException.cs" />
     <Compile Include="Mono.Addins.Setup\IProgressMonitor.cs" />
+    <Compile Include="Mono.Addins.Setup\NativePackage.cs" />
     <Compile Include="Mono.Addins.Setup\Package.cs" />
     <Compile Include="Mono.Addins.Setup\PackageCollection.cs" />
     <Compile Include="Mono.Addins.Setup\ReferenceRepositoryEntry.cs" />
@@ -116,6 +120,7 @@
     <Compile Include="Mono.Addins.Setup\RepositorySerializer.cs" />
     <Compile Include="Mono.Addins.Setup\SetupService.cs" />
     <Compile Include="Mono.Addins.Setup\SetupTool.cs" />
+    <Compile Include="Mono.Addins.Setup\SetupToolCommandLine.cs" />
     <Compile Include="Mono.Addins\Addin.cs" />
     <Compile Include="Mono.Addins\AddinAttribute.cs" />
     <Compile Include="Mono.Addins\AddinDependencyAttribute.cs" />
