@@ -36,7 +36,7 @@ using Mono.Addins.Description;
 
 namespace Mono.Addins.Database
 {
-	internal class AddinScanResult: MarshalByRefObject
+	internal class AddinScanResult: MarshalByRefObject, IAssemblyLocator
 	{
 		internal ArrayList AddinsToScan = new ArrayList ();
 		internal ArrayList AddinsToUpdateRelations = new ArrayList ();
@@ -49,22 +49,33 @@ namespace Mono.Addins.Database
 		
 		Hashtable assemblyLocations = new Hashtable ();
 		Hashtable assemblyLocationsByFullName = new Hashtable (); 
+		Hashtable filesToIgnore;
+		
+		bool regenerateRelationData;
+		bool changesFound;
 		
 		public bool RegenerateAllData;
-		public bool RegenerateRelationData;
-		public bool changesFound;
 		public bool CheckOnly;
 		public bool LocateAssembliesOnly;
-		public StringCollection FilesToIgnore;
+		public string Domain;
 		
 		public bool ChangesFound {
 			get { return changesFound; }
 			set { changesFound = value; }
 		}
+
+		public bool RegenerateRelationData {
+			get { return regenerateRelationData; }
+			set {
+				regenerateRelationData = value;
+				if (value)
+					ChangesFound = true;
+			}
+		}
 		
 		public bool VisitFolder (string folder)
 		{
-			if (visitedFolders.Contains (folder))
+			if (visitedFolders.Contains (folder) || IgnorePath (folder))
 				return false;
 			else {
 				visitedFolders.Add (folder, folder);
@@ -72,16 +83,30 @@ namespace Mono.Addins.Database
 			}
 		}
 		
-		public bool IgnoreFile (string file)
+		public bool IgnorePath (string file)
 		{
-			return FilesToIgnore != null && FilesToIgnore.Contains (file);
+			if (filesToIgnore == null)
+				return false;
+			string root = Path.GetPathRoot (file);
+			while (root != file) {
+				if (filesToIgnore.Contains (file))
+					return true;
+				file = Path.GetDirectoryName (file);
+			}
+			return false;
 		}
 		
-		public void AddFileToIgnore (string fileName)
+		public void AddPathToIgnore (string path)
 		{
-			if (FilesToIgnore == null)
-				FilesToIgnore = new StringCollection ();
-			FilesToIgnore.Add (fileName);
+			if (filesToIgnore == null)
+				filesToIgnore = new Hashtable ();
+			filesToIgnore [path] = path;
+		}
+		
+		public void AddPathsToIgnore (IEnumerable paths)
+		{
+			foreach (string p in paths)
+				AddPathToIgnore (p);
 		}
 		
 		public void AddAddinToScan (string addinId)
@@ -108,6 +133,11 @@ namespace Mono.Addins.Database
 			di.File = file;
 			di.AddinScanFolderInfo = folderInfo;
 			FilesToScan.Add (di);
+			RegisterModifiedFolderInfo (folderInfo);
+		}
+		
+		public void RegisterModifiedFolderInfo (AddinScanFolderInfo folderInfo)
+		{
 			if (!ModifiedFolderInfos.Contains (folderInfo))
 				ModifiedFolderInfos.Add (folderInfo);
 		}
@@ -163,11 +193,5 @@ namespace Mono.Addins.Database
 	{
 		public string File;
 		public AddinScanFolderInfo AddinScanFolderInfo;
-	}
-	
-	class ObjectTypeExtenderData
-	{
-		public DependencyCollection Deps;
-		public string TypeName;
 	}
 }

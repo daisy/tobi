@@ -107,9 +107,9 @@ namespace Mono.Addins
 				extensionNodeChanged += value;
 				foreach (ExtensionNode node in ChildNodes) {
 					try {
-						extensionNodeChanged (this, new ExtensionNodeEventArgs (ExtensionChange.Add, node));
+						value (this, new ExtensionNodeEventArgs (ExtensionChange.Add, node));
 					} catch (Exception ex) {
-						AddinManager.ReportError (null, null, ex, false);
+						AddinManager.ReportError (null, node.Addin != null ? node.Addin.Id : null, ex, false);
 					}
 				}
 			}
@@ -123,8 +123,6 @@ namespace Mono.Addins
 				if (childrenLoaded)
 					return childNodes;
 				
-				childrenLoaded = true;
-				
 				try {
 					if (treeNode.Children.Count == 0) {
 						childNodes = ExtensionNodeList.Empty;
@@ -135,6 +133,8 @@ namespace Mono.Addins
 					AddinManager.ReportError (null, null, ex, false);
 					childNodes = ExtensionNodeList.Empty;
 					return childNodes;
+				} finally {
+					childrenLoaded = true;
 				}
 
 				ArrayList list = new ArrayList ();

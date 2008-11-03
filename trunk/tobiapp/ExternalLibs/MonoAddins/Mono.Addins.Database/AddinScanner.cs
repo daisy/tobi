@@ -43,10 +43,27 @@ namespace Mono.Addins.Database
 	class AddinScanner: MarshalByRefObject
 	{
 		AddinDatabase database;
+		IAssemblyReflector reflector;
+		object coreAssembly;
 		
-		public AddinScanner (AddinDatabase database)
+		public AddinScanner (AddinDatabase database, AddinScanResult scanResult, IProgressStatus monitor)
 		{
 			this.database = database;
+			if (!scanResult.CheckOnly) {
+				string refName = GetType().Assembly.FullName;
+				int i = refName.IndexOf (',');
+				refName = "Mono.Addins.CecilReflector.Reflector, Mono.Addins.CecilReflector" + refName.Substring (i);
+				Type t = Type.GetType (refName, false);
+				if (t != null)
+					reflector = (IAssemblyReflector) Activator.CreateInstance (t);
+				else
+					reflector = new DefaultAssemblyReflector ();
+				
+				if (monitor.LogLevel > 1)
+					monitor.Log ("Using assembly reflector: " + reflector.GetType ());
+				reflector.Initialize (scanResult);
+				coreAssembly = reflector.LoadAssembly (GetType().Assembly.Location);
+			}
 		}
 		
 		public void ScanFolder (IProgressStatus monitor, string path, string domain, AddinScanResult scanResult)
@@ -57,9 +74,6 @@ namespace Mono.Addins.Database
 			if (!scanResult.VisitFolder (path))
 				return;
 			
-			if (monitor.LogLevel > 1 && !scanResult.LocateAssembliesOnly)
-				monitor.Log ("Checking: " + path);
-			
 			AddinScanFolderInfo folderInfo;
 			if (!database.GetFolderInfoForPath (monitor, path, out folderInfo)) {
 				// folderInfo file was corrupt.
@@ -67,6 +81,7 @@ namespace Mono.Addins.Database
 				if (!Directory.Exists (path))
 					scanResult.RegenerateRelationData = true;
 			} else {
+				// Directory is included but it doesn't exist. Ignore it.
 				if (folderInfo == null && !Directory.Exists (path))
 					return;
 			}
@@ -74,9 +89,14 @@ namespace Mono.Addins.Database
 			// if domain is null it means that a new domain has to be created.
 			
 			bool sharedFolder = domain == AddinDatabase.GlobalDomain;
+			bool isNewFolder = folderInfo == null;
 			
-			if (folderInfo == null)
+			if (isNewFolder) {
+				// No folder info. It is the first time this folder is scanned.
+				// There is no need to store this object if the folder does not
+				// contain add-ins.
 				folderInfo = new AddinScanFolderInfo (path);
+			}
 			
 			if (!sharedFolder && (folderInfo.SharedFolder || folderInfo.Domain != domain)) {
 				// If the folder already has a domain, reuse it
@@ -88,7 +108,11 @@ namespace Mono.Addins.Database
 				}
 				else {
 					folderInfo.Domain = domain;
-					scanResult.RegenerateRelationData = true;
+					if (!isNewFolder) {
+						// Domain has changed. Update the folder info and regenerate everything.
+						scanResult.RegenerateRelationData = true;
+						scanResult.RegisterModifiedFolderInfo (folderInfo);
+					}
 				}
 			}
 			else if (!folderInfo.SharedFolder && sharedFolder) {
@@ -96,6 +120,18 @@ namespace Mono.Addins.Database
 			}
 			
 			folderInfo.SharedFolder = sharedFolder;
+			
+			// If there is no domain assigned to the host, get one now
+			if (scanResult.Domain == AddinDatabase.UnknownDomain)
+				scanResult.Domain = domain;
+			
+			// Discard folders not belonging to the required domain
+			if (scanResult.Domain != null && domain != scanResult.Domain && domain != AddinDatabase.GlobalDomain) {
+				return;
+			}
+			
+			if (monitor.LogLevel > 1 && !scanResult.LocateAssembliesOnly)
+				monitor.Log ("Checking: " + path);
 			
 			if (Directory.Exists (path))
 			{
@@ -110,16 +146,21 @@ namespace Mono.Addins.Database
 					}
 				}
 				
+				// Now scan assemblies. They can also add files to the ignore list.
+				
 				foreach (string file in files) {
-					switch (Path.GetExtension (file)) {
-					case ".dll":
-					case ".exe":
+					string ext = Path.GetExtension (file).ToLower ();
+					if (ext == ".dll" || ext == ".exe") {
 						RegisterFileToScan (monitor, file, scanResult, folderInfo);
 						scanResult.AddAssemblyLocation (file);
-						break;
-					case ".addins":
+					}
+				}
+				
+				// Finally scan .addins files
+				
+				foreach (string file in files) {
+					if (Path.GetExtension (file).EndsWith (".addins")) {
 						ScanAddinsFile (monitor, file, domain, scanResult);
-						break;
 					}
 				}
 			}
@@ -145,7 +186,7 @@ namespace Mono.Addins.Database
 			ArrayList missing = folderInfo.GetMissingAddins ();
 			if (missing.Count > 0) {
 				if (Directory.Exists (folderInfo.Folder))
-					scanResult.ModifiedFolderInfos.Add (folderInfo);
+					scanResult.RegisterModifiedFolderInfo (folderInfo);
 				scanResult.ChangesFound = true;
 				if (scanResult.CheckOnly)
 					return;
@@ -175,8 +216,14 @@ namespace Mono.Addins.Database
 			
 				if (!finfo.IsAddin)
 					return;
-				if (database.AddinDescriptionExists (finfo.Domain, finfo.AddinId))
+				
+				if (database.AddinDescriptionExists (finfo.Domain, finfo.AddinId)) {
+					// It is an add-in and it has not changed. Paths in the ignore list
+					// are still valid, so they can be used.
+					if (finfo.IgnorePaths != null)
+						scanResult.AddPathsToIgnore (finfo.IgnorePaths);
 					return;
+				}
 			}
 			
 			scanResult.ChangesFound = true;
@@ -187,7 +234,7 @@ namespace Mono.Addins.Database
 		
 		public void ScanFile (IProgressStatus monitor, string file, AddinScanFolderInfo folderInfo, AddinScanResult scanResult)
 		{
-			if (scanResult.IgnoreFile (file)) {
+			if (scanResult.IgnorePath (file)) {
 				// The file must be ignored. Maybe it caused a crash in a previous scan, or it
 				// might be included by a .addin file (in which case it will be scanned when processing
 				// the .addin file).
@@ -205,10 +252,10 @@ namespace Mono.Addins.Database
 			string scannedAddinId = null;
 			bool scannedIsRoot = false;
 			bool scanSuccessful = false;
+			AddinDescription config = null;
 			
 			try {
 				string ext = Path.GetExtension (file);
-				AddinDescription config = null;
 				
 				if (ext == ".dll" || ext == ".exe")
 					scanSuccessful = ScanAssembly (monitor, file, scanResult, out config);
@@ -284,8 +331,12 @@ namespace Mono.Addins.Database
 						
 						// Assign the domain
 						if (config.IsRoot) {
-							if (folderInfo.RootsDomain == null)
-								folderInfo.RootsDomain = database.GetUniqueDomainId ();
+							if (folderInfo.RootsDomain == null) {
+								if (scanResult.Domain != null && scanResult.Domain != AddinDatabase.UnknownDomain && scanResult.Domain != AddinDatabase.GlobalDomain)
+									folderInfo.RootsDomain = scanResult.Domain;
+								else
+									folderInfo.RootsDomain = database.GetUniqueDomainId ();
+							}
 							config.Domain = folderInfo.RootsDomain;
 						} else
 							config.Domain = folderInfo.Domain;
@@ -297,6 +348,8 @@ namespace Mono.Addins.Database
 								scanResult.HostIndex.RegisterAssembly (asmFile, config.AddinId, config.AddinFile, config.Domain);
 							}
 						}
+						
+						// Finally save
 						
 						if (database.SaveDescription (monitor, config, replaceFileName)) {
 							// The new dependencies also have to be updated
@@ -313,7 +366,16 @@ namespace Mono.Addins.Database
 				monitor.ReportError ("Unexpected error while scanning file: " + file, ex);
 			}
 			finally {
-				folderInfo.SetLastScanTime (file, scannedAddinId, scannedIsRoot, File.GetLastWriteTime (file), !scanSuccessful);
+				AddinFileInfo ainfo = folderInfo.SetLastScanTime (file, scannedAddinId, scannedIsRoot, File.GetLastWriteTime (file), !scanSuccessful);
+				
+				if (scanSuccessful && config != null) {
+					// Update the ignore list in the folder info object. To be used in the next scan
+					foreach (string df in config.AllIgnorePaths) {
+						string path = Path.Combine (config.BasePath, df);
+						ainfo.AddPathToIgnore (Util.GetFullPath (path));
+					}
+				}
+				
 				monitor.Log ("plog:endscan");
 			}
 		}
@@ -338,6 +400,7 @@ namespace Mono.Addins.Database
 
 				if (scanSuccessful && config != null) {
 					
+					config.Domain = "global";
 					if (config.Version.Length == 0)
 						config.Version = "0.0.0.0";
 					
@@ -360,6 +423,8 @@ namespace Mono.Addins.Database
 			XmlTextReader r = null;
 			ArrayList directories = new ArrayList ();
 			ArrayList directoriesWithSubdirs = new ArrayList ();
+			string basePath = Path.GetDirectoryName (file);
+			
 			try {
 				r = new XmlTextReader (new StreamReader (file));
 				r.MoveToContent ();
@@ -381,6 +446,7 @@ namespace Mono.Addins.Database
 						
 						string path = r.ReadElementString ().Trim ();
 						if (path.Length > 0) {
+							path = Util.NormalizePath (path);
 							if (subs == "true")
 								directoriesWithSubdirs.Add (new string[] {path, sdom});
 							else
@@ -390,11 +456,21 @@ namespace Mono.Addins.Database
 					else if (r.NodeType == XmlNodeType.Element && r.LocalName == "GacAssembly") {
 						string aname = r.ReadElementString ().Trim ();
 						if (aname.Length > 0) {
+							aname = Util.NormalizePath (aname);
 							aname = Util.GetGacPath (aname);
 							if (aname != null) {
 								// Gac assemblies always use the global domain
 								directories.Add (new string[] {aname, AddinDatabase.GlobalDomain});
 							}
+						}
+					}
+					else if (r.NodeType == XmlNodeType.Element && r.LocalName == "Exclude") {
+						string path = r.ReadElementString ().Trim ();
+						if (path.Length > 0) {
+							path = Util.NormalizePath (path);
+							if (!Path.IsPathRooted (path))
+								path = Path.Combine (basePath, path);
+							scanResult.AddPathToIgnore (Util.GetFullPath (path));
 						}
 					}
 					else
@@ -408,16 +484,17 @@ namespace Mono.Addins.Database
 				if (r != null)
 					r.Close ();
 			}
+			
 			foreach (string[] d in directories) {
 				string dir = d[0];
 				if (!Path.IsPathRooted (dir))
-					dir = Path.Combine (Path.GetDirectoryName (file), dir);
+					dir = Path.Combine (basePath, dir);
 				ScanFolder (monitor, dir, d[1], scanResult);
 			}
 			foreach (string[] d in directoriesWithSubdirs) {
 				string dir = d[0];
 				if (!Path.IsPathRooted (dir))
-					dir = Path.Combine (Path.GetDirectoryName (file), dir);
+					dir = Path.Combine (basePath, dir);
 				ScanFolderRec (monitor, dir, d[1], scanResult);
 			}
 		}
@@ -515,18 +592,22 @@ namespace Mono.Addins.Database
 				// which are included as 'data' in an add-in.
 				foreach (string df in config.AllFiles) {
 					string file = Path.Combine (config.BasePath, df);
-					scanResult.AddFileToIgnore (Util.GetFullPath (file));
+					scanResult.AddPathToIgnore (Util.GetFullPath (file));
+				}
+				foreach (string df in config.AllIgnorePaths) {
+					string path = Path.Combine (config.BasePath, df);
+					scanResult.AddPathToIgnore (Util.GetFullPath (path));
 				}
 				
 				foreach (string s in config.MainModule.Assemblies) {
 					string asmFile = Path.Combine (config.BasePath, s);
 					asmFiles.Add (asmFile);
-					Assembly asm = Util.LoadAssemblyForReflection (asmFile);
+					object asm = reflector.LoadAssembly (asmFile);
 					assemblies.Add (asm);
-					scanResult.AddFileToIgnore (Util.GetFullPath (asmFile));
+					scanResult.AddPathToIgnore (Util.GetFullPath (asmFile));
 				}
 				
-				foreach (Assembly asm in assemblies)
+				foreach (object asm in assemblies)
 					ScanAssemblyAddinHeaders (config, asm, scanResult);
 				
 				// The add-in id and version must be already assigned at this point
@@ -535,7 +616,7 @@ namespace Mono.Addins.Database
 				if (scanResult.HostIndex != null)
 					scanResult.HostIndex.RemoveHostData (config.AddinId, config.AddinFile);
 
-				foreach (Assembly asm in assemblies)
+				foreach (object asm in assemblies)
 					ScanAssemblyContents (config, asm, hostExtensionClasses, scanResult);
 				
 			} catch (Exception ex) {
@@ -543,7 +624,7 @@ namespace Mono.Addins.Database
 				return false;
 			}
 			
-			foreach (Type t in hostExtensionClasses) {
+			foreach (object t in hostExtensionClasses) {
 				RegisterHostTypeNode (config, t, assemblies);
 			}
 			
@@ -570,11 +651,11 @@ namespace Mono.Addins.Database
 						foreach (string s in mod.Assemblies) {
 							string asmFile = Path.Combine (config.BasePath, s);
 							asmFiles.Add (asmFile);
-							Assembly asm = Util.LoadAssemblyForReflection (asmFile);
+							object asm = reflector.LoadAssembly (asmFile);
 							assemblies.Add (asm);
-							scanResult.AddFileToIgnore (Util.GetFullPath (asmFile));
+							scanResult.AddPathToIgnore (Util.GetFullPath (asmFile));
 						}
-						foreach (Assembly asm in assemblies)
+						foreach (object asm in assemblies)
 							ScanAssemblyContents (config, asm, null, scanResult);
 						
 					} catch (Exception ex) {
@@ -601,10 +682,10 @@ namespace Mono.Addins.Database
 			}
 		}
 		
-		void ScanAssemblyAddinHeaders (AddinDescription config, Assembly asm, AddinScanResult scanResult)
+		void ScanAssemblyAddinHeaders (AddinDescription config, object asm, AddinScanResult scanResult)
 		{
 			// Get basic add-in information
-			AddinAttribute att = (AddinAttribute) Attribute.GetCustomAttribute (asm, typeof(AddinAttribute), false);
+			AddinAttribute att = (AddinAttribute) reflector.GetCustomAttribute (asm, typeof(AddinAttribute), false);
 			if (att != null) {
 				if (att.Id.Length > 0)
 					config.LocalId = att.Id;
@@ -618,11 +699,11 @@ namespace Mono.Addins.Database
 			}
 		}
 		
-		void ScanAssemblyContents (AddinDescription config, Assembly asm, ArrayList hostExtensionClasses, AddinScanResult scanResult)
+		void ScanAssemblyContents (AddinDescription config, object asm, ArrayList hostExtensionClasses, AddinScanResult scanResult)
 		{
 			// Get dependencies
 			
-			object[] deps = asm.GetCustomAttributes (typeof(AddinDependencyAttribute), false);
+			object[] deps = reflector.GetCustomAttributes (asm, typeof(AddinDependencyAttribute), false);
 			foreach (AddinDependencyAttribute dep in deps) {
 				AddinDependency adep = new AddinDependency ();
 				adep.AddinId = dep.Id;
@@ -632,18 +713,21 @@ namespace Mono.Addins.Database
 			
 			// Get extension points
 			
-			object[] extPoints = asm.GetCustomAttributes (typeof(ExtensionPointAttribute), false);
+			object[] extPoints = reflector.GetCustomAttributes (asm, typeof(ExtensionPointAttribute), false);
 			foreach (ExtensionPointAttribute ext in extPoints) {
 				ExtensionPoint ep = config.AddExtensionPoint (ext.Path);
 				ep.Description = ext.Description;
 				ep.Name = ext.Name;
-				ep.AddExtensionNode (ext.NodeName, ext.NodeType.FullName);
+				ep.AddExtensionNode (ext.NodeName, ext.NodeTypeName);
 			}
 			
-			foreach (Type t in asm.GetTypes ()) {
+			foreach (object t in reflector.GetAssemblyTypes (asm)) {
 				
-				if (Attribute.IsDefined (t, typeof(ExtensionAttribute))) {
-					foreach (ExtensionAttribute eatt in t.GetCustomAttributes (typeof(ExtensionAttribute), false)) {
+				string typeFullName = reflector.GetTypeFullName (t);
+				
+				object[] extensionAtts = reflector.GetCustomAttributes (t, typeof(ExtensionAttribute), false);
+				if (extensionAtts.Length > 0) {
+					foreach (ExtensionAttribute eatt in extensionAtts) {
 						string path;
 						string nodeName;
 						
@@ -659,7 +743,7 @@ namespace Mono.Addins.Database
 								if (path == "$") {
 									// The type does not implement any interface and has no superclass.
 									// Will be reported later as an error.
-									path = "$" + t.FullName;
+									path = "$" + typeFullName;
 								}
 								nodeName = "Type";
 							}
@@ -671,9 +755,9 @@ namespace Mono.Addins.Database
 						ExtensionNodeDescription elem = config.MainModule.AddExtensionNode (path, nodeName);
 						if (eatt.Id.Length > 0) {
 							elem.SetAttribute ("id", eatt.Id);
-							elem.SetAttribute ("type", t.FullName);
+							elem.SetAttribute ("type", typeFullName);
 						} else {
-							elem.SetAttribute ("id", t.FullName);
+							elem.SetAttribute ("id", typeFullName);
 						}
 						if (eatt.InsertAfter.Length > 0)
 							elem.SetAttribute ("insertafter", eatt.InsertAfter);
@@ -681,8 +765,8 @@ namespace Mono.Addins.Database
 							elem.SetAttribute ("insertbefore", eatt.InsertAfter);
 					}
 				}
-				else if (Attribute.IsDefined (t, typeof(TypeExtensionPointAttribute))) {
-					foreach (TypeExtensionPointAttribute epa in t.GetCustomAttributes (typeof(TypeExtensionPointAttribute), false)) {
+				else {
+					foreach (TypeExtensionPointAttribute epa in reflector.GetCustomAttributes (t, typeof(TypeExtensionPointAttribute), false)) {
 						ExtensionPoint ep;
 						
 						ExtensionNodeType nt = new ExtensionNodeType ();
@@ -691,8 +775,8 @@ namespace Mono.Addins.Database
 							ep = config.AddExtensionPoint (epa.Path);
 						}
 						else {
-							ep = config.AddExtensionPoint (GetDefaultTypeExtensionPath (config, t));
-							nt.ObjectTypeName = t.FullName;
+							ep = config.AddExtensionPoint (GetDefaultTypeExtensionPath (config, typeFullName));
+							nt.ObjectTypeName = typeFullName;
 						}
 						nt.Id = epa.NodeName;
 						nt.TypeName = epa.NodeType.FullName;
@@ -717,12 +801,12 @@ namespace Mono.Addins.Database
 			if (nt.TypeName.Length == 0)
 				nt.TypeName = "Mono.Addins.TypeExtensionNode";
 			
-			Type ntype = FindAddinType (nt.TypeName, assemblies);
+			object ntype = FindAddinType (nt.TypeName, assemblies);
 			if (ntype == null)
 				return;
 			
 			// Add type information declared with attributes in the code
-			ExtensionNodeAttribute nodeAtt = (ExtensionNodeAttribute) Attribute.GetCustomAttribute (ntype, typeof(ExtensionNodeAttribute), true);
+			ExtensionNodeAttribute nodeAtt = (ExtensionNodeAttribute) reflector.GetCustomAttribute (ntype, typeof(ExtensionNodeAttribute), true);
 			if (nodeAtt != null) {
 				if (nt.Id.Length == 0 && nodeAtt.NodeName.Length > 0)
 					nt.Id = nodeAtt.NodeName;
@@ -731,34 +815,34 @@ namespace Mono.Addins.Database
 			} else {
 				// Use the node type name as default name
 				if (nt.Id.Length == 0)
-					nt.Id = ntype.Name;
+					nt.Id = reflector.GetTypeName (ntype);
 			}
 			
 			// Add information about attributes
-			object[] fieldAtts = ntype.GetCustomAttributes (typeof(NodeAttributeAttribute), true);
+			object[] fieldAtts = reflector.GetCustomAttributes (ntype, typeof(NodeAttributeAttribute), true);
 			foreach (NodeAttributeAttribute fatt in fieldAtts) {
 				NodeTypeAttribute natt = new NodeTypeAttribute ();
 				natt.Name = fatt.Name;
 				natt.Required = fatt.Required;
-				if (fatt.Type != null)
-					natt.Type = fatt.Type.FullName;
+				if (fatt.TypeName != null)
+					natt.Type = fatt.TypeName;
 				if (fatt.Description.Length > 0)
 					natt.Description = fatt.Description;
 				nt.Attributes.Add (natt);
 			}
 			
 			// Check if the type has NodeAttribute attributes applied to fields.
-			foreach (FieldInfo field in ntype.GetFields (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)) {
-				NodeAttributeAttribute fatt = (NodeAttributeAttribute) Attribute.GetCustomAttribute (field, typeof(NodeAttributeAttribute));
+			foreach (object field in reflector.GetFields (ntype)) {
+				NodeAttributeAttribute fatt = (NodeAttributeAttribute) reflector.GetCustomAttribute (field, typeof(NodeAttributeAttribute), false);
 				if (fatt != null) {
 					NodeTypeAttribute natt = new NodeTypeAttribute ();
 					if (fatt.Name.Length > 0)
 						natt.Name = fatt.Name;
 					else
-						natt.Name = field.Name;
+						natt.Name = reflector.GetFieldName (field);
 					if (fatt.Description.Length > 0)
 						natt.Description = fatt.Description;
-					natt.Type = field.FieldType.FullName;
+					natt.Type = reflector.GetFieldTypeFullName (field);
 					natt.Required = fatt.Required;
 					nt.Attributes.Add (natt);
 				}
@@ -770,17 +854,17 @@ namespace Mono.Addins.Database
 			string childSet = (string) internalNodeSets [nt.TypeName];
 			
 			if (childSet == null) {
-				object[] ats = ntype.GetCustomAttributes (typeof(ExtensionNodeChildAttribute), true);
+				object[] ats = reflector.GetCustomAttributes (ntype, typeof(ExtensionNodeChildAttribute), true);
 				if (ats.Length > 0) {
 					// Create a new node set for this type. It is necessary to create a new node set
 					// instead of just adding child ExtensionNodeType objects to the this node type
 					// because child types references can be recursive.
 					ExtensionNodeSet internalSet = new ExtensionNodeSet ();
-					internalSet.Id = ntype.Name + "_" + Guid.NewGuid().ToString ();
+					internalSet.Id = reflector.GetTypeName (ntype) + "_" + Guid.NewGuid().ToString ();
 					foreach (ExtensionNodeChildAttribute at in ats) {
 						ExtensionNodeType internalType = new ExtensionNodeType ();
 						internalType.Id = at.NodeName;
-						internalType.TypeName = at.ExtensionNodeType.FullName;
+						internalType.TypeName = at.ExtensionNodeTypeName;
 						internalSet.NodeTypes.Add (internalType);
 					}
 					config.ExtensionNodeSets.Add (internalSet);
@@ -789,7 +873,7 @@ namespace Mono.Addins.Database
 					// Register the new set in a hashtable, to allow recursive references to the
 					// same internal set.
 					internalNodeSets [nt.TypeName] = internalSet.Id;
-					internalNodeSets [ntype.AssemblyQualifiedName] = internalSet.Id;
+					internalNodeSets [reflector.GetTypeAssemblyQualifiedName (ntype)] = internalSet.Id;
 					ScanNodeSet (config, internalSet, assemblies, internalNodeSets);
 				}
 			}
@@ -807,25 +891,19 @@ namespace Mono.Addins.Database
 			ScanNodeSet (config, nt, assemblies, internalNodeSets);
 		}
 		
-		string GetBaseTypeNameList (Type type)
+		string GetBaseTypeNameList (object type)
 		{
 			StringBuilder sb = new StringBuilder ("$");
-			Type btype = type.BaseType;
-			while (btype != typeof(object)) {
-				sb.Append (btype.FullName).Append (',');
-				btype = btype.BaseType;
-			}
-			foreach (Type iterf in type.GetInterfaces ()) {
-				sb.Append (iterf.FullName).Append (',');
-			}
+			foreach (string tn in reflector.GetBaseTypeFullNameList (type))
+				sb.Append (tn).Append (',');
 			if (sb.Length > 0)
 				sb.Remove (sb.Length - 1, 1);
 			return sb.ToString ();
 		}
 		
-		void RegisterHostTypeNode (AddinDescription config, Type t, ArrayList assemblies)
+		void RegisterHostTypeNode (AddinDescription config, object t, ArrayList assemblies)
 		{
-			foreach (ExtensionAttribute eatt in t.GetCustomAttributes (typeof(ExtensionAttribute), false)) {
+			foreach (ExtensionAttribute eatt in reflector.GetCustomAttributes (t, typeof(ExtensionAttribute), false)) {
 				if (eatt.Path.Length > 0)
 					continue;
 				
@@ -833,9 +911,9 @@ namespace Mono.Addins.Database
 					foreach (ExtensionNodeType nt in ep.NodeSet.NodeTypes) {
 						if (nt.ObjectTypeName.Length == 0)
 							continue;
-						Type etype = FindAddinType (nt.ObjectTypeName, assemblies);
-						if (etype != null && etype.IsAssignableFrom (t)) {
-							RegisterTypeNode (config, eatt, ep.Path, nt.Id, t);
+						object etype = FindAddinType (nt.ObjectTypeName, assemblies);
+						if (etype != null && reflector.TypeIsAssignableFrom (etype, t)) {
+							RegisterTypeNode (config, eatt, ep.Path, nt.Id, reflector.GetTypeFullName (t));
 							return;
 						}
 					}
@@ -843,16 +921,16 @@ namespace Mono.Addins.Database
 			}
 		}
 		
-		Type FindAddinType (string typeName, ArrayList assemblies)
+		object FindAddinType (string typeName, ArrayList assemblies)
 		{
 			// Look in the current assembly
-			Type etype = Type.GetType (typeName, false);
+			object etype = reflector.GetType (coreAssembly, typeName);
 			if (etype != null)
 				return etype;
 			
 			// Look in referenced assemblies
-			foreach (Assembly asm in assemblies) {
-				etype = asm.GetType (typeName);
+			foreach (object asm in assemblies) {
+				etype = reflector.GetType (asm, typeName);
 				if (etype != null)
 					return etype;
 			}
@@ -860,28 +938,30 @@ namespace Mono.Addins.Database
 			Hashtable visited = new Hashtable ();
 			
 			// Look in indirectly referenced assemblies
-			foreach (Assembly asm in assemblies) {
-				foreach (AssemblyName aref in asm.GetReferencedAssemblies ()) {
+			foreach (object asm in assemblies) {
+				foreach (object aref in reflector.GetAssemblyReferences (asm)) {
 					if (visited.Contains (aref))
 						continue;
 					visited.Add (aref, aref);
-					Assembly rasm = Assembly.Load (aref);
-					etype = rasm.GetType (typeName);
-					if (etype != null)
-						return etype;
+					object rasm = reflector.LoadAssemblyFromReference (aref);
+					if (rasm != null) {
+						etype = reflector.GetType (rasm, typeName);
+						if (etype != null)
+							return etype;
+					}
 				}
 			}
 			return null;
 		}
 
-		void RegisterTypeNode (AddinDescription config, ExtensionAttribute eatt, string path, string nodeName, Type t)
+		void RegisterTypeNode (AddinDescription config, ExtensionAttribute eatt, string path, string nodeName, string typeFullName)
 		{
 			ExtensionNodeDescription elem = config.MainModule.AddExtensionNode (path, nodeName);
 			if (eatt.Id.Length > 0) {
 				elem.SetAttribute ("id", eatt.Id);
-				elem.SetAttribute ("type", t.FullName);
+				elem.SetAttribute ("type", typeFullName);
 			} else {
-				elem.SetAttribute ("id", t.FullName);
+				elem.SetAttribute ("id", typeFullName);
 			}
 			if (eatt.InsertAfter.Length > 0)
 				elem.SetAttribute ("insertafter", eatt.InsertAfter);
@@ -889,9 +969,9 @@ namespace Mono.Addins.Database
 				elem.SetAttribute ("insertbefore", eatt.InsertAfter);
 		}
 		
-		internal string GetDefaultTypeExtensionPath (AddinDescription desc, Type type)
+		internal string GetDefaultTypeExtensionPath (AddinDescription desc, string typeFullName)
 		{
-			return "/" + Addin.GetIdName (desc.AddinId) + "/TypeExtensions/" + type.FullName;
+			return "/" + Addin.GetIdName (desc.AddinId) + "/TypeExtensions/" + typeFullName;
 		}
 	}
 }

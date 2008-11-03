@@ -1,10 +1,10 @@
 //
-// TypeExtensionNode.cs
+// NativePackage.cs
 //
 // Author:
 //   Lluis Sanchez Gual
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -26,43 +26,48 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-
 using System;
-using System.Xml;
+using Mono.Addins.Description;
 
-namespace Mono.Addins
+namespace Mono.Addins.Setup
 {
-	[ExtensionNode ("Type", Description="Specifies a class that will be used to create an extension object.")]
-	[NodeAttribute ("class", typeof(Type), false, Description="Name of the class. If a value is not provided, the class name will be taken from the 'id' attribute")]
-	public class TypeExtensionNode: InstanceExtensionNode
+	internal class NativePackage: Package
 	{
-		string typeName;
-		Type type;
-		
-		internal protected override void Read (NodeElement elem)
-		{
-			base.Read (elem);
-			typeName = elem.GetAttribute ("type");
-			if (typeName.Length == 0)
-				typeName = elem.GetAttribute ("class");
-			if (typeName.Length == 0)
-				typeName = elem.GetAttribute ("id");
+		public override string Name {
+			get { return "Native package"; }
 		}
 		
-		public override object CreateInstance ()
+		internal override void PrepareInstall (IProgressMonitor monitor, AddinStore service)
 		{
-			return Activator.CreateInstance (Type);
 		}
 		
-		public Type Type {
-			get {
-				if (type == null) {
-					if (typeName.Length == 0)
-						throw new InvalidOperationException ("Type name not specified.");
-					type = Addin.GetType (typeName, true);
-				}
-				return type;
-			}
+		internal override void CommitInstall (IProgressMonitor monitor, AddinStore service)
+		{
+		}
+		
+		internal override void RollbackInstall (IProgressMonitor monitor, AddinStore service)
+		{
+		}
+		
+		internal override void Resolve (IProgressMonitor monitor, AddinStore service, PackageCollection toInstall, PackageCollection toUninstall, PackageCollection required, DependencyCollection unresolved)
+		{
+		}
+		
+		internal override void PrepareUninstall (IProgressMonitor monitor, AddinStore service)
+		{
+		}
+		
+		internal override void CommitUninstall (IProgressMonitor monitor, AddinStore service)
+		{
+		}
+		
+		internal override void RollbackUninstall (IProgressMonitor monitor, AddinStore service)
+		{
+		}
+		
+		internal override bool IsUpgradeOf (Package p)
+		{
+			return false;
 		}
 	}
 }

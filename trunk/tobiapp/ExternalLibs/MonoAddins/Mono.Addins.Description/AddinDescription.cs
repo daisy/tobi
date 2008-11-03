@@ -61,6 +61,7 @@ namespace Mono.Addins.Description
 		bool hasUserId;
 		bool canWrite = true;
 		bool defaultEnabled = true;
+		AddinFlags flags = AddinFlags.None;
 		string domain;
 		
 		ModuleDescription mainModule;
@@ -179,9 +180,26 @@ namespace Mono.Addins.Description
 			set { defaultEnabled = value; }
 		}
 		
+		public AddinFlags Flags {
+			get { return flags; }
+			set { flags = value; }
+		}
+		
 		internal bool HasUserId {
 			get { return hasUserId; }
 			set { hasUserId = value; }
+		}
+		
+		public bool CanDisable {
+			get { return (flags & AddinFlags.CantDisable) == 0 && !IsHidden; }
+		}
+		
+		public bool CanUninstall {
+			get { return (flags & AddinFlags.CantUninstall) == 0 && !IsHidden; }
+		}
+		
+		public bool IsHidden {
+			get { return (flags & AddinFlags.Hidden) != 0; }
 		}
 		
 		internal bool SupportsVersion (string ver)
@@ -198,6 +216,20 @@ namespace Mono.Addins.Description
 
 				foreach (ModuleDescription mod in OptionalModules) {
 					foreach (string s in mod.AllFiles)
+						col.Add (s);
+				}
+				return col;
+			}
+		}
+		
+		public StringCollection AllIgnorePaths {
+			get {
+				StringCollection col = new StringCollection ();
+				foreach (string s in MainModule.IgnorePaths)
+					col.Add (s);
+
+				foreach (ModuleDescription mod in OptionalModules) {
+					foreach (string s in mod.IgnorePaths)
 						col.Add (s);
 				}
 				return col;
@@ -448,7 +480,12 @@ namespace Mono.Addins.Description
 				elem.RemoveAttribute ("defaultEnabled");
 			else
 				elem.SetAttribute ("defaultEnabled", "false");
-				
+			
+			if (flags != AddinFlags.None)
+				elem.RemoveAttribute ("flags");
+			else
+				elem.SetAttribute ("flags", flags.ToString ());
+			
 			if (author != null && author.Length > 0)
 				elem.SetAttribute ("author", author);
 			else
@@ -511,11 +548,16 @@ namespace Mono.Addins.Description
 		
 		public static AddinDescription Read (Stream stream, string basePath)
 		{
+			return Read (new StreamReader (stream), basePath);
+		}
+		
+		public static AddinDescription Read (TextReader reader, string basePath)
+		{
 			AddinDescription config = new AddinDescription ();
 			
 			try {
 				config.configDoc = new XmlDocument ();
-				config.configDoc.Load (stream);
+				config.configDoc.Load (reader);
 			} catch (Exception ex) {
 				throw new InvalidOperationException ("The add-in configuration file is invalid: " + ex.Message, ex);
 			}
@@ -532,13 +574,19 @@ namespace Mono.Addins.Description
 			config.description = elem.GetAttribute ("description");
 			config.category = elem.GetAttribute ("category");
 			config.basePath = elem.GetAttribute ("basePath");
+			config.domain = "global";
 			
 			string s = elem.GetAttribute ("isRoot");
 			if (s.Length == 0) s = elem.GetAttribute ("isroot");
-			config.isroot = s == "true" || s == "yes";
+			config.isroot = GetBool (s, false);
 			
-			s = elem.GetAttribute ("defaultEnabled");
-			config.defaultEnabled = s.Length == 0 || s == "true" || s == "yes";
+			config.defaultEnabled = GetBool (elem.GetAttribute ("defaultEnabled"), true);
+			
+			string prot = elem.GetAttribute ("flags");
+			if (prot.Length == 0)
+				config.flags = AddinFlags.None;
+			else
+				config.flags = (AddinFlags) Enum.Parse (typeof(AddinFlags), prot);
 			
 			XmlElement localizerElem = (XmlElement) elem.SelectSingleNode ("Localizer");
 			if (localizerElem != null)
@@ -548,6 +596,14 @@ namespace Mono.Addins.Description
 				config.hasUserId = true;
 			
 			return config;
+		}
+		
+		static bool GetBool (string s, bool defval)
+		{
+			if (s.Length == 0)
+				return defval;
+			else
+				return s == "true" || s == "yes";
 		}
 		
 		internal static AddinDescription ReadBinary (FileDatabase fdb, string configFile)
@@ -609,9 +665,9 @@ namespace Mono.Addins.Description
 				
 			if (bp != null) {
 				foreach (string file in AllFiles) {
-					string asmFile = Path.Combine (BasePath, file);
+					string asmFile = Path.Combine (bp, file);
 					if (!File.Exists (asmFile))
-						errors.Add ("The file '" + file + "' referenced in the manifest could not be found.");
+						errors.Add ("The file '" + asmFile + "' referenced in the manifest could not be found.");
 				}
 			}
 			
@@ -682,6 +738,7 @@ namespace Mono.Addins.Description
 			writer.WriteValue ("ConditionTypes", ConditionTypes);
 			writer.WriteValue ("FilesInfo", fileInfo);
 			writer.WriteValue ("Localizer", localizer);
+			writer.WriteValue ("flags", (int)flags);
 		}
 		
 		void IBinaryXmlElement.Read (BinaryXmlReader reader)
@@ -709,6 +766,7 @@ namespace Mono.Addins.Description
 			conditionTypes = (ConditionTypeDescriptionCollection) reader.ReadValue ("ConditionTypes", new ConditionTypeDescriptionCollection (this));
 			fileInfo = (object[]) reader.ReadValue ("FilesInfo", null);
 			localizer = (ExtensionNodeDescription) reader.ReadValue ("Localizer");
+			flags = (AddinFlags) reader.ReadInt32Value ("flags");
 			
 			if (mainModule != null)
 				mainModule.SetParent (this);
@@ -749,6 +807,5 @@ namespace Mono.Addins.Description
 			writer.WriteValue ("fileName", fileName);
 			writer.WriteValue ("timestamp", timestamp);
 		}
-
 	}
 }
