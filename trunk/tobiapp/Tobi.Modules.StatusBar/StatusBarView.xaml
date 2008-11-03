@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Tobi.Modules.StatusBar.StatusBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
+    xmlns:local="clr-namespace:Tobi.Modules.StatusBar">
+
+  <StatusBar>
+    <StatusBarItem>
+      <Label x:Name="LabelStatusHeader" Content="Status: " Width="Auto" Height="Auto"/>
+    </StatusBarItem>
+    <StatusBarItem>
+      <Label x:Name="LabelStatusText" Content="{Binding DisplayString}" Width="Auto" Height="Auto"/>
+    </StatusBarItem>
+    <StatusBarItem>
+      <!-- Button x:Name="ButtonChangeStatusText" Command="{x:Static local:StatusBarView.StatusTextCommand}" CommandParameter="CMD form XAML Button" Width="Auto" Height="Auto">.. Change Status Text</Button -->
+    </StatusBarItem>
+  </StatusBar>
+</UserControl>

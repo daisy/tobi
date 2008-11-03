@@ -51,15 +51,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Colors.cs" />
+    <Compile Include="DelegateCommandWithInputGesture.cs" />
     <Compile Include="GlobalCommands.cs" />
+    <Compile Include="IShellPresenter.cs" />
+    <Compile Include="IShellView.cs" />
+    <Compile Include="IToggableView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Sizes.cs" />
+    <Compile Include="UserInterfaceStrings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite.Wpf\Composite.Wpf.csproj">
       <Project>{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D}</Project>
       <Name>Composite.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Composite.csproj">
+      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
+      <Name>Composite</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

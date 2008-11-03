@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Data" />
     <Reference Include="Tobi.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
@@ -90,13 +91,30 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="Tobi.Modules.MenuBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Tobi.Modules.MenuBar\MenuBar\bin\Debug\Tobi.Modules.MenuBar.dll</HintPath>
+    </Reference>
+    <Reference Include="Tobi.Modules.StatusBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Tobi.Modules.StatusBar\bin\Debug\Tobi.Modules.StatusBar.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="urakawa, Version=2.0.0.27892, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\urakawa-sdk\trunk\csharp\core\bin\Debug\urakawa.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -106,6 +124,10 @@
     <Page Include="Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TobiResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -118,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="EntLibLoggerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,10 +154,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ShellPresenter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -142,9 +167,25 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Tobi.Modules.StatusBar\StatusBar.csproj">
-      <Project>{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}</Project>
-      <Name>StatusBar</Name>
+    <ProjectReference Include="Tobi.Modules.AudioPane\AudioPane.csproj">
+      <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
+      <Name>AudioPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.DocumentPane\DocumentPane.csproj">
+      <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
+      <Name>DocumentPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.NavigationPane\NavigationPane.csproj">
+      <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
+      <Name>NavigationPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.ToolBars\ToolBars.csproj">
+      <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
+      <Name>ToolBars</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.UserInterfaceZoom\UserInterfaceZoom.csproj">
+      <Project>{81A33B16-0EEC-49FD-8AAB-3EA87E8C8B29}</Project>
+      <Name>UserInterfaceZoom</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

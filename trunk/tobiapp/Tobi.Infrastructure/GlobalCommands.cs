@@ -1,34 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using Microsoft.Practices.Composite.Wpf.Commands;
+﻿using Microsoft.Practices.Composite.Wpf.Commands;
 
 namespace Tobi.Infrastructure
 {
-    public class GlobalCommands
+    ///<summary>
+    /// Application-wide commands (usually composite, ready for register/unregister)
+    ///</summary>
+    public static class GlobalCommands
     {
-        //public static RoutedUICommand ChangeStatusTextCommand;
+        //public static readonly CompositeCommand ExitCommand = new CompositeCommand();
 
-        //public static CompositeCommand TobiCompositeCommand = new CompositeCommand();
+        ///<summary>
+        /// TODO: Make this fake Command meaningful
+        ///</summary>
+        public readonly static CompositeCommand TestActiveAwareCommand = new CompositeCommand(true);
 
-        static GlobalCommands()
+        ///<summary>
+        /// TODO: Make this fake Command meaningful
+        ///</summary>
+        public readonly static CompositeCommand TestNonActiveAwareCommand = new CompositeCommand();
+    }
+
+    ///<summary>
+    /// Proxy class for the above static class (to use in dependency injection)
+    ///</summary>
+    public class GlobalCommandsProxy
+    {
+        ///<summary>
+        /// See <see cref="GlobalCommands.TestActiveAwareCommand"/>.
+        ///</summary>
+        virtual public CompositeCommand TestActiveAwareCommand
         {
-            //var changeStatusTextInputs = new InputGestureCollection { new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift) };
-            //ChangeStatusTextCommand = new RoutedUICommand("Change Status Text", "ChangeStatusText", typeof(GlobalCommands), changeStatusTextInputs);
-
-
-            /*
-            CommandBinding binding = new CommandBinding();
-
-            binding.Command = ChangeStatusTextCommand;
-
-            binding.Executed += new ExecutedRoutedEventHandler(binding_Executed);
-
-            CommandManager.RegisterClassCommandBinding(typeof(GlobalCommands), binding);
-             */
+            get { return GlobalCommands.TestActiveAwareCommand; }
         }
+        ///<summary>
+        /// See <see cref="GlobalCommands.TestNonActiveAwareCommand"/>.
+        ///</summary>
+        virtual public CompositeCommand TestNonActiveAwareCommand
+        {
+            get { return GlobalCommands.TestNonActiveAwareCommand; }
+        }
+        /*
+        ///<summary>
+        /// See <see cref="GlobalCommands.ExitCommand"/>.
+        ///</summary>
+        virtual public CompositeCommand ExitCommand
+        {
+            get { return GlobalCommands.ExitCommand; }
+        }
+        */
     }
 }

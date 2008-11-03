@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Infrastructure")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Tobi.Infrastructure")]
+[assembly: AssemblyDescription("Common infrastructure entities for the CAG-WPF Tobi  application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Infrastructure")]
+[assembly: AssemblyCompany("DAISY")]
+[assembly: AssemblyProduct("Tobi")]
 [assembly: AssemblyCopyright("Copyright ©  2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

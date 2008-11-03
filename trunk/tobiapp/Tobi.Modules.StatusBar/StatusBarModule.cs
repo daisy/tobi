@@ -1,11 +1,7 @@
-﻿
-using Tobi.Infrastructure;
+﻿using Tobi.Infrastructure;
 using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Tobi.Modules.StatusBar.Controllers;
-using Tobi.Modules.StatusBar.Views;
-
 
 namespace Tobi.Modules.StatusBar
 {
@@ -15,31 +11,40 @@ namespace Tobi.Modules.StatusBar
     ///</summary>
     public class StatusBarModule : IModule
     {
-        private readonly IRegionManager m_regionManager;
-        private IUnityContainer m_container;
+        private readonly IRegionManager _regionManager;
+        private readonly IUnityContainer _container;
 
-        private IRegion m_targetRegion;
-
+        ///<summary>
+        /// Dependency Injection constructor
+        ///</summary>
+        ///<param name="container">The DI container</param>
+        ///<param name="regionManager">The CAG-WPF region manager</param>
         public StatusBarModule(IUnityContainer container, IRegionManager regionManager)
         {
-            m_regionManager = regionManager;
-            m_container = container;
+            _regionManager = regionManager;
+            _container = container;
         }
 
+        ///<summary>
+        /// Registers implementations for <see cref="IStatusBarView"/> (
+        /// <see cref="StatusBarView"/>), <see cref="IStatusBarService"/> (
+        /// <see cref="StatusBarService"/>) and <see cref="IStatusBarPresenter"/> (
+        /// <see cref="StatusBarPresenter"/>). Creates a <see cref="StatusBarPresenter"/> and
+        /// injects its associated <see cref="StatusBarView"/> inside the '<c>StatusBar</c>'
+        /// region.
+        ///</summary>
         public void Initialize()
         {
-            m_container.RegisterType<IStatusBarController, StatusBarController>();
-            m_container.RegisterType<IStatusBarView, StatusBarView>();
-
             // TODO: should be a singleton;
-            //m_container.RegisterType<IStatusBarService, StatusBarService>();
+            _container.RegisterType<IStatusBarService, StatusBarService>(new ContainerControlledLifetimeManager());
 
-            var presenter = m_container.Resolve<StatusBarPresenter>();
+            _container.RegisterType<IStatusBarView, StatusBarView>();
+            _container.RegisterType<IStatusBarPresenter, StatusBarPresenter>(new ContainerControlledLifetimeManager());
 
-            m_targetRegion = m_regionManager.Regions[RegionNames.StatusBar];
-
-            m_targetRegion.Add(presenter.View, StatusBarData.ViewName);
-            m_targetRegion.Activate(presenter.View);
+            IRegion targetRegion = _regionManager.Regions[RegionNames.StatusBar];
+            var presenter = _container.Resolve<IStatusBarPresenter>();
+            targetRegion.Add(presenter.View);
+            targetRegion.Activate(presenter.View);
         }
     }
 }

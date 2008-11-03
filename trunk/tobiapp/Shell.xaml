@@ -2,58 +2,71 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
+    xmlns:local="clr-namespace:Tobi"
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
-    Title="Tobi" WindowStartupLocation="CenterScreen"
-    Style="{DynamicResource {x:Type Window}}">
-  <!-- Window.CommandBindings>
-    <CommandBinding Command="{x:Static Infrastructure:GlobalCommands.ChangeStatusTextCommand}"
-                    CanExecute="ChangeStatusTextCommand_CanExecute"
-                    Executed="ChangeStatusTextCommand_Executed" />
-  </Window.CommandBindings -->
+    Title="Tobi"
+    Closing="OnClosing"
+    Topmost="False"
+    Width="{x:Static infra:Sizes.DefaultWindowWidth}"
+    Height="{x:Static infra:Sizes.DefaultWindowHeight}"
+    WindowStartupLocation="CenterScreen">
 
-  <DockPanel Width="Auto" Height="Auto" LastChildFill="True">
-    <!--Top Menu Area-->
-    <Menu Width="Auto" Height="Auto" Background="#FFA9D1F4"
-        DockPanel.Dock="Top">
+  <Window.Resources>
+    <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
+      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
+      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
+      <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
+    </LinearGradientBrush>
+  </Window.Resources>
 
-      <!-- File Menu -->
-      <MenuItem Header="File">
-        <MenuItem Header="Save"/>
-        <Separator/>
-        <MenuItem Header="Exit"/>
+  <DockPanel LastChildFill="True">
 
-      </MenuItem>
-      <!-- About Menu -->
-      <MenuItem Header="Help">
+    <DockPanel.LayoutTransform>
+      <ScaleTransform x:Name="ScaleTransform" ScaleX="1" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
+    </DockPanel.LayoutTransform>
 
-        <MenuItem Header="About"/>
-      </MenuItem>
-    </Menu>
+    <!--UserInterfaceZoom-->
+    <ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/>
 
-    <!--Bottom Status Bar area, declared before middle section,
-        as I want it to fill entire bottom of Window,
-        which it wouldn't if there was a Left docked panel before it -->
-    <StackPanel Width="Auto" Height="Auto" Background="#FFCAC5C5"
-        Orientation="Horizontal" DockPanel.Dock="Bottom">
+    <!--TODO: ZOOM binding
+    <Slider Grid.Column="0" x:Name="ZoomSlider" Value="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=TwoWay}" Width="Auto" Height="Auto" Minimum="1" Maximum="4" Orientation="Vertical" Background="{StaticResource brushLinearGradient1}"/>
+-->
+    <!--MenuBar-->
+    <ContentControl DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
-      <ItemsControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}" Width="Auto" Height="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
+    <!--ToolBars-->
+    <ContentControl DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/>
 
-    </StackPanel>
+    <!--StatusBar-->
+    <ContentControl DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/>
 
-    <!--Left Main Content area-->
-    <StackPanel Width="136" Height="Auto" Background="White">
+    <Grid>
 
-      <Button Margin="5,5,5,5" Width="Auto" Height="26" Content="button1"/>
-      <Button Width="126" Height="26" Content="button2" Margin="5,5,5,5"/>
-      <Button Width="126" Height="26" Content="button3" Margin="5,5,5,5"/>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="200"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="150"/>
+      </Grid.RowDefinitions>
 
-    </StackPanel>
+      <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+      <GridSplitter Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="5"/>
 
-    <!--Right Main Content area, NOTE HOW this Grid is the last child
-        so takes all the remaining room -->
-    <StackPanel Width="Auto" Height="Auto" Margin="10,10,10,10">
-      <ItemsControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}" Width="Auto" Height="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
-    </StackPanel>
+      <!--NavigationPane-->
+      <ContentControl Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
+
+      <!--WaveFormBar-->
+      <ContentControl Grid.Column="2" Grid.Row="2" cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
+
+      <!--DocumentPane-->
+      <ContentControl Grid.Column="2" Grid.Row="0" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
+
+    </Grid>
 
   </DockPanel>
+
 </Window>

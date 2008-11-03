@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Tobi.Modules.ToolBars.ToolBarsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
+    xmlns:local="clr-namespace:Tobi.Modules.ToolBars">
+
+  <ToolBarTray>
+    <ToolBar>
+      <Button>Test 1</Button>
+      <Button>Test 2</Button>
+      <Button>Test 3</Button>
+    </ToolBar>
+    <ToolBar>
+      <Button>Dan 1</Button>
+      <Button>Dan 2</Button>
+      <Button>Dan 3</Button>
+      <Button>Dan 4</Button>
+      <Button>Dan 5</Button>
+    </ToolBar>
+  </ToolBarTray>
+</UserControl>
