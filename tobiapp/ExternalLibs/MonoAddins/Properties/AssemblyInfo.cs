@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 // Information about this assembly is defined by the following
 // attributes.
@@ -18,5 +17,4 @@ using System.Runtime.InteropServices;
 // You can specify all values by your own or you can build default build and revision
 // numbers with the '*' character (the default):
 
-[assembly: AssemblyVersion("0.3.0.0")]
-[assembly: ComVisibleAttribute(false)]
+[assembly: AssemblyVersion("0.4.0.0")]

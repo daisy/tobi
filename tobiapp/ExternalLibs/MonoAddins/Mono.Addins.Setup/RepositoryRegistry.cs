@@ -65,7 +65,8 @@ namespace Mono.Addins.Setup
 					UpdateRepository (monitor, url);
 					rr = FindRepositoryRecord (url);
 					Repository rep = rr.GetCachedRepository ();
-					rr.Name = rep.Name;
+					if (rep != null)
+						rr.Name = rep.Name;
 				}
 				service.SaveConfiguration ();
 				return rr;
@@ -195,6 +196,9 @@ namespace Mono.Addins.Setup
 						UpdateRepository (monitor, new Uri (rr.Url), rr);
 					monitor.Step (1);
 				}
+			} catch (Exception ex) {
+				statusMonitor.ReportError ("Could not get information from repository", ex);
+				return;
 			} finally {
 				monitor.EndTask ();
 			}
@@ -205,11 +209,17 @@ namespace Mono.Addins.Setup
 		{
 			Uri absUri = new Uri (baseUri, rr.Url);
 			monitor.BeginTask ("Updating from " + absUri.ToString (), 2);
-			Repository newRep;
+			Repository newRep = null;
+			Exception error = null;
+			
 			try {
 				newRep = (Repository) service.Store.DownloadObject (monitor, absUri.ToString (), typeof(Repository));
 			} catch (Exception ex) {
-				monitor.ReportError ("Could not get information from repository" + ": " + absUri.ToString (), ex);
+				error = ex;
+			}
+			
+			if (newRep == null) {
+				monitor.ReportError ("Could not get information from repository" + ": " + absUri.ToString (), error);
 				return;
 			}
 			

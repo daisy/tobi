@@ -30,6 +30,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Specialized;
 using Mono.Addins.Serialization;
 
 namespace Mono.Addins.Database
@@ -84,8 +85,6 @@ namespace Mono.Addins.Database
 			s = s.Replace (Path.AltDirectorySeparatorChar, '_');
 			s = s.Replace (Path.VolumeSeparatorChar, '_');
 			s = s.Trim ('_');
-			if (s.Length > 200)
-				s = s.Substring (s.Length - 200);
 			return s;
 		}
 		
@@ -160,7 +159,7 @@ namespace Mono.Addins.Database
 			return (AddinFileInfo) files [file];
 		}
 		
-		public void SetLastScanTime (string file, string addinId, bool isRoot, DateTime time, bool scanError)
+		public AddinFileInfo SetLastScanTime (string file, string addinId, bool isRoot, DateTime time, bool scanError)
 		{
 			AddinFileInfo info = (AddinFileInfo) files [file];
 			if (info == null) {
@@ -176,6 +175,7 @@ namespace Mono.Addins.Database
 				info.Domain = GetDomain (isRoot);
 			else
 				info.Domain = null;
+			return info;
 		}
 		
 		public ArrayList GetMissingAddins ()
@@ -238,9 +238,17 @@ namespace Mono.Addins.Database
 		public bool IsRoot;
 		public bool ScanError;
 		public string Domain;
+		public StringCollection IgnorePaths;
 		
 		public bool IsAddin {
 			get { return AddinId != null && AddinId.Length != 0; }
+		}
+		
+		public void AddPathToIgnore (string path)
+		{
+			if (IgnorePaths == null)
+				IgnorePaths = new StringCollection ();
+			IgnorePaths.Add (path);
 		}
 		
 		void IBinaryXmlElement.Write (BinaryXmlWriter writer)
@@ -251,6 +259,8 @@ namespace Mono.Addins.Database
 			writer.WriteValue ("IsRoot", IsRoot);
 			writer.WriteValue ("ScanError", ScanError);
 			writer.WriteValue ("Domain", Domain);
+			if (IgnorePaths != null && IgnorePaths.Count > 0)
+				writer.WriteValue ("IgnorePaths", IgnorePaths);
 		}
 		
 		void IBinaryXmlElement.Read (BinaryXmlReader reader)
@@ -261,6 +271,7 @@ namespace Mono.Addins.Database
 			IsRoot = reader.ReadBooleanValue ("IsRoot");
 			ScanError = reader.ReadBooleanValue ("ScanError");
 			Domain = reader.ReadStringValue ("Domain");
+			IgnorePaths = (StringCollection) reader.ReadValue ("IgnorePaths", new StringCollection ());
 		}
 	}
 }
