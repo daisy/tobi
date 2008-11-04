@@ -1,3 +1,0 @@
-= Notes on technology =
-
-[[SubWiki(inception/technology/)]]

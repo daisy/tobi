@@ -1,3 +1,0 @@
-A quick and dirty way to find which Wiki pages start with "Tobi": there was a rationale for this naming convention at the begining (to differentiate from existing default Trac pages), but now it is obsolete.
-
-[[SubWiki(Tobi)]]

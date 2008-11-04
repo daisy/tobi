@@ -1,3 +1,0 @@
-= Email Good Practice =
-
-We are not using a mailing-list archives to avoid find-hell. Instead, we expect participants in an email discussion to take care of extracting the essence of the conversation and to organize it in relevant sections of the Wiki. A collaborative Wiki is a flexible yet powerful way of managing brainstorming and decision-making content, so we want to maximize its use.
