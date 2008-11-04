@@ -57,7 +57,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{30BA14
 		Images\TobiLogoNew_TopBanner.png = Images\TobiLogoNew_TopBanner.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuBar", "Tobi.Modules.MenuBar\MenuBar\MenuBar.csproj", "{526DAED8-C818-49B3-ADCB-9FBE44AA7088}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuBar", "Tobi.Modules.MenuBar\MenuBar.csproj", "{526DAED8-C818-49B3-ADCB-9FBE44AA7088}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection

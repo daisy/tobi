@@ -93,7 +93,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Tobi.Modules.MenuBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Tobi.Modules.MenuBar\MenuBar\bin\Debug\Tobi.Modules.MenuBar.dll</HintPath>
+      <HintPath>Tobi.Modules.MenuBar\bin\Debug\Tobi.Modules.MenuBar.dll</HintPath>
     </Reference>
     <Reference Include="Tobi.Modules.StatusBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
