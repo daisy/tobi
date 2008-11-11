@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi", "Tobi.csproj", "{64F
 		{526DAED8-C818-49B3-ADCB-9FBE44AA7088} = {526DAED8-C818-49B3-ADCB-9FBE44AA7088}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK", "..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Tobi.Infrastructure\Infrastructure.csproj", "{698E4C51-9506-4CC5-94E2-31F5FD90532E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Composite", "ExternalLibs\CAL\Composite\Composite.csproj", "{77138947-1D13-4E22-AEE0-5D0DD046CA34}"
@@ -87,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioPane", "Tobi.Modules.A
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "..\..\..\urakawa-sdk\trunk\csharp\core\core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,12 +100,6 @@ Global
 		{64F90229-5944-4DBB-96A0-0E09E6BF5997}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64F90229-5944-4DBB-96A0-0E09E6BF5997}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64F90229-5944-4DBB-96A0-0E09E6BF5997}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
-		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
-		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -184,6 +178,12 @@ Global
 		{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
