@@ -167,25 +167,25 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Tobi.Modules.AudioPane\AudioPane.csproj">
+    <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
-      <Name>AudioPane</Name>
+      <Name>Tobi.Modules.AudioPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.DocumentPane\DocumentPane.csproj">
+    <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Modules.DocumentPane.csproj">
       <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
-      <Name>DocumentPane</Name>
+      <Name>Tobi.Modules.DocumentPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.NavigationPane\NavigationPane.csproj">
+    <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Modules.NavigationPane.csproj">
       <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
-      <Name>NavigationPane</Name>
+      <Name>Tobi.Modules.NavigationPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.ToolBars\ToolBars.csproj">
+    <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Modules.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
-      <Name>ToolBars</Name>
+      <Name>Tobi.Modules.ToolBars</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.UserInterfaceZoom\UserInterfaceZoom.csproj">
+    <ProjectReference Include="Tobi.Modules.UserInterfaceZoom\Tobi.Modules.UserInterfaceZoom.csproj">
       <Project>{81A33B16-0EEC-49FD-8AAB-3EA87E8C8B29}</Project>
-      <Name>UserInterfaceZoom</Name>
+      <Name>Tobi.Modules.UserInterfaceZoom</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

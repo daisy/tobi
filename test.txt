@@ -1,5 +1,6 @@
 testing 
 #2 Testing email notification (seems broken today)
 testing ACLs
+Testing commit from new SVN client (command line) on new MacIntel machine.
 hi from steve
 test daniel from windows
