@@ -62,13 +62,13 @@
     <Compile Include="UserInterfaceStrings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Wpf\Composite.Wpf.csproj">
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Wpf\Lib.Composite.Wpf.csproj">
       <Project>{F807062D-6FC9-4FF0-A9F5-5F94653EDC4D}</Project>
-      <Name>Composite.Wpf</Name>
+      <Name>Lib.Composite.Wpf</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Composite.csproj">
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
-      <Name>Composite</Name>
+      <Name>Lib.Composite</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
