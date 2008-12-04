@@ -1,0 +1,44 @@
+{{{
+#!html
+<div style="margin-top:1.5em;text-align: right;font-size:70%;"><a href="#Phase4">Skip local navigation &#187;</a></div>
+}}}
+
+[[TracNav(TobiPhasesTOC)]]
+
+[[TicketBox("Active Tickets (%d)", [report:11?MILESTONE=Phase 4])]]
+
+
+= Phase 4 =
+
+'''1st October 2008 - 1st January 2009'''
+
+(previous: [wiki:TobiPhase3 Phase 3], next: [wiki:TobiPhase5 Phase 5])
+
+== Tobi stage 1 (text and structure editing, but basic audio support) ==
+
+=== Description of Deliverable ===
+
+ * Installable and usable barebone application, with synchronized text and audio views.
+ * Implements a way to represent imported XML content (i.e. DTBook), and showcases a few rudimentary editing workflows.
+ * Basic audio display (i.e. waveform blocks) is used to represent text/audio synchronization, and a simple recording function exists to allow live narration.
+ * A preview/playback WYSIWYG function is available to test the authored content directly within the editing environment.
+ * Sample content is provided to facilitate testing by users. At this stage, there is no requirement for the supported format (i.e. can be XUK or DAISY 3/DTBook). The emphasis should be on opening existing text/structure content, not on creating from scratch.
+ * High-level documentation must be written to explain how to use the application, and its limitations (John).
+ * Some time must be allocated to evaluate the (albeit simple) editing process offered by this initial release (John+David).
+
+=== Remarks ===
+
+ * This is the start of the active development work (i.e. the end of the inception period). From this point onwards, proper Scrum process management must take place. Prioritization of the "Product Backlog" must be done by the "Product Owner" (i.e. DAISY / Markus). Iteration planning is based on the realization of the "Sprint Backlog". The process should remain light at this stage, therefore the use of metrics for refining estimates is not required (i.e. "Burndown Graph").
+
+=== Staffing ===
+
+(Total = '''3.2''' FTE)
+
+|| '''Name''' || '''Company''' || '''Allocation (FTE)''' || '''Remarks''' ||
+|| ''Daniel Weck'' || DFA || '''0.8''' || Activity Lead ||
+|| ''Ole Holst Andersen'' || DAISY || '''0.5''' || Programmer ||
+|| ''Stephen Hibberd'' || RNIB || '''0.5''' || Programmer ||
+|| ''Avneesh Singh'' || DAISY || '''0.7''' || Programmer ||
+|| ''John Worsfold'' || RNIB || '''0.5''' || User-level documentation writing and Workflow/Usability checking ||
+|| ''David Gordon'' || RNIB || '''0.1''' || Workflow/Usability checking ||
+|| ''Markus Gylling'' || DAISY || '''0.1''' || Reviews reports and coordinates actions ||

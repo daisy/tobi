@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><title>Useful Links</title></head><body>
+<div id="toc" class="toc"><h2 id="toctitle">Table of Contents</h2><ul><li><a href="#General">General</a></li><li><a href="#SVN">SVN</a><ul><li><a href="#DirectCheckout">Direct Checkout</a></li></ul></li><li><a href="#Trac">Trac</a></li><li><a href="#Bugzilla">Bugzilla</a></li><li><a href="#WebDav">WebDav</a></li><li><a href="#RSSfeeds">RSS feeds</a></li><li><a href="#Advanced">Advanced</a></li></ul></div>
+
+<h1 id="UsefulLinks">Useful Links</h1><h2 id="General">General</h2><ul><li>The main login page: <a xmlns="" class="ext-link" href="http://cvsdude.com"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://cvsdude.com</span></a>
+</li><li>...and a direct link: <a xmlns="" class="ext-link" href="https://node8.cvsdude.com/login.pl"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://node8.cvsdude.com/login.pl</span></a>
+</li></ul><h2 id="SVN">SVN</h2><ul><li>HTTP client (faster): <a xmlns="" class="ext-link" href="http://daisy-svn.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-svn.cvsdude.com/tobi</span></a>
+</li><li>HTTPS client (more secure): <a xmlns="" class="ext-link" href="https://daisy-svn.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-svn.cvsdude.com/tobi</span></a>
+</li><li>Commits Mailing-list: <a xmlns="" class="ext-link" href="https://node11.cvsdude.com/mlarch/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://node11.cvsdude.com/mlarch/tobi</span></a>
+</li><li>ViewVC (good old ugly UI, but allows for direct HTML rendering): <a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/vvc"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-browse.cvsdude.com/vvc</span></a>
+</li><li>WebSVN (pretty, but no direct HTML delivery): <a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/wsvn"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-browse.cvsdude.com/wsvn</span></a>
+</li></ul><h3 id="DirectCheckout">Direct Checkout</h3><p>
+<i>There's a number of URL schemes</i>:
+</p><p>
+* with the "view=co" GET HTTP parameter in ViewVC:
+</p><p>
+<a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/vvc/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html?view=co"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-browse.cvsdude.com/vvc/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html?view=co</span></a>
+</p><p>
+* with special "*checkout*" pseudo-directory in ViewVC (actually redirects to the above URL):
+</p><p>
+<a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/vvc/*checkout*/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-browse.cvsdude.com/vvc/*checkout*/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html</span></a>
+</p><p>
+* with the "format=raw" GET HTTP parameter in Trac-browser:
+</p><p>
+<a xmlns="" href="https://daisy-trac.cvsdude.com/tobi/browser/trac/wiki/special/Tobi_Roadmap_Summary.html?format=raw">https://daisy-trac.cvsdude.com/tobi/browser/trac/wiki/special/Tobi_Roadmap_Summary.html?format=raw</a>
+</p><p>
+<i>These ones do not work</i>:
+</p><p>
+* WebSVN does not seem to have such "checkout" functionality at all:
+</p><p>
+<a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/wsvn/wsvn/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-browse.cvsdude.com/wsvn/wsvn/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html</span></a>
+</p><p>
+* the SVN-compliant URL only serves plain-text source:
+</p><p>
+<a xmlns="" class="ext-link" href="http://daisy-svn.cvsdude.com/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-svn.cvsdude.com/tobi/trac/wiki/special/Tobi_Roadmap_Summary.html</span></a> 
+</p><h2 id="Trac">Trac</h2><ul><li>HTTP browser (faster): <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi</span></a>
+</li><li>HTTPS browser (more secure): <a xmlns="" class="ext-link" href="https://daisy-trac.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-trac.cvsdude.com/tobi</span></a>
+</li></ul><h2 id="Bugzilla">Bugzilla</h2><p>
+There's one instance only for the whole "daisy" project (sub-projects are configured from within the tracker).
+</p><ul><li><a xmlns="" class="ext-link" href="https://daisy-bugz.cvsdude.com"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-bugz.cvsdude.com</span></a>
+</li></ul><h2 id="WebDav">WebDav</h2><p>
+There's one instance only for the whole "daisy" project.
+</p><p>
+Paste the URL directly in the web-browser, or in supported file WebDav client (Mac OS X: Finder-&gt;Go-&gt;"Connect to server").
+</p><ul><li><a xmlns="" class="ext-link" href="https://daisy-drive.cvsdude.com/users/daisy"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-drive.cvsdude.com/users/daisy</span></a>
+</li></ul><h2 id="RSSfeeds">RSS feeds</h2><p>
+When a Trac page contains an RSS feed, an orange icon that says "RSS XML feed" is displayed at the bottom of the page.
+</p><p>
+The most useful feed is the "Timeline", as it notifies of any changes in the Wiki, SVN repository, Issue Tracker / Tickets and Roadmap / Milestones: <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/timeline?changeset=on&amp;wiki=on&amp;ticket=on&amp;ticket_details=on&amp;milestone=on&amp;format=rss"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/timeline?changeset=on&amp;wiki=on&amp;ticket=on&amp;ticket_details=on&amp;milestone=on&amp;format=rss</span></a>
+</p><p>
+Here are other examples of direct links:
+</p><ul><li>Blog: <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/blog?year=2008&amp;format=rss"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/blog?year=2008&amp;format=rss</span></a>
+</li><li>Active Tickets: <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/report/1?format=rss"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/report/1?format=rss</span></a>
+</li><li>Revision Log ("/" root of the repository): <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/log/?limit=100&amp;mode=stop_on_copy&amp;format=rss"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/log/?limit=100&amp;mode=stop_on_copy&amp;format=rss</span></a>
+</li><li>Revision Log (for the "/trac/" directory): <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/log/trac/?limit=100&amp;mode=stop_on_copy&amp;format=rss"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/log/trac/?limit=100&amp;mode=stop_on_copy&amp;format=rss</span></a>
+</li></ul><h2 id="Advanced">Advanced</h2><ul><li>It is worth noting that there is a direct mapping between the <a href="AdminUpload.html" title="">AdminUpload?</a> -&gt; Upload List directory and a public URL. For example: <a xmlns="" class="ext-link" href="http://PROJECT-trac.cvsdude.com/MODULE/chrome/uploads/USER/file.ext"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://PROJECT-trac.cvsdude.com/MODULE/chrome/uploads/USER/file.ext</span></a> is actually stored inside "/var/www/cvsdude/trac/PROJECT/MODULE/uploads/USER/", which is a write-enabled folder for authenticated TRAC_ADMIN users.
+</li></ul><ul><li>There is also the "/var/www/cvsdude/trac/PROJECT/MODULE/templates/" directory, but it's used internally by the Trac runtime only, there is no public HTTP URL to access its contents. The configuration also shows "/usr/local/python/share/trac/templates".
+</li></ul><ul><li>The CSS and JS files are in the "chrome" directory, e.g.: <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/chrome/common/css/wiki.css"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/chrome/common/css/wiki.css</span></a> and <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/chrome/common/js/trac.js"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/chrome/common/js/trac.js</span></a>. For built-in plugins, there are separate chrome folders, e.g.: <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/chrome/blog/css/blog.css"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/chrome/blog/css/blog.css</span></a> and <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/chrome/tags/css/tractags.css"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/chrome/tags/css/tractags.css</span></a> and <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/chrome/admin/css/admin.css"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-trac.cvsdude.com/tobi/chrome/admin/css/admin.css</span></a>
+</li></ul><ul><li>Unverified: <a xmlns="" class="ext-link" href="http://PROJECT-trac.cvsdude.com/MODULE/wiki-macros/CsvMacro.py"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://PROJECT-trac.cvsdude.com/MODULE/wiki-macros/CsvMacro.py</span></a>
+</li></ul></body></html>

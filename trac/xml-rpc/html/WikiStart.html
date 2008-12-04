@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><title>Homepage</title></head><body>
+<div id="toc" class="toc"><h2 id="toctitle">Table of Contents</h2><ul><li><a href="#ProjectOverview">Project Overview</a><ul><li><a href="#Description">Description</a></li><li><a href="#CostandLicense">Cost and License</a></li></ul></li><li><a href="#Roadmap">Roadmap</a><ul><li><a href="#CurrentStatus">Current Status</a></li><li><a href="#PlanningOverview">Planning Overview</a></li><li><a href="#ReleaseSchedule">Release Schedule</a></li><li><a href="#ProgressTracking">Progress Tracking</a></li></ul></li><li><a href="#Deliverables">Deliverables</a><ul><li><a href="#Binaries">Binaries</a></li><li><a href="#SourceCode">Source Code</a></li><li><a href="#Documentation">Documentation</a></li></ul></li><li><a href="#Technologies">Technologies</a></li><li><a href="#About">About</a><ul><li><a href="#TheDAISYConsortium">The DAISY Consortium</a></li><li><a href="#TheUrakawaProject">The Urakawa Project</a></li></ul></li></ul></div>
+
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/DaisyLogo.png" title="DAISY logo" style="float:right; margin-right:1em"/><h1 id="Homepage">Homepage</h1><h2 id="ProjectOverview">Project Overview</h2><h3 id="Description">Description</h3><p>
+<i>For users:</i>
+</p><p>
+Tobi is a production tool for accessible multimedia formats such as DAISY 3 (otherwise known as the ANSI/NISO Z39.86 open standard). Tobi offers an easy-to-use user interface and an intuitive recording workflow for Digital Talking Books, with support for rich document markup such as the DTBook XML open standard (as used by DAISY, ePub, NIMAS). Tobi provides basic functionality for editing structured text containing images, MathML, and SVG. However, the primary focus is to help authors synchronizing the various streams of information and implementing the navigation structure necessary to successfully produce accessible material.
+</p><p>
+Tobi is extensible: its modular architecture guarantees that there is always scope for new features, to respond to the market demands and to the evolution of standards. From the outset, Tobi is designed as a next-generation authoring tool. The goal of such an open application ecosystem is to stimulate the growth of a community of users and developers, who will interact with each other through the "addon" space. Addons can be plugins (added functionality), document templates, project wizards, multimedia assets, import/export modules, help files, etc. Installed Addons can be updated transparently when a new version comes out, or manually upon user request. New addons can be searched and installed easily, with all their dependencies resolved automatically.
+</p><p>
+Detailed information about Tobi's "unique selling points" can be found <a href="inception!!requirements!!UniqueSellingPoints.html" title="">here</a>.
+</p><p>
+<i>For developers:</i>
+</p><p>
+Behind the scenes, Tobi utilizes the <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/urakawa-sdk"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Urakawa SDK</span></a> (Software Development Kit), so the internal authoring data model is de-facto extensible. Tobi also provides an application framework for developing extensions. The customization capabilities are therefore available across the board: document model, edition services, audio processing, user-interface components, etc.
+</p><p>
+Because of its modularity, Tobi can easily be re-packaged to meet organizations-specific requirements. For example, production houses that require strict configuration management should implement access-control to addons via their own intranet setup. With Tobi's open development model, the possibilities are endless.
+</p><p>
+Our responsibility as the core team of developers is to provide a baseline product. Thanks to third-party contributors, the potential within will be fully unlocked.
+</p><h3 id="CostandLicense">Cost and License</h3><p>
+Tobi is Free (as in beer) and <a xmlns="" class="ext-link" href="http://www.opensource.org/docs/definition.php"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Open-Source</span></a> software. It is released under a business-friendly licensing scheme to allow commercial exploitation whilst protecting the original developers' work (<a href="LGPLvsBSD.html" title="">LGPL</a>).
+</p><p>
+The project was initiated by the DAISY Consortium, but is maintained collaboratively with several key international partners including as the Nippon Foundation (Japan), RFB&amp;D (USA) and RNIB (United Kingdom). Organizations interested in implementing specific requirements can contribute at various levels (templates, import/export, documentation, custom installers), and are able to include closed-source functionality via the Tobi plugin mechanism.
+</p><h2 id="Roadmap">Roadmap</h2><h3 id="CurrentStatus">Current Status</h3><p>
+Version 0.1 (i.e. first alpha release) of Tobi is under heavy development. Due to the application's modular nature, there is a lot of upfront architecture specification and draft implementation work. The first public release will not be a full-featured production tool but will represent a exiting base to start using the extension model.
+</p><p>
+We expect the first public deliverable to be ready in January 2009, with some audio recording capabilities for structured DAISY 3 documents (i.e. human narration for DTBook text). This will be an alpha release aiming at developers, and the extensibility API is likely to change further down the line.
+</p><h3 id="PlanningOverview">Planning Overview</h3><p>
+The development process of the Tobi application runs as a parallel track to the <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/urakawa-sdk"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Urakawa SDK</span></a>. Tobi provides a platform for experimenting new features which results in requirements being injected into the lower layers, such as the SDK.
+</p><p>
+We are a small team so in order to avoid management overhead, we are operating under a lightweight agile process with short iterative release cycles. The Tobi project can easily be subdivided into well-scoped mini-projects, thanks to its modular nature. This facilitates distributing tasks across remote developers, which is important as the project is gathering momentum and we are expecting the team to grow.
+</p><h3 id="ReleaseSchedule">Release Schedule</h3><ul><li>January 2009 (first alpha)
+</li><li>March 2009 (second alpha)
+</li><li>May 2009 (third alpha)
+</li><li>July 2009 (first beta)
+</li><li>September 2009 (second beta)
+</li><li>December 2009 (release candidate)
+</li><li>January 2010 (first stable release)
+</li></ul><p>
+The detailed project roadmap is available <a href="TobiRoadmap.html" title="">here</a>.
+</p><h3 id="ProgressTracking">Progress Tracking</h3><p>
+This Trac-based website provides an integrated tracking system. Up to date progress reports can be accessed <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/roadmap"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">here</span></a> for each active milestone. The general day-to-day project-wide activity can be viewed <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/timeline"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">here</span></a> and can be tracked using this <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/timeline?changeset=on&amp;wiki=on&amp;ticket=on&amp;ticket_details=on&amp;milestone=on&amp;max=50&amp;daysback=90&amp;format=rss"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">RSS feed</span></a>. There is currently no public mailing-list. We intend to set one up before the first public release.
+</p><p>
+Tracking and reporting for the open development process is available in the <a href="meetings.html" title="">meeting reports</a> and <a href="calls.html" title="">conference call minutes</a>. The agenda of upcoming events is available <a href="agenda.html" title="">here</a>.
+</p><h2 id="Deliverables">Deliverables</h2><h3 id="Binaries">Binaries</h3><p>
+We have not made any public release yet, so the executable binaries must be created from source by developers themselves.
+</p><h3 id="SourceCode">Source Code</h3><p>
+<i>Requirements</i>
+</p><p>
+We are using the <a xmlns="" class="ext-link" href="http://www.microsoft.com/express/vcsharp"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Microsoft VisualStudio 2008 SP1</span></a> IDE to edit the C-Sharp source, along with the latest <a xmlns="" class="ext-link" href="http://msdn.microsoft.com/en-us/netframework"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">.NET 3.5 SP1 framework</span></a>. Parts of the project will depend on DirectX (for audio processing). Running the unit-tests will require the free <a xmlns="" class="ext-link" href="http://www.nunit.org"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">NUnit</span></a> library.
+</p><p>
+<i>Optional Tools</i>
+</p><p>
+We recommend the commercial <a xmlns="" class="ext-link" href="http://www.jetbrains.com/resharper"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">ReSharper plugin</span></a> for VisualStudio. We would also recommend free addons for ReSharper such as <a xmlns="" class="ext-link" href="http://code.google.com/p/scoutplugin"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">ScoutPlugin</span></a> and <a xmlns="" class="ext-link" href="http://code.google.com/p/agentsmithplugin"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">AgentSmith</span></a>. RedGate's free <a xmlns="" class="ext-link" href="http://www.red-gate.com/products/reflector"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">.NET Reflector</span></a> is a CIL dissasembler that can be very helpful when debugging application code. For a totally 'free' development environment, programmers may use the <a xmlns="" class="ext-link" href="http://sharpdevelop.net/OpenSource/SD"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">SharpDevelop</span></a> or <a xmlns="" class="ext-link" href="http://monodevelop.com/Main_Page"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">MonoDevelop</span></a> IDEs instead of VisualStudio. Finally, the Microsoft .NET sources can be obtained following the instructions <a xmlns="" class="ext-link" href="http://msdnrss.thecoderblogs.com/2008/10/21/wpf-sources-for-net-framework-35-sp1-are-available"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">here</span></a> and <a xmlns="" class="ext-link" href="http://referencesource.microsoft.com/serversetup.aspx"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">here</span></a> and <a xmlns="" class="ext-link" href="http://forums.msdn.microsoft.com/en-US/refsourceserver/threads"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">here</span></a>.
+</p><p>
+<i>Online Browsing</i>
+</p><ul><li>Tobi is currently being developed in the <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/browser/trunk/tobiapp"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">SVN trunk</span></a>
+</li><li>Some sample code (now obsolete) is available in <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/browser/trunk/csharp/toybox"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">the "toybox"</span></a>
+</li></ul><p>
+There are alternative ways - albeit not as good as Trac - to view the source code directly in a web-browser:
+</p><ul><li><a xmlns="" class="ext-link" href="http://daisy-svn.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">simple plain-text view</span></a>
+</li><li><a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/vvc/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">using the popular ViewVC</span></a>
+</li><li><a xmlns="" class="ext-link" href="https://daisy-browse.cvsdude.com/wsvn/wsvn/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">with the more advanced WebSVN</span></a>
+</li></ul><p>
+<i>Download</i>
+</p><p>
+We do not provide pre-packaged compressed source code archives. You can use your favorite SVN client and anonymously checkout either of these URLs (remember to append a path based on what directory you actually want to download):
+</p><ul><li><a xmlns="" class="ext-link" href="http://daisy-svn.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">http://daisy-svn.cvsdude.com/tobi</span></a> (non-encrypted, faster)
+</li><li><a xmlns="" class="ext-link" href="https://daisy-svn.cvsdude.com/tobi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">https://daisy-svn.cvsdude.com/tobi</span></a> (secured, slower)
+</li></ul><p>
+Microsoft Windows users: the free <a xmlns="" class="ext-link" href="http://tortoisesvn.tigris.org"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Tortoise-SVN</span></a> application is recommended. We find that the commercial <a xmlns="" class="ext-link" href="http://www.visualsvn.com"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">VisualSVN</span></a> tool is a useful commercial addon to VisualStudio.
+</p><h3 id="Documentation">Documentation</h3><p>
+There has not been any public release yet, so the available documentation is only meant for developers. Most of it emerged from the initial inception phase of the Tobi project (requirements gathering, mockups, technical brainstorming, etc.).
+</p><ul><li>Information about the architecture choices can be found <a href="inception!!architecture.html" title="">here</a>.
+</li><li>Pointers to the various technologies used in the project can be found <a href="inception!!technology.html" title="">here</a>.
+</li><li>Details about how Tobi relates to the DAISY 3 Production Tools Requirements can be found <a href="TobiDaisyProdToolReqs.html" title="">here</a>.
+</li><li>Inspirational screenshots can be seen <a href="inception!!ExistingSoftware.html" title="">here</a> and <a href="inception!!Mockups.html" title="">here</a>.
+</li><li>Thoughts about plugins can be found <a href="inception!!PluginExamples.html" title="">here</a>.
+</li></ul><h2 id="Technologies">Technologies</h2><p>
+Due to its projected size and complexity, Tobi is an advanced project that requires state-of-the-art software technologies. The long-term ambitions for this project mean that we needed to be forward-thinking in terms of computer performance and software design. One of the project's goals was also to reach a large user and programmer community for the development of an open ecosystem.
+</p><p>
+The Tobi application is written with Visual Studio 2008 in the C# language for the <a xmlns="" class="ext-link" href="http://msdn.microsoft.com/en-us/vstudio/cc533448.aspx"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">latest</span></a> Microsoft .NET 3.5 SP1 framework. These are currently Windows-only next-generation technologies, which is a limitation that we hope will be relieved with the advent of the cross-platform <a xmlns="" class="ext-link" href="http://www.mono-project.com"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Mono framework</span></a>.
+</p><p>
+The application front-end is made with the <a xmlns="" class="ext-link" href="http://www.codeplex.com/wpf"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Windows Presentation Foundation</span></a> (WPF), which is a mature technology in the .NET 3 series. WPF not only provides a great user experience, it also enable designers and programmers to enjoy modern user-interface construction, where separation of concerns is key to the maintainability and testability of a software product.
+</p><p>
+WPF utilizes an enhanced accessibility model called <a xmlns="" class="ext-link" href="http://msdn.microsoft.com/en-us/library/ms747327.aspx"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">UI-Automation</span></a>, which is supported by modern screen readers. WPF is based on hardware-accelerated scalable graphics, which means that magnification for users with vision impairments is crisp and detailed. WPF also supports graphical themes to meet accessibility requirements or simply to suit user tastes.
+</p><p>
+Although Tobi will be nearly entirely built upon the modern WPF technology, it will also be fully compatible with the traditional MFC-inherited UI development model, namely: Windows-Forms. This way, Tobi will enable organizations and developers to use legacy code for their contributions. As a matter of fact, Tobi will be re-using code coming from DAISY's own <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/obi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Obi application</span></a>, which is built on the .NET 2 series. In addition, WPF doesn't preclude crossing the boundaries into the unmanaged world, which means that fast native code can be used for processing-intensive routines or low-level access to the operating system.
+</p><p>
+The Tobi project relies on several open-source technologies, including <a xmlns="" class="ext-link" href="http://www.mono-project.com/Mono.Addins"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Mono.Addin</span></a> and the <a xmlns="" class="ext-link" href="http://www.codeplex.com/CompositeWPF"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Composite Application Guidance</span></a> for WPF. These libraries play key roles in Tobi's modular architecture, as summarized in <a href="inception!!architecture!!EcoSystem.html" title="">this diagram</a>.
+</p><p>
+PS: the cross-platform <a xmlns="" class="ext-link" href="http://silverlight.net"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Silverlight</span></a> browser technology is a subset of WPF, so there is some overlap in terms of development tools and methods. An interesting project in that respect is the <a xmlns="" class="ext-link" href="http://www.eclipse4sl.org"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Eclipse Silverlight plugin</span></a>.
+</p><h2 id="About">About</h2><h3 id="TheDAISYConsortium">The DAISY Consortium</h3><p>
+DAISY (Digital Accessible Information SYstem) is an open standard for accessible electronic multimedia. The <a xmlns="" class="ext-link" href="http://daisy.org"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">DAISY Consortium</span></a> is a worldwide body of like-minded organizations collaborating to develop the standards and to implement strategies for the production, exchange and use of next-generation Digital Talking Books (DTB) aimed at people who are blind, visually-impaired, or otherwise print-disabled (e.g. dyslexic). The DAISY Consortium is a non-profit organization.
+</p><h3 id="TheUrakawaProject">The Urakawa Project</h3><p>
+<i>Overview</i>
+</p><p>
+The Urakawa project is an incubator created and maintained by the DAISY Consortium, with key support from international partners such as the NRCD (Japan), the INRIA (France) and CWI (Netherlands). The software deliverables of the Urakawa project consist of a software suite including the SDK (Software Development Toolkit), <a xmlns="" class="ext-link" href="http://urakawa.sf.net/obi"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Obi</span></a> and <a xmlns="" class="ext-link" href="http://daisy-trac.cvsdude.com/tobi/"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Tobi</span></a>.
+</p><p>
+The Urakawa project was originally hosted at <a xmlns="" class="ext-link" href="http://urakawa.sourceforge.net"><span xmlns="http://www.w3.org/1999/xhtml" class="icon">Sourceforge.net Sourceforge</span></a>, but that site is now obsolete as we have moved our development resources to this new Trac-based collaborative environment. The original website is kept as a legacy placeholder, which is deprecated and won't be maintained.
+</p><p>
+<i>History</i>
+</p><img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/UrakawaLogo.png" title="Urakawa logo" style="float:left; margin-right:1em"/><p>
+The Urakawa project logo is a circle that contains a large symbolic sea wave, to commemorate the birth of the project in a town called "Urakawa", in Hokkaido (nothern Japan). Urakawa-town has been the setting of devastating tsunamis, and its population has gathered an experience that is now being shared through training and oral communication. The people of Urakawa-town are forward-thinkers who have become volunteers to take part in a large research and experimentation programme for the inclusion of ICT (Information Communication Technology) in evacuation training. Interactive multimedia is a key contributor to the success of disaster preparedness projects, as it meets the needs of a broad category of end-users that have unequal access to safety information. Training manuals produced in accessible DAISY Digital Talking Books are helping not only the print-disabled or visually-impaired, but also persons with various degrees of socio-cognitive disabilities such as the elderly and people with autism. In this era of information society, the DAISY Consortium is dedicated to provide free production and playback tools so that everyone can contribute regardless of their purchasing power.
+</p></body></html>

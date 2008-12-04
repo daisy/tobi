@@ -1,0 +1,6 @@
+= Application Ecosystem =
+
+(accessible version to be included later on)
+
+[[Image(Tobi_Diagram_Application_Ecosystem_Overview.png)]]
+

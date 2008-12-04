@@ -1,0 +1,8 @@
+= Writing Dates =
+
+To enable alphabetical sorting (in file/folder names, documents, etc.), dates should be written using the following syntax:
+
+YEAR-MONTH-DAY (otherwise known as YYYY-MM-DD)
+
+e.g.: 2008-01-05
+
