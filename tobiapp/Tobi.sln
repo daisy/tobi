@@ -182,4 +182,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SelectedEnterpriseLibraryConfigurationSet = EntLib41Src
+	EndGlobalSection
 EndGlobal
