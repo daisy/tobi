@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Wpf.Commands;
+using Microsoft.Practices.Composite.Presentation.Commands;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 

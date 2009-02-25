@@ -53,9 +53,9 @@ namespace Tobi
         /// <summary>
         /// Tobi loads its main Modules statically
         /// </summary>
-        protected override IModuleEnumerator GetModuleEnumerator()
+        protected override IModuleCatalog GetModuleCatalog()
         {
-            return new StaticModuleEnumerator()
+            return new ModuleCatalog()
                 .AddModule(typeof(MenuBarModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(UserInterfaceZoomModule))

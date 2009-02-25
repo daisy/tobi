@@ -58,18 +58,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Composite, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ExternalLibs\CAL\Composite\bin\Debug\Microsoft.Practices.Composite.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Composite.UnityExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ExternalLibs\CAL\Composite.UnityExtensions\bin\Debug\Microsoft.Practices.Composite.UnityExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Composite.Wpf, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ExternalLibs\CAL\Composite.Wpf\bin\Debug\Microsoft.Practices.Composite.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -151,6 +139,18 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
+      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
+      <Name>Lib.Composite.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
+      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
+      <Name>Lib.Composite.UnityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite\Lib.Composite.csproj">
+      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
+      <Name>Lib.Composite</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Modules.AudioPane</Name>
