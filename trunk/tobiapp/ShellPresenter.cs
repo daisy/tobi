@@ -3,7 +3,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Composite.Wpf.Commands;
+using Microsoft.Practices.Composite.Presentation.Commands;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 using Tobi.Modules.MenuBar;

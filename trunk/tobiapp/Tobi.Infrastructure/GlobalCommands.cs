@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.Composite.Wpf.Commands;
+﻿using Microsoft.Practices.Composite.Presentation.Commands;
 
 namespace Tobi.Infrastructure
 {

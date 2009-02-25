@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.Practices.Composite.Wpf.Commands;
+using Microsoft.Practices.Composite.Presentation.Commands;
 
 namespace Tobi.Infrastructure
 {
