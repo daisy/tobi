@@ -28,6 +28,13 @@ namespace Microsoft.Practices.Composite.Presentation.Regions.Behaviors
 {
     /// <summary>
     /// Defines the attached behavior that keeps the items of the <see cref="Selector"/> host control in synchronization with the <see cref="IRegion"/>.
+    /// 
+    /// This behavior also makes sure that, if you activate a view in a region, the SelectedItem is set. If you set the SelectedItem or SelectedItems (ListBox)
+    /// then this behavior will also call Activate on the selected items. 
+    /// <remarks>
+    /// When calling Activate on a view, you can only select a single active view at a time. By setting the SelectedItems property of a listbox, you can set
+    /// multiple views to active. 
+    /// </remarks>
     /// </summary>
     public class SelectorItemsSourceSyncBehavior : RegionBehavior, IHostAwareRegionBehavior
     {
@@ -35,7 +42,7 @@ namespace Microsoft.Practices.Composite.Presentation.Regions.Behaviors
         /// Name that identifies the SelectorItemsSourceSyncBehavior behavior in a collection of RegionsBehaviors. 
         /// </summary>
         public static readonly string BehaviorKey = "SelectorItemsSourceSyncBehavior";
-        private bool updating;
+        private bool updatingActiveViewsInHostControlSelectionChanged;
         private Selector hostControl;
 
         /// <summary>
@@ -81,33 +88,19 @@ namespace Microsoft.Practices.Composite.Presentation.Regions.Behaviors
 
         private void Views_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (this.updating)
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                return;
-            }
-
-            try
-            {
-                this.updating = true;
-
-                if (e.Action == NotifyCollectionChangedAction.Add)
+                foreach (object newItem in e.NewItems)
                 {
-                    foreach (object newItem in e.NewItems)
-                    {
-                        this.hostControl.Items.Add(newItem);
-                    }
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    foreach (object oldItem in e.OldItems)
-                    {
-                        this.hostControl.Items.Remove(oldItem);
-                    }
+                    this.hostControl.Items.Add(newItem);
                 }
             }
-            finally
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                this.updating = false;
+                foreach (object oldItem in e.OldItems)
+                {
+                    this.hostControl.Items.Remove(oldItem);
+                }
             }
         }
 
@@ -135,41 +128,38 @@ namespace Microsoft.Practices.Composite.Presentation.Regions.Behaviors
 
         private void ActiveViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (this.updating)
+            if (this.updatingActiveViewsInHostControlSelectionChanged)
             {
+                // If we are updating the ActiveViews collection in the HostControlSelectionChanged, that 
+                // means the user has set the SelectedItem or SelectedItems himself and we don't need to do that here now
                 return;
             }
 
-            try
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                this.updating = true;
+                if (this.hostControl.SelectedItem != null 
+                    && this.hostControl.SelectedItem != e.NewItems[0] 
+                    && this.Region.ActiveViews.Contains(this.hostControl.SelectedItem))
+                {
+                    this.Region.Deactivate(this.hostControl.SelectedItem);
+                }
 
-                if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    this.hostControl.SelectedItem = e.NewItems[0];
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Remove &&
-                         e.OldItems.Contains(this.hostControl.SelectedItem))
-                {
-                    this.hostControl.SelectedItem = null;
-                }
+                this.hostControl.SelectedItem = e.NewItems[0];
             }
-            finally
+            else if (e.Action == NotifyCollectionChangedAction.Remove &&
+                     e.OldItems.Contains(this.hostControl.SelectedItem))
             {
-                this.updating = false;
+                this.hostControl.SelectedItem = null;
             }
         }
 
         private void HostControlSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.updating)
-            {
-                return;
-            }
-
             try
             {
-                this.updating = true;
+                // Record the fact that we are now updating active views in the HostControlSelectionChanged method. 
+                // This is needed to prevent the ActiveViews_CollectionChanged() method from firing. 
+                this.updatingActiveViewsInHostControlSelectionChanged = true;
 
                 object source;
 #if SILVERLIGHT
@@ -192,13 +182,16 @@ namespace Microsoft.Practices.Composite.Presentation.Regions.Behaviors
 
                     foreach (object item in e.AddedItems)
                     {
-                        this.Region.Activate(item);
+                        if (this.Region.Views.Contains(item) && !this.Region.ActiveViews.Contains(item))
+                        {
+                            this.Region.Activate(item);
+                        }
                     }
                 }
             }
             finally
             {
-                this.updating = false;
+                this.updatingActiveViewsInHostControlSelectionChanged = false;
             }
         }
     }
