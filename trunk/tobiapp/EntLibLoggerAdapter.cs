@@ -11,21 +11,36 @@ namespace Tobi
     ///</summary>
     public class EntLibLoggerAdapter : ILoggerFacade
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public EntLibLoggerAdapter()
         {
+            /*
+              
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+             
+             */
             Console.SetWindowPosition(0, 0);
             Console.Title = "Tobi Log Window";
         }
 
+        /// <summary>
+        /// sdlkfhjdslkgjdfs
+        /// </summary>
+        /// <returns>the name of the given person firstname, is not null, but can be empty ""</returns>
+        public string GetMyName(string firstName)
+        {
+            if (firstName == null) throw new ArgumentNullException("firstName");
+
+            return "";
+        }
+
         #region ILoggerFacade Members
 
-        ///<summary>
-        /// Simply delegates to the Logger from Microsoft.Practices.EnterpriseLibrary.Logging
-        ///</summary>
-        ///<param name="message"></param>
-        ///<param name="category"></param>
-        ///<param name="priority"></param>
+        //<summary>
+        // Simply delegates to the Logger from Microsoft.Practices.EnterpriseLibrary.Logging
+        //</summary>
         public void Log(string message, Category category, Priority priority)
         {
             Logger.Write(message, category.ToString(), (int)priority);
