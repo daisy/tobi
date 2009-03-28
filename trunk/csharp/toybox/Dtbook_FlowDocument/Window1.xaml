@@ -1,0 +1,12 @@
+﻿<Window x:Class="WpfDtbookTest.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="DTBook FlowDocument renderer" Height="600" Width="800">
+  <DockPanel>
+    <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+      <Button Click="OnOpenFile">Open DTBook...</Button>
+      <TextBox Text="{Binding FilePath}"/>
+    </StackPanel>
+    <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"/>
+  </DockPanel>
+</Window>
