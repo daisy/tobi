@@ -105,6 +105,12 @@ namespace WpfDtbookTest
             return str.ToString();
         }
 
+        delegate void DelegateSectionInitializer(Section secstion);
+        delegate void DelegateFigureInitializer(Figure fig);
+        delegate void DelegateFloaterInitializer(Floater floater);
+        delegate void DelegateSpanInitializer(Span span);
+        delegate void DelegateParagraphInitializer(Paragraph para);
+
         private string m_FilePath;
         private FlowDocument m_FlowDoc;
         private Project m_XukProject;
@@ -229,7 +235,7 @@ namespace WpfDtbookTest
                 }
             }
 
-            FlowDocReader.Zoom = 1.0;
+            FlowDocReader.Zoom = 120;
 
             FlowDocReader.Document = flowDoc;
         }
@@ -330,10 +336,10 @@ namespace WpfDtbookTest
             if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
             {
                 image.ToolTip = altAttr.Value;
-                Paragraph paraAlt = new Paragraph(new Run("ALT: "+altAttr.Value));
+                Paragraph paraAlt = new Paragraph(new Run("ALT: " + altAttr.Value));
                 paraAlt.BorderBrush = Brushes.CadetBlue;
                 paraAlt.BorderThickness = new Thickness(1.0);
-                paraAlt.FontSize = m_FlowDoc.FontSize/1.2;
+                paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
                 addBlock(parent, paraAlt);
             }
 
@@ -422,9 +428,8 @@ namespace WpfDtbookTest
                 throw new Exception("Trying to add TableCell btu parent is not Table ??");
             }
         }
-        delegate void delegateParagraphInitializer(Paragraph para);
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateParagraphInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateParagraphInitializer initializer)
         {
             Paragraph data = new Paragraph();
             if (initializer != null)
@@ -588,8 +593,14 @@ namespace WpfDtbookTest
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    Paragraph para = new Paragraph(new Run(textMedia.Text));
+                    data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
+
+                    if (qname.LocalName == "pagenum")
+                    {
+                        formatPageNumberAndSetId(node, para);
+                    }
                 }
 
                 return parent;
@@ -598,6 +609,13 @@ namespace WpfDtbookTest
             else
             {
                 ((List)parent).ListItems.Add(data);
+                if (qname.LocalName == "pagenum")
+                {
+                    Paragraph para = new Paragraph();
+                    formatPageNumberAndSetId(node, para);
+                    data.Blocks.Add(para);
+                    return para;
+                }
                 return data;
             }
         }
@@ -615,7 +633,8 @@ namespace WpfDtbookTest
             {
                 if (parent is Table)
                 {
-                    if (qname.LocalName == "caption" && textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
+                    if ((qname.LocalName == "pagenum" || qname.LocalName == "caption")
+                        && textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
                     {
                         m_currentTD = 0;
 
@@ -624,22 +643,23 @@ namespace WpfDtbookTest
 
                         TableRow data = new TableRow();
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
-                        TableCell cell = new TableCell(new Paragraph(new Run(textMedia.Text)));
+                        Paragraph para = new Paragraph(new Run(textMedia.Text));
+                        TableCell cell = new TableCell(para);
 
-                        formatCaptionCell(cell);
-                        
+                        if (qname.LocalName == "caption")
+                        {
+                            formatCaptionCell(cell);
+                        }
+                        else
+                        {
+                            formatPageNumberAndSetId(node, para);
+                        }
+
                         cell.ColumnSpan = 1;
                         m_cellsToExpand.Add(cell);
-                        
+
                         data.Cells.Add(cell);
 
-                        m_firstTR = false;
-                        return parent;
-                    }
-                    else if (qname.LocalName == "pagenum" && textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
-                    {
-                        //TODO: oy !
-                        //m_cellsToExpand.Add(cell);
                         m_firstTR = false;
                         return parent;
                     }
@@ -659,7 +679,7 @@ namespace WpfDtbookTest
             {
                 if (parent is Table)
                 {
-                    if (qname.LocalName == "caption")
+                    if (qname.LocalName == "pagenum" || qname.LocalName == "caption")
                     {
                         m_currentTD = 0;
 
@@ -671,8 +691,15 @@ namespace WpfDtbookTest
                         Paragraph para = new Paragraph();
                         TableCell cell = new TableCell(para);
 
-                        formatCaptionCell(cell);
-                        
+                        if (qname.LocalName == "caption")
+                        {
+                            formatCaptionCell(cell);
+                        }
+                        else
+                        {
+                            formatPageNumberAndSetId(node, para);
+                        }
+
                         cell.ColumnSpan = 1;
                         m_cellsToExpand.Add(cell);
 
@@ -680,13 +707,6 @@ namespace WpfDtbookTest
 
                         m_firstTR = false;
                         return para;
-                    }
-                    else if (qname.LocalName == "pagenum")
-                    {
-                        //TODO: Oy !
-                        m_firstTR = false;
-                        //m_cellsToExpand.Add(cell);
-                        return parent;
                     }
                     else if (qname.LocalName == "thead"
                         || qname.LocalName == "tbody"
@@ -817,9 +837,7 @@ namespace WpfDtbookTest
             }
         }
 
-        delegate void delegateSpanInitializer(Span span);
-
-        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateSpanInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSpanInitializer initializer)
         {
             Span data = new Span();
             if (initializer != null)
@@ -850,9 +868,7 @@ namespace WpfDtbookTest
             }
         }
 
-        delegate void delegateFloaterInitializer(Floater floater);
-
-        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateFloaterInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFloaterInitializer initializer)
         {
             Floater data = new Floater();
             if (initializer != null)
@@ -881,9 +897,8 @@ namespace WpfDtbookTest
                 return data;
             }
         }
-        delegate void delegateFigureInitializer(Figure fig);
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateFigureInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFigureInitializer initializer)
         {
             Figure data = new Figure();
             if (initializer != null)
@@ -912,9 +927,8 @@ namespace WpfDtbookTest
                 return data;
             }
         }
-        delegate void delegateSectionInitializer(Section section);
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateSectionInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSectionInitializer initializer)
         {
             Section data = new Section();
             if (initializer != null)
@@ -967,6 +981,7 @@ namespace WpfDtbookTest
 
                 switch (qname.LocalName)
                 {
+                    case "p":
                     case "level":
                     case "level1":
                     case "level2":
@@ -1028,10 +1043,6 @@ namespace WpfDtbookTest
                     case "annoref":
                         {
                             return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, qname, textMedia);
-                        }
-                    case "p":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
                         }
                     case "caption":
                         {
@@ -1104,45 +1115,22 @@ namespace WpfDtbookTest
                         }
                     case "pagenum":
                         {
+                            DelegateParagraphInitializer delegatePageNum =
+                                    data =>
+                                    {
+                                        formatPageNumberAndSetId(node, data);
+                                    };
                             if (parent is Table)
                             {
                                 return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
                             }
+                            if (parent is List)
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                            }
                             else
                             {
-                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
-                                             data =>
-                                             {
-                                                 data.BorderBrush =
-                                                     Brushes.Orange;
-                                                 data.BorderThickness =
-                                                     new Thickness(2.0);
-                                                 data.Padding =
-                                                     new Thickness(2.0);
-                                                 data.FontWeight =
-                                                     FontWeights.Bold;
-                                                 data.FontSize =
-                                                     m_FlowDoc.FontSize * 1.2;
-                                                 data.Background =
-                                                     Brushes.LightYellow;
-                                                 data.Foreground =
-                                                     Brushes.DarkOrange;
-
-                                                 XmlProperty xmlProp =
-                                                     node.GetProperty
-                                                         <XmlProperty>();
-                                                 XmlAttribute attr =
-                                                     xmlProp.GetAttribute(
-                                                         "id");
-
-                                                 if (attr != null &&
-                                                     !String.IsNullOrEmpty(
-                                                          attr.Value))
-                                                 {
-                                                     data.Name = attr.Value;
-                                                     Pages.Add(new Page(data));
-                                                 }
-                                             });
+                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, delegatePageNum);
                             }
                         }
                     case "imggroup":
@@ -1295,6 +1283,27 @@ namespace WpfDtbookTest
             return parent;
         }
 
+        private void formatPageNumberAndSetId(TreeNode node, Paragraph data)
+        {
+            data.BorderBrush = Brushes.Orange;
+            data.BorderThickness = new Thickness(2.0);
+            data.Padding = new Thickness(2.0);
+            data.FontWeight = FontWeights.Bold;
+            data.FontSize = m_FlowDoc.FontSize * 1.2;
+            data.Background = Brushes.LightYellow;
+            data.Foreground = Brushes.DarkOrange;
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute attr =xmlProp.GetAttribute("id");
+
+            if (attr != null &&
+                !String.IsNullOrEmpty(attr.Value))
+            {
+                data.Name = attr.Value;
+                Pages.Add(new Page(data));
+            }
+        }
+
         private void addInline(TextElement parent, Inline data)
         {
             if (parent == null)
@@ -1433,7 +1442,7 @@ namespace WpfDtbookTest
 
                 if (qname.LocalName == "table")
                 {
-                    int n = ((Table) parentNext).Columns.Count;
+                    int n = ((Table)parentNext).Columns.Count;
                     foreach (TableCell cell in m_cellsToExpand)
                     {
                         cell.ColumnSpan = n;
