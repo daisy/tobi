@@ -78,7 +78,7 @@ namespace FlowDocumentXmlEditor
 
                 //mLastInlineBoxed.OriginalText.setText(mLastInlineBoxed.Text);
 
-                if (Text != OriginalText.getText())
+                if (Text != OriginalText.Text)
                 {
                     //newRun.Text = mLastInlineBoxed.Text;
                 }

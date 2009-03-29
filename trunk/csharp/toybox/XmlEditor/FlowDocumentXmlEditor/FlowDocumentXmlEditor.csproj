@@ -48,11 +48,6 @@
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="urakawa, Version=1.1.0.29964, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\urakawa-sdk\branches\1.1_before_major_refactor_2.0\csharp\core\bin\Debug\urakawa.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -124,6 +119,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

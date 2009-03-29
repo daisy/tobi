@@ -18,7 +18,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
-            switch (xmlProp.getLocalName())
+            switch (xmlProp.LocalName)
             {
                 case "ul":
                     List uList = new List();
@@ -45,7 +45,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         public static bool ContainsHtmlBlockChild(TreeNode node)
         {
-            foreach (TreeNode child in node.getListOfChildren())
+            foreach (TreeNode child in node.ListOfChildren)
             {
                 if (ContainsHtmlBlock(child)) return true;
             }
@@ -54,12 +54,12 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         public static bool ContainsHtmlBlock(TreeNode node)
         {
-            XmlProperty xmlProp = node.getProperty<XmlProperty>();
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             if (xmlProp != null)
             {
-                if (xmlProp.getNamespaceUri() == HtmlNamespace)
+                if (xmlProp.NamespaceUri == HtmlNamespace)
                 {
-                    switch (xmlProp.getLocalName())
+                    switch (xmlProp.LocalName)
                     {
                         case "p":
                         case "ul":
@@ -74,12 +74,12 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
         private void HandleListItems(ListItemCollection destItemColl, TreeNode node, Inline nodeRun)
         {
             if (nodeRun != null) destItemColl.Add(new ListItem(new Paragraph(nodeRun)));
-            if (node.getChildCount() > 0)
+            if (node.ChildCount > 0)
             {
                 HtmlListItemEntractionVisitor itemVisitor = new HtmlListItemEntractionVisitor(TextChannel);
-                foreach (TreeNode child in node.getListOfChildren())
+                foreach (TreeNode child in node.ListOfChildren)
                 {
-                    child.acceptDepthFirst(itemVisitor);
+                    child.AcceptDepthFirst(itemVisitor);
                 }
                 destItemColl.AddRange(itemVisitor.ExtractedListItems);
             }
