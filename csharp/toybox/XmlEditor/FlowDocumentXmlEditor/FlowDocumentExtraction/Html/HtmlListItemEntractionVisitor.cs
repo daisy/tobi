@@ -18,7 +18,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
-            switch (xmlProp.getLocalName())
+            switch (xmlProp.LocalName)
             {
                 case "li":
                     ListItem newItem = new ListItem();

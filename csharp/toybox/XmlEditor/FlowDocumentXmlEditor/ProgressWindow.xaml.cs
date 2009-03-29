@@ -23,10 +23,10 @@ namespace FlowDocumentXmlEditor
         {
             wasCancelled = false;
             ProgressWindow w = new ProgressWindow();
-            action.progress += new System.EventHandler<urakawa.events.progress.ProgressEventArgs>(w.action_progress);
-            action.finished += new System.EventHandler<urakawa.events.progress.FinishedEventArgs>(w.action_finished);
-            action.cancelled += new System.EventHandler<urakawa.events.progress.CancelledEventArgs>(w.action_cancelled);
-            w.mActionDescription = action.getShortDescription();
+            action.Progress += new System.EventHandler<urakawa.events.progress.ProgressEventArgs>(w.action_progress);
+            action.Finished += new System.EventHandler<urakawa.events.progress.FinishedEventArgs>(w.action_finished);
+            action.Cancelled += new System.EventHandler<urakawa.events.progress.CancelledEventArgs>(w.action_cancelled);
+            w.mActionDescription = action.ShortDescription;
             w.Title = w.mActionDescription;
             Thread executeThread = new Thread(ExecuteWorker);
             executeThread.Start(action);
@@ -37,7 +37,7 @@ namespace FlowDocumentXmlEditor
         private static void ExecuteWorker(object o)
         {
             ProgressAction action = o as ProgressAction;
-            if (action !=null) action.execute();
+            if (action !=null) action.Execute();
         }
 
 

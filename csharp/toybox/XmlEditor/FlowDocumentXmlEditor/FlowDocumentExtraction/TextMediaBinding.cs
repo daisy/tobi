@@ -15,7 +15,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
         public void RemoveDataModelListener() {
             if (mBoundTextMedia != null)
             {
-                mBoundTextMedia.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(BoundTextMedia_changed);
+                mBoundTextMedia.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(BoundTextMedia_changed);
             }
         }
         public TextMedia BoundTextMedia
@@ -31,7 +31,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
                 mBoundTextMedia = value;
                 if (mBoundTextMedia != null)
                 {
-                    mBoundTextMedia.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(BoundTextMedia_changed);
+                    mBoundTextMedia.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(BoundTextMedia_changed);
                 }
                 FirePropertyChanged("Text");
                 Source = this;
@@ -42,14 +42,14 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
         {
             get
             {
-                if (BoundTextMedia != null) return BoundTextMedia.getText();
+                if (BoundTextMedia != null) return BoundTextMedia.Text;
                 return null;
             }
             set
             {
-                if (BoundTextMedia != null && BoundTextMedia.getText() != value)
+                if (BoundTextMedia != null && BoundTextMedia.Text != value)
                 {
-                    BoundTextMedia.setText(value);
+                    BoundTextMedia.Text = value;
                 }
             }
         }

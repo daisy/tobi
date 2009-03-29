@@ -16,7 +16,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
         public static string HtmlNamespace = "http://www.w3.org/1999/xhtml";
         protected override bool HandleXmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
-            if (xmlProp.getNamespaceUri()==HtmlNamespace)
+            if (xmlProp.NamespaceUri == HtmlNamespace)
             {
                 return HandleHtmlElement(xmlProp, node, nodeRun);
             }
@@ -28,12 +28,12 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
         protected void HandleInlines(InlineCollection destInlineColl, TreeNode node, Inline nodeRun)
         {
             if (nodeRun != null) destInlineColl.Add(nodeRun);
-            if (node.getChildCount() > 0)
+            if (node.ChildCount > 0)
             {
                 HtmlInlineExtractionVisitor inlineVisitor = new HtmlInlineExtractionVisitor(TextChannel);
-                foreach (TreeNode child in node.getListOfChildren())
+                foreach (TreeNode child in node.ListOfChildren)
                 {
-                    child.acceptDepthFirst(inlineVisitor);
+                    child.AcceptDepthFirst(inlineVisitor);
                 }
                 destInlineColl.AddRange(inlineVisitor.ExtractedInlines);
             }
@@ -42,12 +42,12 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
         protected void HandleBlocks(BlockCollection destBlockColl, TreeNode node, Inline nodeRun)
         {
             if (nodeRun != null) destBlockColl.Add(new Paragraph(nodeRun));
-            if (node.getChildCount() > 0)
+            if (node.ChildCount > 0)
             {
                 HtmlBlockExtractionVisitor blockVisitor = new HtmlBlockExtractionVisitor(TextChannel);
-                foreach (TreeNode child in node.getListOfChildren())
+                foreach (TreeNode child in node.ListOfChildren)
                 {
-                    child.acceptDepthFirst(blockVisitor);
+                    child.AcceptDepthFirst(blockVisitor);
                 }
                 destBlockColl.AddRange(blockVisitor.ExtractedBlocks);
             }

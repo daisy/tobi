@@ -161,7 +161,7 @@ namespace FlowDocumentXmlEditor
                 */
 
                 HtmlBlockExtractionVisitor blockVisitor = new HtmlBlockExtractionVisitor(TextChannel);
-                RootTreeNode.acceptDepthFirst(blockVisitor);
+                RootTreeNode.AcceptDepthFirst(blockVisitor);
                 Blocks.AddRange(blockVisitor.ExtractedBlocks);
             }
         }

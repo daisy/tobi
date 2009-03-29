@@ -3,10 +3,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="DTBook FlowDocument renderer" Height="600" Width="800">
   <DockPanel>
+
     <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
       <Button Click="OnOpenFile">Open DTBook...</Button>
       <TextBox Text="{Binding FilePath}"/>
     </StackPanel>
+
+    <TreeView x:Name="TreeView" DockPanel.Dock="Left"/>
+
+    <ListView x:Name="ListView" ItemsSource="{Binding Pages}" DockPanel.Dock="Right" SelectionMode="Single" SelectionChanged="OnPageSelected">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Width="70" Header="Page"
+             DisplayMemberBinding="{Binding Name}" />
+          <GridViewColumn Width="70" Header="Id"
+             DisplayMemberBinding="{Binding Id}"  />
+        </GridView>
+      </ListView.View>
+    </ListView>
+
     <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"/>
+
   </DockPanel>
 </Window>

@@ -120,11 +120,11 @@ namespace FlowDocumentXmlEditor
                 }
             }
 
-            if (mProject.getNumberOfPresentations() > 0)
+            if (mProject.NumberOfPresentations > 0)
             {
-                Presentation pres = mProject.getPresentation(0);
+                Presentation pres = mProject.GetPresentation(0);
                 TextChannel textCh = null;
-                foreach (Channel ch in pres.getChannelsManager().getListOfChannels())
+                foreach (Channel ch in pres.ChannelsManager.ListOfChannels)
                 {
                     if (ch is TextChannel) 
                     {
@@ -136,7 +136,7 @@ namespace FlowDocumentXmlEditor
                 //mw1.EditedDocument = doc1;
 
                 GenericExtractionVisitor.USE_TEXT_BOX_UIELEMENT = false;
-                UrakawaHtmlFlowDocument doc2 = new UrakawaHtmlFlowDocument(pres.getRootNode(), textCh);
+                UrakawaHtmlFlowDocument doc2 = new UrakawaHtmlFlowDocument(pres.RootNode, textCh);
                 mw2.EditedDocument = doc2;
             }
             //mw1.Show();

@@ -19,7 +19,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
 
         protected override bool HandleHtmlElement(XmlProperty xmlProp, TreeNode node, Inline nodeRun)
         {
-            switch (xmlProp.getLocalName())
+            switch (xmlProp.LocalName)
             {
                 case "em":
                     Italic newItalic = new Italic();
@@ -38,10 +38,10 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction.Html
                     return false;
                 case "a":
                     Hyperlink link = new Hyperlink();
-                    XmlAttribute href = xmlProp.getAttribute("href", "");
+                    XmlAttribute href = xmlProp.GetAttribute("href", "");
                     if (href != null)
                     {
-                        link.NavigateUri = new Uri(node.getPresentation().getRootUri(), href.getValue());
+                        link.NavigateUri = new Uri(node.Presentation.RootUri, href.Value);
                     }
                     HandleInlines(link.Inlines, node, nodeRun);
                     ExtractedInlines.Add(link);

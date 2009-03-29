@@ -25,10 +25,10 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
         {
             if (TextChannel != null)
             {
-                ChannelsProperty chProp = node.getProperty<ChannelsProperty>();
+                ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
                 if (chProp != null)
                 {
-                    TextMedia text = chProp.getMedia(TextChannel) as TextMedia;
+                    TextMedia text = chProp.GetMedia(TextChannel) as TextMedia;
                     
                     if (text != null)
                     {
@@ -62,7 +62,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
 
         #region ITreeNodeVisitor Members
 
-        public void postVisit(TreeNode node)
+        public void PostVisit(TreeNode node)
         {
             //Do nothing
         }
@@ -73,13 +73,13 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
         private void countTotalNodes(TreeNode node, long currentNumberOfNodes, out long totalNumberOfNodes)
         {
             totalNumberOfNodes = currentNumberOfNodes + 1;
-            foreach (TreeNode child in node.getListOfChildren()) {
+            foreach (TreeNode child in node.ListOfChildren) {
                 countTotalNodes(child, totalNumberOfNodes, out totalNumberOfNodes);
             }
         }
-        public virtual bool preVisit(TreeNode node)
+        public virtual bool PreVisit(TreeNode node)
         {
-            if (mTotalNumberOfNodes == -1 && node.getParent() == null)
+            if (mTotalNumberOfNodes == -1 && node.Parent == null)
             {
                 countTotalNodes(node, mTotalNumberOfNodes, out mTotalNumberOfNodes);
             }
@@ -87,7 +87,7 @@ namespace FlowDocumentXmlEditor.FlowDocumentExtraction
             mCurrentNodeIndex++;
 
             Inline nodeRun = GetTextInline(node);
-            XmlProperty xmlProp = node.getProperty<XmlProperty>();
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             if (xmlProp!=null)
             {
                 if (!HandleXmlElement(xmlProp, node, nodeRun)) return false;

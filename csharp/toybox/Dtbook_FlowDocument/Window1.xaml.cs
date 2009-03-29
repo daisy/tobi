@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
@@ -28,12 +30,107 @@ namespace WpfDtbookTest
     /// </summary>
     public partial class Window1 : INotifyPropertyChanged
     {
+        public class Page
+        {
+            public Page(TextElement textElement)
+            {
+                TextElement = textElement;
+            }
+
+            public TextElement TextElement
+            {
+                get;
+                private set;
+            }
+            public string Id
+            {
+                get
+                {
+                    return TextElement.Name;
+                }
+            }
+            public string Name
+            {
+                get
+                {
+                    if (TextElement is Paragraph)
+                    {
+                        return extractString((Paragraph)TextElement);
+                    }
+                    return "??";
+                }
+            }
+        }
+
+        private Page GetPage(string id)
+        {
+            foreach (Page page in Pages)
+            {
+                if (page.Id == id) return page;
+            }
+            return null;
+        }
+
+        protected static string extractString(Paragraph para)
+        {
+            StringBuilder str = new StringBuilder();
+            foreach (Inline inline in para.Inlines)
+            {
+                if (inline is Run)
+                {
+                    str.Append(((Run)inline).Text);
+                }
+                else if (inline is Span)
+                {
+                    str.Append(extractString((Span)inline));
+                }
+            }
+            return str.ToString();
+        }
+
+        protected static string extractString(Span span)
+        {
+            StringBuilder str = new StringBuilder();
+            foreach (Inline inline in span.Inlines)
+            {
+                if (inline is Run)
+                {
+                    str.Append(((Run)inline).Text);
+                }
+                else if (inline is Span)
+                {
+                    str.Append(extractString((Span)inline));
+                }
+            }
+            return str.ToString();
+        }
+
         private string m_FilePath;
         private FlowDocument m_FlowDoc;
         private Project m_XukProject;
+
         private int m_currentTD;
-        private Dictionary<string,TextElement> m_idLinkTargets;
+        private bool m_firstTR;
+        private int m_currentROWGROUP;
+        List<TableCell> m_cellsToExpand = new List<TableCell>();
+
+        private Dictionary<string, TextElement> m_idLinkTargets;
+        //private Dictionary<string, TextElement> m_idPageMarkers;
+
         private TextElement m_lastHighlighted;
+        private Brush m_lastHighlighted_Background;
+        private Brush m_lastHighlighted_Foreground;
+
+
+        private ObservableCollection<Page> _Pages = new ObservableCollection<Page>();
+
+        public ObservableCollection<Page> Pages
+        {
+            get
+            {
+                return _Pages;
+            }
+        }
 
         public Window1()
         {
@@ -54,12 +151,29 @@ namespace WpfDtbookTest
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.FileName = "dtbook"; // Default file name
             dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBOOK documents (.xml)|*.xml;*.opf";
+            dlg.Filter = "DTBOOK documents (.xml)|*.xml;*.opf;*.ncx";
             bool? result = dlg.ShowDialog();
             if (result == false)
             {
@@ -78,6 +192,8 @@ namespace WpfDtbookTest
                 m_idLinkTargets.Clear();
             }
             m_idLinkTargets = new Dictionary<string, TextElement>();
+            Pages.Clear();
+
             m_lastHighlighted = null;
 
             FlowDocument flowDoc = createFlowDocumentFromXuk();
@@ -87,9 +203,6 @@ namespace WpfDtbookTest
             flowDoc.ColumnWidth = Double.PositiveInfinity;
             flowDoc.IsColumnWidthFlexible = false;
             flowDoc.TextAlignment = TextAlignment.Left;
-            FlowDocReader.Document = flowDoc;
-
-
 
             string dirPath = Path.GetDirectoryName(FilePath);
             string fullPath = Path.Combine(dirPath, "FlowDocument.xaml");
@@ -115,6 +228,10 @@ namespace WpfDtbookTest
                     stream.Close();
                 }
             }
+
+            FlowDocReader.Zoom = 1.0;
+
+            FlowDocReader.Document = flowDoc;
         }
 
         private FlowDocument createFlowDocumentFromXuk()
@@ -134,6 +251,1120 @@ namespace WpfDtbookTest
             return m_FlowDoc;
         }
 
+        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            if (node.ChildCount != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
+            {
+                throw new Exception("Node has children or text exists when processing image ??");
+            }
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute srcAttr = xmlProp.GetAttribute("src");
+
+            if (srcAttr == null) return parent;
+
+            Image image = new Image();
+
+            if (srcAttr.Value.StartsWith("http://"))
+            {
+                try
+                {
+                    image.Source = new BitmapImage(new Uri(srcAttr.Value));
+                }
+                catch (Exception)
+                {
+                    return parent;
+                }
+            }
+            else
+            {
+                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+
+                string dirPath = Path.GetDirectoryName(FilePath);
+                string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+
+                try
+                {
+                    image.Source = new BitmapImage(new Uri(fullImagePath));
+                }
+                catch (Exception)
+                {
+                    return parent;
+                }
+            }
+
+            image.Stretch = Stretch.Uniform;
+
+            if (image.Source is BitmapSource)
+            {
+                BitmapSource bitmap = (BitmapSource)image.Source;
+                int ph = bitmap.PixelHeight;
+                int pw = bitmap.PixelWidth;
+                double dpix = bitmap.DpiX;
+                double dpiy = bitmap.DpiY;
+                image.Width = ph;
+                image.Height = pw;
+            }
+            XmlAttribute srcW = xmlProp.GetAttribute("width");
+            if (srcW != null)
+            {
+                double ww = Double.Parse(srcW.Value);
+                image.Width = ww;
+            }
+            XmlAttribute srcH = xmlProp.GetAttribute("height");
+            if (srcH != null)
+            {
+                double hh = Double.Parse(srcH.Value);
+                image.Height = hh;
+            }
+
+            image.MinWidth = image.Width;
+            image.MinHeight = image.Height;
+
+            BlockUIContainer img = new BlockUIContainer(image);
+            addBlock(parent, img);
+
+
+            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
+
+            if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
+            {
+                image.ToolTip = altAttr.Value;
+                Paragraph paraAlt = new Paragraph(new Run("ALT: "+altAttr.Value));
+                paraAlt.BorderBrush = Brushes.CadetBlue;
+                paraAlt.BorderThickness = new Thickness(1.0);
+                paraAlt.FontSize = m_FlowDoc.FontSize/1.2;
+                addBlock(parent, paraAlt);
+            }
+
+
+            return parent;
+
+            /*
+                WebClient webClient = new WebClient();
+                fullImagePath = srcAttr.Value;
+                byte[] imageContent = webClient.DownloadData(srcAttr.Value);
+                Stream stream = new MemoryStream(imageContent);
+                 */
+            /*
+             * stream = new FileStream(fullImagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+             * 
+             * 
+            if (fullImagePath.EndsWith(".jpg") || fullImagePath.EndsWith(".jpeg"))
+            {
+                BitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+            else if (fullImagePath.EndsWith(".png"))
+            {
+                BitmapDecoder dec = new PngBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+            else if (fullImagePath.EndsWith(".bmp"))
+            {
+                BitmapDecoder dec = new BmpBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+            else if (fullImagePath.EndsWith(".gif"))
+            {
+                BitmapDecoder dec = new GifBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+             */
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            if (parent is Table)
+            {
+                m_currentTD++;
+                TableCell data = new TableCell();
+
+                if (qname.LocalName == "th")
+                {
+                    data.FontWeight = FontWeights.Heavy;
+                }
+
+                data.BorderBrush = Brushes.LightGray;
+                data.BorderThickness = new Thickness(1.0);
+
+                TableRowCollection trc = ((Table)parent).RowGroups[m_currentROWGROUP].Rows;
+                trc[trc.Count - 1].Cells.Add(data);
+
+                if (m_currentTD > ((Table)parent).Columns.Count)
+                {
+                    ((Table)parent).Columns.Add(new TableColumn());
+                }
+
+                if (node.ChildCount == 0)
+                {
+                    if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                    {
+                        // ignore empty list item
+                    }
+                    else
+                    {
+                        data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    }
+
+                    return parent;
+                }
+                //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+                else
+                {
+                    Paragraph para = new Paragraph();
+                    data.Blocks.Add(para);
+                    return para;
+                }
+            }
+            else
+            {
+                throw new Exception("Trying to add TableCell btu parent is not Table ??");
+            }
+        }
+        delegate void delegateParagraphInitializer(Paragraph para);
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateParagraphInitializer initializer)
+        {
+            Paragraph data = new Paragraph();
+            if (initializer != null)
+            {
+                initializer(data);
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    data.Inlines.Add(new LineBreak());
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                }
+
+                addBlock(parent, data);
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addBlock(parent, data);
+                return data;
+            }
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            Underline data = new Underline();
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    // ignore empty underline
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                    addInline(parent, data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+        private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            Bold data = new Bold();
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    // ignore empty bold
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                    addInline(parent, data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+        private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            Italic data = new Italic();
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    // ignore empty italic
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                    addInline(parent, data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            List data = new List();
+
+            if (node.ChildCount == 0)
+            {
+                //ignore empty list
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addBlock(parent, data);
+                return data;
+            }
+        }
+        private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            m_cellsToExpand.Clear();
+            m_currentTD = 0;
+            Table data = new Table();
+
+            data.CellSpacing = 4.0;
+            data.BorderBrush = Brushes.Brown;
+            data.BorderThickness = new Thickness(1.0);
+
+            data.RowGroups.Add(new TableRowGroup());
+            m_currentROWGROUP = 0;
+            m_firstTR = false;
+
+            if (node.ChildCount == 0)
+            {
+                //ignore empty table
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addBlock(parent, data);
+                return data;
+            }
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_li_dd_dt(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            if (!(parent is List))
+            {
+                throw new Exception("list item not in List ??");
+            }
+            ListItem data = new ListItem();
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    // ignore empty list item
+                }
+                else
+                {
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    ((List)parent).ListItems.Add(data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                ((List)parent).ListItems.Add(data);
+                return data;
+            }
+        }
+        private void formatCaptionCell(TableCell cell)
+        {
+            cell.BorderBrush = Brushes.BlueViolet;
+            cell.BorderThickness = new Thickness(2);
+            cell.Background = Brushes.LightYellow;
+            cell.Foreground = Brushes.Navy;
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            if (node.ChildCount == 0)
+            {
+                if (parent is Table)
+                {
+                    if (qname.LocalName == "caption" && textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
+                    {
+                        m_currentTD = 0;
+
+                        ((Table)parent).RowGroups.Add(new TableRowGroup());
+                        m_currentROWGROUP++;
+
+                        TableRow data = new TableRow();
+                        ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
+                        TableCell cell = new TableCell(new Paragraph(new Run(textMedia.Text)));
+
+                        formatCaptionCell(cell);
+                        
+                        cell.ColumnSpan = 1;
+                        m_cellsToExpand.Add(cell);
+                        
+                        data.Cells.Add(cell);
+
+                        m_firstTR = false;
+                        return parent;
+                    }
+                    else if (qname.LocalName == "pagenum" && textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
+                    {
+                        //TODO: oy !
+                        //m_cellsToExpand.Add(cell);
+                        m_firstTR = false;
+                        return parent;
+                    }
+                    else
+                    {
+                        //ignore empty row
+                        return parent;
+                    }
+                }
+                else
+                {
+                    throw new Exception("table row not in Table ??");
+                }
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                if (parent is Table)
+                {
+                    if (qname.LocalName == "caption")
+                    {
+                        m_currentTD = 0;
+
+                        ((Table)parent).RowGroups.Add(new TableRowGroup());
+                        m_currentROWGROUP++;
+
+                        TableRow row = new TableRow();
+                        ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(row);
+                        Paragraph para = new Paragraph();
+                        TableCell cell = new TableCell(para);
+
+                        formatCaptionCell(cell);
+                        
+                        cell.ColumnSpan = 1;
+                        m_cellsToExpand.Add(cell);
+
+                        row.Cells.Add(cell);
+
+                        m_firstTR = false;
+                        return para;
+                    }
+                    else if (qname.LocalName == "pagenum")
+                    {
+                        //TODO: Oy !
+                        m_firstTR = false;
+                        //m_cellsToExpand.Add(cell);
+                        return parent;
+                    }
+                    else if (qname.LocalName == "thead"
+                        || qname.LocalName == "tbody"
+                        || qname.LocalName == "tfoot")
+                    {
+                        ((Table)parent).RowGroups.Add(new TableRowGroup());
+                        m_currentROWGROUP++;
+                        m_firstTR = false;
+                        return parent;
+                    }
+                    else
+                    {
+                        m_currentTD = 0;
+
+                        if (node.Parent != null)
+                        {
+                            QualifiedName qnameParent = node.Parent.GetXmlElementQName();
+                            if (qnameParent != null && qnameParent.LocalName == "table")
+                            {
+                                if (m_firstTR == true)
+                                {
+                                    ((Table)parent).RowGroups.Add(new TableRowGroup());
+                                    m_currentROWGROUP++;
+                                }
+                            }
+                        }
+
+                        m_firstTR = false;
+
+                        TableRow data = new TableRow();
+                        ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
+
+                        return parent;
+                    }
+                }
+                else
+                {
+                    throw new Exception("table row not in Table ??");
+                }
+            }
+        }
+        private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            Hyperlink data = new Hyperlink();
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute attr = xmlProp.GetAttribute("href");
+
+            if (attr != null && !String.IsNullOrEmpty(attr.Value))
+            {
+                data.NavigateUri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
+                data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                    {
+                        data.Inlines.Add(new Run(attr.Value));
+                        addInline(parent, data);
+                    }
+                    else
+                    {
+                        // otherwise ignore empty link
+                    }
+                    return parent;
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                    addInline(parent, data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            Hyperlink data = new Hyperlink();
+
+            data.FontSize = m_FlowDoc.FontSize / 1.2;
+            data.FontWeight = FontWeights.Bold;
+            data.Background = Brushes.LightSkyBlue;
+            data.Foreground = Brushes.Blue;
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute attr = xmlProp.GetAttribute("idref");
+
+            if (attr != null && !String.IsNullOrEmpty(attr.Value))
+            {
+                data.NavigateUri = new Uri("#" + attr.Value, UriKind.Relative);
+                data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+            }
+            else
+            {
+                //ignore: no link
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    data.Inlines.Add(new Run("..."));
+                    addInline(parent, data);
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                    addInline(parent, data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+
+        delegate void delegateSpanInitializer(Span span);
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateSpanInitializer initializer)
+        {
+            Span data = new Span();
+            if (initializer != null)
+            {
+                initializer(data);
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    data.Inlines.Add(new Run("..."));
+                    addInline(parent, data);
+                }
+                else
+                {
+                    data.Inlines.Add(new Run(textMedia.Text));
+                    addInline(parent, data);
+                }
+
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+
+        delegate void delegateFloaterInitializer(Floater floater);
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateFloaterInitializer initializer)
+        {
+            Floater data = new Floater();
+            if (initializer != null)
+            {
+                initializer(data);
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    data.Blocks.Add(new Paragraph(new LineBreak()));
+                }
+                else
+                {
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                }
+
+                addInline(parent, data);
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+        delegate void delegateFigureInitializer(Figure fig);
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateFigureInitializer initializer)
+        {
+            Figure data = new Figure();
+            if (initializer != null)
+            {
+                initializer(data);
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    data.Blocks.Add(new Paragraph(new LineBreak()));
+                }
+                else
+                {
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                }
+
+                addInline(parent, data);
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addInline(parent, data);
+                return data;
+            }
+        }
+        delegate void delegateSectionInitializer(Section section);
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, delegateSectionInitializer initializer)
+        {
+            Section data = new Section();
+            if (initializer != null)
+            {
+                initializer(data);
+            }
+
+            if (node.ChildCount == 0)
+            {
+                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                {
+                    data.Blocks.Add(new Paragraph(new LineBreak()));
+                }
+                else
+                {
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                }
+
+                addBlock(parent, data);
+                return parent;
+            }
+            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            else
+            {
+                addBlock(parent, data);
+                return data;
+            }
+        }
+        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            if (qname == null)
+            {
+                //assumption based on the caller: node.ChildCount == 0 && textMedia != null
+                if (textMedia.Text.Length == 0)
+                {
+                    return parent;
+                }
+
+                Run data = new Run(textMedia.Text);
+                addInline(parent, data);
+
+                return parent;
+            }
+
+            if (qname.NamespaceUri.Length == 0
+                || qname.NamespaceUri == m_XukProject.GetPresentation(0).PropertyFactory.DefaultXmlNamespaceUri)
+            {
+                // node.ChildCount ?
+                // String.IsNullOrEmpty(textMedia.Text) ?
+
+                switch (qname.LocalName)
+                {
+                    case "level":
+                    case "level1":
+                    case "level2":
+                    case "level3":
+                    case "level4":
+                    case "level5":
+                    case "level6":
+                    case "bodymatter":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
+                        }
+                    case "frontmatter":
+                    case "rearmatter":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.BorderBrush = Brushes.GreenYellow;
+                                    data.BorderThickness = new Thickness(2.0);
+                                    data.Padding = new Thickness(4.0);
+                                }
+                                );
+                        }
+                    case "blockquote":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.BorderBrush = Brushes.Olive;
+                                    data.BorderThickness = new Thickness(2.0);
+                                    data.Padding = new Thickness(2.0);
+                                    data.Margin = new Thickness(4.0);
+                                }
+                                );
+                        }
+                    case "note":
+                    case "annotation":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.BorderBrush = Brushes.LightSkyBlue;
+                                    data.BorderThickness = new Thickness(2.0);
+                                    data.Padding = new Thickness(2.0);
+                                    data.FontSize = m_FlowDoc.FontSize / 1.2;
+
+                                    XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                                    XmlAttribute attr = xmlProp.GetAttribute("id");
+
+                                    if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                                    {
+                                        data.Name = attr.Value;
+                                        m_idLinkTargets.Add(data.Name, data);
+                                    }
+                                }
+                                );
+                        }
+                    case "noteref":
+                    case "annoref":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, qname, textMedia);
+                        }
+                    case "p":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
+                        }
+                    case "caption":
+                        {
+                            if (parent is Table)
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                            }
+                            else
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                                 data =>
+                                                 {
+                                                     data.BorderBrush =
+                                                         Brushes.Green;
+                                                     data.BorderThickness =
+                                                         new Thickness(1.0);
+                                                     data.Padding =
+                                                         new Thickness(2.0);
+                                                     data.FontWeight =
+                                                         FontWeights.Light;
+                                                     data.FontSize =
+                                                         m_FlowDoc.FontSize / 1.2;
+                                                     data.Foreground =
+                                                         Brushes.DarkGreen;
+                                                 });
+                            }
+                        }
+                    case "h1":
+                    case "hd":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.FontSize = m_FlowDoc.FontSize * 2;
+                                    data.FontWeight = FontWeights.Heavy;
+                                });
+                        }
+                    case "h2":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.FontSize = m_FlowDoc.FontSize * 1.5;
+                                    data.FontWeight = FontWeights.Heavy;
+                                });
+                        }
+                    case "h3":
+                    case "h4":
+                    case "h5":
+                    case "h6":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.FontSize = m_FlowDoc.FontSize * 1.2;
+                                    data.FontWeight = FontWeights.Heavy;
+                                });
+                        }
+                    case "doctitle":
+                    case "docauthor":
+                    case "covertitle":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.FontSize = m_FlowDoc.FontSize * 1.2;
+                                    data.FontWeight = FontWeights.Heavy;
+                                    data.Foreground = Brushes.Navy;
+                                });
+                        }
+                    case "pagenum":
+                        {
+                            if (parent is Table)
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                            }
+                            else
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                             data =>
+                                             {
+                                                 data.BorderBrush =
+                                                     Brushes.Orange;
+                                                 data.BorderThickness =
+                                                     new Thickness(2.0);
+                                                 data.Padding =
+                                                     new Thickness(2.0);
+                                                 data.FontWeight =
+                                                     FontWeights.Bold;
+                                                 data.FontSize =
+                                                     m_FlowDoc.FontSize * 1.2;
+                                                 data.Background =
+                                                     Brushes.LightYellow;
+                                                 data.Foreground =
+                                                     Brushes.DarkOrange;
+
+                                                 XmlProperty xmlProp =
+                                                     node.GetProperty
+                                                         <XmlProperty>();
+                                                 XmlAttribute attr =
+                                                     xmlProp.GetAttribute(
+                                                         "id");
+
+                                                 if (attr != null &&
+                                                     !String.IsNullOrEmpty(
+                                                          attr.Value))
+                                                 {
+                                                     data.Name = attr.Value;
+                                                     Pages.Add(new Page(data));
+                                                 }
+                                             });
+                            }
+                        }
+                    case "imggroup":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.BorderBrush = Brushes.LightSalmon;
+                                    data.BorderThickness = new Thickness(0.5);
+                                    data.Padding = new Thickness(2.0);
+                                    data.TextAlignment = TextAlignment.Center;
+                                });
+                        }
+                    case "sidebar":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Floater(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.BorderBrush = Brushes.MediumSlateBlue;
+                                    data.BorderThickness = new Thickness(2.0);
+                                    data.Padding = new Thickness(2.0);
+                                });
+                        }
+                    case "img":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_img(node, parent, qname, textMedia);
+                        }
+                    case "th":
+                    case "td":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, qname, textMedia);
+                        }
+                    case "br":
+                        {
+                            addInline(parent, new LineBreak());
+                            return parent;
+                        }
+                    case "em":
+                    case "i":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, qname, textMedia);
+                        }
+                    case "strong":
+                    case "b":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, qname, textMedia);
+                        }
+                    case "underline":
+                    case "u":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, qname, textMedia);
+                        }
+                    case "anchor":
+                    case "a":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, qname, textMedia);
+                        }
+                    case "table":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_table(node, parent, qname, textMedia);
+                        }
+                    case "tr":
+                    case "thead":
+                    case "tfoot":
+                    case "tbody":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                        }
+                    case "list":
+                    case "dl":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, qname, textMedia);
+                        }
+                    case "dt":
+                    case "dd":
+                    case "li":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                        }
+                    case "span":
+                    case "linenum":
+                    case "sent":
+                    case "w":
+                    case "cite":
+                    case "author":
+                    case "sup":
+                    case "sub":
+                    case "bdo":
+                    case "kbd":
+                    case "dfn":
+                    case "abbr":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                        }
+                    case "acronym":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                                    XmlAttribute attr = xmlProp.GetAttribute("pronounce");
+
+                                    if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                                    {
+                                        data.ToolTip = "pronounce = " + attr.Value;
+                                    }
+                                }
+                                );
+                        }
+                    case "lic":
+                    case "q":
+                    case "line":
+                    case "dateline":
+                    case "bridgehead":
+                    case "byline":
+                    case "title":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
+                        }
+                    case "prodnote":
+                    case "div":
+                    case "samp":
+                    case "poem":
+                    case "linegroup":
+                    case "code":
+                    case "book":
+                    case "address":
+                    case "epigraph":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
+                        }
+                    case "col":
+                    case "colgroup":
+                        {
+                            System.Diagnostics.Debug.Fail(String.Format("DTBook element not yet supported [{0}]", qname.LocalName));
+                            break;
+                        }
+                    default:
+                        {
+                            System.Diagnostics.Debug.Fail(String.Format("Unknown DTBook element ! [{0}]", qname.LocalName));
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
+            }
+
+            return parent;
+        }
+
+        private void addInline(TextElement parent, Inline data)
+        {
+            if (parent == null)
+            {
+                m_FlowDoc.Blocks.Add(new Paragraph(data));
+            }
+            else if (parent is Paragraph)
+            {
+                ((Paragraph)parent).Inlines.Add(data);
+            }
+            else if (parent is Span)
+            {
+                ((Span)parent).Inlines.Add(data);
+            }
+            else if (parent is TableCell)
+            {
+                ((TableCell)parent).Blocks.Add(new Paragraph(data));
+            }
+            else if (parent is Section)
+            {
+                ((Section)parent).Blocks.Add(new Paragraph(data));
+            }
+            else if (parent is Floater)
+            {
+                ((Floater)parent).Blocks.Add(new Paragraph(data));
+            }
+            else if (parent is Figure)
+            {
+                ((Figure)parent).Blocks.Add(new Paragraph(data));
+            }
+            else if (parent is ListItem)
+            {
+                ((ListItem)parent).Blocks.Add(new Paragraph(data));
+            }
+            else
+            {
+                throw new Exception("The given parent TextElement is not valid in this context.");
+            }
+        }
+        private void addBlock(TextElement parent, Block data)
+        {
+            if (parent == null)
+            {
+                m_FlowDoc.Blocks.Add(data);
+            }
+            else if (parent is TableCell)
+            {
+                ((TableCell)parent).Blocks.Add(data);
+            }
+            else if (parent is Section)
+            {
+                ((Section)parent).Blocks.Add(data);
+            }
+            else if (parent is Floater)
+            {
+                ((Floater)parent).Blocks.Add(data);
+            }
+            else if (parent is Figure)
+            {
+                ((Figure)parent).Blocks.Add(data);
+            }
+            else if (parent is ListItem)
+            {
+                ((ListItem)parent).Blocks.Add(data);
+            }
+            else
+            {
+                throw new Exception("The given parent TextElement is not valid in this context.");
+            }
+        }
         private void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
             TextElement parentNext = parent;
@@ -151,18 +1382,21 @@ namespace WpfDtbookTest
                     }
                     else //childCount == 0 && qname == null && textMedia != null
                     {
-                        parentNext = generateFlowDocument_NoChild_NoXml_Text(node, parent, textMedia);
+                        //parentNext = generateFlowDocument_NoChild_NoXml_Text(node, parent, textMedia);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
                     }
                 }
                 else //childCount == 0 && qname != null
                 {
                     if (textMedia == null)
                     {
-                        parentNext = generateFlowDocument_NoChild_Xml_NoText(node, parent, qname);
+                        //parentNext = generateFlowDocument_NoChild_Xml_NoText(node, parent, qname);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
                     }
                     else //childCount == 0 && qname != null && textMedia != null
                     {
-                        parentNext = generateFlowDocument_NoChild_Xml_Text(node, parent, qname, textMedia);
+                        //parentNext = generateFlowDocument_NoChild_Xml_Text(node, parent, qname, textMedia);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
                     }
                 }
             }
@@ -183,1016 +1417,28 @@ namespace WpfDtbookTest
                 {
                     if (textMedia == null)
                     {
-                        parentNext = generateFlowDocument_Child_Xml_NoText(node, parent, qname);
+                        //parentNext = generateFlowDocument_Child_Xml_NoText(node, parent, qname);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
                     }
                     else //childCount != 0 && qname != null && textMedia != null
                     {
                         throw new Exception("The given TreeNode has children, has XmlProperty, and has TextMedia.");
                     }
                 }
+
                 for (int i = 0; i < node.ChildCount; i++)
                 {
                     walkBookTreeAndGenerateFlowDocument(node.GetChild(i), parentNext);
                 }
-            }
-        }
 
-        private TextElement generateFlowDocument_Child_Xml_NoText(TreeNode node, TextElement parent, QualifiedName qname)
-        {
-            if (qname.LocalName == "book"
-                || qname.LocalName == "frontmatter"
-                || qname.LocalName == "bodymatter"
-                || qname.LocalName == "rearmatter"
-                || qname.LocalName == "level"
-                || qname.LocalName == "level1"
-                || qname.LocalName == "level2"
-                || qname.LocalName == "level3"
-                || qname.LocalName == "level4"
-                || qname.LocalName == "level5"
-                || qname.LocalName == "level6"
-                || qname.LocalName == "address"
-                || qname.LocalName == "epigraph"
-                || qname.LocalName == "prodnote"
-                || qname.LocalName == "blockquote"
-                || qname.LocalName == "note"
-                || qname.LocalName == "annotation"
-                || qname.LocalName == "lic"
-                || qname.LocalName == "linegroup"
-                || qname.LocalName == "bridgehead"
-                || qname.LocalName == "code"
-                || qname.LocalName == "dateline"
-                || qname.LocalName == "samp"
-                || qname.LocalName == "line"
-                || qname.LocalName == "col"
-                || qname.LocalName == "colgroup"
-                || qname.LocalName == "thead"
-                || qname.LocalName == "tfoot"
-                || qname.LocalName == "tbody"
-                || qname.LocalName == "th"
-                || qname.LocalName == "poem")
-            {
-                Section data = new Section();
-                setStyles(qname, data);
-
-                pushIdIfNecessary(data, qname, node);
-
-                if (parent == null)
+                if (qname.LocalName == "table")
                 {
-                    m_FlowDoc.Blocks.Add(data);
-                }
-                else
-                {
-                    if (parent is Section)
+                    int n = ((Table) parentNext).Columns.Count;
+                    foreach (TableCell cell in m_cellsToExpand)
                     {
-                        ((Section)parent).Blocks.Add(data);
+                        cell.ColumnSpan = n;
                     }
-                    else if (parent is TableCell)
-                    {
-                        ((TableCell)parent).Blocks.Add(data);
-                    }
-                    else if (parent is Floater)
-                    {
-                        ((Floater)parent).Blocks.Add(data);
-                    }
-                    else if (parent is ListItem)
-                    {
-                        ((ListItem)parent).Blocks.Add(data);
-                    }
-                    else
-                    {
-                        throw new Exception("The given parent TextElement is not valid in this context.");
-                    }
-                }
-                return data;
-            }
-            else if (qname.LocalName == "p"
-                || qname.LocalName == "doctitle"
-                || qname.LocalName == "docauthor"
-                || qname.LocalName == "covertitle"
-                || qname.LocalName == "div"
-                || qname.LocalName == "h1"
-                || qname.LocalName == "h2"
-                || qname.LocalName == "h3"
-                || qname.LocalName == "h4"
-                || qname.LocalName == "h4"
-                || qname.LocalName == "h5"
-                || qname.LocalName == "h6"
-                || qname.LocalName == "hd"
-                || qname.LocalName == "pagenum"
-                || qname.LocalName == "caption"
-                || qname.LocalName == "noteref"
-                || qname.LocalName == "annoref")
-            {
-                Paragraph data = new Paragraph();
-                setStyles(qname, data);
-
-
-                prependInnerLinkIfNecessary(data, qname, node);
-
-
-                if (parent is List)
-                {
-                    ((List)parent).ListItems.Add(new ListItem(data));
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(data);
-                }
-                else if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(data);
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(data);
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-                return data;
-            }
-            else if (qname.LocalName == "imggroup"
-                || qname.LocalName == "sidebar")
-            {
-                Floater data = new Floater();
-                setStyles(qname, data);
-
-                if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Paragraph)
-                {
-                    ((Paragraph)parent).Inlines.Add(data);
-                }
-                else if (parent is Span)
-                {
-                    ((Span)parent).Inlines.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-                return data;
-            }
-            else if (qname.LocalName == "span"
-                || qname.LocalName == "linenum"
-                || qname.LocalName == "sent"
-                || qname.LocalName == "w"
-                || qname.LocalName == "strong"
-                || qname.LocalName == "b"
-                || qname.LocalName == "em"
-                || qname.LocalName == "italic"
-                || qname.LocalName == "i"
-                || qname.LocalName == "underline"
-                || qname.LocalName == "u"
-                || qname.LocalName == "cite"
-                || qname.LocalName == "author"
-                || qname.LocalName == "byline"
-                || qname.LocalName == "title"
-                || qname.LocalName == "sup"
-                || qname.LocalName == "sub"
-                || qname.LocalName == "bdo"
-                || qname.LocalName == "img"
-                || qname.LocalName == "a"
-                || qname.LocalName == "kbd"
-                || qname.LocalName == "dfn"
-                || qname.LocalName == "abbr"
-                || qname.LocalName == "acronym"
-                || qname.LocalName == "q")
-            {
-                Span data = new Span();
-                setStyles(qname, data);
-
-                if (parent is Paragraph)
-                {
-                    ((Paragraph)parent).Inlines.Add(data);
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Span)
-                {
-                    ((Span)parent).Inlines.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-                return data;
-            }
-            else if (qname.LocalName == "list"
-                || qname.LocalName == "dl")
-            {
-                List data = new List();
-                setStyles(qname, data);
-
-                if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(data);
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(data);
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(data);
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-                return data;
-            }
-            else if (qname.LocalName == "table")
-            {
-                m_currentTD = 0;
-                Table data = new Table();
-                data.RowGroups.Add(new TableRowGroup());
-
-                setStyles(qname, data);
-
-                if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(data);
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(data);
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(data);
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-                return data;
-            }
-            else if (qname.LocalName == "tr")
-            {
-                if (parent is Table)
-                {
-                    m_currentTD = 0;
-                    TableRow data = new TableRow();
-                    ((Table)parent).RowGroups[0].Rows.Add(data);
-
-                    setStyles(qname, data);
-                    return parent;
-                }
-            }
-            else if (qname.LocalName == "td")
-            {
-                if (parent is Table)
-                {
-                    m_currentTD++;
-                    TableCell data = new TableCell();
-                    TableRowCollection trc = ((Table) parent).RowGroups[0].Rows;
-                    trc[trc.Count-1].Cells.Add(data);
-
-                    if (m_currentTD > ((Table) parent).Columns.Count)
-                    {
-                        ((Table) parent).Columns.Add(new TableColumn());
-                    }
-
-                    setStyles(qname, data);
-                    return data;
-                }
-            }
-            else if (qname.LocalName == "li"
-                || qname.LocalName == "dt"
-                || qname.LocalName == "dd")
-            {
-                ListItem data = new ListItem();
-                setStyles(qname, data);
-
-                if (parent is List)
-                {
-                    ((List)parent).ListItems.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-                return data;
-            }
-            else
-            {
-                throw new Exception("The TreeNode's element name is not valid in this context.");
-            }
-            return parent;
-        }
-
-
-        private TextElement generateFlowDocument_NoChild_Xml_Text(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
-        {
-            if (!String.IsNullOrEmpty(textMedia.Text))
-            {
-                // This is likely a <strong>1234</strong> or similar
-
-                if (qname.LocalName == "li"
-                    || qname.LocalName == "dt"
-                    || qname.LocalName == "dd"
-                    || qname.LocalName == "p"
-                    || qname.LocalName == "span"
-                    || qname.LocalName == "linenum"
-                    || qname.LocalName == "sent"
-                    || qname.LocalName == "w"
-                    || qname.LocalName == "cite"
-                    || qname.LocalName == "author"
-                    || qname.LocalName == "byline"
-                    || qname.LocalName == "title"
-                    || qname.LocalName == "sup"
-                    || qname.LocalName == "sub"
-                    || qname.LocalName == "bdo"
-                    || qname.LocalName == "img"
-                    || qname.LocalName == "kbd"
-                    || qname.LocalName == "dfn"
-                    || qname.LocalName == "abbr"
-                    || qname.LocalName == "acronym"
-                    || qname.LocalName == "q"
-                    || qname.LocalName == "sidebar"
-                    || qname.LocalName == "doctitle"
-                || qname.LocalName == "docauthor"
-                || qname.LocalName == "covertitle"
-                || qname.LocalName == "div"
-                || qname.LocalName == "h1"
-                || qname.LocalName == "h2"
-                || qname.LocalName == "h3"
-                || qname.LocalName == "h4"
-                || qname.LocalName == "h4"
-                || qname.LocalName == "h5"
-                || qname.LocalName == "h6"
-                || qname.LocalName == "hd"
-                || qname.LocalName == "pagenum"
-                || qname.LocalName == "caption"
-                || qname.LocalName == "prodnote"
-                || qname.LocalName == "noteref"
-                || qname.LocalName == "annoref"
-                || qname.LocalName == "note"
-                || qname.LocalName == "annotation"
-                || qname.LocalName == "blockquote"
-                || qname.LocalName == "lic"
-                || qname.LocalName == "linegroup"
-                || qname.LocalName == "bridgehead"
-                || qname.LocalName == "code"
-                || qname.LocalName == "dateline"
-                || qname.LocalName == "samp"
-                || qname.LocalName == "line"
-                || qname.LocalName == "col"
-                || qname.LocalName == "colgroup"
-                || qname.LocalName == "thead"
-                || qname.LocalName == "tfoot"
-                || qname.LocalName == "tbody"
-                || qname.LocalName == "th"
-                || qname.LocalName == "td"
-                || qname.LocalName == "poem")
-                {
-                    Span data = new Span();
-
-                    pushIdIfNecessary(data, qname, node);
-
-                    prependInnerLinkIfNecessary(data, qname, node);
-
-                    data.Inlines.Add(new Run(textMedia.Text));
-
-                    setStyles(qname, data);
-
-                    //Span span = new Span(new Run(textMedia.Text));
-                    if (parent is List)
-                    {
-                        ((List)parent).ListItems.Add(new ListItem(new Paragraph(data)));
-                    }
-                    else if (parent is TableCell)
-                    {
-                        ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Section)
-                    {
-                        ((Section)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Floater)
-                    {
-                        ((Floater)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is ListItem)
-                    {
-                        ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Paragraph)
-                    {
-                        ((Paragraph)parent).Inlines.Add(data);
-                    }
-                    else if (parent is Span)
-                    {
-                        ((Span)parent).Inlines.Add(data);
-                    }
-                    else
-                    {
-                        throw new Exception("The given parent TextElement is not valid in this context.");
-                    }
-                }
-                else if (qname.LocalName == "a")
-                {
-                    Hyperlink data = new Hyperlink(new Run(textMedia.Text));
-                    setStyles(qname, data);
-
-                    data.NavigateUri = new Uri("http://daisy.org");
-
-                    if (parent is Paragraph)
-                    {
-                        ((Paragraph)parent).Inlines.Add(data);
-                    }
-                    else if (parent is Section)
-                    {
-                        ((Section)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is TableCell)
-                    {
-                        ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Floater)
-                    {
-                        ((Floater)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is ListItem)
-                    {
-                        ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Span)
-                    {
-                        ((Span)parent).Inlines.Add(data);
-                    }
-                    else
-                    {
-                        throw new Exception("The given parent TextElement is not valid in this context.");
-                    }
-                }
-                else if (qname.LocalName == "strong"
-                    || qname.LocalName == "b")
-                {
-                    Bold data = new Bold(new Run(textMedia.Text));
-                    setStyles(qname, data);
-
-                    if (parent is Paragraph)
-                    {
-                        ((Paragraph)parent).Inlines.Add(data);
-                    }
-                    else if (parent is TableCell)
-                    {
-                        ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Section)
-                    {
-                        ((Section)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Floater)
-                    {
-                        ((Floater)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is ListItem)
-                    {
-                        ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Span)
-                    {
-                        ((Span)parent).Inlines.Add(data);
-                    }
-                    else
-                    {
-                        throw new Exception("The given parent TextElement is not valid in this context.");
-                    }
-                }
-                else if (qname.LocalName == "underline"
-                    || qname.LocalName == "u")
-                {
-                    Underline data = new Underline(new Run(textMedia.Text));
-                    setStyles(qname, data);
-
-                    if (parent is Paragraph)
-                    {
-                        ((Paragraph)parent).Inlines.Add(data);
-                    }
-                    else if (parent is TableCell)
-                    {
-                        ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Section)
-                    {
-                        ((Section)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Floater)
-                    {
-                        ((Floater)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is ListItem)
-                    {
-                        ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Span)
-                    {
-                        ((Span)parent).Inlines.Add(data);
-                    }
-                    else
-                    {
-                        throw new Exception("The given parent TextElement is not valid in this context.");
-                    }
-                }
-                else if (qname.LocalName == "italic"
-                    || qname.LocalName == "emphasis"
-                    || qname.LocalName == "em"
-                    || qname.LocalName == "i")
-                {
-                    Italic data = new Italic(new Run(textMedia.Text));
-                    setStyles(qname, data);
-
-                    if (parent is Paragraph)
-                    {
-                        ((Paragraph)parent).Inlines.Add(data);
-                    }
-                    else if (parent is TableCell)
-                    {
-                        ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Section)
-                    {
-                        ((Section)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Floater)
-                    {
-                        ((Floater)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is ListItem)
-                    {
-                        ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                    }
-                    else if (parent is Span)
-                    {
-                        ((Span)parent).Inlines.Add(data);
-                    }
-                    else
-                    {
-                        throw new Exception("The given parent TextElement is not valid in this context.");
-                    }
-                }
-                else
-                {
-                    throw new Exception("The TreeNode's element name is not valid in this context.");
-                }
-            }
-            return parent;
-        }
-
-        private void pushIdIfNecessary(TextElement data, QualifiedName qname, TreeNode node)
-        {
-            if (qname.LocalName == "note"
-                        || qname.LocalName == "annotation")
-            {
-                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                XmlAttribute idAttr = xmlProp.GetAttribute("id");
-
-                if (idAttr != null)
-                {
-                    data.Name = idAttr.Value;
-                    m_idLinkTargets.Add(data.Name, data);
-                }
-            }
-        }
-
-        private void prependInnerLinkIfNecessary(TextElement data, QualifiedName qname, TreeNode node)
-        {
-            if (qname.LocalName == "noteref"
-            || qname.LocalName == "annoref")
-            {
-                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                XmlAttribute linkAttr = xmlProp.GetAttribute("idref");
-
-                if (linkAttr != null)
-                {
-                    Hyperlink link = new Hyperlink(new Run("_"));
-                    link.NavigateUri = new Uri("#" + linkAttr.Value, UriKind.Relative);
-                    link.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
-
-                    if (data is Paragraph)
-                    {
-                        ((Paragraph)data).Inlines.Add(link);
-                    }
-                    else if (data is Span)
-                    {
-                        ((Span)data).Inlines.Add(link);
-                    }
-                }
-            }
-        }
-
-        private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            string id = e.Uri.ToString().Substring(1);
-            TextElement link = null;
-            if (m_idLinkTargets.ContainsKey(id))
-            {
-                link = m_idLinkTargets[id];
-            }
-            else
-            {
-                link = m_FlowDoc.FindName(id) as TextElement;
-            }
-            if (link != null)
-            {
-                link.BringIntoView();
-                if (m_lastHighlighted != null)
-                {
-                    m_lastHighlighted.Background = m_FlowDoc.Background;
-                }
-                m_lastHighlighted = link;
-                m_lastHighlighted.Background = Brushes.Yellow;
-            }
-        }
-
-        private TextElement generateFlowDocument_NoChild_Xml_NoText(TreeNode node, TextElement parent, QualifiedName qname)
-        {
-            // This is likely a <br/> or empty <p></p>
-
-            if (qname.LocalName == "img")
-            {
-                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                XmlAttribute srcAttr = xmlProp.GetAttribute("src");
-
-                if (srcAttr == null) return parent;
-
-
-
-                Image image = new Image();
-
-
-                if (srcAttr.Value.StartsWith("http://"))
-                {
-                    /*
-                    WebClient webClient = new WebClient();
-                    fullImagePath = srcAttr.Value;
-                    byte[] imageContent = webClient.DownloadData(srcAttr.Value);
-                    Stream stream = new MemoryStream(imageContent);
-                     */
-                    try
-                    {
-                        image.Source = new BitmapImage(new Uri(srcAttr.Value));
-                    }
-                    catch (Exception)
-                    {
-                        return parent;
-                    }
-                }
-                else
-                {
-                    //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-
-                    //stream = new FileStream(fullImagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-
-                    string dirPath = Path.GetDirectoryName(FilePath);
-                    string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
-
-                    try
-                    {
-                        image.Source = new BitmapImage(new Uri(fullImagePath));
-                    }
-                    catch (Exception)
-                    {
-                        return parent;
-                    }
-                }
-
-                /*
-                if (fullImagePath.EndsWith(".jpg") || fullImagePath.EndsWith(".jpeg"))
-                {
-                    BitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                    image.Source = dec.Frames[0];
-                }
-                else if (fullImagePath.EndsWith(".png"))
-                {
-                    BitmapDecoder dec = new PngBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                    image.Source = dec.Frames[0];
-                }
-                else if (fullImagePath.EndsWith(".bmp"))
-                {
-                    BitmapDecoder dec = new BmpBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                    image.Source = dec.Frames[0];
-                }
-                else if (fullImagePath.EndsWith(".gif"))
-                {
-                    BitmapDecoder dec = new GifBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                    image.Source = dec.Frames[0];
-                }
-                 */
-
-
-                XmlAttribute srcW = xmlProp.GetAttribute("width");
-                if (srcW != null)
-                {
-                    double ww = Double.Parse(srcW.Value);
-                    image.Width = ww;
-                }
-                XmlAttribute srcH = xmlProp.GetAttribute("height");
-                if (srcH != null)
-                {
-                    double hh = Double.Parse(srcH.Value);
-                    image.Height = hh;
-                }
-                image.Stretch = Stretch.None;
-
-                if (parent is Paragraph)
-                {
-                    ((Paragraph)parent).Inlines.Add(new InlineUIContainer(image));
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(new BlockUIContainer(image));
-                }
-                else if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(new BlockUIContainer(image));
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(new BlockUIContainer(image));
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(new BlockUIContainer(image));
-                }
-                else if (parent is Span)
-                {
-                    ((Span)parent).Inlines.Add(new InlineUIContainer(image));
-                }
-            }
-            else if (qname.LocalName == "td")
-            {
-                if (parent is Table)
-                {
-                    m_currentTD++;
-                    TableCell data = new TableCell();
-                    TableRowCollection trc = ((Table)parent).RowGroups[0].Rows;
-                    trc[trc.Count - 1].Cells.Add(data);
-
-                    if (m_currentTD > ((Table)parent).Columns.Count)
-                    {
-                        ((Table)parent).Columns.Add(new TableColumn());
-                    }
-
-                    setStyles(qname, data);
-                    return parent;
-                }
-            }
-            else if (qname.LocalName == "br")
-            {
-                LineBreak data = new LineBreak();
-                setStyles(qname, data);
-
-                if (parent is Paragraph)
-                {
-                    ((Paragraph)parent).Inlines.Add(data);
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Span)
-                {
-                    ((Span)parent).Inlines.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-            }
-            else if (qname.LocalName == "p")
-            {
-                Paragraph data = new Paragraph();
-                setStyles(qname, data);
-
-                data.Inlines.Add(new LineBreak());
-
-                if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(data);
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(data);
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(data);
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-            }
-            else
-            {
-                throw new Exception("The TreeNode's element name is not valid in this context.");
-            }
-            return parent;
-        }
-
-        private TextElement generateFlowDocument_NoChild_NoXml_Text(TreeNode node, TextElement parent, AbstractTextMedia textMedia)
-        {
-            if (!String.IsNullOrEmpty(textMedia.Text))
-            {
-                // mixed-content (TreeNode siblings are probably elements with text, such as <b>1234</b>)
-                Run data = new Run(textMedia.Text);
-
-                if (parent is Paragraph)
-                {
-                    ((Paragraph)parent).Inlines.Add(data);
-                }
-                else if (parent is TableCell)
-                {
-                    ((TableCell)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Section)
-                {
-                    ((Section)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Floater)
-                {
-                    ((Floater)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is ListItem)
-                {
-                    ((ListItem)parent).Blocks.Add(new Paragraph(data));
-                }
-                else if (parent is Span)
-                {
-                    ((Span)parent).Inlines.Add(data);
-                }
-                else
-                {
-                    throw new Exception("The given parent TextElement is not valid in this context.");
-                }
-            }
-            return parent;
-        }
-
-        private void setStyles(QualifiedName qname, TextElement data)
-        {
-            if (qname.LocalName == "h1")
-            {
-                data.FontSize = m_FlowDoc.FontSize * 2;
-                data.FontWeight = FontWeights.Heavy;
-            }
-            else if (qname.LocalName == "h2")
-            {
-                data.FontSize = m_FlowDoc.FontSize * 1.5;
-                data.FontWeight = FontWeights.Heavy;
-            }
-            else if (qname.LocalName == "h3")
-            {
-                data.FontSize = m_FlowDoc.FontSize * 1.2;
-                data.FontWeight = FontWeights.Heavy;
-            }
-            else if (qname.LocalName == "h4")
-            {
-                data.FontSize = m_FlowDoc.FontSize;
-                data.FontWeight = FontWeights.Heavy;
-            }
-            else if (qname.LocalName == "table")
-            {
-                if (data is Table)
-                {
-                    ((Table)data).CellSpacing = 4.0;
-                    ((Table)data).BorderBrush = Brushes.Brown;
-                    ((Table)data).BorderThickness = new Thickness(1.0);
-                }
-            }
-            else if (qname.LocalName == "td")
-            {
-                if (data is TableCell)
-                {
-                    ((TableCell)data).BorderBrush = Brushes.LightGray;
-                    ((TableCell)data).BorderThickness = new Thickness(1.0);
-                }
-            }
-            else if (qname.LocalName == "doctitle"
-                || qname.LocalName == "docauthor")
-            {
-                data.FontSize = m_FlowDoc.FontSize * 1.2;
-                data.FontWeight = FontWeights.Heavy;
-                data.Foreground = Brushes.Navy;
-            }
-            else if (qname.LocalName == "blockquote")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.Olive;
-                    ((Block)data).BorderThickness = new Thickness(2.0);
-                    ((Block)data).Padding = new Thickness(2.0);
-                    ((Block)data).Margin = new Thickness(4.0);
-                }
-            }
-            else if (qname.LocalName == "annotation")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.LightSteelBlue;
-                    ((Block)data).BorderThickness = new Thickness(2.0);
-                    ((Block)data).Padding = new Thickness(2.0);
-                }
-                data.FontSize = m_FlowDoc.FontSize / 1.2;
-            }
-            else if (qname.LocalName == "annoref")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.Magenta;
-                    ((Block)data).BorderThickness = new Thickness(1.0);
-                    ((Block)data).Padding = new Thickness(2.0);
-                }
-                data.FontSize = m_FlowDoc.FontSize / 1.2;
-                data.FontWeight = FontWeights.Bold;
-
-                data.Background = Brushes.LightSteelBlue;
-            }
-            else if (qname.LocalName == "note")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.LightSkyBlue;
-                    ((Block)data).BorderThickness = new Thickness(2.0);
-                    ((Block)data).Padding = new Thickness(2.0);
-                }
-                data.FontSize = m_FlowDoc.FontSize/1.2;
-            }
-            else if (qname.LocalName == "noteref")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.Magenta;
-                    ((Block)data).BorderThickness = new Thickness(1.0);
-                    ((Block)data).Padding = new Thickness(2.0);
-                }
-                data.FontSize = m_FlowDoc.FontSize / 1.2;
-                data.FontWeight = FontWeights.Bold;
-
-                data.Background = Brushes.LightSkyBlue;
-            }
-            else if (qname.LocalName == "pagenum")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.Aqua;
-                    ((Block)data).BorderThickness = new Thickness(2.0);
-                    ((Block)data).Padding = new Thickness(2.0);
-                }
-                data.FontWeight = FontWeights.Bold;
-                data.Background = Brushes.LightYellow;
-                data.Foreground = Brushes.Orange;
-            }
-            else if (qname.LocalName == "frontmatter"
-                || qname.LocalName == "rearmatter")
-            {
-                if (data is Block)
-                {
-                    ((Block)data).BorderBrush = Brushes.GreenYellow;
-                    ((Block)data).BorderThickness = new Thickness(2.0);
-                    ((Block)data).Padding = new Thickness(4.0);
+                    m_cellsToExpand.Clear();
                 }
             }
         }
@@ -1213,21 +1459,58 @@ namespace WpfDtbookTest
             return null;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        private void OnPageSelected(object sender, SelectionChangedEventArgs e)
         {
-            var handler = PropertyChanged;
-
-            if (handler != null)
+            Page page = ListView.SelectedItem as Page;
+            if (page != null)
             {
-                handler(this, e);
+                BringIntoViewAndHighlight(page.Id);
+            }
+        }
+        private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            if (e.Uri.ToString().StartsWith("#"))
+            {
+                string id = e.Uri.ToString().Substring(1);
+                BringIntoViewAndHighlight(id);
             }
         }
 
-        protected void OnPropertyChanged(string propertyName)
+        private void BringIntoViewAndHighlight(string id)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            TextElement link = null;
+            if (m_idLinkTargets.ContainsKey(id))
+            {
+                link = m_idLinkTargets[id];
+            }
+            else
+            {
+                Page page = GetPage(id);
+                if (page != null)
+                {
+                    link = page.TextElement;
+                }
+            }
+            if (link == null)
+            {
+                link = m_FlowDoc.FindName(id) as TextElement;
+            }
+            if (link != null)
+            {
+                link.BringIntoView();
+                if (m_lastHighlighted != null)
+                {
+                    m_lastHighlighted.Background = m_lastHighlighted_Background;
+                    m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
+                }
+                m_lastHighlighted = link;
+
+                m_lastHighlighted_Background = m_lastHighlighted.Background;
+                m_lastHighlighted.Background = Brushes.Yellow;
+
+                m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+                m_lastHighlighted.Foreground = Brushes.Red;
+            }
         }
     }
 }
