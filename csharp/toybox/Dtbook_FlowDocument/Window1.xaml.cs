@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
+using urakawa.navigation;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XmlAttribute = urakawa.property.xml.XmlAttribute;
@@ -30,6 +31,130 @@ namespace WpfDtbookTest
     /// </summary>
     public partial class Window1 : INotifyPropertyChanged
     {
+        public HeadingsNavigator TOC
+        {
+            get
+            {
+                return m_HeadingsNavigator;
+            }
+        }
+        public class HeadingTreeNodeWrapper
+        {
+            private TreeNode m_TreeNode;
+            private TreeNode m_TreeNodeHeading;
+            private HeadingsNavigator m_navigator;
+            private ObservableCollection<HeadingTreeNodeWrapper> m_children;
+
+            public TreeNode WrappedTreeNode
+            {
+                get
+                {
+                    return m_TreeNode;
+                }
+            }
+
+            public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node)
+            {
+                m_TreeNode = node;
+                m_navigator = navigator;
+            }
+            public string Title
+            {
+                get
+                {
+                    if (m_TreeNodeHeading == null && m_TreeNode.ChildCount > 0)
+                    {
+                        TreeNode node = m_TreeNode.GetChild(0);
+                        QualifiedName qname = node.GetXmlElementQName();
+                        if (qname != null && (qname.LocalName == "hd"
+                            || qname.LocalName == "h1"
+                            || qname.LocalName == "h2"
+                            || qname.LocalName == "h3"
+                            || qname.LocalName == "h4"
+                            || qname.LocalName == "h5"
+                            || qname.LocalName == "h6"
+                            ))
+                        {
+                            m_TreeNodeHeading = node;
+                        }
+                    }
+                    string str = (m_TreeNodeHeading != null ? m_TreeNodeHeading.GetTextMediaFlattened() : "??" + m_TreeNode.GetXmlElementQName().LocalName);
+                    return str;
+                }
+            }
+            public ObservableCollection<HeadingTreeNodeWrapper> Children
+            {
+                get
+                {
+                    if (m_children == null)
+                    {
+                        m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
+
+                        int n = m_navigator.GetChildCount(m_TreeNode);
+                        for (int index = 0; index < n; index++)
+                        {
+                            TreeNode node = m_navigator.GetChild(m_TreeNode, index);
+                            m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node));
+                        }
+                    }
+                    return m_children;
+                }
+            }
+        }
+
+        private void OnHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
+            if (node != null)
+            {
+                BringIntoViewAndHighlight(node.WrappedTreeNode);
+            }
+        }
+
+        public class HeadingsNavigator : AbstractFilterNavigator
+        {
+            public HeadingsNavigator(Project project)
+            {
+                m_Project = project;
+            }
+            private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
+            private readonly Project m_Project;
+
+            public ObservableCollection<HeadingTreeNodeWrapper> Roots
+            {
+                get
+                {
+                    if (m_roots == null)
+                    {
+                        m_roots = new ObservableCollection<HeadingTreeNodeWrapper>();
+                        TreeNode presentationRootNode = m_Project.GetPresentation(0).RootNode;
+                        int n = GetChildCount(presentationRootNode);
+                        for (int index = 0; index < n; index++)
+                        {
+                            TreeNode node = GetChild(presentationRootNode, index);
+                            m_roots.Add(new HeadingTreeNodeWrapper(this, node));
+                        }
+                    }
+                    return m_roots;
+                }
+            }
+
+            //treeView.SelectedNode.EnsureVisible();
+
+            public override bool IsIncluded(TreeNode node)
+            {
+                QualifiedName qname = node.GetXmlElementQName();
+                return qname != null &&
+                    (qname.LocalName == "level1"
+                    || qname.LocalName == "level"
+                    || qname.LocalName == "level2"
+                    || qname.LocalName == "level3"
+                    || qname.LocalName == "level4"
+                    || qname.LocalName == "level5"
+                    || qname.LocalName == "level6"
+                    );
+            }
+        }
         public class Page
         {
             public Page(TextElement textElement)
@@ -129,6 +254,7 @@ namespace WpfDtbookTest
 
 
         private ObservableCollection<Page> _Pages = new ObservableCollection<Page>();
+        private HeadingsNavigator m_HeadingsNavigator;
 
         public ObservableCollection<Page> Pages
         {
@@ -192,6 +318,10 @@ namespace WpfDtbookTest
             DTBooktoXukConversion converter = new DTBooktoXukConversion(uri);
 
             m_XukProject = converter.Project;
+
+            m_HeadingsNavigator = new HeadingsNavigator(m_XukProject);
+
+            TreeView.DataContext = TOC;
 
             if (m_idLinkTargets != null)
             {
@@ -1370,7 +1500,7 @@ namespace WpfDtbookTest
             }
             else if (parent is Section)
             {
-                addInlineInBlocks(data, ((Section) parent).Blocks);
+                addInlineInBlocks(data, ((Section)parent).Blocks);
             }
             else if (parent is Floater)
             {
@@ -1525,9 +1655,9 @@ namespace WpfDtbookTest
                     }
                     m_cellsToExpand.Clear();
 
-                    TableRowGroupCollection trgc = ((Table) parentNext).RowGroups;
-                    
-                    for (int index = 0; index < trgc.Count;)
+                    TableRowGroupCollection trgc = ((Table)parentNext).RowGroups;
+
+                    for (int index = 0; index < trgc.Count; )
                     {
                         TableRowGroup trg = trgc[index];
 
@@ -1575,7 +1705,7 @@ namespace WpfDtbookTest
                                     }
                                 case "tfoot":
                                     {
-                                        if (index == (trgc.Count-1))
+                                        if (index == (trgc.Count - 1))
                                         {
                                             index++;
                                             break;
@@ -1633,40 +1763,216 @@ namespace WpfDtbookTest
             }
         }
 
+        private void BringIntoViewAndHighlight(TreeNode node)
+        {
+            TextElement textElement = FindTextElement(node);
+            if (textElement != null)
+            {
+                BringIntoViewAndHighlight(textElement);
+            }
+        }
+
+        private TextElement FindTextElement(TreeNode node, InlineCollection ic)
+        {
+            foreach (Inline inline in ic)
+            {
+                if (inline is Figure)
+                {
+                    TextElement te = FindTextElement(node, (Figure)inline);
+                    if (te != null) return te;
+                }
+                else if (inline is Floater)
+                {
+                    TextElement te = FindTextElement(node, (Floater)inline);
+                    if (te != null) return te;
+                }
+                else if (inline is Run)
+                {
+                    TextElement te = FindTextElement(node, (Run)inline);
+                    if (te != null) return te;
+                }
+                else if (inline is LineBreak)
+                {
+                    TextElement te = FindTextElement(node, (LineBreak)inline);
+                    if (te != null) return te;
+                }
+            }
+
+            return null;
+        }
+
+        private TextElement FindTextElement(TreeNode node, TableCellCollection tcc)
+        {
+            foreach (TableCell tc in tcc)
+            {
+                TextElement te = FindTextElement(node, tc);
+                if (te != null) return te;
+            }
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, TableRowCollection trc)
+        {
+            foreach (TableRow tr in trc)
+            {
+                TextElement te = FindTextElement(node, tr);
+                if (te != null) return te;
+            }
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, TableRowGroupCollection trgc)
+        {
+            foreach (TableRowGroup trg in trgc)
+            {
+                TextElement te = FindTextElement(node, trg);
+                if (te != null) return te;
+            }
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, ListItemCollection lic)
+        {
+            foreach (ListItem li in lic)
+            {
+                TextElement te = FindTextElement(node, li);
+                if (te != null) return te;
+            }
+            return null;
+        }
+
+        private TextElement FindTextElement(TreeNode node, BlockCollection bc)
+        {
+            foreach (Block block in bc)
+            {
+                if (block is Section)
+                {
+                    TextElement te = FindTextElement(node, (Section)block);
+                    if (te != null) return te;
+                }
+                else if (block is Paragraph)
+                {
+                    TextElement te = FindTextElement(node, (Paragraph)block);
+                    if (te != null) return te;
+                }
+                else if (block is List)
+                {
+                    TextElement te = FindTextElement(node, (List)block);
+                    if (te != null) return te;
+                }
+                else if (block is Table)
+                {
+                    TextElement te = FindTextElement(node, (Table)block);
+                    if (te != null) return te;
+                }
+            }
+
+            return null;
+        }
+
+        private TextElement FindTextElement(TreeNode node, TableCell tc)
+        {
+            if (tc.Tag == node) return tc;
+            return FindTextElement(node, tc.Blocks);
+        }
+
+        private TextElement FindTextElement(TreeNode node, Run r)
+        {
+            if (r.Tag == node) return r;
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, LineBreak lb)
+        {
+            if (lb.Tag == node) return lb;
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, Floater f)
+        {
+            if (f.Tag == node) return f;
+            return FindTextElement(node, f.Blocks);
+        }
+        private TextElement FindTextElement(TreeNode node, Figure f)
+        {
+            if (f.Tag == node) return f;
+            return FindTextElement(node, f.Blocks);
+        }
+        private TextElement FindTextElement(TreeNode node, TableRow tr)
+        {
+            if (tr.Tag == node) return tr;
+            return FindTextElement(node, tr.Cells);
+        }
+        private TextElement FindTextElement(TreeNode node, TableRowGroup trg)
+        {
+            if (trg.Tag == node) return trg;
+            return FindTextElement(node, trg.Rows);
+        }
+        private TextElement FindTextElement(TreeNode node, ListItem li)
+        {
+            if (li.Tag == node) return li;
+            return FindTextElement(node, li.Blocks);
+        }
+        private TextElement FindTextElement(TreeNode node)
+        {
+            return FindTextElement(node, m_FlowDoc.Blocks);
+        }
+        private TextElement FindTextElement(TreeNode node, Section section)
+        {
+            if (section.Tag == node) return section;
+            return FindTextElement(node, section.Blocks);
+        }
+        private TextElement FindTextElement(TreeNode node, Paragraph para)
+        {
+            if (para.Tag == node) return para;
+            return FindTextElement(node, para.Inlines);
+        }
+        private TextElement FindTextElement(TreeNode node, List list)
+        {
+            if (list.Tag == node) return list;
+            return FindTextElement(node, list.ListItems);
+        }
+        private TextElement FindTextElement(TreeNode node, Table table)
+        {
+            if (table.Tag == node) return table;
+            return FindTextElement(node, table.RowGroups);
+        }
+
+
+        private void BringIntoViewAndHighlight(TextElement textElement)
+        {
+            textElement.BringIntoView();
+            if (m_lastHighlighted != null)
+            {
+                m_lastHighlighted.Background = m_lastHighlighted_Background;
+                m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
+            }
+            m_lastHighlighted = textElement;
+
+            m_lastHighlighted_Background = m_lastHighlighted.Background;
+            m_lastHighlighted.Background = Brushes.Yellow;
+
+            m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            m_lastHighlighted.Foreground = Brushes.Red;
+        }
+
         private void BringIntoViewAndHighlight(string id)
         {
-            TextElement link = null;
+            TextElement textElement = null;
             if (m_idLinkTargets.ContainsKey(id))
             {
-                link = m_idLinkTargets[id];
+                textElement = m_idLinkTargets[id];
             }
             else
             {
                 Page page = GetPage(id);
                 if (page != null)
                 {
-                    link = page.TextElement;
+                    textElement = page.TextElement;
                 }
             }
-            if (link == null)
+            if (textElement == null)
             {
-                link = m_FlowDoc.FindName(id) as TextElement;
+                textElement = m_FlowDoc.FindName(id) as TextElement;
             }
-            if (link != null)
+            if (textElement != null)
             {
-                link.BringIntoView();
-                if (m_lastHighlighted != null)
-                {
-                    m_lastHighlighted.Background = m_lastHighlighted_Background;
-                    m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
-                }
-                m_lastHighlighted = link;
-
-                m_lastHighlighted_Background = m_lastHighlighted.Background;
-                m_lastHighlighted.Background = Brushes.Yellow;
-
-                m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
-                m_lastHighlighted.Foreground = Brushes.Red;
+                BringIntoViewAndHighlight(textElement);
             }
         }
     }

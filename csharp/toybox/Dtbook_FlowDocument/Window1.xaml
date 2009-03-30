@@ -9,7 +9,26 @@
       <TextBox Text="{Binding FilePath}"/>
     </StackPanel>
 
-    <TreeView x:Name="TreeView" DockPanel.Dock="Left"/>
+    <TreeView x:Name="TreeView" Width="140" DockPanel.Dock="Left" DataContext="{Binding TOC}" ItemsSource="{Binding Roots}"
+              SelectedItemChanged="OnHeadingSelected">
+      <TreeView.ItemTemplate>
+        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+
+          <TextBlock Text="{Binding Path=Title}"/>
+          
+          <HierarchicalDataTemplate.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Path=Title}"/>
+            </DataTemplate>
+          </HierarchicalDataTemplate.ItemTemplate>
+        </HierarchicalDataTemplate>
+      </TreeView.ItemTemplate>
+      <TreeView.ItemContainerStyle>
+        <Style>
+          <Setter Property="TreeViewItem.IsExpanded" Value="True"/>
+        </Style>
+      </TreeView.ItemContainerStyle>
+    </TreeView>
 
     <ListView x:Name="ListView" ItemsSource="{Binding Pages}" DockPanel.Dock="Right" SelectionMode="Single" SelectionChanged="OnPageSelected">
       <ListView.View>
