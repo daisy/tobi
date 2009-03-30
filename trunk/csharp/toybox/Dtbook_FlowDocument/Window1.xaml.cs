@@ -275,7 +275,7 @@ namespace WpfDtbookTest
             {
                 try
                 {
-                    image.Source = new BitmapImage(new Uri(srcAttr.Value));
+                    image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
                 }
                 catch (Exception)
                 {
@@ -327,8 +327,12 @@ namespace WpfDtbookTest
             image.MinWidth = image.Width;
             image.MinHeight = image.Height;
 
-            BlockUIContainer img = new BlockUIContainer(image);
-            addBlock(parent, img);
+            //BlockUIContainer img = new BlockUIContainer(image);
+            //addBlock(parent, img);
+
+            InlineUIContainer img = new InlineUIContainer(image);
+            addInline(parent, img);
+
 
 
             XmlAttribute altAttr = xmlProp.GetAttribute("alt");
@@ -418,9 +422,9 @@ namespace WpfDtbookTest
                 //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
                 else
                 {
-                    Paragraph para = new Paragraph();
-                    data.Blocks.Add(para);
-                    return para;
+                    Section section = new Section();
+                    data.Blocks.Add(section);
+                    return section;
                 }
             }
             else
@@ -759,6 +763,7 @@ namespace WpfDtbookTest
             {
                 data.NavigateUri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
                 data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+                data.ToolTip = data.NavigateUri.ToString();
             }
 
             if (node.ChildCount == 0)
@@ -1141,7 +1146,6 @@ namespace WpfDtbookTest
                                     data.BorderBrush = Brushes.LightSalmon;
                                     data.BorderThickness = new Thickness(0.5);
                                     data.Padding = new Thickness(2.0);
-                                    data.TextAlignment = TextAlignment.Center;
                                 });
                         }
                     case "sidebar":
@@ -1240,7 +1244,6 @@ namespace WpfDtbookTest
                                 }
                                 );
                         }
-                    case "lic":
                     case "q":
                     case "line":
                     case "dateline":
@@ -1250,6 +1253,7 @@ namespace WpfDtbookTest
                         {
                             return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
                         }
+                    case "lic":
                     case "prodnote":
                     case "div":
                     case "samp":
@@ -1277,7 +1281,7 @@ namespace WpfDtbookTest
             }
             else
             {
-                System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
+                //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
             }
 
             return parent;
@@ -1294,7 +1298,7 @@ namespace WpfDtbookTest
             data.Foreground = Brushes.DarkOrange;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-            XmlAttribute attr =xmlProp.GetAttribute("id");
+            XmlAttribute attr = xmlProp.GetAttribute("id");
 
             if (attr != null &&
                 !String.IsNullOrEmpty(attr.Value))
@@ -1308,7 +1312,7 @@ namespace WpfDtbookTest
         {
             if (parent == null)
             {
-                m_FlowDoc.Blocks.Add(new Paragraph(data));
+                addInlineInBlocks(data, m_FlowDoc.Blocks);
             }
             else if (parent is Paragraph)
             {
@@ -1320,29 +1324,59 @@ namespace WpfDtbookTest
             }
             else if (parent is TableCell)
             {
-                ((TableCell)parent).Blocks.Add(new Paragraph(data));
+                addInlineInBlocks(data, ((TableCell)parent).Blocks);
             }
             else if (parent is Section)
             {
-                ((Section)parent).Blocks.Add(new Paragraph(data));
+                addInlineInBlocks(data, ((Section) parent).Blocks);
             }
             else if (parent is Floater)
             {
-                ((Floater)parent).Blocks.Add(new Paragraph(data));
+                addInlineInBlocks(data, ((Floater)parent).Blocks);
             }
             else if (parent is Figure)
             {
-                ((Figure)parent).Blocks.Add(new Paragraph(data));
+                addInlineInBlocks(data, ((Figure)parent).Blocks);
             }
             else if (parent is ListItem)
             {
-                ((ListItem)parent).Blocks.Add(new Paragraph(data));
+                addInlineInBlocks(data, ((ListItem)parent).Blocks);
             }
             else
             {
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
+
+        private void addInlineInBlocks(Inline data, BlockCollection blocks)
+        {
+            Block lastBlock = blocks.LastBlock;
+            if (lastBlock != null && lastBlock is Section)
+            {
+                Block lastBlock2 = ((Section)lastBlock).Blocks.LastBlock;
+                if (lastBlock2 != null && lastBlock2 is Paragraph && lastBlock2.Tag != null && lastBlock2.Tag is bool && ((bool)lastBlock2.Tag))
+                {
+                    ((Paragraph)lastBlock2).Inlines.Add(data);
+                }
+                else
+                {
+                    Paragraph para = new Paragraph(data);
+                    para.Tag = true;
+                    ((Section)lastBlock).Blocks.Add(para);
+                }
+            }
+            else if (lastBlock != null && lastBlock is Paragraph && lastBlock.Tag != null && lastBlock.Tag is bool && ((bool)lastBlock.Tag))
+            {
+                ((Paragraph)lastBlock).Inlines.Add(data);
+            }
+            else
+            {
+                Paragraph para = new Paragraph(data);
+                para.Tag = true;
+                blocks.Add(new Section(para));
+            }
+        }
+
         private void addBlock(TextElement parent, Block data)
         {
             if (parent == null)
