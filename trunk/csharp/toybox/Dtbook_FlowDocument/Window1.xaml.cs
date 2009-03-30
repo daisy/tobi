@@ -390,20 +390,42 @@ namespace WpfDtbookTest
                 m_currentTD++;
                 TableCell data = new TableCell();
 
+                data.BorderBrush = Brushes.LightGray;
+                data.BorderThickness = new Thickness(1.0);
+
+                TableRowGroup trg = ((Table)parent).RowGroups[m_currentROWGROUP];
+
+                if (trg.Tag != null && trg.Tag is string)
+                {
+                    if (((String)(trg.Tag)) == "thead")
+                    {
+                        data.Background = Brushes.LightGreen;
+                        data.FontWeight = FontWeights.Heavy;
+                    }
+                    if (((String)(trg.Tag)) == "tfoot")
+                    {
+                        data.Background = Brushes.LightBlue;
+                    }
+                }
                 if (qname.LocalName == "th")
                 {
                     data.FontWeight = FontWeights.Heavy;
                 }
 
-                data.BorderBrush = Brushes.LightGray;
-                data.BorderThickness = new Thickness(1.0);
-
-                TableRowCollection trc = ((Table)parent).RowGroups[m_currentROWGROUP].Rows;
+                TableRowCollection trc = trg.Rows;
                 trc[trc.Count - 1].Cells.Add(data);
 
                 if (m_currentTD > ((Table)parent).Columns.Count)
                 {
                     ((Table)parent).Columns.Add(new TableColumn());
+                }
+
+                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                XmlAttribute attr = xmlProp.GetAttribute("colspan");
+
+                if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                {
+                    data.ColumnSpan = int.Parse(attr.Value);
                 }
 
                 if (node.ChildCount == 0)
@@ -564,9 +586,13 @@ namespace WpfDtbookTest
             data.CellSpacing = 4.0;
             data.BorderBrush = Brushes.Brown;
             data.BorderThickness = new Thickness(1.0);
+            /*
+            TableRowGroup rowGroup = new TableRowGroup();
+            rowGroup.Tag = "??";
+            data.RowGroups.Add(rowGroup);
+            */
 
-            data.RowGroups.Add(new TableRowGroup());
-            m_currentROWGROUP = 0;
+            m_currentROWGROUP = -1;
             m_firstTR = false;
 
             if (node.ChildCount == 0)
@@ -642,7 +668,9 @@ namespace WpfDtbookTest
                     {
                         m_currentTD = 0;
 
-                        ((Table)parent).RowGroups.Add(new TableRowGroup());
+                        TableRowGroup rowGroup = new TableRowGroup();
+                        rowGroup.Tag = qname.LocalName;
+                        ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
 
                         TableRow data = new TableRow();
@@ -687,7 +715,9 @@ namespace WpfDtbookTest
                     {
                         m_currentTD = 0;
 
-                        ((Table)parent).RowGroups.Add(new TableRowGroup());
+                        TableRowGroup rowGroup = new TableRowGroup();
+                        rowGroup.Tag = qname.LocalName;
+                        ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
 
                         TableRow row = new TableRow();
@@ -716,7 +746,9 @@ namespace WpfDtbookTest
                         || qname.LocalName == "tbody"
                         || qname.LocalName == "tfoot")
                     {
-                        ((Table)parent).RowGroups.Add(new TableRowGroup());
+                        TableRowGroup rowGroup = new TableRowGroup();
+                        rowGroup.Tag = qname.LocalName;
+                        ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
                         m_firstTR = false;
                         return parent;
@@ -730,15 +762,25 @@ namespace WpfDtbookTest
                             QualifiedName qnameParent = node.Parent.GetXmlElementQName();
                             if (qnameParent != null && qnameParent.LocalName == "table")
                             {
-                                if (m_firstTR == true)
+                                if (!m_firstTR)
                                 {
                                     ((Table)parent).RowGroups.Add(new TableRowGroup());
                                     m_currentROWGROUP++;
+
+                                    m_firstTR = true;
                                 }
+                            }
+                            else
+                            {
+                                m_firstTR = false;
                             }
                         }
 
-                        m_firstTR = false;
+                        if (((Table)parent).RowGroups.Count == 0)
+                        {
+                            ((Table)parent).RowGroups.Add(new TableRowGroup());
+                            m_currentROWGROUP = 0;
+                        }
 
                         TableRow data = new TableRow();
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
@@ -1482,6 +1524,78 @@ namespace WpfDtbookTest
                         cell.ColumnSpan = n;
                     }
                     m_cellsToExpand.Clear();
+
+                    TableRowGroupCollection trgc = ((Table) parentNext).RowGroups;
+                    
+                    for (int index = 0; index < trgc.Count;)
+                    {
+                        TableRowGroup trg = trgc[index];
+
+                        if (trg.Tag != null && trg.Tag is string)
+                        {
+                            switch ((String)(trg.Tag))
+                            {
+                                case "caption":
+                                    {
+                                        if (index == 0)
+                                        {
+                                            index++;
+                                            break;
+                                        }
+                                        trgc.Remove(trg);
+                                        trgc.Insert(0, trg);
+                                        index++;
+                                        break;
+                                    }
+                                case "thead":
+                                    {
+                                        if (index == 0)
+                                        {
+                                            index++;
+                                            break;
+                                        }
+                                        TableRowGroup trgFirst = trgc[0];
+                                        if (trgFirst.Tag != null && trgFirst.Tag is string && ((String)(trgFirst.Tag)) == "caption")
+                                        {
+                                            if (index == 1)
+                                            {
+                                                index++;
+                                                break;
+                                            }
+                                            trgc.Remove(trg);
+                                            trgc.Insert(1, trg);
+                                            index++;
+                                            break;
+                                        }
+
+                                        trgc.Remove(trg);
+                                        trgc.Insert(0, trg);
+                                        index++;
+                                        break;
+                                    }
+                                case "tfoot":
+                                    {
+                                        if (index == (trgc.Count-1))
+                                        {
+                                            index++;
+                                            break;
+                                        }
+                                        trgc.Remove(trg);
+                                        trgc.Add(trg);
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        index++;
+                                        break;
+                                    }
+                            }
+                        }
+                        else
+                        {
+                            index++;
+                        }
+                    }
                 }
             }
         }
