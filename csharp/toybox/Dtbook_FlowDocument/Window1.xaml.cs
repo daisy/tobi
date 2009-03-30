@@ -45,11 +45,18 @@ namespace WpfDtbookTest
             private HeadingsNavigator m_navigator;
             private ObservableCollection<HeadingTreeNodeWrapper> m_children;
 
-            public TreeNode WrappedTreeNode
+            public TreeNode WrappedTreeNode_Level
             {
                 get
                 {
                     return m_TreeNode;
+                }
+            }
+            public TreeNode WrappedTreeNode_LevelHeading
+            {
+                get
+                {
+                    return m_TreeNodeHeading;
                 }
             }
 
@@ -107,7 +114,7 @@ namespace WpfDtbookTest
             HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
             if (node != null)
             {
-                BringIntoViewAndHighlight(node.WrappedTreeNode);
+                BringIntoViewAndHighlight((node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level));
             }
         }
 
@@ -340,6 +347,10 @@ namespace WpfDtbookTest
             flowDoc.IsColumnWidthFlexible = false;
             flowDoc.TextAlignment = TextAlignment.Left;
 
+            FlowDocReader.Zoom = 120;
+            FlowDocReader.Document = flowDoc;
+
+            /*
             string dirPath = Path.GetDirectoryName(FilePath);
             string fullPath = Path.Combine(dirPath, "FlowDocument.xaml");
 
@@ -363,11 +374,8 @@ namespace WpfDtbookTest
                 {
                     stream.Close();
                 }
-            }
+            }*/
 
-            FlowDocReader.Zoom = 120;
-
-            FlowDocReader.Document = flowDoc;
         }
 
         private FlowDocument createFlowDocumentFromXuk()
@@ -461,6 +469,8 @@ namespace WpfDtbookTest
             //addBlock(parent, img);
 
             InlineUIContainer img = new InlineUIContainer(image);
+            img.Tag = node;
+
             addInline(parent, img);
 
 
@@ -519,22 +529,27 @@ namespace WpfDtbookTest
             {
                 m_currentTD++;
                 TableCell data = new TableCell();
+                data.Tag = node;
 
                 data.BorderBrush = Brushes.LightGray;
                 data.BorderThickness = new Thickness(1.0);
 
                 TableRowGroup trg = ((Table)parent).RowGroups[m_currentROWGROUP];
 
-                if (trg.Tag != null && trg.Tag is string)
+                if (trg.Tag != null && trg.Tag is TreeNode)
                 {
-                    if (((String)(trg.Tag)) == "thead")
+                    QualifiedName qn = ((TreeNode)trg.Tag).GetXmlElementQName();
+                    if (qn != null)
                     {
-                        data.Background = Brushes.LightGreen;
-                        data.FontWeight = FontWeights.Heavy;
-                    }
-                    if (((String)(trg.Tag)) == "tfoot")
-                    {
-                        data.Background = Brushes.LightBlue;
+                        if (qn.LocalName == "thead")
+                        {
+                            data.Background = Brushes.LightGreen;
+                            data.FontWeight = FontWeights.Heavy;
+                        }
+                        if (qn.LocalName == "tfoot")
+                        {
+                            data.Background = Brushes.LightBlue;
+                        }
                     }
                 }
                 if (qname.LocalName == "th")
@@ -588,6 +603,8 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateParagraphInitializer initializer)
         {
             Paragraph data = new Paragraph();
+            data.Tag = node;
+
             if (initializer != null)
             {
                 initializer(data);
@@ -618,6 +635,7 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Underline data = new Underline();
+            data.Tag = node;
 
             if (node.ChildCount == 0)
             {
@@ -643,6 +661,7 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Bold data = new Bold();
+            data.Tag = node;
 
             if (node.ChildCount == 0)
             {
@@ -668,6 +687,7 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Italic data = new Italic();
+            data.Tag = node;
 
             if (node.ChildCount == 0)
             {
@@ -694,6 +714,7 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             List data = new List();
+            data.Tag = node;
 
             if (node.ChildCount == 0)
             {
@@ -711,16 +732,13 @@ namespace WpfDtbookTest
         {
             m_cellsToExpand.Clear();
             m_currentTD = 0;
+
             Table data = new Table();
+            data.Tag = node;
 
             data.CellSpacing = 4.0;
             data.BorderBrush = Brushes.Brown;
             data.BorderThickness = new Thickness(1.0);
-            /*
-            TableRowGroup rowGroup = new TableRowGroup();
-            rowGroup.Tag = "??";
-            data.RowGroups.Add(rowGroup);
-            */
 
             m_currentROWGROUP = -1;
             m_firstTR = false;
@@ -745,6 +763,8 @@ namespace WpfDtbookTest
                 throw new Exception("list item not in List ??");
             }
             ListItem data = new ListItem();
+            data.Tag = node;
+
             if (node.ChildCount == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
@@ -799,7 +819,8 @@ namespace WpfDtbookTest
                         m_currentTD = 0;
 
                         TableRowGroup rowGroup = new TableRowGroup();
-                        rowGroup.Tag = qname.LocalName;
+                        rowGroup.Tag = node;
+
                         ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
 
@@ -846,7 +867,8 @@ namespace WpfDtbookTest
                         m_currentTD = 0;
 
                         TableRowGroup rowGroup = new TableRowGroup();
-                        rowGroup.Tag = qname.LocalName;
+                        rowGroup.Tag = node;
+
                         ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
 
@@ -877,7 +899,8 @@ namespace WpfDtbookTest
                         || qname.LocalName == "tfoot")
                     {
                         TableRowGroup rowGroup = new TableRowGroup();
-                        rowGroup.Tag = qname.LocalName;
+                        rowGroup.Tag = node;
+
                         ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
                         m_firstTR = false;
@@ -913,6 +936,8 @@ namespace WpfDtbookTest
                         }
 
                         TableRow data = new TableRow();
+                        data.Tag = node;
+
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
 
                         return parent;
@@ -927,6 +952,7 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Hyperlink data = new Hyperlink();
+            data.Tag = node;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("href");
@@ -972,6 +998,7 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Hyperlink data = new Hyperlink();
+            data.Tag = node;
 
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
@@ -1017,6 +1044,8 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSpanInitializer initializer)
         {
             Span data = new Span();
+            data.Tag = node;
+
             if (initializer != null)
             {
                 initializer(data);
@@ -1048,6 +1077,8 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFloaterInitializer initializer)
         {
             Floater data = new Floater();
+            data.Tag = node;
+
             if (initializer != null)
             {
                 initializer(data);
@@ -1078,6 +1109,8 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFigureInitializer initializer)
         {
             Figure data = new Figure();
+            data.Tag = node;
+
             if (initializer != null)
             {
                 initializer(data);
@@ -1108,6 +1141,8 @@ namespace WpfDtbookTest
         private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSectionInitializer initializer)
         {
             Section data = new Section();
+            data.Tag = node;
+
             if (initializer != null)
             {
                 initializer(data);
@@ -1145,6 +1180,7 @@ namespace WpfDtbookTest
                 }
 
                 Run data = new Run(textMedia.Text);
+                data.Tag = node;
                 addInline(parent, data);
 
                 return parent;
@@ -1341,7 +1377,9 @@ namespace WpfDtbookTest
                         }
                     case "br":
                         {
-                            addInline(parent, new LineBreak());
+                            LineBreak data = new LineBreak();
+                            data.Tag = node;
+                            addInline(parent, data);
                             return parent;
                         }
                     case "em":
@@ -1661,64 +1699,74 @@ namespace WpfDtbookTest
                     {
                         TableRowGroup trg = trgc[index];
 
-                        if (trg.Tag != null && trg.Tag is string)
+
+                        if (trg.Tag != null && trg.Tag is TreeNode)
                         {
-                            switch ((String)(trg.Tag))
+                            QualifiedName qn = ((TreeNode)trg.Tag).GetXmlElementQName();
+                            if (qn != null)
                             {
-                                case "caption":
-                                    {
-                                        if (index == 0)
+                                switch (qn.LocalName)
+                                {
+                                    case "caption":
                                         {
-                                            index++;
-                                            break;
-                                        }
-                                        trgc.Remove(trg);
-                                        trgc.Insert(0, trg);
-                                        index++;
-                                        break;
-                                    }
-                                case "thead":
-                                    {
-                                        if (index == 0)
-                                        {
-                                            index++;
-                                            break;
-                                        }
-                                        TableRowGroup trgFirst = trgc[0];
-                                        if (trgFirst.Tag != null && trgFirst.Tag is string && ((String)(trgFirst.Tag)) == "caption")
-                                        {
-                                            if (index == 1)
+                                            if (index == 0)
                                             {
                                                 index++;
                                                 break;
                                             }
                                             trgc.Remove(trg);
-                                            trgc.Insert(1, trg);
+                                            trgc.Insert(0, trg);
                                             index++;
                                             break;
                                         }
+                                    case "thead":
+                                        {
+                                            if (index == 0)
+                                            {
+                                                index++;
+                                                break;
+                                            }
+                                            TableRowGroup trgFirst = trgc[0];
 
-                                        trgc.Remove(trg);
-                                        trgc.Insert(0, trg);
-                                        index++;
-                                        break;
-                                    }
-                                case "tfoot":
-                                    {
-                                        if (index == (trgc.Count - 1))
+                                            if (trgFirst.Tag != null && trgFirst.Tag is TreeNode)
+                                            {
+                                                QualifiedName qun = ((TreeNode)trgFirst.Tag).GetXmlElementQName();
+                                                if (qun != null && qun.LocalName == "caption")
+                                                {
+                                                    if (index == 1)
+                                                    {
+                                                        index++;
+                                                        break;
+                                                    }
+                                                    trgc.Remove(trg);
+                                                    trgc.Insert(1, trg);
+                                                    index++;
+                                                    break;
+                                                }
+                                            }
+
+                                            trgc.Remove(trg);
+                                            trgc.Insert(0, trg);
+                                            index++;
+                                            break;
+                                        }
+                                    case "tfoot":
+                                        {
+                                            if (index == (trgc.Count - 1))
+                                            {
+                                                index++;
+                                                break;
+                                            }
+                                            trgc.Remove(trg);
+                                            trgc.Add(trg);
+                                            break;
+                                        }
+                                    default:
                                         {
                                             index++;
                                             break;
                                         }
-                                        trgc.Remove(trg);
-                                        trgc.Add(trg);
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        index++;
-                                        break;
-                                    }
+                                }
                             }
                         }
                         else
