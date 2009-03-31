@@ -14,13 +14,54 @@
     <Slider x:Name="ZoomSlider" DockPanel.Dock="Bottom" Value="1000" TickPlacement="BottomRight" Minimum="800" Maximum="6000" TickFrequency="500" Delay="1000" Interval="1000" LargeChange="500" SmallChange="200"/>
 
     <ScrollViewer x:Name="WaveFormScroll" DockPanel.Dock="Bottom" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
-      <Canvas x:Name="WaveFormCanvas" MouseDown="OnCanvasMouseDown" Height="130" Width="{Binding ElementName=ZoomSlider, Path=Value}" Background="Black" SizeChanged="OnCanvasSizeChanged">
-        <Path x:Name="WaveFormPathCh1" StrokeThickness="1" Stroke="LimeGreen"/>
-        <Path x:Name="WaveFormPathCh2" StrokeThickness="1" Stroke="LimeGreen"/>
-        <Path x:Name="WaveFormPlayHeadPath" StrokeThickness="2" Stroke="Yellow"/>
+
+      <Canvas x:Name="WaveFormCanvas"
+              SizeChanged="OnCanvasSizeChanged"
+              Height="130"
+              Width="{Binding ElementName=ZoomSlider, Path=Value}"
+              Background="Black">
+
+        <Image x:Name="WaveFormImage"
+               Stretch="Fill"
+               Canvas.ZIndex="0"
+               SnapsToDevicePixels="false"
+               SizeChanged="OnImageSizeChanged"
+               MouseDown="OnImageMouseDown"
+               Canvas.Left="0"
+               Canvas.Top="0"
+               Height="{Binding ElementName=WaveFormCanvas, Path=Height}"
+               Width="{Binding ElementName=ZoomSlider, Path=Value}">
+          <!-- Image.Source>
+            <DrawingImage>
+              <DrawingImage.Drawing>
+                <DrawingGroup x:Name="WaveFormDrawing">
+
+                  <GeometryDrawing
+                  Brush="LimeGreen"
+                  Geometry="M 30 10 L 50 40 10 40 Z">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="LimeGreen" Thickness="1"/>
+                    </GeometryDrawing.Pen>
+                  </GeometryDrawing>
+
+                  <DrawingGroup>
+              </DrawingImage.Drawing>
+            </DrawingImage>
+          </Image.Source -->
+        </Image>
+
+        <!-- Path x:Name="WaveFormPathCh1" StrokeThickness="1" Stroke="LimeGreen"/>
+        <Path x:Name="WaveFormPathCh2" StrokeThickness="1" Stroke="LimeGreen"/ -->
+
+        <Path x:Name="WaveFormPlayHeadPath"
+              Canvas.ZIndex="1"
+              StrokeThickness="1"
+              Stroke="Yellow"
+              Fill="AntiqueWhite"
+              SnapsToDevicePixels="True"/>
       </Canvas>
     </ScrollViewer>
-    
+
     <WindowsFormsHost x:Name="WinFormPeakMeter"/>
   </DockPanel>
 </Window>
