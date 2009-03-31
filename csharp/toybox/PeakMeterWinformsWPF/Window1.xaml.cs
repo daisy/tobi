@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using AudioEngine.PPMeter;
 using AudioLib;
 using AudioLib.Events.Player;
+using AudioLib.Events.VuMeter;
 using Microsoft.Win32;
 using urakawa.media;
 using urakawa.media.data.audio;
@@ -17,6 +18,192 @@ using urakawa.media.timing;
 
 namespace WPF_AudioTest
 {
+    public class PeakMeterBarData
+    {
+        public delegate void PeakMeterRefreshDelegate();
+
+        private TimeSpan m_FallbackSecondsPerDb;
+
+        private Thread m_FallbackThread;
+        private Mutex m_ValueDbMutex = new Mutex();
+
+        private double m_ValueDb;
+        private double m_ShownValueDb;
+        private double m_MinimumDb = -72;
+        private PeakMeterRefreshDelegate m_PeakMeterRefreshDelegate;
+
+        public PeakMeterBarData(PeakMeterRefreshDelegate del)
+        {
+            m_PeakMeterRefreshDelegate = del;
+            m_FallbackSecondsPerDb = TimeSpan.Parse("00:00:00.0900000");
+            m_FallbackThread = new Thread(new ThreadStart(FallbackWorker));
+            ShownValueDb = MinimumDb;
+            ValueDb = MinimumDb;
+        }
+
+        private double ShownValueDb
+        {
+            get
+            {
+                return m_ShownValueDb;
+            }
+
+            set
+            {
+                double newValue;
+                if (value > 0)
+                {
+                    newValue = 0;
+                }
+                else if (value < MinimumDb)
+                {
+                    newValue = MinimumDb;
+                }
+                else
+                {
+                    newValue = value;
+                }
+                if (newValue != m_ShownValueDb)
+                {
+                    m_ShownValueDb = newValue;
+                    m_PeakMeterRefreshDelegate();
+                }
+            }
+        }
+
+        public double ValueDb
+        {
+            get
+            {
+                return m_ValueDb;
+            }
+            set
+            {
+                double newValue;
+                if (value > 0)
+                {
+                    newValue = 0;
+                }
+                else if (value < MinimumDb)
+                {
+                    newValue = MinimumDb;
+                }
+                else
+                {
+                    newValue = value;
+                }
+                if (newValue != m_ValueDb)
+                {
+                    m_ValueDb = newValue;
+                    if (!m_FallbackThread.IsAlive)
+                    {
+                        m_FallbackThread = new Thread(new ThreadStart(FallbackWorker));
+                        m_FallbackThread.Start();
+                    }
+                }
+            }
+        }
+
+
+        public double MinimumDb
+        {
+            get
+            {
+                return m_MinimumDb;
+            }
+            set
+            {
+                double newValue = value;
+                if (newValue > -1)
+                {
+                    newValue = -1;
+                }
+                if (m_MinimumDb != newValue)
+                {
+                    m_MinimumDb = newValue;
+                    ValueDb = ValueDb;
+                    m_PeakMeterRefreshDelegate();
+                    ShownValueDb = ValueDb;
+                }
+            }
+        }
+
+        public void ForceFullFallback()
+        {
+            if (m_FallbackThread.IsAlive)
+            {
+                m_FallbackThread.Abort();
+            }
+            ShownValueDb = ValueDb;
+        }
+
+        private void FallbackWorker()
+        {
+            try
+            {
+                DateTime latestUpdateTime = DateTime.Now;
+                while (true)
+                {
+                    TimeSpan timeSinceLatestUpdate = DateTime.Now.Subtract(latestUpdateTime);
+                    double maxDiff = Double.PositiveInfinity;
+                    if (m_FallbackSecondsPerDb.TotalMilliseconds > 0)
+                    {
+                        maxDiff = timeSinceLatestUpdate.TotalMilliseconds / m_FallbackSecondsPerDb.TotalMilliseconds;
+                    }
+                    latestUpdateTime += timeSinceLatestUpdate;
+                    if (ValueDb < ShownValueDb - maxDiff)
+                    {
+                        ShownValueDb -= maxDiff;
+                    }
+                    else
+                    {
+                        ShownValueDb = ValueDb;
+                    }
+                    m_ValueDbMutex.WaitOne();
+                    try
+                    {
+                        if (ShownValueDb == ValueDb)
+                        {
+                            return;
+                        }
+                    }
+                    finally
+                    {
+                        m_ValueDbMutex.ReleaseMutex();
+                    }
+                    Thread.Sleep(1);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+            }
+        }
+
+        public double DbToPixels(double totalPixels)
+        {
+            double h;
+            if (ValueDb < MinimumDb)
+            {
+                h = 0;
+            }
+            else if (ValueDb > 0)
+            {
+                h = totalPixels;
+            }
+            else
+            {
+                h = (MinimumDb - ValueDb) * totalPixels / MinimumDb;
+            }
+            return h;
+        }
+
+
+        ~PeakMeterBarData()
+        {
+            if (m_FallbackThread.IsAlive) m_FallbackThread.Abort();
+        }
+
+    }
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
@@ -25,14 +212,24 @@ namespace WPF_AudioTest
         private AudioPlayer m_Player;
         private AudioRecorder m_Recorder;
         private VuMeter m_VuMeter;
+
         //private GraphicalPeakMeter m_GraphicalPeakMeter;
         //private GraphicalVuMeter m_GraphicalVuMeter;
-
 
         private string m_WavFilePath;
         private FileStream m_FilePlayStream;
         private PCMDataInfo m_pcmFormat;
         private double m_bytesPerPixel;
+        private AudioPlayer.StreamProviderDelegate mCurrentAudioStreamProvider;
+        private DispatcherTimer m_PlaybackTimer;
+        private DispatcherTimer m_WaveFormLoadTimer;
+        private long m_StreamRiffHeaderEndPos;
+
+        private PeakMeterBarData m_PeakMeterBarDataCh1;
+        private PeakMeterBarData m_PeakMeterBarDataCh2;
+
+        private int[] m_PeakOverloads = new int[] { 0, 0 };
+        private double[] m_PeakMeterValues;
 
         public Window1()
         {
@@ -41,9 +238,9 @@ namespace WPF_AudioTest
             DataContext = this;
         }
 
+
         private void InitializeAudioStuff()
         {
-
             mCurrentAudioStreamProvider = () =>
             {
                 if (!String.IsNullOrEmpty(FilePath))
@@ -63,7 +260,8 @@ namespace WPF_AudioTest
             m_Recorder = new AudioRecorder();
             m_Recorder.StateChanged += Recorder_StateChanged;
 
-            m_VuMeter = new AudioLib.VuMeter(m_Player, m_Recorder);
+            m_VuMeter = new VuMeter(m_Player, m_Recorder);
+
             /*m_GraphicalPeakMeter = new GraphicalPeakMeter
             {
                 BarPaddingToWidthRatio = 0.075F,
@@ -80,8 +278,23 @@ namespace WPF_AudioTest
 
             WinFormPeakMeter.Child = m_GraphicalPeakMeter;
              */
-            WinFormPeakMeter.Child = new System.Windows.Forms.Control("test");
-            m_Player.SetDevice(WinFormPeakMeter.Child, @"auto");
+
+            WinFormHost.Child = new System.Windows.Forms.Control("needed by DirectSound");
+            m_Player.SetDevice(WinFormHost.Child, @"auto");
+
+
+
+            m_PeakMeterBarDataCh1 = new PeakMeterBarData(() => PeakMeterCanvasInvalidateVisual());
+            m_PeakMeterBarDataCh2 = new PeakMeterBarData(() => PeakMeterCanvasInvalidateVisual());
+
+            m_PeakMeterValues = new double[2];
+
+            m_Player.EndOfAudioAsset += new EndOfAudioAssetHandler(OnEndOfAudioAsset);
+            m_Player.StateChanged += new StateChangedHandler(OnAudioPlayerStateChanged);
+
+            m_VuMeter.UpdatePeakMeter += new UpdatePeakMeterHandler(OnUpdateVuMeter);
+            m_VuMeter.ResetEvent += new ResetHandler(OnResetVuMeter);
+            m_VuMeter.PeakOverload += new PeakOverloadHandler(OnPeakOverload);
 
             /*
             m_GraphicalVuMeter = new GraphicalVuMeter()
@@ -108,11 +321,6 @@ namespace WPF_AudioTest
         {
             //m_Recorder.State == AudioLib.AudioRecorderState.Monitoring
         }
-
-        private AudioPlayer.StreamProviderDelegate mCurrentAudioStreamProvider;
-        private DispatcherTimer m_WaveFormTimer;
-        private DispatcherTimer m_WaveFormLoadTimer;
-        private long m_StreamRiffHeaderEndPos;
 
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
@@ -143,14 +351,20 @@ namespace WPF_AudioTest
             FilePath = dlg.FileName;
 
             m_pcmFormat = null;
+
+            if (PeakMeterPathCh1.Data != null)
+            {
+                ((StreamGeometry)PeakMeterPathCh1.Data).Clear();
+            }
+            if (PeakMeterPathCh2.Data != null)
+            {
+                ((StreamGeometry)PeakMeterPathCh2.Data).Clear();
+            }
+
             loadWaveForm();
 
             m_Player.Play(mCurrentAudioStreamProvider,
                         m_pcmFormat.GetDuration(m_pcmFormat.DataLength), m_pcmFormat);
-            m_Player.EndOfAudioAsset += new EndOfAudioAssetHandler(OnEndOfAudioAsset);
-            m_Player.UpdateVuMeter += new UpdateVuMeterHandler(OnUpdateVuMeter);
-            m_Player.ResetVuMeter += new ResetVuMeterHandler(OnUpdateVuMeter);
-            m_Player.StateChanged += new StateChangedHandler(OnAudioPlayerStateChanged);
         }
 
         private void OnAudioPlayerStateChanged(object sender, StateChangedEventArgs e)
@@ -170,19 +384,19 @@ namespace WPF_AudioTest
 
         private void stopWaveFormTimer()
         {
-            if (m_WaveFormTimer != null && m_WaveFormTimer.IsEnabled)
+            if (m_PlaybackTimer != null && m_PlaybackTimer.IsEnabled)
             {
-                m_WaveFormTimer.Stop();
+                m_PlaybackTimer.Stop();
             }
         }
         private void startWaveFormTimer()
         {
-            if (m_WaveFormTimer == null)
+            if (m_PlaybackTimer == null)
             {
-                m_WaveFormTimer = new DispatcherTimer();
-                m_WaveFormTimer.Tick += WaveFormTimer_Tick;
+                m_PlaybackTimer = new DispatcherTimer();
+                m_PlaybackTimer.Tick += OnPlaybackTimerTick;
             }
-            else if (m_WaveFormTimer.IsEnabled)
+            else if (m_PlaybackTimer.IsEnabled)
             {
                 return;
             }
@@ -193,9 +407,9 @@ namespace WPF_AudioTest
             {
                 interval = 50;
             }
-            m_WaveFormTimer.Interval = TimeSpan.FromMilliseconds(interval);
+            m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
 
-            m_WaveFormTimer.Start();
+            m_PlaybackTimer.Start();
         }
 
         //TimeDelta d = m_pcmFormat.GetDuration((uint)m_bytesPerPixel);
@@ -206,31 +420,178 @@ namespace WPF_AudioTest
             {
                 return 0;
             }
-            return 1000 * bytes / (m_pcmFormat.SampleRate * m_pcmFormat.NumberOfChannels * (m_pcmFormat.BitDepth / 8));
+            return 1000 * bytes / (m_pcmFormat.SampleRate * m_pcmFormat.NumberOfChannels * m_pcmFormat.BitDepth / 8);
         }
-
-        private void WaveFormTimer_Tick(object sender, EventArgs e)
+        public double convertMillisecondsToByte(double ms)
         {
-            updateWaveFormPlayHeadPath();
+            if (m_pcmFormat == null)
+            {
+                return 0;
+            }
+            return (ms * m_pcmFormat.SampleRate * m_pcmFormat.NumberOfChannels * m_pcmFormat.BitDepth / 8) / 1000;
         }
 
-        private void WaveFormLoadTimer_Tick(object sender, EventArgs e)
+        private void OnPlaybackTimerTick(object sender, EventArgs e)
+        {
+            updateWaveFormPlayHead();
+            updatePeakMeter();
+        }
+
+        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
             m_WaveFormLoadTimer.Stop();
             loadWaveForm();
         }
 
-        private void OnUpdateVuMeter(object sender, UpdateVuMeterEventArgs e)
+        private void OnPeakOverload(object sender, PeakOverloadEventArgs e)
         {
-            //JERKY AND UNRELIABLE updateWaveFormPlayHeadPath();
+            //TODO
+        }
+
+        private void OnResetVuMeter(object sender, ResetEventArgs e)
+        {
+            m_PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
+            m_PeakMeterBarDataCh1.ForceFullFallback();
+
+            if (m_pcmFormat.NumberOfChannels > 1)
+            {
+                m_PeakMeterBarDataCh2.ValueDb = Double.NegativeInfinity;
+                m_PeakMeterBarDataCh2.ForceFullFallback();
+            }
+
+            PeakMeterCanvasInvalidateVisual();
+
+            updateWaveFormPlayHead();
+        }
+
+        private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
+        {
+            if (e.PeakValues != null && e.PeakValues.Length > 0)
+            {
+                m_PeakMeterValues[0] = e.PeakValues[0];
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    m_PeakMeterValues[1] = e.PeakValues[1];
+                }
+            }
         }
 
         private void OnEndOfAudioAsset(object sender, EndOfAudioAssetEventArgs e)
         {
             //
         }
+        private void PeakMeterCanvasInvalidateVisual()
+        {
+            if (Dispatcher.CheckAccess())
+            {
+                PeakMeterCanvas.InvalidateVisual();
+            }
+            else
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(PeakMeterCanvasInvalidateVisual));
+            }
+        }
 
-        private void updateWaveFormPlayHeadPath()
+        private void updatePeakMeter()
+        {
+            if (m_pcmFormat == null)
+            {
+                return;
+            }
+            if (Dispatcher.CheckAccess())
+            {
+                if (m_Player.State != AudioPlayerState.Playing)
+                {
+                    return;
+                }
+
+                double margin = 5;
+
+                double barWidth = PeakMeterCanvas.ActualWidth - margin - margin;
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    barWidth = (barWidth - margin) / 2;
+                }
+                double availableHeight = PeakMeterCanvas.ActualHeight;
+
+                StreamGeometry geometry1 = null;
+                StreamGeometry geometry2 = null;
+
+                if (PeakMeterPathCh1.Data == null)
+                {
+                    geometry1 = new StreamGeometry();
+                }
+                else
+                {
+                    geometry1 = (StreamGeometry)PeakMeterPathCh1.Data;
+                }
+                using (StreamGeometryContext sgc = geometry1.Open())
+                {
+                    m_PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
+
+                    double pixels = m_PeakMeterBarDataCh1.DbToPixels(availableHeight);
+
+                    sgc.BeginFigure(new Point(margin, availableHeight - pixels), true, true);
+                    sgc.LineTo(new Point(margin + barWidth, availableHeight - pixels), true, false);
+                    sgc.LineTo(new Point(margin + barWidth, availableHeight), true, false);
+                    sgc.LineTo(new Point(margin, availableHeight), true, false);
+
+                    sgc.Close();
+                }
+
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    if (PeakMeterPathCh2.Data == null)
+                    {
+                        geometry2 = new StreamGeometry();
+                    }
+                    else
+                    {
+                        geometry2 = (StreamGeometry)PeakMeterPathCh2.Data;
+                    }
+                    using (StreamGeometryContext sgc = geometry2.Open())
+                    {
+                        m_PeakMeterBarDataCh2.ValueDb = m_PeakMeterValues[1];
+
+                        double pixels = m_PeakMeterBarDataCh2.DbToPixels(availableHeight);
+
+                        sgc.BeginFigure(new Point(barWidth + margin + margin, availableHeight - pixels), true, true);
+                        sgc.LineTo(new Point(barWidth + margin + margin + barWidth, availableHeight - pixels), true, false);
+                        sgc.LineTo(new Point(barWidth + margin + margin + barWidth, availableHeight), true, false);
+                        sgc.LineTo(new Point(barWidth + margin + margin, availableHeight), true, false);
+
+                        sgc.Close();
+                    }
+                }
+
+
+                if (PeakMeterPathCh1.Data == null)
+                {
+                    PeakMeterPathCh1.Data = geometry1;
+                }
+                else
+                {
+                    PeakMeterPathCh1.InvalidateVisual();
+                }
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    if (PeakMeterPathCh2.Data == null)
+                    {
+                        PeakMeterPathCh2.Data = geometry2;
+                    }
+                    else
+                    {
+                        PeakMeterPathCh2.InvalidateVisual();
+                    }
+                }
+            }
+            else
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(updatePeakMeter));
+            }
+        }
+
+        private void updateWaveFormPlayHead()
         {
             if (m_pcmFormat == null)
             {
@@ -259,7 +620,7 @@ namespace WPF_AudioTest
 
                 using (StreamGeometryContext sgc = geometry.Open())
                 {
-                    sgc.BeginFigure(new Point(pixels, WaveFormCanvas.Height - 5), true, false);
+                    sgc.BeginFigure(new Point(pixels, WaveFormCanvas.ActualHeight - 5), true, false);
                     sgc.LineTo(new Point(pixels, 5), true, false);
                     sgc.LineTo(new Point(pixels + 5, 5 + 5), true, false);
                     sgc.LineTo(new Point(pixels, 5 + 5 + 5), true, false);
@@ -295,7 +656,7 @@ namespace WPF_AudioTest
             }
             else
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(updateWaveFormPlayHeadPath));
+                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(updateWaveFormPlayHead));
             }
         }
 
@@ -336,13 +697,12 @@ namespace WPF_AudioTest
             {
                 return;
             }
-            ushort channels = m_pcmFormat.NumberOfChannels;
-            ushort frameSize = m_pcmFormat.BlockAlign;
 
+            ushort frameSize = (ushort)(m_pcmFormat.NumberOfChannels * m_pcmFormat.BitDepth / 8);
             double samplesPerPixel = Math.Ceiling(m_pcmFormat.DataLength
                                 / (double)frameSize
-                                / WaveFormCanvas.Width * channels);
-            m_bytesPerPixel = samplesPerPixel * frameSize / channels;
+                                / WaveFormCanvas.ActualWidth * m_pcmFormat.NumberOfChannels);
+            m_bytesPerPixel = samplesPerPixel * frameSize / m_pcmFormat.NumberOfChannels;
 
             byte[] bytes = new byte[(int)m_bytesPerPixel];
             short[] samples = new short[(int)samplesPerPixel];
@@ -363,14 +723,14 @@ namespace WPF_AudioTest
             StreamGeometry geometryCh2 = null;
             StreamGeometryContext sgcCh2 = null;
 
-            if (channels > 1)
+            if (m_pcmFormat.NumberOfChannels > 1)
             {
                 geometryCh2 = new StreamGeometry();
                 sgcCh2 = geometryCh2.Open();
             }
 
             double height = WaveFormImage.Height;
-            if (channels > 1)
+            if (m_pcmFormat.NumberOfChannels > 1)
             {
                 height /= 2;
             }
@@ -386,11 +746,11 @@ namespace WPF_AudioTest
 
                 short min = short.MaxValue;
                 short max = short.MinValue;
-                for (int channel = 0; channel < channels; channel++)
+                for (int channel = 0; channel < m_pcmFormat.NumberOfChannels; channel++)
                 {
                     int limit = (int)Math.Ceiling(read / (float)frameSize);
 
-                    for (int i = channel; i < limit; i += channels)
+                    for (int i = channel; i < limit; i += m_pcmFormat.NumberOfChannels)
                     {
                         if (samples[i] < min) min = samples[i];
                         if (samples[i] > max) max = samples[i];
@@ -430,7 +790,7 @@ namespace WPF_AudioTest
             m_FilePlayStream = null;
 
             sgcCh1.Close();
-            if (channels > 1)
+            if (m_pcmFormat.NumberOfChannels > 1)
             {
                 sgcCh2.Close();
             }
@@ -444,7 +804,7 @@ namespace WPF_AudioTest
             geoDraw1.Freeze();
             //
             GeometryDrawing geoDraw2 = null;
-            if (channels > 1)
+            if (m_pcmFormat.NumberOfChannels > 1)
             {
                 //StreamGeometry geo2 = geometryCh2.Clone();
                 geometryCh2.Freeze();
@@ -452,7 +812,7 @@ namespace WPF_AudioTest
                 geoDraw2.Freeze();
             }
             //
-            if (channels > 1)
+            if (m_pcmFormat.NumberOfChannels > 1)
             {
                 DrawingGroup drawGrp = new DrawingGroup();
                 drawGrp.Children.Add(geoDraw1);
@@ -466,7 +826,7 @@ namespace WPF_AudioTest
             }
             drawImg.Freeze();
             WaveFormImage.Source = drawImg;
-            
+
             ////////
 
             /*
@@ -515,7 +875,12 @@ namespace WPF_AudioTest
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
-        private void OnCanvasSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnPeakMeterCanvasSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            updatePeakMeter();
+        }
+
+        private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
             PresentationSource ps = PresentationSource.FromVisual(this);
             if (ps != null)
@@ -524,23 +889,22 @@ namespace WPF_AudioTest
                 double dpiFactor = 1 / m.M11;
                 WaveFormPlayHeadPath.StrokeThickness = 1 * dpiFactor; // 1px
             }
-            updateWaveFormPlayHeadPath();
-
+            updateWaveFormPlayHead();
         }
 
-        private void OnImageSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnWaveFormImageSizeChanged(object sender, SizeChangedEventArgs e)
         {
             ushort channels = m_pcmFormat.NumberOfChannels;
             ushort frameSize = m_pcmFormat.BlockAlign;
             double samplesPerPixel = Math.Ceiling(m_pcmFormat.DataLength
-                / (double)frameSize / WaveFormCanvas.Width * channels);
+                / (double)frameSize / WaveFormCanvas.ActualWidth * channels);
             m_bytesPerPixel = samplesPerPixel * frameSize / channels;
 
 
             if (m_WaveFormLoadTimer == null)
             {
                 m_WaveFormLoadTimer = new DispatcherTimer();
-                m_WaveFormLoadTimer.Tick += WaveFormLoadTimer_Tick;
+                m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
                 m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(500);
             }
             else if (m_WaveFormLoadTimer.IsEnabled)
@@ -573,8 +937,10 @@ namespace WPF_AudioTest
             else if (m_Player.State == AudioPlayerState.Stopped)
             {
                 m_Player.Play(mCurrentAudioStreamProvider,
-                            m_pcmFormat.GetDuration(m_pcmFormat.DataLength), m_pcmFormat);
-                m_Player.CurrentTimePosition = convertByteToMilliseconds(p.X * m_bytesPerPixel);
+                            m_pcmFormat.GetDuration(m_pcmFormat.DataLength),
+                            m_pcmFormat,
+                            convertByteToMilliseconds(p.X * m_bytesPerPixel)
+                            );
             }
             else if (m_Player.State == AudioPlayerState.Playing)
             {
