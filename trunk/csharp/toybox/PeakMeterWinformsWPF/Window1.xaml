@@ -7,17 +7,41 @@
     <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
       <Button Click="OnOpenFile">Play WAV file...</Button>
       <TextBox Text="{Binding Path=FilePath}" IsEnabled="False"/>
+      <WindowsFormsHost x:Name="WinFormHost"/>
     </StackPanel>
 
-    <!-- WindowsFormsHost x:Name="WinFormVuMeter" DockPanel.Dock="Right"/ -->
 
-    <Slider x:Name="ZoomSlider" DockPanel.Dock="Bottom" Value="1000" TickPlacement="BottomRight" Minimum="800" Maximum="6000" TickFrequency="500" Delay="1000" Interval="1000" LargeChange="500" SmallChange="200"/>
+    <Canvas x:Name="PeakMeterCanvas"
+            SizeChanged="OnPeakMeterCanvasSizeChanged"
+            Background="Black"
+            Width="150"
+            DockPanel.Dock="Right">
 
-    <ScrollViewer x:Name="WaveFormScroll" DockPanel.Dock="Bottom" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+      <Path x:Name="PeakMeterPathCh1"
+            Canvas.ZIndex="1"
+            StrokeThickness="1"
+            Stroke="Green"
+            Fill="LimeGreen"
+            SnapsToDevicePixels="False"/>
+
+      <Path x:Name="PeakMeterPathCh2"
+            Canvas.ZIndex="1"
+            StrokeThickness="1"
+            Stroke="Green"
+            Fill="LimeGreen"
+            SnapsToDevicePixels="False"/>
+    </Canvas>
+    
+    <Slider x:Name="ZoomSlider" IsMoveToPointEnabled="True" DockPanel.Dock="Bottom" Value="1000" TickPlacement="BottomRight" Minimum="800" Maximum="10000" TickFrequency="500" Delay="1000" Interval="1000" LargeChange="500" SmallChange="200"/>
+
+    <ScrollViewer x:Name="WaveFormScroll"
+                  DockPanel.Dock="Bottom"
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Visible"
+                  Background="Black">
 
       <Canvas x:Name="WaveFormCanvas"
-              SizeChanged="OnCanvasSizeChanged"
-              Height="130"
+              SizeChanged="OnWaveFormCanvasSizeChanged"
               Width="{Binding ElementName=ZoomSlider, Path=Value}"
               Background="Black">
 
@@ -25,43 +49,21 @@
                Stretch="Fill"
                Canvas.ZIndex="0"
                SnapsToDevicePixels="false"
-               SizeChanged="OnImageSizeChanged"
+               SizeChanged="OnWaveFormImageSizeChanged"
                MouseDown="OnImageMouseDown"
                Canvas.Left="0"
                Canvas.Top="0"
-               Height="{Binding ElementName=WaveFormCanvas, Path=Height}"
-               Width="{Binding ElementName=ZoomSlider, Path=Value}">
-          <!-- Image.Source>
-            <DrawingImage>
-              <DrawingImage.Drawing>
-                <DrawingGroup x:Name="WaveFormDrawing">
-
-                  <GeometryDrawing
-                  Brush="LimeGreen"
-                  Geometry="M 30 10 L 50 40 10 40 Z">
-                    <GeometryDrawing.Pen>
-                      <Pen Brush="LimeGreen" Thickness="1"/>
-                    </GeometryDrawing.Pen>
-                  </GeometryDrawing>
-
-                  <DrawingGroup>
-              </DrawingImage.Drawing>
-            </DrawingImage>
-          </Image.Source -->
-        </Image>
-
-        <!-- Path x:Name="WaveFormPathCh1" StrokeThickness="1" Stroke="LimeGreen"/>
-        <Path x:Name="WaveFormPathCh2" StrokeThickness="1" Stroke="LimeGreen"/ -->
+               Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight}"
+               Width="{Binding ElementName=ZoomSlider, Path=Value}"/>
 
         <Path x:Name="WaveFormPlayHeadPath"
               Canvas.ZIndex="1"
               StrokeThickness="1"
               Stroke="Yellow"
-              Fill="AntiqueWhite"
+              Fill="Yellow"
               SnapsToDevicePixels="True"/>
       </Canvas>
     </ScrollViewer>
 
-    <WindowsFormsHost x:Name="WinFormPeakMeter"/>
   </DockPanel>
 </Window>
