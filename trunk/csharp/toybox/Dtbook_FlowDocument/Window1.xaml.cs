@@ -1844,6 +1844,12 @@ namespace WpfDtbookTest
                     TextElement te = FindTextElement(node, (LineBreak)inline);
                     if (te != null) return te;
                 }
+                else if (inline is InlineUIContainer)
+                {
+                    TextElement te = FindTextElement(node, (InlineUIContainer)inline);
+                    if (te != null) return te;
+                }
+                
             }
 
             return null;
@@ -1910,6 +1916,11 @@ namespace WpfDtbookTest
                     TextElement te = FindTextElement(node, (Table)block);
                     if (te != null) return te;
                 }
+                else if (block is BlockUIContainer)
+                {
+                    TextElement te = FindTextElement(node, (BlockUIContainer)block);
+                    if (te != null) return te;
+                }
             }
 
             return null;
@@ -1929,6 +1940,16 @@ namespace WpfDtbookTest
         private TextElement FindTextElement(TreeNode node, LineBreak lb)
         {
             if (lb.Tag == node) return lb;
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, InlineUIContainer iuc)
+        {
+            if (iuc.Tag == node) return iuc;
+            return null;
+        }
+        private TextElement FindTextElement(TreeNode node, BlockUIContainer b)
+        {
+            if (b.Tag == node) return b;
             return null;
         }
         private TextElement FindTextElement(TreeNode node, Floater f)
