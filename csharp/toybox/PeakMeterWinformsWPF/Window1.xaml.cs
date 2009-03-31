@@ -32,7 +32,7 @@ namespace WPF_AudioTest
         private string m_WavFilePath;
         private FileStream m_FilePlayStream;
         private PCMDataInfo m_pcmFormat;
-        private int m_bytesPerPixel;
+        private double m_bytesPerPixel;
 
         public Window1()
         {
@@ -110,6 +110,9 @@ namespace WPF_AudioTest
         }
 
         private AudioPlayer.StreamProviderDelegate mCurrentAudioStreamProvider;
+        private DispatcherTimer m_WaveFormTimer;
+        private DispatcherTimer m_WaveFormLoadTimer;
+        private long m_StreamRiffHeaderEndPos;
 
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
@@ -157,12 +160,69 @@ namespace WPF_AudioTest
                     || m_Player.State == AudioPlayerState.Stopped))
             {
                 m_FilePlayStream = null;
+                stopWaveFormTimer();
             }
+            if (m_Player.State == AudioPlayerState.Playing)
+            {
+                startWaveFormTimer();
+            }
+        }
+
+        private void stopWaveFormTimer()
+        {
+            if (m_WaveFormTimer != null && m_WaveFormTimer.IsEnabled)
+            {
+                m_WaveFormTimer.Stop();
+            }
+        }
+        private void startWaveFormTimer()
+        {
+            if (m_WaveFormTimer == null)
+            {
+                m_WaveFormTimer = new DispatcherTimer();
+                m_WaveFormTimer.Tick += WaveFormTimer_Tick;
+            }
+            else if (m_WaveFormTimer.IsEnabled)
+            {
+                return;
+            }
+
+            double interval = convertByteToMilliseconds(m_bytesPerPixel);
+
+            if (interval < 50.0)
+            {
+                interval = 50;
+            }
+            m_WaveFormTimer.Interval = TimeSpan.FromMilliseconds(interval);
+
+            m_WaveFormTimer.Start();
+        }
+
+        //TimeDelta d = m_pcmFormat.GetDuration((uint)m_bytesPerPixel);
+        //double interval = d.TimeDeltaAsMillisecondFloat;
+        private double convertByteToMilliseconds(double bytes)
+        {
+            if (m_pcmFormat == null)
+            {
+                return 0;
+            }
+            return 1000 * bytes / (m_pcmFormat.SampleRate * m_pcmFormat.NumberOfChannels * (m_pcmFormat.BitDepth / 8));
+        }
+
+        private void WaveFormTimer_Tick(object sender, EventArgs e)
+        {
+            updateWaveFormPlayHeadPath();
+        }
+
+        private void WaveFormLoadTimer_Tick(object sender, EventArgs e)
+        {
+            m_WaveFormLoadTimer.Stop();
+            loadWaveForm();
         }
 
         private void OnUpdateVuMeter(object sender, UpdateVuMeterEventArgs e)
         {
-            updateWaveFormPlayHeadPath();
+            //JERKY AND UNRELIABLE updateWaveFormPlayHeadPath();
         }
 
         private void OnEndOfAudioAsset(object sender, EndOfAudioAssetEventArgs e)
@@ -179,9 +239,13 @@ namespace WPF_AudioTest
 
             if (Dispatcher.CheckAccess())
             {
+                if (m_Player.State != AudioPlayerState.Playing)
+                {
+                    return;
+                }
                 double time = m_Player.CurrentTimePosition;
                 long byteOffset = m_pcmFormat.GetByteForTime(new Time(time));
-                double pixels = ((double)byteOffset) / m_bytesPerPixel;
+                double pixels = byteOffset / m_bytesPerPixel;
 
                 StreamGeometry geometry = null;
                 if (WaveFormPlayHeadPath.Data == null)
@@ -195,8 +259,10 @@ namespace WPF_AudioTest
 
                 using (StreamGeometryContext sgc = geometry.Open())
                 {
-                    sgc.BeginFigure(new Point(pixels, 5), false, false);
-                    sgc.LineTo(new Point(pixels, WaveFormCanvas.Height - 5), true, false);
+                    sgc.BeginFigure(new Point(pixels, WaveFormCanvas.Height - 5), true, false);
+                    sgc.LineTo(new Point(pixels, 5), true, false);
+                    sgc.LineTo(new Point(pixels + 5, 5 + 5), true, false);
+                    sgc.LineTo(new Point(pixels, 5 + 5 + 5), true, false);
 
                     sgc.Close();
                 }
@@ -249,19 +315,21 @@ namespace WPF_AudioTest
 
             if (mCurrentAudioStreamProvider() == null)
             {
-                if (wasPlaying)
-                {
-                    m_Player.Resume();
-                }
                 return;
             }
 
-            m_FilePlayStream.Position = 0;
-            m_FilePlayStream.Seek(0, SeekOrigin.Begin);
 
-            if (true || m_pcmFormat == null)
+            if (m_pcmFormat == null)
             {
+                m_FilePlayStream.Position = 0;
+                m_FilePlayStream.Seek(0, SeekOrigin.Begin);
                 m_pcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_FilePlayStream);
+                m_StreamRiffHeaderEndPos = m_FilePlayStream.Position;
+            }
+            else
+            {
+                m_FilePlayStream.Position = m_StreamRiffHeaderEndPos;
+                m_FilePlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);
             }
 
             if (m_pcmFormat.BitDepth != 16)
@@ -271,12 +339,15 @@ namespace WPF_AudioTest
             ushort channels = m_pcmFormat.NumberOfChannels;
             ushort frameSize = m_pcmFormat.BlockAlign;
 
-            int samplesPerPixel = (int)Math.Ceiling(m_pcmFormat.DataLength / (float)frameSize / WaveFormCanvas.Width * channels);
+            double samplesPerPixel = Math.Ceiling(m_pcmFormat.DataLength
+                                / (double)frameSize
+                                / WaveFormCanvas.Width * channels);
             m_bytesPerPixel = samplesPerPixel * frameSize / channels;
 
-            byte[] bytes = new byte[m_bytesPerPixel];
-            short[] samples = new short[samplesPerPixel];
+            byte[] bytes = new byte[(int)m_bytesPerPixel];
+            short[] samples = new short[(int)samplesPerPixel];
 
+            /*
             if (WaveFormPathCh1.Data != null)
             {
                 WaveFormPathCh1.Data = null;
@@ -284,7 +355,7 @@ namespace WPF_AudioTest
             if (WaveFormPathCh2.Data != null)
             {
                 WaveFormPathCh2.Data = null;
-            }
+            }*/
 
             StreamGeometry geometryCh1 = new StreamGeometry();
             StreamGeometryContext sgcCh1 = geometryCh1.Open();
@@ -298,9 +369,15 @@ namespace WPF_AudioTest
                 sgcCh2 = geometryCh2.Open();
             }
 
-            for (double x = 0; x < WaveFormCanvas.Width; ++x)
+            double height = WaveFormImage.Height;
+            if (channels > 1)
             {
-                int read = m_FilePlayStream.Read(bytes, 0, m_bytesPerPixel);
+                height /= 2;
+            }
+
+            for (double x = 0; x < WaveFormImage.Width; ++x)
+            {
+                int read = m_FilePlayStream.Read(bytes, 0, (int)m_bytesPerPixel);
                 if (read <= 0)
                 {
                     continue;
@@ -319,8 +396,8 @@ namespace WPF_AudioTest
                         if (samples[i] > max) max = samples[i];
                     }
 
-                    double y1 = WaveFormCanvas.Height
-                                - ((min - short.MinValue) * WaveFormCanvas.Height)
+                    double y1 = height
+                                - ((min - short.MinValue) * height)
                                 / ushort.MaxValue;
 
                     if (channel == 0)
@@ -329,12 +406,13 @@ namespace WPF_AudioTest
                     }
                     else
                     {
+                        y1 += height;
                         sgcCh2.BeginFigure(new Point(x, y1), false, false);
                     }
 
 
-                    double y2 = WaveFormCanvas.Height
-                                - ((max - short.MinValue) * WaveFormCanvas.Height)
+                    double y2 = height
+                                - ((max - short.MinValue) * height)
                                 / ushort.MaxValue;
                     if (channel == 0)
                     {
@@ -342,6 +420,7 @@ namespace WPF_AudioTest
                     }
                     else
                     {
+                        y2 += height;
                         sgcCh2.LineTo(new Point(x, y2), true, false);
                     }
                 }
@@ -351,16 +430,53 @@ namespace WPF_AudioTest
             m_FilePlayStream = null;
 
             sgcCh1.Close();
+            if (channels > 1)
+            {
+                sgcCh2.Close();
+            }
+
+
+            DrawingImage drawImg = new DrawingImage();
+            //
+            //StreamGeometry geo1 = geometryCh1.Clone();
+            geometryCh1.Freeze();
+            GeometryDrawing geoDraw1 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh1);
+            geoDraw1.Freeze();
+            //
+            GeometryDrawing geoDraw2 = null;
+            if (channels > 1)
+            {
+                //StreamGeometry geo2 = geometryCh2.Clone();
+                geometryCh2.Freeze();
+                geoDraw2 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh2);
+                geoDraw2.Freeze();
+            }
+            //
+            if (channels > 1)
+            {
+                DrawingGroup drawGrp = new DrawingGroup();
+                drawGrp.Children.Add(geoDraw1);
+                drawGrp.Children.Add(geoDraw2);
+                drawGrp.Freeze();
+                drawImg.Drawing = drawGrp;
+            }
+            else
+            {
+                drawImg.Drawing = geoDraw1;
+            }
+            drawImg.Freeze();
+            WaveFormImage.Source = drawImg;
+            
+            ////////
+
+            /*
             geometryCh1.Freeze();
             WaveFormPathCh1.Data = geometryCh1;
             if (channels > 1)
             {
-                sgcCh2.Close();
                 geometryCh2.Freeze();
                 WaveFormPathCh2.Data = geometryCh2;
-            }
-
-            updateWaveFormPlayHeadPath();
+            }*/
 
             if (wasPlaying)
             {
@@ -401,10 +517,49 @@ namespace WPF_AudioTest
 
         private void OnCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            loadWaveForm();
+            PresentationSource ps = PresentationSource.FromVisual(this);
+            if (ps != null)
+            {
+                Matrix m = ps.CompositionTarget.TransformToDevice;
+                double dpiFactor = 1 / m.M11;
+                WaveFormPlayHeadPath.StrokeThickness = 1 * dpiFactor; // 1px
+            }
+            updateWaveFormPlayHeadPath();
+
         }
 
-        private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnImageSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ushort channels = m_pcmFormat.NumberOfChannels;
+            ushort frameSize = m_pcmFormat.BlockAlign;
+            double samplesPerPixel = Math.Ceiling(m_pcmFormat.DataLength
+                / (double)frameSize / WaveFormCanvas.Width * channels);
+            m_bytesPerPixel = samplesPerPixel * frameSize / channels;
+
+
+            if (m_WaveFormLoadTimer == null)
+            {
+                m_WaveFormLoadTimer = new DispatcherTimer();
+                m_WaveFormLoadTimer.Tick += WaveFormLoadTimer_Tick;
+                m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(500);
+            }
+            else if (m_WaveFormLoadTimer.IsEnabled)
+            {
+                m_WaveFormLoadTimer.Stop();
+                m_WaveFormLoadTimer.Start();
+                return;
+            }
+
+            m_WaveFormLoadTimer.Start();
+        }
+
+        private void OnImageMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(WaveFormImage);
+            OnSurfaceMouseDown(p);
+        }
+
+        private void OnSurfaceMouseDown(Point p)
         {
             if (m_pcmFormat == null)
             {
@@ -419,12 +574,12 @@ namespace WPF_AudioTest
             {
                 m_Player.Play(mCurrentAudioStreamProvider,
                             m_pcmFormat.GetDuration(m_pcmFormat.DataLength), m_pcmFormat);
+                m_Player.CurrentTimePosition = convertByteToMilliseconds(p.X * m_bytesPerPixel);
             }
-
-            Point p = e.GetPosition(WaveFormCanvas);
-            long byteOffset = (long)(p.X * m_bytesPerPixel);
-            TimeDelta d = m_pcmFormat.GetDuration((uint)byteOffset);
-            m_Player.CurrentTimePosition = d.TimeDeltaAsMillisecondFloat;
+            else if (m_Player.State == AudioPlayerState.Playing)
+            {
+                m_Player.CurrentTimePosition = convertByteToMilliseconds(p.X * m_bytesPerPixel);
+            }
         }
     }
 }
