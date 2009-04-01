@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -14,11 +13,10 @@ using AudioLib;
 using AudioLib.Events.Player;
 using AudioLib.Events.VuMeter;
 using Microsoft.Win32;
-using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
 
-namespace WPF_AudioTest
+namespace WpfDtbookTest
 {
     public class PeakMeterBarData
     {
@@ -257,14 +255,6 @@ namespace WPF_AudioTest
 
         private double[] m_PeakMeterValues;
 
-        public Window1()
-        {
-            InitializeComponent();
-            PeakMeterCanvasBackground.Freeze();
-            InitializeAudioStuff();
-            DataContext = this;
-        }
-
 
         private void InitializeAudioStuff()
         {
@@ -352,7 +342,7 @@ namespace WPF_AudioTest
             //m_Recorder.State == AudioLib.AudioRecorderState.Monitoring
         }
 
-        private void OnOpenFile(object sender, RoutedEventArgs e)
+        private void OnOpenAudioFile(object sender, RoutedEventArgs e)
         {
             if (m_Player.State == AudioPlayerState.Playing)
             {
@@ -954,7 +944,7 @@ namespace WPF_AudioTest
                 OnPropertyChanged("PeakOverloadCountCh2");
             }
         }
-        public string FilePath
+        public string FileAudioPath
         {
             get
             {
@@ -964,25 +954,8 @@ namespace WPF_AudioTest
             {
                 if (m_WavFilePath == value) return;
                 m_WavFilePath = value;
-                OnPropertyChanged("FilePath");
+                OnPropertyChanged("FileAudioPath");
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnPeakMeterCanvasSizeChanged(object sender, SizeChangedEventArgs e)
