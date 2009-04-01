@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Xml;
 using DTbookToXuk;
 using Microsoft.Win32;
 using urakawa;
@@ -274,6 +270,8 @@ namespace WpfDtbookTest
         public Window1()
         {
             InitializeComponent();
+            PeakMeterCanvasBackground.Freeze();
+            InitializeAudioStuff();
             DataContext = this;
         }
         public string FilePath

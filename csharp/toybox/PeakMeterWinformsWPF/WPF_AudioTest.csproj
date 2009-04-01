@@ -104,10 +104,6 @@
       <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
       <Name>AudioLib</Name>
     </ProjectReference>
-    <ProjectReference Include="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\PPMeter\PPMeter.csproj">
-      <Project>{58C576A9-CEBA-4274-A643-5867D377FEA3}</Project>
-      <Name>PPMeter</Name>
-    </ProjectReference>
     <ProjectReference Include="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
