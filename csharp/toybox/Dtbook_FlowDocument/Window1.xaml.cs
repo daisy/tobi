@@ -22,6 +22,245 @@ using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace WpfDtbookTest
 {
+
+    public class HeadingTreeNodeWrapper : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+
+        private TreeNode m_TreeNode;
+        private HeadingTreeNodeWrapper m_parent;
+        private TreeNode m_TreeNodeHeading;
+        private HeadingsNavigator m_navigator;
+        private ObservableCollection<HeadingTreeNodeWrapper> m_children;
+        private bool m_isExpanded;
+        private HeadingTreeNodeWrapper m_dummyNode;
+
+        private void LoadChildren()
+        {
+            if (m_TreeNode == null)
+            {
+                return;
+            }
+            if (m_children == null)
+            {
+                m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
+
+                int n = m_navigator.GetChildCount(m_TreeNode);
+                for (int index = 0; index < n; index++)
+                {
+                    TreeNode node = m_navigator.GetChild(m_TreeNode, index);
+                    m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
+                }
+
+                OnPropertyChanged("Children");
+            }
+        }
+        public bool HasChildren
+        {
+            get
+            {
+                if (m_TreeNode == null)
+                {
+                    return false;
+                }
+                return m_navigator.GetChildCount(m_TreeNode) > 0;
+            }
+        }
+        public bool IsExpanded
+        {
+            get
+            {
+                return m_isExpanded;
+            }
+            set
+            {
+                if (value != m_isExpanded)
+                {
+                    m_isExpanded = value;
+                    
+                    if (m_isExpanded)
+                    {
+                        if (m_parent != null)
+                        {
+                            m_parent.IsExpanded = true;
+                        }
+                        LoadChildren();
+                    }
+                    else
+                    {
+                        m_children = null;
+                    }
+
+                    OnPropertyChanged("IsExpanded");
+                }
+            }
+        }
+        public TreeNode WrappedTreeNode_Level
+        {
+            get
+            {
+                return m_TreeNode;
+            }
+        }
+        public TreeNode WrappedTreeNode_LevelHeading
+        {
+            get
+            {
+                return m_TreeNodeHeading;
+            }
+        }
+
+        public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
+        {
+            m_parent = parent;
+            m_TreeNode = node;
+            m_navigator = navigator;
+            m_isExpanded = false;
+            m_TreeNodeHeading = null;
+
+            if (m_TreeNode == null)
+            {
+                return;
+            }
+
+            if (m_TreeNode.ChildCount > 0)
+            {
+                TreeNode nd = m_TreeNode.GetChild(0);
+                if (nd != null)
+                {
+                    QualifiedName qname = nd.GetXmlElementQName();
+                    if (qname != null && (qname.LocalName == "hd"
+                                          || qname.LocalName == "h1"
+                                          || qname.LocalName == "h2"
+                                          || qname.LocalName == "h3"
+                                          || qname.LocalName == "h4"
+                                          || qname.LocalName == "h5"
+                                          || qname.LocalName == "h6"
+                                         ))
+                    {
+                        m_TreeNodeHeading = nd;
+                    }
+                }
+            }
+        }
+        public string Title
+        {
+            get
+            {
+                if (m_TreeNode == null)
+                {
+                    return "DUMMY";
+                }
+                string str = (m_TreeNodeHeading != null ? m_TreeNodeHeading.GetTextMediaFlattened() : "??" + m_TreeNode.GetXmlElementQName().LocalName);
+                return str;
+            }
+        }
+        public ObservableCollection<HeadingTreeNodeWrapper> Children
+        {
+            get
+            {
+                if (m_TreeNode == null)
+                {
+                    return new ObservableCollection<HeadingTreeNodeWrapper>();
+                }
+                if (IsExpanded)
+                {
+                    if (m_children == null)
+                    {
+                        LoadChildren();
+                    }
+                    return m_children;
+                }
+                var col = new ObservableCollection<HeadingTreeNodeWrapper>();
+                if (HasChildren)
+                {
+                    if (m_dummyNode == null)
+                    {
+                        m_dummyNode = new HeadingTreeNodeWrapper(null, null, null);
+                    }
+                    col.Add(m_dummyNode);
+                }
+                return col;
+            }
+        }
+    }
+
+    public class HeadingsNavigator : AbstractFilterNavigator
+    {
+        public HeadingsNavigator(Project project)
+        {
+            m_Project = project;
+        }
+        private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
+        private readonly Project m_Project;
+
+        public void ExpandAll()
+        {
+            foreach (HeadingTreeNodeWrapper node in Roots)
+            {
+                node.IsExpanded = true;
+            }
+        }
+        public void CollapseAll()
+        {
+            foreach (HeadingTreeNodeWrapper node in Roots)
+            {
+                node.IsExpanded = false;
+            }
+        }
+
+
+        public ObservableCollection<HeadingTreeNodeWrapper> Roots
+        {
+            get
+            {
+                if (m_roots == null)
+                {
+                    m_roots = new ObservableCollection<HeadingTreeNodeWrapper>();
+                    TreeNode presentationRootNode = m_Project.GetPresentation(0).RootNode;
+                    int n = GetChildCount(presentationRootNode);
+                    for (int index = 0; index < n; index++)
+                    {
+                        TreeNode node = GetChild(presentationRootNode, index);
+                        m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+                    }
+                }
+                return m_roots;
+            }
+        }
+
+        //treeView.SelectedNode.EnsureVisible();
+
+        public override bool IsIncluded(TreeNode node)
+        {
+            QualifiedName qname = node.GetXmlElementQName();
+            return qname != null &&
+                (qname.LocalName == "level1"
+                || qname.LocalName == "level"
+                || qname.LocalName == "level2"
+                || qname.LocalName == "level3"
+                || qname.LocalName == "level4"
+                || qname.LocalName == "level5"
+                || qname.LocalName == "level6"
+                );
+        }
+    }
+
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
@@ -34,77 +273,6 @@ namespace WpfDtbookTest
                 return m_HeadingsNavigator;
             }
         }
-        public class HeadingTreeNodeWrapper
-        {
-            private TreeNode m_TreeNode;
-            private TreeNode m_TreeNodeHeading;
-            private HeadingsNavigator m_navigator;
-            private ObservableCollection<HeadingTreeNodeWrapper> m_children;
-
-            public TreeNode WrappedTreeNode_Level
-            {
-                get
-                {
-                    return m_TreeNode;
-                }
-            }
-            public TreeNode WrappedTreeNode_LevelHeading
-            {
-                get
-                {
-                    return m_TreeNodeHeading;
-                }
-            }
-
-            public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node)
-            {
-                m_TreeNode = node;
-                m_navigator = navigator;
-            }
-            public string Title
-            {
-                get
-                {
-                    if (m_TreeNodeHeading == null && m_TreeNode.ChildCount > 0)
-                    {
-                        TreeNode node = m_TreeNode.GetChild(0);
-                        QualifiedName qname = node.GetXmlElementQName();
-                        if (qname != null && (qname.LocalName == "hd"
-                            || qname.LocalName == "h1"
-                            || qname.LocalName == "h2"
-                            || qname.LocalName == "h3"
-                            || qname.LocalName == "h4"
-                            || qname.LocalName == "h5"
-                            || qname.LocalName == "h6"
-                            ))
-                        {
-                            m_TreeNodeHeading = node;
-                        }
-                    }
-                    string str = (m_TreeNodeHeading != null ? m_TreeNodeHeading.GetTextMediaFlattened() : "??" + m_TreeNode.GetXmlElementQName().LocalName);
-                    return str;
-                }
-            }
-            public ObservableCollection<HeadingTreeNodeWrapper> Children
-            {
-                get
-                {
-                    if (m_children == null)
-                    {
-                        m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
-
-                        int n = m_navigator.GetChildCount(m_TreeNode);
-                        for (int index = 0; index < n; index++)
-                        {
-                            TreeNode node = m_navigator.GetChild(m_TreeNode, index);
-                            m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node));
-                        }
-                    }
-                    return m_children;
-                }
-            }
-        }
-
         private void OnHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
@@ -114,50 +282,15 @@ namespace WpfDtbookTest
             }
         }
 
-        public class HeadingsNavigator : AbstractFilterNavigator
+        private Page GetPage(string id)
         {
-            public HeadingsNavigator(Project project)
+            foreach (Page page in Pages)
             {
-                m_Project = project;
+                if (page.Id == id) return page;
             }
-            private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
-            private readonly Project m_Project;
-
-            public ObservableCollection<HeadingTreeNodeWrapper> Roots
-            {
-                get
-                {
-                    if (m_roots == null)
-                    {
-                        m_roots = new ObservableCollection<HeadingTreeNodeWrapper>();
-                        TreeNode presentationRootNode = m_Project.GetPresentation(0).RootNode;
-                        int n = GetChildCount(presentationRootNode);
-                        for (int index = 0; index < n; index++)
-                        {
-                            TreeNode node = GetChild(presentationRootNode, index);
-                            m_roots.Add(new HeadingTreeNodeWrapper(this, node));
-                        }
-                    }
-                    return m_roots;
-                }
-            }
-
-            //treeView.SelectedNode.EnsureVisible();
-
-            public override bool IsIncluded(TreeNode node)
-            {
-                QualifiedName qname = node.GetXmlElementQName();
-                return qname != null &&
-                    (qname.LocalName == "level1"
-                    || qname.LocalName == "level"
-                    || qname.LocalName == "level2"
-                    || qname.LocalName == "level3"
-                    || qname.LocalName == "level4"
-                    || qname.LocalName == "level5"
-                    || qname.LocalName == "level6"
-                    );
-            }
+            return null;
         }
+
         public class Page
         {
             public Page(TextElement textElement)
@@ -188,15 +321,6 @@ namespace WpfDtbookTest
                     return "??";
                 }
             }
-        }
-
-        private Page GetPage(string id)
-        {
-            foreach (Page page in Pages)
-            {
-                if (page.Id == id) return page;
-            }
-            return null;
         }
 
         protected static string extractString(Paragraph para)
@@ -1847,7 +1971,7 @@ namespace WpfDtbookTest
                     TextElement te = FindTextElement(node, (InlineUIContainer)inline);
                     if (te != null) return te;
                 }
-                
+
             }
 
             return null;
@@ -2040,6 +2164,21 @@ namespace WpfDtbookTest
             if (textElement != null)
             {
                 BringIntoViewAndHighlight(textElement);
+            }
+        }
+
+        private void OnExpandAll(object sender, RoutedEventArgs e)
+        {
+            if (m_HeadingsNavigator != null)
+            {
+                m_HeadingsNavigator.ExpandAll();
+            }
+        }
+        private void OnCollapseAll(object sender, RoutedEventArgs e)
+        {
+            if (m_HeadingsNavigator != null)
+            {
+                m_HeadingsNavigator.CollapseAll();
             }
         }
     }
