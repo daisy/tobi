@@ -153,6 +153,10 @@
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
     </ProjectReference>
+    <ProjectReference Include="ExternalLibs\TaskDialog\TaskDialog\Lib.TaskDialog.csproj">
+      <Project>{F6B58070-8452-4A49-94B1-E38123120859}</Project>
+      <Name>Lib.TaskDialog</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Modules.AudioPane</Name>

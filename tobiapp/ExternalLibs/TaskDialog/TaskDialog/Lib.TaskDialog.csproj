@@ -133,7 +133,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release copy "$(TargetPath)" "\\har-116662s\d$\Sid 3.5 Shared\"
-IF $(ConfigurationName) == Release copy "$(TargetDir)$(TargetName).pdb" "\\har-116662s\d$\Sid 3.5 Shared\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
