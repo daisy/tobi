@@ -13,7 +13,7 @@ namespace Tobi
     /// </summary>
     public partial class Shell : Window, IShellView
     {
-        private readonly IUnityContainer _container;
+        private readonly IUnityContainer m_DiContainer;
 
         ///<summary>
         /// Just calls <c>Window.InitializeComponent()</c>.
@@ -21,7 +21,7 @@ namespace Tobi
         public Shell(IUnityContainer container)
         {
             InitializeComponent();
-            _container = container;
+            m_DiContainer = container;
         }
 
         protected void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -36,7 +36,7 @@ namespace Tobi
                 return null;
             }, null);
              */
-            var shellPresenter = _container.Resolve<IShellPresenter>();
+            var shellPresenter = m_DiContainer.Resolve<IShellPresenter>();
             bool leaving = shellPresenter.OnShellWindowClosing();
             if (!leaving) e.Cancel = true;
         }
@@ -49,9 +49,19 @@ namespace Tobi
             Show();
         }
 
+        public Window Window
+        {
+            get { return this; }
+        }
+    }
+}
+
+
+/*
+ * 
         public void DecreaseZoom(double? step)
         {
-            var zoomer =_container.Resolve<IUserInterfaceZoomPresenter>();
+            var zoomer =m_DiContainer.Resolve<IUserInterfaceZoomPresenter>();
             double value = ScaleTransform.ScaleX - (step == null ? (zoomer != null ? zoomer.ZoomStep : 0.5) : (double)step);
             if (zoomer!=null)
             {
@@ -63,7 +73,7 @@ namespace Tobi
 
         public void IncreaseZoom(double? step)
         {
-            var zoomer = _container.Resolve<IUserInterfaceZoomPresenter>();
+            var zoomer = m_DiContainer.Resolve<IUserInterfaceZoomPresenter>();
             double value = ScaleTransform.ScaleX + (step == null ? (zoomer != null ? zoomer.ZoomStep : 0.5) : (double)step);
             if (zoomer != null)
             {
@@ -82,16 +92,9 @@ namespace Tobi
                 Mode = BindingMode.TwoWay
             };
         }
-
-        public Window Window
-        {
-            get { return this; }
-        }
-    }
-}
-
-
-/*
+ * 
+ * 
+ * 
 public static readonly DependencyProperty ZoomValueProperty =
     DependencyProperty.Register("ZoomValue",
     typeof(double),

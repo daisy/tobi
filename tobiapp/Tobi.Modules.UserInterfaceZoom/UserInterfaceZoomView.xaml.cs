@@ -40,7 +40,7 @@ namespace Tobi.Modules.UserInterfaceZoom
 
             InitializeComponent();
 
-            ZoomSlider.SetBinding(RangeBase.ValueProperty, shellview.GetZoomBinding());
+            //ZoomSlider.SetBinding(RangeBase.ValueProperty, shellview.GetZoomBinding());
 
             /*BindingOperations.SetBinding(
             Shell.ScaleTransform,
@@ -64,7 +64,10 @@ namespace Tobi.Modules.UserInterfaceZoom
 
         public string RegionName
         {
-            get { return RegionNames.UserInterfaceZoom; }
+            get {
+                return "";
+                //RegionNames.UserInterfaceZoom;
+            }
         }
     }
 }

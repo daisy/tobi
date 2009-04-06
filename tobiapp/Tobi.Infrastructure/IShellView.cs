@@ -9,11 +9,12 @@ namespace Tobi
         /// Shows the Shell window
         ///</summary>
         void ShowView();
+        Window Window { get; }
 
+        /*
         void DecreaseZoom(double? step);
         void IncreaseZoom(double? step);
-
         Binding GetZoomBinding();
-        Window Window { get; }
+        */
     }
 }
