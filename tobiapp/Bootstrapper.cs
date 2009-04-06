@@ -57,10 +57,10 @@ namespace Tobi
         {
             return new ModuleCatalog()
                 .AddModule(typeof(MenuBarModule))
-                .AddModule(typeof(AudioPaneModule))
-                .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(ToolBarsModule))
                 .AddModule(typeof(NavigationPaneModule))
+                .AddModule(typeof(DocumentPaneModule))
+                .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(StatusBarModule));
             
                 //.AddModule(typeof(UserInterfaceZoomModule))

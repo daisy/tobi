@@ -9,7 +9,13 @@
     Topmost="False"
     Width="{x:Static infra:Sizes.DefaultWindowWidth}"
     Height="{x:Static infra:Sizes.DefaultWindowHeight}"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="CenterScreen"
+   >
+   <!--    FocusManager.FocusedElement="{infra:FirstFocusedElement}"
+   KeyboardNavigation.TabIndex="1" 
+   KeyboardNavigation.IsTabStop="false"
+   KeyboardNavigation.TabNavigation="Continue"
+ -->
 
   <Window.Resources>
     <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
@@ -21,21 +27,21 @@
 
   <DockPanel LastChildFill="True">
 
-    <DockPanel.LayoutTransform>
+    <!-- DockPanel.LayoutTransform>
       <ScaleTransform x:Name="ScaleTransform" ScaleX="1" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
-    </DockPanel.LayoutTransform>
+    </DockPanel.LayoutTransform -->
 
     <!--UserInterfaceZoom-->
     <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
 
     <!--MenuBar-->
-    <ContentControl DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
+    <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
     <!--ToolBars-->
-    <ContentControl DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/>
+    <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/>
 
     <!--StatusBar-->
-    <ContentControl DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/>
+    <ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/>
 
     <Grid>
 
@@ -54,13 +60,13 @@
       <GridSplitter Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="5"/>
 
       <!--NavigationPane-->
-      <ContentControl Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
+      <ContentControl Focusable="False" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
 
       <!--WaveFormBar-->
-      <ContentControl Grid.Column="2" Grid.Row="2" cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
+      <ContentControl Focusable="False" Grid.Column="2" Grid.Row="2" cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
 
       <!--DocumentPane-->
-      <ContentControl Grid.Column="2" Grid.Row="0" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
+      <ContentControl Focusable="False" Grid.Column="2" Grid.Row="0" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
 
     </Grid>
 
