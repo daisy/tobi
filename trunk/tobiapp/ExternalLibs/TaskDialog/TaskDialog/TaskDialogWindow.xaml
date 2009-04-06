@@ -9,9 +9,9 @@
     ResizeMode="NoResize"
     Loaded="OnWindowLoaded">
 
-    <Window.Resources>
+    <!-- Window.Resources>
         <Style TargetType="TextBox">
             <EventSetter Event="GotKeyboardFocus" Handler="OnGotKeyboardFocusTextBox" />
         </Style>
-    </Window.Resources>
+    </Window.Resources -->
 </l:InteropWindow>

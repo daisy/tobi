@@ -1,14 +1,12 @@
-﻿using System.IO;
-using System.Windows;
-using System.Windows.Data;
+﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Composite.Presentation.Commands;
 using Microsoft.Practices.Unity;
+using Sid.Windows.Controls;
 using Tobi.Infrastructure;
 using Tobi.Modules.MenuBar;
-using Tobi.Modules.StatusBar;
 
 namespace Tobi
 {
@@ -42,7 +40,11 @@ namespace Tobi
 
         private void exit()
         {
-            MessageBox.Show("Good bye !", "Tobi says:");
+            //MessageBox.Show("Good bye !", "Tobi says:");
+            TaskDialog.Show("Tobi is exiting.",
+                "Just saying goodbye...",
+                "The Tobi application is now closing.",
+                TaskDialogIcon.Information);
             _exiting = true;
             Application.Current.Shutdown();
         }
@@ -105,9 +107,26 @@ namespace Tobi
             var window = View as Window;
             if (window != null)
             {
-                MessageBoxResult result = MessageBox.Show(window, "Confirm quit ?", "Tobi asks:",
+                /*MessageBoxResult result = MessageBox.Show(window, "Confirm quit ?", "Tobi asks:",
                                                           MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)
+                {
+                    return false;
+                }*/
+
+                TaskDialogResult result = TaskDialog.Show(window, "Exit Tobi ?",
+                    "Are you sure you want to exit Tobi ?",
+                    "Press OK to exit, CANCEL to return to the application.",
+                    "You can use the ESCAPE, ENTER or 'C' shortcut keys to cancel,\nor the 'O' shortcut key to confirm.",
+                    "Please note that any unsaved work will be lost.",
+                TaskDialogButton.OkCancel,
+                TaskDialogResult.Cancel,
+                TaskDialogIcon.Question,
+                TaskDialogIcon.Warning,
+                Brushes.White,
+                Brushes.Navy);
+
+                if (result != TaskDialogResult.Ok)
                 {
                     return false;
                 }

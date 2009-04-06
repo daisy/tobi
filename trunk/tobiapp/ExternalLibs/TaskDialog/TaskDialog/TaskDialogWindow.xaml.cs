@@ -16,10 +16,11 @@ namespace Sid.Windows.Controls
             InitializeComponent();
         }
 
+        /*
         private void OnGotKeyboardFocusTextBox(Object sender, KeyboardFocusChangedEventArgs e)
         {
             ((TextBox)sender).SelectAll();
-        }
+        }*/
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
