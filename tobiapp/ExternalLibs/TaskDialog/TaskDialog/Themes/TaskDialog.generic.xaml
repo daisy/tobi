@@ -129,8 +129,7 @@
 								Content="{TemplateBinding Content}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}"
 								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-								FocusManager.IsFocusScope="false"
-								Focusable="False"/>
+								/>
 
                                 <!-- Detail -->
                             <ContentPresenter
@@ -141,8 +140,7 @@
 								Content="{TemplateBinding Detail}"
                                 ContentTemplate="{TemplateBinding DetailTemplate}"
 								ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}"
-								FocusManager.IsFocusScope="false"
-								Focusable="False"/>
+								/>
 
                             <Rectangle x:Name="rectanglePadding" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
 
@@ -157,13 +155,18 @@
                         
                             Style="{StaticResource _aeroButtonStyle}" 
                             -->
-                                <Button x:Name="PART_Button3" Command="l:TaskDialogCommands.Button3" Content="{TemplateBinding Button3Text}" DockPanel.Dock="Right" Margin="5,0,0,0" MinWidth="70" Visibility="{TemplateBinding Button3Visibility}" IsDefault="{TemplateBinding IsButton3Default}" IsCancel="{TemplateBinding IsButton3Cancel}" TabIndex="3" />
-                                <Button x:Name="PART_Button2" Command="l:TaskDialogCommands.Button2" Content="{TemplateBinding Button2Text}" DockPanel.Dock="Right" Margin="5,0,0,0" MinWidth="70" Visibility="{TemplateBinding Button2Visibility}" IsDefault="{TemplateBinding IsButton2Default}" IsCancel="{TemplateBinding IsButton2Cancel}" TabIndex="2"/>
-                                <Button x:Name="PART_Button1" Command="l:TaskDialogCommands.Button1" Content="{TemplateBinding Button1Text}" DockPanel.Dock="Right" Margin="5,0,0,0" MinWidth="70" Visibility="{TemplateBinding Button1Visibility}" IsDefault="{TemplateBinding IsButton1Default}" IsCancel="{TemplateBinding IsButton1Cancel}" TabIndex="1"/>
+                                <Button 
+                                        x:Name="PART_Button3" Command="l:TaskDialogCommands.Button3" Content="{TemplateBinding Button3Text}" DockPanel.Dock="Right" Margin="5,0,0,0" MinWidth="70" Visibility="{TemplateBinding Button3Visibility}" IsDefault="{TemplateBinding IsButton3Default}" IsCancel="{TemplateBinding IsButton3Cancel}" TabIndex="3" />
+                                <Button 
+                                        x:Name="PART_Button2" Command="l:TaskDialogCommands.Button2" Content="{TemplateBinding Button2Text}" DockPanel.Dock="Right" Margin="5,0,0,0" MinWidth="70" Visibility="{TemplateBinding Button2Visibility}" IsDefault="{TemplateBinding IsButton2Default}" IsCancel="{TemplateBinding IsButton2Cancel}" TabIndex="2"/>
+                                <Button 
+                                        x:Name="PART_Button1" Command="l:TaskDialogCommands.Button1" Content="{TemplateBinding Button1Text}" DockPanel.Dock="Right" Margin="5,0,0,0" MinWidth="70" Visibility="{TemplateBinding Button1Visibility}" IsDefault="{TemplateBinding IsButton1Default}" IsCancel="{TemplateBinding IsButton1Cancel}" TabIndex="1"/>
 
                                 <ToggleButton x:Name="toggleButton" 
                                         Style="{StaticResource _toggleButtonStyle}"
-                                        Content="{TemplateBinding ToggleButtonText}" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" DockPanel.Dock="Left" TabIndex="0"/>
+                                        Content="{TemplateBinding ToggleButtonText}"
+                                        IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                        DockPanel.Dock="Left" TabIndex="0"/>
                             </DockPanel>
                         </Border>
 
