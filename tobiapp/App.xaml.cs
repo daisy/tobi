@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Markup;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
 using Sid.Windows.Controls;
@@ -13,6 +14,11 @@ namespace Tobi
     /// </summary>
     public partial class App : Application
     {
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ((TextBox)sender).SelectAll();
+        }
+
         ///<summary>
         /// Implements 2 runtimes: DEBUG and RELEASE
         ///</summary>
@@ -28,6 +34,10 @@ namespace Tobi
                   new FrameworkPropertyMetadata(
                      XmlLanguage.GetLanguage(
                      CultureInfo.CurrentCulture.IetfLanguageTag)));
+            
+            EventManager.RegisterClassHandler(typeof(TextBox),
+                UIElement.GotFocusEvent,
+                new RoutedEventHandler(TextBox_GotFocus));
 
 #if (DEBUG)
             runInDebugMode();
