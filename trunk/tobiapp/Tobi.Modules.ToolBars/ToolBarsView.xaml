@@ -4,13 +4,15 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.ToolBars">
 
-  <ToolBarTray>
-    <ToolBar>
+  <ToolBarTray Focusable="False">
+    <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
       <Button>Test 1</Button>
       <Button>Test 2</Button>
       <Button>Test 3</Button>
     </ToolBar>
-    <ToolBar>
+    <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
       <Button>Dan 1</Button>
       <Button>Dan 2</Button>
       <Button>Dan 3</Button>
