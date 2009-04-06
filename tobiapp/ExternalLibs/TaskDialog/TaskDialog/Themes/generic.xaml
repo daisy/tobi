@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="clr-namespace:Sid.Windows.Controls">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/Sid.TaskDialog;component/themes/TaskDialog.generic.xaml"/>
+		<ResourceDictionary Source="/Sid.TaskDialog;component/themes/TaskDialogCommandButton.generic.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
