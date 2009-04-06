@@ -12,6 +12,6 @@ namespace Tobi.Infrastructure
         public const string NavigationPane = "NavigationPane";
         public const string DocumentPane = "DocumentPane";
         public const string AudioPane = "AudioPane";
-        public const string UserInterfaceZoom = "UserInterfaceZoom";
+        //public const string UserInterfaceZoom = "UserInterfaceZoom";
     }
 }

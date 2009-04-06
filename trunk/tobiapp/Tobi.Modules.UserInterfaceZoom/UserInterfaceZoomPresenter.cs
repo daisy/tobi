@@ -113,14 +113,14 @@ namespace Tobi.Modules.UserInterfaceZoom
         {
             Logger.Log(string.Format("DecreaseZoomCommand_Executed {0}", parameter), Category.Debug, Priority.Medium);
 
-            ShellPresenter.View.DecreaseZoom(parameter);
+            //ShellPresenter.View.DecreaseZoom(parameter);
         }
 
         private void increaseZoomCommand_Executed(double? parameter)
         {
             Logger.Log(string.Format("IncreaseZoomCommand_Executed {0}", parameter), Category.Debug, Priority.Medium);
 
-            ShellPresenter.View.IncreaseZoom(parameter);
+            //ShellPresenter.View.IncreaseZoom(parameter);
         }
 
         private void zoomToggleCommand_Executed(bool? parameter)

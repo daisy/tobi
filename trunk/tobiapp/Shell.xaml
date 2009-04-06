@@ -26,11 +26,8 @@
     </DockPanel.LayoutTransform>
 
     <!--UserInterfaceZoom-->
-    <ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/>
+    <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
 
-    <!--TODO: ZOOM binding
-    <Slider Grid.Column="0" x:Name="ZoomSlider" Value="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=TwoWay}" Width="Auto" Height="Auto" Minimum="1" Maximum="4" Orientation="Vertical" Background="{StaticResource brushLinearGradient1}"/>
--->
     <!--MenuBar-->
     <ContentControl DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
