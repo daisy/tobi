@@ -27,8 +27,7 @@ namespace Sid.Windows.Controls
             TaskDialog td = Content as TaskDialog;
             if (td != null)
             {
-                // Too soon (see OnShowWindow)
-                //td.OnWindowLoaded();
+                td.OnWindowLoaded();
             }
         }
         protected override void OnShowWindow()
@@ -37,9 +36,6 @@ namespace Sid.Windows.Controls
             TaskDialog td = Content as TaskDialog;
             if (td != null)
             {
-
-                td.OnWindowLoaded();
-
                 td.OnWindowInitialized();
 
                 switch (td.SystemSound)

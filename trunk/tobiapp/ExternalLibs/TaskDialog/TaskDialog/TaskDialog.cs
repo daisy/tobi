@@ -296,6 +296,17 @@ namespace Sid.Windows.Controls
             return Result;
         }
 
+        public void DelayedFocus(UIElement uiElement)
+        {
+            uiElement.Dispatcher.BeginInvoke(
+            new Action(delegate
+            {
+                FocusManager.SetFocusedElement(TaskDialogWindow, uiElement);
+                uiElement.Focus();
+                Keyboard.Focus(uiElement);
+            }),
+            DispatcherPriority.Render);
+        }
 
         internal void OnWindowLoaded()
         {
@@ -316,9 +327,7 @@ namespace Sid.Windows.Controls
                 case TaskDialogResult.Yes:
                     if (Button1Visibility == Visibility.Visible && b1 != null)
                     {
-                        FocusManager.SetFocusedElement(TaskDialogWindow, b1);
-                        Keyboard.Focus(b1);
-                        b1.Focus();
+                        DelayedFocus(b1);
                     }
                     break;
 
@@ -326,9 +335,7 @@ namespace Sid.Windows.Controls
                 case TaskDialogResult.No:
                     if (Button2Visibility == Visibility.Visible && b2 != null)
                     {
-                        FocusManager.SetFocusedElement(TaskDialogWindow, b2);
-                        Keyboard.Focus(b2);
-                        b2.Focus();
+                        DelayedFocus(b2);
                     }
                     break;
 
@@ -336,24 +343,18 @@ namespace Sid.Windows.Controls
                     if (TaskDialogButton == TaskDialogButton.OkCancel
                         && Button2Visibility == Visibility.Visible && b2 != null)
                     {
-                        FocusManager.SetFocusedElement(TaskDialogWindow, b2);
-                        Keyboard.Focus(b2);
-                        b2.Focus();
+                        DelayedFocus(b2);
                     }
                     else if (Button3Visibility == Visibility.Visible && b3 != null)
                     {
-                        FocusManager.SetFocusedElement(TaskDialogWindow, b3);
-                        Keyboard.Focus(b3);
-                        b3.Focus();
+                        DelayedFocus(b3);
                     }
                     break;
 
                 case TaskDialogResult.Button3:
                     if (Button3Visibility == Visibility.Visible && b3 != null)
                     {
-                        FocusManager.SetFocusedElement(TaskDialogWindow, b3);
-                        Keyboard.Focus(b3);
-                        b3.Focus();
+                        DelayedFocus(b3);
                     }
                     break;
             }
