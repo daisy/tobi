@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
+using Sid.Windows.Controls;
 using Tobi.Infrastructure;
 
 namespace Tobi
@@ -18,12 +21,19 @@ namespace Tobi
         {
             base.OnStartup(e);
 
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                  typeof(FrameworkElement),
+                  new FrameworkPropertyMetadata(
+                     XmlLanguage.GetLanguage(
+                     CultureInfo.CurrentCulture.IetfLanguageTag)));
+
 #if (DEBUG)
             runInDebugMode();
 #else
             runInReleaseMode();
 #endif
-            ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
 
         private static void runInDebugMode()
@@ -45,6 +55,7 @@ namespace Tobi
                 handleException(ex);
             }
         }
+
         private static void appDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             handleException(e.ExceptionObject as Exception);
@@ -55,8 +66,9 @@ namespace Tobi
             if (ex == null)
                 return;
 
-            ExceptionPolicy.HandleException(ex, "Default Policy");
-            MessageBox.Show(UserInterfaceStrings.UnhandledException);
+            //ExceptionPolicy.HandleException(ex, "Default Policy");
+            //MessageBox.Show(UserInterfaceStrings.UnhandledException);
+            TaskDialog.ShowException("Unhandled Exception !", UserInterfaceStrings.UnhandledException, ex);
             Environment.Exit(1);
         }
     }

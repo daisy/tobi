@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
@@ -106,11 +107,7 @@ namespace Tobi
             {
                 MessageBoxResult result = MessageBox.Show(window, "Confirm quit ?", "Tobi asks:",
                                                           MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.OK)
-                {
-                    return true;
-                }
-                else
+                if (result != MessageBoxResult.OK)
                 {
                     return false;
                 }
