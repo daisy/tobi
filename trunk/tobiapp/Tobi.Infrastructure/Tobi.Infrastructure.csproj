@@ -76,6 +76,113 @@
       <Name>Lib.Composite</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="xaml-icons\Add.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Back.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Block.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Check.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Configurator.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Delete.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Down.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Down1.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Edit.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Error.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Exit.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\File.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Find.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Find_Next.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Forward.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Help.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Left.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Left1.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Lock.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Open.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Padlock.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Printer.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Redo.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Refresh.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Right.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Right1.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Save.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Save_As.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Search.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Undo.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Up.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Up1.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Warning.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Zoom_in.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="xaml-icons\Zoom_out.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

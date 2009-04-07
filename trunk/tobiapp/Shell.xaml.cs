@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Practices.Unity;
 using Tobi.Modules.MenuBar;
@@ -22,6 +24,30 @@ namespace Tobi
         {
             InitializeComponent();
             m_DiContainer = container;
+        }
+
+
+        private void OnWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Uri iconUri = new Uri("pack://application:,,,/" + GetType().Assembly.GetName().Name
+                                        + ";component/Tobi.ico", UriKind.Absolute);
+                //Uri iconUri = new Uri("Tobi.ico", UriKind.RelativeOrAbsolute);
+                Icon = BitmapFrame.Create(iconUri);
+            }
+            finally
+            {
+                //ignore
+            }
+
+            /*
+            IconBitmapDecoder ibd = new IconBitmapDecoder(new Uri(
+                            @"pack://application:,,/Resources/Tobi.ico",
+                            UriKind.RelativeOrAbsolute),
+                            BitmapCreateOptions.None, BitmapCacheOption.Default);
+            Icon = ibd.Frames[0];
+            */
         }
 
         protected void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)

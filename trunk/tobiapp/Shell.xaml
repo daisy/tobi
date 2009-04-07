@@ -10,6 +10,7 @@
     Width="{x:Static infra:Sizes.DefaultWindowWidth}"
     Height="{x:Static infra:Sizes.DefaultWindowHeight}"
     WindowStartupLocation="CenterScreen"
+    Loaded="OnWindowLoaded"
    >
    <!--    FocusManager.FocusedElement="{infra:FirstFocusedElement}"
    KeyboardNavigation.TabIndex="1" 
@@ -27,11 +28,18 @@
 
   <DockPanel LastChildFill="True">
 
-    <!-- DockPanel.LayoutTransform>
-      <ScaleTransform x:Name="ScaleTransform" ScaleX="1" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
-    </DockPanel.LayoutTransform -->
+    <DockPanel.LayoutTransform>
+      <ScaleTransform x:Name="ScaleTransform"
+            ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
+    </DockPanel.LayoutTransform>
 
-    <!--UserInterfaceZoom-->
+        <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
+        Value="1" Width="Auto" Height="Auto"
+        Minimum="0.5" Maximum="10"
+        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
+
+
+        <!--UserInterfaceZoom-->
     <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
 
     <!--MenuBar-->
