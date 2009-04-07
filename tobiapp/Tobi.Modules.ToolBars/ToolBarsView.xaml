@@ -3,21 +3,226 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.ToolBars">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Add.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Error.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Lock.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save_As.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Back.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Exit.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Open.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Search.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Block.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/File.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Padlock.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Undo.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Check.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Printer.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Configurator.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find_Next.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Redo.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up1.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Delete.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Forward.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Refresh.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Warning.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Help.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_in.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down1.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right1.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_out.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Edit.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left1.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-  <ToolBarTray Focusable="False">
-    <ToolBar 
+    <ToolBarTray Focusable="False">
+        <ToolBar 
     KeyboardNavigation.TabNavigation="Continue">
-      <Button>Test 1</Button>
-      <Button>Test 2</Button>
-      <Button>Test 3</Button>
-    </ToolBar>
-    <ToolBar 
+            
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Check}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Refresh}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Printer}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Help}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Exit}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Configurator}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            
+        </ToolBar>
+        <ToolBar 
     KeyboardNavigation.TabNavigation="Continue">
-      <Button>Dan 1</Button>
-      <Button>Dan 2</Button>
-      <Button>Dan 3</Button>
-      <Button>Dan 4</Button>
-      <Button>Dan 5</Button>
-    </ToolBar>
-  </ToolBarTray>
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Back}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Forward}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Up}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Up1}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Down}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Down1}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Left}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Left1}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Right}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Right1}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_File}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Open}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Save}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Save_As}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Edit}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+<Button>
+                <Image Source="{StaticResource Horizon_Image_Add}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Delete}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Warning}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Error}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Search}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Find}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Find_Next}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Block}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Padlock}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Lock}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Undo}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Redo}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+        <ToolBar 
+    KeyboardNavigation.TabNavigation="Continue">
+
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Zoom_out}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+            <Button>
+                <Image Source="{StaticResource Horizon_Image_Zoom_In}"
+                Stretch="Uniform" SnapsToDevicePixels="False" Height="16" Width="16"/>
+            </Button>
+        </ToolBar>
+    </ToolBarTray>
 </UserControl>
