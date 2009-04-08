@@ -16,24 +16,22 @@ namespace Tobi
         /// </summary>
         public EntLibLoggerAdapter()
         {
+#if (DEBUG)
             /*
-              
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
              
+            try
+            {
+                Console.SetWindowPosition(0, 0);
+                Console.Title = "Tobi Log Window";
+            }
+            finally
+            {
+                //ignore
+            }
+            Console.Beep();
              */
-            Console.SetWindowPosition(0, 0);
-            Console.Title = "Tobi Log Window";
-        }
-
-        /// <summary>
-        /// sdlkfhjdslkgjdfs
-        /// </summary>
-        /// <returns>the name of the given person firstname, is not null, but can be empty ""</returns>
-        public string GetMyName(string firstName)
-        {
-            if (firstName == null) throw new ArgumentNullException("firstName");
-
-            return "";
+#endif
         }
 
         #region ILoggerFacade Members
@@ -45,7 +43,7 @@ namespace Tobi
         {
             Logger.Write(message, category.ToString(), (int)priority);
 
-            
+#if (DEBUG)
             switch (category)
             {
                 case Category.Info:
@@ -83,6 +81,7 @@ namespace Tobi
                     }
                     break;
             }
+#endif
         }
 
         #endregion

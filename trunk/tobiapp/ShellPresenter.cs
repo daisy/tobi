@@ -41,10 +41,10 @@ namespace Tobi
         private void exit()
         {
             //MessageBox.Show("Good bye !", "Tobi says:");
-            TaskDialog.Show("Tobi is exiting.",
+            /*TaskDialog.Show("Tobi is exiting.",
                 "Just saying goodbye...",
                 "The Tobi application is now closing.",
-                TaskDialogIcon.Information);
+                TaskDialogIcon.Information);*/
             _exiting = true;
             Application.Current.Shutdown();
         }
