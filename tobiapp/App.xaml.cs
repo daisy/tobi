@@ -19,12 +19,20 @@ namespace Tobi
             ((TextBox)sender).SelectAll();
         }
 
+        public SplashScreen SplashScreen
+        {
+            get; set;
+        }
+
         ///<summary>
         /// Implements 2 runtimes: DEBUG and RELEASE
         ///</summary>
         ///<param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
+            SplashScreen = new SplashScreen("Splashscreen1.png");
+            SplashScreen.Show(false);
+
             base.OnStartup(e);
 
             ShutdownMode = ShutdownMode.OnMainWindowClose;

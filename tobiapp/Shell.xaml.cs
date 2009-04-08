@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Microsoft.Practices.Unity;
-using Tobi.Modules.MenuBar;
-using Tobi.Modules.UserInterfaceZoom;
 
 namespace Tobi
 {
@@ -40,6 +35,14 @@ namespace Tobi
             {
                 //ignore
             }
+
+            App app = Application.Current as App;
+            if (app != null)
+            {
+                app.SplashScreen.Close(TimeSpan.FromSeconds(0.5));
+            }
+
+            //Activate();
 
             /*
             IconBitmapDecoder ibd = new IconBitmapDecoder(new Uri(

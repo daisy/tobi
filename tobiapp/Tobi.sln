@@ -69,11 +69,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.AudioPane", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.core", "..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7931CFCF-DBDC-4EF3-8219-ED4C49FB19C3}"
-	ProjectSection(SolutionItems) = preProject
-		Images\TobiLogoNew_TopBanner.png = Images\TobiLogoNew_TopBanner.png
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Composite.Presentation", "ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj", "{A957D686-369A-4FFD-B8EC-0611741C9E41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLib", "..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.csproj", "{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}"
