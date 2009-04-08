@@ -10,7 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using DTbookToXuk;
+using XukImport;
 using Microsoft.Win32;
 using urakawa;
 using urakawa.core;
@@ -443,8 +443,7 @@ namespace WpfDtbookTest
 
             FilePath = dlg.FileName;
 
-            var uri = new Uri(FilePath);
-            DTBooktoXukConversion converter = new DTBooktoXukConversion(uri);
+            DaisyToXuk converter = new DaisyToXuk(FilePath);
 
             m_XukProject = converter.Project;
 
@@ -551,7 +550,7 @@ namespace WpfDtbookTest
 
                 try
                 {
-                    image.Source = new BitmapImage(new Uri(fullImagePath));
+                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute));
                 }
                 catch (Exception)
                 {
