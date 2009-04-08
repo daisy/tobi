@@ -3,17 +3,74 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.NavigationPane">
-  
-  <TreeView>
-    <TreeViewItem Header="Fruit">
-      <TreeViewItem Header="Orange"/>
-      <TreeViewItem Header="Banana"/>
-      <TreeViewItem Header="Grapefruit"/>
-    </TreeViewItem>
-    <TreeViewItem Header="Vegetables">
-      <TreeViewItem Header="Aubergine"/>
-      <TreeViewItem Header="Squash"/>
-      <TreeViewItem Header="Spinach"/>
-    </TreeViewItem>
-  </TreeView>
+
+  <DockPanel>
+
+    <Grid  DockPanel.Dock="Left">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+
+      <Button Click="OnExpandAll"
+              Grid.Row="0" Grid.Column="0">Expand all</Button>
+      <Button Click="OnCollapseAll"
+              Grid.Row="1" Grid.Column="0">Collapse all</Button>
+
+      <TreeView x:Name="TreeView" Width="140"
+                Grid.Row="2" Grid.Column="0"
+                DataContext="{Binding TOC}"
+                ItemsSource="{Binding Roots}"
+                SelectedItemChanged="OnHeadingSelected">
+
+        <TreeView.ItemContainerStyle>
+          <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" /-->
+            <Setter Property="FontWeight" Value="Normal" />
+            <Style.Triggers>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter Property="FontWeight" Value="Bold" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </TreeView.ItemContainerStyle>
+
+
+        <TreeView.Resources>
+
+          <HierarchicalDataTemplate       DataType="{x:Type local:HeadingTreeNodeWrapper}"
+                                          ItemsSource="{Binding Children}">
+
+            <TextBlock Text="{Binding Path=Title}"/>
+
+            <HierarchicalDataTemplate.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Path=Title}"/>
+              </DataTemplate>
+            </HierarchicalDataTemplate.ItemTemplate>
+          </HierarchicalDataTemplate>
+        </TreeView.Resources>
+
+      </TreeView>
+    </Grid>
+
+    <ListView x:Name="ListView" ItemsSource="{Binding Pages}"
+              DockPanel.Dock="Left" SelectionMode="Single" SelectionChanged="OnPageSelected">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Width="70" Header="Page"
+             DisplayMemberBinding="{Binding Name}" />
+          <GridViewColumn Width="70" Header="Id"
+             DisplayMemberBinding="{Binding Id}"  />
+        </GridView>
+      </ListView.View>
+    </ListView>
+    
+  </DockPanel>
 </UserControl>

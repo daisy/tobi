@@ -26,25 +26,18 @@ namespace Tobi.Modules.StatusBar
         }
 
         ///<summary>
-        /// Registers implementations for <see cref="IStatusBarView"/> (
-        /// <see cref="StatusBarView"/>), <see cref="IStatusBarService"/> (
-        /// <see cref="StatusBarService"/>) and <see cref="IStatusBarPresenter"/> (
-        /// <see cref="StatusBarPresenter"/>). Creates a <see cref="StatusBarPresenter"/> and
-        /// injects its associated <see cref="StatusBarView"/> inside the '<c>StatusBar</c>'
-        /// region.
+        /// Registers the <see cref="StatusBarView"/> in the Dependency Injection container
+        /// and injects it inside the '<c>StatusBar</c>' region.
         ///</summary>
         public void Initialize()
         {
-            // TODO: should be a singleton;
-            _container.RegisterType<IStatusBarService, StatusBarService>(new ContainerControlledLifetimeManager());
-
-            _container.RegisterType<IStatusBarView, StatusBarView>();
-            _container.RegisterType<IStatusBarPresenter, StatusBarPresenter>(new ContainerControlledLifetimeManager());
+            _container.RegisterType<StatusBarView>(new ContainerControlledLifetimeManager());
 
             IRegion targetRegion = _regionManager.Regions[RegionNames.StatusBar];
-            var presenter = _container.Resolve<IStatusBarPresenter>();
-            targetRegion.Add(presenter.View);
-            targetRegion.Activate(presenter.View);
+            var view = _container.Resolve<StatusBarView>();
+
+            targetRegion.Add(view);
+            targetRegion.Activate(view);
         }
     }
 }

@@ -4,6 +4,23 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.DocumentPane">
 
-  <DocumentViewer>
-  </DocumentViewer>
-</UserControl>
+  <DockPanel LastChildFill="True">
+    
+  <Grid DockPanel.Dock="Top">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Button Click="OnOpenFile"
+            Grid.Row="0" Grid.Column="0">Open DTBook...</Button>
+
+    <TextBox Text="{Binding FilePath, Mode=OneWay}"
+             IsEnabled="False"
+             Grid.Row="0" Grid.Column="1"/>
+  </Grid>
+  <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"/>
+</DockPanel></UserControl>

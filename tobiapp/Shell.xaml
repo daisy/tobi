@@ -42,6 +42,7 @@
         <!--UserInterfaceZoom-->
     <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
 
+
     <!--MenuBar-->
     <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 

@@ -12,7 +12,7 @@ namespace Tobi.Modules.UserInterfaceZoom
     /// <summary>
     /// The View implementation (aka XAML 'code-behind')
     /// </summary>
-    public partial class UserInterfaceZoomView : UserControl, IUserInterfaceZoomView
+    public partial class UserInterfaceZoomView : IUserInterfaceZoomView
     {
         ///<summary>
         /// The DI container, injected in the constructor by the DI container himself !

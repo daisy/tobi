@@ -12,8 +12,8 @@ namespace Tobi.Modules.MenuBar
     ///</summary>
     public class MenuBarModule : IModule
     {
-        private readonly IRegionManager _regionManager;
-        private readonly IUnityContainer _container;
+        private readonly IRegionManager m_regionManager;
+        private readonly IUnityContainer m_container;
 
         ///<summary>
         /// Dependency Injection constructor
@@ -22,29 +22,23 @@ namespace Tobi.Modules.MenuBar
         ///<param name="regionManager">The CAG-WPF region manager</param>
         public MenuBarModule(IUnityContainer container, IRegionManager regionManager)
         {
-            _regionManager = regionManager;
-            _container = container;
+            m_regionManager = regionManager;
+            m_container = container;
         }
 
         ///<summary>
-        /// Registers implementations for <see cref="IMenuBarView"/> (
-        /// <see cref="MenuBarView"/>), <see cref="IMenuBarService"/> (
-        /// <see cref="MenuBarService"/>) and <see cref="IMenuBarPresenter"/> (
-        /// <see cref="MenuBarPresenter"/>). Creates a <see cref="MenuBarPresenter"/> and
-        /// injects its associated <see cref="MenuBarView"/> inside the '<c>MenuBar</c>'
-        /// region.
+        /// Registers the <see cref="MenuBarView"/> into the Dependecy Container
+        /// and injects it inside the '<c>MenuBar</c>' region.
         ///</summary>
         public void Initialize()
         {
-            _container.RegisterType<IMenuBarService, MenuBarService>(new ContainerControlledLifetimeManager());
+            m_container.RegisterType<MenuBarView>(new ContainerControlledLifetimeManager());
 
-            _container.RegisterType<IMenuBarView, MenuBarView>();
-            _container.RegisterType<IMenuBarPresenter, MenuBarPresenter>(new ContainerControlledLifetimeManager());
+            IRegion targetRegion = m_regionManager.Regions[RegionNames.MenuBar];
+            var view = m_container.Resolve<MenuBarView>();
 
-            IRegion targetRegion = _regionManager.Regions[RegionNames.MenuBar];
-            var presenter = _container.Resolve<IMenuBarPresenter>();
-            targetRegion.Add(presenter.View);
-            targetRegion.Activate(presenter.View);
+            targetRegion.Add(view);
+            targetRegion.Activate(view);
         }
     }
 }

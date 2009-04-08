@@ -63,15 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="INavigationPanePresenter.cs" />
-    <Compile Include="INavigationPaneService.cs" />
-    <Compile Include="NavigationPanePresentationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NavigationPaneData.cs" />
     <Compile Include="NavigationPaneModule.cs" />
-    <Compile Include="INavigationPaneView.cs" />
-    <Compile Include="NavigationPanePresenter.cs" />
-    <Compile Include="NavigationPaneService.cs" />
     <Compile Include="NavigationPaneView.xaml.cs">
       <DependentUpon>NavigationPaneView.xaml</DependentUpon>
     </Compile>
@@ -83,6 +76,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
       <Name>Lib.Composite.Presentation</Name>
@@ -90,6 +87,10 @@
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tobi.Modules.DocumentPane\Tobi.Modules.DocumentPane.csproj">
+      <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
+      <Name>Tobi.Modules.DocumentPane</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
