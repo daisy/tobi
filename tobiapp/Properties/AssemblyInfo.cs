@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Tobi")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Tobi, for Accessible DAISY Multimedia Authoring")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("DAISY Consortium")]
 [assembly: AssemblyProduct("Tobi")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Open-Source, Free")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
