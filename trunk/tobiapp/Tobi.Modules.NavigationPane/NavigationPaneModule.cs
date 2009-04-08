@@ -10,7 +10,7 @@ namespace Tobi.Modules.NavigationPane
     /// The navigation center for the multimedia presentation (hierarchical table of contents, page numbers, footnotes, etc.)
     /// More or less corresponds to the NCX in DAISY3.
     ///</summary>
-    [ModuleDependency("DocumentPaneModule")]
+    /// [ModuleDependency("DocumentPaneModule")] ALREADY CONFIGURED IN THE MODULE CATALOG
     public class NavigationPaneModule : IModule
     {
         private readonly IUnityContainer m_container;

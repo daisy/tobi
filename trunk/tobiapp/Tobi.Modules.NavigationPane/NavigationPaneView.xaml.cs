@@ -279,17 +279,13 @@ namespace Tobi.Modules.NavigationPane
 
         private void OnPageSelected(object sender, SelectionChangedEventArgs e)
         {
+            //Page page = GetPage(page.Id);
             Page page = ListView.SelectedItem as Page;
             if (page != null)
             {
-                //Page page = GetPage(page.Id);
-                if (page != null)
-                {
-                    TextElement textElement = page.TextElement;
-
-                    //DocumentPaneView docView = m_container.Resolve<DocumentPaneView>();
-                    m_documentView.BringIntoViewAndHighlight(textElement);
-                }
+                TextElement textElement = page.TextElement;
+                //DocumentPaneView docView = m_container.Resolve<DocumentPaneView>();
+                m_documentView.BringIntoViewAndHighlight(textElement);
             }
         }
         public void ResetNavigation(Project project)
