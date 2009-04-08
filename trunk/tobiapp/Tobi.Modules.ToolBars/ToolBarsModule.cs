@@ -26,25 +26,18 @@ namespace Tobi.Modules.ToolBars
         }
 
         ///<summary>
-        /// Registers implementations for <see cref="IToolBarsView"/> (
-        /// <see cref="ToolBarsView"/>), <see cref="IToolBarsService"/> (
-        /// <see cref="ToolBarsService"/>) and <see cref="IToolBarsPresenter"/> (
-        /// <see cref="ToolBarsPresenter"/>). Creates a <see cref="ToolBarsPresenter"/> and
-        /// injects its associated <see cref="ToolBarsView"/> inside the '<c>ToolBars</c>'
-        /// region.
+        /// Registers the <see cref="ToolBarsView"/> into the Dependency Injection container
+        /// and injects it inside the '<c>ToolBars</c>' region.
         ///</summary>
         public void Initialize()
         {
-            // TODO: should be a singleton;
-            _container.RegisterType<IToolBarsService, ToolBarsService>(new ContainerControlledLifetimeManager());
-
-            _container.RegisterType<IToolBarsView, ToolBarsView>();
-            _container.RegisterType<IToolBarsPresenter, ToolBarsPresenter>(new ContainerControlledLifetimeManager());
+            _container.RegisterType<ToolBarsView>(new ContainerControlledLifetimeManager());
 
             IRegion targetRegion = _regionManager.Regions[RegionNames.ToolBars];
-            var presenter = _container.Resolve<IToolBarsPresenter>();
-            targetRegion.Add(presenter.View);
-            targetRegion.Activate(presenter.View);
+            var view = _container.Resolve<ToolBarsView>();
+
+            targetRegion.Add(view);
+            targetRegion.Activate(view);
         }
     }
 }

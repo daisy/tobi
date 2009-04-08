@@ -8,9 +8,9 @@ namespace Tobi
     /// <summary>
     /// 'Code behind' for the Shell window
     /// </summary>
-    public partial class Shell : Window, IShellView
+    public partial class Shell : IShellView
     {
-        private readonly IUnityContainer m_DiContainer;
+        protected IUnityContainer Container { get; private set;  }
 
         ///<summary>
         /// Just calls <c>Window.InitializeComponent()</c>.
@@ -18,7 +18,7 @@ namespace Tobi
         public Shell(IUnityContainer container)
         {
             InitializeComponent();
-            m_DiContainer = container;
+            Container = container;
         }
 
 
@@ -65,7 +65,7 @@ namespace Tobi
                 return null;
             }, null);
              */
-            var shellPresenter = m_DiContainer.Resolve<IShellPresenter>();
+            var shellPresenter = Container.Resolve<IShellPresenter>();
             bool leaving = shellPresenter.OnShellWindowClosing();
             if (!leaving) e.Cancel = true;
         }

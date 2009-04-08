@@ -6,45 +6,35 @@ using Microsoft.Practices.Unity;
 namespace Tobi.Modules.DocumentPane
 {
     ///<summary>
-    /// The status bar is commonly displayed at the bottom of the application window
-    /// to report live information about the state of the application.
+    /// The document pane contains the text part of the multimedia presentation.
     ///</summary>
     public class DocumentPaneModule : IModule
     {
-        private readonly IRegionManager _regionManager;
-        private readonly IUnityContainer _container;
+        private readonly IUnityContainer m_container;
 
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        ///<param name="regionManager">The CAG-WPF region manager</param>
-        public DocumentPaneModule(IUnityContainer container, IRegionManager regionManager)
+        public DocumentPaneModule(IUnityContainer container)
         {
-            _regionManager = regionManager;
-            _container = container;
+            m_container = container;
         }
 
         ///<summary>
-        /// Registers implementations for <see cref="IDocumentPaneView"/> (
-        /// <see cref="DocumentPaneView"/>), <see cref="IDocumentPaneService"/> (
-        /// <see cref="DocumentPaneService"/>) and <see cref="IDocumentPanePresenter"/> (
-        /// <see cref="DocumentPanePresenter"/>). Creates a <see cref="DocumentPanePresenter"/> and
-        /// injects its associated <see cref="DocumentPaneView"/> inside the '<c>DocumentPane</c>'
-        /// region.
+        /// Registers the <see cref="DocumentPaneView"/> in the DI container as a singleton
+        /// and injects it inside the '<c>DocumentPane</c>' region.
         ///</summary>
         public void Initialize()
         {
-            // TODO: should be a singleton;
-            _container.RegisterType<IDocumentPaneService, DocumentPaneService>(new ContainerControlledLifetimeManager());
+            m_container.RegisterType<DocumentPaneView>(new ContainerControlledLifetimeManager());
 
-            _container.RegisterType<IDocumentPaneView, DocumentPaneView>();
-            _container.RegisterType<IDocumentPanePresenter, DocumentPanePresenter>(new ContainerControlledLifetimeManager());
+            var regionManager = m_container.Resolve<IRegionManager>();
+            IRegion targetRegion = regionManager.Regions[RegionNames.DocumentPane];
 
-            IRegion targetRegion = _regionManager.Regions[RegionNames.DocumentPane];
-            var presenter = _container.Resolve<IDocumentPanePresenter>();
-            targetRegion.Add(presenter.View);
-            targetRegion.Activate(presenter.View);
+            var view = m_container.Resolve<DocumentPaneView>();
+            targetRegion.Add(view);
+            targetRegion.Activate(view);
         }
     }
 }

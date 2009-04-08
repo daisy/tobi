@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
@@ -7,6 +9,8 @@ using Microsoft.Practices.Unity;
 using Sid.Windows.Controls;
 using Tobi.Infrastructure;
 using Tobi.Modules.MenuBar;
+using Tobi.Modules.NavigationPane;
+using urakawa;
 
 namespace Tobi
 {
@@ -18,17 +22,25 @@ namespace Tobi
         public DelegateCommandWithInputGesture<object> ExitCommand { get; private set; }
 
         public IShellView View { get; private set; }
-        protected IUnityContainer Container { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IRegionManager RegionManager { get; private set; }
+
+        //protected MenuBarView MenuBarView { get; private set; }
+        //protected NavigationPaneView NavigationPaneView { get; private set; }
+
+        protected IUnityContainer Container { get; private set; }
 
         ///<summary>
         /// Default constructor
         ///</summary>
         ///<param name="view"></param>
-        public ShellPresenter(IShellView view, IUnityContainer container, ILoggerFacade logger, IRegionManager regionManager)
+        public ShellPresenter(IShellView view, ILoggerFacade logger, IRegionManager regionManager, IUnityContainer container) //MenuBarView menubarView, NavigationPaneView navView
         {
             _exiting = false;
+
+            //MenuBarView = menubarView;
+            //NavigationPaneView = navView;
+            
             View = view;
             Logger = logger;
             Container = container;
@@ -65,7 +77,6 @@ namespace Tobi
 
         public void ToggleView(bool? show, IToggableView view)
         {
-
             var region = RegionManager.Regions[view.RegionName];
             var isVisible = region.ActiveViews.Contains(view);
 
@@ -98,8 +109,20 @@ namespace Tobi
                 region.Remove(view);
             }
 
-            var presenter = Container.Resolve<IMenuBarPresenter>();
-            presenter.View.EnsureViewMenuCheckState(view.RegionName, makeVisible);
+            var menuView = Container.Resolve<MenuBarView>();
+            menuView.EnsureViewMenuCheckState(view.RegionName, makeVisible);
+        }
+
+        public void ProjectLoaded(Project proj)
+        {
+            NavigationPaneView navPane = Container.Resolve<NavigationPaneView>();
+            navPane.ResetNavigation(proj);
+        }
+
+        public void PageEncountered(TextElement textElement)
+        {
+            NavigationPaneView navPane = Container.Resolve<NavigationPaneView>();
+            navPane.AddPage(textElement);
         }
 
         private bool askUserConfirmExit()

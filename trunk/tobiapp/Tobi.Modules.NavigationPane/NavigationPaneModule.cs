@@ -2,49 +2,43 @@
 using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
+using Tobi.Modules.DocumentPane;
 
 namespace Tobi.Modules.NavigationPane
 {
     ///<summary>
-    /// The status bar is commonly displayed at the bottom of the application window
-    /// to report live information about the state of the application.
+    /// The navigation center for the multimedia presentation (hierarchical table of contents, page numbers, footnotes, etc.)
+    /// More or less corresponds to the NCX in DAISY3.
     ///</summary>
+    [ModuleDependency("DocumentPaneModule")]
     public class NavigationPaneModule : IModule
     {
-        private readonly IRegionManager _regionManager;
-        private readonly IUnityContainer _container;
+        private readonly IUnityContainer m_container;
 
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        ///<param name="regionManager">The CAG-WPF region manager</param>
-        public NavigationPaneModule(IUnityContainer container, IRegionManager regionManager)
+        ///<param name="docModule">The navigation depends on the documentr</param>
+        public NavigationPaneModule(IUnityContainer container)
         {
-            _regionManager = regionManager;
-            _container = container;
+            m_container = container;
         }
 
         ///<summary>
-        /// Registers implementations for <see cref="INavigationPaneView"/> (
-        /// <see cref="NavigationPaneView"/>), <see cref="INavigationPaneService"/> (
-        /// <see cref="NavigationPaneService"/>) and <see cref="INavigationPanePresenter"/> (
-        /// <see cref="NavigationPanePresenter"/>). Creates a <see cref="NavigationPanePresenter"/> and
-        /// injects its associated <see cref="NavigationPaneView"/> inside the '<c>NavigationPane</c>'
-        /// region.
+        /// Registers the <see cref="NavigationPaneView"/> in the DI container as a singleton
+        /// and injects it inside the '<c>NavigationPane</c>' region.
         ///</summary>
         public void Initialize()
         {
-            // TODO: should be a singleton;
-            _container.RegisterType<INavigationPaneService, NavigationPaneService>(new ContainerControlledLifetimeManager());
+            m_container.RegisterType<NavigationPaneView>(new ContainerControlledLifetimeManager());
 
-            _container.RegisterType<INavigationPaneView, NavigationPaneView>();
-            _container.RegisterType<INavigationPanePresenter, NavigationPanePresenter>(new ContainerControlledLifetimeManager());
+            var regionManager = m_container.Resolve<IRegionManager>();
+            IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPane];
 
-            IRegion targetRegion = _regionManager.Regions[RegionNames.NavigationPane];
-            var presenter = _container.Resolve<INavigationPanePresenter>();
-            targetRegion.Add(presenter.View);
-            targetRegion.Activate(presenter.View);
+            var view = m_container.Resolve<NavigationPaneView>();
+            targetRegion.Add(view);
+            targetRegion.Activate(view);
         }
     }
 }

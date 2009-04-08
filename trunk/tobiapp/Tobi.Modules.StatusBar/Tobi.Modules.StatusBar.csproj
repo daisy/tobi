@@ -63,15 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IStatusBarPresenter.cs" />
-    <Compile Include="IStatusBarService.cs" />
-    <Compile Include="StatusBarPresentationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StatusBarData.cs" />
     <Compile Include="StatusBarModule.cs" />
-    <Compile Include="IStatusBarView.cs" />
-    <Compile Include="StatusBarPresenter.cs" />
-    <Compile Include="StatusBarService.cs" />
     <Compile Include="StatusBarView.xaml.cs">
       <DependentUpon>StatusBarView.xaml</DependentUpon>
     </Compile>

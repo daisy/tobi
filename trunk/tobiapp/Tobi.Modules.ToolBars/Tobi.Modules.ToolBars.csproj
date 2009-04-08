@@ -63,15 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IToolBarsPresenter.cs" />
-    <Compile Include="IToolBarsService.cs" />
-    <Compile Include="ToolBarsPresentationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToolBarsData.cs" />
     <Compile Include="ToolBarsModule.cs" />
-    <Compile Include="IToolBarsView.cs" />
-    <Compile Include="ToolBarsPresenter.cs" />
-    <Compile Include="ToolBarsService.cs" />
     <Compile Include="ToolBarsView.xaml.cs">
       <DependentUpon>ToolBarsView.xaml</DependentUpon>
     </Compile>

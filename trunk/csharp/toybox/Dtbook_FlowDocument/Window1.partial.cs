@@ -260,11 +260,11 @@ namespace WpfDtbookTest
         {
             mCurrentAudioStreamProvider = () =>
             {
-                if (!String.IsNullOrEmpty(FilePath))
+                if (!String.IsNullOrEmpty(FileAudioPath))
                 {
                     if (m_FilePlayStream == null)
                     {
-                        m_FilePlayStream = File.Open(FilePath, FileMode.Open);
+                        m_FilePlayStream = File.Open(FileAudioPath, FileMode.Open);
                     }
                     return m_FilePlayStream;
                 }
@@ -368,7 +368,7 @@ namespace WpfDtbookTest
                 m_Player.Stop();
             }
 
-            FilePath = dlg.FileName;
+            FileAudioPath = dlg.FileName;
 
             m_pcmFormat = null;
 

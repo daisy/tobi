@@ -90,12 +90,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMenuBarPresenter.cs" />
-    <Compile Include="IMenuBarService.cs" />
-    <Compile Include="MenuBarData.cs" />
     <Compile Include="MenuBarModule.cs" />
-    <Compile Include="MenuBarPresentationModel.cs" />
-    <Compile Include="MenuBarService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -109,8 +104,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="IMenuBarView.cs" />
-    <Compile Include="MenuBarPresenter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

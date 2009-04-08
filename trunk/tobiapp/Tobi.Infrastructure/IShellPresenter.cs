@@ -1,6 +1,8 @@
 ﻿using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Tobi.Infrastructure;
+using urakawa;
 
 namespace Tobi
 {
@@ -30,5 +32,9 @@ namespace Tobi
         bool OnShellWindowClosing();
 
         void ToggleView(bool? show, IToggableView view);
+
+        //TODO: the methods below are not part of the final design, they're here just to compile and run the experiments.
+        void ProjectLoaded(Project proj);
+        void PageEncountered(TextElement textElement);
     }
 }
