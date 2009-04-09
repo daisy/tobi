@@ -42,7 +42,9 @@
     </DockPanel.LayoutTransform>
 
         <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
-        Value="1" Width="Auto" Height="Auto"
+        Value="1"
+                Width="Auto" Height="Auto"
+                VerticalAlignment="Stretch"
         Minimum="0.5" Maximum="10"
         Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
 
@@ -68,7 +70,7 @@
         <ad:ResizingPanel Orientation="Horizontal" >
 
           <UserControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"
-                        ad:ResizingPanel.ResizeWidth="200" />
+                        ad:ResizingPanel.ResizeWidth="150" />
 
           <ad:DocumentPane>
 
