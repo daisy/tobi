@@ -22,13 +22,18 @@
  -->
 
   <Window.Resources>
-    <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
-      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
-      <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
-      <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
-    </LinearGradientBrush>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
+        <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
+        <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
+      </LinearGradientBrush>
+    </ResourceDictionary>
   </Window.Resources>
-
+  
   <DockPanel LastChildFill="True">
 
     <DockPanel.LayoutTransform>
@@ -62,35 +67,36 @@
 
         <ad:ResizingPanel Orientation="Horizontal" >
 
-          <ad:DockablePane>
+          <UserControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"
+                        ad:ResizingPanel.ResizeWidth="200" />
 
-            <ad:DockableContent Title="TextBox1" cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}">
+          <ad:DocumentPane>
 
-            </ad:DockableContent>
+            <ad:DocumentContent Title="Placeholder" x:Name="DocumentContent2">
 
-          </ad:DockablePane>
-
-          <ad:DocumentPane x:Name="documentsHost">
-
-            <ad:DocumentContent Title="File1.doc" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}">
-
+              <TabControl>
+                <TabItem Header="TabItem Header 1" >
+                  <Button x:Name="ButtonDefault">Click 1</Button>
+                </TabItem>
+                <TabItem Header="TabItem Header2" >
+                  <StackPanel Orientation="Vertical">
+                    <Button x:Name="ButtonDefault2">Click 2.1</Button>
+                    <Button x:Name="ButtonDefault3">Click 2.2</Button>
+                  </StackPanel>
+                </TabItem>
+              </TabControl>
             </ad:DocumentContent >
 
-            <ad:DocumentContent Title="File2.doc" x:Name="DocumentContent2">
+            <ad:DocumentContent Title="Document" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}" ContentTypeDescription="Urakawa SDK Presentation">
 
             </ad:DocumentContent >
-
           </ad:DocumentPane>
 
         </ad:ResizingPanel>
 
-        <ad:DockablePane>
 
-          <ad:DockableContent Title="TextBox2" cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}">
-
-          </ad:DockableContent>
-
-        </ad:DockablePane>
+        <UserControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"
+                      ad:ResizingPanel.ResizeHeight="200"/>
 
       </ad:ResizingPanel>
 

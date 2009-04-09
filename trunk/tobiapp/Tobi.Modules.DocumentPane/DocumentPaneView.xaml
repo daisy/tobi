@@ -4,7 +4,7 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.DocumentPane">
 
-  <DockPanel LastChildFill="True">
+  <DockPanel LastChildFill="True" Background="White">
     
   <Grid DockPanel.Dock="Top">
     <Grid.ColumnDefinitions>
@@ -22,5 +22,15 @@
              IsEnabled="False"
              Grid.Row="0" Grid.Column="1"/>
   </Grid>
-  <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"/>
-</DockPanel></UserControl>
+  <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"
+                      Background="White">
+
+    <FlowDocumentReader.ContextMenu>
+      <ContextMenu>
+        <MenuItem Header="Menu Placeholder 1"/>
+        <Separator/>
+        <MenuItem Header="Menu Placeholder 2"/>
+        <MenuItem Header="Menu Placeholder 2"/>
+      </ContextMenu>
+    </FlowDocumentReader.ContextMenu>
+</FlowDocumentReader></DockPanel></UserControl>
