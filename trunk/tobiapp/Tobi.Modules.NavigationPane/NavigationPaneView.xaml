@@ -49,7 +49,7 @@
                     Width="Auto">
         
       <TreeView x:Name="TreeView"
-                DataContext="{Binding TOC}"
+                DataContext="{Binding HeadingsNavigator}"
                 ItemsSource="{Binding Roots}"
                 SelectedItemChanged="OnHeadingSelected">
 

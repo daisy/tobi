@@ -722,7 +722,7 @@ namespace Tobi.Modules.AudioPane
                         sgc.LineTo(new Point(barWidth + barWidth, 0), true, false);
                         sgc.LineTo(new Point(barWidth + barWidth, availableHeight - pixels), true, false);
                         sgc.LineTo(new Point(barWidth, availableHeight - pixels), true, false);
-                        sgc.LineTo(new Point(barWidth, availableHeight), true, false);
+                        sgc.LineTo(new Point(barWidth, availableHeight - 20), true, false);
 
                         sgc.Close();
                     }
