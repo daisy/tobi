@@ -296,6 +296,11 @@ namespace Tobi.Modules.AudioPane
                 double width = ((ScrollViewer)AdornedElement).ActualWidth;
                 double height = ((ScrollViewer)AdornedElement).ActualHeight - 20;
 
+                if (width <= margin + margin || height <= margin + margin)
+                {
+                    return;
+                }
+
                 double leftOffset = (width - formattedText.Width) / 2;
                 double topOffset = (height - formattedText.Height) / 2;
 
