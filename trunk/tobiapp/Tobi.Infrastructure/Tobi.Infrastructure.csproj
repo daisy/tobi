@@ -54,12 +54,15 @@
     <Compile Include="DelegateCommandWithInputGesture.cs" />
     <Compile Include="FirstFocusedElementExtension.cs" />
     <Compile Include="GlobalCommands.cs" />
+    <Compile Include="GreyableImage.cs" />
+    <Compile Include="IHeaderInfoProvider.cs" />
     <Compile Include="IShellPresenter.cs" />
     <Compile Include="IShellView.cs" />
     <Compile Include="IToggableView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Sizes.cs" />
+    <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
   </ItemGroup>
   <ItemGroup>

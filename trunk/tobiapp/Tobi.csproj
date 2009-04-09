@@ -125,6 +125,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvalonDockRegion.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="EntLibLoggerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -156,6 +157,10 @@
     <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\AvalonDock\Lib.AvalonDock.csproj">
+      <Project>{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}</Project>
+      <Name>Lib.AvalonDock</Name>
     </ProjectReference>
     <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>

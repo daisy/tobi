@@ -577,7 +577,10 @@ namespace Tobi.Modules.AudioPane
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
-            m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+            }
             m_WaveFormLoadTimer.Stop();
             loadWaveForm();
         }
@@ -990,8 +993,10 @@ namespace Tobi.Modules.AudioPane
             drawImg.Freeze();
             WaveFormImage.Source = drawImg;
 
-
-            m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+            }
 
             if (wasPlaying)
             {
@@ -1081,7 +1086,11 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+            }
             m_WaveFormLoadTimer.Start();
         }
 
@@ -1136,12 +1145,16 @@ namespace Tobi.Modules.AudioPane
 
         private void OnPaneLoaded(object sender, RoutedEventArgs e)
         {
-            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll);
             AdornerLayer layer = AdornerLayer.GetAdornerLayer(WaveFormScroll);
+            if (layer == null)
+            {
+                m_WaveFormLoadingAdorner = null;
+                return;
+            }
+            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll);
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
         }
 
     }
-
 }
