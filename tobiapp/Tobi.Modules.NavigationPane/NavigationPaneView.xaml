@@ -1,15 +1,35 @@
-﻿<UserControl x:Class="Tobi.Modules.NavigationPane.NavigationPaneView"
+﻿<ad:DockablePane x:Class="Tobi.Modules.NavigationPane.NavigationPaneView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
-    xmlns:local="clr-namespace:Tobi.Modules.NavigationPane">
+    xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
+    xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock">
 
-  <DockPanel>
+  <ad:DockableContent
+  Title="Pages" DockableStyle="DockableToBorders">
 
-    <Grid  DockPanel.Dock="Left">
+    <ListView x:Name="ListView" ItemsSource="{Binding Pages}"
+              SelectionMode="Single" SelectionChanged="OnPageSelected">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Width="70" Header="Page"
+             DisplayMemberBinding="{Binding Name}" />
+          <GridViewColumn Width="70" Header="Id"
+             DisplayMemberBinding="{Binding Id}"  />
+        </GridView>
+      </ListView.View>
+    </ListView>
+
+
+  </ad:DockableContent>
+  
+  <ad:DockableContent
+  Title="TOC" DockableStyle="DockableToBorders">
+    
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
@@ -22,8 +42,13 @@
       <Button Click="OnCollapseAll"
               Grid.Row="1" Grid.Column="0">Collapse all</Button>
 
-      <TreeView x:Name="TreeView" Width="140"
+      <ScrollViewer 
                 Grid.Row="2" Grid.Column="0"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Visible"
+                    Width="Auto">
+        
+      <TreeView x:Name="TreeView"
                 DataContext="{Binding TOC}"
                 ItemsSource="{Binding Roots}"
                 SelectedItemChanged="OnHeadingSelected">
@@ -58,19 +83,8 @@
         </TreeView.Resources>
 
       </TreeView>
-    </Grid>
+    </ScrollViewer></Grid>
 
-    <ListView x:Name="ListView" ItemsSource="{Binding Pages}"
-              DockPanel.Dock="Left" SelectionMode="Single" SelectionChanged="OnPageSelected">
-      <ListView.View>
-        <GridView>
-          <GridViewColumn Width="70" Header="Page"
-             DisplayMemberBinding="{Binding Name}" />
-          <GridViewColumn Width="70" Header="Id"
-             DisplayMemberBinding="{Binding Id}"  />
-        </GridView>
-      </ListView.View>
-    </ListView>
-    
-  </DockPanel>
-</UserControl>
+
+  </ad:DockableContent>
+</ad:DockablePane>
