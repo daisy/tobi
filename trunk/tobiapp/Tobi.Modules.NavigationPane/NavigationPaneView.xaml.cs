@@ -196,6 +196,14 @@ namespace Tobi.Modules.NavigationPane
                 if (nd != null)
                 {
                     QualifiedName qname = nd.GetXmlElementQName();
+                    if (qname != null && qname.LocalName == "pagenum" && m_TreeNode.ChildCount > 1)
+                    {
+                        nd = m_TreeNode.GetChild(1);
+                        if (nd != null)
+                        {
+                            qname = nd.GetXmlElementQName();
+                        }
+                    }
                     if (qname != null && (qname.LocalName == "hd"
                                           || qname.LocalName == "h1"
                                           || qname.LocalName == "h2"
@@ -219,7 +227,7 @@ namespace Tobi.Modules.NavigationPane
                     return "DUMMY";
                 }
                 string str = (m_TreeNodeHeading != null ? m_TreeNodeHeading.GetTextMediaFlattened() : "??" + m_TreeNode.GetXmlElementQName().LocalName);
-                return str;
+                return str.Trim();
             }
         }
         public ObservableCollection<HeadingTreeNodeWrapper> Children

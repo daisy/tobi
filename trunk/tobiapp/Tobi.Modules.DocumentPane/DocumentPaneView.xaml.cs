@@ -798,7 +798,7 @@ namespace Tobi.Modules.DocumentPane
 
             if (attr != null && !String.IsNullOrEmpty(attr.Value))
             {
-                data.NavigateUri = new Uri("#" + attr.Value, UriKind.Relative);
+                data.NavigateUri = new Uri((attr.Value.StartsWith("#") ? "" : "#") + attr.Value, UriKind.Relative);
                 data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
             }
             else
@@ -1034,7 +1034,8 @@ namespace Tobi.Modules.DocumentPane
 
                                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                                     {
-                                        data.Name = attr.Value;
+                                        data.Name = IdToName(attr.Value);
+                                        data.ToolTip = data.Name;
                                         m_idLinkTargets.Add(data.Name, data);
                                     }
                                 }
@@ -1301,7 +1302,8 @@ namespace Tobi.Modules.DocumentPane
             if (attr != null &&
                 !String.IsNullOrEmpty(attr.Value))
             {
-                data.Name = attr.Value;
+                data.Name = IdToName(attr.Value);
+                data.ToolTip = data.Name;
 
                 IShellPresenter shellPres = Container.Resolve<IShellPresenter>();
                 shellPres.PageEncountered(data);
@@ -1784,9 +1786,19 @@ namespace Tobi.Modules.DocumentPane
             return FindTextElement(node, table.RowGroups);
         }
 
-
-        public void BringIntoViewAndHighlight(string id)
+        private string IdToName(string id)
         {
+            return id.Replace("-", "_DaSh_");
+        }
+        private string NameToId(string name)
+        {
+            return name.Replace("_DaSh_", "-");
+        }
+
+        public void BringIntoViewAndHighlight(string uid)
+        {
+            string id = IdToName(uid);
+
             TextElement textElement = null;
             if (m_idLinkTargets.ContainsKey(id))
             {
