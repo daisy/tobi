@@ -6,7 +6,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
+using Tobi.Infrastructure;
 using Tobi.Modules.DocumentPane;
 using urakawa;
 using urakawa.core;
@@ -293,14 +295,17 @@ namespace Tobi.Modules.NavigationPane
             if (page != null)
             {
                 TextElement textElement = page.TextElement;
-                //DocumentPaneView docView = m_container.Resolve<DocumentPaneView>();
-                m_documentView.BringIntoViewAndHighlight(textElement);
+                TreeNode treeNode = textElement.Tag as TreeNode;
+                if (treeNode != null)
+                {
+                    m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                }
             }
         }
         public void ResetNavigation(Project project)
         {
             m_HeadingsNavigator = new HeadingsNavigator(project);
-            TreeView.DataContext = TOC;
+            TreeView.DataContext = HeadingsNavigator;
             Pages.Clear();
         }
 
@@ -309,20 +314,34 @@ namespace Tobi.Modules.NavigationPane
             Pages.Add(new Page(data));
         }
 
-        private readonly DocumentPaneView m_documentView;
-
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public NavigationPaneView(DocumentPaneView docView)
+        public NavigationPaneView(IEventAggregator eventAggregator)
         {
             InitializeComponent();
-            m_documentView = docView;
+            m_eventAggregator = eventAggregator;
+
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected);
             DataContext = this;
+        }
+
+        private void OnTreeNodeSelected(TreeNode node)
+        {
+            //TODO: selected the containing parent in the TOC
+            if (m_HeadingsNavigator.IsIncluded(node))
+            {
+                TreeView.BringIntoView();
+            }
+            else
+            {
+                // find ancestor
+            }
         }
 
         private ObservableCollection<Page> _Pages = new ObservableCollection<Page>();
         private HeadingsNavigator m_HeadingsNavigator;
+        private IEventAggregator m_eventAggregator;
 
         public ObservableCollection<Page> Pages
         {
@@ -331,7 +350,7 @@ namespace Tobi.Modules.NavigationPane
                 return _Pages;
             }
         }
-        public HeadingsNavigator TOC
+        public HeadingsNavigator HeadingsNavigator
         {
             get
             {
@@ -344,8 +363,8 @@ namespace Tobi.Modules.NavigationPane
             HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
             if (node != null)
             {
-                //DocumentPaneView docView = m_container.Resolve<DocumentPaneView>();
-                m_documentView.BringIntoViewAndHighlight((node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level));
+                TreeNode treeNode = (node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level);
+                m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
             }
         }
 

@@ -8,8 +8,10 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
+using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
@@ -42,18 +44,24 @@ namespace Tobi.Modules.DocumentPane
         }
 
 
-        protected IUnityContainer Container;
+        protected IUnityContainer Container { get; private set; }
+        private IEventAggregator m_eventAggregator;
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public DocumentPaneView(IUnityContainer container)
+        public DocumentPaneView(IUnityContainer container, IEventAggregator eventAggregator)
         {
             InitializeComponent();
+            m_eventAggregator = eventAggregator;
             Container = container;
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected);
             DataContext = this;
         }
-
+        private void OnTreeNodeSelected(TreeNode node)
+        {
+            BringIntoViewAndHighlight(node);
+        }
         public string FilePath
         {
             get
@@ -592,10 +600,13 @@ namespace Tobi.Modules.DocumentPane
 
                     if (qname.LocalName == "pagenum")
                     {
+                        data.Tag = null;
                         formatPageNumberAndSetId(node, para);
                     }
                     else if (qname.LocalName == "hd")
                     {
+                        data.Tag = null;
+                        para.Tag = node;
                         formatListHeader(para);
                     }
                 }
@@ -608,6 +619,7 @@ namespace Tobi.Modules.DocumentPane
                 ((List)parent).ListItems.Add(data);
                 if (qname.LocalName == "pagenum")
                 {
+                    data.Tag = null;
                     Paragraph para = new Paragraph();
                     formatPageNumberAndSetId(node, para);
                     data.Blocks.Add(para);
@@ -615,7 +627,9 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else if (qname.LocalName == "hd")
                 {
+                    data.Tag = null;
                     Paragraph para = new Paragraph();
+                    para.Tag = node;
                     formatListHeader(para);
                     data.Blocks.Add(para);
                     return para;
@@ -643,7 +657,6 @@ namespace Tobi.Modules.DocumentPane
                         m_currentTD = 0;
 
                         TableRowGroup rowGroup = new TableRowGroup();
-                        rowGroup.Tag = node;
 
                         ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
@@ -655,6 +668,7 @@ namespace Tobi.Modules.DocumentPane
 
                         if (qname.LocalName == "caption")
                         {
+                            para.Tag = node;
                             formatCaptionCell(cell);
                         }
                         else
@@ -691,7 +705,6 @@ namespace Tobi.Modules.DocumentPane
                         m_currentTD = 0;
 
                         TableRowGroup rowGroup = new TableRowGroup();
-                        rowGroup.Tag = node;
 
                         ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
@@ -703,6 +716,7 @@ namespace Tobi.Modules.DocumentPane
 
                         if (qname.LocalName == "caption")
                         {
+                            para.Tag = node;
                             formatCaptionCell(cell);
                         }
                         else
@@ -1339,6 +1353,8 @@ namespace Tobi.Modules.DocumentPane
 
         private void formatPageNumberAndSetId(TreeNode node, Paragraph data)
         {
+            data.Tag = node;
+
             data.BorderBrush = Brushes.Orange;
             data.BorderThickness = new Thickness(2.0);
             data.Padding = new Thickness(2.0);

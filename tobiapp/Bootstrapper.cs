@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
+using AvalonDock;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
