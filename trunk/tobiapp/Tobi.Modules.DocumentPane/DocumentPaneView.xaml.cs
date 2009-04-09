@@ -144,7 +144,7 @@ namespace Tobi.Modules.DocumentPane
             m_FlowDoc.IsColumnWidthFlexible = false;
             m_FlowDoc.TextAlignment = TextAlignment.Left;
 
-            FlowDocReader.Zoom = 110;
+            FlowDocReader.Zoom = 130;
             FlowDocReader.Document = m_FlowDoc;
 
             /*
@@ -224,7 +224,7 @@ namespace Tobi.Modules.DocumentPane
 
                 try
                 {
-                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute));
+                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)) { CacheOption = BitmapCacheOption.None };
                 }
                 catch (Exception)
                 {
@@ -233,6 +233,7 @@ namespace Tobi.Modules.DocumentPane
             }
 
             image.Stretch = Stretch.Uniform;
+            image.StretchDirection = StretchDirection.Both;
 
             if (image.Source is BitmapSource)
             {
@@ -259,22 +260,39 @@ namespace Tobi.Modules.DocumentPane
 
             image.MinWidth = image.Width;
             image.MinHeight = image.Height;
+            //image.MaxWidth = image.Width;
+            //image.MaxHeight = image.Height;
 
             //BlockUIContainer img = new BlockUIContainer(image);
             //addBlock(parent, img);
 
-            InlineUIContainer img = new InlineUIContainer(image);
+            //InlineUIContainer img = new InlineUIContainer(image);
+            //addInline(parent, img);
+
+            BlockUIContainer img = new BlockUIContainer(image);
+            
+            img.BorderBrush = Brushes.RoyalBlue;
+            img.BorderThickness = new Thickness(2.0);
+
             img.Tag = node;
 
-            addInline(parent, img);
+            //Floater floater = new Floater();
+            //floater.Blocks.Add(img);
+            //floater.Width = image.Width;
+            //addInline(parent, floater);
 
 
+            //Figure figure = new Figure(img);
+            //figure.Width = image.Width;
+            //addInline(parent, figure);
+
+            addBlock(parent, img);
 
             XmlAttribute altAttr = xmlProp.GetAttribute("alt");
 
             if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
             {
-                image.ToolTip = altAttr.Value;
+                image.ToolTip = trimSpecial(altAttr.Value);
                 Paragraph paraAlt = new Paragraph(new Run("ALT: " + trimSpecial(altAttr.Value)));
                 paraAlt.BorderBrush = Brushes.CadetBlue;
                 paraAlt.BorderThickness = new Thickness(1.0);
