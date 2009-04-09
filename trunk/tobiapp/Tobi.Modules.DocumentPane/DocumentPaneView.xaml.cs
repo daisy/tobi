@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -15,7 +13,6 @@ using Microsoft.Win32;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
-using urakawa.navigation;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XukImport;
@@ -94,12 +91,22 @@ namespace Tobi.Modules.DocumentPane
 
         private Dictionary<string, TextElement> m_idLinkTargets;
 
+        private string trimSpecial(string str)
+        {
+            string strTrimmed = str.Trim();
+            if (strTrimmed.Length == str.Length)
+            {
+                return str;
+            }
+            return " " + strTrimmed + " "; // quick and dirty hack: need to normalize spaces at XML parsing stage.
+        }
+
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.FileName = "dtbook"; // Default file name
             dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBOOK documents (.xml)|*.xml;*.opf;*.ncx";
+            dlg.Filter = "DTBook and OPF documents (.xml, *.opf)|*.xml;*.opf;*.ncx";
             bool? result = dlg.ShowDialog();
             if (result == false)
             {
@@ -268,7 +275,7 @@ namespace Tobi.Modules.DocumentPane
             if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
             {
                 image.ToolTip = altAttr.Value;
-                Paragraph paraAlt = new Paragraph(new Run("ALT: " + altAttr.Value));
+                Paragraph paraAlt = new Paragraph(new Run("ALT: " + trimSpecial(altAttr.Value)));
                 paraAlt.BorderBrush = Brushes.CadetBlue;
                 paraAlt.BorderThickness = new Thickness(1.0);
                 paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
@@ -369,7 +376,7 @@ namespace Tobi.Modules.DocumentPane
                     }
                     else
                     {
-                        data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                        data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
                     }
 
                     return parent;
@@ -406,7 +413,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                 }
 
                 addBlock(parent, data);
@@ -433,7 +440,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                     addInline(parent, data);
                 }
 
@@ -459,7 +466,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                     addInline(parent, data);
                 }
 
@@ -485,7 +492,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                     addInline(parent, data);
                 }
 
@@ -561,13 +568,17 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    Paragraph para = new Paragraph(new Run(textMedia.Text));
+                    Paragraph para = new Paragraph(new Run(trimSpecial(textMedia.Text)));
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
                     if (qname.LocalName == "pagenum")
                     {
                         formatPageNumberAndSetId(node, para);
+                    }
+                    else if (qname.LocalName == "hd")
+                    {
+                        formatListHeader(para);
                     }
                 }
 
@@ -581,6 +592,13 @@ namespace Tobi.Modules.DocumentPane
                 {
                     Paragraph para = new Paragraph();
                     formatPageNumberAndSetId(node, para);
+                    data.Blocks.Add(para);
+                    return para;
+                }
+                else if (qname.LocalName == "hd")
+                {
+                    Paragraph para = new Paragraph();
+                    formatListHeader(para);
                     data.Blocks.Add(para);
                     return para;
                 }
@@ -614,7 +632,7 @@ namespace Tobi.Modules.DocumentPane
 
                         TableRow data = new TableRow();
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
-                        Paragraph para = new Paragraph(new Run(textMedia.Text));
+                        Paragraph para = new Paragraph(new Run(trimSpecial(textMedia.Text)));
                         TableCell cell = new TableCell(para);
 
                         if (qname.LocalName == "caption")
@@ -758,7 +776,7 @@ namespace Tobi.Modules.DocumentPane
                 {
                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                     {
-                        data.Inlines.Add(new Run(attr.Value));
+                        data.Inlines.Add(new Run(trimSpecial(attr.Value)));
                         addInline(parent, data);
                     }
                     else
@@ -769,7 +787,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                     addInline(parent, data);
                 }
 
@@ -815,7 +833,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                     addInline(parent, data);
                 }
 
@@ -848,7 +866,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
                     addInline(parent, data);
                 }
 
@@ -880,7 +898,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
                 }
 
                 addInline(parent, data);
@@ -912,7 +930,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
                 }
 
                 addInline(parent, data);
@@ -944,7 +962,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
                 }
 
                 addBlock(parent, data);
@@ -967,7 +985,7 @@ namespace Tobi.Modules.DocumentPane
                     return parent;
                 }
 
-                Run data = new Run(textMedia.Text);
+                Run data = new Run(trimSpecial(textMedia.Text));
                 data.Tag = node;
                 addInline(parent, data);
 
@@ -1075,6 +1093,10 @@ namespace Tobi.Modules.DocumentPane
                     case "h1":
                     case "hd":
                         {
+                            if (qname.LocalName == "hd" || parent is List)
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                            }
                             return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
                                 data =>
                                 {
@@ -1225,6 +1247,7 @@ namespace Tobi.Modules.DocumentPane
                     case "kbd":
                     case "dfn":
                     case "abbr":
+                    case "q":
                         {
                             return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
                         }
@@ -1243,7 +1266,6 @@ namespace Tobi.Modules.DocumentPane
                                 }
                                 );
                         }
-                    case "q":
                     case "line":
                     case "dateline":
                     case "bridgehead":
@@ -1284,6 +1306,17 @@ namespace Tobi.Modules.DocumentPane
             }
 
             return parent;
+        }
+
+        private void formatListHeader(Paragraph data)
+        {
+            data.BorderBrush = Brushes.Blue;
+            data.BorderThickness = new Thickness(2.0);
+            data.Padding = new Thickness(2.0);
+            data.FontWeight = FontWeights.Bold;
+            data.FontSize = m_FlowDoc.FontSize * 1.2;
+            data.Background = Brushes.Lavender;
+            data.Foreground = Brushes.DarkSlateBlue;
         }
 
         private void formatPageNumberAndSetId(TreeNode node, Paragraph data)

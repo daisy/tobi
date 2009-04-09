@@ -211,6 +211,7 @@ namespace Tobi.Modules.NavigationPane
                                           || qname.LocalName == "h4"
                                           || qname.LocalName == "h5"
                                           || qname.LocalName == "h6"
+                                          || qname.LocalName == "doctitle"
                                          ))
                     {
                         m_TreeNodeHeading = nd;
