@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -12,10 +13,16 @@ using System.Windows.Threading;
 using AudioLib;
 using AudioLib.Events.Player;
 using AudioLib.Events.VuMeter;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
+using Tobi.Infrastructure;
+using urakawa.core;
+using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
+using urakawa.property.channel;
+using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -259,8 +266,10 @@ namespace Tobi.Modules.AudioPane
         //private GraphicalVuMeter m_GraphicalVuMeter;
 
         private string m_WavFilePath;
-        private FileStream m_FilePlayStream;
-        private PCMDataInfo m_pcmFormat;
+        private Stream m_PlayStream;
+        private long m_dataLength;
+        private TreeNode m_CurrentTreeNode;
+        private PCMFormatInfo m_pcmFormat;
         private double m_bytesPerPixel;
         private AudioPlayer.StreamProviderDelegate mCurrentAudioStreamProvider;
         private DispatcherTimer m_PlaybackTimer;
@@ -325,19 +334,6 @@ namespace Tobi.Modules.AudioPane
 
         private void InitializeAudioStuff()
         {
-            mCurrentAudioStreamProvider = () =>
-            {
-                if (!String.IsNullOrEmpty(FilePath))
-                {
-                    if (m_FilePlayStream == null)
-                    {
-                        m_FilePlayStream = File.Open(FilePath, FileMode.Open);
-                    }
-                    return m_FilePlayStream;
-                }
-                return null;
-            };
-
             m_Player = new AudioPlayer();
             m_Player.StateChanged += Player_StateChanged;
 
@@ -368,8 +364,8 @@ namespace Tobi.Modules.AudioPane
 
 
 
-            m_PeakMeterBarDataCh1 = new PeakMeterBarData(() => peakMeterCanvasInvalidateVisual());
-            m_PeakMeterBarDataCh2 = new PeakMeterBarData(() => peakMeterCanvasInvalidateVisual());
+            m_PeakMeterBarDataCh1 = new PeakMeterBarData(peakMeterCanvasInvalidateVisual);
+            m_PeakMeterBarDataCh2 = new PeakMeterBarData(peakMeterCanvasInvalidateVisual);
 
             m_PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             m_PeakMeterBarDataCh2.ValueDb = Double.NegativeInfinity;
@@ -411,17 +407,59 @@ namespace Tobi.Modules.AudioPane
 
         private WaveFormLoadingAdorner m_WaveFormLoadingAdorner;
 
+        protected IUnityContainer Container { get; private set; }
+        private IEventAggregator m_eventAggregator;
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public AudioPaneView()
+        public AudioPaneView(IUnityContainer container, IEventAggregator eventAggregator)
         {
             InitializeComponent();
+            m_eventAggregator = eventAggregator;
+            Container = container;
             PeakMeterCanvasBackground.Freeze();
             InitializeAudioStuff();
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected);
             DataContext = this;
         }
 
+        private void OnTreeNodeSelected(TreeNode node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+
+            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            {
+                m_Player.Stop();
+            }
+
+            m_CurrentTreeNode = node;
+
+            m_PlayStream = node.GetManagedAudioMediaFlattened();
+
+            if (m_PlayStream == null)
+            {
+                return;
+            }
+            m_dataLength = m_PlayStream.Length;
+
+            mCurrentAudioStreamProvider = () =>
+            {
+                if (m_PlayStream == null)
+                {
+                    m_PlayStream = m_CurrentTreeNode.GetManagedAudioMediaFlattened();
+                    m_dataLength = m_PlayStream.Length;
+                }
+                return m_PlayStream;
+            };
+
+            FilePath = "Live Stream from AudioMediaData";
+
+            loadAndPlay();
+        }
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
             if (m_Player.State == AudioPlayerState.Playing)
@@ -449,6 +487,43 @@ namespace Tobi.Modules.AudioPane
             }
 
             FilePath = dlg.FileName;
+            m_CurrentTreeNode = null;
+
+            if (!String.IsNullOrEmpty(FilePath))
+            {
+                if (!File.Exists(FilePath))
+                {
+                    return;
+                }
+                m_PlayStream = File.Open(FilePath, FileMode.Open);
+            }
+
+            m_dataLength = m_PlayStream.Length;
+
+            mCurrentAudioStreamProvider = () =>
+            {
+                if (m_PlayStream == null)
+                {
+                    m_PlayStream = File.Open(FilePath, FileMode.Open);
+                    m_dataLength = m_PlayStream.Length;
+                }
+                return m_PlayStream;
+            };
+
+            loadAndPlay();
+        }
+        private void loadAndPlay()
+        {
+            if (mCurrentAudioStreamProvider() == null)
+            {
+                return;
+            }
+            //else the stream is now open
+
+            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            {
+                m_Player.Stop();
+            }
 
             m_pcmFormat = null;
 
@@ -464,10 +539,28 @@ namespace Tobi.Modules.AudioPane
             PeakOverloadCountCh1 = 0;
             PeakOverloadCountCh2 = 0;
 
-            loadWaveForm();
+            if (m_pcmFormat == null)
+            {
+                m_PlayStream.Position = 0;
+                m_PlayStream.Seek(0, SeekOrigin.Begin);
 
+                if (m_PlayStream is FileStream)
+                {
+                    m_pcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_PlayStream);
+                    m_StreamRiffHeaderEndPos = m_PlayStream.Position;
+                }
+                else
+                {
+                    m_pcmFormat = m_CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                }
+            }
+
+            loadWaveForm(); // will close the stream so that we can pass the stream onto the player 
+
+            TimeDelta dur = m_pcmFormat.GetDuration(m_dataLength);
             m_Player.Play(mCurrentAudioStreamProvider,
-                        m_pcmFormat.GetDuration(m_pcmFormat.DataLength), m_pcmFormat);
+                        dur,
+                        m_pcmFormat);
         }
 
         private void OnAudioPlayerStateChanged(object sender, StateChangedEventArgs e)
@@ -476,7 +569,7 @@ namespace Tobi.Modules.AudioPane
                 && (m_Player.State == AudioPlayerState.Paused
                     || m_Player.State == AudioPlayerState.Stopped))
             {
-                m_FilePlayStream = null;
+                m_PlayStream = null;
                 stopWaveFormTimer();
                 stopPeakMeterTimer();
             }
@@ -640,9 +733,10 @@ namespace Tobi.Modules.AudioPane
             {
                 return;
             }
-            double time = m_pcmFormat.Duration.TimeDeltaAsMillisecondDouble;
+            double time = m_pcmFormat.GetDuration(m_dataLength).TimeDeltaAsMillisecondDouble;
             updateWaveFormPlayHead(time);
         }
+
         private void peakMeterCanvasInvalidateVisual()
         {
             if (Dispatcher.CheckAccess())
@@ -842,160 +936,165 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
+            if (m_pcmFormat.BitDepth != 16)
+            {
+                if (!wasPlaying)
+                {
+                    m_PlayStream.Close();
+                    m_PlayStream = null;
+                }
+                return;
+            }
+
             if (mCurrentAudioStreamProvider() == null)
             {
                 return;
             }
+            // else: the stream is now open, thus why we have a try/finally wrapper below:
 
-
-            if (m_pcmFormat == null)
+            try
             {
-                m_FilePlayStream.Position = 0;
-                m_FilePlayStream.Seek(0, SeekOrigin.Begin);
-                m_pcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_FilePlayStream);
-                m_StreamRiffHeaderEndPos = m_FilePlayStream.Position;
-            }
-            else
-            {
-                m_FilePlayStream.Position = m_StreamRiffHeaderEndPos;
-                m_FilePlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);
-            }
-
-            if (m_pcmFormat.BitDepth != 16)
-            {
-                return;
-            }
-
-            if (m_pcmFormat.NumberOfChannels == 1)
-            {
-                PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                PeakOverloadLabelCh2.Visibility = Visibility.Visible;
-            }
-
-
-            ushort frameSize = (ushort)(m_pcmFormat.NumberOfChannels * m_pcmFormat.BitDepth / 8);
-            double samplesPerPixel = Math.Ceiling(m_pcmFormat.DataLength
-                                / (double)frameSize
-                                / WaveFormCanvas.ActualWidth * m_pcmFormat.NumberOfChannels);
-            m_bytesPerPixel = samplesPerPixel * frameSize / m_pcmFormat.NumberOfChannels;
-
-            byte[] bytes = new byte[(int)m_bytesPerPixel];
-            short[] samples = new short[(int)samplesPerPixel];
-
-            StreamGeometry geometryCh1 = new StreamGeometry();
-            StreamGeometryContext sgcCh1 = geometryCh1.Open();
-
-            StreamGeometry geometryCh2 = null;
-            StreamGeometryContext sgcCh2 = null;
-
-            if (m_pcmFormat.NumberOfChannels > 1)
-            {
-                geometryCh2 = new StreamGeometry();
-                sgcCh2 = geometryCh2.Open();
-            }
-
-            double height = WaveFormImage.Height;
-            if (m_pcmFormat.NumberOfChannels > 1)
-            {
-                height /= 2;
-            }
-
-            for (double x = 0; x < WaveFormImage.Width; ++x)
-            {
-                int read = m_FilePlayStream.Read(bytes, 0, (int)m_bytesPerPixel);
-                if (read <= 0)
+                if (m_pcmFormat.NumberOfChannels == 1)
                 {
-                    continue;
+                    PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
                 }
-                Buffer.BlockCopy(bytes, 0, samples, 0, read);
-
-                short min = short.MaxValue;
-                short max = short.MinValue;
-                for (int channel = 0; channel < m_pcmFormat.NumberOfChannels; channel++)
+                else
                 {
-                    int limit = (int)Math.Ceiling(read / (float)frameSize);
+                    PeakOverloadLabelCh2.Visibility = Visibility.Visible;
+                }
 
-                    for (int i = channel; i < limit; i += m_pcmFormat.NumberOfChannels)
+
+                ushort frameSize = (ushort)(m_pcmFormat.NumberOfChannels * m_pcmFormat.BitDepth / 8);
+                double samplesPerPixel = Math.Ceiling(m_dataLength
+                                                      / (double)frameSize
+                                                      / WaveFormCanvas.ActualWidth * m_pcmFormat.NumberOfChannels);
+                m_bytesPerPixel = samplesPerPixel * frameSize / m_pcmFormat.NumberOfChannels;
+
+                byte[] bytes = new byte[(int)m_bytesPerPixel];
+                short[] samples = new short[(int)samplesPerPixel];
+
+                StreamGeometry geometryCh1 = new StreamGeometry();
+                StreamGeometryContext sgcCh1 = geometryCh1.Open();
+
+                StreamGeometry geometryCh2 = null;
+                StreamGeometryContext sgcCh2 = null;
+
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    geometryCh2 = new StreamGeometry();
+                    sgcCh2 = geometryCh2.Open();
+                }
+
+                double height = WaveFormImage.Height;
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    height /= 2;
+                }
+
+                if (m_PlayStream is FileStream)
+                {
+                    m_PlayStream.Position = m_StreamRiffHeaderEndPos;
+                    m_PlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);
+                }
+
+                for (double x = 0; x < WaveFormImage.Width; ++x)
+                {
+                    int read = m_PlayStream.Read(bytes, 0, (int)m_bytesPerPixel);
+                    if (read <= 0)
                     {
-                        if (samples[i] < min) min = samples[i];
-                        if (samples[i] > max) max = samples[i];
+                        continue;
                     }
+                    Buffer.BlockCopy(bytes, 0, samples, 0, read);
 
-                    double y1 = height
-                                - ((min - short.MinValue) * height)
-                                / ushort.MaxValue;
+                    short min = short.MaxValue;
+                    short max = short.MinValue;
+                    for (int channel = 0; channel < m_pcmFormat.NumberOfChannels; channel++)
+                    {
+                        int limit = (int)Math.Ceiling(read / (float)frameSize);
 
-                    if (channel == 0)
-                    {
-                        sgcCh1.BeginFigure(new Point(x, y1), false, false);
-                    }
-                    else
-                    {
-                        y1 += height;
-                        sgcCh2.BeginFigure(new Point(x, y1), false, false);
-                    }
+                        for (int i = channel; i < limit; i += m_pcmFormat.NumberOfChannels)
+                        {
+                            if (samples[i] < min) min = samples[i];
+                            if (samples[i] > max) max = samples[i];
+                        }
+
+                        double y1 = height
+                                    - ((min - short.MinValue) * height)
+                                      / ushort.MaxValue;
+
+                        if (channel == 0)
+                        {
+                            sgcCh1.BeginFigure(new Point(x, y1), false, false);
+                        }
+                        else
+                        {
+                            y1 += height;
+                            sgcCh2.BeginFigure(new Point(x, y1), false, false);
+                        }
 
 
-                    double y2 = height
-                                - ((max - short.MinValue) * height)
-                                / ushort.MaxValue;
-                    if (channel == 0)
-                    {
-                        sgcCh1.LineTo(new Point(x, y2), true, false);
-                    }
-                    else
-                    {
-                        y2 += height;
-                        sgcCh2.LineTo(new Point(x, y2), true, false);
+                        double y2 = height
+                                    - ((max - short.MinValue) * height)
+                                      / ushort.MaxValue;
+                        if (channel == 0)
+                        {
+                            sgcCh1.LineTo(new Point(x, y2), true, false);
+                        }
+                        else
+                        {
+                            y2 += height;
+                            sgcCh2.LineTo(new Point(x, y2), true, false);
+                        }
                     }
                 }
-            }
 
-            m_FilePlayStream.Close();
-            m_FilePlayStream = null;
-
-            sgcCh1.Close();
-            if (m_pcmFormat.NumberOfChannels > 1)
-            {
-                sgcCh2.Close();
-            }
+                sgcCh1.Close();
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    sgcCh2.Close();
+                }
 
 
-            DrawingImage drawImg = new DrawingImage();
-            //
-            geometryCh1.Freeze();
-            GeometryDrawing geoDraw1 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh1);
-            geoDraw1.Freeze();
-            //
-            GeometryDrawing geoDraw2 = null;
-            if (m_pcmFormat.NumberOfChannels > 1)
-            {
-                geometryCh2.Freeze();
-                geoDraw2 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh2);
-                geoDraw2.Freeze();
-            }
-            //
-            if (m_pcmFormat.NumberOfChannels > 1)
-            {
-                DrawingGroup drawGrp = new DrawingGroup();
-                drawGrp.Children.Add(geoDraw1);
-                drawGrp.Children.Add(geoDraw2);
-                drawGrp.Freeze();
-                drawImg.Drawing = drawGrp;
-            }
-            else
-            {
-                drawImg.Drawing = geoDraw1;
-            }
-            drawImg.Freeze();
-            WaveFormImage.Source = drawImg;
+                DrawingImage drawImg = new DrawingImage();
+                //
+                geometryCh1.Freeze();
+                GeometryDrawing geoDraw1 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0),
+                                                               geometryCh1);
+                geoDraw1.Freeze();
+                //
+                GeometryDrawing geoDraw2 = null;
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    geometryCh2.Freeze();
+                    geoDraw2 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh2);
+                    geoDraw2.Freeze();
+                }
+                //
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    DrawingGroup drawGrp = new DrawingGroup();
+                    drawGrp.Children.Add(geoDraw1);
+                    drawGrp.Children.Add(geoDraw2);
+                    drawGrp.Freeze();
+                    drawImg.Drawing = drawGrp;
+                }
+                else
+                {
+                    drawImg.Drawing = geoDraw1;
+                }
+                drawImg.Freeze();
+                WaveFormImage.Source = drawImg;
 
-            if (m_WaveFormLoadingAdorner != null)
+                if (m_WaveFormLoadingAdorner != null)
+                {
+                    m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+                }
+            }
+            finally
             {
-                m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+                // ensure the stream is closed before we resume the player
+                m_PlayStream.Close();
+                m_PlayStream = null;
             }
 
             if (wasPlaying)
@@ -1060,8 +1159,6 @@ namespace Tobi.Modules.AudioPane
             }
             updateWaveFormPlayHead();
 
-
-
             if (!e.WidthChanged || m_pcmFormat == null)
             {
                 return;
@@ -1069,7 +1166,7 @@ namespace Tobi.Modules.AudioPane
 
             ushort channels = m_pcmFormat.NumberOfChannels;
             ushort frameSize = m_pcmFormat.BlockAlign;
-            double samplesPerPixel = Math.Ceiling(m_pcmFormat.DataLength
+            double samplesPerPixel = Math.Ceiling(m_dataLength
                 / (double)frameSize / WaveFormCanvas.ActualWidth * channels);
             m_bytesPerPixel = samplesPerPixel * frameSize / channels;
 
@@ -1121,8 +1218,10 @@ namespace Tobi.Modules.AudioPane
             }
             else if (m_Player.State == AudioPlayerState.Stopped)
             {
+                mCurrentAudioStreamProvider(); // ensure m_PlayStream is open
+
                 m_Player.Play(mCurrentAudioStreamProvider,
-                            m_pcmFormat.GetDuration(m_pcmFormat.DataLength),
+                            m_pcmFormat.GetDuration(m_dataLength),
                             m_pcmFormat,
                             convertByteToMilliseconds(p.X * m_bytesPerPixel)
                             );
