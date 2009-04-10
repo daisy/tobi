@@ -114,7 +114,7 @@ namespace Tobi.Modules.DocumentPane
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.FileName = "dtbook"; // Default file name
             dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBook and OPF documents (.xml, *.opf)|*.xml;*.opf;*.ncx";
+            dlg.Filter = "DTBook, OPF or XUK (.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk";
             bool? result = dlg.ShowDialog();
             if (result == false)
             {
@@ -122,10 +122,18 @@ namespace Tobi.Modules.DocumentPane
             }
 
             FilePath = dlg.FileName;
+            if (Path.GetExtension(FilePath) == ".xuk")
+            {
+                m_XukProject = new Project();
 
-            DaisyToXuk converter = new DaisyToXuk(FilePath);
-
-            m_XukProject = converter.Project;
+                Uri uri = new Uri(FilePath, UriKind.Absolute);
+                m_XukProject.OpenXuk(uri);
+            }
+            else
+            {
+                DaisyToXuk converter = new DaisyToXuk(FilePath);
+                m_XukProject = converter.Project;
+            }
 
             if (m_idLinkTargets != null)
             {
