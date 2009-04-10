@@ -16,7 +16,7 @@
     </Grid.RowDefinitions>
 
     <Button Click="OnOpenFile"
-            Grid.Row="0" Grid.Column="0">Open DTBook or OPF...</Button>
+            Grid.Row="0" Grid.Column="0">Open DTBook, OPF or XUK...</Button>
 
     <TextBox Text="{Binding FilePath, Mode=OneWay}"
              IsEnabled="False"
