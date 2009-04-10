@@ -451,7 +451,10 @@ namespace Tobi.Modules.AudioPane
                 if (m_PlayStream == null)
                 {
                     m_PlayStream = m_CurrentTreeNode.GetManagedAudioMediaFlattened();
-                    m_dataLength = m_PlayStream.Length;
+                    if (m_PlayStream != null)
+                    {
+                        m_dataLength = m_PlayStream.Length;
+                    }
                 }
                 return m_PlayStream;
             };

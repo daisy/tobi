@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -15,6 +16,7 @@ using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
+using urakawa.media.data.audio;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XukImport;
@@ -201,7 +203,7 @@ namespace Tobi.Modules.DocumentPane
             }
 
             m_FlowDoc = new FlowDocument();
-            m_FlowDoc.Blocks.Clear();
+            //m_FlowDoc.Blocks.Clear();
 
             walkBookTreeAndGenerateFlowDocument(nodeBook, null);
         }
@@ -290,7 +292,7 @@ namespace Tobi.Modules.DocumentPane
             img.BorderBrush = Brushes.RoyalBlue;
             img.BorderThickness = new Thickness(2.0);
 
-            img.Tag = node;
+            setTag(img, node);
 
             //Floater floater = new Floater();
             //floater.Blocks.Add(img);
@@ -352,13 +354,44 @@ namespace Tobi.Modules.DocumentPane
              */
         }
 
+        private void setTag(TextElement data, TreeNode node)
+        {
+            data.Tag = node;
+
+            ManagedAudioMedia media = node.GetManagedAudioMedia();
+            if (media != null)
+            {
+                data.Foreground = Brushes.Red;
+                data.Background = Brushes.Pink;
+                //data.Cursor = 
+                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                data.MouseEnter += OnMouseEnterTextElementWithNodeAndAudio;
+                data.MouseLeave += OnMouseLeaveTextElementWithNodeAndAudio;
+            }
+        }
+
+        private void OnMouseEnterTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
+        {
+            ((TextElement)sender).Foreground = Brushes.Blue;
+            ((TextElement)sender).Background = Brushes.Lavender;
+        }
+        private void OnMouseLeaveTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
+        {
+            ((TextElement)sender).Foreground = Brushes.Red;
+            ((TextElement)sender).Background = Brushes.Pink;
+        }
+        private void OnMouseDownTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
+        {
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
+        }
+
         private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             if (parent is Table)
             {
                 m_currentTD++;
                 TableCell data = new TableCell();
-                data.Tag = node;
+                setTag(data, node);
 
                 data.BorderBrush = Brushes.LightGray;
                 data.BorderThickness = new Thickness(1.0);
@@ -432,7 +465,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateParagraphInitializer initializer)
         {
             Paragraph data = new Paragraph();
-            data.Tag = node;
+            setTag(data, node);
 
             if (initializer != null)
             {
@@ -464,7 +497,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Underline data = new Underline();
-            data.Tag = node;
+            setTag(data, node);
 
             if (node.ChildCount == 0)
             {
@@ -490,7 +523,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Bold data = new Bold();
-            data.Tag = node;
+            setTag(data, node);
 
             if (node.ChildCount == 0)
             {
@@ -516,7 +549,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Italic data = new Italic();
-            data.Tag = node;
+            setTag(data, node);
 
             if (node.ChildCount == 0)
             {
@@ -543,7 +576,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             List data = new List();
-            data.Tag = node;
+            setTag(data, node);
 
             if (node.ChildCount == 0)
             {
@@ -563,7 +596,7 @@ namespace Tobi.Modules.DocumentPane
             m_currentTD = 0;
 
             Table data = new Table();
-            data.Tag = node;
+            setTag(data, node);
 
             data.CellSpacing = 4.0;
             data.BorderBrush = Brushes.Brown;
@@ -592,7 +625,7 @@ namespace Tobi.Modules.DocumentPane
                 throw new Exception("list item not in List ??");
             }
             ListItem data = new ListItem();
-            data.Tag = node;
+            setTag(data, node);
 
             if (node.ChildCount == 0)
             {
@@ -614,7 +647,7 @@ namespace Tobi.Modules.DocumentPane
                     else if (qname.LocalName == "hd")
                     {
                         data.Tag = null;
-                        para.Tag = node;
+                        setTag(para, node);
                         formatListHeader(para);
                     }
                 }
@@ -637,7 +670,7 @@ namespace Tobi.Modules.DocumentPane
                 {
                     data.Tag = null;
                     Paragraph para = new Paragraph();
-                    para.Tag = node;
+                    setTag(para, node);
                     formatListHeader(para);
                     data.Blocks.Add(para);
                     return para;
@@ -676,7 +709,7 @@ namespace Tobi.Modules.DocumentPane
 
                         if (qname.LocalName == "caption")
                         {
-                            para.Tag = node;
+                            setTag(para, node);
                             formatCaptionCell(cell);
                         }
                         else
@@ -724,7 +757,7 @@ namespace Tobi.Modules.DocumentPane
 
                         if (qname.LocalName == "caption")
                         {
-                            para.Tag = node;
+                            setTag(para, node);
                             formatCaptionCell(cell);
                         }
                         else
@@ -745,7 +778,7 @@ namespace Tobi.Modules.DocumentPane
                         || qname.LocalName == "tfoot")
                     {
                         TableRowGroup rowGroup = new TableRowGroup();
-                        rowGroup.Tag = node;
+                        setTag(rowGroup, node);
 
                         ((Table)parent).RowGroups.Add(rowGroup);
                         m_currentROWGROUP++;
@@ -782,7 +815,7 @@ namespace Tobi.Modules.DocumentPane
                         }
 
                         TableRow data = new TableRow();
-                        data.Tag = node;
+                        setTag(data, node);
 
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
 
@@ -798,7 +831,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Hyperlink data = new Hyperlink();
-            data.Tag = node;
+            setTag(data, node);
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("href");
@@ -844,7 +877,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Hyperlink data = new Hyperlink();
-            data.Tag = node;
+            setTag(data, node);
 
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
@@ -890,7 +923,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSpanInitializer initializer)
         {
             Span data = new Span();
-            data.Tag = node;
+            setTag(data, node);
 
             if (initializer != null)
             {
@@ -923,7 +956,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFloaterInitializer initializer)
         {
             Floater data = new Floater();
-            data.Tag = node;
+            setTag(data, node);
 
             if (initializer != null)
             {
@@ -955,7 +988,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFigureInitializer initializer)
         {
             Figure data = new Figure();
-            data.Tag = node;
+            setTag(data, node);
 
             if (initializer != null)
             {
@@ -987,7 +1020,7 @@ namespace Tobi.Modules.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSectionInitializer initializer)
         {
             Section data = new Section();
-            data.Tag = node;
+            setTag(data, node);
 
             if (initializer != null)
             {
@@ -1026,7 +1059,7 @@ namespace Tobi.Modules.DocumentPane
                 }
 
                 Run data = new Run(trimSpecial(textMedia.Text));
-                data.Tag = node;
+                setTag(data, node);
                 addInline(parent, data);
 
                 return parent;
@@ -1229,7 +1262,7 @@ namespace Tobi.Modules.DocumentPane
                     case "br":
                         {
                             LineBreak data = new LineBreak();
-                            data.Tag = node;
+                            setTag(data, node);
                             addInline(parent, data);
                             return parent;
                         }
@@ -1361,7 +1394,7 @@ namespace Tobi.Modules.DocumentPane
 
         private void formatPageNumberAndSetId(TreeNode node, Paragraph data)
         {
-            data.Tag = node;
+            setTag(data, node);
 
             data.BorderBrush = Brushes.Orange;
             data.BorderThickness = new Thickness(2.0);
@@ -1708,10 +1741,24 @@ namespace Tobi.Modules.DocumentPane
                     TextElement te = FindTextElement(node, (InlineUIContainer)inline);
                     if (te != null) return te;
                 }
-
+                else if (inline is Span)
+                {
+                    TextElement te = FindTextElement(node, (Span)inline);
+                    if (te != null) return te;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.Fail("TextElement type not matched ??");
+                }
             }
 
             return null;
+        }
+
+        private TextElement FindTextElement(TreeNode node, Span span)
+        {
+            if (span.Tag == node) return span;
+            return FindTextElement(node, span.Inlines);
         }
 
         private TextElement FindTextElement(TreeNode node, TableCellCollection tcc)
@@ -1779,6 +1826,10 @@ namespace Tobi.Modules.DocumentPane
                 {
                     TextElement te = FindTextElement(node, (BlockUIContainer)block);
                     if (te != null) return te;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.Fail("TextElement type not matched ??");
                 }
             }
 
