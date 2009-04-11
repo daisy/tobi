@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Infrastructure;
@@ -57,7 +58,7 @@ namespace Tobi.Modules.DocumentPane
             InitializeComponent();
             m_eventAggregator = eventAggregator;
             Container = container;
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected);
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             DataContext = this;
         }
         private void OnTreeNodeSelected(TreeNode node)
@@ -162,6 +163,8 @@ namespace Tobi.Modules.DocumentPane
             m_FlowDoc.IsColumnWidthFlexible = false;
             m_FlowDoc.TextAlignment = TextAlignment.Left;
 
+            //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
+
             FlowDocReader.Zoom = 130;
             FlowDocReader.Document = m_FlowDoc;
 
@@ -242,7 +245,7 @@ namespace Tobi.Modules.DocumentPane
 
                 try
                 {
-                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)) { CacheOption = BitmapCacheOption.None };
+                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)); // { CacheOption = BitmapCacheOption.OnLoad };
                 }
                 catch (Exception)
                 {
@@ -363,25 +366,58 @@ namespace Tobi.Modules.DocumentPane
             {
                 data.Foreground = Brushes.Red;
                 data.Background = Brushes.Pink;
-                //data.Cursor = 
+                data.Cursor = Cursors.Hand;
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                data.MouseEnter += OnMouseEnterTextElementWithNodeAndAudio;
-                data.MouseLeave += OnMouseLeaveTextElementWithNodeAndAudio;
+            }
+            else if (node.GetTextMedia() != null)
+            {
+                //data.Foreground = Brushes.Green;
+                //data.Background = Brushes.LimeGreen;
+                data.Cursor = Cursors.Pen;
+                data.MouseDown += OnMouseDownTextElementWithNode;
             }
         }
 
-        private void OnMouseEnterTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
+
+        private void OnMouseUpFlowDoc(object sender, MouseButtonEventArgs e)
         {
-            ((TextElement)sender).Foreground = Brushes.Blue;
-            ((TextElement)sender).Background = Brushes.Lavender;
+            e.Handled = true;
+
+            TextSelection selection = FlowDocReader.Selection;
+            if (selection != null && !selection.IsEmpty)
+            {
+                TextPointer startPointer = selection.Start;
+                TextPointer endPointer = selection.End;
+                TextRange selectedRange = new TextRange(startPointer, endPointer);
+
+
+                TextPointer leftPointer = startPointer;
+
+                while (leftPointer != null
+                    && (leftPointer.GetPointerContext(LogicalDirection.Backward) != TextPointerContext.ElementStart
+                    || ! (leftPointer.Parent is Run)))
+                {
+                    leftPointer = leftPointer.GetNextContextPosition(LogicalDirection.Backward);
+                }
+                if (leftPointer == null
+                    || (leftPointer.GetPointerContext(LogicalDirection.Backward) != TextPointerContext.ElementStart
+                    || !(leftPointer.Parent is Run)))
+                {
+                    return;
+                }
+                BringIntoViewAndHighlight((TextElement)leftPointer.Parent);
+            }
         }
-        private void OnMouseLeaveTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
+
+        private void OnMouseDownTextElementWithNode(object sender, MouseButtonEventArgs e)
         {
-            ((TextElement)sender).Foreground = Brushes.Red;
-            ((TextElement)sender).Background = Brushes.Pink;
+            e.Handled = true;
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
         }
+
         private void OnMouseDownTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
         }
 
