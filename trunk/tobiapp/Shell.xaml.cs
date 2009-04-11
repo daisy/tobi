@@ -20,6 +20,8 @@ namespace Tobi
         public Shell(IUnityContainer container)
         {
             InitializeComponent();
+            DataContext = this;
+
             Container = container;
 
             IRegionManager regionManager = Container.Resolve<IRegionManager>();
@@ -60,6 +62,7 @@ namespace Tobi
             Icon = ibd.Frames[0];
             */
         }
+
         public String WindowTitle
         {
             get
