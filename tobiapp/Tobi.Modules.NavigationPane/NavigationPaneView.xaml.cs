@@ -120,8 +120,11 @@ namespace Tobi.Modules.NavigationPane
             HeadingTreeNodeWrapper nodeTOC = m_HeadingsNavigator.GetAncestorContainer(node);
             if (nodeTOC != null)
             {
-                m_ignoreHeadingSelected = true;
-                TreeView.SelectItem(nodeTOC);
+                if (TreeView.SelectedItem != nodeTOC)
+                {
+                    m_ignoreHeadingSelected = true;
+                    TreeView.SelectItem(nodeTOC);
+                }
             }
         }
         private void UpdatePageListSelection(TreeNode node)
@@ -133,8 +136,12 @@ namespace Tobi.Modules.NavigationPane
                 TreeNode treeNode = textElement.Tag as TreeNode;
                 if (treeNode != null && treeNode.IsAfter(node))
                 {
-                    m_ignorePageSelected = true;
-                    ListView.SelectedItem = (prevPage != null ? prevPage : page);
+                    Page pageToSelect = prevPage ?? page;
+                    if (pageToSelect != ListView.SelectedItem)
+                    {
+                        m_ignorePageSelected = true;
+                        ListView.SelectedItem = pageToSelect;
+                    }
                     return;
                 }
                 prevPage = page;

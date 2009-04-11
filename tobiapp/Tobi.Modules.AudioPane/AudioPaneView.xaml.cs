@@ -21,6 +21,7 @@ using Tobi.Infrastructure;
 using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.media.data.utilities;
 using urakawa.media.timing;
 using urakawa.property.channel;
 using Colors = System.Windows.Media.Colors;
@@ -439,32 +440,53 @@ namespace Tobi.Modules.AudioPane
 
             m_CurrentTreeNode = node;
 
-            m_PlayStream = node.GetManagedAudioDataFlattened();
-
-            if (m_PlayStream == null)
-            {
-                TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
-                if (ancerstor == null || ancerstor.GetManagedAudioMedia().AudioMediaData == null)
-                {
-                    return;
-                }
-                m_CurrentTreeNode = ancerstor;
-                m_PlayStream = ancerstor.GetManagedAudioMedia().AudioMediaData.GetAudioData();
-            }
-            m_dataLength = m_PlayStream.Length;
-
             mCurrentAudioStreamProvider = () =>
             {
                 if (m_PlayStream == null)
                 {
                     m_PlayStream = m_CurrentTreeNode.GetManagedAudioDataFlattened();
-                    if (m_PlayStream != null)
+
+                    if (m_PlayStream == null)
                     {
-                        m_dataLength = m_PlayStream.Length;
+                        TreeNode ancerstor = m_CurrentTreeNode.GetFirstAncestorWithManagedAudio();
+                        if (ancerstor == null)
+                        {
+                            return null;
+                        }
+                        ManagedAudioMedia managedMedia = ancerstor.GetManagedAudioMedia();
+                        if (managedMedia != null && managedMedia.AudioMediaData != null)
+                        {
+                            m_CurrentTreeNode = ancerstor;
+                            m_PlayStream = ancerstor.GetManagedAudioMedia().AudioMediaData.GetAudioData();
+                        }
+                        else
+                        {
+                            SequenceMedia seqMedia = ancerstor.GetAudioSequenceMedia();
+                            if (seqMedia != null)
+                            {
+                                Stream stream = seqMedia.GetManagedAudioMediaDataStream();
+                                if (stream != null)
+                                {
+                                    m_CurrentTreeNode = ancerstor;
+                                    m_PlayStream = stream;
+                                }
+                            }
+                        }
                     }
+                    if (m_PlayStream == null)
+                    {
+                        return null;
+                    }
+                    m_dataLength = m_PlayStream.Length;
                 }
                 return m_PlayStream;
             };
+
+            if (mCurrentAudioStreamProvider() == null)
+            {
+                m_CurrentTreeNode = null;
+                return;
+            }
 
             FilePath = "";
 
@@ -499,26 +521,33 @@ namespace Tobi.Modules.AudioPane
             FilePath = dlg.FileName;
             m_CurrentTreeNode = null;
 
-            if (!String.IsNullOrEmpty(FilePath))
-            {
-                if (!File.Exists(FilePath))
-                {
-                    return;
-                }
-                m_PlayStream = File.Open(FilePath, FileMode.Open);
-            }
-
-            m_dataLength = m_PlayStream.Length;
-
             mCurrentAudioStreamProvider = () =>
             {
                 if (m_PlayStream == null)
                 {
-                    m_PlayStream = File.Open(FilePath, FileMode.Open);
+                    if (!String.IsNullOrEmpty(FilePath))
+                    {
+                        if (!File.Exists(FilePath))
+                        {
+                            return null;
+                        }
+                        m_PlayStream = File.Open(FilePath, FileMode.Open);
+                    }
+                    if (m_PlayStream == null)
+                    {
+                        return null;
+                    }
+
                     m_dataLength = m_PlayStream.Length;
                 }
                 return m_PlayStream;
             };
+
+            if (mCurrentAudioStreamProvider() == null)
+            {
+                FilePath = "Could not get file stream !";
+                return;
+            }
 
             loadAndPlay();
         }

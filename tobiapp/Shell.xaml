@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:Tobi"
     xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock" 
 
-    Title="Tobi (unreleased development version)"
+    Title="{Binding WindowTitle}"
     Closing="OnClosing"
     Topmost="False"
     Width="{x:Static infra:Sizes.DefaultWindowWidth}"
