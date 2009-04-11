@@ -63,6 +63,7 @@
     <Compile Include="RegionNames.cs" />
     <Compile Include="Sizes.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
+    <Compile Include="TreeViewHelper.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
   </ItemGroup>
   <ItemGroup>

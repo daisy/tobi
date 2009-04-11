@@ -14,6 +14,7 @@ using AudioLib;
 using AudioLib.Events.Player;
 using AudioLib.Events.VuMeter;
 using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Infrastructure;
@@ -420,7 +421,7 @@ namespace Tobi.Modules.AudioPane
             Container = container;
             PeakMeterCanvasBackground.Freeze();
             InitializeAudioStuff();
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected);
+            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             DataContext = this;
         }
 
@@ -438,11 +439,17 @@ namespace Tobi.Modules.AudioPane
 
             m_CurrentTreeNode = node;
 
-            m_PlayStream = node.GetManagedAudioMediaFlattened();
+            m_PlayStream = node.GetManagedAudioDataFlattened();
 
             if (m_PlayStream == null)
             {
-                return;
+                TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
+                if (ancerstor == null || ancerstor.GetManagedAudioMedia().AudioMediaData == null)
+                {
+                    return;
+                }
+                m_CurrentTreeNode = ancerstor;
+                m_PlayStream = ancerstor.GetManagedAudioMedia().AudioMediaData.GetAudioData();
             }
             m_dataLength = m_PlayStream.Length;
 
@@ -450,7 +457,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_PlayStream == null)
                 {
-                    m_PlayStream = m_CurrentTreeNode.GetManagedAudioMediaFlattened();
+                    m_PlayStream = m_CurrentTreeNode.GetManagedAudioDataFlattened();
                     if (m_PlayStream != null)
                     {
                         m_dataLength = m_PlayStream.Length;
@@ -459,7 +466,7 @@ namespace Tobi.Modules.AudioPane
                 return m_PlayStream;
             };
 
-            FilePath = "Live Stream from AudioMediaData";
+            FilePath = "";
 
             loadAndPlay();
         }
@@ -547,7 +554,7 @@ namespace Tobi.Modules.AudioPane
                 m_PlayStream.Position = 0;
                 m_PlayStream.Seek(0, SeekOrigin.Begin);
 
-                if (m_PlayStream is FileStream)
+                if (FilePath.Length > 0)
                 {
                     m_pcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_PlayStream);
                     m_StreamRiffHeaderEndPos = m_PlayStream.Position;
@@ -732,12 +739,20 @@ namespace Tobi.Modules.AudioPane
 
         private void OnEndOfAudioAsset(object sender, EndOfAudioAssetEventArgs e)
         {
-            if (m_pcmFormat == null)
+            if (m_pcmFormat != null)
+            {
+                double time = m_pcmFormat.GetDuration(m_dataLength).TimeDeltaAsMillisecondDouble;
+                updateWaveFormPlayHead(time);
+            }
+            if (FilePath.Length > 0 || m_CurrentTreeNode == null)
             {
                 return;
             }
-            double time = m_pcmFormat.GetDuration(m_dataLength).TimeDeltaAsMillisecondDouble;
-            updateWaveFormPlayHead(time);
+            TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
+            if (nextNode != null)
+            {
+                m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+            }
         }
 
         private void peakMeterCanvasInvalidateVisual()
@@ -994,7 +1009,7 @@ namespace Tobi.Modules.AudioPane
                     height /= 2;
                 }
 
-                if (m_PlayStream is FileStream)
+                if (FilePath.Length > 0)
                 {
                     m_PlayStream.Position = m_StreamRiffHeaderEndPos;
                     m_PlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);

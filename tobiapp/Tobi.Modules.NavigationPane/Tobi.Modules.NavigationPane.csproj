@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HeadingsNavigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NavigationPaneModule.cs" />
     <Compile Include="NavigationPaneView.xaml.cs">
