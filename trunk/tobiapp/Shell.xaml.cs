@@ -60,6 +60,13 @@ namespace Tobi
             Icon = ibd.Frames[0];
             */
         }
+        public String WindowTitle
+        {
+            get
+            {
+                return "Tobi [unreleased development version] (" + DateTime.Now + ")";
+            }
+        }
 
         protected void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {

@@ -368,8 +368,21 @@ namespace Tobi.Modules.DocumentPane
                 data.Background = Brushes.Pink;
                 data.Cursor = Cursors.Hand;
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                return;
             }
-            else if (node.GetTextMedia() != null)
+            SequenceMedia seqMedia = node.GetAudioSequenceMedia();
+            if (seqMedia != null && !seqMedia.AllowMultipleTypes && seqMedia.Count > 0)
+            {
+                if (seqMedia.GetItem(0) is ManagedAudioMedia)
+                {
+                    data.Foreground = Brushes.Red;
+                    data.Background = Brushes.Pink;
+                    data.Cursor = Cursors.Cross;
+                    data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                    return;
+                }
+            }
+            if (node.GetTextMedia() != null)
             {
                 //data.Foreground = Brushes.Green;
                 //data.Background = Brushes.LimeGreen;
@@ -1561,6 +1574,11 @@ namespace Tobi.Modules.DocumentPane
             QualifiedName qname = node.GetXmlElementQName();
             AbstractTextMedia textMedia = node.GetTextMedia();
 
+            if (node.GetAudioSequenceMedia() != null)
+            {
+                int debug = 1;
+            }
+
             if (node.ChildCount == 0)
             {
                 if (qname == null)
@@ -1972,7 +1990,14 @@ namespace Tobi.Modules.DocumentPane
             }
             if (textElement != null)
             {
-                BringIntoViewAndHighlight(textElement);
+                if (textElement.Tag is TreeNode)
+                {
+                    m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
+                }
+                else
+                {
+                    BringIntoViewAndHighlight(textElement);
+                }
             }
         }
 
