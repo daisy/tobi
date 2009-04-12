@@ -13,6 +13,7 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
 
     <Button Click="OnOpenFile"
@@ -21,6 +22,11 @@
     <TextBox Text="{Binding FilePath, Mode=OneWay}"
              IsEnabled="False"
              Grid.Row="0" Grid.Column="1"/>
+    
+    
+    <WrapPanel x:Name="BreadcrumbPanel" Orientation="Horizontal"
+               Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+    </WrapPanel>
   </Grid>
   <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"
                       Background="White">
