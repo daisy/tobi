@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAudio", "..\..\..\urakawa-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLayer", "..\..\..\urakawa-sdk\trunk\csharp\audio\NLayer\NLayer.csproj", "{1AFB5B4A-BF93-4720-84FA-78A711342C98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mp3Sharp", "..\..\..\urakawa-sdk\trunk\csharp\audio\mp3sharp\Mp3Sharp.csproj", "{834CAB58-648D-47CC-AC6F-D01C08C809A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mp3Sharp", "..\..\..\urakawa-sdk\trunk\csharp\audio\mp3-sharp\Mp3Sharp.csproj", "{834CAB58-648D-47CC-AC6F-D01C08C809A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
