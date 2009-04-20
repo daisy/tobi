@@ -28,216 +28,6 @@ using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Modules.AudioPane
 {
-    public class PeakMeterBarData
-    {
-        public delegate void PeakMeterRefreshDelegate();
-
-        private double m_ValueDb;
-        private double m_MinimumDb = -72;
-        private PeakMeterRefreshDelegate m_PeakMeterRefreshDelegate;
-        private int m_PeakOverloadCount;
-
-        public PeakMeterBarData(PeakMeterRefreshDelegate del)
-        {
-            m_PeakOverloadCount = 0;
-            m_PeakMeterRefreshDelegate = del;
-            ValueDb = MinimumDb;
-            //ShownValueDb = MinimumDb;
-            //m_FallbackSecondsPerDb = TimeSpan.Parse("00:00:00.5000000");
-            //m_FallbackThread = new Thread(new ThreadStart(FallbackWorker));
-        }
-
-        public double ValueDb
-        {
-            get
-            {
-                return m_ValueDb;
-            }
-            set
-            {
-                double newValue;
-                if (value > 0)
-                {
-                    newValue = 0;
-                }
-                else if (value < MinimumDb)
-                {
-                    newValue = MinimumDb;
-                }
-                else
-                {
-                    newValue = value;
-                }
-                if (newValue != m_ValueDb)
-                {
-                    m_ValueDb = newValue;
-
-                    /*
-                    if (!m_FallbackThread.IsAlive)
-                    {
-                        m_FallbackThread = new Thread(new ThreadStart(FallbackWorker));
-                        m_FallbackThread.Start();
-                    }*/
-                }
-            }
-        }
-
-
-        public double MinimumDb
-        {
-            get
-            {
-                return m_MinimumDb;
-            }
-            set
-            {
-                double newValue = value;
-                if (newValue > -1)
-                {
-                    newValue = -1;
-                }
-                if (m_MinimumDb != newValue)
-                {
-                    m_MinimumDb = newValue;
-                    ValueDb = ValueDb;
-                    m_PeakMeterRefreshDelegate();
-                    //ShownValueDb = ValueDb;
-                }
-            }
-        }
-
-        public int PeakOverloadCount
-        {
-            get
-            {
-                return m_PeakOverloadCount;
-            }
-            set
-            {
-                m_PeakOverloadCount = value;
-            }
-        }
-
-        /*
-         * 
-        private TimeSpan m_FallbackSecondsPerDb;
-
-        private Thread m_FallbackThread;
-        private Mutex m_ValueDbMutex = new Mutex();
-
-        private double m_ShownValueDb;
-         
-        public void ForceFullFallback()
-        {
-            if (m_FallbackThread.IsAlive)
-            {
-                m_FallbackThread.Abort();
-            }
-            ShownValueDb = ValueDb;
-        }
-
-    
-        private double ShownValueDb
-        {
-            get
-            {
-                return m_ShownValueDb;
-            }
-
-            set
-            {
-                double newValue;
-                if (value > 0)
-                {
-                    newValue = 0;
-                }
-                else if (value < MinimumDb)
-                {
-                    newValue = MinimumDb;
-                }
-                else
-                {
-                    newValue = value;
-                }
-                if (newValue != m_ShownValueDb)
-                {
-                    m_ShownValueDb = newValue;
-                    m_PeakMeterRefreshDelegate();
-                }
-            }
-        }
-
-        private void FallbackWorker()
-        {
-            try
-            {
-                DateTime latestUpdateTime = DateTime.Now;
-                while (true)
-                {
-                    TimeSpan timeSinceLatestUpdate = DateTime.Now.Subtract(latestUpdateTime);
-                    double maxDiff = Double.PositiveInfinity;
-                    if (m_FallbackSecondsPerDb.TotalMilliseconds > 0)
-                    {
-                        maxDiff = timeSinceLatestUpdate.TotalMilliseconds / m_FallbackSecondsPerDb.TotalMilliseconds;
-                    }
-                    latestUpdateTime += timeSinceLatestUpdate;
-                    if (ValueDb < ShownValueDb - maxDiff)
-                    {
-                        ShownValueDb -= maxDiff;
-                    }
-                    else
-                    {
-                        ShownValueDb = ValueDb;
-                    }
-                    
-                    if (ShownValueDb == ValueDb)
-                    {
-                        return;
-                    }
-                    m_ValueDbMutex.WaitOne();
-                    try
-                    {
-                        if (ShownValueDb == ValueDb)
-                        {
-                            return;
-                        }
-                    }
-                    finally
-                    {
-                        m_ValueDbMutex.ReleaseMutex();
-                    }
-                     
-                    Thread.Sleep(10);
-                }
-            }
-            catch (ThreadAbortException)
-            {
-            }
-        }
-         ~PeakMeterBarData()
-        {
-            if (m_FallbackThread.IsAlive) m_FallbackThread.Abort();
-        }
-         */
-
-        public double DbToPixels(double totalPixels)
-        {
-            double h;
-            if (ValueDb < MinimumDb)
-            {
-                h = 0;
-            }
-            else if (ValueDb > 0)
-            {
-                h = totalPixels;
-            }
-            else
-            {
-                h = (MinimumDb - ValueDb) * totalPixels / MinimumDb;
-            }
-            return h;
-        }
-    }
     /// <summary>
     /// Interaction logic for AudioPaneView.xaml
     /// </summary>
@@ -269,6 +59,9 @@ namespace Tobi.Modules.AudioPane
 
         private string m_WavFilePath;
         private Stream m_PlayStream;
+
+        private List<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
+
         private long m_dataLength;
         private TreeNode m_CurrentTreeNode;
         private PCMFormatInfo m_pcmFormat;
@@ -412,6 +205,8 @@ namespace Tobi.Modules.AudioPane
         protected IUnityContainer Container { get; private set; }
         private IEventAggregator m_eventAggregator;
 
+        private TreeNode m_CurrentSubTreeNode;
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -423,7 +218,13 @@ namespace Tobi.Modules.AudioPane
             PeakMeterCanvasBackground.Freeze();
             InitializeAudioStuff();
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
             DataContext = this;
+        }
+
+        private void OnSubTreeNodeSelected(TreeNode node)
+        {
+            m_CurrentSubTreeNode = node;
         }
 
         private void OnTreeNodeSelected(TreeNode node)
@@ -438,40 +239,45 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Stop();
             }
 
+            resetWaveForm();
+
             m_CurrentTreeNode = node;
+            m_CurrentSubTreeNode = node;
 
             mCurrentAudioStreamProvider = () =>
             {
+                if (m_CurrentTreeNode == null) return null;
+
                 if (m_PlayStream == null)
                 {
-                    m_PlayStream = m_CurrentTreeNode.GetManagedAudioDataFlattened();
+                    if (m_PlayStreamMarkers != null)
+                    {
+                        m_PlayStreamMarkers.Clear();
+                        m_PlayStreamMarkers = null;
+                    }
 
-                    if (m_PlayStream == null)
+                    StreamWithMarkers? sm = m_CurrentTreeNode.GetManagedAudioDataFlattened();
+
+                    if (sm == null)
                     {
                         TreeNode ancerstor = m_CurrentTreeNode.GetFirstAncestorWithManagedAudio();
                         if (ancerstor == null)
                         {
                             return null;
                         }
-                        ManagedAudioMedia managedMedia = ancerstor.GetManagedAudioMedia();
-                        if (managedMedia != null && managedMedia.AudioMediaData != null)
+
+                        StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
+                        if (sma != null)
                         {
                             m_CurrentTreeNode = ancerstor;
-                            m_PlayStream = ancerstor.GetManagedAudioMedia().AudioMediaData.GetAudioData();
+                            m_PlayStream = sma.GetValueOrDefault().m_Stream;
+                            m_PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
                         }
-                        else
-                        {
-                            SequenceMedia seqMedia = ancerstor.GetAudioSequenceMedia();
-                            if (seqMedia != null)
-                            {
-                                Stream stream = seqMedia.GetManagedAudioMediaDataStream();
-                                if (stream != null)
-                                {
-                                    m_CurrentTreeNode = ancerstor;
-                                    m_PlayStream = stream;
-                                }
-                            }
-                        }
+                    }
+                    else
+                    {
+                        m_PlayStream = sm.GetValueOrDefault().m_Stream;
+                        m_PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
                     }
                     if (m_PlayStream == null)
                     {
@@ -485,6 +291,7 @@ namespace Tobi.Modules.AudioPane
             if (mCurrentAudioStreamProvider() == null)
             {
                 m_CurrentTreeNode = null;
+                m_CurrentSubTreeNode = null;
                 return;
             }
 
@@ -518,13 +325,21 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Stop();
             }
 
+            resetWaveForm();
+
             FilePath = dlg.FileName;
             m_CurrentTreeNode = null;
+            m_CurrentSubTreeNode = null;
 
             mCurrentAudioStreamProvider = () =>
             {
                 if (m_PlayStream == null)
                 {
+                    if (m_PlayStreamMarkers != null)
+                    {
+                        m_PlayStreamMarkers.Clear();
+                        m_PlayStreamMarkers = null;
+                    }
                     if (!String.IsNullOrEmpty(FilePath))
                     {
                         if (!File.Exists(FilePath))
@@ -592,6 +407,11 @@ namespace Tobi.Modules.AudioPane
                 {
                     m_pcmFormat = m_CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                 }
+            }
+
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
             }
 
             loadWaveForm(); // will close the stream so that we can pass the stream onto the player 
@@ -704,6 +524,25 @@ namespace Tobi.Modules.AudioPane
 
         private void OnPlaybackTimerTick(object sender, EventArgs e)
         {
+            TreeNode subTreeNode = null;
+
+            double time = m_Player.CurrentTimePosition;
+            long byteOffset = m_pcmFormat.GetByteForTime(new Time(time));
+
+            long sumData = 0;
+            foreach (TreeNodeAndStreamDataLength markers in m_PlayStreamMarkers)
+            {
+                sumData += markers.m_LocalStreamDataLength;
+                if (byteOffset <= sumData)
+                {
+                    subTreeNode = markers.m_TreeNode;
+                    break;
+                }
+            }
+            if (subTreeNode != null && subTreeNode != m_CurrentSubTreeNode)
+            {
+                m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+            }
             updateWaveFormPlayHead();
         }
 
@@ -925,25 +764,23 @@ namespace Tobi.Modules.AudioPane
             {
                 WaveFormPlayHeadPath.Data = geometry;
             }
+
+            double left = WaveFormScroll.HorizontalOffset;
+            double right = left + WaveFormScroll.ActualWidth;
+            //bool b = WaveFormPlayHeadPath.IsVisible;
+            if (pixels < left || pixels > right)
+            {
+                //WaveFormPlayHeadPath.BringIntoView();
+                double offset = pixels - 10;
+                if (offset < 0)
+                {
+                    offset = 0;
+                }
+                WaveFormScroll.ScrollToHorizontalOffset(offset);
+            }
             else
             {
-                double left = WaveFormScroll.HorizontalOffset;
-                double right = left + WaveFormScroll.ActualWidth;
-                //bool b = WaveFormPlayHeadPath.IsVisible;
-                if (pixels < left || pixels > right)
-                {
-                    //WaveFormPlayHeadPath.BringIntoView();
-                    double offset = pixels - 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-                else
-                {
-                    WaveFormPlayHeadPath.InvalidateVisual();
-                }
+                WaveFormPlayHeadPath.InvalidateVisual();
             }
         }
 
@@ -967,6 +804,31 @@ namespace Tobi.Modules.AudioPane
             {
                 Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(updateWaveFormPlayHead));
             }
+        }
+
+        private void resetWaveForm()
+        {
+            DrawingImage drawImg = new DrawingImage();
+            StreamGeometry geometry = new StreamGeometry();
+            StreamGeometryContext sgc = geometry.Open();
+
+            sgc.BeginFigure(new Point(0, 0), true, true);
+            sgc.LineTo(new Point(0, WaveFormImage.Height), true, false);
+            sgc.LineTo(new Point(WaveFormImage.Width, WaveFormImage.Height), true, false);
+            sgc.LineTo(new Point(WaveFormImage.Width, 0), true, false);
+            sgc.Close();
+            geometry.Freeze();
+            GeometryDrawing geoDraw = new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Transparent, 1.0), geometry);
+            geoDraw.Freeze();
+            DrawingGroup drawGrp = new DrawingGroup();
+            drawGrp.Children.Add(geoDraw);
+            drawGrp.Freeze();
+            drawImg.Drawing = drawGrp;
+            drawImg.Freeze();
+            WaveFormImage.Source = drawImg;
+
+            WaveFormPlayHeadPath.Data = null;
+            WaveFormPlayHeadPath.InvalidateVisual();
         }
 
         private void loadWaveForm()
@@ -1117,18 +979,42 @@ namespace Tobi.Modules.AudioPane
                     geoDraw2.Freeze();
                 }
                 //
+
+                StreamGeometry geometryMarkers = new StreamGeometry();
+                StreamGeometryContext sgcMarkers = geometryMarkers.Open();
+
+                long sumData = 0;
+                foreach (TreeNodeAndStreamDataLength markers in m_PlayStreamMarkers)
+                {
+                    double pixels = (sumData + markers.m_LocalStreamDataLength) / m_bytesPerPixel;
+
+                    sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
+                    sgcMarkers.LineTo(new Point(pixels, WaveFormImage.Height), true, false);
+
+                    sumData += markers.m_LocalStreamDataLength;
+                }
+                sgcMarkers.Close();
+
+                geometryMarkers.Freeze();
+                GeometryDrawing geoDrawMarkers = new GeometryDrawing(Brushes.BlueViolet, new Pen(Brushes.BlueViolet, 1.0),
+                                                               geometryMarkers);
+                geoDrawMarkers.Freeze();
+                //
+                DrawingGroup drawGrp = new DrawingGroup();
+                //
                 if (m_pcmFormat.NumberOfChannels > 1)
                 {
-                    DrawingGroup drawGrp = new DrawingGroup();
                     drawGrp.Children.Add(geoDraw1);
                     drawGrp.Children.Add(geoDraw2);
-                    drawGrp.Freeze();
-                    drawImg.Drawing = drawGrp;
+                    drawGrp.Children.Add(geoDrawMarkers);
                 }
                 else
                 {
-                    drawImg.Drawing = geoDraw1;
+                    drawGrp.Children.Add(geoDraw1);
+                    drawGrp.Children.Add(geoDrawMarkers);
                 }
+                drawGrp.Freeze();
+                drawImg.Drawing = drawGrp;
                 drawImg.Freeze();
                 WaveFormImage.Source = drawImg;
 

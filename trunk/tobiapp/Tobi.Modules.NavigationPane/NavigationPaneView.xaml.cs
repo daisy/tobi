@@ -69,6 +69,7 @@ namespace Tobi.Modules.NavigationPane
             m_eventAggregator = eventAggregator;
 
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
             DataContext = this;
         }
 
@@ -146,6 +147,11 @@ namespace Tobi.Modules.NavigationPane
                 }
                 prevPage = page;
             }
+        }
+
+        private void OnSubTreeNodeSelected(TreeNode node)
+        {
+            OnTreeNodeSelected(node);
         }
 
         private void OnTreeNodeSelected(TreeNode node)

@@ -60,15 +60,26 @@ namespace Tobi.Modules.DocumentPane
             m_eventAggregator = eventAggregator;
             Container = container;
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
             DataContext = this;
         }
 
         private List<TreeNode> PathToCurrentTreeNode;
 
+        private void OnSubTreeNodeSelected(TreeNode node)
+        {
+            BringIntoViewAndHighlightSub(node);
+            updateBreadcrumbPanel(node);
+        }
+
         private void OnTreeNodeSelected(TreeNode node)
         {
             BringIntoViewAndHighlight(node);
+            updateBreadcrumbPanel(node);
+        }
 
+        private void updateBreadcrumbPanel(TreeNode node)
+        {
             BreadcrumbPanel.Children.Clear();
 
             if (PathToCurrentTreeNode == null || !PathToCurrentTreeNode.Contains(node))
@@ -88,13 +99,13 @@ namespace Tobi.Modules.DocumentPane
             {
                 QualifiedName qname = n.GetXmlElementQName();
                 Button butt = new Button
-                                  {
-                                      Tag = n,
-                                      BorderBrush = null,
-                                      Background = Brushes.Transparent,
-                                      Foreground = Brushes.Blue,
-                                      Cursor = Cursors.Hand
-                                  };
+                {
+                    Tag = n,
+                    BorderBrush = null,
+                    Background = Brushes.Transparent,
+                    Foreground = Brushes.Blue,
+                    Cursor = Cursors.Hand
+                };
 
                 Run run = new Run((qname != null ? qname.LocalName : "TEXT")) { TextDecorations = TextDecorations.Underline };
                 butt.Content = run;
@@ -108,14 +119,14 @@ namespace Tobi.Modules.DocumentPane
                     Run run2 = new Run(">");
 
                     Button tb = new Button
-                                    {
-                                        Content = run2,
-                                        Tag = n,
-                                        BorderBrush = null,
-                                        Background = Brushes.Transparent,
-                                        Foreground = Brushes.Black,
-                                        Cursor = Cursors.Cross
-                                    };
+                    {
+                        Content = run2,
+                        Tag = n,
+                        BorderBrush = null,
+                        Background = Brushes.Transparent,
+                        Foreground = Brushes.Black,
+                        Cursor = Cursors.Cross
+                    };
 
                     tb.Click += OnBreadCrumbSeparatorClick;
 
@@ -265,6 +276,12 @@ namespace Tobi.Modules.DocumentPane
         private TextElement m_lastHighlighted;
         private Brush m_lastHighlighted_Background;
         private Brush m_lastHighlighted_Foreground;
+        private Brush m_lastHighlighted_BorderBrush;
+        private Thickness m_lastHighlighted_BorderThickness;
+
+        private TextElement m_lastHighlightedSub;
+        private Brush m_lastHighlightedSub_Background;
+        private Brush m_lastHighlightedSub_Foreground;
 
 
         private Dictionary<string, TextElement> m_idLinkTargets;
@@ -318,6 +335,7 @@ namespace Tobi.Modules.DocumentPane
             shellPres.ProjectLoaded(m_XukProject);
 
             m_lastHighlighted = null;
+            m_lastHighlightedSub = null;
 
             createFlowDocumentFromXuk();
 
@@ -534,8 +552,8 @@ namespace Tobi.Modules.DocumentPane
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
-                data.Foreground = Brushes.Red;
-                data.Background = Brushes.Pink;
+                //data.Foreground = Brushes.Red;
+                data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.Hand;
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 return;
@@ -545,8 +563,8 @@ namespace Tobi.Modules.DocumentPane
             {
                 if (seqMedia.GetItem(0) is ManagedAudioMedia)
                 {
-                    data.Foreground = Brushes.Red;
-                    data.Background = Brushes.Pink;
+                    //data.Foreground = Brushes.Red;
+                    data.Background = Brushes.LightGoldenrodYellow;
                     data.Cursor = Cursors.Cross;
                     data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                     return;
@@ -1936,6 +1954,15 @@ namespace Tobi.Modules.DocumentPane
             }
         }
 
+        public void BringIntoViewAndHighlightSub(TreeNode node)
+        {
+            TextElement textElement = FindTextElement(node);
+            if (textElement != null)
+            {
+                BringIntoViewAndHighlightSub(textElement);
+            }
+        }
+
         private TextElement FindTextElement(TreeNode node, InlineCollection ic)
         {
             foreach (Inline inline in ic)
@@ -2171,16 +2198,61 @@ namespace Tobi.Modules.DocumentPane
             }
         }
 
+        
+        public void BringIntoViewAndHighlightSub(TextElement textElement)
+        {
+            textElement.BringIntoView();
+            if (m_lastHighlightedSub != null)
+            {
+                m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
+                m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
+            }
+            else
+            {
+                if (m_lastHighlighted != null)
+                {
+                    if (m_lastHighlighted is Block)
+                    {
+                        m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                        m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                        ((Block)m_lastHighlighted).BorderBrush = Brushes.Blue;
+                        ((Block)m_lastHighlighted).BorderThickness = new Thickness(1.5);
+                    }
+                }
+            }
+            m_lastHighlightedSub = textElement;
+
+            m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
+            m_lastHighlightedSub.Background = Brushes.LightCoral;
+
+            m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
+            m_lastHighlightedSub.Foreground = Brushes.Blue;
+        }
+
         public void BringIntoViewAndHighlight(TextElement textElement)
         {
             textElement.BringIntoView();
+
+            if (m_lastHighlightedSub != null)
+            {
+                m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
+                m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
+
+                if (m_lastHighlighted != null && m_lastHighlighted is Block)
+                {
+                    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
+                    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
+                }
+            }
             if (m_lastHighlighted != null)
             {
                 m_lastHighlighted.Background = m_lastHighlighted_Background;
                 m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
             }
-            m_lastHighlighted = textElement;
 
+            m_lastHighlighted = textElement;
+            m_lastHighlightedSub = null;
+            
             m_lastHighlighted_Background = m_lastHighlighted.Background;
             m_lastHighlighted.Background = Brushes.Yellow;
 
