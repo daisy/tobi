@@ -70,26 +70,33 @@
           <Canvas x:Name="WaveFormCanvas"
                   SizeChanged="OnWaveFormCanvasSizeChanged"
                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                  Background="Black"
+                  Background="Silver"
                       VerticalAlignment="Stretch">
 
             <Image x:Name="WaveFormImage"
                    Stretch="Fill"
                    Canvas.ZIndex="0"
-                   SnapsToDevicePixels="false"
                    SizeChanged="OnWaveFormImageSizeChanged"
                    MouseDown="OnImageMouseDown"
                    Canvas.Left="0"
                    Canvas.Top="0"
                    Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
-                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"/>
+                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                   SnapsToDevicePixels="False"/>
 
-            <Path x:Name="WaveFormPlayHeadPath"
+            <Path x:Name="WaveFormTimeRangePath"
                   Canvas.ZIndex="1"
+                  StrokeThickness="1"
+                  Stroke="BlueViolet"
+                  Fill="BlueViolet"
+                  SnapsToDevicePixels="False"/>
+            
+            <Path x:Name="WaveFormPlayHeadPath"
+                  Canvas.ZIndex="2"
                   StrokeThickness="1"
                   Stroke="Orange"
                   Fill="Yellow"
-                  SnapsToDevicePixels="True"/>
+                  SnapsToDevicePixels="False"/>
           </Canvas>
         </ScrollViewer>
       </DockPanel>
