@@ -4,6 +4,8 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.AudioPane"
     xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock"
+    xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
              Loaded="OnPaneLoaded"
                  >
 
@@ -12,17 +14,88 @@
 
       <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="100"/>
+        <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="90"/>
+        <ColumnDefinition Width="50"/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
 
-      <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+        <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+      <GridSplitter Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+
+        <ScrollViewer Grid.Column="0" Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch">
+          <StackPanel Orientation="Vertical">
+            <CheckBox IsChecked="{Binding IsAdjustOffsetFix, Mode=TwoWay}" Margin="2">Adjust fix</CheckBox>
+            <CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform background</CheckBox>
+            <CheckBox IsChecked="{Binding IsWaveFillVisible, Mode=TwoWay}" Margin="2">Waveform Bars</CheckBox>
+            <CheckBox IsChecked="{Binding IsEnvelopeVisible, Mode=TwoWay}" Margin="2">Envelope</CheckBox>
+            <CheckBox IsChecked="{Binding IsEnvelopeFilled, Mode=TwoWay}" IsEnabled="{Binding IsEnvelopeVisible}" Margin="2">Envelope Fill</CheckBox>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Waveform increment: </TextBlock>
+              <ComboBox ItemsSource="{Binding WaveStepXs, Mode=OneWay}" SelectedItem="{Binding WaveStepX, Mode=TwoWay}" Margin="2"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Waveform background: </TextBlock>
+            <infraUI:ComboColorPicker
+                                      SelectedColor="{Binding ColorWaveBackground, Mode=TwoWay}"
+                                      Margin="2"
+                                      HorizontalAlignment="Left"/>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Waveform bars: </TextBlock>
+              <infraUI:ComboColorPicker
+                                        SelectedColor="{Binding ColorWaveBars, Mode=TwoWay}"
+                                        Margin="2"
+                                        HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Waveform envelope: </TextBlock>
+            <infraUI:ComboColorPicker
+                                      SelectedColor="{Binding ColorEnvelopeOutline, Mode=TwoWay}"
+                                      Margin="2"
+                                      HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Waveform envelope fill: </TextBlock>
+              <infraUI:ComboColorPicker
+                                        SelectedColor="{Binding ColorEnvelopeFill, Mode=TwoWay}"
+                                        Margin="2"
+                                        HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Waveform markers: </TextBlock>
+              <infraUI:ComboColorPicker
+                                        SelectedColor="{Binding ColorMarkers, Mode=TwoWay}"
+                                        Margin="2"
+                                        HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Playhead: </TextBlock>
+              <infraUI:ComboColorPicker
+                                        SelectedColor="{Binding ColorPlayhead, Mode=TwoWay}"
+                                        Margin="2"
+                                        HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Playhead triangle: </TextBlock>
+              <infraUI:ComboColorPicker
+                                        SelectedColor="{Binding ColorPlayheadFill, Mode=TwoWay}"
+                                        Margin="2"
+                                        HorizontalAlignment="Left"/>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
         
-      <DockPanel Grid.Column="0" Grid.Row="0"
+      <DockPanel Grid.Column="2" Grid.Row="0"
                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
         <WindowsFormsHost x:Name="WinFormHost"
@@ -64,38 +137,36 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Visible"
                       Background="DarkGray"
-                      
                       VerticalAlignment="Stretch">
 
           <Canvas x:Name="WaveFormCanvas"
                   SizeChanged="OnWaveFormCanvasSizeChanged"
                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                  Background="Silver"
-                      VerticalAlignment="Stretch">
-
+                  Background="Black"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Left"
+                  SnapsToDevicePixels="False">
+<!-- -->
             <Image x:Name="WaveFormImage"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
                    Stretch="Fill"
                    Canvas.ZIndex="0"
-                   SizeChanged="OnWaveFormImageSizeChanged"
+                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                   Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                    MouseDown="OnImageMouseDown"
                    Canvas.Left="0"
                    Canvas.Top="0"
-                   Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
-                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                    SnapsToDevicePixels="False"/>
 
             <Path x:Name="WaveFormTimeRangePath"
                   Canvas.ZIndex="1"
                   StrokeThickness="1"
-                  Stroke="BlueViolet"
-                  Fill="BlueViolet"
                   SnapsToDevicePixels="False"/>
             
             <Path x:Name="WaveFormPlayHeadPath"
                   Canvas.ZIndex="2"
-                  StrokeThickness="1"
-                  Stroke="Orange"
-                  Fill="Yellow"
+                  StrokeThickness="1.6"
                   SnapsToDevicePixels="False"/>
           </Canvas>
         </ScrollViewer>
@@ -103,7 +174,7 @@
 
 
 
-      <Grid Grid.Column="2" Grid.Row="0"
+      <Grid Grid.Column="4" Grid.Row="0"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width=".50*"/>
@@ -141,7 +212,7 @@
 
           <Rectangle
             Canvas.ZIndex="0"
-                StrokeThickness="1"
+                StrokeThickness="0"
                 Stroke="Green"
                 SnapsToDevicePixels="False"
                      Canvas.Top="0"
@@ -157,6 +228,22 @@
                 <GradientStop Color="LimeGreen" Offset="0.65" />
                 <GradientStop Color="Green" Offset="1.0" />
               </LinearGradientBrush>
+            </Rectangle.Fill>
+          </Rectangle>
+          
+          <Rectangle
+            x:Name="PeakMeterCanvasOpaqueMask"
+            Visibility="Visible"
+            Canvas.ZIndex="2"
+                StrokeThickness="0"
+                Stroke="Lime"
+                SnapsToDevicePixels="False"
+                     Canvas.Top="0"
+                     Canvas.Left="0"
+                     Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
+                     Height="{Binding ElementName=PeakMeterCanvas, Path=ActualHeight, Mode=OneWay}">
+            <Rectangle.Fill>
+              <SolidColorBrush Color="Black"/>
             </Rectangle.Fill>
           </Rectangle>
 
@@ -178,7 +265,7 @@
         </Canvas>
       </Grid>
 
-      </Grid >
+     </Grid >
 
     </ad:DockableContent>
 

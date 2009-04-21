@@ -54,7 +54,6 @@
     <Compile Include="DelegateCommandWithInputGesture.cs" />
     <Compile Include="FirstFocusedElementExtension.cs" />
     <Compile Include="GlobalCommands.cs" />
-    <Compile Include="GreyableImage.cs" />
     <Compile Include="IHeaderInfoProvider.cs" />
     <Compile Include="IShellPresenter.cs" />
     <Compile Include="IShellView.cs" />
@@ -64,6 +63,13 @@
     <Compile Include="Sizes.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TreeViewHelper.cs" />
+    <Compile Include="UI\ComboColorPicker.xaml.cs">
+      <DependentUpon>ComboColorPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GreyableImage.cs" />
+    <Compile Include="UI\SmallColorPicker.xaml.cs">
+      <DependentUpon>SmallColorPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserInterfaceStrings.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +198,14 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\ComboColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\SmallColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="xaml-icons\Home.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
