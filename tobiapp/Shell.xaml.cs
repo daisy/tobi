@@ -24,12 +24,10 @@ namespace Tobi
 
             Container = container;
 
-            IRegionManager regionManager = Container.Resolve<IRegionManager>();
-
-            string regionName = "AvalonDockRegion_1";
-
-            regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
-            ((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
+            //IRegionManager regionManager = Container.Resolve<IRegionManager>();
+            //string regionName = "AvalonDockRegion_1";
+            //regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
+            //((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
         }
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)

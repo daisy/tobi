@@ -427,6 +427,7 @@ namespace Tobi.Modules.AudioPane
                 && (m_Player.State == AudioPlayerState.Paused
                     || m_Player.State == AudioPlayerState.Stopped))
             {
+                updatePeakMeter();
                 m_PlayStream = null;
                 stopWaveFormTimer();
                 stopPeakMeterTimer();
@@ -438,6 +439,7 @@ namespace Tobi.Modules.AudioPane
                     PeakOverloadCountCh1 = 0;
                     PeakOverloadCountCh2 = 0;
                 }
+                updatePeakMeter();
                 startWaveFormTimer();
                 startPeakMeterTimer();
             }
@@ -464,7 +466,7 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_PeakMeterTimer == null)
             {
-                m_PeakMeterTimer = new DispatcherTimer();
+                m_PeakMeterTimer = new DispatcherTimer(DispatcherPriority.Input);
                 m_PeakMeterTimer.Tick += OnPeakMeterTimerTick;
                 m_PeakMeterTimer.Interval = TimeSpan.FromMilliseconds(60);
             }
@@ -480,14 +482,14 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_PlaybackTimer == null)
             {
-                m_PlaybackTimer = new DispatcherTimer();
+                m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
                 m_PlaybackTimer.Tick += OnPlaybackTimerTick;
 
                 double interval = convertByteToMilliseconds(m_bytesPerPixel);
 
-                if (interval < 20.0)
+                if (interval < 60.0)
                 {
-                    interval = 20;
+                    interval = 60;
                 }
                 m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
             }
@@ -565,6 +567,7 @@ namespace Tobi.Modules.AudioPane
             m_PeakMeterValues[1] = m_PeakMeterBarDataCh2.ValueDb;
 
             updatePeakMeter();
+
             peakMeterCanvasInvalidateVisual();
         }
 
@@ -594,6 +597,9 @@ namespace Tobi.Modules.AudioPane
                 double time = m_pcmFormat.GetDuration(m_dataLength).TimeDeltaAsMillisecondDouble;
                 updateWaveFormPlayHead(time);
             }
+
+            updatePeakMeter();
+
             if (FilePath.Length > 0 || m_CurrentTreeNode == null)
             {
                 return;
@@ -619,16 +625,18 @@ namespace Tobi.Modules.AudioPane
 
         private void updatePeakMeter()
         {
-            if (m_pcmFormat == null)
-            {
-                return;
-            }
             if (Dispatcher.CheckAccess())
             {
                 if (m_Player.State != AudioPlayerState.Playing)
                 {
+                    PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
                     return;
                 }
+                if (m_pcmFormat == null)
+                {
+                    return;
+                }
+                PeakMeterCanvasOpaqueMask.Visibility = Visibility.Hidden;
 
                 double barWidth = PeakMeterCanvas.ActualWidth;
                 if (m_pcmFormat.NumberOfChannels > 1)
@@ -656,9 +664,9 @@ namespace Tobi.Modules.AudioPane
                     double pixels = m_PeakMeterBarDataCh1.DbToPixels(availableHeight);
 
                     sgc.BeginFigure(new Point(0, 0), true, true);
-                    sgc.LineTo(new Point(barWidth, 0), true, false);
-                    sgc.LineTo(new Point(barWidth, availableHeight - pixels), true, false);
-                    sgc.LineTo(new Point(0, availableHeight - pixels), true, false);
+                    sgc.LineTo(new Point(barWidth, 0), false, false);
+                    sgc.LineTo(new Point(barWidth, availableHeight - pixels), false, false);
+                    sgc.LineTo(new Point(0, availableHeight - pixels), false, false);
 
                     sgc.Close();
                 }
@@ -681,10 +689,10 @@ namespace Tobi.Modules.AudioPane
                         double pixels = m_PeakMeterBarDataCh2.DbToPixels(availableHeight);
 
                         sgc.BeginFigure(new Point(barWidth, 0), true, true);
-                        sgc.LineTo(new Point(barWidth + barWidth, 0), true, false);
-                        sgc.LineTo(new Point(barWidth + barWidth, availableHeight - pixels), true, false);
-                        sgc.LineTo(new Point(barWidth, availableHeight - pixels), true, false);
-                        sgc.LineTo(new Point(barWidth, availableHeight - 20), true, false);
+                        sgc.LineTo(new Point(barWidth + barWidth, 0), false, false);
+                        sgc.LineTo(new Point(barWidth + barWidth, availableHeight - pixels), false, false);
+                        sgc.LineTo(new Point(barWidth, availableHeight - pixels), false, false);
+                        sgc.LineTo(new Point(barWidth, availableHeight - 1), false, false);
 
                         sgc.Close();
                     }
@@ -734,12 +742,24 @@ namespace Tobi.Modules.AudioPane
                 geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
             }
 
+            double height = WaveFormCanvas.ActualHeight;
+            if (height == Double.NaN || height == 0)
+            {
+                height = WaveFormCanvas.Height;
+            }
+
+            int arrowDepth = 6;
+
             using (StreamGeometryContext sgc = geometry.Open())
             {
-                sgc.BeginFigure(new Point(pixels, WaveFormCanvas.ActualHeight - 5), true, false);
-                sgc.LineTo(new Point(pixels, 5), true, false);
-                sgc.LineTo(new Point(pixels + 5, 5 + 5), true, false);
-                sgc.LineTo(new Point(pixels, 5 + 5 + 5), true, false);
+                sgc.BeginFigure(new Point(pixels, height - arrowDepth), true, false);
+                sgc.LineTo(new Point(pixels + arrowDepth, height), true, false);
+                sgc.LineTo(new Point(pixels - arrowDepth, height), true, false);
+                sgc.LineTo(new Point(pixels, height - arrowDepth), true, false);
+                sgc.LineTo(new Point(pixels, arrowDepth), true, false);
+                sgc.LineTo(new Point(pixels - arrowDepth, 0), true, false);
+                sgc.LineTo(new Point(pixels + arrowDepth, 0), true, false);
+                sgc.LineTo(new Point(pixels, arrowDepth), true, false);
 
                 sgc.Close();
             }
@@ -787,11 +807,6 @@ namespace Tobi.Modules.AudioPane
                 sumDataPrev = sumData;
             }
 
-            if (subTreeNode == null || subTreeNode == m_CurrentSubTreeNode)
-            {
-                return;
-            }
-
             m_CurrentSubTreeNode = subTreeNode;
             //m_CurrentSubTreeNode_OffsetLeft = sumDataPrev;
             //m_CurrentSubTreeNode_OffsetRight = sumData;
@@ -811,10 +826,15 @@ namespace Tobi.Modules.AudioPane
 
             using (StreamGeometryContext sgc = geometryRange.Open())
             {
-                sgc.BeginFigure(new Point(pixelsLeft, WaveFormCanvas.ActualHeight), true, true);
-                sgc.LineTo(new Point(pixelsRight, WaveFormCanvas.ActualHeight), true, false);
-                sgc.LineTo(new Point(pixelsRight, WaveFormCanvas.ActualHeight - 5), true, false);
-                sgc.LineTo(new Point(pixelsLeft, WaveFormCanvas.ActualHeight - 5), true, false);
+                sgc.BeginFigure(new Point(pixelsLeft, height - arrowDepth), true, false);
+                sgc.LineTo(new Point(pixelsRight, height - arrowDepth), false, false);
+                sgc.LineTo(new Point(pixelsRight, height), false, false);
+                sgc.LineTo(new Point(pixelsLeft, height), false, false);
+                sgc.LineTo(new Point(pixelsLeft, 0), false, false);
+                sgc.LineTo(new Point(pixelsRight, 0), false, false);
+                sgc.LineTo(new Point(pixelsRight, arrowDepth), false, false);
+                sgc.LineTo(new Point(pixelsLeft, arrowDepth), false, false);
+                sgc.LineTo(new Point(pixelsLeft, 0), false, false);
 
                 sgc.Close();
             }
@@ -826,7 +846,15 @@ namespace Tobi.Modules.AudioPane
 
             WaveFormTimeRangePath.InvalidateVisual();
 
-            m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(m_CurrentSubTreeNode);
+
+            if (subTreeNode == null || (subTreeNode == m_CurrentSubTreeNode && subTreeNode != m_CurrentTreeNode))
+            {
+                return;
+            }
+            if (m_CurrentSubTreeNode != m_CurrentTreeNode)
+            {
+                m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(m_CurrentSubTreeNode);
+            }
         }
 
         private void updateWaveFormPlayHead()
@@ -847,23 +875,39 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(updateWaveFormPlayHead));
+                Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(updateWaveFormPlayHead));
             }
         }
 
-        private void resetWaveForm()
+        private void resetWaveFormBackground()
         {
+            double height = WaveFormCanvas.ActualHeight;
+            if (height == Double.NaN || height == 0)
+            {
+                height = WaveFormCanvas.Height;
+            }
+
+            double width = WaveFormCanvas.ActualWidth;
+            if (width == Double.NaN || width == 0)
+            {
+                width = WaveFormCanvas.Width;
+            }
+
             DrawingImage drawImg = new DrawingImage();
             StreamGeometry geometry = new StreamGeometry();
-            StreamGeometryContext sgc = geometry.Open();
+            using (StreamGeometryContext sgc = geometry.Open())
+            {
+                sgc.BeginFigure(new Point(0, 0), true, true);
+                sgc.LineTo(new Point(0, height), true, false);
+                sgc.LineTo(new Point(width, height), true, false);
+                sgc.LineTo(new Point(width, 0), true, false);
+                sgc.Close();
+            }
 
-            sgc.BeginFigure(new Point(0, 0), true, true);
-            sgc.LineTo(new Point(0, WaveFormCanvas.ActualHeight), true, false);
-            sgc.LineTo(new Point(WaveFormCanvas.ActualWidth, WaveFormCanvas.ActualHeight), true, false);
-            sgc.LineTo(new Point(WaveFormCanvas.ActualWidth, 0), true, false);
-            sgc.Close();
             geometry.Freeze();
-            GeometryDrawing geoDraw = new GeometryDrawing(Brushes.Black, new Pen(Brushes.Black, 1.0), geometry);
+
+            Brush brushColorBack = new SolidColorBrush(ColorWaveBackground);
+            GeometryDrawing geoDraw = new GeometryDrawing(brushColorBack, new Pen(brushColorBack, 1.0), geometry);
             geoDraw.Freeze();
             DrawingGroup drawGrp = new DrawingGroup();
             drawGrp.Children.Add(geoDraw);
@@ -871,6 +915,11 @@ namespace Tobi.Modules.AudioPane
             drawImg.Drawing = drawGrp;
             drawImg.Freeze();
             WaveFormImage.Source = drawImg;
+        }
+
+        private void resetWaveForm()
+        {
+            resetWaveFormBackground();
 
             m_LastPlayHeadTime = 0;
 
@@ -879,14 +928,273 @@ namespace Tobi.Modules.AudioPane
 
             WaveFormTimeRangePath.Data = null;
             WaveFormTimeRangePath.InvalidateVisual();
+
+            PeakMeterPathCh2.Data = null;
+            PeakMeterPathCh2.InvalidateVisual();
+
+            PeakMeterPathCh1.Data = null;
+            PeakMeterPathCh1.InvalidateVisual();
+
+            PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
         }
 
+        private List<Double> m_WaveStepXs = null;
+        public List<Double> WaveStepXs
+        {
+            get
+            {
+                if (m_WaveStepXs == null)
+                {
+                    m_WaveStepXs = new List<double>();
+                    m_WaveStepXs.Add(1.0);
+                    m_WaveStepXs.Add(2.0);
+                    m_WaveStepXs.Add(3.0);
+                    m_WaveStepXs.Add(4.0);
+                    m_WaveStepXs.Add(5.0);
+                    m_WaveStepXs.Add(6.0);
+                    m_WaveStepXs.Add(7.0);
+                    m_WaveStepXs.Add(8.0);
+                    m_WaveStepXs.Add(9.0);
+                    m_WaveStepXs.Add(10.0);
+                }
+                return m_WaveStepXs;
+            }
+        }
+        private double m_WaveStepX = 3;
+        public double WaveStepX
+        {
+            get
+            {
+                return m_WaveStepX;
+            }
+            set
+            {
+                if (m_WaveStepX == value) return;
+                m_WaveStepX = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("WaveStepX");
+            }
+        }
+
+        private bool m_IsBackgroundVisible = true;
+        public bool IsBackgroundVisible
+        {
+            get
+            {
+                return m_IsBackgroundVisible;
+            }
+            set
+            {
+                if (m_IsBackgroundVisible == value) return;
+                m_IsBackgroundVisible = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("IsBackgroundVisible");
+            }
+        }
+
+
+        private bool m_IsAdjustOffsetFix = false;
+        public bool IsAdjustOffsetFix
+        {
+            get
+            {
+                return m_IsAdjustOffsetFix;
+            }
+            set
+            {
+                if (m_IsAdjustOffsetFix == value) return;
+                m_IsAdjustOffsetFix = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("IsAdjustOffsetFix");
+            }
+        }
+
+        private bool m_IsWaveFillVisible = false;
+        public bool IsWaveFillVisible
+        {
+            get
+            {
+                return m_IsWaveFillVisible;
+            }
+            set
+            {
+                if (m_IsWaveFillVisible == value) return;
+                m_IsWaveFillVisible = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("IsWaveFillVisible");
+            }
+        }
+
+        private bool m_IsEnvelopeVisible = true;
+        public bool IsEnvelopeVisible
+        {
+            get
+            {
+                return m_IsEnvelopeVisible;
+            }
+            set
+            {
+                if (m_IsEnvelopeVisible == value) return;
+                m_IsEnvelopeVisible = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("IsEnvelopeVisible");
+            }
+        }
+        private bool m_IsEnvelopeFilled = true;
+        public bool IsEnvelopeFilled
+        {
+            get
+            {
+                return m_IsEnvelopeFilled;
+            }
+            set
+            {
+                if (m_IsEnvelopeFilled == value) return;
+                m_IsEnvelopeFilled = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("IsEnvelopeFilled");
+            }
+        }
+
+        private Color m_ColorPlayhead = Colors.Red;
+        public Color ColorPlayhead
+        {
+            get
+            {
+                return m_ColorPlayhead;
+            }
+            set
+            {
+                if (m_ColorPlayhead == value) return;
+                m_ColorPlayhead = value;
+                Brush brush = new SolidColorBrush(m_ColorPlayhead);
+                WaveFormPlayHeadPath.Stroke = brush;
+                //updateWaveFormPlayHead();
+                OnPropertyChanged("ColorPlayhead");
+            }
+        }
+        private Color m_ColorPlayheadFill = Colors.Gold;
+        public Color ColorPlayheadFill
+        {
+            get
+            {
+                return m_ColorPlayheadFill;
+            }
+            set
+            {
+                if (m_ColorPlayheadFill == value) return;
+                m_ColorPlayheadFill = value;
+                Brush brush = new SolidColorBrush(m_ColorPlayheadFill);
+                WaveFormPlayHeadPath.Fill = brush;
+                //updateWaveFormPlayHead();
+                OnPropertyChanged("ColorPlayheadFill");
+            }
+        }
+        private Color m_ColorWaveBackground = Colors.Black;
+        public Color ColorWaveBackground
+        {
+            get
+            {
+                return m_ColorWaveBackground;
+            }
+            set
+            {
+                if (m_ColorWaveBackground == value) return;
+                m_ColorWaveBackground = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("ColorWaveBackground");
+            }
+        }
+        private Color m_ColorMarkers = Colors.Maroon;
+        public Color ColorMarkers
+        {
+            get
+            {
+                return m_ColorMarkers;
+            }
+            set
+            {
+                if (m_ColorMarkers == value) return;
+                m_ColorMarkers = value;
+                Brush brush = new SolidColorBrush(m_ColorMarkers);
+                WaveFormTimeRangePath.Fill = brush;
+                WaveFormTimeRangePath.Stroke = brush;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("ColorMarkers");
+            }
+        }
+        private Color m_ColorWaveBars = Colors.Lime;
+        public Color ColorWaveBars
+        {
+            get
+            {
+                return m_ColorWaveBars;
+            }
+            set
+            {
+                if (m_ColorWaveBars == value) return;
+                m_ColorWaveBars = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("ColorWaveBars");
+            }
+        }
+        private Color m_ColorEnvelopeFill = Colors.ForestGreen;
+        public Color ColorEnvelopeFill
+        {
+            get
+            {
+                return m_ColorEnvelopeFill;
+            }
+            set
+            {
+                if (m_ColorEnvelopeFill == value) return;
+                m_ColorEnvelopeFill = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("ColorEnvelopeFill");
+            }
+        }
+        private Color m_ColorEnvelopeOutline = Colors.LawnGreen;
+        public Color ColorEnvelopeOutline
+        {
+            get
+            {
+                return m_ColorEnvelopeOutline;
+            }
+            set
+            {
+                if (m_ColorEnvelopeOutline == value) return;
+                m_ColorEnvelopeOutline = value;
+                resetWaveFormBackground();
+                loadWaveForm();
+                OnPropertyChanged("ColorEnvelopeOutline");
+            }
+        }
         private void loadWaveForm()
         {
-            double stepX = 3;
-            bool bShowEnvelope = true;
-            bool bFillEnvelope = true;
-            bool bShowSamples = false;
+            Brush brush1 = new SolidColorBrush(m_ColorPlayhead);
+            WaveFormPlayHeadPath.Stroke = brush1;
+            Brush brush2 = new SolidColorBrush(m_ColorPlayheadFill);
+            WaveFormPlayHeadPath.Fill = brush2;
+            Brush brush3 = new SolidColorBrush(m_ColorMarkers);
+            WaveFormTimeRangePath.Fill = brush3;
+            WaveFormTimeRangePath.Stroke = brush3;
+
+            double stepX = WaveStepX;
+            bool bShowBackground = IsBackgroundVisible;
+            bool bShowEnvelope = IsEnvelopeVisible;
+            bool bFillEnvelope = IsEnvelopeFilled;
+            bool bShowSamples = IsWaveFillVisible;
+            bool bAdjustOffsetFix = IsAdjustOffsetFix;
 
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
@@ -947,18 +1255,24 @@ namespace Tobi.Modules.AudioPane
                 sgcCh2_envelope = geometryCh2_envelope.Open();
             }
 
-            double height = WaveFormCanvas.ActualHeight;
-            if (m_pcmFormat.NumberOfChannels > 1)
-            {
-                height /= 2;
-            }
-
             double prevY1 = -1;
             double prevY2 = -1;
             double prevY1_ = -1;
             double prevY2_ = -1;
 
-            m_bytesPerPixel = m_dataLength / WaveFormCanvas.ActualWidth;
+            double height = WaveFormCanvas.ActualHeight;
+            if (height == Double.NaN || height == 0)
+            {
+                height = WaveFormCanvas.Height;
+            }
+
+            double width = WaveFormCanvas.ActualWidth;
+            if (width == Double.NaN || width == 0)
+            {
+                width = WaveFormCanvas.Width;
+            }
+
+            m_bytesPerPixel = m_dataLength / width;
 
             int byteDepth = m_pcmFormat.BitDepth / 8; //bytes per sample (data for one channel only)
 
@@ -970,21 +1284,16 @@ namespace Tobi.Modules.AudioPane
             byte[] bytes = new byte[bytesPerStep];
             short[] samples = new short[samplesPerStep];
 
-            List<Point> listTopPointsCh1 = null;
-            List<Point> listTopPointsCh2 = null;
-            List<Point> listBottomPointsCh1 = null;
-            List<Point> listBottomPointsCh2 = null;
-
-            if (bFillEnvelope)
-            {
-                listTopPointsCh1 = new List<Point>();
-                listTopPointsCh2 = new List<Point>();
-                listBottomPointsCh1 = new List<Point>();
-                listBottomPointsCh2 = new List<Point>();
-            }
+            List<Point> listTopPointsCh1 = new List<Point>();
+            List<Point> listTopPointsCh2 = new List<Point>();
+            List<Point> listBottomPointsCh1 = new List<Point>();
+            List<Point> listBottomPointsCh2 = new List<Point>();
 
             int read = 0;
-            double x = 0;
+            double x = 0.5;
+            bool bJoinInterSamples = false;
+
+            int tolerance = 5;
             try
             {
                 if (FilePath.Length > 0)
@@ -1025,71 +1334,74 @@ namespace Tobi.Modules.AudioPane
                             }
                         }
 
-                        double y1 = Math.Min(height, height
-                                    - ((min - short.MinValue) * height)
-                                      / ushort.MaxValue);
+                        double hh = height;
+                        if (m_pcmFormat.NumberOfChannels > 1)
+                        {
+                            hh /= 2;
+                        }
 
-                        double y2 = Math.Max(0, height
-                                    - ((max - short.MinValue) * height)
+                        double y1 = Math.Min(hh, hh
+                                    - ((min - short.MinValue) * hh)
                                       / ushort.MaxValue);
+                        if (y1 > hh - tolerance)
+                        {
+                            y1 = hh - tolerance;
+                        }
+                        if (y1 < 0 + tolerance)
+                        {
+                            y1 = 0 + tolerance;
+                        }
+
+                        double y2 = Math.Max(0, hh
+                                    - ((max - short.MinValue) * hh)
+                                      / ushort.MaxValue);
+                        if (y2 > hh - tolerance)
+                        {
+                            y2 = hh - tolerance;
+                        }
+                        if (y2 < 0 + tolerance)
+                        {
+                            y2 = 0 + tolerance;
+                        }
 
                         if (channel == 0)
                         {
-                            sgcCh1.BeginFigure(new Point(x, y1), false, false);
-
-                            if (bFillEnvelope)
-                            {
-                                listTopPointsCh1.Add(new Point(x, y1));
-                            }
+                            listTopPointsCh1.Add(new Point(x, y1));
 
                             if (prevY1 == -1)
                             {
-                                //sgcCh1_envelope.BeginFigure(new Point(x, y1), false, false);
+                                sgcCh1.BeginFigure(new Point(x, y1), false, false);
                             }
                             else
                             {
-                                if (!bFillEnvelope)
-                                {
-                                    sgcCh1_envelope.BeginFigure(new Point(x - stepX, prevY1), false, false);
-                                    sgcCh1_envelope.LineTo(new Point(x, y1), true, false);
-                                }
+                                sgcCh1.LineTo(new Point(x, y1), bJoinInterSamples, false);
                             }
                             prevY1 = y1;
                         }
                         else
                         {
-                            y1 += height;
-                            sgcCh2.BeginFigure(new Point(x, y1), false, false);
-                            
-                            if (bFillEnvelope)
-                            {
-                                listTopPointsCh2.Add(new Point(x, y1));
-                            }
+                            y1 += hh;
+
+                            listTopPointsCh2.Add(new Point(x, y1));
 
                             if (prevY1_ == -1)
                             {
-                                //sgcCh2_envelope.BeginFigure(new Point(x, y1), false, false);
+                                sgcCh2.BeginFigure(new Point(x, y1), false, false);
                             }
                             else
                             {
-                                prevY1_ += height;
-                                if (!bFillEnvelope)
-                                {
-                                    sgcCh2_envelope.BeginFigure(new Point(x - stepX, prevY1_), false, false);
-                                    sgcCh2_envelope.LineTo(new Point(x, y1), true, false);
-                                }
+                                sgcCh2.LineTo(new Point(x, y1), bJoinInterSamples, false);
+
+                                prevY1_ += hh;
                             }
-                            prevY1_ = y1 - height;
+                            prevY1_ = y1 - hh;
                         }
 
                         if (channel == 0)
                         {
                             sgcCh1.LineTo(new Point(x, y2), true, false);
 
-                            if (bFillEnvelope)
-                            {
-                                listBottomPointsCh1.Add(new Point(x, y2));
-                            }
+                            listBottomPointsCh1.Add(new Point(x, y2));
 
                             if (prevY2 == -1)
                             {
@@ -1097,23 +1409,16 @@ namespace Tobi.Modules.AudioPane
                             }
                             else
                             {
-                                if (!bFillEnvelope)
-                                {
-                                    sgcCh1_envelope.BeginFigure(new Point(x - stepX, prevY2), false, false);
-                                    sgcCh1_envelope.LineTo(new Point(x, y2), true, false);
-                                }
+                                //
                             }
                             prevY2 = y2;
                         }
                         else
                         {
-                            y2 += height;
+                            y2 += hh;
                             sgcCh2.LineTo(new Point(x, y2), true, false);
 
-                            if (bFillEnvelope)
-                            {
-                                listBottomPointsCh2.Add(new Point(x, y2));
-                            }
+                            listBottomPointsCh2.Add(new Point(x, y2));
 
                             if (prevY2_ == -1)
                             {
@@ -1121,60 +1426,95 @@ namespace Tobi.Modules.AudioPane
                             }
                             else
                             {
-                                prevY2_ += height;
-                                if (!bFillEnvelope)
-                                {
-                                    sgcCh2_envelope.BeginFigure(new Point(x - stepX, prevY2_), false, false);
-                                    sgcCh2_envelope.LineTo(new Point(x, y2), true, false);
-                                }
+                                prevY2_ += hh;
+                                //
                             }
-                            prevY2_ = y2 - height;
+                            prevY2_ = y2 - hh;
                         }
                     }
 
                     x += (read / m_bytesPerPixel); //stepX;
-                    if (x > WaveFormCanvas.ActualWidth)
+                    if (x > width)
                     {
                         break;
                     }
                 }
 
-                if (bFillEnvelope)
+                listBottomPointsCh1.Reverse();
+                listTopPointsCh1.AddRange(listBottomPointsCh1);
+                listBottomPointsCh1.Clear();
+
+
+                int count = 0;
+                Point pp = new Point();
+                foreach (Point p in listTopPointsCh1)
                 {
-                    listBottomPointsCh1.Reverse();
-                    listTopPointsCh1.AddRange(listBottomPointsCh1);
-                    listBottomPointsCh1.Clear();
-                    int count = 0;
-                    foreach (Point p in listTopPointsCh1)
+                    pp.X = p.X;
+                    pp.Y = p.Y;
+
+                    if (pp.X > width)
                     {
+                        pp.X = width;
+                    }
+                    if (pp.X < 0)
+                    {
+                        pp.X = 0;
+                    }
+                    if (pp.Y > height - tolerance)
+                    {
+                        pp.Y = height - tolerance;
+                    }
+                    if (pp.Y < 0 + tolerance)
+                    {
+                        pp.Y = 0 + tolerance;
+                    }
+                    if (count == 0)
+                    {
+                        sgcCh1_envelope.BeginFigure(pp, bFillEnvelope, false);
+                    }
+                    else
+                    {
+                        sgcCh1_envelope.LineTo(pp, true, false);
+                    }
+                    count++;
+                }
+                if (m_pcmFormat.NumberOfChannels > 1)
+                {
+                    listBottomPointsCh2.Reverse();
+                    listTopPointsCh2.AddRange(listBottomPointsCh2);
+                    listBottomPointsCh2.Clear();
+                    count = 0;
+
+                    foreach (Point p in listTopPointsCh2)
+                    {
+                        pp.X = p.X;
+                        pp.Y = p.Y;
+
+                        if (pp.X > width)
+                        {
+                            pp.X = width;
+                        }
+                        if (pp.X < 0)
+                        {
+                            pp.X = 0;
+                        }
+                        if (pp.Y > height - tolerance)
+                        {
+                            pp.Y = height - tolerance;
+                        }
+                        if (pp.Y < 0 + tolerance)
+                        {
+                            pp.Y = 0 + tolerance;
+                        }
                         if (count == 0)
                         {
-                            sgcCh1_envelope.BeginFigure(p, true, true);
+                            sgcCh2_envelope.BeginFigure(pp, bFillEnvelope, false);
                         }
                         else
                         {
-                            sgcCh1_envelope.LineTo(p, true, false);
+                            sgcCh2_envelope.LineTo(pp, true, false);
                         }
                         count++;
-                    }
-                    if (m_pcmFormat.NumberOfChannels > 1)
-                    {
-                        listBottomPointsCh2.Reverse();
-                        listTopPointsCh2.AddRange(listBottomPointsCh2);
-                        listBottomPointsCh2.Clear();
-                        count = 0;
-                        foreach (Point p in listTopPointsCh2)
-                        {
-                            if (count == 0)
-                            {
-                                sgcCh2_envelope.BeginFigure(p, true, true);
-                            }
-                            else
-                            {
-                                sgcCh2_envelope.LineTo(p, true, false);
-                            }
-                            count++;
-                        }
                     }
                 }
 
@@ -1186,14 +1526,17 @@ namespace Tobi.Modules.AudioPane
                     sgcCh2_envelope.Close();
                 }
 
-                DrawingImage drawImg = new DrawingImage();
+                Brush brushColorBars = new SolidColorBrush(ColorWaveBars);
+                Brush brushColorEnvelopeOutline = new SolidColorBrush(ColorEnvelopeOutline);
+                Brush brushColorEnvelopeFill = new SolidColorBrush(ColorEnvelopeFill);
+
                 //
                 geometryCh1.Freeze();
-                GeometryDrawing geoDraw1 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh1);
+                GeometryDrawing geoDraw1 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh1);
                 geoDraw1.Freeze();
                 //
                 geometryCh1_envelope.Freeze();
-                GeometryDrawing geoDraw1_envelope = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.GreenYellow, 1.0), geometryCh1_envelope);
+                GeometryDrawing geoDraw1_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh1_envelope);
                 geoDraw1_envelope.Freeze();
                 //
                 GeometryDrawing geoDraw2 = null;
@@ -1201,79 +1544,187 @@ namespace Tobi.Modules.AudioPane
                 if (m_pcmFormat.NumberOfChannels > 1)
                 {
                     geometryCh2.Freeze();
-                    geoDraw2 = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.LimeGreen, 1.0), geometryCh2);
+                    geoDraw2 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh2);
                     geoDraw2.Freeze();
                     geometryCh2_envelope.Freeze();
-                    geoDraw2_envelope = new GeometryDrawing(Brushes.LimeGreen, new Pen(Brushes.GreenYellow, 1.0), geometryCh2_envelope);
+                    geoDraw2_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh2_envelope);
                     geoDraw2_envelope.Freeze();
                 }
                 //
+
+                Brush brushColorMarkers = new SolidColorBrush(ColorMarkers);
                 GeometryDrawing geoDrawMarkers = null;
                 if (m_PlayStreamMarkers != null)
                 {
                     StreamGeometry geometryMarkers = new StreamGeometry();
-                    StreamGeometryContext sgcMarkers = geometryMarkers.Open();
-
-                    long sumData = 0;
-                    foreach (TreeNodeAndStreamDataLength markers in m_PlayStreamMarkers)
+                    using (StreamGeometryContext sgcMarkers = geometryMarkers.Open())
                     {
-                        double pixels = (sumData + markers.m_LocalStreamDataLength) / m_bytesPerPixel;
+                        sgcMarkers.BeginFigure(new Point(0.5, 0), false, false);
+                        sgcMarkers.LineTo(new Point(0.5, height), true, false);
 
-                        sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
-                        sgcMarkers.LineTo(new Point(pixels, WaveFormCanvas.ActualHeight), true, false);
+                        long sumData = 0;
+                        foreach (TreeNodeAndStreamDataLength markers in m_PlayStreamMarkers)
+                        {
+                            double pixels = (sumData + markers.m_LocalStreamDataLength) / m_bytesPerPixel;
 
-                        sumData += markers.m_LocalStreamDataLength;
+                            sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
+                            sgcMarkers.LineTo(new Point(pixels, height), true, false);
+
+                            sumData += markers.m_LocalStreamDataLength;
+                        }
+                        sgcMarkers.Close();
                     }
-                    sgcMarkers.Close();
 
                     geometryMarkers.Freeze();
-                    geoDrawMarkers = new GeometryDrawing(Brushes.BlueViolet,
-                                                                         new Pen(Brushes.BlueViolet, 1.0),
+                    geoDrawMarkers = new GeometryDrawing(brushColorMarkers,
+                                                                         new Pen(brushColorMarkers, 1.0),
                                                                          geometryMarkers);
                     geoDrawMarkers.Freeze();
                 }
                 //
                 StreamGeometry geometryBack = new StreamGeometry();
-                StreamGeometryContext sgcBack = geometryBack.Open();
-
-                sgcBack.BeginFigure(new Point(0, 0), true, true);
-                sgcBack.LineTo(new Point(0, WaveFormCanvas.ActualHeight), true, false);
-                sgcBack.LineTo(new Point(WaveFormCanvas.ActualWidth, WaveFormCanvas.ActualHeight), true, false);
-                sgcBack.LineTo(new Point(WaveFormCanvas.ActualWidth, 0), true, false);
-                sgcBack.Close();
+                using (StreamGeometryContext sgcBack = geometryBack.Open())
+                {
+                    sgcBack.BeginFigure(new Point(0, 0), true, true);
+                    sgcBack.LineTo(new Point(0, height), false, false);
+                    sgcBack.LineTo(new Point(width, height), false, false);
+                    sgcBack.LineTo(new Point(width, 0), false, false);
+                    sgcBack.Close();
+                }
                 geometryBack.Freeze();
-                GeometryDrawing geoDrawBack = new GeometryDrawing(Brushes.Black, new Pen(Brushes.Black, 1.0), geometryBack);
+                Brush brushColorBack = new SolidColorBrush(ColorWaveBackground);
+                GeometryDrawing geoDrawBack = new GeometryDrawing(brushColorBack, null, geometryBack); //new Pen(brushColorBack, 1.0)
                 geoDrawBack.Freeze();
                 //
                 DrawingGroup drawGrp = new DrawingGroup();
                 //
-                drawGrp.Children.Add(geoDrawBack);
-                if (bShowSamples)
+
+                if (bShowBackground)
                 {
-                    drawGrp.Children.Add(geoDraw1);
+                    drawGrp.Children.Add(geoDrawBack);
+                    if (drawGrp.Bounds.Top != 0 || drawGrp.Bounds.Left != 0)
+                    {
+                        int debug = 1;
+                    }
+                    if (drawGrp.Bounds.Width != width || drawGrp.Bounds.Height != height)
+                    {
+                        int debug = 1;
+                    }
                 }
                 if (bShowEnvelope)
                 {
-                    drawGrp.Children.Add(geoDraw1_envelope);
+                    if (bFillEnvelope)
+                    {
+                        drawGrp.Children.Add(geoDraw1_envelope);
+                        if (bShowSamples)
+                        {
+                            drawGrp.Children.Add(geoDraw1);
+                        }
+                    }
+                    else
+                    {
+                        if (bShowSamples)
+                        {
+                            drawGrp.Children.Add(geoDraw1);
+                        }
+                        drawGrp.Children.Add(geoDraw1_envelope);
+                    }
+
+                    if (drawGrp.Bounds.Top != 0 || drawGrp.Bounds.Left != 0)
+                    {
+                        int debug = 1;
+                    }
+                    if (drawGrp.Bounds.Width != width || drawGrp.Bounds.Height != height)
+                    {
+                        int debug = 1;
+                    }
+                }
+                else if (bShowSamples)
+                {
+                    drawGrp.Children.Add(geoDraw1);
+
+
+                    if (drawGrp.Bounds.Top != 0 || drawGrp.Bounds.Left != 0)
+                    {
+                        int debug = 1;
+                    }
+                    if (drawGrp.Bounds.Width != width || drawGrp.Bounds.Height != height)
+                    {
+                        int debug = 1;
+                    }
                 }
                 if (m_pcmFormat.NumberOfChannels > 1)
                 {
-                    if (bShowSamples)
-                    {
-                        drawGrp.Children.Add(geoDraw2);
-                    }
                     if (bShowEnvelope)
                     {
-                        drawGrp.Children.Add(geoDraw2_envelope);
+                        if (bFillEnvelope)
+                        {
+                            drawGrp.Children.Add(geoDraw2_envelope);
+                            if (bShowSamples)
+                            {
+                                drawGrp.Children.Add(geoDraw2);
+                            }
+                        }
+                        else
+                        {
+                            if (bShowSamples)
+                            {
+                                drawGrp.Children.Add(geoDraw2);
+                            }
+                            drawGrp.Children.Add(geoDraw2_envelope);
+                        }
+                    }
+                    else if (bShowSamples)
+                    {
+                        drawGrp.Children.Add(geoDraw2);
                     }
                 }
                 if (m_PlayStreamMarkers != null)
                 {
                     drawGrp.Children.Add(geoDrawMarkers);
                 }
+
+                if (drawGrp.Bounds.Top != 0 || drawGrp.Bounds.Left != 0)
+                {
+                    int debug = 1;
+                }
+                if (drawGrp.Bounds.Width != width || drawGrp.Bounds.Height != height)
+                {
+                    int debug = 1;
+                }
+                double m_offsetFixX = 0;
+                m_offsetFixX = drawGrp.Bounds.Width - width;
+
+                double m_offsetFixY = 0;
+                m_offsetFixY = drawGrp.Bounds.Height - height;
+
+                if (bAdjustOffsetFix && (m_offsetFixX != 0 || m_offsetFixY != 0))
+                {
+                    TransformGroup trGrp = new TransformGroup();
+                    //trGrp.Children.Add(new TranslateTransform(-drawGrp.Bounds.Left, -drawGrp.Bounds.Top));
+                    trGrp.Children.Add(new ScaleTransform(width / drawGrp.Bounds.Width, height / drawGrp.Bounds.Height));
+                    drawGrp.Transform = trGrp;
+                }
+
                 drawGrp.Freeze();
-                drawImg.Drawing = drawGrp;
+
+
+                DrawingImage drawImg = new DrawingImage(drawGrp);
+
+                if (drawImg.Height > height)
+                {
+                    //drawImg.Height = WaveFormCanvas.ActualHeight;
+                    int debug = 1;
+                }
+
+                if (drawImg.Width > width)
+                {
+                    //drawImg.Width = WaveFormCanvas.ActualWidth;
+                    int debug = 1;
+                }
                 drawImg.Freeze();
+
+                RenderOptions.SetBitmapScalingMode(WaveFormImage, BitmapScalingMode.LowQuality);
                 WaveFormImage.Source = drawImg;
 
                 if (m_WaveFormLoadingAdorner != null)
@@ -1349,43 +1800,44 @@ namespace Tobi.Modules.AudioPane
                 WaveFormTimeRangePath.StrokeThickness = 1 * dpiFactor;
             }
 
-            m_bytesPerPixel = m_dataLength / WaveFormCanvas.ActualWidth;
+            double height = WaveFormCanvas.ActualHeight;
+            if (height == Double.NaN || height == 0)
+            {
+                height = WaveFormCanvas.Height;
+            }
+
+            double width = WaveFormCanvas.ActualWidth;
+            if (width == Double.NaN || width == 0)
+            {
+                width = WaveFormCanvas.Width;
+            }
+
+            m_bytesPerPixel = m_dataLength / width;
 
             m_CurrentSubTreeNode = null;
             updateWaveFormPlayHead();
 
-            if (!e.WidthChanged || m_pcmFormat == null)
+            if (m_pcmFormat == null) //!e.WidthChanged || 
             {
                 return;
             }
 
             if (m_WaveFormLoadTimer == null)
             {
-                m_WaveFormLoadTimer = new DispatcherTimer();
+                m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
                 m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
                 m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(500);
             }
             else if (m_WaveFormLoadTimer.IsEnabled)
             {
                 m_WaveFormLoadTimer.Stop();
-                m_WaveFormLoadTimer.Start();
-                return;
             }
-
 
             if (m_WaveFormLoadingAdorner != null)
             {
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
             }
             m_WaveFormLoadTimer.Start();
-        }
-
-        private void OnWaveFormImageSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (!e.WidthChanged)
-            {
-                return;
-            }
         }
 
         private void OnImageMouseDown(object sender, MouseButtonEventArgs e)
@@ -1403,9 +1855,10 @@ namespace Tobi.Modules.AudioPane
 
             if (m_Player.State == AudioPlayerState.Paused)
             {
-                m_Player.Resume();
+                m_Player.Stop();
             }
-            else if (m_Player.State == AudioPlayerState.Stopped)
+            
+            if (m_Player.State == AudioPlayerState.Stopped)
             {
                 mCurrentAudioStreamProvider(); // ensure m_PlayStream is open
 
