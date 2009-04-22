@@ -33,8 +33,9 @@
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch">
           <StackPanel Orientation="Vertical">
-            <CheckBox IsChecked="{Binding IsAdjustOffsetFix, Mode=TwoWay}" Margin="2">Adjust fix</CheckBox>
-            <CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform background</CheckBox>
+            <CheckBox IsChecked="{Binding IsUseDecibels, Mode=TwoWay}" Margin="2">Decibel logarithmic scale</CheckBox>
+            <CheckBox IsChecked="{Binding IsUseDecibelsAdjust, Mode=TwoWay}" IsEnabled="{Binding IsUseDecibels}" Margin="2">Auto adjust dB scale</CheckBox>
+            <CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform framed</CheckBox>
             <CheckBox IsChecked="{Binding IsWaveFillVisible, Mode=TwoWay}" Margin="2">Waveform Bars</CheckBox>
             <CheckBox IsChecked="{Binding IsEnvelopeVisible, Mode=TwoWay}" Margin="2">Envelope</CheckBox>
             <CheckBox IsChecked="{Binding IsEnvelopeFilled, Mode=TwoWay}" IsEnabled="{Binding IsEnvelopeVisible}" Margin="2">Envelope Fill</CheckBox>
