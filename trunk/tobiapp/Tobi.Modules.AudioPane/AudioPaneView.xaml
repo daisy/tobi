@@ -34,7 +34,12 @@
                       HorizontalAlignment="Stretch">
           <StackPanel Orientation="Vertical">
             <CheckBox IsChecked="{Binding IsUseDecibels, Mode=TwoWay}" Margin="2">Decibel logarithmic scale</CheckBox>
+            <CheckBox IsChecked="{Binding IsUseDecibelsNoAverage, Mode=TwoWay}" IsEnabled="{Binding IsUseDecibels}" Margin="2">Use min/max instead of average</CheckBox>
             <CheckBox IsChecked="{Binding IsUseDecibelsAdjust, Mode=TwoWay}" IsEnabled="{Binding IsUseDecibels}" Margin="2">Auto adjust dB scale</CheckBox>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Decibel resolutions: </TextBlock>
+              <ComboBox ItemsSource="{Binding DecibelResolutions, Mode=OneWay}" SelectedItem="{Binding DecibelResolution, Mode=TwoWay}"  IsEnabled="{Binding IsUseDecibels}" Margin="2"/>
+            </StackPanel>
             <CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform framed</CheckBox>
             <CheckBox IsChecked="{Binding IsWaveFillVisible, Mode=TwoWay}" Margin="2">Waveform Bars</CheckBox>
             <CheckBox IsChecked="{Binding IsEnvelopeVisible, Mode=TwoWay}" Margin="2">Envelope</CheckBox>
