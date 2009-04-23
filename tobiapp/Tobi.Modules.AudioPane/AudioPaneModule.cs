@@ -11,7 +11,7 @@ namespace Tobi.Modules.AudioPane
     ///</summary>
     public class AudioPaneModule : IModule
     {
-        private readonly IUnityContainer m_container;
+        private readonly IUnityContainer m_Container;
 
         ///<summary>
         /// Dependency Injection constructor
@@ -19,7 +19,7 @@ namespace Tobi.Modules.AudioPane
         ///<param name="container">The DI container</param>
         public AudioPaneModule(IUnityContainer container)
         {
-            m_container = container;
+            m_Container = container;
         }
 
         ///<summary>
@@ -28,12 +28,13 @@ namespace Tobi.Modules.AudioPane
         ///</summary>
         public void Initialize()
         {
-            m_container.RegisterType<AudioPaneView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<AudioPaneViewModel>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<AudioPaneView>(new ContainerControlledLifetimeManager());
 
-            var regionManager = m_container.Resolve<IRegionManager>();
+            var regionManager = m_Container.Resolve<IRegionManager>();
             IRegion targetRegion = regionManager.Regions[RegionNames.AudioPane];
 
-            var view = m_container.Resolve<AudioPaneView>();
+            var view = m_Container.Resolve<AudioPaneView>();
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }
