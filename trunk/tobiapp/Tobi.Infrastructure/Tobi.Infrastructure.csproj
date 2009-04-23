@@ -71,6 +71,7 @@
       <DependentUpon>SmallColorPicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserInterfaceStrings.cs" />
+    <Compile Include="ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">

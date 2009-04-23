@@ -67,12 +67,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioPaneViewModel.cs" />
+    <Compile Include="AudioPaneViewModelPartial.cs" />
+    <Compile Include="AudioPaneViewPartial.cs" />
+    <Compile Include="IAudioPaneView.cs" />
     <Compile Include="PeakMeterBarData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AudioPaneModule.cs" />
     <Compile Include="AudioPaneView.xaml.cs">
       <DependentUpon>AudioPaneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WaveFormLoadingAdorner.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AudioPaneView.xaml">
