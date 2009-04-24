@@ -131,7 +131,7 @@ namespace Tobi.Modules.NavigationPane
         private void UpdatePageListSelection(TreeNode node)
         {
             Page prevPage = null;
-            foreach (Page page in m_Pages)
+            foreach (Page page in Pages)
             {
                 TextElement textElement = page.TextElement;
                 TreeNode treeNode = textElement.Tag as TreeNode;

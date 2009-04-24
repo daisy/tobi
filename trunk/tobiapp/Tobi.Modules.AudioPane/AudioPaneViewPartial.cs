@@ -386,7 +386,7 @@ namespace Tobi.Modules.AudioPane
                 GeometryDrawing geoDraw2_envelope = null;
                 if (ViewModel.IsEnvelopeVisible)
                 {
-                    createGeomerty_envelope(out geoDraw1_envelope, out geoDraw2_envelope,
+                    createGeometry_envelope(out geoDraw1_envelope, out geoDraw2_envelope,
                                             ref listTopPointsCh1, ref listTopPointsCh2,
                                             ref listBottomPointsCh1, ref listBottomPointsCh2,
                                             dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
@@ -558,7 +558,7 @@ namespace Tobi.Modules.AudioPane
         }
 
 
-        private void createGeomerty_envelope(out GeometryDrawing geoDraw1_envelope, out GeometryDrawing geoDraw2_envelope,
+        private void createGeometry_envelope(out GeometryDrawing geoDraw1_envelope, out GeometryDrawing geoDraw2_envelope,
             ref List<Point> listTopPointsCh1, ref List<Point> listTopPointsCh2,
             ref List<Point> listBottomPointsCh1, ref List<Point> listBottomPointsCh2,
             double dBMinHardCoded, double dBMinReached,
