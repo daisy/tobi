@@ -5,7 +5,8 @@
         
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi"
-    xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock" 
+    xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock"
+    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure" 
 
     Title="{Binding WindowTitle}"
     Closing="OnClosing"
@@ -60,7 +61,7 @@
     <!-- ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/ -->
 
     <!--StatusBar-->
-    <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/ -->
+    <ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/>
     
     
     <ad:DockingManager x:Name="dockManager">
@@ -74,9 +75,10 @@
 
           <ad:DocumentPane>
 
-            <!-- ad:DocumentContent Title="Placeholder" x:Name="DocumentContent2">
+            <ad:DocumentContent Title="Placeholder" x:Name="DocumentContent2">
 
-              <TabControl>
+              <UI:LoadingUserControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+              <!-- TabControl>
                 <TabItem Header="TabItem Header 1" >
                   <Button x:Name="ButtonDefault">Click 1</Button>
                 </TabItem>
@@ -86,8 +88,8 @@
                     <Button x:Name="ButtonDefault3">Click 2.2</Button>
                   </StackPanel>
                 </TabItem>
-              </TabControl>
-            </ad:DocumentContent -->
+              </TabControl -->
+            </ad:DocumentContent>
 
             <ad:DocumentContent Title="Document" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}" ContentTypeDescription="Urakawa SDK Presentation">
 

@@ -45,6 +45,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -63,13 +66,25 @@
     <Compile Include="Sizes.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TreeViewHelper.cs" />
+    <Compile Include="UI\BindableRun.cs" />
+    <Compile Include="UI\BindableRunTextMedia.cs" />
     <Compile Include="UI\ComboColorPicker.xaml.cs">
       <DependentUpon>ComboColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
+    <Compile Include="UI\KeyDownCommandBinding.cs" />
+    <Compile Include="UI\LoadingUserControl.xaml.cs">
+      <DependentUpon>LoadingUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\LogicalTreeHelperHelper.cs" />
+    <Compile Include="UI\Placeholder.cs" />
+    <Compile Include="UI\RunExtensions.cs" />
     <Compile Include="UI\SmallColorPicker.xaml.cs">
       <DependentUpon>SmallColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\TextMediaTextBox.cs" />
+    <Compile Include="UI\UiClipboardImageHelper.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
@@ -203,6 +218,10 @@
     <Page Include="UI\ComboColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\LoadingUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SmallColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>

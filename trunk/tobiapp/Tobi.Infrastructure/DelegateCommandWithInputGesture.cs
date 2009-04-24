@@ -7,7 +7,8 @@ using Microsoft.Practices.Composite.Presentation.Commands;
 namespace Tobi.Infrastructure
 {
     ///<summary>
-    /// Extension to <see cref="DelegateCommand"/> that supports a <see cref="KeyGesture"/> (for example, to display in <see cref="MenuItem"/>)
+    /// Extension to <see cref="DelegateCommand<T>"/> that supports a <see cref="KeyGesture"/>
+    /// (for example, to display a shortcut in <see cref="MenuItem"/>, next to the label)
     ///</summary>
     ///<typeparam name="T"></typeparam>
     public class DelegateCommandWithInputGesture<T> : DelegateCommand<T>
@@ -23,11 +24,13 @@ namespace Tobi.Infrastructure
         {
             KeyGesture = keyGesture;
         }
+
         public KeyGesture KeyGesture
         {
             get;
             set;
         }
+
         public string KeyGestureText
         {
             get

@@ -58,12 +58,12 @@ namespace Tobi
         protected override IModuleCatalog GetModuleCatalog()
         {
             return new ModuleCatalog()
-                .AddModule(typeof(MenuBarModule))
-                .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
-                .AddModule(typeof(DocumentPaneModule))
-                .AddModule(typeof(AudioPaneModule));
+                .AddModule(typeof (MenuBarModule))
+                .AddModule(typeof (NavigationPaneModule), "DocumentPaneModule")
+                .AddModule(typeof (DocumentPaneModule))
+                .AddModule(typeof (AudioPaneModule))
+                .AddModule(typeof (StatusBarModule));
 
-                //.AddModule(typeof(StatusBarModule))
                 //.AddModule(typeof(ToolBarsModule))
             
                 //.AddModule(typeof(UserInterfaceZoomModule))
