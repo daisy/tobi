@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Threading;
 using AudioLib;
 using AudioLib.Events.Player;
 using AudioLib.Events.VuMeter;
@@ -107,8 +106,14 @@ namespace Tobi.Modules.AudioPane
             {
                 m_Player.Stop();
             }
+            LastPlayHeadTime = 0;
 
-            resetWaveForm();
+            if (View != null)
+            {
+                View.RefreshUI_WaveFormBackground();
+            
+                View.RefreshUI_AllReset();
+            }
 
             m_CurrentTreeNode = node;
             m_CurrentSubTreeNode = node;
@@ -178,7 +183,6 @@ namespace Tobi.Modules.AudioPane
 
         #endregion Private Class Attributes
 
-
         #region Public Properties
 
         private string m_WavFilePath;
@@ -198,37 +202,143 @@ namespace Tobi.Modules.AudioPane
 
         #endregion Public Properties
 
-        #region WaveForm
+        #region Audio Recorder
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_ForcePlayAfterWaveFormLoaded = false;
-        // ReSharper restore RedundantDefaultFieldInitializer
+        private AudioRecorder m_Recorder;
+
+        // ReSharper disable MemberCanBeMadeStatic.Local
+        private void OnRecorderStateChanged(object sender, AudioLib.Events.Recorder.StateChangedEventArgs e)
+        // ReSharper restore MemberCanBeMadeStatic.Local
+        {
+            //m_Recorder.State == AudioLib.AudioRecorderState.Monitoring
+        }
+
+        #endregion Audio Recorder
+
+        #region VuMeter / PeakMeter
+
+        private VuMeter m_VuMeter;
+
+        public PeakMeterBarData PeakMeterBarDataCh1 { get; set; }
+        public PeakMeterBarData PeakMeterBarDataCh2 { get; set; }
+
+        private double[] m_PeakMeterValues;
+
+        public int PeakOverloadCountCh1
+        {
+            get
+            {
+                return PeakMeterBarDataCh1.PeakOverloadCount;
+            }
+            set
+            {
+                if (PeakMeterBarDataCh1.PeakOverloadCount == value) return;
+                PeakMeterBarDataCh1.PeakOverloadCount = value;
+                OnPropertyChanged("PeakOverloadCountCh1");
+            }
+        }
+
+        public int PeakOverloadCountCh2
+        {
+            get
+            {
+                return PeakMeterBarDataCh2.PeakOverloadCount;
+            }
+            set
+            {
+                if (PeakMeterBarDataCh2.PeakOverloadCount == value) return;
+                PeakMeterBarDataCh2.PeakOverloadCount = value;
+                OnPropertyChanged("PeakOverloadCountCh2");
+            }
+        }
+
+        public void UpdatePeakMeter()
+        {
+            if (m_PcmFormat == null || m_Player.State != AudioPlayerState.Playing)
+            {
+                if (View != null)
+                {
+                    View.RefreshUI_PeakMeterBlackout(true);
+                }
+                return;
+            }
+            PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
+            if (m_PcmFormat.NumberOfChannels > 1)
+            {
+                PeakMeterBarDataCh2.ValueDb = m_PeakMeterValues[1];
+            }
+
+            if (View != null)
+            {
+                View.RefreshUI_PeakMeterBlackout(false);
+
+                View.RefreshUI_PeakMeter();
+            }
+        }
+
+        #region Event / Callbacks
+
+        private void OnResetVuMeter(object sender, ResetEventArgs e)
+        {
+            PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
+            //PeakMeterBarDataCh1.ForceFullFallback();
+
+            PeakMeterBarDataCh2.ValueDb = Double.NegativeInfinity;
+            //PeakMeterBarDataCh2.ForceFullFallback();
+
+            m_PeakMeterValues[0] = PeakMeterBarDataCh1.ValueDb;
+            m_PeakMeterValues[1] = PeakMeterBarDataCh2.ValueDb;
+
+            UpdatePeakMeter();
+
+            AudioPlayer_UpdateWaveFormPlayHead();
+        }
+
+        private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
+        {
+            if (e.PeakValues != null && e.PeakValues.Length > 0)
+            {
+                m_PeakMeterValues[0] = e.PeakValues[0];
+                if (m_PcmFormat.NumberOfChannels > 1)
+                {
+                    m_PeakMeterValues[1] = e.PeakValues[1];
+                }
+            }
+        }
+
+        private void OnPeakOverload(object sender, PeakOverloadEventArgs e)
+        {
+            if (e != null)
+            {
+                if (e.Channel == 1)
+                {
+                    PeakOverloadCountCh1++;
+                }
+                else if (e.Channel == 2)
+                {
+                    PeakOverloadCountCh2++;
+                }
+            }
+        }
+
+
+
+        #endregion Event / Callbacks
+
+        #endregion VuMeter / PeakMeter
+
+        #region Audio Player
+
         private Stream m_PlayStream;
         private List<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
         private long m_DataLength;
         private PCMFormatInfo m_PcmFormat;
         private long m_StreamRiffHeaderEndPos;
 
-        private DispatcherTimer m_PlaybackTimer;
-        private DispatcherTimer m_WaveFormLoadTimer;
+        private AudioPlayer m_Player;
+        private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
 
-        public double ConvertByteToMilliseconds(double bytes)
-        {
-            if (m_PcmFormat == null)
-            {
-                return 0;
-            }
-            return 1000.0 * bytes / ((double)m_PcmFormat.SampleRate * m_PcmFormat.NumberOfChannels * m_PcmFormat.BitDepth / 8.0);
-        }
-
-        public double ConvertMillisecondsToByte(double ms)
-        {
-            if (m_PcmFormat == null)
-            {
-                return 0;
-            }
-            return (ms * m_PcmFormat.SampleRate * m_PcmFormat.NumberOfChannels * m_PcmFormat.BitDepth / 8.0) / 1000.0;
-        }
+        public double LastPlayHeadTime { get; private set; }
 
         private void loadAndPlay()
         {
@@ -269,81 +379,12 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
-            startWaveFormLoadTimer(10, true);
-        }
-
-        private void startWaveFormLoadTimer(double delay, bool play)
-        {
-            if (m_PcmFormat == null)
-            {
-                return;
-            }
-
-            m_ForcePlayAfterWaveFormLoaded = play;
-
             if (View != null)
             {
-                View.RefreshUI_LoadingMessage(true);
+                View.StartWaveFormLoadTimer(10, true);
             }
-
-            if (m_WaveFormLoadTimer == null)
-            {
-                m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Background);
-                m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
-                // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-                if (delay == 0)
-                // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
-                {
-                    m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);//TODO: does this work ?? (immediate dispatch)
-                }
-                else
-                {
-                    m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
-                }
-            }
-            else if (m_WaveFormLoadTimer.IsEnabled)
-            {
-                m_WaveFormLoadTimer.Stop();
-            }
-
-            m_WaveFormLoadTimer.Start();
         }
 
-        private void stopWaveFormTimer()
-        {
-            if (m_PlaybackTimer != null && m_PlaybackTimer.IsEnabled)
-            {
-                m_PlaybackTimer.Stop();
-            }
-            m_PlaybackTimer = null;
-        }
-        private void startWaveFormTimer()
-        {
-            if (m_PlaybackTimer == null)
-            {
-                m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
-                m_PlaybackTimer.Tick += OnPlaybackTimerTick;
-
-                double interval = 60;
-
-                if (View != null)
-                {
-                    interval = ConvertByteToMilliseconds(View.BytesPerPixel);
-                }
-
-                if (interval < 60.0)
-                {
-                    interval = 60;
-                }
-                m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
-            }
-            else if (m_PlaybackTimer.IsEnabled)
-            {
-                return;
-            }
-
-            m_PlaybackTimer.Start();
-        }
         private void updateWaveFormPlayHead(double time)
         {
             LastPlayHeadTime = time;
@@ -360,7 +401,7 @@ namespace Tobi.Modules.AudioPane
 
             TreeNode subTreeNode = null;
 
-            long byteOffset = GetPcmFormat().GetByteForTime(new Time(LastPlayHeadTime));
+            long byteOffset = AudioPlayer_GetPcmFormat().GetByteForTime(new Time(LastPlayHeadTime));
 
             long sumData = 0;
             long sumDataPrev = 0;
@@ -392,7 +433,25 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private void updateWaveFormPlayHead()
+        public double AudioPlayer_ConvertByteToMilliseconds(double bytes)
+        {
+            if (m_PcmFormat == null)
+            {
+                return 0;
+            }
+            return 1000.0 * bytes / ((double)m_PcmFormat.SampleRate * m_PcmFormat.NumberOfChannels * m_PcmFormat.BitDepth / 8.0);
+        }
+
+        public double AudioPlayer_ConvertMillisecondsToByte(double ms)
+        {
+            if (m_PcmFormat == null)
+            {
+                return 0;
+            }
+            return (ms * m_PcmFormat.SampleRate * m_PcmFormat.NumberOfChannels * m_PcmFormat.BitDepth / 8.0) / 1000.0;
+        }
+
+        public void AudioPlayer_UpdateWaveFormPlayHead()
         {
             if (m_PcmFormat == null)
             {
@@ -407,27 +466,7 @@ namespace Tobi.Modules.AudioPane
             updateWaveFormPlayHead(time);
         }
 
-        private void resetWaveFormBackground()
-        {
-            if (View != null)
-            {
-                View.RefreshUI_WaveFormBackground();
-            }
-        }
-
-        private void resetWaveForm()
-        {
-            resetWaveFormBackground();
-
-            LastPlayHeadTime = 0;
-
-            if (View != null)
-            {
-                View.RefreshUI_AllReset();
-            }
-        }
-
-        private void loadWaveForm(bool play)
+        public void AudioPlayer_LoadWaveForm(bool play)
         {
             if (m_PcmFormat == null)
             {
@@ -485,197 +524,6 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        #region Event / Callbacks
-
-        private void OnPlaybackTimerTick(object sender, EventArgs e)
-        {
-            updateWaveFormPlayHead();
-        }
-
-        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
-        {
-            if (View != null)
-            {
-                View.RefreshUI_LoadingMessage(true);
-            }
-            m_WaveFormLoadTimer.Stop();
-            loadWaveForm(m_ForcePlayAfterWaveFormLoaded);
-        }
-
-        #endregion Event / Callbacks
-
-        #endregion WaveForm
-
-        #region Audio Recorder
-
-        private AudioRecorder m_Recorder;
-
-        // ReSharper disable MemberCanBeMadeStatic.Local
-        private void OnRecorderStateChanged(object sender, AudioLib.Events.Recorder.StateChangedEventArgs e)
-        // ReSharper restore MemberCanBeMadeStatic.Local
-        {
-            //m_Recorder.State == AudioLib.AudioRecorderState.Monitoring
-        }
-
-        #endregion Audio Recorder
-
-        #region VuMeter / PeakMeter
-
-        private VuMeter m_VuMeter;
-
-        public PeakMeterBarData PeakMeterBarDataCh1 { get; set; }
-        public PeakMeterBarData PeakMeterBarDataCh2 { get; set; }
-
-        private double[] m_PeakMeterValues;
-        private DispatcherTimer m_PeakMeterTimer;
-
-        public int PeakOverloadCountCh1
-        {
-            get
-            {
-                return PeakMeterBarDataCh1.PeakOverloadCount;
-            }
-            set
-            {
-                if (PeakMeterBarDataCh1.PeakOverloadCount == value) return;
-                PeakMeterBarDataCh1.PeakOverloadCount = value;
-                OnPropertyChanged("PeakOverloadCountCh1");
-            }
-        }
-
-        public int PeakOverloadCountCh2
-        {
-            get
-            {
-                return PeakMeterBarDataCh2.PeakOverloadCount;
-            }
-            set
-            {
-                if (PeakMeterBarDataCh2.PeakOverloadCount == value) return;
-                PeakMeterBarDataCh2.PeakOverloadCount = value;
-                OnPropertyChanged("PeakOverloadCountCh2");
-            }
-        }
-
-
-        private void stopPeakMeterTimer()
-        {
-            if (m_PeakMeterTimer != null && m_PeakMeterTimer.IsEnabled)
-            {
-                m_PeakMeterTimer.Stop();
-            }
-            m_PeakMeterTimer = null;
-        }
-
-        private void startPeakMeterTimer()
-        {
-            if (m_PeakMeterTimer == null)
-            {
-                m_PeakMeterTimer = new DispatcherTimer(DispatcherPriority.Input);
-                m_PeakMeterTimer.Tick += OnPeakMeterTimerTick;
-                m_PeakMeterTimer.Interval = TimeSpan.FromMilliseconds(60);
-            }
-            else if (m_PeakMeterTimer.IsEnabled)
-            {
-                return;
-            }
-
-            m_PeakMeterTimer.Start();
-        }
-
-
-        private void resetPeakMeterValues()
-        {
-            PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
-            //PeakMeterBarDataCh1.ForceFullFallback();
-
-            PeakMeterBarDataCh2.ValueDb = Double.NegativeInfinity;
-            //PeakMeterBarDataCh2.ForceFullFallback();
-
-            m_PeakMeterValues[0] = PeakMeterBarDataCh1.ValueDb;
-            m_PeakMeterValues[1] = PeakMeterBarDataCh2.ValueDb;
-
-            updatePeakMeter();
-        }
-
-
-        public void updatePeakMeter()
-        {
-            if (m_PcmFormat == null || m_Player.State != AudioPlayerState.Playing)
-            {
-                if (View != null)
-                {
-                    View.RefreshUI_PeakMeterBlackout(true);
-                }
-                return;
-            }
-            if (View != null)
-            {
-                View.RefreshUI_PeakMeterBlackout(false);
-
-                PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
-                if (m_PcmFormat.NumberOfChannels > 1)
-                {
-                    PeakMeterBarDataCh2.ValueDb = m_PeakMeterValues[1];
-                }
-
-                View.RefreshUI_PeakMeter();
-            }
-        }
-
-        #region Event / Callbacks
-
-        private void OnResetVuMeter(object sender, ResetEventArgs e)
-        {
-            resetPeakMeterValues();
-
-            updateWaveFormPlayHead();
-        }
-
-        private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
-        {
-            if (e.PeakValues != null && e.PeakValues.Length > 0)
-            {
-                m_PeakMeterValues[0] = e.PeakValues[0];
-                if (m_PcmFormat.NumberOfChannels > 1)
-                {
-                    m_PeakMeterValues[1] = e.PeakValues[1];
-                }
-            }
-        }
-
-        private void OnPeakOverload(object sender, PeakOverloadEventArgs e)
-        {
-            if (e != null)
-            {
-                if (e.Channel == 1)
-                {
-                    PeakOverloadCountCh1++;
-                }
-                else if (e.Channel == 2)
-                {
-                    PeakOverloadCountCh2++;
-                }
-            }
-        }
-
-
-        private void OnPeakMeterTimerTick(object sender, EventArgs e)
-        {
-            updatePeakMeter();
-        }
-
-        #endregion Event / Callbacks
-
-        #endregion VuMeter / PeakMeter
-
-        #region Audio Player
-
-        private AudioPlayer m_Player;
-        private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
-
-        public double LastPlayHeadTime { get; private set; }
-
         /// <summary>
         /// If player exists and is playing, then pause. Otherwise if paused or stopped, then plays.
         /// </summary>
@@ -719,14 +567,14 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Play(m_CurrentAudioStreamProvider,
                             m_PcmFormat.GetDuration(m_DataLength),
                             m_PcmFormat,
-                            ConvertByteToMilliseconds(bytes)
+                            AudioPlayer_ConvertByteToMilliseconds(bytes)
                             );
             }
             else if (m_Player.State == AudioPlayerState.Playing)
             {
-                m_Player.CurrentTimePosition = ConvertByteToMilliseconds(bytes);
+                m_Player.CurrentTimePosition = AudioPlayer_ConvertByteToMilliseconds(bytes);
             }
-            updateWaveFormPlayHead();
+            AudioPlayer_UpdateWaveFormPlayHead();
         }
 
         /// <summary>
@@ -759,7 +607,14 @@ namespace Tobi.Modules.AudioPane
         {
             FilePath = path;
 
-            resetWaveForm();
+            LastPlayHeadTime = 0;
+
+            if (View != null)
+            {
+                View.RefreshUI_WaveFormBackground();
+
+                View.RefreshUI_AllReset();
+            }
 
             m_CurrentTreeNode = null;
             m_CurrentSubTreeNode = null;
@@ -800,6 +655,32 @@ namespace Tobi.Modules.AudioPane
             loadAndPlay();
         }
 
+        public PCMFormatInfo AudioPlayer_GetPcmFormat()
+        {
+            return m_PcmFormat;
+        }
+
+        public Stream AudioPlayer_GetPlayStream()
+        {
+            return m_PlayStream;
+        }
+
+        public void AudioPlayer_ClosePlayStream()
+        {
+            m_PlayStream.Close();
+            m_PlayStream = null;
+        }
+
+        public void AudioPlayer_ResetPlayStreamPosition()
+        {
+            m_PlayStream.Position = m_StreamRiffHeaderEndPos;
+            m_PlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);
+        }
+
+        public List<TreeNodeAndStreamDataLength> AudioPlayer_GetPlayStreamMarkers()
+        {
+            return m_PlayStreamMarkers;
+        }
 
         #region Event / Callbacks
 
@@ -811,7 +692,7 @@ namespace Tobi.Modules.AudioPane
                 updateWaveFormPlayHead(time);
             }
 
-            updatePeakMeter();
+            UpdatePeakMeter();
 
             if (FilePath.Length > 0 || m_CurrentTreeNode == null)
             {
@@ -830,10 +711,13 @@ namespace Tobi.Modules.AudioPane
                 && (m_Player.State == AudioPlayerState.Paused
                     || m_Player.State == AudioPlayerState.Stopped))
             {
-                updatePeakMeter();
+                UpdatePeakMeter();
                 m_PlayStream = null;
-                stopWaveFormTimer();
-                stopPeakMeterTimer();
+                if (View != null)
+                {
+                    View.StopWaveFormTimer();
+                    View.StopPeakMeterTimer();
+                }
             }
             if (m_Player.State == AudioPlayerState.Playing)
             {
@@ -842,64 +726,17 @@ namespace Tobi.Modules.AudioPane
                     PeakOverloadCountCh1 = 0;
                     PeakOverloadCountCh2 = 0;
                 }
-                updatePeakMeter();
-                startWaveFormTimer();
-                startPeakMeterTimer();
+                UpdatePeakMeter();
+                if (View != null)
+                {
+                    View.StartWaveFormTimer();
+                    View.StartPeakMeterTimer();
+                }
             }
         }
 
         #endregion Event / Callbacks
 
-
         #endregion Audio Player
-
-        public void ReloadAfterSizeChanged()
-        {
-            updateWaveFormPlayHead();
-
-            if (m_PcmFormat == null) //!e.WidthChanged || 
-            {
-                return;
-            }
-            startWaveFormLoadTimer(500, false);
-        }
-
-        #region General stuff
-
-
-
-        #endregion General stuff
-
-        public PCMFormatInfo GetPcmFormat()
-        {
-            return m_PcmFormat;
-        }
-
-        public Stream GetPlayStream()
-        {
-            return m_PlayStream;
-        }
-
-        public void ClosePlayStream()
-        {
-            m_PlayStream.Close();
-            m_PlayStream = null;
-        }
-
-        public void ResetPlayStreamPosition()
-        {
-            m_PlayStream.Position = m_StreamRiffHeaderEndPos;
-            m_PlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);
-        }
-
-        public List<TreeNodeAndStreamDataLength> GetPlayStreamMarkers()
-        {
-            return m_PlayStreamMarkers;
-        }
-
-        public long GetDataLength()
-        {
-            return m_DataLength;
-        }
     }
 }
