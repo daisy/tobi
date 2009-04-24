@@ -12,7 +12,13 @@ namespace Tobi.Modules.StatusBar
         ///</summary>
         public StatusBarView()
         {
+            DataContext = this;
             InitializeComponent();
+        }
+
+        public string DisplayString
+        {
+            get { return "Testing..."; }
         }
     }
 
