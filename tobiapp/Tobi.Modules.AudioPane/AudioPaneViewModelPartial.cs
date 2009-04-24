@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-using Colors=System.Windows.Media.Colors;
+using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -12,9 +12,9 @@ namespace Tobi.Modules.AudioPane
     {
         #region WaveForm configuration
 
-// ReSharper disable RedundantDefaultFieldInitializer
+        // ReSharper disable RedundantDefaultFieldInitializer
         private List<Double> m_DecibelResolutions = null;
-// ReSharper restore RedundantDefaultFieldInitializer
+        // ReSharper restore RedundantDefaultFieldInitializer
         public List<Double> DecibelResolutions
         {
             get
@@ -66,22 +66,26 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_DecibelResolution == value) return;
                 m_DecibelResolution = value;
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("DecibelResolution");
             }
         }
 
-// ReSharper disable RedundantDefaultFieldInitializer
+        // ReSharper disable RedundantDefaultFieldInitializer
         private List<Double> m_WaveStepXs = null;
-// ReSharper restore RedundantDefaultFieldInitializer
+        // ReSharper restore RedundantDefaultFieldInitializer
         public List<Double> WaveStepXs
         {
             get
             {
                 if (m_WaveStepXs == null)
                 {
-                    m_WaveStepXs = new List<double> {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+                    m_WaveStepXs = new List<double> { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
                 }
                 return m_WaveStepXs;
             }
@@ -98,8 +102,12 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_WaveStepX == value) return;
                 m_WaveStepX = value;
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("WaveStepX");
             }
         }
@@ -116,14 +124,17 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsUseDecibelsAdjust == value) return;
                 m_IsUseDecibelsAdjust = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsUseDecibelsAdjust");
             }
         }
 
-// ReSharper disable RedundantDefaultFieldInitializer
+        // ReSharper disable RedundantDefaultFieldInitializer
         private bool m_IsUseDecibels = false;
-// ReSharper restore RedundantDefaultFieldInitializer
+        // ReSharper restore RedundantDefaultFieldInitializer
         public bool IsUseDecibels
         {
             get
@@ -135,14 +146,17 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsUseDecibels == value) return;
                 m_IsUseDecibels = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsUseDecibels");
             }
         }
 
-// ReSharper disable RedundantDefaultFieldInitializer
+        // ReSharper disable RedundantDefaultFieldInitializer
         private bool m_IsUseDecibelsNoAverage = false;
-// ReSharper restore RedundantDefaultFieldInitializer
+        // ReSharper restore RedundantDefaultFieldInitializer
         public bool IsUseDecibelsNoAverage
         {
             get
@@ -154,7 +168,10 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsUseDecibelsNoAverage == value) return;
                 m_IsUseDecibelsNoAverage = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsUseDecibelsNoAverage");
             }
         }
@@ -189,7 +206,10 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsBackgroundVisible == value) return;
                 m_IsBackgroundVisible = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsBackgroundVisible");
             }
         }
@@ -212,9 +232,9 @@ namespace Tobi.Modules.AudioPane
             }
         }*/
 
-// ReSharper disable RedundantDefaultFieldInitializer
+        // ReSharper disable RedundantDefaultFieldInitializer
         private bool m_IsWaveFillVisible = false;
-// ReSharper restore RedundantDefaultFieldInitializer
+        // ReSharper restore RedundantDefaultFieldInitializer
         public bool IsWaveFillVisible
         {
             get
@@ -226,7 +246,10 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsWaveFillVisible == value) return;
                 m_IsWaveFillVisible = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsWaveFillVisible");
             }
         }
@@ -243,7 +266,10 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsEnvelopeVisible == value) return;
                 m_IsEnvelopeVisible = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsEnvelopeVisible");
             }
         }
@@ -260,7 +286,10 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsEnvelopeFilled == value) return;
                 m_IsEnvelopeFilled = value;
                 //resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("IsEnvelopeFilled");
             }
         }
@@ -280,7 +309,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.RefreshUI_WaveFormColors();
                 }
-                //updateWaveFormPlayHead();
+                //AudioPlayer_UpdateWaveFormPlayHead();
                 OnPropertyChanged("ColorPlayhead");
             }
         }
@@ -300,7 +329,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.RefreshUI_WaveFormColors();
                 }
-                //updateWaveFormPlayHead();
+                //AudioPlayer_UpdateWaveFormPlayHead();
                 OnPropertyChanged("ColorPlayheadFill");
             }
         }
@@ -316,8 +345,12 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorWaveBackground == value) return;
                 m_ColorWaveBackground = value;
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("ColorWaveBackground");
             }
         }
@@ -338,8 +371,12 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.RefreshUI_WaveFormColors();
                 }
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("ColorMarkers");
             }
         }
@@ -355,8 +392,12 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorWaveBars == value) return;
                 m_ColorWaveBars = value;
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("ColorWaveBars");
             }
         }
@@ -372,8 +413,13 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorEnvelopeFill == value) return;
                 m_ColorEnvelopeFill = value;
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("ColorEnvelopeFill");
             }
         }
@@ -389,8 +435,12 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorEnvelopeOutline == value) return;
                 m_ColorEnvelopeOutline = value;
-                resetWaveFormBackground();
-                startWaveFormLoadTimer(20, false);
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormBackground();
+                
+                    View.StartWaveFormLoadTimer(20, false);
+                }
                 OnPropertyChanged("ColorEnvelopeOutline");
             }
         }

@@ -18,6 +18,11 @@
         void RefreshUI_WaveFormColors();
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
 // ReSharper restore InconsistentNaming
-        double BytesPerPixel { get; set;}
+        double BytesPerPixel { get; set; }
+        void StopWaveFormTimer();
+        void StartWaveFormTimer();
+        void StopPeakMeterTimer();
+        void StartPeakMeterTimer();
+        void StartWaveFormLoadTimer(double delay, bool play);
     }
 }

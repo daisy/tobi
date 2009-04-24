@@ -70,7 +70,7 @@ namespace Tobi.Modules.AudioPane
 
         private void OnPeakMeterCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ViewModel.updatePeakMeter();
+            ViewModel.UpdatePeakMeter();
         }
 
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
@@ -92,7 +92,12 @@ namespace Tobi.Modules.AudioPane
 
             BytesPerPixel = ViewModel.AudioPlayer_GetDataLength() / width;
 
-            ViewModel.ReloadAfterSizeChanged();
+            ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
+            StartWaveFormLoadTimer(500, false);
         }
 
 
@@ -212,13 +217,11 @@ namespace Tobi.Modules.AudioPane
             PeakMeterPathCh1.InvalidateVisual();
 
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
-
         }
 
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
-        /// <param name="bytes"></param>
         public void RefreshUI_WaveFormPlayHead()
         {
             if (!Dispatcher.CheckAccess())
@@ -227,7 +230,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            long bytes = ViewModel.GetPcmFormat().GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
+            long bytes = ViewModel.AudioPlayer_GetPcmFormat().GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
             double pixels = bytes / BytesPerPixel;
 
             StreamGeometry geometry;
@@ -284,8 +287,10 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+// ReSharper disable RedundantDefaultFieldInitializer
         private long m_WaveFormChunkMarkersLeftBytes = 0;
         private long m_WaveFormChunkMarkersRightBytes = 0;
+// ReSharper restore RedundantDefaultFieldInitializer
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -389,7 +394,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             double barWidth = PeakMeterCanvas.ActualWidth;
-            if (ViewModel.GetPcmFormat().NumberOfChannels > 1)
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
             {
                 barWidth = barWidth / 2;
             }
@@ -418,7 +423,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             StreamGeometry geometry2 = null;
-            if (ViewModel.GetPcmFormat().NumberOfChannels > 1)
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -451,7 +456,7 @@ namespace Tobi.Modules.AudioPane
             {
                 PeakMeterPathCh1.InvalidateVisual();
             }
-            if (ViewModel.GetPcmFormat().NumberOfChannels > 1)
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -578,5 +583,131 @@ namespace Tobi.Modules.AudioPane
                 }
             }
         }
+
+        #region DispatcherTimers
+
+        private DispatcherTimer m_PlaybackTimer;
+
+        public void StopWaveFormTimer()
+        {
+            if (m_PlaybackTimer != null && m_PlaybackTimer.IsEnabled)
+            {
+                m_PlaybackTimer.Stop();
+            }
+            m_PlaybackTimer = null;
+        }
+
+        public void StartWaveFormTimer()
+        {
+            if (m_PlaybackTimer == null)
+            {
+                m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
+                m_PlaybackTimer.Tick += OnPlaybackTimerTick;
+
+// ReSharper disable RedundantAssignment
+                double interval = 60;
+// ReSharper restore RedundantAssignment
+
+                interval = ViewModel.AudioPlayer_ConvertByteToMilliseconds(BytesPerPixel);
+
+                if (interval < 60.0)
+                {
+                    interval = 60;
+                }
+                m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
+            }
+            else if (m_PlaybackTimer.IsEnabled)
+            {
+                return;
+            }
+
+            m_PlaybackTimer.Start();
+        }
+
+        private void OnPlaybackTimerTick(object sender, EventArgs e)
+        {
+            ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+        }
+
+        private DispatcherTimer m_PeakMeterTimer;
+
+        public void StopPeakMeterTimer()
+        {
+            if (m_PeakMeterTimer != null && m_PeakMeterTimer.IsEnabled)
+            {
+                m_PeakMeterTimer.Stop();
+            }
+            m_PeakMeterTimer = null;
+        }
+
+        public void StartPeakMeterTimer()
+        {
+            if (m_PeakMeterTimer == null)
+            {
+                m_PeakMeterTimer = new DispatcherTimer(DispatcherPriority.Input);
+                m_PeakMeterTimer.Tick += OnPeakMeterTimerTick;
+                m_PeakMeterTimer.Interval = TimeSpan.FromMilliseconds(60);
+            }
+            else if (m_PeakMeterTimer.IsEnabled)
+            {
+                return;
+            }
+
+            m_PeakMeterTimer.Start();
+        }
+
+        private void OnPeakMeterTimerTick(object sender, EventArgs e)
+        {
+            ViewModel.UpdatePeakMeter();
+        }
+
+
+        private DispatcherTimer m_WaveFormLoadTimer;
+
+        // ReSharper disable RedundantDefaultFieldInitializer
+        private bool m_ForcePlayAfterWaveFormLoaded = false;
+        // ReSharper restore RedundantDefaultFieldInitializer
+
+        public void StartWaveFormLoadTimer(double delay, bool play)
+        {
+            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
+
+            m_ForcePlayAfterWaveFormLoaded = play;
+
+            RefreshUI_LoadingMessage(true);
+
+            if (m_WaveFormLoadTimer == null)
+            {
+                m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Background);
+                m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
+                // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+                if (delay == 0)
+                // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+                {
+                    m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);//TODO: does this work ?? (immediate dispatch)
+                }
+                else
+                {
+                    m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
+                }
+            }
+            else if (m_WaveFormLoadTimer.IsEnabled)
+            {
+                m_WaveFormLoadTimer.Stop();
+            }
+
+            m_WaveFormLoadTimer.Start();
+        }
+
+        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
+        {
+            RefreshUI_LoadingMessage(true);
+            m_WaveFormLoadTimer.Stop();
+            ViewModel.AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
+        }
+        #endregion DispatcherTimers
     }
 }
