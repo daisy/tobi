@@ -72,6 +72,7 @@
     </Compile>
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
+    <Compile Include="ObservableWrappedCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
