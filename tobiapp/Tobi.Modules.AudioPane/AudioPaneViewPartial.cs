@@ -7,11 +7,11 @@ using urakawa.core;
 namespace Tobi.Modules.AudioPane
 {
     public partial class AudioPaneView
-    {           
+    {
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-// ReSharper disable InconsistentNaming
+        // ReSharper disable InconsistentNaming
         public void RefreshUI_LoadWaveForm()
         {
             Brush brush1 = new SolidColorBrush(ViewModel.ColorPlayhead);
@@ -25,28 +25,6 @@ namespace Tobi.Modules.AudioPane
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
             PeakOverloadLabelCh2.Visibility = ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels == 1 ? Visibility.Collapsed : Visibility.Visible;
-
-            var geometryCh1 = new StreamGeometry();
-            StreamGeometryContext sgcCh1 = geometryCh1.Open();
-
-            var geometryCh1_envelope = new StreamGeometry();
-
-            StreamGeometryContext sgcCh1_envelope = geometryCh1_envelope.Open();
-
-            StreamGeometry geometryCh2 = null;
-            StreamGeometryContext sgcCh2 = null;
-
-            StreamGeometry geometryCh2_envelope = null;
-            StreamGeometryContext sgcCh2_envelope = null;
-
-            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
-            {
-                geometryCh2 = new StreamGeometry();
-                sgcCh2 = geometryCh2.Open();
-
-                geometryCh2_envelope = new StreamGeometry();
-                sgcCh2_envelope = geometryCh2_envelope.Open();
-            }
 
             double height = WaveFormCanvas.ActualHeight;
             if (height == Double.NaN || height == 0)
@@ -72,10 +50,18 @@ namespace Tobi.Modules.AudioPane
             var bytes = new byte[bytesPerStep]; // Int 8 unsigned
             var samples = new short[samplesPerStep]; // Int 16 signed
 
-            var listTopPointsCh1 = new List<Point>();
-            var listTopPointsCh2 = new List<Point>();
-            var listBottomPointsCh1 = new List<Point>();
-            var listBottomPointsCh2 = new List<Point>();
+            List<Point> listTopPointsCh1 = null;
+            List<Point> listTopPointsCh2 = null;
+            List<Point> listBottomPointsCh1 = null;
+            List<Point> listBottomPointsCh2 = null;
+            if (ViewModel.IsEnvelopeVisible)
+            {
+                var estimatedCapacity = (int)(width / (bytesPerStep / BytesPerPixel)) + 1;
+                listTopPointsCh1 = new List<Point>(estimatedCapacity);
+                listTopPointsCh2 = new List<Point>(estimatedCapacity);
+                listBottomPointsCh1 = new List<Point>(estimatedCapacity);
+                listBottomPointsCh2 = new List<Point>(estimatedCapacity);
+            }
 
             double x = 0.5;
             const bool bJoinInterSamples = false;
@@ -124,6 +110,20 @@ namespace Tobi.Modules.AudioPane
                 bool firstY1 = true;
                 bool firstY1_ = true;
 
+                var geometryCh1 = new StreamGeometry();
+                StreamGeometryContext sgcCh1 = geometryCh1.Open();
+
+                StreamGeometry geometryCh2 = null;
+                StreamGeometryContext sgcCh2 = null;
+
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+                {
+                    geometryCh2 = new StreamGeometry();
+                    sgcCh2 = geometryCh2.Open();
+                }
+
+#region LOOP
+
                 int read;
                 while ((read = ViewModel.AudioPlayer_GetPlayStream().Read(bytes, 0, bytes.Length)) > 0)
                 {
@@ -146,14 +146,14 @@ namespace Tobi.Modules.AudioPane
                         }
 
                         double total = 0;
-                        int n = 0;
+                        int nSamplesRead = 0;
 
                         double min = short.MaxValue; // Int 16 signed 32767
                         double max = short.MinValue; // Int 16 signed -32768
 
                         for (int i = channel; i < limit; i += ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels)
                         {
-                            n++;
+                            nSamplesRead++;
 
                             short sample = samples[i];
                             if (sample == short.MinValue)
@@ -165,7 +165,6 @@ namespace Tobi.Modules.AudioPane
                                 total += Math.Abs(sample);
                             }
 
-
                             if (samples[i] < min)
                             {
                                 min = samples[i];
@@ -176,7 +175,7 @@ namespace Tobi.Modules.AudioPane
                             }
                         }
 
-                        double avg = total / n;
+                        double avg = total / nSamplesRead;
 
                         double hh = height;
                         if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
@@ -184,10 +183,10 @@ namespace Tobi.Modules.AudioPane
                             hh /= 2;
                         }
 
-// ReSharper disable RedundantAssignment
+                        // ReSharper disable RedundantAssignment
                         double y1 = 0.0;
                         double y2 = 0.0;
-// ReSharper restore RedundantAssignment
+                        // ReSharper restore RedundantAssignment
 
                         if (ViewModel.IsUseDecibels)
                         {
@@ -289,47 +288,67 @@ namespace Tobi.Modules.AudioPane
 
                         if (channel == 0)
                         {
-                            listTopPointsCh1.Add(new Point(x, y1));
-
-                            if (firstY1)
+                            if (ViewModel.IsEnvelopeVisible && listTopPointsCh1 != null)
                             {
-                                sgcCh1.BeginFigure(new Point(x, y1), false, false);
-                                firstY1 = false;
+                                listTopPointsCh1.Add(new Point(x, y1));
                             }
-                            else
+                            if (ViewModel.IsWaveFillVisible)
                             {
-                                sgcCh1.LineTo(new Point(x, y1), bJoinInterSamples, false);
+                                if (firstY1)
+                                {
+                                    sgcCh1.BeginFigure(new Point(x, y1), false, false);
+                                    firstY1 = false;
+                                }
+                                else
+                                {
+                                    sgcCh1.LineTo(new Point(x, y1), bJoinInterSamples, false);
+                                }
                             }
                         }
                         else if (sgcCh2 != null)
                         {
                             y1 += hh;
-
-                            listTopPointsCh2.Add(new Point(x, y1));
-
-                            if (firstY1_)
+                            if (ViewModel.IsEnvelopeVisible && listTopPointsCh2 != null)
                             {
-                                sgcCh2.BeginFigure(new Point(x, y1), false, false);
-                                firstY1_ = false;
+                                listTopPointsCh2.Add(new Point(x, y1));
                             }
-                            else
+                            if (ViewModel.IsWaveFillVisible)
                             {
-                                sgcCh2.LineTo(new Point(x, y1), bJoinInterSamples, false);
+                                if (firstY1_)
+                                {
+                                    sgcCh2.BeginFigure(new Point(x, y1), false, false);
+                                    firstY1_ = false;
+                                }
+                                else
+                                {
+                                    sgcCh2.LineTo(new Point(x, y1), bJoinInterSamples, false);
+                                }
                             }
                         }
 
                         if (channel == 0)
                         {
-                            sgcCh1.LineTo(new Point(x, y2), true, false);
-
-                            listBottomPointsCh1.Add(new Point(x, y2));
+                            if (ViewModel.IsWaveFillVisible)
+                            {
+                                sgcCh1.LineTo(new Point(x, y2), true, false);
+                            }
+                            if (ViewModel.IsEnvelopeVisible && listBottomPointsCh1 != null)
+                            {
+                                listBottomPointsCh1.Add(new Point(x, y2));
+                            }
                         }
                         else if (sgcCh2 != null)
                         {
                             y2 += hh;
-                            sgcCh2.LineTo(new Point(x, y2), true, false);
 
-                            listBottomPointsCh2.Add(new Point(x, y2));
+                            if (ViewModel.IsWaveFillVisible)
+                            {
+                                sgcCh2.LineTo(new Point(x, y2), true, false);
+                            }
+                            if (ViewModel.IsEnvelopeVisible && listBottomPointsCh2 != null)
+                            {
+                                listBottomPointsCh2.Add(new Point(x, y2));
+                            }
                         }
                     }
 
@@ -340,69 +359,329 @@ namespace Tobi.Modules.AudioPane
                     }
                 }
 
-                int bottomIndexStartCh1 = listTopPointsCh1.Count;
-                int bottomIndexStartCh2 = listTopPointsCh2.Count;
+#endregion LOOP
 
-                if (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage)
+                //
+                Brush brushColorBars = new SolidColorBrush(ViewModel.ColorWaveBars);
+
+                sgcCh1.Close();
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && sgcCh2 != null)
                 {
-                    listBottomPointsCh1.Reverse();
-                    listTopPointsCh1.AddRange(listBottomPointsCh1);
-                    listBottomPointsCh1.Clear();
-
-                    if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
-                    {
-                        listBottomPointsCh2.Reverse();
-                        listTopPointsCh2.AddRange(listBottomPointsCh2);
-                        listBottomPointsCh2.Clear();
-                    }
+                    sgcCh2.Close();
                 }
 
-                if (ViewModel.IsUseDecibels && ViewModel.IsUseDecibelsAdjust &&
-                    (dBMinHardCoded != dBMinReached ||
-                    (ViewModel.IsUseDecibelsNoAverage && (-dBMinHardCoded) != dBMaxReached)))
-                {
-                    var listNewCh1 = new List<Point>(listTopPointsCh1.Count);
-                    var listNewCh2 = new List<Point>(listTopPointsCh2.Count);
+                geometryCh1.Freeze();
+                var geoDraw1 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh1);
+                geoDraw1.Freeze();
 
-                    double hh = height;
-                    if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+                GeometryDrawing geoDraw2 = null;
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && geometryCh2 != null)
+                {
+                    geometryCh2.Freeze();
+                    geoDraw2 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh2);
+                    geoDraw2.Freeze();
+                }
+                //
+                GeometryDrawing geoDraw1_envelope = null;
+                GeometryDrawing geoDraw2_envelope = null;
+                if (ViewModel.IsEnvelopeVisible)
+                {
+                    createGeomerty_envelope(out geoDraw1_envelope, out geoDraw2_envelope,
+                                            ref listTopPointsCh1, ref listTopPointsCh2,
+                                            ref listBottomPointsCh1, ref listBottomPointsCh2,
+                                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
+                                            height, width);
+                }
+                //
+                GeometryDrawing geoDrawMarkers = null;
+                if (ViewModel.AudioPlayer_GetPlayStreamMarkers() != null)
+                {
+                    geoDrawMarkers = createGeometry_Markers(height);
+                }
+                //
+                GeometryDrawing geoDrawBack = createGeometry_Back(height, width);
+                //
+                //
+                var drawGrp = new DrawingGroup();
+
+                if (ViewModel.IsBackgroundVisible)
+                {
+                    drawGrp.Children.Add(geoDrawBack);
+                }
+                if (ViewModel.IsEnvelopeVisible)
+                {
+                    if (ViewModel.IsEnvelopeFilled)
                     {
-                        hh /= 2;
+                        if (geoDraw1_envelope != null)
+                        {
+                            drawGrp.Children.Add(geoDraw1_envelope);
+                        }
+                        if (ViewModel.IsWaveFillVisible)
+                        {
+                            drawGrp.Children.Add(geoDraw1);
+                        }
+                    }
+                    else
+                    {
+                        if (ViewModel.IsWaveFillVisible)
+                        {
+                            drawGrp.Children.Add(geoDraw1);
+                        }
+                        if (geoDraw1_envelope != null)
+                        {
+                            drawGrp.Children.Add(geoDraw1_envelope);
+                        }
+                    }
+                }
+                else if (ViewModel.IsWaveFillVisible)
+                {
+                    drawGrp.Children.Add(geoDraw1);
+                }
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+                {
+                    if (ViewModel.IsEnvelopeVisible)
+                    {
+                        if (ViewModel.IsEnvelopeFilled)
+                        {
+                            if (geoDraw2_envelope != null)
+                            {
+                                drawGrp.Children.Add(geoDraw2_envelope);
+                            }
+                            if (ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                            {
+                                drawGrp.Children.Add(geoDraw2);
+                            }
+                        }
+                        else
+                        {
+                            if (ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                            {
+                                drawGrp.Children.Add(geoDraw2);
+                            }
+                            if (geoDraw2_envelope != null)
+                            {
+                                drawGrp.Children.Add(geoDraw2_envelope);
+                            }
+                        }
+                    }
+                    else if (ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                    {
+                        drawGrp.Children.Add(geoDraw2);
+                    }
+                }
+                if (ViewModel.AudioPlayer_GetPlayStreamMarkers() != null && geoDrawMarkers != null)
+                {
+                    drawGrp.Children.Add(geoDrawMarkers);
+                }
+
+                /*
+                double m_offsetFixX = 0;
+                m_offsetFixX = drawGrp.Bounds.Width - width;
+
+                double m_offsetFixY = 0;
+                m_offsetFixY = drawGrp.Bounds.Height - height;
+
+                if (bAdjustOffsetFix && (m_offsetFixX != 0 || m_offsetFixY != 0))
+                {
+                    TransformGroup trGrp = new TransformGroup();
+                    //trGrp.Children.Add(new TranslateTransform(-drawGrp.Bounds.Left, -drawGrp.Bounds.Top));
+                    trGrp.Children.Add(new ScaleTransform(width / drawGrp.Bounds.Width, height / drawGrp.Bounds.Height));
+                    drawGrp.Transform = trGrp;
+                }*/
+
+                drawGrp.Freeze();
+
+                var drawImg = new DrawingImage(drawGrp);
+                drawImg.Freeze();
+
+                RenderOptions.SetBitmapScalingMode(WaveFormImage, BitmapScalingMode.LowQuality);
+                WaveFormImage.Source = drawImg;
+
+                RefreshUI_LoadingMessage(false);
+            }
+            finally
+            {
+                // ensure the stream is closed before we resume the player
+                ViewModel.AudioPlayer_ClosePlayStream();
+            }
+        }
+
+        private GeometryDrawing createGeometry_Markers(double height)
+        {
+            Brush brushColorMarkers = new SolidColorBrush(ViewModel.ColorMarkers);
+
+            var geometryMarkers = new StreamGeometry();
+            using (StreamGeometryContext sgcMarkers = geometryMarkers.Open())
+            {
+                sgcMarkers.BeginFigure(new Point(0.5, 0), false, false);
+                sgcMarkers.LineTo(new Point(0.5, height), true, false);
+
+                long sumData = 0;
+                foreach (TreeNodeAndStreamDataLength markers in ViewModel.AudioPlayer_GetPlayStreamMarkers())
+                {
+                    double pixels = (sumData + markers.m_LocalStreamDataLength) / BytesPerPixel;
+
+                    sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
+                    sgcMarkers.LineTo(new Point(pixels, height), true, false);
+
+                    sumData += markers.m_LocalStreamDataLength;
+                }
+                sgcMarkers.Close();
+            }
+
+            geometryMarkers.Freeze();
+            var geoDrawMarkers = new GeometryDrawing(brushColorMarkers,
+                                                                 new Pen(brushColorMarkers, 1.0),
+                                                                 geometryMarkers);
+            geoDrawMarkers.Freeze();
+
+            return geoDrawMarkers;
+        }
+
+        private GeometryDrawing createGeometry_Back(double height, double width)
+        {
+            var geometryBack = new StreamGeometry();
+            using (StreamGeometryContext sgcBack = geometryBack.Open())
+            {
+                sgcBack.BeginFigure(new Point(0, 0), true, true);
+                sgcBack.LineTo(new Point(0, height), false, false);
+                sgcBack.LineTo(new Point(width, height), false, false);
+                sgcBack.LineTo(new Point(width, 0), false, false);
+                sgcBack.Close();
+            }
+            geometryBack.Freeze();
+            Brush brushColorBack = new SolidColorBrush(ViewModel.ColorWaveBackground);
+            var geoDrawBack = new GeometryDrawing(brushColorBack, null, geometryBack); //new Pen(brushColorBack, 1.0)
+            geoDrawBack.Freeze();
+
+            return geoDrawBack;
+        }
+
+
+        private void createGeomerty_envelope(out GeometryDrawing geoDraw1_envelope, out GeometryDrawing geoDraw2_envelope,
+            ref List<Point> listTopPointsCh1, ref List<Point> listTopPointsCh2,
+            ref List<Point> listBottomPointsCh1, ref List<Point> listBottomPointsCh2,
+            double dBMinHardCoded, double dBMinReached,
+            double dBMaxReached,
+            double decibelDrawDelta, double tolerance,
+            double height, double width)
+        {
+            var geometryCh1_envelope = new StreamGeometry();
+            StreamGeometryContext sgcCh1_envelope = geometryCh1_envelope.Open();
+
+            StreamGeometry geometryCh2_envelope = null;
+            StreamGeometryContext sgcCh2_envelope = null;
+
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+            {
+                geometryCh2_envelope = new StreamGeometry();
+                sgcCh2_envelope = geometryCh2_envelope.Open();
+            }
+
+            int bottomIndexStartCh1 = listTopPointsCh1.Count;
+            int bottomIndexStartCh2 = listTopPointsCh2.Count;
+
+            if (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage)
+            {
+                listBottomPointsCh1.Reverse();
+                listTopPointsCh1.AddRange(listBottomPointsCh1);
+                listBottomPointsCh1.Clear();
+
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+                {
+                    listBottomPointsCh2.Reverse();
+                    listTopPointsCh2.AddRange(listBottomPointsCh2);
+                    listBottomPointsCh2.Clear();
+                }
+            }
+
+            if (ViewModel.IsUseDecibels && ViewModel.IsUseDecibelsAdjust &&
+                (dBMinHardCoded != dBMinReached ||
+                (ViewModel.IsUseDecibelsNoAverage && (-dBMinHardCoded) != dBMaxReached)))
+            {
+                var listNewCh1 = new List<Point>(listTopPointsCh1.Count);
+                var listNewCh2 = new List<Point>(listTopPointsCh2.Count);
+
+                double hh = height;
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+                {
+                    hh /= 2;
+                }
+
+                double range = ((ViewModel.IsUseDecibelsNoAverage ? -dBMinHardCoded : 0) - dBMinHardCoded);
+                double pixPerDbUnit = hh / range;
+
+                int index = -1;
+
+                var p2 = new Point();
+                foreach (Point p in listTopPointsCh1)
+                {
+                    index++;
+
+                    p2.X = p.X;
+                    p2.Y = p.Y;
+
+                    /*
+                     if (ViewModel.IsUseDecibelsNoAverage)
+                     * 
+                        YY = pixPerDbUnit * (MaxValue - DB - MinValue) - decibelDrawDelta [+HH]
+                     * 
+                     * 
+                       DB = (-YY - decibelDrawDelta)/pixPerDbUnit + MaxValue - MinValue
+                           
+                     */
+
+
+                    /*if (!ViewModel.IsUseDecibelsNoAverage)
+                     * 
+                        YY = hh - (pixPerDbUnit * (DB - MinValue) - decibelDrawDelta) [+HH]
+                     * 
+                     * 
+                        DB = ( hh + decibelDrawDelta- YY)/pixPerDbUnit + MinValue
+                            
+                     */
+
+
+                    double newRange = ((ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
+                    double pixPerDbUnit_new = hh / newRange;
+
+                    double dB;
+                    if (ViewModel.IsUseDecibelsNoAverage)
+                    {
+                        if (index >= bottomIndexStartCh1)
+                        {
+                            dB = (-p.Y - decibelDrawDelta) / pixPerDbUnit - dBMinHardCoded - dBMinHardCoded;
+                            p2.Y = pixPerDbUnit_new * (dBMaxReached - dB - dBMinReached) - decibelDrawDelta;
+                        }
+                        else
+                        {
+                            dB = (-p.Y - decibelDrawDelta) / pixPerDbUnit + dBMinHardCoded - dBMinHardCoded;
+                            p2.Y = pixPerDbUnit_new * (dBMinReached - dB - dBMinReached) - decibelDrawDelta;
+                        }
+                        //p2.Y = hh - p2.Y;
+                    }
+                    else
+                    {
+                        dB = (hh + decibelDrawDelta - p.Y) / pixPerDbUnit + dBMinHardCoded;
+                        p2.Y = hh - (pixPerDbUnit_new * (dB - dBMinReached) - decibelDrawDelta);
                     }
 
-                    double range = ((ViewModel.IsUseDecibelsNoAverage ? -dBMinHardCoded : 0) - dBMinHardCoded);
-                    double pixPerDbUnit = hh / range;
+                    listNewCh1.Add(p2);
+                }
+                listTopPointsCh1.Clear();
+                listTopPointsCh1.AddRange(listNewCh1);
+                listNewCh1.Clear();
 
-                    int index = -1;
+                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+                {
+                    index = -1;
 
-                    var p2 = new Point();
-                    foreach (Point p in listTopPointsCh1)
+                    foreach (Point p in listTopPointsCh2)
                     {
                         index++;
 
                         p2.X = p.X;
                         p2.Y = p.Y;
-
-                        /*
-                         if (ViewModel.IsUseDecibelsNoAverage)
-                         * 
-                            YY = pixPerDbUnit * (MaxValue - DB - MinValue) - decibelDrawDelta [+HH]
-                         * 
-                         * 
-                           DB = (-YY - decibelDrawDelta)/pixPerDbUnit + MaxValue - MinValue
-                           
-                         */
-
-
-                        /*if (!ViewModel.IsUseDecibelsNoAverage)
-                         * 
-                            YY = hh - (pixPerDbUnit * (DB - MinValue) - decibelDrawDelta) [+HH]
-                         * 
-                         * 
-                            DB = ( hh + decibelDrawDelta- YY)/pixPerDbUnit + MinValue
-                            
-                         */
-
 
                         double newRange = ((ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
                         double pixPerDbUnit_new = hh / newRange;
@@ -410,76 +689,70 @@ namespace Tobi.Modules.AudioPane
                         double dB;
                         if (ViewModel.IsUseDecibelsNoAverage)
                         {
-                            if (index >= bottomIndexStartCh1)
+                            if (index >= bottomIndexStartCh2)
                             {
-                                dB = (-p.Y - decibelDrawDelta) / pixPerDbUnit - dBMinHardCoded - dBMinHardCoded;
-                                p2.Y = pixPerDbUnit_new * (dBMaxReached - dB - dBMinReached) - decibelDrawDelta;
+                                dB = (hh + -p.Y - decibelDrawDelta) / pixPerDbUnit - dBMinHardCoded - dBMinHardCoded;
+                                p2.Y = hh + pixPerDbUnit_new * (dBMaxReached - dB - dBMinReached) - decibelDrawDelta;
                             }
                             else
                             {
-                                dB = (-p.Y - decibelDrawDelta) / pixPerDbUnit + dBMinHardCoded - dBMinHardCoded;
-                                p2.Y = pixPerDbUnit_new * (dBMinReached - dB - dBMinReached) - decibelDrawDelta;
+                                dB = (hh + -p.Y - decibelDrawDelta) / pixPerDbUnit + dBMinHardCoded - dBMinHardCoded;
+                                p2.Y = hh + pixPerDbUnit_new * (dBMinReached - dB - dBMinReached) - decibelDrawDelta;
                             }
                             //p2.Y = hh - p2.Y;
                         }
                         else
                         {
-                            dB = (hh + decibelDrawDelta - p.Y) / pixPerDbUnit + dBMinHardCoded;
-                            p2.Y = hh - (pixPerDbUnit_new * (dB - dBMinReached) - decibelDrawDelta);
+                            dB = (hh + hh + decibelDrawDelta - p.Y) / pixPerDbUnit + dBMinHardCoded;
+                            p2.Y = hh + hh - (pixPerDbUnit_new * (dB - dBMinReached) - decibelDrawDelta);
                         }
 
-                        listNewCh1.Add(p2);
+                        listNewCh2.Add(p2);
                     }
-                    listTopPointsCh1.Clear();
-                    listTopPointsCh1.AddRange(listNewCh1);
-                    listNewCh1.Clear();
-
-                    if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
-                    {
-                        index = -1;
-
-                        foreach (Point p in listTopPointsCh2)
-                        {
-                            index++;
-
-                            p2.X = p.X;
-                            p2.Y = p.Y;
-
-                            double newRange = ((ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
-                            double pixPerDbUnit_new = hh / newRange;
-
-                            double dB;
-                            if (ViewModel.IsUseDecibelsNoAverage)
-                            {
-                                if (index >= bottomIndexStartCh2)
-                                {
-                                    dB = (hh + -p.Y - decibelDrawDelta) / pixPerDbUnit - dBMinHardCoded - dBMinHardCoded;
-                                    p2.Y = hh + pixPerDbUnit_new * (dBMaxReached - dB - dBMinReached) - decibelDrawDelta;
-                                }
-                                else
-                                {
-                                    dB = (hh + -p.Y - decibelDrawDelta) / pixPerDbUnit + dBMinHardCoded - dBMinHardCoded;
-                                    p2.Y = hh + pixPerDbUnit_new * (dBMinReached - dB - dBMinReached) - decibelDrawDelta;
-                                }
-                                //p2.Y = hh - p2.Y;
-                            }
-                            else
-                            {
-                                dB = (hh + hh + decibelDrawDelta - p.Y) / pixPerDbUnit + dBMinHardCoded;
-                                p2.Y = hh + hh - (pixPerDbUnit_new * (dB - dBMinReached) - decibelDrawDelta);
-                            }
-
-                            listNewCh2.Add(p2);
-                        }
-                        listTopPointsCh2.Clear();
-                        listTopPointsCh2.AddRange(listNewCh2);
-                        listNewCh2.Clear();
-                    }
+                    listTopPointsCh2.Clear();
+                    listTopPointsCh2.AddRange(listNewCh2);
+                    listNewCh2.Clear();
                 }
+            }
 
-                int count = 0;
-                var pp = new Point();
-                foreach (Point p in listTopPointsCh1)
+            int count = 0;
+            var pp = new Point();
+            foreach (Point p in listTopPointsCh1)
+            {
+                pp.X = p.X;
+                pp.Y = p.Y;
+
+                if (pp.X > width)
+                {
+                    pp.X = width;
+                }
+                if (pp.X < 0)
+                {
+                    pp.X = 0;
+                }
+                if (pp.Y > height - tolerance)
+                {
+                    pp.Y = height - tolerance;
+                }
+                if (pp.Y < 0 + tolerance)
+                {
+                    pp.Y = 0 + tolerance;
+                }
+                if (count == 0)
+                {
+                    sgcCh1_envelope.BeginFigure(pp, ViewModel.IsEnvelopeFilled && (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage), false);
+                }
+                else
+                {
+                    sgcCh1_envelope.LineTo(pp, true, false);
+                }
+                count++;
+            }
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && sgcCh2_envelope != null)
+            {
+                count = 0;
+
+                foreach (Point p in listTopPointsCh2)
                 {
                     pp.X = p.X;
                     pp.Y = p.Y;
@@ -502,223 +775,37 @@ namespace Tobi.Modules.AudioPane
                     }
                     if (count == 0)
                     {
-                        sgcCh1_envelope.BeginFigure(pp, ViewModel.IsEnvelopeFilled && (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage), false);
+                        sgcCh2_envelope.BeginFigure(pp, ViewModel.IsEnvelopeFilled && (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
                     {
-                        sgcCh1_envelope.LineTo(pp, true, false);
+                        sgcCh2_envelope.LineTo(pp, true, false);
                     }
                     count++;
                 }
-                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && sgcCh2_envelope != null)
-                {
-                    count = 0;
-
-                    foreach (Point p in listTopPointsCh2)
-                    {
-                        pp.X = p.X;
-                        pp.Y = p.Y;
-
-                        if (pp.X > width)
-                        {
-                            pp.X = width;
-                        }
-                        if (pp.X < 0)
-                        {
-                            pp.X = 0;
-                        }
-                        if (pp.Y > height - tolerance)
-                        {
-                            pp.Y = height - tolerance;
-                        }
-                        if (pp.Y < 0 + tolerance)
-                        {
-                            pp.Y = 0 + tolerance;
-                        }
-                        if (count == 0)
-                        {
-                            sgcCh2_envelope.BeginFigure(pp, ViewModel.IsEnvelopeFilled && (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage), false);
-                        }
-                        else
-                        {
-                            sgcCh2_envelope.LineTo(pp, true, false);
-                        }
-                        count++;
-                    }
-                }
-
-                sgcCh1.Close();
-                sgcCh1_envelope.Close();
-                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && sgcCh2 != null)
-                {
-                    sgcCh2.Close();
-                    sgcCh2_envelope.Close();
-                }
-
-                Brush brushColorBars = new SolidColorBrush(ViewModel.ColorWaveBars);
-                Brush brushColorEnvelopeOutline = new SolidColorBrush(ViewModel.ColorEnvelopeOutline);
-                Brush brushColorEnvelopeFill = new SolidColorBrush(ViewModel.ColorEnvelopeFill);
-
-                //
-                geometryCh1.Freeze();
-                var geoDraw1 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh1);
-                geoDraw1.Freeze();
-                //
-                geometryCh1_envelope.Freeze();
-                var geoDraw1_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh1_envelope);
-                geoDraw1_envelope.Freeze();
-                //
-                GeometryDrawing geoDraw2 = null;
-                GeometryDrawing geoDraw2_envelope = null;
-                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && geometryCh2 != null)
-                {
-                    geometryCh2.Freeze();
-                    geoDraw2 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh2);
-                    geoDraw2.Freeze();
-                    geometryCh2_envelope.Freeze();
-                    geoDraw2_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh2_envelope);
-                    geoDraw2_envelope.Freeze();
-                }
-                //
-
-                Brush brushColorMarkers = new SolidColorBrush(ViewModel.ColorMarkers);
-                GeometryDrawing geoDrawMarkers = null;
-                if (ViewModel.AudioPlayer_GetPlayStreamMarkers() != null)
-                {
-                    var geometryMarkers = new StreamGeometry();
-                    using (StreamGeometryContext sgcMarkers = geometryMarkers.Open())
-                    {
-                        sgcMarkers.BeginFigure(new Point(0.5, 0), false, false);
-                        sgcMarkers.LineTo(new Point(0.5, height), true, false);
-
-                        long sumData = 0;
-                        foreach (TreeNodeAndStreamDataLength markers in ViewModel.AudioPlayer_GetPlayStreamMarkers())
-                        {
-                            double pixels = (sumData + markers.m_LocalStreamDataLength) / BytesPerPixel;
-
-                            sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
-                            sgcMarkers.LineTo(new Point(pixels, height), true, false);
-
-                            sumData += markers.m_LocalStreamDataLength;
-                        }
-                        sgcMarkers.Close();
-                    }
-
-                    geometryMarkers.Freeze();
-                    geoDrawMarkers = new GeometryDrawing(brushColorMarkers,
-                                                                         new Pen(brushColorMarkers, 1.0),
-                                                                         geometryMarkers);
-                    geoDrawMarkers.Freeze();
-                }
-                //
-                var geometryBack = new StreamGeometry();
-                using (StreamGeometryContext sgcBack = geometryBack.Open())
-                {
-                    sgcBack.BeginFigure(new Point(0, 0), true, true);
-                    sgcBack.LineTo(new Point(0, height), false, false);
-                    sgcBack.LineTo(new Point(width, height), false, false);
-                    sgcBack.LineTo(new Point(width, 0), false, false);
-                    sgcBack.Close();
-                }
-                geometryBack.Freeze();
-                Brush brushColorBack = new SolidColorBrush(ViewModel.ColorWaveBackground);
-                var geoDrawBack = new GeometryDrawing(brushColorBack, null, geometryBack); //new Pen(brushColorBack, 1.0)
-                geoDrawBack.Freeze();
-                //
-                var drawGrp = new DrawingGroup();
-                //
-
-                if (ViewModel.IsBackgroundVisible)
-                {
-                    drawGrp.Children.Add(geoDrawBack);
-                }
-                if (ViewModel.IsEnvelopeVisible)
-                {
-                    if (ViewModel.IsEnvelopeFilled)
-                    {
-                        drawGrp.Children.Add(geoDraw1_envelope);
-                        if (ViewModel.IsWaveFillVisible)
-                        {
-                            drawGrp.Children.Add(geoDraw1);
-                        }
-                    }
-                    else
-                    {
-                        if (ViewModel.IsWaveFillVisible)
-                        {
-                            drawGrp.Children.Add(geoDraw1);
-                        }
-                        drawGrp.Children.Add(geoDraw1_envelope);
-                    }
-                }
-                else if (ViewModel.IsWaveFillVisible)
-                {
-                    drawGrp.Children.Add(geoDraw1);
-                }
-                if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
-                {
-                    if (ViewModel.IsEnvelopeVisible)
-                    {
-                        if (ViewModel.IsEnvelopeFilled)
-                        {
-                            drawGrp.Children.Add(geoDraw2_envelope);
-                            if (ViewModel.IsWaveFillVisible)
-                            {
-                                drawGrp.Children.Add(geoDraw2);
-                            }
-                        }
-                        else
-                        {
-                            if (ViewModel.IsWaveFillVisible)
-                            {
-                                drawGrp.Children.Add(geoDraw2);
-                            }
-                            drawGrp.Children.Add(geoDraw2_envelope);
-                        }
-                    }
-                    else if (ViewModel.IsWaveFillVisible)
-                    {
-                        drawGrp.Children.Add(geoDraw2);
-                    }
-                }
-                if (ViewModel.AudioPlayer_GetPlayStreamMarkers() != null)
-                {
-                    drawGrp.Children.Add(geoDrawMarkers);
-                }
-
-                /*
-                double m_offsetFixX = 0;
-                m_offsetFixX = drawGrp.Bounds.Width - width;
-
-                double m_offsetFixY = 0;
-                m_offsetFixY = drawGrp.Bounds.Height - height;
-
-                if (bAdjustOffsetFix && (m_offsetFixX != 0 || m_offsetFixY != 0))
-                {
-                    TransformGroup trGrp = new TransformGroup();
-                    //trGrp.Children.Add(new TranslateTransform(-drawGrp.Bounds.Left, -drawGrp.Bounds.Top));
-                    trGrp.Children.Add(new ScaleTransform(width / drawGrp.Bounds.Width, height / drawGrp.Bounds.Height));
-                    drawGrp.Transform = trGrp;
-                }*/
-
-                drawGrp.Freeze();
-
-
-                var drawImg = new DrawingImage(drawGrp);
-
-                drawImg.Freeze();
-
-                RenderOptions.SetBitmapScalingMode(WaveFormImage, BitmapScalingMode.LowQuality);
-                WaveFormImage.Source = drawImg;
-
-                RefreshUI_LoadingMessage(false);
             }
-            finally
+
+            sgcCh1_envelope.Close();
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && sgcCh2_envelope != null)
             {
-                // ensure the stream is closed before we resume the player
-                ViewModel.AudioPlayer_ClosePlayStream();
+                sgcCh2_envelope.Close();
+            }
+
+            Brush brushColorEnvelopeOutline = new SolidColorBrush(ViewModel.ColorEnvelopeOutline);
+            Brush brushColorEnvelopeFill = new SolidColorBrush(ViewModel.ColorEnvelopeFill);
+
+            geometryCh1_envelope.Freeze();
+            geoDraw1_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh1_envelope);
+            geoDraw1_envelope.Freeze();
+
+            geoDraw2_envelope = null;
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1 && geometryCh2_envelope != null)
+            {
+                geometryCh2_envelope.Freeze();
+                geoDraw2_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh2_envelope);
+                geoDraw2_envelope.Freeze();
             }
         }
     }
-// ReSharper restore InconsistentNaming
+    // ReSharper restore InconsistentNaming
 }
