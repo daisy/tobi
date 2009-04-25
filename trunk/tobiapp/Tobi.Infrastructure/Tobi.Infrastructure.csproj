@@ -67,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Sizes.cs" />
+    <Compile Include="StringXamlConverter.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TreeViewHelper.cs" />
     <Compile Include="UI\BindableRun.cs" />
@@ -88,6 +89,7 @@
     </Compile>
     <Compile Include="UI\TextMediaTextBox.cs" />
     <Compile Include="UI\UiClipboardImageHelper.cs" />
+    <Compile Include="UI\XamlToPngConverter.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
