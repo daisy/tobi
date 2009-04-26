@@ -6,7 +6,8 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi"
     xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock"
-    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure" 
+    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+    xmlns:huddled="clr-namespace:Huddled.Wpf;assembly=Tobi.Infrastructure" 
 
     Title="{Binding WindowTitle}"
     Closing="OnClosing"
@@ -16,12 +17,24 @@
     WindowStartupLocation="CenterScreen"
     Loaded="OnWindowLoaded"
    >
+  <huddled:NativeBehaviors.Behaviors>
+    <huddled:SnapToBehavior SnapDistance="20,20,20,80" />
+    <huddled:HotkeysBehavior>
+      <KeyBinding Command="huddled:GlobalCommands.ActivateWindow" Key="K"  Modifiers="Win" />
+      <KeyBinding Command="huddled:GlobalCommands.CloseWindow"    Key="F4" Modifiers="Ctrl+Shift" />
+      <KeyBinding Command="huddled:GlobalCommands.ToggleWindow"   Key="S"  Modifiers="Win" />
+      <!-- the next two should cause conflicts for the sake of the demo -->
+      <KeyBinding Command="huddled:GlobalCommands.HideWindow"     Key="H"  Modifiers="Win" />
+      <KeyBinding Command="huddled:GlobalCommands.ShowWindow"     Key="H"  Modifiers="Win+Shift" />
+    </huddled:HotkeysBehavior>
+  </huddled:NativeBehaviors.Behaviors>
+  
    <!--    FocusManager.FocusedElement="{infra:FirstFocusedElement}"
    KeyboardNavigation.TabIndex="1" 
    KeyboardNavigation.IsTabStop="false"
    KeyboardNavigation.TabNavigation="Continue"
  -->
-
+  
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -34,6 +47,7 @@
       </LinearGradientBrush>
     </ResourceDictionary>
   </Window.Resources>
+
   
   <DockPanel LastChildFill="True">
 

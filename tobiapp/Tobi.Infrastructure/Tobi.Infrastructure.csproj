@@ -78,6 +78,15 @@
     </Compile>
     <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
+    <Compile Include="UI\HuddledPartial\DpiHelper.cs" />
+    <Compile Include="UI\HuddledPartial\GlobalCommands.cs" />
+    <Compile Include="UI\HuddledPartial\HotkeyManager.cs" />
+    <Compile Include="UI\HuddledPartial\HotkeysBehavior.cs" />
+    <Compile Include="UI\HuddledPartial\NativeBehavior.cs" />
+    <Compile Include="UI\HuddledPartial\NativeBehaviors.cs" />
+    <Compile Include="UI\HuddledPartial\NativeMethodsKeyboard.cs" />
+    <Compile Include="UI\HuddledPartial\NativeMethodsWindow.cs" />
+    <Compile Include="UI\HuddledPartial\SnapToBehavior.cs" />
     <Compile Include="UI\KeyDownCommandBinding.cs" />
     <Compile Include="UI\ListBoxExtensions.cs" />
     <Compile Include="UI\ListViewExtensions.cs" />
