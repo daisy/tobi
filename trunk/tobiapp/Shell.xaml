@@ -16,6 +16,7 @@
     Height="{x:Static infra:Sizes.DefaultWindowHeight}"
     WindowStartupLocation="CenterScreen"
     Loaded="OnWindowLoaded"
+        x:Name="MainWindow"
    >
   <huddled:NativeBehaviors.Behaviors>
     <huddled:SnapToBehavior SnapDistance="20,20,20,80" />
@@ -85,9 +86,10 @@
         <ad:ResizingPanel Orientation="Horizontal" >
 
           <UserControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"
-                        ad:ResizingPanel.ResizeWidth="150" />
+                        ad:ResizingPanel.ResizeWidth="150"
+                       cal:RegionManager.RegionManager="{Binding Path=(cal:RegionManager.RegionManager), ElementName=MainWindow, Mode=OneWay}"/>
 
-          <ad:DocumentPane>
+          <ad:DocumentPane cal:RegionManager.RegionManager="{Binding Path=(cal:RegionManager.RegionManager), ElementName=MainWindow, Mode=OneWay}">
 
             <ad:DocumentContent Title="Placeholder" x:Name="DocumentContent2">
 
@@ -114,7 +116,8 @@
 
 
         <UserControl cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"
-                      ad:ResizingPanel.ResizeHeight="160"/>
+                      ad:ResizingPanel.ResizeHeight="160"
+                     cal:RegionManager.RegionManager="{Binding Path=(cal:RegionManager.RegionManager), ElementName=MainWindow, Mode=OneWay}"/>
 
       </ad:ResizingPanel>
 

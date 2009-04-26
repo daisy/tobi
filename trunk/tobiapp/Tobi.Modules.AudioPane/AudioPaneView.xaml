@@ -7,8 +7,9 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.AudioPane"
+    xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
              Loaded="OnPaneLoaded"
-                 >
+                 Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}">
 
   <ad:DockableContent Title="Audio Waveform and PeakMeter" DockableStyle="DockableToBorders">
 
