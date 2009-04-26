@@ -80,6 +80,7 @@
     <Compile Include="UI\GreyableImage.cs" />
     <Compile Include="UI\KeyDownCommandBinding.cs" />
     <Compile Include="UI\ListBoxExtensions.cs" />
+    <Compile Include="UI\ListViewExtensions.cs" />
     <Compile Include="UI\LoadingUserControl.xaml.cs">
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>
     </Compile>
