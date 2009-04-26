@@ -79,10 +79,12 @@
     <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
     <Compile Include="UI\KeyDownCommandBinding.cs" />
+    <Compile Include="UI\ListBoxExtensions.cs" />
     <Compile Include="UI\LoadingUserControl.xaml.cs">
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\LogicalTreeHelperHelper.cs" />
+    <Compile Include="UI\MenuShortcutManager.cs" />
     <Compile Include="UI\Placeholder.cs" />
     <Compile Include="UI\RunExtensions.cs" />
     <Compile Include="UI\SmallColorPicker.xaml.cs">
@@ -94,6 +96,7 @@
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
+    <Compile Include="WeakReferenceCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
