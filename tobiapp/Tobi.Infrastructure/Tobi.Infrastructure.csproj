@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\CAL\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -61,6 +65,7 @@
     <Compile Include="FirstFocusedElementExtension.cs" />
     <Compile Include="GlobalCommands.cs" />
     <Compile Include="IHeaderInfoProvider.cs" />
+    <Compile Include="IndependentModule.cs" />
     <Compile Include="IShellPresenter.cs" />
     <Compile Include="IShellView.cs" />
     <Compile Include="IToggableView.cs" />
@@ -97,6 +102,7 @@
     <Compile Include="UI\LogicalTreeHelperHelper.cs" />
     <Compile Include="UI\MenuShortcutManager.cs" />
     <Compile Include="UI\Placeholder.cs" />
+    <Compile Include="UI\RegionManagerCustomExtensions.cs" />
     <Compile Include="UI\RunExtensions.cs" />
     <Compile Include="UI\SmallColorPicker.xaml.cs">
       <DependentUpon>SmallColorPicker.xaml</DependentUpon>
@@ -104,6 +110,7 @@
     <Compile Include="UI\TextMediaTextBox.cs" />
     <Compile Include="UI\UiClipboardImageHelper.cs" />
     <Compile Include="UI\XamlToPngConverter.cs" />
+    <Compile Include="UnityServiceLocator.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
@@ -125,6 +132,10 @@
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\ServiceLocation\Lib.ServiceLocation.csproj">
+      <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>
+      <Name>Lib.ServiceLocation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
-    xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock">
+    xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock"
+    xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
+Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}">
 
   <ad:DockableContent
   Title="Pages" DockableStyle="DockableToBorders">

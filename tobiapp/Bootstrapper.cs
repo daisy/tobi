@@ -52,11 +52,29 @@ namespace Tobi
             return shellView as DependencyObject;
         }
 
+        protected override void InitializeModules()
+        {
+            base.InitializeModules();
+
+            var moduleCatalog = Container.Resolve<IModuleCatalog>();
+            foreach (var module in moduleCatalog.Modules)
+            {
+
+                if (module.ModuleName == "MyModuleName")
+                {
+                    var moduleManager = Container.Resolve<IModuleManager>();
+                    moduleManager.LoadModule(module.ModuleName);
+                }
+            }
+        }
+
         /// <summary>
         /// Tobi loads its main Modules statically
         /// </summary>
         protected override IModuleCatalog GetModuleCatalog()
         {
+            //return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
+
             return new ModuleCatalog()
                 .AddModule(typeof (MenuBarModule))
                 .AddModule(typeof (NavigationPaneModule), "DocumentPaneModule")
