@@ -76,6 +76,7 @@
     <Compile Include="UI\ComboColorPicker.xaml.cs">
       <DependentUpon>ComboColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\FlowDocumentFindReplace.cs" />
     <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
     <Compile Include="UI\HuddledPartial\DpiHelper.cs" />
