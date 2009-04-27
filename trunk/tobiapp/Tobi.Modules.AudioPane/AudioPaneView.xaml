@@ -100,6 +100,13 @@
                                       Margin="2"
                                       HorizontalAlignment="Left"/>
           </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock>Time selection: </TextBlock>
+            <infraUI:ComboColorPicker
+                                      SelectedColor="{Binding ColorTimeSelection, Mode=TwoWay}"
+                                      Margin="2"
+                                      HorizontalAlignment="Left"/>
+          </StackPanel>
         </StackPanel>
       </ScrollViewer>
 
@@ -149,6 +156,9 @@
 
           <Canvas x:Name="WaveFormCanvas"
                   SizeChanged="OnWaveFormCanvasSizeChanged"
+                   MouseDown="OnWaveFormMouseDown"
+                   MouseMove="OnWaveFormMouseMove"
+                   MouseUp="OnWaveFormMouseUp"
                   Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                   Background="Black"
                       VerticalAlignment="Stretch"
@@ -162,7 +172,6 @@
                    Canvas.ZIndex="0"
                    Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                    Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
-                   MouseDown="OnImageMouseDown"
                    Canvas.Left="0"
                    Canvas.Top="0"
                    SnapsToDevicePixels="False"/>
@@ -170,12 +179,42 @@
             <Path x:Name="WaveFormTimeRangePath"
                   Canvas.ZIndex="1"
                   StrokeThickness="1"
-                  SnapsToDevicePixels="False"/>
+                  SnapsToDevicePixels="False">
+              <Path.Fill>
+                <SolidColorBrush Color="{Binding Path=ColorMarkers, Mode=OneWay}"/>
+              </Path.Fill>
+              <Path.Stroke>
+                <SolidColorBrush Color="{Binding Path=ColorMarkers, Mode=OneWay}"/>
+              </Path.Stroke>
+            </Path>
+
+            <Rectangle
+              x:Name="WaveFormTimeSelectionRect"
+              Canvas.ZIndex="2"
+                  StrokeThickness="0"
+                  Stroke="Lime"
+                  SnapsToDevicePixels="False"
+                       Canvas.Top="0"
+                       Canvas.Left="0"
+                       Width="0"
+              Visibility="Hidden"
+                   Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}">
+              <Rectangle.Fill>
+                <SolidColorBrush Opacity="0.25" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
+              </Rectangle.Fill>
+            </Rectangle>
 
             <Path x:Name="WaveFormPlayHeadPath"
-                  Canvas.ZIndex="2"
-                  StrokeThickness="1.6"
-                  SnapsToDevicePixels="False"/>
+                  Canvas.ZIndex="3"
+                  StrokeThickness="2"
+                  SnapsToDevicePixels="False">
+              <Path.Stroke>
+                <SolidColorBrush Color="{Binding Path=ColorPlayhead, Mode=OneWay}"/>
+              </Path.Stroke>
+              <Path.Fill>
+                <SolidColorBrush Color="{Binding Path=ColorPlayheadFill, Mode=OneWay}"/>
+              </Path.Fill>
+            </Path>
           </Canvas>
         </ScrollViewer>
       </DockPanel>
@@ -228,7 +267,7 @@
                      Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
                      Height="{Binding ElementName=PeakMeterCanvas, Path=ActualHeight, Mode=OneWay}">
             <Rectangle.Fill>
-              <LinearGradientBrush x:Name="PeakMeterCanvasBackground"
+              <LinearGradientBrush x:Name="PeakMeterCanvasBackgroundBrush"
                                    StartPoint="0,0" EndPoint="0,1">
                 <GradientStop Color="Red" Offset="0.0" />
                 <GradientStop Color="Orange" Offset="0.25" />
