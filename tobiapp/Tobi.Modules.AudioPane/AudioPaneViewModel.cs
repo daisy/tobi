@@ -499,20 +499,19 @@ namespace Tobi.Modules.AudioPane
             }
             // else: the stream is now open, thus why we have a try/finally wrapper below:
 
-
             if (View != null)
             {
                 View.RefreshUI_LoadWaveForm();
             }
 
-
-            if (wasPlaying && play)
+            if (wasPlaying)
             {
+                if (!play)
+                {
+                    m_Player.Resume();
+                    return;
+                }
                 m_Player.Stop();
-            }
-            else
-            {
-                m_Player.Resume();
             }
 
             if (play)
@@ -543,37 +542,74 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Resume();
             }
         }
-
+        
         /// <summary>
-        /// If player exists, resumes or start playing at the given byte offset
+        /// If player exists, resumes or start playing at the given byte offset in the audio stream
         /// </summary>
         /// <param name="bytes"></param>
-        public void AudioPlayer_PlayFromOffset(double bytes)
+        public void AudioPlayer_PlayFrom(double bytes)
+        {
+            AudioPlayer_PlayFromTo(bytes, -1);
+        }
+
+        private long m_EndOffsetOfPlayStream;
+
+        /// <summary>
+        /// If player exists, resumes or start playing at the given byte offset in the audio stream,
+        /// and ends playback at the specified offset.
+        /// </summary>
+        /// <param name="bytesStart"></param>
+        /// <param name="bytesEnd"></param>
+        public void AudioPlayer_PlayFromTo(double bytesStart, double bytesEnd)
         {
             if (m_PcmFormat == null)
             {
                 return;
             }
 
+            m_EndOffsetOfPlayStream = m_DataLength;
+
             if (m_Player.State == AudioPlayerState.Paused)
             {
                 m_Player.Stop();
             }
 
-            if (m_Player.State == AudioPlayerState.Stopped)
+            if (bytesEnd == -1)
             {
+                if (m_Player.State == AudioPlayerState.Stopped)
+                {
+                    m_CurrentAudioStreamProvider(); // ensure m_PlayStream is open
+
+                    m_Player.Play(m_CurrentAudioStreamProvider,
+                                  m_PcmFormat.GetDuration(m_DataLength),
+                                  m_PcmFormat,
+                                  AudioPlayer_ConvertByteToMilliseconds(bytesStart)
+                        );
+                }
+                else if (m_Player.State == AudioPlayerState.Playing)
+                {
+                    m_Player.CurrentTimePosition = AudioPlayer_ConvertByteToMilliseconds(bytesStart);
+                }
+            }
+            else
+            {
+                m_EndOffsetOfPlayStream = (long) bytesEnd;
+
+                if (m_Player.State == AudioPlayerState.Playing)
+                {
+                    m_Player.Stop();
+                }
+
                 m_CurrentAudioStreamProvider(); // ensure m_PlayStream is open
 
                 m_Player.Play(m_CurrentAudioStreamProvider,
-                            m_PcmFormat.GetDuration(m_DataLength),
-                            m_PcmFormat,
-                            AudioPlayer_ConvertByteToMilliseconds(bytes)
-                            );
+                              m_PcmFormat.GetDuration(m_DataLength),
+                              m_PcmFormat,
+                              AudioPlayer_ConvertByteToMilliseconds(bytesStart),
+                              AudioPlayer_ConvertByteToMilliseconds(bytesEnd)
+                    );
             }
-            else if (m_Player.State == AudioPlayerState.Playing)
-            {
-                m_Player.CurrentTimePosition = AudioPlayer_ConvertByteToMilliseconds(bytes);
-            }
+
             AudioPlayer_UpdateWaveFormPlayHead();
         }
 
@@ -688,7 +724,10 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_PcmFormat != null)
             {
-                double time = m_PcmFormat.GetDuration(m_DataLength).TimeDeltaAsMillisecondDouble;
+                //double time = m_PcmFormat.GetDuration(m_DataLength).TimeDeltaAsMillisecondDouble;
+                //long bytes = (long) m_Player.CurrentTimePosition;
+
+                double time = m_PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
                 updateWaveFormPlayHead(time);
             }
 

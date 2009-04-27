@@ -15,7 +15,6 @@
         void RefreshUI_PeakMeterBlackout(bool black);
         void RefreshUI_WaveFormBackground();
         void RefreshUI_WaveFormPlayHead();
-        void RefreshUI_WaveFormColors();
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
 // ReSharper restore InconsistentNaming
         double BytesPerPixel { get; set; }

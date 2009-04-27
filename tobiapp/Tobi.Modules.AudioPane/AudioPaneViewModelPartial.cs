@@ -294,6 +294,21 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        private Color m_ColorTimeSelection = Colors.Aqua;
+        public Color ColorTimeSelection
+        {
+            get
+            {
+                return m_ColorTimeSelection;
+            }
+            set
+            {
+                if (m_ColorTimeSelection == value) return;
+                m_ColorTimeSelection = value;
+                OnPropertyChanged("ColorTimeSelection");
+            }
+        }
+
         private Color m_ColorPlayhead = Colors.Red;
         public Color ColorPlayhead
         {
@@ -305,11 +320,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorPlayhead == value) return;
                 m_ColorPlayhead = value;
-                if (View != null)
-                {
-                    View.RefreshUI_WaveFormColors();
-                }
-                //AudioPlayer_UpdateWaveFormPlayHead();
+                AudioPlayer_UpdateWaveFormPlayHead();
                 OnPropertyChanged("ColorPlayhead");
             }
         }
@@ -325,11 +336,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorPlayheadFill == value) return;
                 m_ColorPlayheadFill = value;
-                if (View != null)
-                {
-                    View.RefreshUI_WaveFormColors();
-                }
-                //AudioPlayer_UpdateWaveFormPlayHead();
+                AudioPlayer_UpdateWaveFormPlayHead();
                 OnPropertyChanged("ColorPlayheadFill");
             }
         }
@@ -367,10 +374,6 @@ namespace Tobi.Modules.AudioPane
                 if (m_ColorMarkers == value) return;
                 m_ColorMarkers = value;
 
-                if (View != null)
-                {
-                    View.RefreshUI_WaveFormColors();
-                }
                 if (View != null)
                 {
                     View.RefreshUI_WaveFormBackground();

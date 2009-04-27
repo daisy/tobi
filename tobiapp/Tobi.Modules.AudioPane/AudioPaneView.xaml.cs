@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -31,7 +32,8 @@ namespace Tobi.Modules.AudioPane
 
             ViewModel.SetView(this);
 
-            PeakMeterCanvasBackground.Freeze();
+            PeakMeterCanvasBackgroundBrush.Freeze();
+
             WinFormHost.Child = ViewModel.GetWindowsFormsHookControl();
         }
 
@@ -100,17 +102,87 @@ namespace Tobi.Modules.AudioPane
             StartWaveFormLoadTimer(500, false);
         }
 
+        private double m_TimeSelectionLeftX = -1;
+        private readonly Cursor m_WaveFormDefaultCursor = Cursors.ArrowCD;
 
-        private void OnImageMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
-            Point p = e.GetPosition(WaveFormImage);
-            OnSurfaceMouseDown(p);
+            if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
+            {
+                WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                return;
+            }
+
+            Point p = e.GetPosition(WaveFormCanvas);
+
+            if (p.X == m_TimeSelectionLeftX)
+            {
+                WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
+                WaveFormTimeSelectionRect.Width = 0;
+
+                return;
+            }
+
+            double right = p.X;
+            double left = m_TimeSelectionLeftX;
+
+            if (p.X < m_TimeSelectionLeftX)
+            {
+                right = m_TimeSelectionLeftX;
+                left = p.X;
+            }
+
+            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
+            WaveFormTimeSelectionRect.Width = right - left;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, left);
+
+            WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
 
-        private void OnSurfaceMouseDown(Point p)
+        private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
-            double bytes = p.X * BytesPerPixel;
-            ViewModel.AudioPlayer_PlayFromOffset(bytes);
+            WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+
+            Point p = e.GetPosition(WaveFormCanvas);
+
+            if (p.X == m_TimeSelectionLeftX)
+            {
+                m_TimeSelectionLeftX = -1;
+                WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
+                WaveFormTimeSelectionRect.Width = 0;
+                WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+
+                ViewModel.AudioPlayer_PlayFrom(p.X * BytesPerPixel);
+
+                return;
+            }
+
+            double right = p.X;
+
+            if (p.X < m_TimeSelectionLeftX)
+            {
+                right = m_TimeSelectionLeftX;
+                m_TimeSelectionLeftX = p.X;
+            }
+
+            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
+            WaveFormTimeSelectionRect.Width = right - m_TimeSelectionLeftX;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+
+            ViewModel.AudioPlayer_PlayFromTo(m_TimeSelectionLeftX * BytesPerPixel, right * BytesPerPixel);
+        }
+
+        private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(WaveFormCanvas);
+
+            m_TimeSelectionLeftX = p.X;
+
+            WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+            WaveFormTimeSelectionRect.Width = 0;
+
+            WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
 
         private void OnResetPeakOverloadCountCh1(object sender, MouseButtonEventArgs e)
@@ -190,7 +262,6 @@ namespace Tobi.Modules.AudioPane
             drawImg.Drawing = drawGrp;
             drawImg.Freeze();
             WaveFormImage.Source = drawImg;
-
         }
 
         /// <summary>
@@ -203,6 +274,8 @@ namespace Tobi.Modules.AudioPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_AllReset));
                 return;
             }
+
+            WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
 
             WaveFormPlayHeadPath.Data = null;
             WaveFormPlayHeadPath.InvalidateVisual();
@@ -357,28 +430,6 @@ namespace Tobi.Modules.AudioPane
             }
 
             RefreshUI_WaveFormChunkMarkers();
-        }
-
-        /// <summary>
-        /// (ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        public void RefreshUI_WaveFormColors()
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormColors));
-                return;
-            }
-
-            Brush brush1 = new SolidColorBrush(ViewModel.ColorMarkers);
-            WaveFormTimeRangePath.Fill = brush1;
-            WaveFormTimeRangePath.Stroke = brush1;
-
-            Brush brush2 = new SolidColorBrush(ViewModel.ColorPlayhead);
-            WaveFormPlayHeadPath.Stroke = brush2;
-
-            Brush brush3 = new SolidColorBrush(ViewModel.ColorPlayheadFill);
-            WaveFormPlayHeadPath.Fill = brush3;
         }
 
         /// <summary>
