@@ -5,7 +5,8 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="PresentationOptions"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
-    xmlns:local="clr-namespace:Tobi.Modules.ToolBars">
+    xmlns:local="clr-namespace:Tobi.Modules.ToolBars"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
   <UserControl.Resources>
     
     <ResourceDictionary>
@@ -93,6 +94,15 @@
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/ -->
       </ResourceDictionary.MergedDictionaries>
+
+      <local:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
+
+      <Style x:Key="ButtonImage" TargetType="{x:Type Image}">
+        <Setter Property="Stretch" Value="Fill"/>
+        <Setter Property="SnapsToDevicePixels" Value="False"/>
+        <Setter Property="Height" Value="{Binding IconHeight, Mode=OneWay}"/>
+        <Setter Property="Width" Value="{Binding IconWidth, Mode=OneWay}"/>
+      </Style>
       
     </ResourceDictionary>
     
@@ -101,26 +111,580 @@
 
   <WrapPanel Orientation="Horizontal">
 
-    <WrapPanel.Resources>
-      <local:FrameworkElementToRenderTargetBitmapImageSourceConverter x:Key="FrameworkElementToRenderTargetBitmapImageSourceConverter"/>
-      <local:FrameworkElementToVisualBrushConverter x:Key="FrameworkElementToVisualBrushConverter"/>
-    </WrapPanel.Resources>
+    <StackPanel Orientation="Horizontal">
+      <TextBlock>Width: </TextBlock>
 
-    <Button>
-      <Rectangle x:Name="RectIconReferenceSize" SnapsToDevicePixels="False" Height="60" Width="70">
-        <Rectangle.Fill>
-          <Binding Converter="{StaticResource FrameworkElementToVisualBrushConverter}"
-                   Source="{StaticResource accessories-text-editor}" Mode="OneWay"/>
-        </Rectangle.Fill>
+      <ComboBox x:Name="ComboWidth" Margin="2"
+                ItemsSource="{Binding IconWidths, Mode=OneWay}"
+                SelectedItem="{Binding IconWidth, Mode=TwoWay}" >
+      </ComboBox>
+    </StackPanel>
+
+      <StackPanel Orientation="Horizontal">
+        <TextBlock>Height: </TextBlock>
+        
+        <ComboBox x:Name="ComboHeight" Margin="2"
+                  ItemsSource="{Binding IconHeights, Mode=OneWay}"
+                  SelectedItem="{Binding IconHeight, Mode=TwoWay}" >
+        </ComboBox>
+      </StackPanel>
+
+    <!-- Button>
+      <Rectangle x:Name="RectIconReferenceSize" SnapsToDevicePixels="False"
+             Height="{Binding IconHeight, Mode=OneWay}"
+             Width="{Binding IconWidth, Mode=OneWay}"
+                 Fill="{StaticResource accessories-text-editor}">
       </Rectangle>
-    </Button>
+    </Button -->
     
     <Button>
-      <Image Stretch="Fill" SnapsToDevicePixels="False" Height="{Binding Path=Height, ElementName=RectIconReferenceSize}" Width="{Binding Path=Width, ElementName=RectIconReferenceSize}">
+      <Image Style="{StaticResource ButtonImage}">
         <Image.Source>
-          <MultiBinding Converter="{StaticResource FrameworkElementToRenderTargetBitmapImageSourceConverter}">
-            <Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
             <Binding Source="{StaticResource accessories-text-editor}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource applications-graphics}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource audio-volume-high}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource audio-volume-low}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource audio-volume-muted}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource document-new}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource document-open}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource document-save}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-clear}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-copy}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-cut}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-find}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-paste}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-redo}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource edit-undo}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource folder}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource format-indent-less}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource format-indent-more}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-bottom}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-down}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-first}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-home}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-jump}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-last}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-next}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-previous}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource go-top}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource help-browser}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource list-add}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource list-remove}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-floppy}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-playback-pause}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-playback-start}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-playback-stop}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-record}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-seek-backward}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-seek-forward}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-skip-backward}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-skip-forward}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource preferences-desktop-accessibility}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource preferences-desktop-keyboard-shortcuts}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource preferences-system}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource system-search}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource utilities-system-monitor}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource view-fullscreen}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
+    </Button>
+    <Button>
+      <Image Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource view-refresh}" Mode="OneWay"/>
+            <Binding Path="IconWidth" Mode="OneWay"/>
+            <Binding Path="IconHeight" Mode="OneWay"/>
           </MultiBinding>
         </Image.Source>
       </Image>

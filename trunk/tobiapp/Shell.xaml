@@ -70,8 +70,9 @@
     <!--ToolBars-->
     <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
       <ContentControl.LayoutTransform>
-        <ScaleTransform x:Name="ScaleTransform"
-              ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
+        <ScaleTransform
+              ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                        ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
       </ContentControl.LayoutTransform>
     </ContentControl>
 

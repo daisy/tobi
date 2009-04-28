@@ -63,9 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FrameworkElementToVisualBrushConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FrameworkElementToRenderTargetBitmapImageSourceConverter.cs" />
+    <Compile Include="RenderTargetBitmapImageSourceConverter.cs" />
     <Compile Include="ToolBarsModule.cs" />
     <Compile Include="ToolBarsView.xaml.cs">
       <DependentUpon>ToolBarsView.xaml</DependentUpon>
