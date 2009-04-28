@@ -4,10 +4,8 @@
                     xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="PresentationOptions">
-
-        <Canvas x:Key="accessories-text-editor"
-                      VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch">
+  
+        <Canvas  x:Key="accessories-text-editor">
           <Canvas   RenderTransform="0.02417561,0,0,0.02086758,45.12765,40.1536">
             <Rectangle RadiusX="0" RadiusY="0"   Width="1339.6335" Height="478.35718" Opacity="0.40206185" Canvas.Left="-1559.2523" Canvas.Top="-150.69685">
               <Rectangle.Fill>
@@ -105,7 +103,6 @@
               <PathGeometry Figures="M7.8126474,5.5404503L38.944983,5.5404503C39.66702,5.5404503 40.2483,5.3883462 40.2483,6.014572 40.2483,6.014572 42.521973,39.023077 42.521973,39.023077 42.521973,39.023077 42.622156,41.732033 42.622156,41.732033 42.622156,42.358259 42.48282,42.376269 41.760782,42.376269L4.8620444,42.376269C4.4493662,42.376269,4.4426114,42.269871,4.4426114,41.864615L4.4320338,39.194177 6.7280807,6.045822C6.7280807,5.4195962,7.09061,5.5404503,7.8126474,5.5404503z" />
             </Path.Data>
           </Path>
-          <Canvas  >
             <Rectangle RadiusX="1" RadiusY="1" Fill="#FFFCE94F" Stroke="#FF886F00" StrokeMiterLimit="4"   Width="3" Height="6" Canvas.Left="8" Canvas.Top="2" />
             <Rectangle RadiusX="1" RadiusY="1" Fill="#FFFCE94F" Stroke="#FF886F00" StrokeMiterLimit="4"   Width="3" Height="6" Canvas.Left="12" Canvas.Top="2" />
             <Rectangle RadiusX="1" RadiusY="1" Fill="#FFFCE94F" Stroke="#FF886F00" StrokeMiterLimit="4"   Width="3" Height="6" Canvas.Left="16" Canvas.Top="2" />
@@ -114,8 +111,7 @@
             <Rectangle RadiusX="1" RadiusY="1" Fill="#FFFCE94F" Stroke="#FF886F00" StrokeMiterLimit="4"   Width="3" Height="6" Canvas.Left="28" Canvas.Top="2" />
             <Rectangle RadiusX="1" RadiusY="1" Fill="#FFFCE94F" Stroke="#FF886F00" StrokeMiterLimit="4"   Width="3" Height="6" Canvas.Left="32" Canvas.Top="2" />
             <Rectangle RadiusX="1" RadiusY="1" Fill="#FFFCE94F" Stroke="#FF886F00" StrokeMiterLimit="4"   Width="3" Height="6" Canvas.Left="36" Canvas.Top="2" />
-          </Canvas>
-          <Canvas  >
+          
             <Rectangle RadiusX="0" RadiusY="0" Fill="#48000000"   Width="29" Height="1" Opacity="0.28070175" Canvas.Left="9" Canvas.Top="12" />
             <Rectangle RadiusX="0" RadiusY="0" Fill="#48000000"   Width="29" Height="1" Opacity="0.28070176" Canvas.Left="9" Canvas.Top="14.981792" />
             <Rectangle RadiusX="0" RadiusY="0" Fill="#48000000"   Width="13" Height="1" Opacity="0.28070176" Canvas.Left="9" Canvas.Top="18.003939" />
@@ -123,7 +119,7 @@
             <Rectangle RadiusX="0" RadiusY="0" Fill="#48000000"   Width="29" Height="1" Opacity="0.28070176" Canvas.Left="9" Canvas.Top="26.007877" />
             <Rectangle RadiusX="0" RadiusY="0" Fill="#48000000"   Width="29" Height="1" Opacity="0.28070176" Canvas.Left="9" Canvas.Top="29.030024" />
             <Rectangle RadiusX="0" RadiusY="0" Fill="#48000000"   Width="8" Height="1" Opacity="0.28070176" Canvas.Left="9" Canvas.Top="32.05217" />
-          </Canvas>
+          
           <Path Fill="#FFCB9022" Stroke="#FF5C410C" StrokeMiterLimit="4"  >
             <Path.Data>
               <PathGeometry Figures="M17.34116,32.5L22.96616,26.875 43.059909,17.125C46.309909,15.875,48.247409,20.5,45.372409,22.125L25.34116,31.5 17.34116,32.5z" />
