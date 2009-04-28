@@ -47,6 +47,120 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
+        private void OnPlay(object sender, RoutedEventArgs e)
+        {
+            ViewModel.AudioPlayer_TogglePlayPause();
+        }
+        private void OnPause(object sender, RoutedEventArgs e)
+        {
+            ViewModel.AudioPlayer_TogglePlayPause();
+        }
+        private void OnStop(object sender, RoutedEventArgs e)
+        {
+            ViewModel.AudioPlayer_Stop();
+        }
+
+        private void OnRecord(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnSwitchPhrasePrevious(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnSwitchPhraseNext(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnGotoBegining(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnGotoEnd(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnStepBack(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnStepForward(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnRewind(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OnFastForward(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void clearSelection()
+        {
+            m_TimeSelectionLeftX = -1;
+            WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
+            WaveFormTimeSelectionRect.Width = 0;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+        }
+
+        private void OnClearSelection(object sender, RoutedEventArgs e)
+        {
+            clearSelection();
+        }
+
+        private void OnZoomSelection(object sender, RoutedEventArgs e)
+        {
+            if (m_TimeSelectionLeftX == -1)
+            {
+                return;
+            }
+
+            double widthToUse = WaveFormScroll.ActualWidth;
+            if (widthToUse == Double.NaN || widthToUse == 0)
+            {
+                widthToUse = WaveFormScroll.Width;
+            }
+            double widthSelection = WaveFormTimeSelectionRect.Width;
+
+            double ratio = widthToUse / widthSelection;
+
+            double newSliderValue = ZoomSlider.Value * ratio;
+
+            if (newSliderValue > 20000)
+            {
+                return; //safeguard...image too large
+            }
+
+            if (newSliderValue < ZoomSlider.Minimum)
+            {
+                ZoomSlider.Minimum = newSliderValue;
+            }
+            if (newSliderValue > ZoomSlider.Maximum)
+            {
+                ZoomSlider.Maximum = newSliderValue;
+            }
+            ZoomSlider.Value = newSliderValue;
+        }
+        private void OnZoomFitFull(object sender, RoutedEventArgs e)
+        {
+            double widthToUse = WaveFormScroll.ActualWidth;
+            if (widthToUse == Double.NaN || widthToUse == 0)
+            {
+                widthToUse = WaveFormScroll.Width;
+            }
+            if (widthToUse < ZoomSlider.Minimum)
+            {
+                ZoomSlider.Minimum = widthToUse;
+            }
+            if (widthToUse > ZoomSlider.Maximum)
+            {
+                ZoomSlider.Maximum = widthToUse;
+            }
+            ZoomSlider.Value = widthToUse;
+        }
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
             ViewModel.AudioPlayer_TogglePlayPause();

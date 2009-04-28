@@ -1,13 +1,12 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Tobi.Modules.ToolBars
+namespace Tobi.Infrastructure.UI
 {
     public class RenderTargetBitmapImageSourceConverter : IMultiValueConverter
     {
@@ -44,8 +43,14 @@ namespace Tobi.Modules.ToolBars
                 return null;
             }
 
-            var rectangle = new Rectangle { SnapsToDevicePixels = false, StrokeThickness = 0,
-                            Height = height, Width = width, Fill = visualBrush };
+            var rectangle = new Rectangle
+            {
+                SnapsToDevicePixels = false,
+                StrokeThickness = 0,
+                Height = height,
+                Width = width,
+                Fill = visualBrush
+            };
 
             var size = new Size(width, height);
             rectangle.Measure(size);

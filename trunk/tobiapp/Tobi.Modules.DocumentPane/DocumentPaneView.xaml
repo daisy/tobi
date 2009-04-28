@@ -1,10 +1,11 @@
-﻿<UserControl x:Class="Tobi.Modules.DocumentPane.DocumentPaneView"
+﻿<DockPanel x:Class="Tobi.Modules.DocumentPane.DocumentPaneView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
-    xmlns:local="clr-namespace:Tobi.Modules.DocumentPane">
-
-  <DockPanel LastChildFill="True" Background="White">
+    xmlns:local="clr-namespace:Tobi.Modules.DocumentPane"
+           
+           Focusable="False"
+           LastChildFill="True" Background="White">
     
   <Grid DockPanel.Dock="Top">
     <Grid.ColumnDefinitions>
@@ -28,9 +29,9 @@
                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
     </WrapPanel>
   </Grid>
+  
   <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"
                       Background="White">
-
     <FlowDocumentReader.ContextMenu>
       <ContextMenu>
         <MenuItem Header="Menu Placeholder 1"/>
@@ -39,4 +40,6 @@
         <MenuItem Header="Menu Placeholder 2"/>
       </ContextMenu>
     </FlowDocumentReader.ContextMenu>
-</FlowDocumentReader></DockPanel></UserControl>
+</FlowDocumentReader>
+
+</DockPanel>
