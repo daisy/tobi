@@ -32,8 +32,6 @@ namespace Tobi.Modules.AudioPane
 
             ViewModel.SetView(this);
 
-            PeakMeterCanvasBackgroundBrush.Freeze();
-
             WinFormHost.Child = ViewModel.GetWindowsFormsHookControl();
         }
 
@@ -341,6 +339,8 @@ namespace Tobi.Modules.AudioPane
                 WaveFormPlayHeadPath.Data = geometry;
             }
 
+            WaveFormPlayHeadPath.InvalidateVisual();
+
             double left = WaveFormScroll.HorizontalOffset;
             double right = left + WaveFormScroll.ActualWidth;
             //bool b = WaveFormPlayHeadPath.IsVisible;
@@ -353,10 +353,6 @@ namespace Tobi.Modules.AudioPane
                     offset = 0;
                 }
                 WaveFormScroll.ScrollToHorizontalOffset(offset);
-            }
-            else
-            {
-                WaveFormPlayHeadPath.InvalidateVisual();
             }
         }
 

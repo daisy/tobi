@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="PresentationOptions">
+  <VisualBrush x:Key="edit-copy">
+    <VisualBrush.Visual>
+        <Canvas >
+          <Canvas  RenderTransform="1.001508,0,0,1.000616,-0.05002205,-0.06304895" Opacity="0.49999997">
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="13" Height="2" Opacity="0.17045452" Canvas.Left="20.161837" Canvas.Top="34.033413" />
+            <Rectangle RadiusX="0.56565511" RadiusY="0.56615961" Stroke="#FF888A85" StrokeThickness="0.99893934" StrokeMiterLimit="4"  Width="31.95049834" Height="36.97562734" Canvas.Left="1.04897113" Canvas.Top="1.06346063">
+              <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="22.308331,18.99214" EndPoint="35.785294,39.498238" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="1.065698,0,0,0.987595,-8.54832,-4.891713">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFF0F0EF" Offset="0" />
+                    <GradientStop Color="#FFE8E8E8" Offset="0.59928655999999991" />
+                    <GradientStop Color="#FFFFFFFF" Offset="0.82758623" />
+                    <GradientStop Color="#FFD8D8D3" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle RadiusX="0" RadiusY="0" StrokeThickness="0.99893963" StrokeMiterLimit="4"  Width="29.96968063" Height="34.97999563" Canvas.Left="2.033043085" Canvas.Top="2.061125685">
+              <Rectangle.Stroke>
+                <LinearGradientBrush StartPoint="26.076092,26.696676" EndPoint="30.811172,42.007351" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="0.998504,0,0,0.998246,-6.970391,-4.892901">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFFFFFFF" Offset="0" />
+                    <GradientStop Color="#00FFFFFF" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Rectangle.Stroke>
+            </Rectangle>
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="21" Height="2" Opacity="0.17045452" Canvas.Left="7.016119" Canvas.Top="10.033414" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="20" Height="2" Opacity="0.17045452" Canvas.Left="7.016119" Canvas.Top="14.033414" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="18" Height="2" Opacity="0.17045452" Canvas.Left="7.016119" Canvas.Top="18.033415" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="21" Height="2" Opacity="0.17045452" Canvas.Left="7.016119" Canvas.Top="22.033415" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="13" Height="2" Opacity="0.17045452" Canvas.Left="7.016119" Canvas.Top="26.033413" />
+          </Canvas>
+          <Canvas >
+            <Path Stroke="#FF888A85" StrokeThickness="1.0000002" StrokeMiterLimit="4" >
+              <Path.Data>
+                <PathGeometry Figures="M15.072946,10.500852L44.929331,10.500852C45.245071,10.500852,45.499257,10.753945,45.499257,11.068324L45.499257,38.235686C45.499257,40.712138,38.619447,46.538773,36.231325,46.538773L15.072946,46.538773C14.757206,46.538773,14.50302,46.285681,14.50302,45.9713L14.50302,11.068324C14.50302,10.753945,14.757206,10.500852,15.072946,10.500852z" />
+              </Path.Data>
+              <Path.Fill>
+                <LinearGradientBrush StartPoint="22.308331,18.99214" EndPoint="35.785294,39.498238" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="1.067236,0,0,0.989276,4.391684,4.035227">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFF0F0EF" Offset="0" />
+                    <GradientStop Color="#FFE8E8E8" Offset="0.59928655999999991" />
+                    <GradientStop Color="#FFFFFFFF" Offset="0.82758623" />
+                    <GradientStop Color="#FFD8D8D3" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Fill>
+            </Path>
+            <Rectangle RadiusX="0" RadiusY="0" StrokeThickness="1.0000008" StrokeMiterLimit="4"  Width="29.9973498" Height="35.0407648" Canvas.Left="15.0029506" Canvas.Top="10.9999996">
+              <Rectangle.Stroke>
+                <LinearGradientBrush StartPoint="26.076092,26.696676" EndPoint="30.811172,42.007351" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="0.999421,0,0,1,5.991319,4.033411">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFFFFFFF" Offset="0" />
+                    <GradientStop Color="#00FFFFFF" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Rectangle.Stroke>
+            </Rectangle>
+            <Path Stroke="#FF868A84" StrokeThickness="1.0000002" StrokeMiterLimit="4" >
+              <Path.Data>
+                <PathGeometry Figures="M36.220918,46.536966C38.251336,46.866864 45.809711,42.007037 45.505329,38.039122 43.942067,40.462219 40.746807,39.32586 36.638049,39.48487 36.638049,39.48487 37.033418,46.036966 36.220918,46.536966z" />
+              </Path.Data>
+              <Path.Fill>
+                <LinearGradientBrush StartPoint="35.996582,40.458221" EndPoint="33.664921,37.770721" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="1,0,0,1,6.161836,4.033411">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FF7C7C7C" Offset="0" />
+                    <GradientStop Color="#FFB8B8B8" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Fill>
+            </Path>
+            <Path StrokeThickness="0.99999982" StrokeMiterLimit="4"  Opacity="0.36931817">
+              <Path.Data>
+                <PathGeometry Figures="M37.671355,44.345464C39.041134,43.661635 42.099604,42.198999 43.398985,40.317995 41.802891,40.99805 40.451175,40.527491 37.696651,40.5084 37.696651,40.5084 37.858973,43.570494 37.671355,44.345464z" />
+              </Path.Data>
+              <Path.Stroke>
+                <LinearGradientBrush StartPoint="33.396004,36.921333" EndPoint="34.170048,38.070381" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="1,0,0,1,6.161836,3.658411">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFFFFFFF" Offset="0" />
+                    <GradientStop Color="#00FFFFFF" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Stroke>
+            </Path>
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="21" Height="2" Opacity="0.17045452" Canvas.Left="20" Canvas.Top="19.033415" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="19.992233" Height="2" Opacity="0.17045452" Canvas.Left="20" Canvas.Top="23.033415" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="17.976702" Height="2" Opacity="0.17045452" Canvas.Left="20" Canvas.Top="27.033415" />
+            <Rectangle RadiusX="0" RadiusY="0" Fill="#2B000000"  Width="21" Height="2" Opacity="0.17045452" Canvas.Left="20" Canvas.Top="31.033415" />
+          </Canvas>
+        </Canvas>
+    </VisualBrush.Visual>
+  </VisualBrush>
+</ResourceDictionary>
