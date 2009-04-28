@@ -19,7 +19,7 @@
         x:Name="MainWindow"
    >
   <huddled:NativeBehaviors.Behaviors>
-    <huddled:SnapToBehavior SnapDistance="20,20,20,80" />
+    <huddled:SnapToBehavior SnapDistance="20,20,20,20" />
     <huddled:HotkeysBehavior>
       <KeyBinding Command="huddled:GlobalCommands.ActivateWindow" Key="K"  Modifiers="Win" />
       <KeyBinding Command="huddled:GlobalCommands.CloseWindow"    Key="F4" Modifiers="Ctrl+Shift" />
@@ -68,18 +68,15 @@
     <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
     <!--ToolBars-->
-    <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
-
-
+    <!-- ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
       <ContentControl.LayoutTransform>
         <ScaleTransform x:Name="ScaleTransform"
               ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
       </ContentControl.LayoutTransform>
-
-    </ContentControl>
+    </ContentControl -->
 
       <!--StatusBar-->
-    <ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/>
+    <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/ -->
     
     
     <ad:DockingManager x:Name="dockManager">

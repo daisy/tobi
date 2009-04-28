@@ -499,6 +499,8 @@ namespace Tobi.Modules.AudioPane
             }
             // else: the stream is now open, thus why we have a try/finally wrapper below:
 
+            m_EndOffsetOfPlayStream = m_DataLength;
+
             if (View != null)
             {
                 View.RefreshUI_LoadWaveForm();
@@ -579,6 +581,8 @@ namespace Tobi.Modules.AudioPane
                 if (m_Player.State == AudioPlayerState.Stopped)
                 {
                     m_CurrentAudioStreamProvider(); // ensure m_PlayStream is open
+
+                    m_EndOffsetOfPlayStream = m_DataLength;
 
                     m_Player.Play(m_CurrentAudioStreamProvider,
                                   m_PcmFormat.GetDuration(m_DataLength),
@@ -737,10 +741,13 @@ namespace Tobi.Modules.AudioPane
             {
                 return;
             }
-            TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
-            if (nextNode != null)
+            if (m_EndOffsetOfPlayStream == m_DataLength)
             {
-                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
+                if (nextNode != null)
+                {
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                }
             }
         }
 

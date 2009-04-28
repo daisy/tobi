@@ -79,9 +79,9 @@ namespace Tobi
                 .AddModule(typeof (MenuBarModule))
                 .AddModule(typeof (NavigationPaneModule), "DocumentPaneModule")
                 .AddModule(typeof (DocumentPaneModule))
-                .AddModule(typeof (AudioPaneModule))
-                .AddModule(typeof (StatusBarModule))
-                .AddModule(typeof (ToolBarsModule));
+                .AddModule(typeof (AudioPaneModule));
+                //.AddModule(typeof (StatusBarModule));
+                //.AddModule(typeof (ToolBarsModule));
             
                 //.AddModule(typeof(UserInterfaceZoomModule))
         }
