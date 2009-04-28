@@ -7,6 +7,7 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.ToolBars">
   <UserControl.Resources>
+    
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/accessories-text-editor.xaml"/>
@@ -92,15 +93,41 @@
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/ -->
       </ResourceDictionary.MergedDictionaries>
+      
     </ResourceDictionary>
+    
   </UserControl.Resources>
 
 
   <WrapPanel Orientation="Horizontal">
+
+    <WrapPanel.Resources>
+      <local:FrameworkElementToRenderTargetBitmapImageSourceConverter x:Key="FrameworkElementToRenderTargetBitmapImageSourceConverter"/>
+
+      <local:FrameworkElementToVisualBrushConverter x:Key="FrameworkElementToVisualBrushConverter"/>
+    </WrapPanel.Resources>
+    
     <Button>
-      <Rectangle SnapsToDevicePixels="False" Height="48" Width="48" Fill="{StaticResource accessories-text-editor}"></Rectangle>
+      <Image Stretch="Fill" SnapsToDevicePixels="False" Height="100" Width="100">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource FrameworkElementToRenderTargetBitmapImageSourceConverter}">
+            <Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/>
+            <Binding Source="{StaticResource accessories-text-editor}" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </Image>
     </Button>
+    
     <Button>
+      <Rectangle SnapsToDevicePixels="False" Height="100" Width="100">
+        <Rectangle.Fill>
+          <Binding Converter="{StaticResource FrameworkElementToVisualBrushConverter}"
+                   Source="{StaticResource accessories-text-editor}" Mode="OneWay"/>
+        </Rectangle.Fill>
+      </Rectangle>
+    </Button>
+
+    <!-- Button>
       <Rectangle SnapsToDevicePixels="False" Height="48" Width="48" Fill="{StaticResource applications-graphics}"></Rectangle>
     </Button>
     <Button>
@@ -234,7 +261,7 @@
     </Button>
     <Button>
       <Rectangle SnapsToDevicePixels="False" Height="48" Width="48" Fill="{StaticResource view-refresh}"></Rectangle>
-    </Button>
+    </Button -->
   </WrapPanel>
 
   <!-- ToolBarTray Focusable="False">

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using urakawa.core;
 
 namespace Tobi.Modules.AudioPane
@@ -14,14 +15,6 @@ namespace Tobi.Modules.AudioPane
         // ReSharper disable InconsistentNaming
         public void RefreshUI_LoadWaveForm()
         {
-            Brush brush1 = new SolidColorBrush(ViewModel.ColorPlayhead);
-            WaveFormPlayHeadPath.Stroke = brush1;
-            Brush brush2 = new SolidColorBrush(ViewModel.ColorPlayheadFill);
-            WaveFormPlayHeadPath.Fill = brush2;
-            Brush brush3 = new SolidColorBrush(ViewModel.ColorMarkers);
-            WaveFormTimeRangePath.Fill = brush3;
-            WaveFormTimeRangePath.Stroke = brush3;
-
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
             PeakOverloadLabelCh2.Visibility = ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels == 1 ? Visibility.Collapsed : Visibility.Visible;
@@ -491,11 +484,20 @@ namespace Tobi.Modules.AudioPane
 
                 drawGrp.Freeze();
 
-                var drawImg = new DrawingImage(drawGrp);
+                /* var drawImg = new DrawingImage(drawGrp);
                 drawImg.Freeze();
-
-                RenderOptions.SetBitmapScalingMode(WaveFormImage, BitmapScalingMode.LowQuality);
                 WaveFormImage.Source = drawImg;
+                 */
+
+                var renderBitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
+                var drawingVisual = new DrawingVisual();
+                using (DrawingContext context = drawingVisual.RenderOpen())
+                {
+                    context.DrawDrawing(drawGrp);
+                }
+                renderBitmap.Render(drawingVisual);
+                renderBitmap.Freeze();
+                WaveFormImage.Source = renderBitmap;
 
                 RefreshUI_LoadingMessage(false);
             }
