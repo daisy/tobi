@@ -75,6 +75,7 @@ namespace Tobi.Modules.AudioPane
 
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
+            /*
             PresentationSource ps = PresentationSource.FromVisual(this);
             if (ps != null)
             {
@@ -83,6 +84,7 @@ namespace Tobi.Modules.AudioPane
                 WaveFormPlayHeadPath.StrokeThickness = 1 * dpiFactor; // 1px
                 WaveFormTimeRangePath.StrokeThickness = 1 * dpiFactor;
             }
+             */
 
             double width = WaveFormCanvas.ActualWidth;
             if (width == Double.NaN || width == 0)

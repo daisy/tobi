@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Tobi.Modules.ToolBars
+﻿namespace Tobi.Modules.ToolBars
 {
     /// <summary>
     /// Interaction logic for ToolBarsView.xaml
@@ -8,11 +6,12 @@ namespace Tobi.Modules.ToolBars
     public partial class ToolBarsView
     {
         ///<summary>
-        /// Default constructor, initializes an empty View without any PresentationModel
+        /// Default constructor
         ///</summary>
         public ToolBarsView()
         {
             InitializeComponent();
+            DataContext = this;
         }
     }
 

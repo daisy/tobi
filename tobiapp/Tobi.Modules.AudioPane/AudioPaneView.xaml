@@ -182,7 +182,8 @@
                    Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                    Canvas.Left="0"
                    Canvas.Top="0"
-                   RenderOptions.EdgeMode="Unspecified" SnapsToDevicePixels="False"/>
+                   RenderOptions.EdgeMode="Unspecified" SnapsToDevicePixels="False"
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
 
             <Path x:Name="WaveFormTimeRangePath"
                   Canvas.ZIndex="1"
@@ -214,8 +215,8 @@
 
             <Path x:Name="WaveFormPlayHeadPath"
                   Canvas.ZIndex="3"
-                  StrokeThickness="2"
-                  RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False">
+                  StrokeThickness="1.2"
+                  RenderOptions.EdgeMode="Unspecified" SnapsToDevicePixels="True">
               <Path.Stroke>
                 <SolidColorBrush Color="{Binding Path=ColorPlayhead, Mode=OneWay}"/>
               </Path.Stroke>
@@ -299,26 +300,36 @@
                      Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
                      Height="{Binding ElementName=PeakMeterCanvas, Path=ActualHeight, Mode=OneWay}">
             <Rectangle.Fill>
-              <SolidColorBrush Color="Black"/>
+              <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
             </Rectangle.Fill>
           </Rectangle>
 
           <Path x:Name="PeakMeterPathCh1"
                 Canvas.ZIndex="1"
                 StrokeThickness="1"
-                Stroke="Black"
                 RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
-                Fill="Black">
+                >
+            <Path.Fill>
+              <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
+            </Path.Fill>
+            <Path.Stroke>
+              <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
+            </Path.Stroke>
           </Path>
 
 
           <Path x:Name="PeakMeterPathCh2"
               Canvas.ZIndex="1"
               StrokeThickness="2"
-              Stroke="Black"
-              Fill="Black"
                 RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
-                />
+                >
+            <Path.Fill>
+              <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
+            </Path.Fill>
+            <Path.Stroke>
+              <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
+            </Path.Stroke>
+          </Path>
         </Canvas>
       </Grid>
 
