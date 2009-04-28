@@ -52,17 +52,12 @@
   
   <DockPanel LastChildFill="True">
 
-    <!-- DockPanel.LayoutTransform>
-      <ScaleTransform x:Name="ScaleTransform"
-            ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
-    </DockPanel.LayoutTransform>
-
     <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
         Value="1"
                 Width="Auto" Height="Auto"
                 VerticalAlignment="Stretch"
         Minimum="0.5" Maximum="10"
-        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/ -->
+        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
 
 
         <!--UserInterfaceZoom-->
@@ -73,9 +68,17 @@
     <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
     <!--ToolBars-->
-    <!-- ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/ -->
+    <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
 
-    <!--StatusBar-->
+
+      <ContentControl.LayoutTransform>
+        <ScaleTransform x:Name="ScaleTransform"
+              ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=ScaleTransform, Path=ScaleX, Mode=OneWay}"/>
+      </ContentControl.LayoutTransform>
+
+    </ContentControl>
+
+      <!--StatusBar-->
     <ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/>
     
     
