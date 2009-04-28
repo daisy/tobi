@@ -142,6 +142,11 @@ namespace Tobi.Modules.AudioPane
             {
                 ZoomSlider.Maximum = newSliderValue;
             }
+
+            m_TimeSelectionLeftX *= ratio;
+            WaveFormTimeSelectionRect.Width *= ratio;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+
             ZoomSlider.Value = newSliderValue;
         }
         private void OnZoomFitFull(object sender, RoutedEventArgs e)
@@ -831,6 +836,8 @@ namespace Tobi.Modules.AudioPane
         private bool m_ForcePlayAfterWaveFormLoaded = false;
         // ReSharper restore RedundantDefaultFieldInitializer
 
+        private static readonly Object LOCK = new Object();
+
         public void StartWaveFormLoadTimer(double delay, bool play)
         {
             if (ViewModel.AudioPlayer_GetPcmFormat() == null)
@@ -838,31 +845,35 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            m_ForcePlayAfterWaveFormLoaded = play;
-
-            RefreshUI_LoadingMessage(true);
-
-            if (m_WaveFormLoadTimer == null)
+            lock (LOCK)
             {
-                m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Background);
-                m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
-                // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-                if (delay == 0)
-                // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
-                {
-                    m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);//TODO: does this work ?? (immediate dispatch)
-                }
-                else
-                {
-                    m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
-                }
-            }
-            else if (m_WaveFormLoadTimer.IsEnabled)
-            {
-                m_WaveFormLoadTimer.Stop();
-            }
+                m_ForcePlayAfterWaveFormLoaded = play;
 
-            m_WaveFormLoadTimer.Start();
+                RefreshUI_LoadingMessage(true);
+
+                if (m_WaveFormLoadTimer == null)
+                {
+                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Background);
+                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
+                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+                    if (delay == 0)
+                        // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+                    {
+                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
+                            //TODO: does this work ?? (immediate dispatch)
+                    }
+                    else
+                    {
+                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
+                    }
+                }
+                else if (m_WaveFormLoadTimer.IsEnabled)
+                {
+                    m_WaveFormLoadTimer.Stop();
+                }
+
+                m_WaveFormLoadTimer.Start();
+            }
         }
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
