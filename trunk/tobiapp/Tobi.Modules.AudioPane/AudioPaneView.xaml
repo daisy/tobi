@@ -182,12 +182,12 @@
                    Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                    Canvas.Left="0"
                    Canvas.Top="0"
-                   SnapsToDevicePixels="False"/>
+                   RenderOptions.EdgeMode="Unspecified" SnapsToDevicePixels="False"/>
 
             <Path x:Name="WaveFormTimeRangePath"
                   Canvas.ZIndex="1"
                   StrokeThickness="1"
-                  SnapsToDevicePixels="False">
+                  RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False">
               <Path.Fill>
                 <SolidColorBrush Color="{Binding Path=ColorMarkers, Mode=OneWay}"/>
               </Path.Fill>
@@ -201,7 +201,7 @@
               Canvas.ZIndex="2"
                   StrokeThickness="0"
                   Stroke="Lime"
-                  SnapsToDevicePixels="False"
+              RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
                        Canvas.Top="0"
                        Canvas.Left="0"
                        Width="0"
@@ -215,7 +215,7 @@
             <Path x:Name="WaveFormPlayHeadPath"
                   Canvas.ZIndex="3"
                   StrokeThickness="2"
-                  SnapsToDevicePixels="False">
+                  RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False">
               <Path.Stroke>
                 <SolidColorBrush Color="{Binding Path=ColorPlayhead, Mode=OneWay}"/>
               </Path.Stroke>
@@ -269,7 +269,7 @@
             Canvas.ZIndex="0"
                 StrokeThickness="0"
                 Stroke="Green"
-                SnapsToDevicePixels="False"
+            RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
                      Canvas.Top="0"
                      Canvas.Left="0"
                      Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
@@ -293,7 +293,7 @@
             Canvas.ZIndex="2"
                 StrokeThickness="0"
                 Stroke="Lime"
-                SnapsToDevicePixels="False"
+            RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
                      Canvas.Top="0"
                      Canvas.Left="0"
                      Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
@@ -307,7 +307,7 @@
                 Canvas.ZIndex="1"
                 StrokeThickness="1"
                 Stroke="Black"
-                SnapsToDevicePixels="False"
+                RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
                 Fill="Black">
           </Path>
 
@@ -317,7 +317,8 @@
               StrokeThickness="2"
               Stroke="Black"
               Fill="Black"
-              SnapsToDevicePixels="False"/>
+                RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
+                />
         </Canvas>
       </Grid>
 
