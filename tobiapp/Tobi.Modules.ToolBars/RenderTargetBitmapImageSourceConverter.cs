@@ -9,36 +9,50 @@ using System.Windows.Shapes;
 
 namespace Tobi.Modules.ToolBars
 {
-    public class FrameworkElementToRenderTargetBitmapImageSourceConverter : IMultiValueConverter
+    public class RenderTargetBitmapImageSourceConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length < 2)
+            if (values.Length < 3)
             {
                 return null;
             }
 
-            var image = values[0] as Image;
-            if (image == null)
+            var visualBrush = values[0] as VisualBrush;
+            if (visualBrush == null)
+            {
+                var frameworkElement = values[1] as FrameworkElement;
+                if (frameworkElement != null)
+                {
+                    visualBrush = new VisualBrush(frameworkElement);
+                }
+            }
+
+            if (visualBrush == null)
             {
                 return null;
             }
 
-            var frameworkElement = values[1] as FrameworkElement;
-            if (frameworkElement == null)
+            var width = (Double)values[1];
+            if (Double.IsNaN(width))
+            {
+                return null;
+            }
+            var height = (Double)values[2];
+            if (Double.IsNaN(height))
             {
                 return null;
             }
 
-            var visualBrush = new VisualBrush(frameworkElement);
-            var rectangle = new Rectangle { SnapsToDevicePixels = false, StrokeThickness = 0, Height = image.Height, Width = image.Width, Fill = visualBrush };
+            var rectangle = new Rectangle { SnapsToDevicePixels = false, StrokeThickness = 0,
+                            Height = height, Width = width, Fill = visualBrush };
 
-            var size = new Size(image.Width, image.Height);
+            var size = new Size(width, height);
             rectangle.Measure(size);
-            rectangle.Arrange(new Rect(0, 0, image.Width, image.Height));
+            rectangle.Arrange(new Rect(0, 0, width, height));
             rectangle.UpdateLayout();
 
-            var renderBitmap = new RenderTargetBitmap((int)image.Width, (int)image.Height, 96, 96, PixelFormats.Pbgra32);
+            var renderBitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
             renderBitmap.Render(rectangle);
 
             renderBitmap.Freeze();
