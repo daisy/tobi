@@ -20,14 +20,13 @@
    >
   <huddled:NativeBehaviors.Behaviors>
     <huddled:SnapToBehavior SnapDistance="20,20,20,20" />
-    <huddled:HotkeysBehavior>
+    <!-- huddled:HotkeysBehavior>
       <KeyBinding Command="huddled:GlobalCommands.ActivateWindow" Key="K"  Modifiers="Win" />
       <KeyBinding Command="huddled:GlobalCommands.CloseWindow"    Key="F4" Modifiers="Ctrl+Shift" />
       <KeyBinding Command="huddled:GlobalCommands.ToggleWindow"   Key="S"  Modifiers="Win" />
-      <!-- the next two should cause conflicts for the sake of the demo -->
       <KeyBinding Command="huddled:GlobalCommands.HideWindow"     Key="H"  Modifiers="Win" />
       <KeyBinding Command="huddled:GlobalCommands.ShowWindow"     Key="H"  Modifiers="Win+Shift" />
-    </huddled:HotkeysBehavior>
+    </huddled:HotkeysBehavior -->
   </huddled:NativeBehaviors.Behaviors>
   
    <!--    FocusManager.FocusedElement="{infra:FirstFocusedElement}"
@@ -35,52 +34,51 @@
    KeyboardNavigation.IsTabStop="false"
    KeyboardNavigation.TabNavigation="Continue"
  -->
-  
-  <Window.Resources>
+
+  <!-- Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/>
       </ResourceDictionary.MergedDictionaries>
+      
       <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
         <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
         <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
       </LinearGradientBrush>
     </ResourceDictionary>
-  </Window.Resources>
+  </Window.Resources -->
 
   
   <DockPanel LastChildFill="True">
 
-    <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
+    <!-- Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
         Value="1"
                 Width="Auto" Height="Auto"
                 VerticalAlignment="Stretch"
         Minimum="0.5" Maximum="10"
-        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
+        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/ -->
 
-
-        <!--UserInterfaceZoom-->
     <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
 
 
-    <!--MenuBar-->
-    <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
+    <ContentControl Focusable="False" DockPanel.Dock="Top"
+                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
-    <!--ToolBars-->
-    <ContentControl Focusable="False" DockPanel.Dock="Top" cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
+    <!-- ContentControl Focusable="False" DockPanel.Dock="Top" 
+                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
       <ContentControl.LayoutTransform>
         <ScaleTransform
               ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                         ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
       </ContentControl.LayoutTransform>
-    </ContentControl>
+    </ContentControl -->
 
-      <!--StatusBar-->
-    <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom" cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/ -->
-    
-    
-    <ad:DockingManager x:Name="dockManager">
+    <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom"
+                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/ -->
+
+
+    <!-- ad:DockingManager x:Name="dockManager">
 
       <ad:ResizingPanel Orientation="Vertical">
 
@@ -95,7 +93,7 @@
             <ad:DocumentContent Title="Placeholder" x:Name="DocumentContent2">
 
               <UI:LoadingUserControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-              <!-- TabControl>
+              <!- TabControl>
                 <TabItem Header="TabItem Header 1" >
                   <Button x:Name="ButtonDefault">Click 1</Button>
                 </TabItem>
@@ -105,7 +103,7 @@
                     <Button x:Name="ButtonDefault3">Click 2.2</Button>
                   </StackPanel>
                 </TabItem>
-              </TabControl -->
+              </TabControl ->
             </ad:DocumentContent>
 
             <ad:DocumentContent Title="Document" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}" ContentTypeDescription="Urakawa SDK Presentation">
@@ -122,9 +120,9 @@
 
       </ad:ResizingPanel>
 
-    </ad:DockingManager>
+    </ad:DockingManager -->
 
-    <!-- Grid>
+    <Grid>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="200"/>
         <ColumnDefinition Width="Auto"/>
@@ -136,18 +134,24 @@
         <RowDefinition Height="150"/>
       </Grid.RowDefinitions>
 
-      <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
-      <GridSplitter Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="5"/>
+      <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+      
+      <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="5"/>
 
-      <!-NavigationPane->
-      <ContentControl Focusable="False" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
+      <ContentControl Focusable="False"
+                      Grid.Column="0" Grid.Row="0" 
+                      cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
 
-      <!-WaveFormBar->
-      <ContentControl Focusable="False" Grid.Column="2" Grid.Row="2" cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
+      <ContentControl Focusable="False"
+                      Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"
+                      cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
 
-      <!-DocumentPane->
-      <ContentControl Focusable="False" Grid.Column="2" Grid.Row="0" cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
-    </Grid -->
+      <ContentControl Focusable="False"
+                      Grid.Column="2" Grid.Row="0"
+                      cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
+    </Grid>
 
   </DockPanel>
 
