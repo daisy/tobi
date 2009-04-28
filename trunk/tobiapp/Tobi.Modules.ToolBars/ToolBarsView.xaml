@@ -103,12 +103,20 @@
 
     <WrapPanel.Resources>
       <local:FrameworkElementToRenderTargetBitmapImageSourceConverter x:Key="FrameworkElementToRenderTargetBitmapImageSourceConverter"/>
-
       <local:FrameworkElementToVisualBrushConverter x:Key="FrameworkElementToVisualBrushConverter"/>
     </WrapPanel.Resources>
+
+    <Button>
+      <Rectangle x:Name="RectIconReferenceSize" SnapsToDevicePixels="False" Height="60" Width="70">
+        <Rectangle.Fill>
+          <Binding Converter="{StaticResource FrameworkElementToVisualBrushConverter}"
+                   Source="{StaticResource accessories-text-editor}" Mode="OneWay"/>
+        </Rectangle.Fill>
+      </Rectangle>
+    </Button>
     
     <Button>
-      <Image Stretch="Fill" SnapsToDevicePixels="False" Height="100" Width="100">
+      <Image Stretch="Fill" SnapsToDevicePixels="False" Height="{Binding Path=Height, ElementName=RectIconReferenceSize}" Width="{Binding Path=Width, ElementName=RectIconReferenceSize}">
         <Image.Source>
           <MultiBinding Converter="{StaticResource FrameworkElementToRenderTargetBitmapImageSourceConverter}">
             <Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/>
@@ -118,14 +126,6 @@
       </Image>
     </Button>
     
-    <Button>
-      <Rectangle SnapsToDevicePixels="False" Height="100" Width="100">
-        <Rectangle.Fill>
-          <Binding Converter="{StaticResource FrameworkElementToVisualBrushConverter}"
-                   Source="{StaticResource accessories-text-editor}" Mode="OneWay"/>
-        </Rectangle.Fill>
-      </Rectangle>
-    </Button>
 
     <!-- Button>
       <Rectangle SnapsToDevicePixels="False" Height="48" Width="48" Fill="{StaticResource applications-graphics}"></Rectangle>
