@@ -56,6 +56,8 @@
 
       <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 
+      <infraUI:BooleanNotConverter x:Key="BooleanNotConverter"/>
+
       <System:Double x:Key="IconWidth">16</System:Double>
       <System:Double x:Key="IconHeight">16</System:Double>
 
@@ -448,6 +450,7 @@
       <Button Style="{StaticResource IconButton}"
               ToolTip="Start playback"
               
+              IsEnabled="{Binding IsPlaying, Mode=OneWay, Converter={StaticResource BooleanNotConverter}}"
               Click="OnPlay"
               >
         <Image Style="{StaticResource ButtonImage}">
@@ -465,6 +468,7 @@
       <Button Style="{StaticResource IconButton}"
                             ToolTip="Pause playback"
               Click="OnPause"
+              IsEnabled="{Binding IsPlaying, Mode=OneWay}"
               >
         <Image Style="{StaticResource ButtonImage}">
           <Image.Source>
@@ -478,21 +482,20 @@
         </Image>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <!-- Button Style="{StaticResource IconButton}"
                             ToolTip="Stop playback"
               Click="OnStop"
 >
         <Image Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
               <Binding Source="{StaticResource media-playback-stop}" Mode="OneWay"/>
               <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
         </Image>
-      </Button>
+      </Button -->
 
       <Button Style="{StaticResource IconButton}"
                             ToolTip="Start recording"

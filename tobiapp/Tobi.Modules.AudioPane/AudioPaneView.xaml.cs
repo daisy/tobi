@@ -7,6 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Win32;
 using urakawa.media.timing;
 
@@ -54,7 +55,7 @@ namespace Tobi.Modules.AudioPane
 
             if (m_TimeSelectionLeftX == -1)
             {
-                if (ViewModel.LastPlayHeadTime ==
+                if (ViewModel.LastPlayHeadTime >=
                         ViewModel.AudioPlayer_ConvertByteToMilliseconds(
                                             ViewModel.AudioPlayer_GetDataLength()))
                 {
@@ -76,13 +77,47 @@ namespace Tobi.Modules.AudioPane
                 if (byteLastPlayHeadTime >= byteSelectionLeft
                         && byteLastPlayHeadTime < byteSelectionRight)
                 {
-                    ViewModel.AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
+                    if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
+                    {
+                        ViewModel.AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
+                    }
                 }
                 else
                 {
-                    ViewModel.AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
+                    if (verifyBeginEndPlayerValues(byteSelectionLeft, byteSelectionRight))
+                    {
+                        ViewModel.AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
+                    }
                 }
             }
+        }
+
+        private bool verifyBeginEndPlayerValues(double begin, double end)
+        {
+            double from = ViewModel.AudioPlayer_ConvertByteToMilliseconds(begin);
+            double to = ViewModel.AudioPlayer_ConvertByteToMilliseconds(end);
+
+            var pcmInfo = ViewModel.AudioPlayer_GetPcmFormat();
+
+            long startPosition = 0;
+            if (from > 0)
+            {
+                startPosition = CalculationFunctions.ConvertTimeToByte(from, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                startPosition = CalculationFunctions.AdaptToFrame(startPosition, pcmInfo.BlockAlign);
+            }
+            long endPosition = 0;
+            if (to > 0)
+            {
+                endPosition = CalculationFunctions.ConvertTimeToByte(to, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
+            }
+            if (startPosition >= 0 &&
+                (endPosition == 0 || startPosition < endPosition) &&
+                endPosition <= pcmInfo.GetDataLength(pcmInfo.GetDuration(ViewModel.AudioPlayer_GetDataLength())))
+            {
+                return true;
+            }
+            return false;
         }
 
         private void OnPlay(object sender, RoutedEventArgs e)
@@ -98,10 +133,11 @@ namespace Tobi.Modules.AudioPane
             //ViewModel.AudioPlayer_TogglePlayPause();
         }
 
+        /*
         private void OnStop(object sender, RoutedEventArgs e)
         {
             ViewModel.AudioPlayer_Stop();
-        }
+        }*/
 
         private void OnRecord(object sender, RoutedEventArgs e)
         {
@@ -358,6 +394,12 @@ namespace Tobi.Modules.AudioPane
 
         private void selectionFinished(double x)
         {
+            if (Math.Abs(m_TimeSelectionLeftX-x) <= 6)
+            {
+                clearSelection();
+                m_TimeSelectionLeftX = x;
+            }
+
             if (x == m_TimeSelectionLeftX)
             {
                 restoreSelection();

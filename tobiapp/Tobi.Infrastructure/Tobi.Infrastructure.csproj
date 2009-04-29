@@ -78,6 +78,7 @@
     <Compile Include="TreeViewHelper.cs" />
     <Compile Include="UI\BindableRun.cs" />
     <Compile Include="UI\BindableRunTextMedia.cs" />
+    <Compile Include="UI\BooleanNotConverter.cs" />
     <Compile Include="UI\ComboColorPicker.xaml.cs">
       <DependentUpon>ComboColorPicker.xaml</DependentUpon>
     </Compile>
