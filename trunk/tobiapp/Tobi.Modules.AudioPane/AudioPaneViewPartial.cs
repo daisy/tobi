@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using urakawa.core;
@@ -502,6 +503,8 @@ namespace Tobi.Modules.AudioPane
                 RefreshUI_LoadingMessage(false);
 
                 ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+
+                m_WaveFormTimeTicksAdorner.InvalidateVisual();
             }
             finally
             {

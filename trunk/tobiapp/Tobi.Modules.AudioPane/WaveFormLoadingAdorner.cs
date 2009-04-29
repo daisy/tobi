@@ -8,14 +8,14 @@ namespace Tobi.Modules.AudioPane
 {
     public class WaveFormLoadingAdorner : Adorner
     {
-        public WaveFormLoadingAdorner(UIElement adornedElement)
+        public WaveFormLoadingAdorner(FrameworkElement adornedElement)
             : base(adornedElement)
         {
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            FormattedText formattedText = new FormattedText(
+            var formattedText = new FormattedText(
                 "Loading...",
                 CultureInfo.GetCultureInfo("en-us"),
                 FlowDirection.LeftToRight,
@@ -24,10 +24,10 @@ namespace Tobi.Modules.AudioPane
                 Brushes.Black
                 );
 
-            double margin = 20;
+            const double margin = 20;
 
-            double width = ((ScrollViewer)AdornedElement).ActualWidth;
-            double height = ((ScrollViewer)AdornedElement).ActualHeight - 20;
+            double width = ((FrameworkElement)AdornedElement).ActualWidth;
+            double height = ((FrameworkElement)AdornedElement).ActualHeight - margin;
 
             if (width <= margin + margin || height <= margin + margin)
             {
@@ -38,9 +38,8 @@ namespace Tobi.Modules.AudioPane
             double topOffset = (height - formattedText.Height) / 2;
 
 
-            SolidColorBrush renderBrush = new SolidColorBrush(Colors.Black);
-            renderBrush.Opacity = 0.6;
-            Pen pen = new Pen(Brushes.White, 1);
+            var renderBrush = new SolidColorBrush(Colors.Black) {Opacity = 0.6};
+            var pen = new Pen(Brushes.White, 1);
 
             drawingContext.DrawRoundedRectangle(renderBrush, pen,
                                                 new Rect(new Point(margin, margin),
@@ -48,8 +47,8 @@ namespace Tobi.Modules.AudioPane
                                                                   height - margin - margin)),
                                                 10.0, 10.0);
 
-            Geometry textGeometry = formattedText.BuildGeometry(
-                new Point(leftOffset, topOffset));
+            Geometry textGeometry = formattedText.BuildGeometry(new Point(leftOffset, topOffset));
+
             drawingContext.DrawGeometry(Brushes.White,
                                         new Pen(Brushes.Black, 1),
                                         textGeometry);

@@ -315,7 +315,8 @@
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Visible"
                   Background="DarkGray"
-                  VerticalAlignment="Stretch">
+                  VerticalAlignment="Stretch"
+                  ScrollChanged="OnWaveFormScrollChanged">
 
       <Canvas x:Name="WaveFormCanvas"
               SizeChanged="OnWaveFormCanvasSizeChanged"
