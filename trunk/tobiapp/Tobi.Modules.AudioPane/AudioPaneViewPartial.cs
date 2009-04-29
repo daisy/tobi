@@ -500,6 +500,8 @@ namespace Tobi.Modules.AudioPane
                 WaveFormImage.Source = renderBitmap;
 
                 RefreshUI_LoadingMessage(false);
+
+                ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
             }
             finally
             {

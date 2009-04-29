@@ -11,6 +11,8 @@ namespace Tobi
         void ShowView();
         Window Window { get; }
 
+        bool SplitterDrag { get; }
+
         /*
         void DecreaseZoom(double? step);
         void IncreaseZoom(double? step);

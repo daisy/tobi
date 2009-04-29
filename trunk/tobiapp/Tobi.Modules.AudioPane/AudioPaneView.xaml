@@ -140,6 +140,17 @@
 
       </Style>
 
+      <Style x:Key="IconButtonNeedsAudioAndSubTreeNodes" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+
+        <Setter Property="IsEnabled" Value="{Binding IsAudioLoadedWithSubTreeNodes, Mode=OneWay}"/>
+
+      </Style>
+      <Style x:Key="IconButtonNeedsAudioAndTreeNode" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+
+        <Setter Property="IsEnabled" Value="{Binding IsAudioLoadedWithTreeNode, Mode=OneWay}"/>
+
+      </Style>
+
       <Style x:Key="IconButtonPlayPause" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonNeedsAudio}">
 
         <Setter Property="IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
@@ -550,8 +561,8 @@
         Click="OnRecordOrStop">
       </Button>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Switch to previous phrase"
+      <Button Style="{StaticResource IconButtonNeedsAudioAndTreeNode}"
+                            ToolTip="Switch to previous audio"
               Click="OnSwitchPhrasePrevious"
 >
         <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
@@ -582,7 +593,7 @@
         </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
+      <Button Style="{StaticResource IconButtonNeedsAudioAndSubTreeNodes}"
                             ToolTip="Step back one phrase"
               Click="OnStepBack"
               >
@@ -632,7 +643,7 @@
       </Button>
 
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
+      <Button Style="{StaticResource IconButtonNeedsAudioAndSubTreeNodes}"
                             ToolTip="Step forward one phrase"
               
               Click="OnStepForward">
@@ -665,8 +676,8 @@
         </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Switch to next phrase"
+      <Button Style="{StaticResource IconButtonNeedsAudioAndTreeNode}"
+                            ToolTip="Switch to next audio"
               Click="OnSwitchPhraseNext"
               >
         <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
@@ -682,7 +693,7 @@
       </Button>
 
       <Button Style="{StaticResource IconButtonNeedsSelection}"
-                            ToolTip="Clear selection"
+                            ToolTip="Clear audio selection"
               Click="OnClearSelection"
               >
         <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
@@ -698,7 +709,7 @@
       </Button>
 
       <Button Style="{StaticResource IconButtonNeedsSelection}"
-                            ToolTip="Zoom on selection"
+                            ToolTip="Zoom waveform selection into view"
               
               Click="OnZoomSelection">
         <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
@@ -714,7 +725,7 @@
       </Button>
 
       <Button Style="{StaticResource IconButton}"
-                            ToolTip="Fit full waveform into view"
+                            ToolTip="Fit the entire audio waveform into view"
               Click="OnZoomFitFull"
               >
         <Image Style="{StaticResource ButtonImage}">
@@ -729,6 +740,22 @@
         </Image>
       </Button>
 
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
+                            ToolTip="Reload the audio waveform data"
+              Click="OnRefresh"
+              >
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
+          <Image.Source>
+            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+              <Binding Source="{StaticResource view-refresh}" Mode="OneWay"/>
+              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+            </MultiBinding>
+          </Image.Source>
+        </infraUI:GreyableImage>
+      
+    </Button>
 
     </WrapPanel>
 

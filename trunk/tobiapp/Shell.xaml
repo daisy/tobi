@@ -140,6 +140,8 @@
                     HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
       
       <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
+                    Thumb.DragCompleted="OnSplitterDragCompleted"
+                    Thumb.DragStarted="OnSplitterDragStarted"
                     HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="5"/>
 
       <ContentControl Focusable="False"
