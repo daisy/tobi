@@ -61,12 +61,10 @@
       <System:Double x:Key="IconWidth">16</System:Double>
       <System:Double x:Key="IconHeight">16</System:Double>
 
-      <Style x:Key="IconButton" TargetType="{x:Type Button}">
-        <Setter Property="Padding" Value="2"/>
-      </Style>
-      
-      <Style x:Key="IconToggleButton" TargetType="{x:Type ToggleButton}">
-        <Setter Property="Padding" Value="2"/>
+      <Style x:Key="IconButton">
+        <Setter Property="Control.Padding" Value="2"/>
+        <Setter Property="RepeatButton.Delay" Value="0"/>
+        <Setter Property="RepeatButton.Interval" Value="100"/>
       </Style>
 
       <Style x:Key="ButtonImage" TargetType="{x:Type Image}">
@@ -128,53 +126,53 @@
         </Image.Source>
       </infraUI:GreyableImage>
 
-      <Style x:Key="IconButtonNeedsSelection" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+      <Style x:Key="IconButtonNeedsSelection" BasedOn="{StaticResource IconButton}">
 
-        <Setter Property="IsEnabled" Value="{Binding IsSelectionSet, Mode=OneWay}"/>
+        <Setter Property="UIElement.IsEnabled" Value="{Binding IsSelectionSet, Mode=OneWay}"/>
 
       </Style>
       
-      <Style x:Key="IconButtonNeedsAudio" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+      <Style x:Key="IconButtonNeedsAudio" BasedOn="{StaticResource IconButton}">
 
-        <Setter Property="IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
-
-      </Style>
-
-      <Style x:Key="IconButtonNeedsAudioAndSubTreeNodes" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
-
-        <Setter Property="IsEnabled" Value="{Binding IsAudioLoadedWithSubTreeNodes, Mode=OneWay}"/>
-
-      </Style>
-      <Style x:Key="IconButtonNeedsAudioAndTreeNode" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
-
-        <Setter Property="IsEnabled" Value="{Binding IsAudioLoadedWithTreeNode, Mode=OneWay}"/>
+        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
 
       </Style>
 
-      <Style x:Key="IconButtonPlayPause" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonNeedsAudio}">
+      <Style x:Key="IconButtonNeedsAudioAndSubTreeNodes" BasedOn="{StaticResource IconButton}">
 
-        <Setter Property="IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
+        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoadedWithSubTreeNodes, Mode=OneWay}"/>
+
+      </Style>
+      <Style x:Key="IconButtonNeedsAudioAndTreeNode" BasedOn="{StaticResource IconButton}">
+
+        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoadedWithTreeNode, Mode=OneWay}"/>
+
+      </Style>
+
+      <Style x:Key="IconButtonPlayPause" BasedOn="{StaticResource IconButtonNeedsAudio}">
+
+        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
         
-        <Setter Property="Content" Value="{StaticResource Image_media-playback-start}"/>
-        <Setter Property="ToolTip" Value="Start playback"/>
+        <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-start}"/>
+        <Setter Property="FrameworkElement.ToolTip" Value="Start playback"/>
         
         <Style.Triggers>
           <DataTrigger Binding="{Binding Path=IsPlaying}" Value="True">
-            <Setter Property="ToolTip" Value="Stop playback"/>
-            <Setter Property="Content" Value="{StaticResource Image_media-playback-pause}"/>
+            <Setter Property="FrameworkElement.ToolTip" Value="Stop playback"/>
+            <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-pause}"/>
           </DataTrigger>
         </Style.Triggers>
       </Style>
 
-      <Style x:Key="IconButtonRecordOrStop" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+      <Style x:Key="IconButtonRecordOrStop" BasedOn="{StaticResource IconButton}">
 
-        <Setter Property="Content" Value="{StaticResource Image_media-record}"/>
-        <Setter Property="ToolTip" Value="Start recording"/>
+        <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-record}"/>
+        <Setter Property="FrameworkElement.ToolTip" Value="Start recording"/>
 
         <Style.Triggers>
           <DataTrigger Binding="{Binding Path=IsRecording}" Value="True">
-            <Setter Property="ToolTip" Value="Stop recording"/>
-            <Setter Property="Content" Value="{StaticResource Image_media-playback-stop}"/>
+            <Setter Property="FrameworkElement.ToolTip" Value="Stop recording"/>
+            <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-stop}"/>
           </DataTrigger>
         </Style.Triggers>
       </Style>
@@ -514,7 +512,7 @@
 
       <ToggleButton
               ToolTip="Auto playback"
-              Style="{StaticResource IconToggleButton}"
+              Style="{StaticResource IconButton}"
               IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
               >
         <!-- ToggleButton.Style>
@@ -609,9 +607,8 @@
         </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
+      <RepeatButton Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Rewind by a pre-defined time increment"
-              
               Click="OnRewind"
               >
         <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
@@ -624,9 +621,9 @@
             </MultiBinding>
           </Image.Source>
         </infraUI:GreyableImage>
-      </Button>
+      </RepeatButton>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
+      <RepeatButton Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Fast-forward by a pre-defined time increment"
               Click="OnFastForward"
               >
@@ -640,7 +637,7 @@
             </MultiBinding>
           </Image.Source>
         </infraUI:GreyableImage>
-      </Button>
+      </RepeatButton>
 
 
       <Button Style="{StaticResource IconButtonNeedsAudioAndSubTreeNodes}"
