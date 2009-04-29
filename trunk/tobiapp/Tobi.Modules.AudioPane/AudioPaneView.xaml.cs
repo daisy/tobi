@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Media;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -182,36 +183,76 @@ namespace Tobi.Modules.AudioPane
 
         private void OnSwitchPhrasePrevious(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.AudioPlayer_Stop();
         }
         private void OnSwitchPhraseNext(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.AudioPlayer_Stop();
         }
         private void OnGotoBegining(object sender, RoutedEventArgs e)
         {
+            ViewModel.AudioPlayer_Stop();
 
+            ViewModel.LastPlayHeadTime = 0;
+
+            if (ViewModel.IsAutoPlay)
+            {
+                clearSelection();
+                Play();
+            }
         }
         private void OnGotoEnd(object sender, RoutedEventArgs e)
         {
+            ViewModel.AudioPlayer_Stop();
 
+            ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertByteToMilliseconds(ViewModel.AudioPlayer_GetDataLength());
         }
         private void OnStepBack(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.AudioPlayer_Stop();
         }
 
         private void OnStepForward(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.AudioPlayer_Stop();
         }
+
+        private double m_TimeStepForwardRewind = 1000; //1s
+
         private void OnRewind(object sender, RoutedEventArgs e)
         {
+            ViewModel.AudioPlayer_Stop();
+            double newTime = ViewModel.LastPlayHeadTime - m_TimeStepForwardRewind;
+            if (newTime < 0)
+            {
+                newTime = 0;
+                SystemSounds.Exclamation.Play();
+            }
+            ViewModel.LastPlayHeadTime = newTime;
 
+            if (ViewModel.IsAutoPlay)
+            {
+                clearSelection();
+                Play();
+            }
         }
         private void OnFastForward(object sender, RoutedEventArgs e)
         {
+            ViewModel.AudioPlayer_Stop();
+            double newTime = ViewModel.LastPlayHeadTime + m_TimeStepForwardRewind;
+            double max = ViewModel.AudioPlayer_ConvertByteToMilliseconds(ViewModel.AudioPlayer_GetDataLength());
+            if (newTime > max)
+            {
+                newTime = max;
+                SystemSounds.Exclamation.Play();
+            }
+            ViewModel.LastPlayHeadTime = newTime;
 
+            if (ViewModel.IsAutoPlay && newTime < max)
+            {
+                clearSelection();
+                Play();
+            }
         }
 
         private double m_SelectionBackup_X = 0;
