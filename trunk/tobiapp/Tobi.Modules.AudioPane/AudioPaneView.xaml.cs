@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -47,14 +48,56 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
+        private void Play()
+        {
+            double byteLastPlayHeadTime = ViewModel.AudioPlayer_ConvertMillisecondsToByte(ViewModel.LastPlayHeadTime);
+
+            if (m_TimeSelectionLeftX == -1)
+            {
+                if (ViewModel.LastPlayHeadTime ==
+                        ViewModel.AudioPlayer_ConvertByteToMilliseconds(
+                                            ViewModel.AudioPlayer_GetDataLength()))
+                {
+                    ViewModel.LastPlayHeadTime = 0;
+                    ViewModel.AudioPlayer_PlayFrom(0);
+                }
+                else
+                {
+                    ViewModel.AudioPlayer_PlayFrom(byteLastPlayHeadTime);
+                }
+            }
+            else
+            {
+                double byteSelectionLeft = Math.Round(m_TimeSelectionLeftX * BytesPerPixel);
+                double byteSelectionRight = Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
+
+                byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
+
+                if (byteLastPlayHeadTime >= byteSelectionLeft
+                        && byteLastPlayHeadTime < byteSelectionRight)
+                {
+                    ViewModel.AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
+                }
+                else
+                {
+                    ViewModel.AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
+                }
+            }
+        }
+
         private void OnPlay(object sender, RoutedEventArgs e)
         {
-            ViewModel.AudioPlayer_TogglePlayPause();
+            ViewModel.AudioPlayer_Stop();
+
+            Play();
         }
+
         private void OnPause(object sender, RoutedEventArgs e)
         {
-            ViewModel.AudioPlayer_TogglePlayPause();
+            ViewModel.AudioPlayer_Stop();
+            //ViewModel.AudioPlayer_TogglePlayPause();
         }
+
         private void OnStop(object sender, RoutedEventArgs e)
         {
             ViewModel.AudioPlayer_Stop();
@@ -98,6 +141,23 @@ namespace Tobi.Modules.AudioPane
 
         }
 
+        private double m_SelectionBackup_X = 0;
+        private double m_SelectionBackup_Width = 0;
+
+        private void restoreSelection()
+        {
+            m_TimeSelectionLeftX = m_SelectionBackup_X;
+            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
+            WaveFormTimeSelectionRect.Width = m_SelectionBackup_Width;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+        }
+
+        private void backupSelection()
+        {
+            m_SelectionBackup_X = m_TimeSelectionLeftX;
+            m_SelectionBackup_Width = WaveFormTimeSelectionRect.Width;
+        }
+
         private void clearSelection()
         {
             m_TimeSelectionLeftX = -1;
@@ -118,20 +178,19 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            double widthToUse = WaveFormScroll.ActualWidth;
+            double widthToUse = WaveFormScroll.ViewportWidth;
             if (widthToUse == Double.NaN || widthToUse == 0)
             {
-                widthToUse = WaveFormScroll.Width;
+                widthToUse = WaveFormScroll.ActualWidth;
             }
-            double widthSelection = WaveFormTimeSelectionRect.Width;
 
-            double ratio = widthToUse / widthSelection;
+            widthToUse -= 20;
 
-            double newSliderValue = ZoomSlider.Value * ratio;
+            double newSliderValue = ZoomSlider.Value * (widthToUse / WaveFormTimeSelectionRect.Width);
 
             if (newSliderValue > 20000)
             {
-                return; //safeguard...image too large
+                newSliderValue = 20000; //safeguard...image too large
             }
 
             if (newSliderValue < ZoomSlider.Minimum)
@@ -143,18 +202,14 @@ namespace Tobi.Modules.AudioPane
                 ZoomSlider.Maximum = newSliderValue;
             }
 
-            m_TimeSelectionLeftX *= ratio;
-            WaveFormTimeSelectionRect.Width *= ratio;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-
             ZoomSlider.Value = newSliderValue;
         }
         private void OnZoomFitFull(object sender, RoutedEventArgs e)
         {
-            double widthToUse = WaveFormScroll.ActualWidth;
+            double widthToUse = WaveFormScroll.ViewportWidth;
             if (widthToUse == Double.NaN || widthToUse == 0)
             {
-                widthToUse = WaveFormScroll.Width;
+                widthToUse = WaveFormScroll.ActualWidth;
             }
             if (widthToUse < ZoomSlider.Minimum)
             {
@@ -164,8 +219,10 @@ namespace Tobi.Modules.AudioPane
             {
                 ZoomSlider.Maximum = widthToUse;
             }
+
             ZoomSlider.Value = widthToUse;
         }
+
         private void OnOpenFile(object sender, RoutedEventArgs e)
         {
             ViewModel.AudioPlayer_TogglePlayPause();
@@ -192,6 +249,20 @@ namespace Tobi.Modules.AudioPane
             ViewModel.UpdatePeakMeter();
         }
 
+        private bool m_ZoomSliderDrag = false;
+
+        private void OnZoomSliderDragStarted(object sender, DragStartedEventArgs e1)
+        {
+            m_ZoomSliderDrag = true;
+        }
+
+        private void OnZoomSliderDragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            m_ZoomSliderDrag = false;
+
+            StartWaveFormLoadTimer(500, false);
+        }
+
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
             /*
@@ -204,6 +275,7 @@ namespace Tobi.Modules.AudioPane
                 WaveFormTimeRangePath.StrokeThickness = 1 * dpiFactor;
             }
              */
+            double oldWidth = e.PreviousSize.Width;
 
             double width = WaveFormCanvas.ActualWidth;
             if (width == Double.NaN || width == 0)
@@ -211,13 +283,27 @@ namespace Tobi.Modules.AudioPane
                 width = WaveFormCanvas.Width;
             }
 
+            if (m_TimeSelectionLeftX != -1)
+            {
+                double ratio = width / oldWidth;
+                m_TimeSelectionLeftX *= ratio;
+                WaveFormTimeSelectionRect.Width *= ratio;
+                WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+            }
+
             BytesPerPixel = ViewModel.AudioPlayer_GetDataLength() / width;
 
             ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+
             if (ViewModel.AudioPlayer_GetPcmFormat() == null)
             {
                 return;
             }
+            if (m_ZoomSliderDrag)
+            {
+                return;
+            }
+
             StartWaveFormLoadTimer(500, false);
         }
 
@@ -236,9 +322,8 @@ namespace Tobi.Modules.AudioPane
 
             if (p.X == m_TimeSelectionLeftX)
             {
-                WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
-                WaveFormTimeSelectionRect.Width = 0;
-
+                clearSelection();
+                m_TimeSelectionLeftX = p.X;
                 return;
             }
 
@@ -258,48 +343,86 @@ namespace Tobi.Modules.AudioPane
             WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
 
-        private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
+        private void OnWaveFormMouseLeave(object sender, MouseEventArgs e)
         {
-            WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+            if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
+            {
+                WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                return;
+            }
 
             Point p = e.GetPosition(WaveFormCanvas);
 
-            if (p.X == m_TimeSelectionLeftX)
-            {
-                m_TimeSelectionLeftX = -1;
-                WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
-                WaveFormTimeSelectionRect.Width = 0;
-                WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+            selectionFinished(p.X);
+        }
 
-                ViewModel.AudioPlayer_PlayFrom(p.X * BytesPerPixel);
+        private void selectionFinished(double x)
+        {
+            if (x == m_TimeSelectionLeftX)
+            {
+                restoreSelection();
+
+                if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+                {
+                    return;
+                }
+
+                double bytes = x * BytesPerPixel;
+                ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
+
+                if (ViewModel.IsAutoPlay)
+                {
+                    Play();
+                }
 
                 return;
             }
 
-            double right = p.X;
+            double right = x;
 
-            if (p.X < m_TimeSelectionLeftX)
+            if (x < m_TimeSelectionLeftX)
             {
                 right = m_TimeSelectionLeftX;
-                m_TimeSelectionLeftX = p.X;
+                m_TimeSelectionLeftX = x;
             }
 
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
             WaveFormTimeSelectionRect.Width = right - m_TimeSelectionLeftX;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
 
-            ViewModel.AudioPlayer_PlayFromTo(m_TimeSelectionLeftX * BytesPerPixel, right * BytesPerPixel);
+            if (ViewModel.IsAutoPlay)
+            {
+                if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+                {
+                    return;
+                }
+
+                double bytesFrom = m_TimeSelectionLeftX * BytesPerPixel;
+                ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytesFrom);
+                double bytesTo = right * BytesPerPixel;
+
+                ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
+            }
+        }
+
+        private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+
+            Point p = e.GetPosition(WaveFormCanvas);
+
+            selectionFinished(p.X);
         }
 
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
+            ViewModel.AudioPlayer_Stop();
+
             Point p = e.GetPosition(WaveFormCanvas);
 
+            backupSelection();
+            clearSelection();
             m_TimeSelectionLeftX = p.X;
-
-            WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-            WaveFormTimeSelectionRect.Width = 0;
 
             WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
@@ -382,7 +505,6 @@ namespace Tobi.Modules.AudioPane
             drawImg.Freeze();
             WaveFormImage.Source = drawImg;
         }
-
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -394,7 +516,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
+            clearSelection();
 
             WaveFormPlayHeadPath.Data = null;
             WaveFormPlayHeadPath.InvalidateVisual();
@@ -411,14 +533,121 @@ namespace Tobi.Modules.AudioPane
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
         }
 
+        private void scrollInView(double pixels)
+        {
+            double left = WaveFormScroll.HorizontalOffset;
+            double right = left + WaveFormScroll.ViewportWidth;
+            //bool b = WaveFormPlayHeadPath.IsVisible;
+
+            if (m_TimeSelectionLeftX == -1)
+            {
+                if (pixels < left || pixels > right)
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+            }
+            else
+            {
+                double timeSelectionRightX = m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width;
+
+                double minX = Math.Min(m_TimeSelectionLeftX, pixels);
+                minX = Math.Min(timeSelectionRightX, minX);
+
+                double maxX = Math.Max(m_TimeSelectionLeftX, pixels);
+                maxX = Math.Max(timeSelectionRightX, maxX);
+
+                double visibleWidth = (right - left);
+
+                if ((maxX - minX) <= (visibleWidth - 20))
+                {
+                    if (minX < left)
+                    {
+                        double offset = minX - 10;
+                        if (offset < 0)
+                        {
+                            offset = 0;
+                        }
+                        WaveFormScroll.ScrollToHorizontalOffset(offset);
+                    }
+                    else if (maxX > right)
+                    {
+                        double offset = maxX - visibleWidth + 10;
+                        if (offset < 0)
+                        {
+                            offset = 0;
+                        }
+                        WaveFormScroll.ScrollToHorizontalOffset(offset);
+                    }
+                }
+                else if (pixels >= timeSelectionRightX)
+                {
+                    double offset = pixels - visibleWidth + 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else if (pixels <= timeSelectionRightX)
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else if ((timeSelectionRightX - pixels) <= (visibleWidth - 10))
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else if ((pixels - m_TimeSelectionLeftX) <= (visibleWidth - 10))
+                {
+                    double offset = m_TimeSelectionLeftX - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+            }
+        }
+
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_WaveFormPlayHead()
+        public void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
         {
-            if (!Dispatcher.CheckAccess())
+            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
             {
-                Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(RefreshUI_WaveFormPlayHead));
+                if (m_TimeSelectionLeftX != -1)
+                {
+                    scrollInView(m_TimeSelectionLeftX + 1);
+                }
+
                 return;
             }
 
@@ -462,25 +691,26 @@ namespace Tobi.Modules.AudioPane
 
             WaveFormPlayHeadPath.InvalidateVisual();
 
-            double left = WaveFormScroll.HorizontalOffset;
-            double right = left + WaveFormScroll.ActualWidth;
-            //bool b = WaveFormPlayHeadPath.IsVisible;
-            if (pixels < left || pixels > right)
-            {
-                //WaveFormPlayHeadPath.BringIntoView();
-                double offset = pixels - 10;
-                if (offset < 0)
-                {
-                    offset = 0;
-                }
-                WaveFormScroll.ScrollToHorizontalOffset(offset);
-            }
+            scrollInView(pixels);
         }
 
-// ReSharper disable RedundantDefaultFieldInitializer
+        /// <summary>
+        /// (ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        public void RefreshUI_WaveFormPlayHead()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(RefreshUI_WaveFormPlayHead_NoDispatcherCheck));
+                return;
+            }
+            RefreshUI_WaveFormPlayHead_NoDispatcherCheck();
+        }
+
+        // ReSharper disable RedundantDefaultFieldInitializer
         private long m_WaveFormChunkMarkersLeftBytes = 0;
         private long m_WaveFormChunkMarkersRightBytes = 0;
-// ReSharper restore RedundantDefaultFieldInitializer
+        // ReSharper restore RedundantDefaultFieldInitializer
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -772,9 +1002,9 @@ namespace Tobi.Modules.AudioPane
                 m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
                 m_PlaybackTimer.Tick += OnPlaybackTimerTick;
 
-// ReSharper disable RedundantAssignment
+                // ReSharper disable RedundantAssignment
                 double interval = 60;
-// ReSharper restore RedundantAssignment
+                // ReSharper restore RedundantAssignment
 
                 interval = ViewModel.AudioPlayer_ConvertByteToMilliseconds(BytesPerPixel);
 
@@ -857,10 +1087,10 @@ namespace Tobi.Modules.AudioPane
                     m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
                     // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
                     if (delay == 0)
-                        // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
                     {
                         m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
-                            //TODO: does this work ?? (immediate dispatch)
+                        //TODO: does this work ?? (immediate dispatch)
                     }
                     else
                     {

@@ -111,7 +111,7 @@ namespace Tobi.Modules.AudioPane
             if (View != null)
             {
                 View.RefreshUI_WaveFormBackground();
-            
+
                 View.RefreshUI_AllReset();
             }
 
@@ -168,6 +168,8 @@ namespace Tobi.Modules.AudioPane
                 m_CurrentSubTreeNode = null;
                 return;
             }
+
+            m_EndOffsetOfPlayStream = m_DataLength;
 
             FilePath = "";
 
@@ -338,8 +340,40 @@ namespace Tobi.Modules.AudioPane
         private AudioPlayer m_Player;
         private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
 
-        public double LastPlayHeadTime { get; private set; }
+        private double m_LastPlayHeadTime;
+        public double LastPlayHeadTime
+        {
+            get
+            {
+                return m_LastPlayHeadTime;
+            }
+            set
+            {
+                m_LastPlayHeadTime = value;
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormPlayHead();
+                }
+            }
+        }
 
+        // ReSharper disable RedundantDefaultFieldInitializer
+        private bool m_IsAutoPlay = false;
+        // ReSharper restore RedundantDefaultFieldInitializer
+        public bool IsAutoPlay
+        {
+            get
+            {
+                return m_IsAutoPlay;
+            }
+            set
+            {
+                if (m_IsAutoPlay == value) return;
+                m_IsAutoPlay = value;
+
+                OnPropertyChanged("IsAutoPlay");
+            }
+        }
         private void loadAndPlay()
         {
             if (m_CurrentAudioStreamProvider() == null)
@@ -347,6 +381,8 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
             //else the stream is now open
+
+            m_EndOffsetOfPlayStream = m_DataLength;
 
             if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
             {
@@ -381,18 +417,13 @@ namespace Tobi.Modules.AudioPane
 
             if (View != null)
             {
-                View.StartWaveFormLoadTimer(10, true);
+                View.StartWaveFormLoadTimer(10, IsAutoPlay);
             }
         }
 
         private void updateWaveFormPlayHead(double time)
         {
             LastPlayHeadTime = time;
-
-            if (View != null)
-            {
-                View.RefreshUI_WaveFormPlayHead();
-            }
 
             if (m_PlayStreamMarkers == null)
             {
@@ -455,6 +486,10 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_PcmFormat == null)
             {
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormPlayHead();
+                }
                 return;
             }
 
@@ -497,9 +532,7 @@ namespace Tobi.Modules.AudioPane
             {
                 return;
             }
-            // else: the stream is now open, thus why we have a try/finally wrapper below:
-
-            m_EndOffsetOfPlayStream = m_DataLength;
+            // else: the stream is now open
 
             if (View != null)
             {
@@ -544,7 +577,7 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Resume();
             }
         }
-        
+
         /// <summary>
         /// If player exists, resumes or start playing at the given byte offset in the audio stream
         /// </summary>
@@ -597,7 +630,7 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                m_EndOffsetOfPlayStream = (long) bytesEnd;
+                m_EndOffsetOfPlayStream = (long)bytesEnd;
 
                 if (m_Player.State == AudioPlayerState.Playing)
                 {
@@ -741,7 +774,8 @@ namespace Tobi.Modules.AudioPane
             {
                 return;
             }
-            if (m_EndOffsetOfPlayStream == m_DataLength)
+
+            if (m_EndOffsetOfPlayStream == m_DataLength && IsAutoPlay)
             {
                 TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)

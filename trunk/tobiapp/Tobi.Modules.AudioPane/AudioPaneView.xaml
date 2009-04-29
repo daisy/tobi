@@ -60,9 +60,14 @@
       <System:Double x:Key="IconHeight">16</System:Double>
 
       <Style x:Key="IconButton" TargetType="{x:Type Button}">
-        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Padding" Value="2"/>
       </Style>
       
+      <Style x:Key="IconToggleButton" TargetType="{x:Type ToggleButton}">
+        <!--BasedOn="IconButton" -->
+        <Setter Property="Padding" Value="2"/>
+      </Style>
+
       <Style x:Key="ButtonImage" TargetType="{x:Type Image}">
         <Setter Property="Stretch" Value="Fill"/>
         <Setter Property="SnapsToDevicePixels" Value="False"/>
@@ -180,7 +185,7 @@
     <WindowsFormsHost x:Name="WinFormHost"
                       DockPanel.Dock="Left"
                       Focusable="False"/>
-    
+
 
     <!-- Grid DockPanel.Dock="Top">
 
@@ -213,6 +218,7 @@
                MouseDown="OnWaveFormMouseDown"
                MouseMove="OnWaveFormMouseMove"
                MouseUp="OnWaveFormMouseUp"
+               MouseLeave="OnWaveFormMouseLeave"
               Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
               Background="Black"
                   VerticalAlignment="Stretch"
@@ -400,6 +406,44 @@
         </Image>
       </Button>
 
+
+      <ToggleButton
+              ToolTip="Auto playback"
+              Style="{StaticResource IconToggleButton}"
+              IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
+              >
+        <!-- ToggleButton.Style>
+          <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </ToggleButton.Style -->
+
+        <Image Style="{StaticResource ButtonImage}">
+          <Image.Source>
+            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+              <Binding Source="{StaticResource go-jump}" Mode="OneWay"/>
+              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+            </MultiBinding>
+          </Image.Source>
+        </Image>
+      </ToggleButton>
 
       <Button Style="{StaticResource IconButton}"
               ToolTip="Start playback"
@@ -649,7 +693,10 @@
     </WrapPanel>
 
     <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
-    <Slider x:Name="ZoomSlider" IsMoveToPointEnabled="True"
+    <Slider x:Name="ZoomSlider"
+            Thumb.DragCompleted="OnZoomSliderDragCompleted"
+            Thumb.DragStarted="OnZoomSliderDragStarted"
+            IsMoveToPointEnabled="True"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Value="1000"
