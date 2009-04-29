@@ -78,6 +78,7 @@
       <DependentUpon>AudioPaneView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WaveFormLoadingAdorner.cs" />
+    <Compile Include="WaveFormTimeTicksAdorner.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AudioPaneView.xaml">

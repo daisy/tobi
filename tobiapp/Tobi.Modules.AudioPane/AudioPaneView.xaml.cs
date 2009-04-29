@@ -22,7 +22,7 @@ namespace Tobi.Modules.AudioPane
     {
         #region Construction
 
-        protected AudioPaneViewModel ViewModel { get; private set; }
+        public AudioPaneViewModel ViewModel { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -45,6 +45,7 @@ namespace Tobi.Modules.AudioPane
         private const int m_ArrowDepth = 6;
 
         private WaveFormLoadingAdorner m_WaveFormLoadingAdorner;
+        private WaveFormTimeTicksAdorner m_WaveFormTimeTicksAdorner;
 
         #endregion Private Class Attributes
 
@@ -408,6 +409,14 @@ namespace Tobi.Modules.AudioPane
             StartWaveFormLoadTimer(500, false);
         }
 
+        private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (m_WaveFormTimeTicksAdorner != null)
+            {
+                m_WaveFormTimeTicksAdorner.InvalidateVisual();
+            }
+        }
+
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
             /*
@@ -611,8 +620,13 @@ namespace Tobi.Modules.AudioPane
             if (layer == null)
             {
                 m_WaveFormLoadingAdorner = null;
+                m_WaveFormTimeTicksAdorner = null;
                 return;
             }
+            m_WaveFormTimeTicksAdorner = new WaveFormTimeTicksAdorner(WaveFormScroll, this);
+            layer.Add(m_WaveFormTimeTicksAdorner);
+            m_WaveFormTimeTicksAdorner.Visibility = Visibility.Visible;
+
             m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll);
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
