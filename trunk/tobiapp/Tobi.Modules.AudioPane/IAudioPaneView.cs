@@ -18,6 +18,7 @@
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
 // ReSharper restore InconsistentNaming
         double BytesPerPixel { get; set; }
+        bool IsSelectionSet { get; }
         void StopWaveFormTimer();
         void StartWaveFormTimer();
         void StopPeakMeterTimer();

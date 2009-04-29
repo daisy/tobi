@@ -70,7 +70,7 @@ namespace Tobi.Modules.NavigationPane
 
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
-            DataContext = this;
+            //DataContext = this;
         }
 
         private void OnHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)

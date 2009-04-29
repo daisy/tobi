@@ -7,7 +7,8 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.ToolBars"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure">
+    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
   <UserControl.Resources>
     
     <ResourceDictionary>

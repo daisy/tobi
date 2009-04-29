@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.DocumentPane"
-           
+           DataContext="{Binding RelativeSource={RelativeSource Self}}"
            Focusable="False"
            LastChildFill="True" Background="White">
     

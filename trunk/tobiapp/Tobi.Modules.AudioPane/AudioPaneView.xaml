@@ -66,7 +66,6 @@
       </Style>
       
       <Style x:Key="IconToggleButton" TargetType="{x:Type ToggleButton}">
-        <!--BasedOn="IconButton" -->
         <Setter Property="Padding" Value="2"/>
       </Style>
 
@@ -76,6 +75,99 @@
         <Setter Property="Height" Value="{StaticResource IconHeight}"/>
         <Setter Property="Width" Value="{StaticResource IconWidth}"/>
       </Style>
+
+      <infraUI:GreyableImage x:Key="Image_media-playback-stop"
+                             x:Shared="False"
+                             Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-playback-stop}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </infraUI:GreyableImage>
+
+      <infraUI:GreyableImage x:Key="Image_media-record"
+                             x:Shared="False"
+                             Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-record}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </infraUI:GreyableImage>
+
+      <infraUI:GreyableImage x:Key="Image_media-playback-start"
+                             x:Shared="False"
+                             Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-playback-start}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </infraUI:GreyableImage>
+
+      <infraUI:GreyableImage x:Key="Image_media-playback-pause"
+                             x:Shared="False"
+        Style="{StaticResource ButtonImage}">
+        <Image.Source>
+          <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+            <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+            <Binding Source="{StaticResource media-playback-pause}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+            <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+          </MultiBinding>
+        </Image.Source>
+      </infraUI:GreyableImage>
+
+      <Style x:Key="IconButtonNeedsSelection" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+
+        <Setter Property="IsEnabled" Value="{Binding IsSelectionSet, Mode=OneWay}"/>
+
+      </Style>
+      
+      <Style x:Key="IconButtonNeedsAudio" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+
+        <Setter Property="IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
+
+      </Style>
+
+      <Style x:Key="IconButtonPlayPause" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonNeedsAudio}">
+
+        <Setter Property="IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
+        
+        <Setter Property="Content" Value="{StaticResource Image_media-playback-start}"/>
+        <Setter Property="ToolTip" Value="Start playback"/>
+        
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding Path=IsPlaying}" Value="True">
+            <Setter Property="ToolTip" Value="Stop playback"/>
+            <Setter Property="Content" Value="{StaticResource Image_media-playback-pause}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+
+      <Style x:Key="IconButtonRecordOrStop" TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+
+        <Setter Property="Content" Value="{StaticResource Image_media-record}"/>
+        <Setter Property="ToolTip" Value="Start recording"/>
+
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding Path=IsRecording}" Value="True">
+            <Setter Property="ToolTip" Value="Stop recording"/>
+            <Setter Property="Content" Value="{StaticResource Image_media-playback-stop}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+      
     </ResourceDictionary>
   </Grid.Resources>
 
@@ -447,77 +539,22 @@
         </Image>
       </ToggleButton>
 
-      <Button Style="{StaticResource IconButton}"
-              ToolTip="Start playback"
-              
-              IsEnabled="{Binding IsPlaying, Mode=OneWay, Converter={StaticResource BooleanNotConverter}}"
-              Click="OnPlay"
-              >
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-playback-start}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
+
+      <Button
+        Style="{StaticResource IconButtonPlayPause}"
+        Click="OnPlayPause">
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
-                            ToolTip="Pause playback"
-              Click="OnPause"
-              IsEnabled="{Binding IsPlaying, Mode=OneWay}"
-              >
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-playback-pause}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
+      <Button
+        Style="{StaticResource IconButtonRecordOrStop}"
+        Click="OnRecordOrStop">
       </Button>
 
-      <!-- Button Style="{StaticResource IconButton}"
-                            ToolTip="Stop playback"
-              Click="OnStop"
->
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <Binding Source="{StaticResource media-playback-stop}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
-      </Button -->
-
-      <Button Style="{StaticResource IconButton}"
-                            ToolTip="Start recording"
-              Click="OnRecord"
->
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-record}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
-              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
-      </Button>
-
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Switch to previous phrase"
               Click="OnSwitchPhrasePrevious"
 >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -526,14 +563,14 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Rewind to begining of audio stream"
               Click="OnGotoBegining"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -542,14 +579,14 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Step back one phrase"
               Click="OnStepBack"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -558,15 +595,15 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Rewind by a pre-defined time increment"
               
               Click="OnRewind"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -575,14 +612,14 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Fast-forward by a pre-defined time increment"
               Click="OnFastForward"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -591,15 +628,15 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Step forward one phrase"
               
               Click="OnStepForward">
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -608,15 +645,15 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Fast-forward to end of audio stream"
               
               Click="OnGotoEnd"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -625,14 +662,14 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsAudio}"
                             ToolTip="Switch to next phrase"
               Click="OnSwitchPhraseNext"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -641,14 +678,14 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsSelection}"
                             ToolTip="Clear selection"
               Click="OnClearSelection"
               >
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -657,14 +694,14 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
-      <Button Style="{StaticResource IconButton}"
+      <Button Style="{StaticResource IconButtonNeedsSelection}"
                             ToolTip="Zoom on selection"
               
               Click="OnZoomSelection">
-        <Image Style="{StaticResource ButtonImage}">
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
           <Image.Source>
             <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
               <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
@@ -673,7 +710,7 @@
               <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
             </MultiBinding>
           </Image.Source>
-        </Image>
+        </infraUI:GreyableImage>
       </Button>
 
       <Button Style="{StaticResource IconButton}"

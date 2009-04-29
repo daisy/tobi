@@ -9,7 +9,7 @@
     xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
 Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}"
-  
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
   TabStripPlacement="Bottom">
 
 

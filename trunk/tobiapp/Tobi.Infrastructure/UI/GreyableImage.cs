@@ -86,33 +86,50 @@ namespace Tobi.Infrastructure.UI
 
             // create Opacity Mask for greyscale image as FormatConvertedBitmap does not keep transparency info
             _opacityMaskG = new ImageBrush(_sourceC);
-            _opacityMaskG.Opacity = 0.6;
+            _opacityMaskG.Opacity = 0.3;
 
-            try
+            if (Source is BitmapSource)
             {
-                // get the string Uri for the original image source first
-                String stringUri = TypeDescriptor.GetConverter(Source).ConvertTo(Source, typeof(string)) as string;
-                Uri uri = null;
-                // try to resolve it as an absolute Uri (if it is relative and used it as is
-                // it is likely to point in a wrong direction)
-                if (!Uri.TryCreate(stringUri, UriKind.Absolute, out uri))
-                {
-                    // it seems that the Uri is relative, at this stage we can only assume that
-                    // the image requested is in the same assembly as this oblect,
-                    // so we modify the string Uri to make it absolute ...
-                    stringUri = "pack://application:,,,/" + stringUri.TrimStart(new char[2] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-
-                    // ... and try to resolve again
-                    uri = new Uri(stringUri);
-                }
-
                 // create and cache greyscale ImageSource
-                _sourceG = new FormatConvertedBitmap(new BitmapImage(uri), PixelFormats.Gray8, null, 0);
+                _sourceG = new FormatConvertedBitmap((BitmapSource)Source,
+                                        PixelFormats.Gray8,
+                                        null,
+                                        0);
             }
-            catch (Exception e)
+            else
             {
-                System.Diagnostics.Debug.Fail("The Image used cannot be greyed out.",
-                                              "Use BitmapImage or URI as a Source in order to allow greyscaling. Make sure the absolute Uri is used as relative Uri may sometimes resolve incorrectly.\n\nException: " + e.Message);
+                try
+                {
+                    // get the string Uri for the original image source first
+                    String stringUri = TypeDescriptor.GetConverter(Source).ConvertTo(Source, typeof (string)) as string;
+                    Uri uri = null;
+                    // try to resolve it as an absolute Uri (if it is relative and used it as is
+                    // it is likely to point in a wrong direction)
+                    if (!Uri.TryCreate(stringUri, UriKind.Absolute, out uri))
+                    {
+                        // it seems that the Uri is relative, at this stage we can only assume that
+                        // the image requested is in the same assembly as this oblect,
+                        // so we modify the string Uri to make it absolute ...
+                        stringUri = "pack://application:,,,/" +
+                                    stringUri.TrimStart(new char[2]
+                                                            {
+                                                                System.IO.Path.DirectorySeparatorChar,
+                                                                System.IO.Path.AltDirectorySeparatorChar
+                                                            });
+
+                        // ... and try to resolve again
+                        uri = new Uri(stringUri);
+                    }
+
+                    // create and cache greyscale ImageSource
+                    _sourceG = new FormatConvertedBitmap(new BitmapImage(uri), PixelFormats.Gray8, null, 0);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.Fail("The Image used cannot be greyed out.",
+                                                  "Use BitmapImage or URI as a Source in order to allow greyscaling. Make sure the absolute Uri is used as relative Uri may sometimes resolve incorrectly.\n\nException: " +
+                                                  e.Message);
+                }
             }
         }
     }

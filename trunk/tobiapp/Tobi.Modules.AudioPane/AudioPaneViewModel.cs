@@ -203,6 +203,21 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        public bool IsSelectionSet
+        {
+            get
+            {
+                if (View != null)
+                {
+                    return View.IsSelectionSet;
+                }
+                return false;
+            }
+            set
+            {
+                OnPropertyChanged("IsSelectionSet");
+            }
+        }
         #endregion Public Properties
 
         #region Audio Recorder
@@ -214,6 +229,14 @@ namespace Tobi.Modules.AudioPane
         // ReSharper restore MemberCanBeMadeStatic.Local
         {
             //m_Recorder.State == AudioLib.AudioRecorderState.Monitoring
+        }
+
+        public void AudioRecorder_Start()
+        {
+        }
+
+        public void AudioRecorder_Stop()
+        {
         }
 
         #endregion Audio Recorder
@@ -376,13 +399,30 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        public bool IsRecording
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public bool IsPlaying
         {
             get
             {
-                return (m_Player.State != AudioPlayerState.NotReady && m_Player.State == AudioPlayerState.Playing);
+                return (m_PcmFormat != null && m_Player.State != AudioPlayerState.NotReady && m_Player.State == AudioPlayerState.Playing);
             }
         }
+
+        public bool IsAudioLoaded
+        {
+            get
+            {
+                return (m_PcmFormat != null);
+            }
+        }
+        
 
         private void loadAndPlay()
         {
@@ -401,6 +441,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             m_PcmFormat = null;
+            OnPropertyChanged("IsAudioLoaded");
 
             if (View != null)
             {
@@ -424,6 +465,8 @@ namespace Tobi.Modules.AudioPane
                 {
                     m_PcmFormat = m_CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                 }
+
+                OnPropertyChanged("IsAudioLoaded");
             }
 
             if (View != null)
