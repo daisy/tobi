@@ -279,6 +279,18 @@ namespace Tobi.Modules.AudioPane
                 ZoomSlider.Maximum = newSliderValue;
             }
 
+            if (ViewModel.AudioPlayer_GetPcmFormat() != null)
+            {
+                double selectionTimeLeft = ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
+                double selectionTimeRight = ViewModel.AudioPlayer_ConvertByteToMilliseconds((m_TimeSelectionLeftX+WaveFormTimeSelectionRect.Width) * BytesPerPixel);
+
+                if (ViewModel.LastPlayHeadTime < selectionTimeLeft || ViewModel.LastPlayHeadTime > selectionTimeRight)
+                {
+                    ViewModel.LastPlayHeadTime =
+                        ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_TimeSelectionLeftX*BytesPerPixel);
+                }
+            }
+
             ZoomSlider.Value = newSliderValue;
         }
         private void OnZoomFitFull(object sender, RoutedEventArgs e)
@@ -376,11 +388,17 @@ namespace Tobi.Modules.AudioPane
             {
                 return;
             }
-            if (m_ZoomSliderDrag)
+
+            if (m_ZoomSliderDrag || ViewModel.ResizeDrag)
             {
                 return;
             }
 
+            StartWaveFormLoadTimer(500, false);
+        }
+
+        private void OnRefresh(object sender, RoutedEventArgs e)
+        {
             StartWaveFormLoadTimer(500, false);
         }
 
@@ -1180,7 +1198,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (m_WaveFormLoadTimer == null)
                 {
-                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Background);
+                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
                     m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
                     // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
                     if (delay == 0)

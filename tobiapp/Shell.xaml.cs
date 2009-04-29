@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 using AvalonDock;
 using Microsoft.Practices.Composite.Regions;
@@ -97,6 +98,26 @@ namespace Tobi
         public Window Window
         {
             get { return this; }
+        }
+
+        private bool m_SplitterDrag = false;
+
+        public bool SplitterDrag
+        {
+            get
+            {
+                return m_SplitterDrag;
+            }
+        }
+
+        private void OnSplitterDragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            m_SplitterDrag = false;
+        }
+
+        private void OnSplitterDragStarted(object sender, DragStartedEventArgs e)
+        {
+            m_SplitterDrag = true;
         }
     }
 }
