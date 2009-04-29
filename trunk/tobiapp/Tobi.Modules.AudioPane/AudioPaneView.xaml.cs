@@ -274,6 +274,16 @@ namespace Tobi.Modules.AudioPane
             m_SelectionBackup_Width = WaveFormTimeSelectionRect.Width;
         }
 
+        private void expandSelection()
+        {
+            m_TimeSelectionLeftX = 0;
+            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
+            WaveFormTimeSelectionRect.Width = WaveFormCanvas.ActualWidth;
+            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+
+            ViewModel.IsSelectionSet = true;
+        }
+
         private void clearSelection()
         {
             m_TimeSelectionLeftX = -1;
@@ -282,6 +292,11 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
 
             ViewModel.IsSelectionSet = false;
+        }
+
+        private void OnSelectAll(object sender, RoutedEventArgs e)
+        {
+            expandSelection();
         }
 
         private void OnClearSelection(object sender, RoutedEventArgs e)

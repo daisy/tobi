@@ -48,6 +48,7 @@
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-clear.xaml"/>
 
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
 
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
 
@@ -689,6 +690,23 @@
         </infraUI:GreyableImage>
       </Button>
 
+      <Button Style="{StaticResource IconButton}"
+                            ToolTip="Select all"
+              Click="OnSelectAll"
+              >
+        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
+          <Image.Source>
+            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+              <Binding Source="{StaticResource view-fullscreen}" Mode="OneWay"/>
+              <Binding Source="{StaticResource IconWidth}" Mode="OneWay"/>
+              <Binding Source="{StaticResource IconHeight}" Mode="OneWay"/>
+            </MultiBinding>
+          </Image.Source>
+        </infraUI:GreyableImage>
+
+      </Button>
+      
       <Button Style="{StaticResource IconButtonNeedsSelection}"
                             ToolTip="Clear audio selection"
               Click="OnClearSelection"
