@@ -20,7 +20,7 @@ namespace Tobi
         public Shell(IUnityContainer container)
         {
             InitializeComponent();
-            DataContext = this;
+            //DataContext = this;
 
             Container = container;
 

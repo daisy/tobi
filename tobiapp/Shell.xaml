@@ -17,17 +17,19 @@
     WindowStartupLocation="CenterScreen"
     Loaded="OnWindowLoaded"
         x:Name="MainWindow"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
    >
-  <huddled:NativeBehaviors.Behaviors>
+  <!-- huddled:NativeBehaviors.Behaviors>
     <huddled:SnapToBehavior SnapDistance="20,20,20,20" />
-    <!-- huddled:HotkeysBehavior>
+    <huddled:HotkeysBehavior>
       <KeyBinding Command="huddled:GlobalCommands.ActivateWindow" Key="K"  Modifiers="Win" />
       <KeyBinding Command="huddled:GlobalCommands.CloseWindow"    Key="F4" Modifiers="Ctrl+Shift" />
       <KeyBinding Command="huddled:GlobalCommands.ToggleWindow"   Key="S"  Modifiers="Win" />
       <KeyBinding Command="huddled:GlobalCommands.HideWindow"     Key="H"  Modifiers="Win" />
       <KeyBinding Command="huddled:GlobalCommands.ShowWindow"     Key="H"  Modifiers="Win+Shift" />
-    </huddled:HotkeysBehavior -->
-  </huddled:NativeBehaviors.Behaviors>
+    </huddled:HotkeysBehavior>
+  </huddled:NativeBehaviors.Behaviors -->
   
    <!--    FocusManager.FocusedElement="{infra:FirstFocusedElement}"
    KeyboardNavigation.TabIndex="1" 

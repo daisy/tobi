@@ -61,7 +61,7 @@ namespace Tobi.Modules.DocumentPane
             Container = container;
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
-            DataContext = this;
+            //DataContext = this;
         }
 
         private List<TreeNode> PathToCurrentTreeNode;

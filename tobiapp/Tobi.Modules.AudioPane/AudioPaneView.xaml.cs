@@ -120,29 +120,66 @@ namespace Tobi.Modules.AudioPane
             return false;
         }
 
+        private void OnPlayPause(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
+
+            if (ViewModel.IsPlaying)
+            {
+                OnPause(sender, e);
+            }
+            else
+            {
+                OnPlay(sender, e);
+            }
+        }
+
         private void OnPlay(object sender, RoutedEventArgs e)
         {
-            ViewModel.AudioPlayer_Stop();
+            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
 
+            ViewModel.AudioPlayer_Stop();
             Play();
         }
 
         private void OnPause(object sender, RoutedEventArgs e)
         {
+            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
+
             ViewModel.AudioPlayer_Stop();
             //ViewModel.AudioPlayer_TogglePlayPause();
         }
 
-        /*
-        private void OnStop(object sender, RoutedEventArgs e)
+        private void OnRecordOrStop(object sender, RoutedEventArgs e)
         {
-            ViewModel.AudioPlayer_Stop();
-        }*/
+            if (ViewModel.IsRecording)
+            {
+                OnStopRecord(sender, e);
+            }
+            else
+            {
+                OnRecord(sender, e);
+            }
+        }
+        private void OnStopRecord(object sender, RoutedEventArgs e)
+        {
+            ViewModel.AudioRecorder_Stop();
+        }
 
         private void OnRecord(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.AudioRecorder_Start();
         }
+
         private void OnSwitchPhrasePrevious(object sender, RoutedEventArgs e)
         {
 
@@ -186,6 +223,8 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
             WaveFormTimeSelectionRect.Width = m_SelectionBackup_Width;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+
+            ViewModel.IsSelectionSet = true;
         }
 
         private void backupSelection()
@@ -200,6 +239,8 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
             WaveFormTimeSelectionRect.Width = 0;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+
+            ViewModel.IsSelectionSet = false;
         }
 
         private void OnClearSelection(object sender, RoutedEventArgs e)
@@ -360,6 +401,8 @@ namespace Tobi.Modules.AudioPane
             {
                 clearSelection();
                 m_TimeSelectionLeftX = p.X;
+
+                ViewModel.IsSelectionSet = false;
                 return;
             }
 
@@ -432,6 +475,8 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.Width = right - m_TimeSelectionLeftX;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
 
+            ViewModel.IsSelectionSet = true;
+
             if (ViewModel.IsAutoPlay)
             {
                 if (ViewModel.AudioPlayer_GetPcmFormat() == null)
@@ -465,6 +510,8 @@ namespace Tobi.Modules.AudioPane
             backupSelection();
             clearSelection();
             m_TimeSelectionLeftX = p.X;
+
+            ViewModel.IsSelectionSet = false;
 
             WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
@@ -1027,6 +1074,14 @@ namespace Tobi.Modules.AudioPane
         #region DispatcherTimers
 
         private DispatcherTimer m_PlaybackTimer;
+
+        public bool IsSelectionSet
+        {
+            get
+            {
+                return m_TimeSelectionLeftX != -1;
+            }
+        }
 
         public void StopWaveFormTimer()
         {

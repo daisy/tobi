@@ -19,7 +19,7 @@ namespace Tobi.Modules.ToolBars
         public ToolBarsView()
         {
             InitializeComponent();
-            DataContext = this;
+            //DataContext = this;
         }
 
         /*
