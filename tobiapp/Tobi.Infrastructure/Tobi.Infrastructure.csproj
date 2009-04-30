@@ -102,6 +102,7 @@
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\LogicalTreeHelperHelper.cs" />
+    <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\MenuShortcutManager.cs" />
     <Compile Include="UI\Placeholder.cs" />
     <Compile Include="UI\RegionManagerCustomExtensions.cs" />
@@ -114,7 +115,6 @@
     <Compile Include="UI\UiClipboardImageHelper.cs" />
     <Compile Include="UI\XamlToPngConverter.cs" />
     <Compile Include="UnityServiceLocator.cs" />
-    <Compile Include="UserInterfaceScaledEvent.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />

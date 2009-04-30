@@ -48,7 +48,7 @@ namespace Tobi.Modules.AudioPane
         protected void Initialize()
         {
             InitializeAudioStuff();
-            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
+            //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
         }
 
@@ -195,11 +195,6 @@ namespace Tobi.Modules.AudioPane
             OnPropertyChanged("IsAudioLoadedWithSubTreeNodes");
 
             loadAndPlay();
-        }
-
-        private void OnUserInterfaceScaled(double obj)
-        {
-            //xxx
         }
 
         #endregion Event / Callbacks
