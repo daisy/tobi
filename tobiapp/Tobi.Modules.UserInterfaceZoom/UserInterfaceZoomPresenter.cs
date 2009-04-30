@@ -64,6 +64,7 @@ namespace Tobi.Modules.UserInterfaceZoom
         ///</summary>
         protected IRegionManager RegionManager { get; private set; }
 
+        /*
         ///<summary>
         /// A keyboard shortcut. TODO: this should become a class property, with a value fetched from a configuration service. The value hard-coded here would be the default one and could be changed dynamically according to user preferences.
         ///</summary>
@@ -78,9 +79,10 @@ namespace Tobi.Modules.UserInterfaceZoom
         /// A keyboard shortcut. TODO: this should become a class property, with a value fetched from a configuration service. The value hard-coded here would be the default one and could be changed dynamically according to user preferences.
         ///</summary>
         private readonly KeyGesture _decreaseZoomKeyGesture = new KeyGesture(Key.PageDown, ModifierKeys.Control | ModifierKeys.Shift);
+        */
 
         ///<summary>
-        /// Assigns itself as the Model (DataContext) of the View. Creates the commands and registers the keyboard shortcuts at the application level.
+        /// Creates the commands and registers the keyboard shortcuts at the application level.
         ///</summary>
         ///<param name="view"></param>
         ///<param name="shellPresenter"></param>
@@ -98,17 +100,21 @@ namespace Tobi.Modules.UserInterfaceZoom
 
             View.Model = this;
 
-            ZoomToggleCommand = new DelegateCommandWithInputGesture<bool?>(_zoomToggleKeyGesture, zoomToggleCommand_Executed);
+            /*
+            ZoomToggleCommand = new DelegateCommandWithInputGesture<bool?>(UserInterfaceStrings.Menu_Zoom, _zoomToggleKeyGesture, zoomToggleCommand_Executed);
             var keyBinding = new KeyBinding(ZoomToggleCommand, ZoomToggleCommand.KeyGesture) { CommandParameter = null };
             ShellPresenter.AddInputBinding(keyBinding);
+            
 
-            IncreaseZoomCommand = new DelegateCommandWithInputGesture<double?>(_increaseZoomKeyGesture, increaseZoomCommand_Executed);
+            IncreaseZoomCommand = new DelegateCommandWithInputGesture<double?>("Increase Zoom", _increaseZoomKeyGesture, increaseZoomCommand_Executed);
             ShellPresenter.AddInputBinding(new KeyBinding(IncreaseZoomCommand, IncreaseZoomCommand.KeyGesture) { CommandParameter = null });
 
-            DecreaseZoomCommand = new DelegateCommandWithInputGesture<double?>(_decreaseZoomKeyGesture, decreaseZoomCommand_Executed);
+            DecreaseZoomCommand = new DelegateCommandWithInputGesture<double?>("Decrease Zoom", _decreaseZoomKeyGesture, decreaseZoomCommand_Executed);
             ShellPresenter.AddInputBinding(new KeyBinding(DecreaseZoomCommand, DecreaseZoomCommand.KeyGesture) { CommandParameter = null });
+             *  * */
         }
 
+        /*
         private void decreaseZoomCommand_Executed(double? parameter)
         {
             Logger.Log(string.Format("DecreaseZoomCommand_Executed {0}", parameter), Category.Debug, Priority.Medium);
@@ -128,6 +134,6 @@ namespace Tobi.Modules.UserInterfaceZoom
             Logger.Log(string.Format("ZoomToggleCommand_Executed {0}", parameter), Category.Debug, Priority.Medium);
 
             ShellPresenter.ToggleView(parameter, View);
-        }
+        }*/
     }
 }

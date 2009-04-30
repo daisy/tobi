@@ -249,6 +249,10 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="SharedResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="tango-icons\accessories-text-editor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -40,13 +41,17 @@ namespace Tobi
 
             //MenuBarView = menubarView;
             //NavigationPaneView = navView;
-            
+
             View = view;
             Logger = logger;
             Container = container;
             RegionManager = regionManager;
 
-            ExitCommand = new DelegateCommandWithInputGesture<object>(new KeyGesture(Key.Q, ModifierKeys.Control), ExitCommand_Executed, ExitCommand_CanExecute);
+            ExitCommand = new DelegateCommandWithInputGesture<object>(UserInterfaceStrings.Menu_Exit,
+                                                                      UserInterfaceStrings.Menu_Exit_,
+                                                                      new KeyGesture(Key.Q, ModifierKeys.Control),
+                                                                      (VisualBrush)Application.Current.FindResource("document-save"),
+                                                            ExitCommand_Executed, ExitCommand_CanExecute);
             AddInputBinding(new KeyBinding(ExitCommand, ExitCommand.KeyGesture));
         }
 
@@ -179,6 +184,15 @@ namespace Tobi
             if (window != null)
             {
                 window.InputBindings.Add(inputBinding);
+            }
+        }
+
+        public void RemoveInputBinding(InputBinding inputBinding)
+        {
+            var window = View as Window;
+            if (window != null)
+            {
+                window.InputBindings.Remove(inputBinding);
             }
         }
     }
