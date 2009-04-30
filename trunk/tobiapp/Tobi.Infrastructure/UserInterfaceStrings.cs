@@ -8,11 +8,13 @@
     {
         public const string Menu_File = "_File";
         public const string Menu_New = "_New...";
+        public const string Menu_New_ = "Create new document";
         public const string Menu_Open = "_Open...";
         public const string Menu_Save = "_Save";
         public const string Menu_SaveAs = "S_ave as";
         public const string Menu_Close = "_Close";
         public const string Menu_Exit = "_Quit";
+        public const string Menu_Exit_ = "Exit the application";
 
         public const string Menu_Edit = "_Edit";
         public const string Menu_Undo = "_Undo";
@@ -30,7 +32,7 @@
         public const string Menu_View = "_View"; // This is a top-menu that is empty by default and gets filled dynamically by modules that register GUI views
         public const string Menu_ToolBars = "_Tool bars"; // TODO: move this language resource in its own module (ToolBarsModule)
         public const string Menu_StatusBar = "_Status bar"; // TODO: move this language resource in its own module (StatusBarModule)
-        public const string Menu_Zoom = "UI _Zoom"; // TODO: move this language resource in its own module (ZoomModule)
+        //public const string Menu_Zoom = "UI _Zoom"; // TODO: move this language resource in its own module (ZoomModule)
         public const string Menu_NavigationPane = "_Navigation panel"; // TODO: move this language resource in its own module (NavigationModule)
         public const string Menu_DocumentPane = "_Document panel"; // TODO: move this language resource in its own module (DocumentModule)
         public const string Menu_AudioPane = "_Audio panel"; // TODO: move this language resource in its own module (AudioModule)

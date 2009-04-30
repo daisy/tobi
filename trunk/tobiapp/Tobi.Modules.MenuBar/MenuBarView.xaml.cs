@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
@@ -18,6 +19,7 @@ namespace Tobi.Modules.MenuBar
         /// TODO: move this to the DocumentManagerModule
         ///</summary>
         public DelegateCommandWithInputGesture<object> NewCommand { get; private set; }
+        private KeyBinding NewKeyBinding;
 
         ///<summary>
         /// Delegates to <see cref="IShellPresenter.ExitCommand"/>
@@ -37,22 +39,22 @@ namespace Tobi.Modules.MenuBar
         ///</summary>
         public MenuBarView(IUnityContainer container, ILoggerFacade logger)
         {
-            InitializeComponent();
-
             Container = container;
             Logger = logger;
 
-            NewCommand = new DelegateCommandWithInputGesture<object>(new KeyGesture(Key.N, ModifierKeys.Control), NewCommand_Executed, NewCommand_CanExecute);
+            NewCommand = new DelegateCommandWithInputGesture<object>(UserInterfaceStrings.Menu_New, UserInterfaceStrings.Menu_New_,
+                new KeyGesture(Key.N, ModifierKeys.Control),
+                (VisualBrush)FindResource("document-new"),
+                NewCommand_Executed, NewCommand_CanExecute);
+            NewKeyBinding = new KeyBinding(NewCommand, NewCommand.KeyGesture);
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            shellPresenter.AddInputBinding(NewKeyBinding);
+            ExitCommand = shellPresenter.ExitCommand;
+
+            InitializeComponent();
         }
 
-        private void OnMenuBarLoaded(object sender, RoutedEventArgs e)
-        {
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            shellPresenter.AddInputBinding(new KeyBinding(NewCommand, NewCommand.KeyGesture));
-            ExitCommand = shellPresenter.ExitCommand;
-            // TODO: implement a generic registration mechanism for IToggableViews
-            //ZoomToggleCommand = shellPresenter.ZoomToggleCommand;
-        }
         private void NewCommand_Executed(object parameter)
         {
             Logger.Log("MenuBarPresentationModel.NewCommand_Executed", Category.Debug, Priority.Medium);
@@ -74,8 +76,7 @@ namespace Tobi.Modules.MenuBar
         public void EnsureViewMenuCheckState(string regionName, bool visible)
         {
             //TODO make this generic using a mapping between RegionName and an actual menu trigger check box thing
-            if (ZoomMenuItem.IsChecked != visible)
-                ZoomMenuItem.IsChecked = visible;
+            //if (ZoomMenuItem.IsChecked != visible) ZoomMenuItem.IsChecked = visible;
         }
 
     }

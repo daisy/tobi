@@ -7,7 +7,7 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="TobiResource.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/SharedResources.xaml"/>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

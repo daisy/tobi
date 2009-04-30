@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Win32;
@@ -454,6 +455,15 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
+            if (m_WaveFormImageSourceDrawingImage != null && !(WaveFormImage.Source is DrawingImage))
+            {
+                //RenderTargetBitmap source = (RenderTargetBitmap)WaveFormImage.Source;
+                WaveFormImage.Source = null;
+                WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
+
+                SystemSounds.Asterisk.Play();
+            }
+
             if (m_ZoomSliderDrag || ViewModel.ResizeDrag)
             {
                 return;
@@ -718,6 +728,8 @@ namespace Tobi.Modules.AudioPane
             PeakMeterPathCh1.InvalidateVisual();
 
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
+
+            m_WaveFormImageSourceDrawingImage = null;
         }
 
         private void scrollInView(double pixels)

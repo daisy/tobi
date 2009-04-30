@@ -33,11 +33,35 @@ namespace Tobi.Infrastructure.UI
             }
 
             var width = (Double)values[1];
+            var height = (Double)values[2];
+            return convert(visualBrush, width, height);
+
+            //return renderBitmap.GetAsFrozen();
+
+
+            /*
+            var viewBox = new Viewbox
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                StretchDirection = StretchDirection.Both,
+                Stretch = Stretch.Fill
+            };
+            viewBox.Child = frameworkElement;
+             */
+            /*
+            viewBox.Measure(size);
+            viewBox.Arrange(new Rect(0, 0, image.Width, image.Height));
+            viewBox.UpdateLayout();
+             */
+        }
+
+        public static RenderTargetBitmap convert(VisualBrush visualBrush, double width, double height)
+        {
             if (Double.IsNaN(width))
             {
                 return null;
             }
-            var height = (Double)values[2];
             if (Double.IsNaN(height))
             {
                 return null;
@@ -62,25 +86,6 @@ namespace Tobi.Infrastructure.UI
 
             renderBitmap.Freeze();
             return renderBitmap;
-
-            //return renderBitmap.GetAsFrozen();
-
-
-            /*
-            var viewBox = new Viewbox
-            {
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                StretchDirection = StretchDirection.Both,
-                Stretch = Stretch.Fill
-            };
-            viewBox.Child = frameworkElement;
-             */
-            /*
-            viewBox.Measure(size);
-            viewBox.Arrange(new Rect(0, 0, image.Width, image.Height));
-            viewBox.UpdateLayout();
-             */
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

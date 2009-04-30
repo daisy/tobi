@@ -3,24 +3,39 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.MenuBar"
-             Loaded="OnMenuBarLoaded">
+    xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+             
+           DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
+  <!-- UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/SharedResources.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources -->
+  
   <Menu Width="Auto" Height="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
 
     <!-- File Menu -->
     <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_File}">
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_New}"
+      <MenuItem Header="{Binding NewCommand.ShortDescription}"
+                ToolTip="{Binding NewCommand.LongDescription}"
                 InputGestureText="{Binding NewCommand.KeyGestureText}"
                 Command="{Binding NewCommand}"
-                CommandParameter="{Binding}"/>
+                CommandParameter="{Binding}"
+                Icon="{Binding NewCommand.IconSmall}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Open}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Save}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_SaveAs}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Close}"/>
       <Separator/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Exit}"
+      <MenuItem Header="{Binding ExitCommand.ShortDescription}"
+                ToolTip="{Binding ExitCommand.LongDescription}"
                 InputGestureText="{Binding ExitCommand.KeyGestureText}"
-                Command="{Binding ExitCommand}"/>
+                Command="{Binding ExitCommand}"
+                Icon="{Binding ExitCommand.IconSmall}"/>
     </MenuItem>
 
     <!-- Edit Menu -->
@@ -61,14 +76,14 @@
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_NavigationPane}"
                 IsCheckable="True"
                 IsChecked="True"/>
-      
-      <MenuItem x:Name="ZoomMenuItem"
-                Header="{x:Static infra:UserInterfaceStrings.Menu_Zoom}"
+
+      <!-- MenuItem x:Name="ZoomMenuItem"
+                Header="{Binding ZoomToggleCommand.ShortDescription}"
                 IsCheckable="True"
                 IsChecked="True"
                 InputGestureText="{Binding ZoomToggleCommand.KeyGestureText}"
                 Command="{Binding ZoomToggleCommand}"
-                CommandParameter="{Binding ElementName=ZoomMenuItem, Path=IsChecked}"/>
+                CommandParameter="{Binding ElementName=ZoomMenuItem, Path=IsChecked}"/ -->
     </MenuItem>
 
     <!-- Help Menu -->

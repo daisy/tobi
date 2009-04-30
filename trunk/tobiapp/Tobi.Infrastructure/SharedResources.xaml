@@ -1,0 +1,143 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Infrastructure="clr-namespace:Tobi.Infrastructure">
+
+  <ResourceDictionary.MergedDictionaries>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-start.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-stop.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-record.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-backward.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-forward.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-backward.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-forward.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-open.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-save.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-new.xaml"/>
+  
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-first.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-last.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-previous.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-next.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/system-search.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-add.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-remove.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-clear.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
+
+  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
+
+    </ResourceDictionary.MergedDictionaries>
+
+  <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
+
+  <infraUI:BooleanNotConverter x:Key="BooleanNotConverter"/>
+
+  <Style x:Key="IconSmallImage" TargetType="{x:Type Image}">
+    <Setter Property="Stretch" Value="Fill"/>
+    <Setter Property="SnapsToDevicePixels" Value="False"/>
+    <Setter Property="Width" Value="{x:Static Infrastructure:Sizes.IconWidth_Small}"/>
+    <Setter Property="Height" Value="{x:Static Infrastructure:Sizes.IconHeight_Small}"/>
+  </Style>
+
+  <Style x:Key="IconButton">
+    <Setter Property="Control.Padding" Value="2"/>
+    <Setter Property="RepeatButton.Delay" Value="0"/>
+    <Setter Property="RepeatButton.Interval" Value="100"/>
+  </Style>
+
+  <Style x:Key="ButtonImage" TargetType="{x:Type Image}">
+    <Setter Property="Stretch" Value="Fill"/>
+    <Setter Property="SnapsToDevicePixels" Value="False"/>
+    <Setter Property="Width" Value="{x:Static Infrastructure:Sizes.IconWidth_Medium}"/>
+    <Setter Property="Height" Value="{x:Static Infrastructure:Sizes.IconHeight_Medium}"/>
+  </Style>
+
+  <infraUI:GreyableImage x:Key="Image_media-playback-stop"
+                         x:Shared="False"
+                         Style="{StaticResource ButtonImage}">
+    <Image.Source>
+      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+        <Binding Source="{StaticResource media-playback-stop}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
+      </MultiBinding>
+    </Image.Source>
+  </infraUI:GreyableImage>
+
+  <infraUI:GreyableImage x:Key="Image_media-record"
+                         x:Shared="False"
+                         Style="{StaticResource ButtonImage}">
+    <Image.Source>
+      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+        <Binding Source="{StaticResource media-record}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
+      </MultiBinding>
+    </Image.Source>
+  </infraUI:GreyableImage>
+
+  <infraUI:GreyableImage x:Key="Image_media-playback-start"
+                         x:Shared="False"
+                         Style="{StaticResource ButtonImage}">
+    <Image.Source>
+      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+        <Binding Source="{StaticResource media-playback-start}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
+      </MultiBinding>
+    </Image.Source>
+  </infraUI:GreyableImage>
+
+  <infraUI:GreyableImage x:Key="Image_media-playback-pause"
+                         x:Shared="False"
+    Style="{StaticResource ButtonImage}">
+    <Image.Source>
+      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
+        <Binding Source="{StaticResource media-playback-pause}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
+        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
+      </MultiBinding>
+    </Image.Source>
+  </infraUI:GreyableImage>
+
+  <!-- infraUI:GreyableImage x:Key="Image_document-new"
+                         x:Shared="False"
+    Style="{StaticResource IconSmallImage}">
+    <Image.Source>
+      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+        <Binding Source="{StaticResource document-new}" Mode="OneWay"/>
+        <Binding Source="{StaticResource IconSmallWidth}" Mode="OneWay"/>
+        <Binding Source="{StaticResource IconSmallHeight}" Mode="OneWay"/>
+      </MultiBinding>
+    </Image.Source>
+  </infraUI:GreyableImage>
+
+  <infraUI:GreyableImage x:Key="Image_document-save"
+                         x:Shared="False"
+    Style="{StaticResource IconSmallImage}">
+    <Image.Source>
+      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
+        <Binding Source="{StaticResource document-save}" Mode="OneWay"/>
+        <Binding Source="{StaticResource IconSmallWidth}" Mode="OneWay"/>
+        <Binding Source="{StaticResource IconSmallHeight}" Mode="OneWay"/>
+      </MultiBinding>
+    </Image.Source>
+  </infraUI:GreyableImage -->
+  
+</ResourceDictionary>

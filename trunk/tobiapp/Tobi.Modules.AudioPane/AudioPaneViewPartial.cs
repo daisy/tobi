@@ -485,8 +485,12 @@ namespace Tobi.Modules.AudioPane
 
                 drawGrp.Freeze();
 
-                /* var drawImg = new DrawingImage(drawGrp);
+                var drawImg = new DrawingImage(drawGrp);
                 drawImg.Freeze();
+
+                m_WaveFormImageSourceDrawingImage = drawImg;
+
+                /*
                 WaveFormImage.Source = drawImg;
                  */
 
@@ -512,6 +516,8 @@ namespace Tobi.Modules.AudioPane
                 ViewModel.AudioPlayer_ClosePlayStream();
             }
         }
+
+        private DrawingImage m_WaveFormImageSourceDrawingImage;
 
         private GeometryDrawing createGeometry_Markers(double height)
         {
