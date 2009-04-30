@@ -63,6 +63,8 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandZoomFitFull { get; private set; }
         public RichDelegateCommand<object> CommandRefresh { get; private set; }
         public RichDelegateCommand<object> CommandAutoPlay { get; private set; }
+        public RichDelegateCommand<object> CommandPlay { get; private set; }
+        public RichDelegateCommand<object> CommandPause { get; private set; }
 
         private void initializeCommands()
         {
@@ -190,6 +192,114 @@ namespace Tobi.Modules.AudioPane
 
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
             //
+            //
+            CommandPlay = new RichDelegateCommand<object>(null,
+                "Play",
+                null,
+                (VisualBrush)Application.Current.FindResource("media-playback-start"),
+                obj => Play(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandPlay);
+            //
+            CommandPause = new RichDelegateCommand<object>(null,
+                "Pause",
+                null,
+                (VisualBrush)Application.Current.FindResource("media-playback-pause"),
+                obj => Pause(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandPause);
+        }
+
+        public void Play()
+        {
+            if (AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
+
+            AudioPlayer_Stop();
+
+            Logger.Log("AudioPaneViewModel.Play", Category.Debug, Priority.Medium);
+
+            double byteLastPlayHeadTime = AudioPlayer_ConvertMillisecondsToByte(LastPlayHeadTime);
+
+            if (View == null || View.GetSelectionLeft() == -1)
+            {
+                if (LastPlayHeadTime >=
+                        AudioPlayer_ConvertByteToMilliseconds(
+                                            AudioPlayer_GetDataLength()))
+                {
+                    LastPlayHeadTime = 0;
+                    AudioPlayer_PlayFrom(0);
+                }
+                else
+                {
+                    AudioPlayer_PlayFrom(byteLastPlayHeadTime);
+                }
+            }
+            else
+            {
+                double byteSelectionLeft = Math.Round(View.GetSelectionLeft() * View.BytesPerPixel);
+                double byteSelectionRight = Math.Round((View.GetSelectionLeft() + View.GetSelectionWidth()) * View.BytesPerPixel);
+
+                byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
+
+                if (byteLastPlayHeadTime >= byteSelectionLeft
+                        && byteLastPlayHeadTime < byteSelectionRight)
+                {
+                    if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
+                    {
+                        AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
+                    }
+                }
+                else
+                {
+                    if (verifyBeginEndPlayerValues(byteSelectionLeft, byteSelectionRight))
+                    {
+                        AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
+                    }
+                }
+            }
+        }
+
+        private bool verifyBeginEndPlayerValues(double begin, double end)
+        {
+            double from = AudioPlayer_ConvertByteToMilliseconds(begin);
+            double to = AudioPlayer_ConvertByteToMilliseconds(end);
+
+            var pcmInfo = AudioPlayer_GetPcmFormat();
+
+            long startPosition = 0;
+            if (from > 0)
+            {
+                startPosition = CalculationFunctions.ConvertTimeToByte(from, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                startPosition = CalculationFunctions.AdaptToFrame(startPosition, pcmInfo.BlockAlign);
+            }
+            long endPosition = 0;
+            if (to > 0)
+            {
+                endPosition = CalculationFunctions.ConvertTimeToByte(to, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
+            }
+            if (startPosition >= 0 &&
+                (endPosition == 0 || startPosition < endPosition) &&
+                endPosition <= pcmInfo.GetDataLength(pcmInfo.GetDuration(AudioPlayer_GetDataLength())))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private void Pause()
+        {
+            if (AudioPlayer_GetPcmFormat() == null)
+            {
+                return;
+            }
+
+            AudioPlayer_Stop();
+            //ViewModel.AudioPlayer_TogglePlayPause();
         }
 
         public void Refresh()
@@ -252,7 +362,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.ClearSelection();
-                    View.Play();
+                    Play();
                 }
             }
         }
@@ -275,7 +385,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.ClearSelection();
-                    View.Play();
+                    Play();
                 }
             }
         }
@@ -296,7 +406,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.ClearSelection();
-                    View.Play();
+                    Play();
                 }
             }
         }
@@ -304,7 +414,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
-            AudioPlayer_TogglePlayPause();
+            AudioPlayer_Stop();
 
             string filePath = str;
 
@@ -318,7 +428,6 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            AudioPlayer_Stop();
             AudioPlayer_LoadAndPlayFromFile(filePath);
         }
 

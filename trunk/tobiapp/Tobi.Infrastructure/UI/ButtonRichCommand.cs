@@ -27,10 +27,10 @@ namespace Tobi.Infrastructure.UI
                 return;
             }
 
-            init(button, command);
+            ConfigureButtonFromCommand(button, command);
         }
 
-        private static void init(ButtonBase button, RichDelegateCommand<object> command)
+        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand<object> command)
         {
             button.Command = command;
 
@@ -85,6 +85,97 @@ namespace Tobi.Infrastructure.UI
             set
             {
                 SetValue(RichCommandProperty, value);
+            }
+        }
+    }
+
+
+
+
+    public class TwoStateButtonRichCommand : Button
+    {
+        public static readonly DependencyProperty RichCommandOneProperty =
+            DependencyProperty.Register("RichCommandOne",
+                                        typeof(RichDelegateCommand<object>),
+                                        typeof(TwoStateButtonRichCommand),
+                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandOneChanged)));
+
+        private static void OnRichCommandOneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ButtonRichCommand.OnRichCommandChanged(d, e);
+        }
+
+        public RichDelegateCommand<object> RichCommandOne
+        {
+            get
+            {
+                return (RichDelegateCommand<object>)GetValue(RichCommandOneProperty);
+            }
+            set
+            {
+                SetValue(RichCommandOneProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty RichCommandTwoProperty =
+            DependencyProperty.Register("RichCommandTwo",
+                                        typeof(RichDelegateCommand<object>),
+                                        typeof(TwoStateButtonRichCommand),
+                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandTwoChanged)));
+
+        private static void OnRichCommandTwoChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            //ButtonRichCommand.OnRichCommandChanged(d, e);
+        }
+
+        public RichDelegateCommand<object> RichCommandTwo
+        {
+            get
+            {
+                return (RichDelegateCommand<object>)GetValue(RichCommandTwoProperty);
+            }
+            set
+            {
+                SetValue(RichCommandTwoProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty RichCommandActiveProperty =
+            DependencyProperty.Register("RichCommandActive",
+                                        typeof(Boolean),
+                                        typeof(TwoStateButtonRichCommand),
+                                        new PropertyMetadata(true, OnRichCommandActiveChanged));
+
+        private static void OnRichCommandActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var button = d as TwoStateButtonRichCommand;
+            if (button == null)
+            {
+                return;
+            }
+            var choice = (Boolean)e.NewValue;
+
+            RichDelegateCommand<object> command = button.RichCommandOne;
+            if (!choice)
+            {
+                command = button.RichCommandTwo;
+            }
+            ButtonRichCommand.ConfigureButtonFromCommand(button, command);
+        }
+
+        /// <summary>
+        /// True => RichCommandOne (default one)
+        /// False => RichCommandTwo (alternative one)
+        /// </summary>
+        public Boolean RichCommandActive
+        {
+            get
+            {
+                return (Boolean)GetValue(RichCommandActiveProperty);
+            }
+            set
+            {
+                SetValue(RichCommandActiveProperty, value);
             }
         }
     }
