@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -18,16 +19,13 @@ namespace Tobi
     public class ShellPresenter : IShellPresenter
     {
         // To avoid the shutting-down loop in OnShellWindowClosing()
-        private bool _exiting;
+        private bool m_Exiting;
 
         public RichDelegateCommand<object> ExitCommand { get; private set; }
 
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IRegionManager RegionManager { get; private set; }
-
-        //protected MenuBarView MenuBarView { get; private set; }
-        //protected NavigationPaneView NavigationPaneView { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
 
@@ -37,38 +35,43 @@ namespace Tobi
         ///<param name="view"></param>
         public ShellPresenter(IShellView view, ILoggerFacade logger, IRegionManager regionManager, IUnityContainer container) //MenuBarView menubarView, NavigationPaneView navView
         {
-            _exiting = false;
-
-            //MenuBarView = menubarView;
-            //NavigationPaneView = navView;
+            m_Exiting = false;
 
             View = view;
             Logger = logger;
             Container = container;
             RegionManager = regionManager;
 
+            Logger.Log("ShellPresenter.ctor", Category.Debug, Priority.Medium);
+
+
             ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       new KeyGesture(Key.Q, ModifierKeys.Control),
                                                                       (VisualBrush)Application.Current.FindResource("document-save"),
-                                                            ExitCommand_Executed, ExitCommand_CanExecute);
-            AddInputBinding(new KeyBinding(ExitCommand, ExitCommand.KeyGesture));
+                                                            ExitCommand_Executed, obj => true);
+            AddInputBinding(ExitCommand.KeyBinding);
         }
 
         private void exit()
         {
+            Logger.Log("ShellPresenter.exit", Category.Debug, Priority.Medium);
+
             //MessageBox.Show("Good bye !", "Tobi says:");
             /*TaskDialog.Show("Tobi is exiting.",
                 "Just saying goodbye...",
                 "The Tobi application is now closing.",
                 TaskDialogIcon.Information);*/
-            _exiting = true;
+            m_Exiting = true;
             Application.Current.Shutdown();
         }
 
         public bool OnShellWindowClosing()
         {
-            if (_exiting) return true;
+            Logger.Log("ShellPresenter.OnShellWindowClosing", Category.Debug, Priority.Medium);
+
+            if (m_Exiting) return true;
+
             if (ExitCommand.CanExecute(null))
             {
                 if (askUserConfirmExit())
@@ -77,11 +80,14 @@ namespace Tobi
                     return true;
                 }
             }
+
             return false;
         }
 
         public void ToggleView(bool? show, IToggableView view)
         {
+            Logger.Log("ShellPresenter.ToggleView", Category.Debug, Priority.Medium);
+
             var region = RegionManager.Regions[view.RegionName];
             var isVisible = region.ActiveViews.Contains(view);
 
@@ -120,6 +126,8 @@ namespace Tobi
 
         public void ProjectLoaded(Project proj)
         {
+            Logger.Log("ShellPresenter.ProjectLoaded", Category.Debug, Priority.Medium);
+
             NavigationPaneView navPane = Container.Resolve<NavigationPaneView>();
             navPane.ResetNavigation(proj);
         }
@@ -132,6 +140,8 @@ namespace Tobi
 
         private bool askUserConfirmExit()
         {
+            Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
+
             var window = View as Window;
             if (window != null)
             {
@@ -164,35 +174,54 @@ namespace Tobi
 
         private void ExitCommand_Executed(object parameter)
         {
-            Logger.Log("MenuBarPresentationModel.ExitCommand_Executed", Category.Debug, Priority.Medium);
-
             if (askUserConfirmExit())
             {
                 exit();
             }
         }
 
-        private bool ExitCommand_CanExecute(object parameter)
+        public bool AddInputBinding(InputBinding inputBinding)
         {
-            Logger.Log("MenuBarPresentationModel.ExitCommand_CanExecute", Category.Debug, Priority.Medium);
-            return true;
-        }
+            Logger.Log("ShellPresenter.AddInputBinding", Category.Debug, Priority.Medium);
 
-        public void AddInputBinding(InputBinding inputBinding)
-        {
             var window = View as Window;
             if (window != null)
             {
+                logInputBinding(inputBinding);
                 window.InputBindings.Add(inputBinding);
+                return true;
             }
+
+            return false;
         }
 
         public void RemoveInputBinding(InputBinding inputBinding)
         {
+            Logger.Log("ShellPresenter.RemoveInputBinding", Category.Debug, Priority.Medium);
+
             var window = View as Window;
             if (window != null)
             {
+                logInputBinding(inputBinding);
                 window.InputBindings.Remove(inputBinding);
+            }
+        }
+
+        private void logInputBinding(InputBinding inputBinding)
+        {
+            if (inputBinding.Gesture is KeyGesture)
+            {
+                Logger.Log(
+                    "KeyBinding (" +
+                    ((KeyGesture)(inputBinding.Gesture)).GetDisplayStringForCulture(CultureInfo.CurrentCulture) + ")",
+                    Category.Debug, Priority.Medium);
+            }
+            else
+            {
+                Logger.Log(
+                       "InputBinding (" +
+                       inputBinding.Gesture + ")",
+                       Category.Debug, Priority.Medium);
             }
         }
     }

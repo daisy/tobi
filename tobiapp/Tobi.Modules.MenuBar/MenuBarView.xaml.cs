@@ -21,7 +21,6 @@ namespace Tobi.Modules.MenuBar
         /// TODO: move this to the DocumentManagerModule
         ///</summary>
         public RichDelegateCommand<object> NewCommand { get; private set; }
-        private KeyBinding NewKeyBinding;
 
         ///<summary>
         /// Delegates to <see cref="IShellPresenter.ExitCommand"/>
@@ -47,46 +46,41 @@ namespace Tobi.Modules.MenuBar
             Logger = logger;
             EventAggregator = eventAggregator;
 
+            Logger.Log("MenuBarView.ctor", Category.Debug, Priority.Medium);
+
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
+
+            initializeCommands();
+
+            InitializeComponent();
+        }
+
+        private void initializeCommands()
+        {
+            Logger.Log("MenuBarView.initializeCommands", Category.Debug, Priority.Medium);
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
             NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_New, UserInterfaceStrings.Menu_New_,
                 new KeyGesture(Key.N, ModifierKeys.Control),
                 (VisualBrush)FindResource("document-new"),
-                NewCommand_Executed, NewCommand_CanExecute);
-            NewKeyBinding = new KeyBinding(NewCommand, NewCommand.KeyGesture);
-            shellPresenter.AddInputBinding(NewKeyBinding);
+                NewCommand_Executed, obj => true);
+            shellPresenter.AddInputBinding(NewCommand.KeyBinding);
 
             ExitCommand = shellPresenter.ExitCommand;
-
-            InitializeComponent();
         }
 
         private void NewCommand_Executed(object parameter)
         {
-            Logger.Log("MenuBarPresentationModel.NewCommand_Executed", Category.Debug, Priority.Medium);
+            Logger.Log("MenuBarView.NewCommand_Executed", Category.Debug, Priority.Medium);
+
             if (parameter != null) MessageBox.Show(parameter.ToString());
         }
 
-        private bool NewCommand_CanExecute(object parameter)
-        {
-            /*
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, (DispatcherOperationCallback)delegate(object o)
-            {
-                MessageBox.Show("CanNew");
-                return null;
-            }, null);
-             */
-            Logger.Log("MenuBarPresentationModel.NewCommand_CanExecute", Category.Debug, Priority.Medium);
-            return true;
-        }
         public void EnsureViewMenuCheckState(string regionName, bool visible)
         {
             //TODO make this generic using a mapping between RegionName and an actual menu trigger check box thing
             //if (ZoomMenuItem.IsChecked != visible) ZoomMenuItem.IsChecked = visible;
         }
-
     }
-
 }

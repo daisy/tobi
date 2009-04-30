@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using AudioLib;
 using AudioLib.Events.Player;
 using AudioLib.Events.VuMeter;
 using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
@@ -23,19 +27,69 @@ namespace Tobi.Modules.AudioPane
 
         protected IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
+        public ILoggerFacade Logger { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public AudioPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator)
+        public AudioPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
             Container = container;
             EventAggregator = eventAggregator;
+            Logger = logger;
 
             Initialize();
         }
 
         #endregion Construction
+
+        #region Commands
+
+        public RichDelegateCommand<object> CommandOpenFile { get; private set; }
+
+        private void initializeCommands()
+        {
+            Logger.Log("AudioPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+
+            CommandOpenFile = new RichDelegateCommand<object>(null,
+                UserInterfaceStrings.Audio_OpenFile,
+                new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift),
+                (VisualBrush)Application.Current.FindResource("document-open"),
+                CommandOpenFile_Executed, obj => true);
+
+            shellPresenter.AddInputBinding(CommandOpenFile.KeyBinding);
+        }
+
+        public void OpenFile()
+        {
+            Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
+
+            AudioPlayer_TogglePlayPause();
+
+            string str = null;
+
+            if (View != null)
+            {
+                str = View.OpenFileDialog();
+            }
+            else
+            {
+                str = null;
+                return;
+            }
+
+            AudioPlayer_Stop();
+            AudioPlayer_LoadAndPlayFromFile(str);
+        }
+
+        private void CommandOpenFile_Executed(object obj)
+        {
+            OpenFile();
+        }
+
+        #endregion Commands
 
         #region Initialization
 
@@ -47,13 +101,16 @@ namespace Tobi.Modules.AudioPane
 
         protected void Initialize()
         {
-            InitializeAudioStuff();
+            initializeCommands();
+            initializeAudioStuff();
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
         }
 
-        private void InitializeAudioStuff()
+        private void initializeAudioStuff()
         {
+            Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
+
             m_Player = new AudioPlayer();
             m_Player.SetDevice(GetWindowsFormsHookControl(), @"auto");
             m_Player.StateChanged += OnPlayerStateChanged;
@@ -86,6 +143,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_WindowsFormsHookControl == null)
             {
+                Logger.Log("AudioPaneViewModel.GetWindowsFormsHookControl", Category.Debug, Priority.Medium);
+
                 m_WindowsFormsHookControl = new System.Windows.Forms.Control(@"Dummy visual needed by DirectSound");
             }
 
@@ -98,6 +157,8 @@ namespace Tobi.Modules.AudioPane
 
         private void OnTreeNodeSelected(TreeNode node)
         {
+            Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
+
             resetAllInternalPlayerValues();
 
             OnPropertyChanged("IsAudioLoaded");
@@ -267,10 +328,12 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioRecorder_Start()
         {
+            Logger.Log("AudioPaneViewModel.AudioRecorder_Start", Category.Debug, Priority.Medium);
         }
 
         public void AudioRecorder_Stop()
         {
+            Logger.Log("AudioPaneViewModel.AudioRecorder_Stop", Category.Debug, Priority.Medium);
         }
 
         #endregion Audio Recorder
@@ -340,6 +403,8 @@ namespace Tobi.Modules.AudioPane
 
         private void OnResetVuMeter(object sender, ResetEventArgs e)
         {
+            Logger.Log("AudioPaneViewModel.OnResetVuMeter", Category.Debug, Priority.Medium);
+
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             //PeakMeterBarDataCh1.ForceFullFallback();
 
@@ -380,8 +445,6 @@ namespace Tobi.Modules.AudioPane
                 }
             }
         }
-
-
 
         #endregion Event / Callbacks
 
@@ -478,6 +541,8 @@ namespace Tobi.Modules.AudioPane
 
         private void loadAndPlay()
         {
+            Logger.Log("AudioPaneViewModel.loadAndPlay", Category.Debug, Priority.Medium);
+
             if (m_CurrentAudioStreamProvider() == null)
             {
                 return;
@@ -621,6 +686,8 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_LoadWaveForm(bool play)
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
+
             if (m_PcmFormat == null)
             {
                 return;
@@ -690,6 +757,8 @@ namespace Tobi.Modules.AudioPane
         /// </summary>
         public void AudioPlayer_TogglePlayPause()
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_TogglePlayPause", Category.Debug, Priority.Medium);
+
             if (m_PcmFormat == null)
             {
                 return;
@@ -726,6 +795,8 @@ namespace Tobi.Modules.AudioPane
         /// <param name="bytesEnd"></param>
         public void AudioPlayer_PlayFromTo(double bytesStart, double bytesEnd)
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_PlayFromTo", Category.Debug, Priority.Medium);
+
             if (m_PcmFormat == null)
             {
                 return;
@@ -788,6 +859,8 @@ namespace Tobi.Modules.AudioPane
         /// </summary>
         public void AudioPlayer_Stop()
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_Stop", Category.Debug, Priority.Medium);
+
             if (m_PcmFormat == null)
             {
                 return;
@@ -812,6 +885,8 @@ namespace Tobi.Modules.AudioPane
 
         private void resetAllInternalPlayerValues()
         {
+            Logger.Log("AudioPaneViewModel.resetAllInternalPlayerValues", Category.Debug, Priority.Medium);
+
             m_CurrentTreeNode = null;
             m_CurrentSubTreeNode = null;
             m_PlayStreamMarkers = null;
@@ -826,6 +901,8 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_LoadAndPlayFromFile(string path)
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_LoadAndPlayFromFile", Category.Debug, Priority.Medium);
+
             resetAllInternalPlayerValues();
 
             FilePath = path;
@@ -901,6 +978,8 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_ClosePlayStream()
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_ClosePlayStream", Category.Debug, Priority.Medium);
+
             m_PlayStream.Close();
             m_PlayStream = null;
         }
@@ -920,6 +999,8 @@ namespace Tobi.Modules.AudioPane
 
         private void OnEndOfAudioAsset(object sender, EndOfAudioAssetEventArgs e)
         {
+            Logger.Log("AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
+
             OnPropertyChanged("IsPlaying");
 
             if (m_PcmFormat != null)
@@ -951,6 +1032,8 @@ namespace Tobi.Modules.AudioPane
 
         private void OnPlayerStateChanged(object sender, StateChangedEventArgs e)
         {
+            Logger.Log("AudioPaneViewModel.OnPlayerStateChanged", Category.Debug, Priority.Medium);
+
             if (e.OldState == AudioPlayerState.Playing
                 && (m_Player.State == AudioPlayerState.Paused
                     || m_Player.State == AudioPlayerState.Stopped))

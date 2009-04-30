@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite.Presentation.Commands;
 using Tobi.Infrastructure.UI;
 
@@ -14,12 +13,12 @@ namespace Tobi.Infrastructure
 {
     ///<summary>
     /// Extension to <see cref="DelegateCommand<T>"/> that supports a <see cref="KeyGesture"/>
-    /// (for example, to display a shortcut in <see cref="MenuItem"/>, next to the label)
+    /// (for example, to display a shortcut in <see cref="MenuItem"/>, next to the label),
+    /// as well as a scalable icon (with 3 pre-determined sizes), and descriptions (text labels)
     ///</summary>
     ///<typeparam name="T"></typeparam>
     public class RichDelegateCommand<T> : DelegateCommand<T>, INotifyPropertyChanged
     {
-
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -227,6 +226,19 @@ namespace Tobi.Infrastructure
         {
             get;
             private set;
+        }
+
+        private KeyBinding m_KeyBinding = null;
+        public KeyBinding KeyBinding
+        {
+            get
+            {
+                if (m_KeyBinding == null)
+                {
+                    m_KeyBinding = new KeyBinding(this, KeyGesture);
+                }
+                return m_KeyBinding;
+            }
         }
 
         public KeyGesture KeyGesture

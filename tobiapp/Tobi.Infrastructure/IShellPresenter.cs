@@ -24,7 +24,7 @@ namespace Tobi
         ///<summary>
         /// Adds a <see cref="KeyBinding"/> to the Shell window
         ///</summary>
-        void AddInputBinding(InputBinding inputBinding);
+        bool AddInputBinding(InputBinding inputBinding);
 
         ///<summary>
         /// The shell window is closing, returns true if application is shutting down

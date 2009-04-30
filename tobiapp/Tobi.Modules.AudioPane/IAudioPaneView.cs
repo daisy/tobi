@@ -17,6 +17,7 @@
         void RefreshUI_WaveFormPlayHead();
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
 // ReSharper restore InconsistentNaming
+        string OpenFileDialog();
         double BytesPerPixel { get; set; }
         bool IsSelectionSet { get; }
         void StopWaveFormTimer();
