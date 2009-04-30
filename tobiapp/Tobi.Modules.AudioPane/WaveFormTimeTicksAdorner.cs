@@ -15,6 +15,7 @@ namespace Tobi.Modules.AudioPane
             : base(adornedElement)
         {
             IsHitTestVisible = false;
+            ClipToBounds = true;
             m_AudioPaneView = view;
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
@@ -47,35 +48,35 @@ namespace Tobi.Modules.AudioPane
             heightAvailable = m_AudioPaneView.WaveFormScroll.ViewportHeight;
             widthAvailable = m_AudioPaneView.WaveFormScroll.ViewportWidth;
 
-            var brush = new SolidColorBrush(Colors.Red) { Opacity = 0.0 };
+            /* var brush = new SolidColorBrush(Colors.Red) { Opacity = 0.0 };
             drawingContext.DrawRectangle(brush, null,
                                              new Rect(new Point(0, 0),
                                                       new Size(widthAvailable,
-                                                               heightAvailable)));
-           
+                                                               heightAvailable))); */
+
             var penTick = new Pen(Brushes.White, 1);
+
+            var renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.8 };
 
             const double tickHeight = 3;
 
-            if (m_MousePosX != -1)
-            {
-                var renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.6 };
+            /*if (m_MousePosX != -1)
+             {
 
-                var formattedTextTMP = new FormattedText(
-                    "test",
-                    CultureInfo.GetCultureInfo("en-us"),
-                    FlowDirection.LeftToRight,
-                    new Typeface("Helvetica"),
-                    12,
-                    Brushes.White
-                    );
-                drawingContext.DrawRectangle(renderBrush, null,
-                                             new Rect(new Point(0, 0),
-                                                      new Size(widthAvailable,
-                                                               tickHeight + tickHeight + formattedTextTMP.Height)));
-            }
+                 var formattedTextTMP = new FormattedText(
+                     "test",
+                     CultureInfo.GetCultureInfo("en-us"),
+                     FlowDirection.LeftToRight,
+                     new Typeface("Helvetica"),
+                     12,
+                     Brushes.White
+                     );
+                 drawingContext.DrawRectangle(renderBrush, null,
+                                              new Rect(new Point(0, 0),
+                                                       new Size(widthAvailable,
+                                                                tickHeight + tickHeight + formattedTextTMP.Height)));
+             }*/
 
-            drawingContext.PushOpacity(0.6);
 
 
             long minorTickInterval_milliseconds = 1000; //1s minor ticks
@@ -83,20 +84,37 @@ namespace Tobi.Modules.AudioPane
                 m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(minorTickInterval_milliseconds)
                     / m_AudioPaneView.BytesPerPixel;
 
+            if (minorTickInterval_pixels > 30)
+            {
+                minorTickInterval_pixels = 30;
+                double newTime = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels);
+                newTime = Math.Round(newTime);
+                if (newTime % 10 != 0)
+                {
+                    newTime = Math.Round(newTime / 10) * 10;
+                    minorTickInterval_pixels =
+                        m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(newTime)
+                            / m_AudioPaneView.BytesPerPixel;
+                }
+
+                minorTickInterval_milliseconds = (long)newTime;
+            }
+
             double hoffset = m_AudioPaneView.WaveFormScroll.HorizontalOffset;
 
-            int numberOfEntireTicksHidden = (int) Math.Floor(hoffset/minorTickInterval_pixels);
+            int numberOfEntireTicksHidden = (int)Math.Floor(hoffset / minorTickInterval_pixels);
 
             double firstTickX = minorTickInterval_pixels -
-                                    (hoffset - (numberOfEntireTicksHidden * minorTickInterval_pixels));
+                                (hoffset - (numberOfEntireTicksHidden * minorTickInterval_pixels));
 
+            drawingContext.PushOpacity(0.6);
 
             int count = numberOfEntireTicksHidden;
             double currentTickX = firstTickX;
             while (currentTickX <= widthAvailable)
             {
                 count++;
-                
+
                 if (count % 5 == 0)
                 {
                     drawingContext.DrawLine(penTick, new Point(currentTickX, 0),
@@ -113,7 +131,23 @@ namespace Tobi.Modules.AudioPane
                         Brushes.White
                         );
 
-                    drawingContext.DrawText(formattedText, new Point(currentTickX - formattedText.Width / 2,
+                    double posX = currentTickX - formattedText.Width / 2;
+
+                    if (m_MousePosX != -1)
+                    {
+                        var point = new Point(posX,
+                                              tickHeight * 2);
+
+                        drawingContext.Pop();
+
+                        drawingContext.DrawRectangle(renderBrush, null,
+                                                     new Rect(point,
+                                                              new Size(formattedText.Width,
+                                                                       formattedText.Height)));
+
+                        drawingContext.PushOpacity(0.6);
+                    }
+                    drawingContext.DrawText(formattedText, new Point(posX,
                                                                 tickHeight * 2));
                 }
                 else
@@ -147,15 +181,14 @@ namespace Tobi.Modules.AudioPane
 
                 drawingContext.Pop();
 
-                    var renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.6 };
-                    var point = new Point(xPos,
-                                            heightAvailable - formattedText.Height - tickHeight);
+                var point = new Point(xPos,
+                                        heightAvailable - formattedText.Height - tickHeight);
 
-                    drawingContext.DrawRectangle(renderBrush, null,
-                                                 new Rect(point,
-                                                          new Size(formattedText.Width,
-                                                                   formattedText.Height)));
-                
+                drawingContext.DrawRectangle(renderBrush, null,
+                                             new Rect(point,
+                                                      new Size(formattedText.Width,
+                                                               formattedText.Height)));
+
                 drawingContext.DrawText(formattedText, point);
             }
         }

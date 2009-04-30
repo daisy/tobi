@@ -927,7 +927,8 @@ namespace Tobi.Modules.AudioPane
                 //long bytes = (long) m_Player.CurrentTimePosition;
 
                 double time = m_PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
-                updateWaveFormPlayHead(time);
+                LastPlayHeadTime = time;
+                //updateWaveFormPlayHead(time);
             }
 
             UpdatePeakMeter();
