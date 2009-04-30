@@ -38,7 +38,8 @@ namespace Tobi.Infrastructure.UI
 
         static GreyableImage()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(GreyableImage), new FrameworkPropertyMetadata(typeof(GreyableImage)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(GreyableImage),
+                new FrameworkPropertyMetadata(typeof(GreyableImage)));
         }
 
         /// <summary>

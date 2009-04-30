@@ -65,12 +65,12 @@ namespace Tobi.Modules.NavigationPane
         ///</summary>
         public NavigationPaneView(IEventAggregator eventAggregator)
         {
-            InitializeComponent();
             m_eventAggregator = eventAggregator;
+
+            InitializeComponent();
 
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
-            //DataContext = this;
         }
 
         private void OnHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)

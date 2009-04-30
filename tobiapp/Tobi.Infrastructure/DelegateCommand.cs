@@ -1,24 +1,11 @@
-//===================================================================================
-// Microsoft patterns & practices
-// Composite Application Guidance for Windows Presentation Foundation and Silverlight
-//===================================================================================
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY
-// OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT
-// LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-// FITNESS FOR A PARTICULAR PURPOSE.
-//===================================================================================
-// The example companies, organizations, products, domain names,
-// e-mail addresses, logos, people, places, and events depicted
-// herein are fictitious.  No association with any real company,
-// organization, product, domain name, email address, logo, person,
-// places, or events is intended or should be inferred.
-//===================================================================================
-using System;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
-using Microsoft.Practices.Composite.Presentation.Properties;
+using System.Windows.Threading;
+using Microsoft.Practices.Composite;
+using Microsoft.Practices.Composite.Presentation.Commands;
 
-namespace Microsoft.Practices.Composite.Presentation.Commands
+namespace Tobi.Infrastructure
 {
     /// <summary>
     /// An <see cref="ICommand"/> whose delegates can be attached for <see cref="Execute"/> and <see cref="CanExecute"/>.
@@ -27,11 +14,55 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
     /// that monitors command's activity.
     /// </summary>
     /// <typeparam name="T">Parameter type.</typeparam>
-    public partial class DelegateCommand<T> : ICommand, IActiveAware
+    public class DelegateCommand<T> : ICommand, IActiveAware
     {
         private readonly Action<T> executeMethod = null;
         private readonly Func<T, bool> canExecuteMethod = null;
         private bool _isActive;
+
+        /// <summary>
+        /// Raises <see cref="CanExecuteChanged"/> on the UI thread so every command invoker
+        /// can requery to check if the command can execute.
+        /// <remarks>Note that this will trigger the execution of <see cref="CanExecute"/> once for each invoker.</remarks>
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
+        public void RaiseCanExecuteChanged()
+        {
+            OnCanExecuteChanged();
+        }
+
+        /// <summary>
+        /// Raises <see cref="CanExecuteChanged"/> on the UI thread so every command invoker can requery to check if the command can execute.
+        /// </summary>
+        protected virtual void OnCanExecuteChanged()
+        {
+            Dispatcher dispatcher = null;
+            if (Application.Current != null)
+            {
+                dispatcher = Application.Current.Dispatcher;
+            }
+            if (dispatcher == null)
+            {
+                return;
+            }
+            if (!dispatcher.CheckAccess())
+            {
+                dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                       (Action)OnCanExecuteChanged);
+            }
+            else
+            {
+                EventHandler canExecuteChangedHandler;
+                lock (LOCK)
+                {
+                    canExecuteChangedHandler = m_CanExecuteChangedEvent;
+                }
+                if (canExecuteChangedHandler != null)
+                {
+                    canExecuteChangedHandler(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="DelegateCommand{T}"/>.
@@ -52,7 +83,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
         public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
         {
             if (executeMethod == null && canExecuteMethod == null)
-                throw new ArgumentNullException("executeMethod", Resources.DelegateCommandDelegatesCannotBeNull);
+                throw new ArgumentNullException("executeMethod");
 
             this.executeMethod = executeMethod;
             this.canExecuteMethod = canExecuteMethod;
@@ -81,25 +112,12 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
             executeMethod(parameter);
         }
 
-        ///<summary>
-        ///Defines the method that determines whether the command can execute in its current state.
-        ///</summary>
-        ///<param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
-        ///<returns>
-        ///true if this command can be executed; otherwise, false.
-        ///</returns>
-        bool ICommand.CanExecute(object parameter)
-        {
-            return CanExecute((T)parameter);
-        }
+        private readonly object LOCK = new object();
+        private EventHandler m_CanExecuteChangedEvent;
 
         ///<summary>
         ///Occurs when changes occur that affect whether or not the command should execute.
         ///</summary>
-        //public event EventHandler CanExecuteChanged;
-
-        private readonly object LOCK = new object();
-        private EventHandler m_CanExecuteChangedEvent;
         public event EventHandler CanExecuteChanged
         {
             add
@@ -121,23 +139,24 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
         }
 
         ///<summary>
+        ///Defines the method that determines whether the command can execute in its current state.
+        ///</summary>
+        ///<param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+        ///<returns>
+        ///true if this command can be executed; otherwise, false.
+        ///</returns>
+        bool ICommand.CanExecute(object parameter)
+        {
+            return CanExecute((T)parameter);
+        }
+
+        ///<summary>
         ///Defines the method to be called when the command is invoked.
         ///</summary>
         ///<param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
         void ICommand.Execute(object parameter)
         {
             Execute((T)parameter);
-        }
-
-        /// <summary>
-        /// Raises <see cref="CanExecuteChanged"/> on the UI thread so every command invoker
-        /// can requery to check if the command can execute.
-        /// <remarks>Note that this will trigger the execution of <see cref="CanExecute"/> once for each invoker.</remarks>
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
-        public void RaiseCanExecuteChanged()
-        {
-            OnCanExecuteChanged();
         }
 
         #region IActiveAware members

@@ -56,9 +56,11 @@ namespace Tobi.Modules.DocumentPane
         ///</summary>
         public DocumentPaneView(IUnityContainer container, IEventAggregator eventAggregator)
         {
-            InitializeComponent();
             m_eventAggregator = eventAggregator;
             Container = container;
+
+            InitializeComponent();
+
             m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
             //DataContext = this;

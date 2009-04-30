@@ -1,10 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
@@ -28,12 +28,16 @@ namespace Tobi
         protected IRegionManager RegionManager { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
+        protected IEventAggregator EventAggregator { get; private set; }
 
         ///<summary>
         /// Default constructor
         ///</summary>
         ///<param name="view"></param>
-        public ShellPresenter(IShellView view, ILoggerFacade logger, IRegionManager regionManager, IUnityContainer container) //MenuBarView menubarView, NavigationPaneView navView
+        public ShellPresenter(IShellView view, ILoggerFacade logger,
+                            IRegionManager regionManager, IUnityContainer container,
+                            IEventAggregator eventAggregator
+                            )
         {
             m_Exiting = false;
 
@@ -41,6 +45,7 @@ namespace Tobi
             Logger = logger;
             Container = container;
             RegionManager = regionManager;
+            EventAggregator = eventAggregator;
 
             Logger.Log("ShellPresenter.ctor", Category.Debug, Priority.Medium);
 
@@ -50,7 +55,7 @@ namespace Tobi
                                                                       new KeyGesture(Key.Q, ModifierKeys.Control),
                                                                       (VisualBrush)Application.Current.FindResource("document-save"),
                                                             ExitCommand_Executed, obj => true);
-            AddInputBinding(ExitCommand.KeyBinding);
+            RegisterRichCommand(ExitCommand);
         }
 
         private void exit()
@@ -180,12 +185,42 @@ namespace Tobi
             }
         }
 
+        private readonly List<RichDelegateCommand<object>> m_listOfRegisteredRichCommands =
+            new List<RichDelegateCommand<object>>();
+
+        public void SetZoomValue(double value)
+        {
+            /*if (EventAggregator == null)
+            {
+                return;
+            }
+            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Publish(value);
+             */
+
+            foreach (var command in m_listOfRegisteredRichCommands)
+            {
+                command.IconDrawScale = value;
+            }
+        }
+
+        public void RegisterRichCommand(RichDelegateCommand<object> command)
+        {
+            m_listOfRegisteredRichCommands.Add(command);
+            AddInputBinding(command.KeyBinding);
+        }
+
+        public void UnRegisterRichCommand(RichDelegateCommand<object> command)
+        {
+            m_listOfRegisteredRichCommands.Remove(command);
+            RemoveInputBinding(command.KeyBinding);
+        }
+
         public bool AddInputBinding(InputBinding inputBinding)
         {
             Logger.Log("ShellPresenter.AddInputBinding", Category.Debug, Priority.Medium);
 
             var window = View as Window;
-            if (window != null)
+            if (window != null && inputBinding != null)
             {
                 logInputBinding(inputBinding);
                 window.InputBindings.Add(inputBinding);
@@ -200,7 +235,7 @@ namespace Tobi
             Logger.Log("ShellPresenter.RemoveInputBinding", Category.Debug, Priority.Medium);
 
             var window = View as Window;
-            if (window != null)
+            if (window != null && inputBinding != null)
             {
                 logInputBinding(inputBinding);
                 window.InputBindings.Remove(inputBinding);

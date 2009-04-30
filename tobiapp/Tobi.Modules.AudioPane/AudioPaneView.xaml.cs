@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Media;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,7 +54,7 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        private void Play()
+        public void Play()
         {
             ViewModel.Logger.Log("AudioPaneView.Play", Category.Debug, Priority.Medium);
 
@@ -188,83 +187,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.AudioRecorder_Start();
         }
 
-        private void OnSwitchPhrasePrevious(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioPlayer_Stop();
-        }
-        private void OnSwitchPhraseNext(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioPlayer_Stop();
-        }
-        private void OnGotoBegining(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioPlayer_Stop();
 
-            ViewModel.LastPlayHeadTime = 0;
-
-            if (ViewModel.IsAutoPlay)
-            {
-                clearSelection();
-                Play();
-            }
-        }
-        private void OnGotoEnd(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioPlayer_Stop();
-
-            ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertByteToMilliseconds(ViewModel.AudioPlayer_GetDataLength());
-        }
-        private void OnStepBack(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioPlayer_Stop();
-        }
-
-        private void OnStepForward(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioPlayer_Stop();
-        }
-
-        private double m_TimeStepForwardRewind = 1000; //1s
-
-        private void OnRewind(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Logger.Log("AudioPaneView.OnRewind", Category.Debug, Priority.Medium);
-
-            ViewModel.AudioPlayer_Stop();
-            double newTime = ViewModel.LastPlayHeadTime - m_TimeStepForwardRewind;
-            if (newTime < 0)
-            {
-                newTime = 0;
-                SystemSounds.Exclamation.Play();
-            }
-            ViewModel.LastPlayHeadTime = newTime;
-
-            if (ViewModel.IsAutoPlay)
-            {
-                clearSelection();
-                Play();
-            }
-        }
-        private void OnFastForward(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Logger.Log("AudioPaneView.OnFastForward", Category.Debug, Priority.Medium);
-
-            ViewModel.AudioPlayer_Stop();
-            double newTime = ViewModel.LastPlayHeadTime + m_TimeStepForwardRewind;
-            double max = ViewModel.AudioPlayer_ConvertByteToMilliseconds(ViewModel.AudioPlayer_GetDataLength());
-            if (newTime > max)
-            {
-                newTime = max;
-                SystemSounds.Exclamation.Play();
-            }
-            ViewModel.LastPlayHeadTime = newTime;
-
-            if (ViewModel.IsAutoPlay && newTime < max)
-            {
-                clearSelection();
-                Play();
-            }
-        }
 
         private double m_SelectionBackup_X = 0;
         private double m_SelectionBackup_Width = 0;
@@ -285,7 +208,7 @@ namespace Tobi.Modules.AudioPane
             m_SelectionBackup_Width = WaveFormTimeSelectionRect.Width;
         }
 
-        private void expandSelection()
+        public void ExpandSelection()
         {
             ViewModel.Logger.Log("AudioPaneView.expandSelection", Category.Debug, Priority.Medium);
 
@@ -297,7 +220,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.IsSelectionSet = true;
         }
 
-        private void clearSelection()
+        public void ClearSelection()
         {
             m_TimeSelectionLeftX = -1;
             WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
@@ -307,17 +230,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.IsSelectionSet = false;
         }
 
-        private void OnSelectAll(object sender, RoutedEventArgs e)
-        {
-            expandSelection();
-        }
-
-        private void OnClearSelection(object sender, RoutedEventArgs e)
-        {
-            clearSelection();
-        }
-
-        private void OnZoomSelection(object sender, RoutedEventArgs e)
+        public void ZoomSelection()
         {
             ViewModel.Logger.Log("AudioPaneView.OnZoomSelection", Category.Debug, Priority.Medium);
 
@@ -364,7 +277,8 @@ namespace Tobi.Modules.AudioPane
 
             ZoomSlider.Value = newSliderValue;
         }
-        private void OnZoomFitFull(object sender, RoutedEventArgs e)
+
+        public void ZoomFitFull()
         {
             ViewModel.Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
 
@@ -383,30 +297,6 @@ namespace Tobi.Modules.AudioPane
             }
 
             ZoomSlider.Value = widthToUse;
-        }
-
-        public string OpenFileDialog()
-        {
-            ViewModel.Logger.Log("AudioPaneView.OpenFileDialog", Category.Debug, Priority.Medium);
-
-            var dlg = new OpenFileDialog
-            {
-                FileName = "audio",
-                DefaultExt = ".wav",
-                Filter = "WAV files (.wav)|*.wav;*.aiff"
-            };
-            bool? result = dlg.ShowDialog();
-            if (result == false)
-            {
-                return null;
-            }
-
-            return dlg.FileName;
-        }
-
-        private void OnOpenFile(object sender, RoutedEventArgs e)
-        {
-            ViewModel.OpenFile();
         }
 
         private void OnPeakMeterCanvasSizeChanged(object sender, SizeChangedEventArgs e)
@@ -492,7 +382,7 @@ namespace Tobi.Modules.AudioPane
             StartWaveFormLoadTimer(500, false);
         }
 
-        private void OnRefresh(object sender, RoutedEventArgs e)
+        public void Refresh()
         {
             StartWaveFormLoadTimer(500, false);
         }
@@ -517,7 +407,7 @@ namespace Tobi.Modules.AudioPane
 
             if (p.X == m_TimeSelectionLeftX)
             {
-                clearSelection();
+                ClearSelection();
                 m_TimeSelectionLeftX = p.X;
 
                 ViewModel.IsSelectionSet = false;
@@ -562,7 +452,7 @@ namespace Tobi.Modules.AudioPane
         {
             if (Math.Abs(m_TimeSelectionLeftX-x) <= 6)
             {
-                clearSelection();
+                ClearSelection();
                 m_TimeSelectionLeftX = x;
             }
 
@@ -631,7 +521,7 @@ namespace Tobi.Modules.AudioPane
             Point p = e.GetPosition(WaveFormCanvas);
 
             backupSelection();
-            clearSelection();
+            ClearSelection();
             m_TimeSelectionLeftX = p.X;
 
             ViewModel.IsSelectionSet = false;
@@ -677,6 +567,25 @@ namespace Tobi.Modules.AudioPane
         #endregion Event / Callbacks
 
         public double BytesPerPixel { get; set; }
+
+        public string OpenFileDialog()
+        {
+            ViewModel.Logger.Log("AudioPaneView.OpenFileDialog", Category.Debug, Priority.Medium);
+
+            var dlg = new OpenFileDialog
+            {
+                FileName = "audio",
+                DefaultExt = ".wav",
+                Filter = "WAV files (.wav)|*.wav;*.aiff"
+            };
+            bool? result = dlg.ShowDialog();
+            if (result == false)
+            {
+                return null;
+            }
+
+            return dlg.FileName;
+        }
 
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
@@ -739,7 +648,7 @@ namespace Tobi.Modules.AudioPane
 
             ViewModel.Logger.Log("AudioPaneView.RefreshUI_AllReset", Category.Debug, Priority.Medium);
 
-            clearSelection();
+            ClearSelection();
 
             WaveFormPlayHeadPath.Data = null;
             WaveFormPlayHeadPath.InvalidateVisual();

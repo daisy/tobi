@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Tobi.Infrastructure.UI
 {
@@ -18,7 +13,7 @@ namespace Tobi.Infrastructure.UI
 
         private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var menuItem = d as MenuItemRichCommand;
+            var menuItem = d as MenuItem;
             if (menuItem == null)
             {
                 return;
@@ -31,14 +26,17 @@ namespace Tobi.Infrastructure.UI
             menuItem.Command = command;
 
             menuItem.Header = command.ShortDescription;
-            menuItem.ToolTip = command.LongDescription;
+            menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " [" + command.KeyGestureText + "]" : "");
             menuItem.InputGestureText = command.KeyGestureText;
             menuItem.Icon = command.IconSmall;
         }
 
         public RichDelegateCommand<object> RichCommand
         {
-            get { return (RichDelegateCommand<object>)GetValue(RichCommandProperty); }
+            get
+            {
+                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+            }
             set
             {
                 SetValue(RichCommandProperty, value);

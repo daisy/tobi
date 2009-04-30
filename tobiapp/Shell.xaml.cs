@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using AvalonDock;
 using Microsoft.Practices.Composite.Events;
-using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
 
 namespace Tobi
 {
@@ -20,16 +16,21 @@ namespace Tobi
 
         protected IEventAggregator EventAggregator { get; private set; }
 
+        private bool m_InConstructor = false;
+
         ///<summary>
-        /// Just calls <c>Window.InitializeComponent()</c>.
+        /// 
         ///</summary>
         public Shell(IUnityContainer container, IEventAggregator eventAggregator)
         {
-            InitializeComponent();
-            //DataContext = this;
-
             Container = container;
             EventAggregator = eventAggregator;
+
+            m_InConstructor = true;
+
+            InitializeComponent();
+
+            m_InConstructor = false;
 
             //IRegionManager regionManager = Container.Resolve<IRegionManager>();
             //string regionName = "AvalonDockRegion_1";
@@ -128,14 +129,18 @@ namespace Tobi
 
         private void OnZoomValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            /*
-            if (EventAggregator == null)
+            if (m_InConstructor)
             {
                 return;
             }
-            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Publish(e.NewValue);
-             */
 
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            if (shellPresenter != null)
+            {
+                shellPresenter.SetZoomValue(e.NewValue);
+            }
+
+            /*
             foreach(InputBinding ib in InputBindings)
             {
                 var command = ib.Command as RichDelegateCommand<object>;
@@ -144,6 +149,7 @@ namespace Tobi
                     command.IconDrawScale = e.NewValue;
                 }
             }
+             */
         }
     }
 }

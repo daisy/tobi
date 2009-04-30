@@ -3,11 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
-using System.Windows.Input;
 
 namespace Tobi.Infrastructure.UI
 {
-    public class ButtonRichCommand : Button
+    public class ButtonRichCommand : RepeatButton
     {
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
@@ -15,9 +14,9 @@ namespace Tobi.Infrastructure.UI
                                         typeof(ButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
-        private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        internal static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var button = d as ButtonRichCommand;
+            var button = d as ButtonBase;
             if (button == null)
             {
                 return;
@@ -28,9 +27,14 @@ namespace Tobi.Infrastructure.UI
                 return;
             }
 
+            init(button, command);
+        }
+
+        private static void init(ButtonBase button, RichDelegateCommand<object> command)
+        {
             button.Command = command;
 
-            button.ToolTip = command.LongDescription;
+            button.ToolTip = command.LongDescription + (command.KeyGesture != null ? " [" + command.KeyGestureText + "]" : "");
 
             if (String.IsNullOrEmpty(command.ShortDescription))
             {
@@ -45,10 +49,39 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
-        
+
         public RichDelegateCommand<object> RichCommand
         {
-            get { return (RichDelegateCommand<object>)GetValue(RichCommandProperty); }
+            get
+            {
+                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+            }
+            set
+            {
+                SetValue(RichCommandProperty, value);
+            }
+        }
+    }
+
+    public class ToggleButtonRichCommand : ToggleButton
+    {
+        public static readonly DependencyProperty RichCommandProperty =
+            DependencyProperty.Register("RichCommand",
+                                        typeof(RichDelegateCommand<object>),
+                                        typeof(ToggleButtonRichCommand),
+                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
+
+        private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ButtonRichCommand.OnRichCommandChanged(d, e);
+        }
+
+        public RichDelegateCommand<object> RichCommand
+        {
+            get
+            {
+                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+            }
             set
             {
                 SetValue(RichCommandProperty, value);

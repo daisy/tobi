@@ -32,18 +32,26 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
             {
                 dispatcher = Application.Current.Dispatcher;
             }
-
-            EventHandler canExecuteChangedHandler = CanExecuteChanged;
-            if (canExecuteChangedHandler != null)
+             if (dispatcher == null)
+             {
+                 return;
+             }
+            if (!dispatcher.CheckAccess())
             {
-                if (dispatcher != null && !dispatcher.CheckAccess())
+                dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                       (Action)OnCanExecuteChanged);
+            }
+            else
+            {
+                EventHandler canExecuteChangedHandler;
+                lock (LOCK)
                 {
-                    dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                           (Action)OnCanExecuteChanged);
+                    canExecuteChangedHandler = m_CanExecuteChangedEvent;
                 }
-                else
+                if (canExecuteChangedHandler != null)
                 {
                     canExecuteChangedHandler(this, EventArgs.Empty);
+
                 }
             }
         }
