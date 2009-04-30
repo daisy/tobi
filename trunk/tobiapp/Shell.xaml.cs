@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AvalonDock;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
+using Tobi.Infrastructure;
 
 namespace Tobi
 {
@@ -15,15 +18,18 @@ namespace Tobi
     {
         protected IUnityContainer Container { get; private set;  }
 
+        protected IEventAggregator EventAggregator { get; private set; }
+
         ///<summary>
         /// Just calls <c>Window.InitializeComponent()</c>.
         ///</summary>
-        public Shell(IUnityContainer container)
+        public Shell(IUnityContainer container, IEventAggregator eventAggregator)
         {
             InitializeComponent();
             //DataContext = this;
 
             Container = container;
+            EventAggregator = eventAggregator;
 
             //IRegionManager regionManager = Container.Resolve<IRegionManager>();
             //string regionName = "AvalonDockRegion_1";
@@ -118,6 +124,25 @@ namespace Tobi
         private void OnSplitterDragStarted(object sender, DragStartedEventArgs e)
         {
             m_SplitterDrag = true;
+        }
+
+        private void OnZoomValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (EventAggregator == null)
+            {
+                return;
+            }
+
+            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Publish(e.NewValue);
+
+            foreach(InputBinding ib in InputBindings)
+            {
+                var command = ib.Command as RichDelegateCommand<object>;
+                if (command != null)
+                {
+                    command.IconDrawScale = e.NewValue;
+                }
+            }
         }
     }
 }

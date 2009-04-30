@@ -18,9 +18,9 @@ namespace Tobi.Modules.UserInterfaceZoom
     {
         #region IUserInterfaceZoomPresenter
 
-        public DelegateCommandWithInputGesture<bool?> ZoomToggleCommand { get; private set; }
-        public DelegateCommandWithInputGesture<double?> IncreaseZoomCommand { get; private set; }
-        public DelegateCommandWithInputGesture<double?> DecreaseZoomCommand { get; private set; }
+        public RichDelegateCommand<bool?> ZoomToggleCommand { get; private set; }
+        public RichDelegateCommand<double?> IncreaseZoomCommand { get; private set; }
+        public RichDelegateCommand<double?> DecreaseZoomCommand { get; private set; }
 
         public double MinimumZoom
         {
@@ -101,15 +101,15 @@ namespace Tobi.Modules.UserInterfaceZoom
             View.Model = this;
 
             /*
-            ZoomToggleCommand = new DelegateCommandWithInputGesture<bool?>(UserInterfaceStrings.Menu_Zoom, _zoomToggleKeyGesture, zoomToggleCommand_Executed);
+            ZoomToggleCommand = new RichDelegateCommand<bool?>(UserInterfaceStrings.Menu_Zoom, _zoomToggleKeyGesture, zoomToggleCommand_Executed);
             var keyBinding = new KeyBinding(ZoomToggleCommand, ZoomToggleCommand.KeyGesture) { CommandParameter = null };
             ShellPresenter.AddInputBinding(keyBinding);
             
 
-            IncreaseZoomCommand = new DelegateCommandWithInputGesture<double?>("Increase Zoom", _increaseZoomKeyGesture, increaseZoomCommand_Executed);
+            IncreaseZoomCommand = new RichDelegateCommand<double?>("Increase Zoom", _increaseZoomKeyGesture, increaseZoomCommand_Executed);
             ShellPresenter.AddInputBinding(new KeyBinding(IncreaseZoomCommand, IncreaseZoomCommand.KeyGesture) { CommandParameter = null });
 
-            DecreaseZoomCommand = new DelegateCommandWithInputGesture<double?>("Decrease Zoom", _decreaseZoomKeyGesture, decreaseZoomCommand_Executed);
+            DecreaseZoomCommand = new RichDelegateCommand<double?>("Decrease Zoom", _decreaseZoomKeyGesture, decreaseZoomCommand_Executed);
             ShellPresenter.AddInputBinding(new KeyBinding(DecreaseZoomCommand, DecreaseZoomCommand.KeyGesture) { CommandParameter = null });
              *  * */
         }

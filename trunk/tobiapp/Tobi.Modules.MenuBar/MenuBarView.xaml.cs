@@ -3,7 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 
@@ -18,7 +20,7 @@ namespace Tobi.Modules.MenuBar
         /// Creates a new document.
         /// TODO: move this to the DocumentManagerModule
         ///</summary>
-        public DelegateCommandWithInputGesture<object> NewCommand { get; private set; }
+        public RichDelegateCommand<object> NewCommand { get; private set; }
         private KeyBinding NewKeyBinding;
 
         ///<summary>
@@ -34,15 +36,20 @@ namespace Tobi.Modules.MenuBar
         protected IUnityContainer Container { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
 
+        protected IEventAggregator EventAggregator { get; private set; }
+
         ///<summary>
         /// Dependency-injected constructor
         ///</summary>
-        public MenuBarView(IUnityContainer container, ILoggerFacade logger)
+        public MenuBarView(IUnityContainer container, ILoggerFacade logger, IEventAggregator eventAggregator)
         {
             Container = container;
             Logger = logger;
+            EventAggregator = eventAggregator;
 
-            NewCommand = new DelegateCommandWithInputGesture<object>(UserInterfaceStrings.Menu_New, UserInterfaceStrings.Menu_New_,
+            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
+
+            NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_New, UserInterfaceStrings.Menu_New_,
                 new KeyGesture(Key.N, ModifierKeys.Control),
                 (VisualBrush)FindResource("document-new"),
                 NewCommand_Executed, NewCommand_CanExecute);
@@ -53,6 +60,11 @@ namespace Tobi.Modules.MenuBar
             ExitCommand = shellPresenter.ExitCommand;
 
             InitializeComponent();
+        }
+
+        private void OnUserInterfaceScaled(double obj)
+        {
+            //xxx
         }
 
         private void NewCommand_Executed(object parameter)

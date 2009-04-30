@@ -20,12 +20,14 @@
 
     <!-- File Menu -->
     <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_File}">
-      <MenuItem Header="{Binding NewCommand.ShortDescription}"
+      <MenuItem Command="{Binding NewCommand}"
+                Header="{Binding NewCommand.ShortDescription}"
                 ToolTip="{Binding NewCommand.LongDescription}"
                 InputGestureText="{Binding NewCommand.KeyGestureText}"
-                Command="{Binding NewCommand}"
+                Icon="{Binding NewCommand.IconSmall}"
                 CommandParameter="{Binding}"
-                Icon="{Binding NewCommand.IconSmall}"/>
+                IsEnabled="False"
+                />
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Open}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Save}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_SaveAs}"/>
