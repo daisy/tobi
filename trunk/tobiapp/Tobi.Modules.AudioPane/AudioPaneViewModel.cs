@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -12,6 +14,7 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
+using Tobi.Infrastructure.UI;
 using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
@@ -46,47 +49,277 @@ namespace Tobi.Modules.AudioPane
         #region Commands
 
         public RichDelegateCommand<object> CommandOpenFile { get; private set; }
+        public RichDelegateCommand<object> CommandSwitchPhrasePrevious { get; private set; }
+        public RichDelegateCommand<object> CommandSwitchPhraseNext { get; private set; }
+        public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
+        public RichDelegateCommand<object> CommandGotoEnd { get; private set; }
+        public RichDelegateCommand<object> CommandStepBack { get; private set; }
+        public RichDelegateCommand<object> CommandStepForward { get; private set; }
+        public RichDelegateCommand<object> CommandRewind { get; private set; }
+        public RichDelegateCommand<object> CommandFastForward { get; private set; }
+        public RichDelegateCommand<object> CommandSelectAll { get; private set; }
+        public RichDelegateCommand<object> CommandClearSelection { get; private set; }
+        public RichDelegateCommand<object> CommandZoomSelection { get; private set; }
+        public RichDelegateCommand<object> CommandZoomFitFull { get; private set; }
+        public RichDelegateCommand<object> CommandRefresh { get; private set; }
+        public RichDelegateCommand<object> CommandAutoPlay { get; private set; }
 
         private void initializeCommands()
         {
             Logger.Log("AudioPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
-
+            //
             CommandOpenFile = new RichDelegateCommand<object>(null,
                 UserInterfaceStrings.Audio_OpenFile,
                 new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift),
                 (VisualBrush)Application.Current.FindResource("document-open"),
-                CommandOpenFile_Executed, obj => true);
+                obj => OpenFile(obj as String), obj => true);
 
-            shellPresenter.AddInputBinding(CommandOpenFile.KeyBinding);
+            shellPresenter.RegisterRichCommand(CommandOpenFile);
+            //
+            CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(null,
+                "Switch to previous audio",
+                null,
+                (VisualBrush)Application.Current.FindResource("go-first"),
+                obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithTreeNode);
+
+            shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
+            //
+            CommandSwitchPhraseNext = new RichDelegateCommand<object>(null,
+                "Switch to next audio",
+                null,
+                (VisualBrush)Application.Current.FindResource("go-last"),
+                obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithTreeNode);
+
+            shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
+            //
+            CommandGotoBegining = new RichDelegateCommand<object>(null,
+                "Rewind to begining of the audio stream",
+                null,
+                (VisualBrush)Application.Current.FindResource("go-previous"),
+                obj => GotoBegining(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandGotoBegining);
+            //
+            CommandGotoEnd = new RichDelegateCommand<object>(null,
+                "Fast Forward to the end of the audio stream",
+                null,
+                (VisualBrush)Application.Current.FindResource("go-next"),
+                obj => GotoEnd(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandGotoEnd);
+            //
+            CommandStepBack = new RichDelegateCommand<object>(null,
+                "Step back one phrase",
+                null,
+                (VisualBrush)Application.Current.FindResource("media-skip-backward"),
+                obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithSubTreeNodes);
+
+            shellPresenter.RegisterRichCommand(CommandStepBack);
+            //
+            CommandStepForward = new RichDelegateCommand<object>(null,
+                "Step forward one phrase",
+                null,
+                (VisualBrush)Application.Current.FindResource("media-skip-forward"),
+                obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithSubTreeNodes);
+
+            shellPresenter.RegisterRichCommand(CommandStepForward);
+            //
+            CommandFastForward = new RichDelegateCommand<object>(null,
+                "Fast-forward by a pre-defined time increment",
+                null,
+                (VisualBrush)Application.Current.FindResource("media-seek-forward"),
+                obj => FastForward(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandFastForward);
+            //
+            CommandRewind = new RichDelegateCommand<object>(null,
+                "Rewind by a pre-defined time increment",
+                null,
+                (VisualBrush)Application.Current.FindResource("media-seek-backward"),
+                obj => Rewind(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandRewind);
+            //
+            CommandSelectAll = new RichDelegateCommand<object>(null,
+                "Select all",
+                null,
+                (VisualBrush)Application.Current.FindResource("view-fullscreen"),
+                obj => SelectAll(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandSelectAll);
+            //
+            CommandClearSelection = new RichDelegateCommand<object>(null,
+                "Clear audio selection",
+                null,
+                (VisualBrush)Application.Current.FindResource("edit-clear"),
+                obj => ClearSelection(), obj => IsSelectionSet);
+
+            shellPresenter.RegisterRichCommand(CommandClearSelection);
+            //
+            CommandZoomSelection = new RichDelegateCommand<object>(null,
+                "Zoom waveform selection into view",
+                null,
+                (VisualBrush)Application.Current.FindResource("system-search"),
+                obj => ZoomSelection(), obj => IsSelectionSet);
+
+            shellPresenter.RegisterRichCommand(CommandZoomSelection);
+            //
+            CommandZoomFitFull = new RichDelegateCommand<object>(null,
+                "Fit the entire audio waveform into view",
+                null,
+                (VisualBrush)Application.Current.FindResource("utilities-system-monitor"),
+                obj => ZoomFitFull(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandZoomFitFull);
+            //
+            CommandRefresh = new RichDelegateCommand<object>(null,
+                "Reload the audio waveform data",
+                null,
+                (VisualBrush)Application.Current.FindResource("view-refresh"),
+                obj => Refresh(), obj => IsAudioLoaded);
+
+            shellPresenter.RegisterRichCommand(CommandRefresh);
+            //
+            CommandAutoPlay = new RichDelegateCommand<object>(null,
+                "Switch autoplay on/off",
+                null,
+                (VisualBrush)Application.Current.FindResource("go-jump"),
+                obj => { }, obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandAutoPlay);
+            //
         }
 
-        public void OpenFile()
+        public void Refresh()
+        {
+            if (View != null)
+            {
+                View.Refresh();
+            }
+        }
+
+        public void ZoomFitFull()
+        {
+            if (View != null)
+            {
+                View.ZoomFitFull();
+            }
+        }
+
+        public void ZoomSelection()
+        {
+            if (View != null)
+            {
+                View.ZoomSelection();
+            }
+        }
+
+        public void ClearSelection()
+        {
+            if (View != null)
+            {
+                View.ClearSelection();
+            }
+        }
+
+        public void SelectAll()
+        {
+            if (View != null)
+            {
+                View.ExpandSelection();
+            }
+        }
+
+        private double m_TimeStepForwardRewind = 1000; //1s
+
+        public void Rewind()
+        {
+            Logger.Log("AudioPaneView.OnRewind", Category.Debug, Priority.Medium);
+
+            AudioPlayer_Stop();
+            double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
+            if (newTime < 0)
+            {
+                newTime = 0;
+                SystemSounds.Exclamation.Play();
+            }
+            LastPlayHeadTime = newTime;
+
+            if (IsAutoPlay)
+            {
+                if (View != null)
+                {
+                    View.ClearSelection();
+                    View.Play();
+                }
+            }
+        }
+        public void FastForward()
+        {
+            Logger.Log("AudioPaneView.OnFastForward", Category.Debug, Priority.Medium);
+
+            AudioPlayer_Stop();
+            double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
+            double max = AudioPlayer_ConvertByteToMilliseconds(AudioPlayer_GetDataLength());
+            if (newTime > max)
+            {
+                newTime = max;
+                SystemSounds.Exclamation.Play();
+            }
+            LastPlayHeadTime = newTime;
+
+            if (IsAutoPlay && newTime < max)
+            {
+                if (View != null)
+                {
+                    View.ClearSelection();
+                    View.Play();
+                }
+            }
+        }
+        public void GotoEnd()
+        {
+            AudioPlayer_Stop();
+            LastPlayHeadTime = AudioPlayer_ConvertByteToMilliseconds(AudioPlayer_GetDataLength());
+        }
+
+        public void GotoBegining()
+        {
+            AudioPlayer_Stop();
+
+            LastPlayHeadTime = 0;
+
+            if (IsAutoPlay)
+            {
+                if (View != null)
+                {
+                    View.ClearSelection();
+                    View.Play();
+                }
+            }
+        }
+        public void OpenFile(String str)
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
             AudioPlayer_TogglePlayPause();
 
-            string str = null;
+            string filePath = str;
 
-            if (View != null)
+            if (filePath == null && View != null)
             {
-                str = View.OpenFileDialog();
+                filePath = View.OpenFileDialog();
             }
-            else
+
+            if (filePath == null)
             {
-                str = null;
                 return;
             }
 
             AudioPlayer_Stop();
-            AudioPlayer_LoadAndPlayFromFile(str);
-        }
-
-        private void CommandOpenFile_Executed(object obj)
-        {
-            OpenFile();
+            AudioPlayer_LoadAndPlayFromFile(filePath);
         }
 
         #endregion Commands

@@ -25,5 +25,11 @@
         void StopPeakMeterTimer();
         void StartPeakMeterTimer();
         void StartWaveFormLoadTimer(double delay, bool play);
+        void ClearSelection();
+        void Play();
+        void ExpandSelection();
+        void ZoomSelection();
+        void ZoomFitFull();
+        void Refresh();
     }
 }

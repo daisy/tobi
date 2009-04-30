@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Practices.Composite.Presentation.Commands;
 using Tobi.Infrastructure.UI;
 
 namespace Tobi.Infrastructure
@@ -120,7 +119,7 @@ namespace Tobi.Infrastructure
                 }
                 if (m_IconSmall == null)
                 {
-                    m_IconSmall = createImage();
+                    m_IconSmall = createImage(0);
                     assignMultiBinding(m_IconSmall, "Small");
                 }
                 return m_IconSmall;
@@ -165,7 +164,7 @@ namespace Tobi.Infrastructure
                 }
                 if (m_IconMedium == null)
                 {
-                    m_IconMedium = createImage();
+                    m_IconMedium = createImage(1);
                     assignMultiBinding(m_IconMedium, "Medium");
                 }
                 return m_IconMedium;
@@ -209,7 +208,7 @@ namespace Tobi.Infrastructure
                 }
                 if (m_IconLarge == null)
                 {
-                    m_IconLarge = createImage();
+                    m_IconLarge = createImage(2);
                     assignMultiBinding(m_IconLarge, "Large");
                 }
                 return m_IconLarge;
@@ -233,6 +232,10 @@ namespace Tobi.Infrastructure
         {
             get
             {
+                if (KeyGesture == null)
+                {
+                    return null;
+                }
                 if (m_KeyBinding == null)
                 {
                     m_KeyBinding = new KeyBinding(this, KeyGesture);
@@ -259,7 +262,10 @@ namespace Tobi.Infrastructure
         private double m_IconDrawScale = 1;
         public double IconDrawScale
         {
-            get { return m_IconDrawScale; }
+            get
+            {
+                return m_IconDrawScale;
+            }
             set
             {
                 if (m_IconDrawScale != value)
@@ -283,6 +289,58 @@ namespace Tobi.Infrastructure
 
                     m_IconWidth_Large = Sizes.IconWidth_Large * m_IconDrawScale;
                     OnPropertyChanged("IconWidth_Large");
+
+                    /*
+                    bool canExec = ((ICommand)this).CanExecute(null);
+                    
+                    if (m_IconSmall != null)
+                    {
+                        bool dirty = false;
+                        var imageSource  = m_IconSmall.Source as RenderTargetBitmap;
+                        if (imageSource != null)
+                        {
+                            dirty = imageSource.Width != IconWidth_Small
+                                    ||
+                                    imageSource.Height != IconHeight_Small;
+                        }
+                        if (!canExec || dirty)
+                        {
+                            m_IconSmall.InvalidateProperty(Image.SourceProperty);
+                            //assignMultiBinding(m_IconSmall, "Small");
+                        }
+                    }
+                    if (m_IconMedium != null)
+                    {
+                        bool dirty = false;
+                        var imageSource = m_IconMedium.Source as RenderTargetBitmap;
+                        if (imageSource != null)
+                        {
+                            dirty = imageSource.Width != IconWidth_Medium
+                                    ||
+                                    imageSource.Height != IconHeight_Medium;
+                        }
+                        if (!canExec || dirty)
+                        {
+                            m_IconMedium.InvalidateProperty(Image.SourceProperty);
+                            //assignMultiBinding(m_IconMedium, "Medium");
+                        }
+                    }
+                    if (m_IconLarge != null)
+                    {
+                        bool dirty = false;
+                        var imageSource = m_IconLarge.Source as RenderTargetBitmap;
+                        if (imageSource != null)
+                        {
+                            dirty = imageSource.Width != IconWidth_Large
+                                    ||
+                                    imageSource.Height != IconHeight_Large;
+                        }
+                        if (!canExec || dirty)
+                        {
+                            m_IconLarge.InvalidateProperty(Image.SourceProperty);
+                            //assignMultiBinding(m_IconLarge, "Large");
+                        }
+                    }*/
                 }
             }
         }
@@ -316,17 +374,43 @@ namespace Tobi.Infrastructure
             };
             bindingMulti.Bindings.Add(bindingHeight);
 
-            image.SetBinding(Image.SourceProperty, bindingMulti);
+            bindingMulti.ConverterParameter = false;
+
+            var expr = image.SetBinding(Image.SourceProperty, bindingMulti);
+
+            if (image is AutoGreyableImage)
+            {
+                MultiBinding bind = cloneBinding(bindingMulti);
+                bind.ConverterParameter = true;
+                ((AutoGreyableImage)image).SetColorAndGreySourceBindings(bindingMulti, bind);
+            }
         }
 
-        private Image createImage()
+        private MultiBinding cloneBinding(MultiBinding binding)
         {
-            Image image = new GreyableImage
+            var multiBind = new MultiBinding
+                                {
+                                    Converter = binding.Converter,
+                                    ConverterParameter = binding.ConverterParameter
+                                };
+            foreach (Binding bind in binding.Bindings)
+            {
+                var newBind = new Binding();
+                newBind.Mode = bind.Mode;
+                newBind.Source = bind.Source;
+                newBind.Path = bind.Path;
+                multiBind.Bindings.Add(newBind);
+            }
+            return multiBind;
+        }
+        private Image createImage(int size)
+        {
+            Image image = new AutoGreyableImage
             {
                 Stretch = Stretch.Fill,
                 SnapsToDevicePixels = false,
-                Width = Sizes.IconWidth_Small,
-                Height = Sizes.IconHeight_Small,
+                Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : Sizes.IconWidth_Large)),
+                Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : Sizes.IconHeight_Large))
             };
 
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);

@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Colors.cs" />
     <Compile Include="CommandExtension.cs" />
+    <Compile Include="DelegateCommand.cs" />
     <Compile Include="RichDelegateCommand.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="EnumListExtension.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="StringXamlConverter.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TreeViewHelper.cs" />
+    <Compile Include="UI\AutoGreyableImage.cs" />
     <Compile Include="UI\BindableRun.cs" />
     <Compile Include="UI\BindableRunTextMedia.cs" />
     <Compile Include="UI\BooleanNotConverter.cs" />
@@ -114,6 +116,7 @@
     </Compile>
     <Compile Include="UI\TextMediaTextBox.cs" />
     <Compile Include="UI\UiClipboardImageHelper.cs" />
+    <Compile Include="UI\UserInterfaceScaledEvent.cs" />
     <Compile Include="UI\XamlToPngConverter.cs" />
     <Compile Include="UnityServiceLocator.cs" />
     <Compile Include="UserInterfaceStrings.cs" />

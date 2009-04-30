@@ -60,7 +60,7 @@
 
 
   <Style x:Key="IconButton">
-    <Setter Property="Control.Padding" Value="2"/>
+    <Setter Property="Control.Padding" Value="0"/>
     <Setter Property="RepeatButton.Delay" Value="0"/>
     <Setter Property="RepeatButton.Interval" Value="100"/>
   </Style>

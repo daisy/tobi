@@ -48,8 +48,6 @@ namespace Tobi.Modules.MenuBar
 
             Logger.Log("MenuBarView.ctor", Category.Debug, Priority.Medium);
 
-            //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
-
             initializeCommands();
 
             InitializeComponent();
@@ -65,7 +63,7 @@ namespace Tobi.Modules.MenuBar
                 new KeyGesture(Key.N, ModifierKeys.Control),
                 (VisualBrush)FindResource("document-new"),
                 NewCommand_Executed, obj => true);
-            shellPresenter.AddInputBinding(NewCommand.KeyBinding);
+            shellPresenter.RegisterRichCommand(NewCommand);
 
             ExitCommand = shellPresenter.ExitCommand;
         }

@@ -34,29 +34,17 @@ namespace Tobi.Infrastructure.UI
 
             var width = (Double)values[1];
             var height = (Double)values[2];
-            return convert(visualBrush, width, height);
 
-            //return renderBitmap.GetAsFrozen();
-
-
-            /*
-            var viewBox = new Viewbox
+            bool grey = false;
+            if (parameter != null && parameter is Boolean)
             {
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                StretchDirection = StretchDirection.Both,
-                Stretch = Stretch.Fill
-            };
-            viewBox.Child = frameworkElement;
-             */
-            /*
-            viewBox.Measure(size);
-            viewBox.Arrange(new Rect(0, 0, image.Width, image.Height));
-            viewBox.UpdateLayout();
-             */
+                grey = (Boolean)parameter;
+            }
+
+            return convert(visualBrush, width, height, grey);
         }
 
-        public static RenderTargetBitmap convert(VisualBrush visualBrush, double width, double height)
+        public static BitmapSource convert(VisualBrush visualBrush, double width, double height, Boolean grey)
         {
             if (Double.IsNaN(width))
             {
@@ -85,7 +73,14 @@ namespace Tobi.Infrastructure.UI
             renderBitmap.Render(rectangle);
 
             renderBitmap.Freeze();
-            return renderBitmap;
+
+            if (grey)
+            {
+                return new FormatConvertedBitmap(renderBitmap,
+                                                PixelFormats.Gray32Float, null, 0);
+            }
+
+            return renderBitmap; //renderBitmap.GetAsFrozen();
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

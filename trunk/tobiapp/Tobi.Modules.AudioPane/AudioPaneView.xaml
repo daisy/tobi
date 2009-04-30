@@ -50,8 +50,6 @@
       </Style>
 
       <Style x:Key="IconButtonPlayPause" BasedOn="{StaticResource IconButtonNeedsAudio}">
-
-        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
         
         <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-start}"/>
         <Setter Property="FrameworkElement.ToolTip" Value="Start playback"/>
@@ -395,62 +393,12 @@
 
     <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/>
-      
-      <Button Style="{StaticResource IconButton}"
-              Click="OnOpenFile"
-              ToolTip="Open a local WAV file for playback test">
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource document-open}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
-      </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"
+                                 Style="{StaticResource IconButton}"/>
 
-
-      <ToggleButton
-              ToolTip="Auto playback"
+      <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
               Style="{StaticResource IconButton}"
-              IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
-              >
-        <!-- ToggleButton.Style>
-          <Style TargetType="{x:Type ToggleButton}">
-            <Setter Property="Template">
-              <Setter.Value>
-                <ControlTemplate>
-                </ControlTemplate>
-              </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-              <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Template">
-                  <Setter.Value>
-                    <ControlTemplate>
-                    </ControlTemplate>
-                  </Setter.Value>
-                </Setter>
-              </Trigger>
-            </Style.Triggers>
-          </Style>
-        </ToggleButton.Style -->
-
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource go-jump}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
-      </ToggleButton>
-
+              IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
 
       <Button
         Style="{StaticResource IconButtonPlayPause}"
@@ -462,217 +410,44 @@
         Click="OnRecordOrStop">
       </Button>
 
-      <Button Style="{StaticResource IconButtonNeedsAudioAndTreeNode}"
-                            ToolTip="Switch to previous audio"
-              Click="OnSwitchPhrasePrevious"
->
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource go-first}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
+                                 Style="{StaticResource IconButton}"/>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Rewind to begining of audio stream"
-              Click="OnGotoBegining"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource go-previous}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
+                                 Style="{StaticResource IconButton}"/>
 
-      <Button Style="{StaticResource IconButtonNeedsAudioAndSubTreeNodes}"
-                            ToolTip="Step back one phrase"
-              Click="OnStepBack"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-skip-backward}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
+      <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepBack}"
+                                  Style="{StaticResource IconButton}"/>
 
-      <RepeatButton Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Rewind by a pre-defined time increment"
-              Click="OnRewind"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-seek-backward}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </RepeatButton>
-
-      <RepeatButton Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Fast-forward by a pre-defined time increment"
-              Click="OnFastForward"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-seek-forward}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </RepeatButton>
-
-
-      <Button Style="{StaticResource IconButtonNeedsAudioAndSubTreeNodes}"
-                            ToolTip="Step forward one phrase"
-              
-              Click="OnStepForward">
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource media-skip-forward}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
-
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Fast-forward to end of audio stream"
-              
-              Click="OnGotoEnd"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource go-next}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
-
-      <Button Style="{StaticResource IconButtonNeedsAudioAndTreeNode}"
-                            ToolTip="Switch to next audio"
-              Click="OnSwitchPhraseNext"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource go-last}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
-
-      <Button Style="{StaticResource IconButton}"
-                            ToolTip="Select all"
-              Click="OnSelectAll"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource view-fullscreen}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-
-      </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandRewind}"
+                                 Style="{StaticResource IconButton}"/>
       
-      <Button Style="{StaticResource IconButtonNeedsSelection}"
-                            ToolTip="Clear audio selection"
-              Click="OnClearSelection"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource edit-clear}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandFastForward}"
+                                 Style="{StaticResource IconButton}"/>
 
-      <Button Style="{StaticResource IconButtonNeedsSelection}"
-                            ToolTip="Zoom waveform selection into view"
-              
-              Click="OnZoomSelection">
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource system-search}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      </Button>
+      <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepForward}"
+                                  Style="{StaticResource IconButton}"/>
 
-      <Button Style="{StaticResource IconButton}"
-                            ToolTip="Fit the entire audio waveform into view"
-              Click="OnZoomFitFull"
-              >
-        <Image Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource utilities-system-monitor}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </Image>
-      </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoEnd}"
+                                 Style="{StaticResource IconButton}"/>
 
-      <Button Style="{StaticResource IconButtonNeedsAudio}"
-                            ToolTip="Reload the audio waveform data"
-              Click="OnRefresh"
-              >
-        <infraUI:GreyableImage Style="{StaticResource ButtonImage}">
-          <Image.Source>
-            <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-              <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-              <Binding Source="{StaticResource view-refresh}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-              <Binding Source="{x:Static infra:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-            </MultiBinding>
-          </Image.Source>
-        </infraUI:GreyableImage>
-      
-    </Button>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
+                                 Style="{StaticResource IconButton}"/>
+
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
+                                 Style="{StaticResource IconButton}"/>
+
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
+                                 Style="{StaticResource IconButton}"/>
+
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
+                                 Style="{StaticResource IconButton}"/>
+
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
+                                 Style="{StaticResource IconButton}"/>
+
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"
+                                 Style="{StaticResource IconButton}"/>
 
     </WrapPanel>
 

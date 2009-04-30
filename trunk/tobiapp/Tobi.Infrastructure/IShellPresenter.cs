@@ -26,6 +26,8 @@ namespace Tobi
         ///</summary>
         bool AddInputBinding(InputBinding inputBinding);
 
+        void RegisterRichCommand(RichDelegateCommand<object> command);
+
         ///<summary>
         /// The shell window is closing, returns true if application is shutting down
         ///</summary>
@@ -36,5 +38,6 @@ namespace Tobi
         //TODO: the methods below are not part of the final design, they're here just to compile and run the experiments.
         void ProjectLoaded(Project proj);
         void PageEncountered(TextElement textElement);
+        void SetZoomValue(double value);
     }
 }
