@@ -54,118 +54,6 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        public void Play()
-        {
-            ViewModel.Logger.Log("AudioPaneView.Play", Category.Debug, Priority.Medium);
-
-            double byteLastPlayHeadTime = ViewModel.AudioPlayer_ConvertMillisecondsToByte(ViewModel.LastPlayHeadTime);
-
-            if (m_TimeSelectionLeftX == -1)
-            {
-                if (ViewModel.LastPlayHeadTime >=
-                        ViewModel.AudioPlayer_ConvertByteToMilliseconds(
-                                            ViewModel.AudioPlayer_GetDataLength()))
-                {
-                    ViewModel.LastPlayHeadTime = 0;
-                    ViewModel.AudioPlayer_PlayFrom(0);
-                }
-                else
-                {
-                    ViewModel.AudioPlayer_PlayFrom(byteLastPlayHeadTime);
-                }
-            }
-            else
-            {
-                double byteSelectionLeft = Math.Round(m_TimeSelectionLeftX * BytesPerPixel);
-                double byteSelectionRight = Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
-
-                byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
-
-                if (byteLastPlayHeadTime >= byteSelectionLeft
-                        && byteLastPlayHeadTime < byteSelectionRight)
-                {
-                    if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
-                    {
-                        ViewModel.AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
-                    }
-                }
-                else
-                {
-                    if (verifyBeginEndPlayerValues(byteSelectionLeft, byteSelectionRight))
-                    {
-                        ViewModel.AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
-                    }
-                }
-            }
-        }
-
-        private bool verifyBeginEndPlayerValues(double begin, double end)
-        {
-            double from = ViewModel.AudioPlayer_ConvertByteToMilliseconds(begin);
-            double to = ViewModel.AudioPlayer_ConvertByteToMilliseconds(end);
-
-            var pcmInfo = ViewModel.AudioPlayer_GetPcmFormat();
-
-            long startPosition = 0;
-            if (from > 0)
-            {
-                startPosition = CalculationFunctions.ConvertTimeToByte(from, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
-                startPosition = CalculationFunctions.AdaptToFrame(startPosition, pcmInfo.BlockAlign);
-            }
-            long endPosition = 0;
-            if (to > 0)
-            {
-                endPosition = CalculationFunctions.ConvertTimeToByte(to, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
-                endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
-            }
-            if (startPosition >= 0 &&
-                (endPosition == 0 || startPosition < endPosition) &&
-                endPosition <= pcmInfo.GetDataLength(pcmInfo.GetDuration(ViewModel.AudioPlayer_GetDataLength())))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private void OnPlayPause(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
-            {
-                return;
-            }
-
-            if (ViewModel.IsPlaying)
-            {
-                OnPause(sender, e);
-            }
-            else
-            {
-                OnPlay(sender, e);
-            }
-        }
-
-        private void OnPlay(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
-            {
-                return;
-            }
-
-            ViewModel.AudioPlayer_Stop();
-            Play();
-        }
-
-        private void OnPause(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
-            {
-                return;
-            }
-
-            ViewModel.AudioPlayer_Stop();
-            //ViewModel.AudioPlayer_TogglePlayPause();
-        }
-
         private void OnRecordOrStop(object sender, RoutedEventArgs e)
         {
             if (ViewModel.IsRecording)
@@ -390,6 +278,16 @@ namespace Tobi.Modules.AudioPane
         private double m_TimeSelectionLeftX = -1;
         //private readonly Cursor m_WaveFormDefaultCursor = Cursors.Pen;
 
+        public double GetSelectionLeft()
+        {
+            return m_TimeSelectionLeftX;
+        }
+
+        public double GetSelectionWidth()
+        {
+            return WaveFormTimeSelectionRect.Width;
+        }
+
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
             if (m_WaveFormTimeTicksAdorner != null)
@@ -470,7 +368,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (ViewModel.IsAutoPlay)
                 {
-                    Play();
+                    ViewModel.Play();
                 }
 
                 return;

@@ -25,28 +25,8 @@
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/SharedResources.xaml"/>
       </ResourceDictionary.MergedDictionaries -->
 
-
-      <Style x:Key="IconButtonNeedsSelection" BasedOn="{StaticResource IconButton}">
-
-        <Setter Property="UIElement.IsEnabled" Value="{Binding IsSelectionSet, Mode=OneWay}"/>
-
-      </Style>
-      
-      <Style x:Key="IconButtonNeedsAudio" BasedOn="{StaticResource IconButton}">
-
+      <!-- Style x:Key="IconButtonNeedsAudio" BasedOn="{StaticResource IconButton}">
         <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
-
-      </Style>
-
-      <Style x:Key="IconButtonNeedsAudioAndSubTreeNodes" BasedOn="{StaticResource IconButton}">
-
-        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoadedWithSubTreeNodes, Mode=OneWay}"/>
-
-      </Style>
-      <Style x:Key="IconButtonNeedsAudioAndTreeNode" BasedOn="{StaticResource IconButton}">
-
-        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoadedWithTreeNode, Mode=OneWay}"/>
-
       </Style>
 
       <Style x:Key="IconButtonPlayPause" BasedOn="{StaticResource IconButtonNeedsAudio}">
@@ -56,11 +36,11 @@
         
         <Style.Triggers>
           <DataTrigger Binding="{Binding Path=IsPlaying}" Value="True">
-            <Setter Property="FrameworkElement.ToolTip" Value="Stop playback"/>
+            <Setter Property="FrameworkElement.ToolTip" Value="Pause playback"/>
             <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-pause}"/>
           </DataTrigger>
         </Style.Triggers>
-      </Style>
+      </Style -->
 
       <Style x:Key="IconButtonRecordOrStop" BasedOn="{StaticResource IconButton}">
 
@@ -400,10 +380,17 @@
               Style="{StaticResource IconButton}"
               IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
 
-      <Button
+
+      <infraUI:TwoStateButtonRichCommand
+        RichCommandOne="{Binding CommandPause}"
+        RichCommandTwo="{Binding CommandPlay}"
+              Style="{StaticResource IconButton}"
+              RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
+
+      <!-- Button
         Style="{StaticResource IconButtonPlayPause}"
         Click="OnPlayPause">
-      </Button>
+      </Button -->
 
       <Button
         Style="{StaticResource IconButtonRecordOrStop}"
