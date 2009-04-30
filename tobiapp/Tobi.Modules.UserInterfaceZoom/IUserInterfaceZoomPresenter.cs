@@ -15,17 +15,17 @@ namespace Tobi.Modules.UserInterfaceZoom
         ///<summary>
         /// Command: toggles the zoom slider display on/off. If the parameter is non-null, .. TODO
         ///</summary>
-        DelegateCommandWithInputGesture<bool?> ZoomToggleCommand { get; }
+        RichDelegateCommand<bool?> ZoomToggleCommand { get; }
 
         ///<summary>
         /// Command: increases the zoom level, constrained within <see cref="MinimumZoom"/> and <see cref="MaximumZoom"/>. If the parameter is non-null, it is used as the step value (negative values are allowed, although that's kind of non-intuitive !), otherwise <see cref="ZoomStep"/> is used.
         ///</summary>
-        DelegateCommandWithInputGesture<double?> IncreaseZoomCommand { get; }
+        RichDelegateCommand<double?> IncreaseZoomCommand { get; }
 
         ///<summary>
         /// Command: decreases the zoom level, constrained within <see cref="MinimumZoom"/> and <see cref="MaximumZoom"/>. If the parameter is non-null, it is used as the step value (negative values are allowed, although that's kind of non-intuitive !), otherwise <see cref="ZoomStep"/> is used.
         ///</summary>
-        DelegateCommandWithInputGesture<double?> DecreaseZoomCommand { get; }
+        RichDelegateCommand<double?> DecreaseZoomCommand { get; }
 
         ///<summary>
         /// The minimum allowed zoom value

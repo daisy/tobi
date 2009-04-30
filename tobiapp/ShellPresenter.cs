@@ -20,7 +20,7 @@ namespace Tobi
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool _exiting;
 
-        public DelegateCommandWithInputGesture<object> ExitCommand { get; private set; }
+        public RichDelegateCommand<object> ExitCommand { get; private set; }
 
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
@@ -47,7 +47,7 @@ namespace Tobi
             Container = container;
             RegionManager = regionManager;
 
-            ExitCommand = new DelegateCommandWithInputGesture<object>(UserInterfaceStrings.Menu_Exit,
+            ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       new KeyGesture(Key.Q, ModifierKeys.Control),
                                                                       (VisualBrush)Application.Current.FindResource("document-save"),

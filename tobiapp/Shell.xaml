@@ -37,29 +37,31 @@
    KeyboardNavigation.TabNavigation="Continue"
  -->
 
-  <!-- Window.Resources>
+  <Window.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/>
-      </ResourceDictionary.MergedDictionaries>
-      
       <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
         <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
         <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
       </LinearGradientBrush>
     </ResourceDictionary>
-  </Window.Resources -->
+  </Window.Resources>
 
   
   <DockPanel LastChildFill="True">
-
-    <!-- Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
+    <DockPanel.LayoutTransform>
+      <ScaleTransform
+            ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                      ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
+    </DockPanel.LayoutTransform>
+    
+    <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
+            ValueChanged="OnZoomValueChanged"
         Value="1"
                 Width="Auto" Height="Auto"
                 VerticalAlignment="Stretch"
         Minimum="0.5" Maximum="10"
-        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/ -->
+        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
 
     <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
 
@@ -69,11 +71,7 @@
 
     <!-- ContentControl Focusable="False" DockPanel.Dock="Top" 
                     cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
-      <ContentControl.LayoutTransform>
-        <ScaleTransform
-              ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                        ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
-      </ContentControl.LayoutTransform>
+      
     </ContentControl -->
 
     <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom"

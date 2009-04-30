@@ -19,7 +19,7 @@ namespace Tobi
         ///<summary>
         /// Requests application exit
         ///</summary>
-        DelegateCommandWithInputGesture<object> ExitCommand { get; }
+        RichDelegateCommand<object> ExitCommand { get; }
 
         ///<summary>
         /// Adds a <see cref="KeyBinding"/> to the Shell window

@@ -5,40 +5,40 @@
     xmlns:Infrastructure="clr-namespace:Tobi.Infrastructure">
 
   <ResourceDictionary.MergedDictionaries>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-start.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-stop.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-record.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-backward.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-forward.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-backward.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-forward.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-start.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-stop.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-record.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-backward.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-forward.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-backward.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-forward.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-open.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-save.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-new.xaml"/>
-  
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-first.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-last.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-open.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-save.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-new.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-previous.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-next.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-first.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-last.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/system-search.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-previous.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-next.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-add.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-remove.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/system-search.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-clear.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-add.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-remove.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-clear.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
 
-  <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
 
-    </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
+
+  </ResourceDictionary.MergedDictionaries>
 
   <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 
@@ -51,17 +51,18 @@
     <Setter Property="Height" Value="{x:Static Infrastructure:Sizes.IconHeight_Small}"/>
   </Style>
 
-  <Style x:Key="IconButton">
-    <Setter Property="Control.Padding" Value="2"/>
-    <Setter Property="RepeatButton.Delay" Value="0"/>
-    <Setter Property="RepeatButton.Interval" Value="100"/>
-  </Style>
-
   <Style x:Key="ButtonImage" TargetType="{x:Type Image}">
     <Setter Property="Stretch" Value="Fill"/>
     <Setter Property="SnapsToDevicePixels" Value="False"/>
     <Setter Property="Width" Value="{x:Static Infrastructure:Sizes.IconWidth_Medium}"/>
     <Setter Property="Height" Value="{x:Static Infrastructure:Sizes.IconHeight_Medium}"/>
+  </Style>
+
+
+  <Style x:Key="IconButton">
+    <Setter Property="Control.Padding" Value="2"/>
+    <Setter Property="RepeatButton.Delay" Value="0"/>
+    <Setter Property="RepeatButton.Interval" Value="100"/>
   </Style>
 
   <infraUI:GreyableImage x:Key="Image_media-playback-stop"
@@ -139,5 +140,5 @@
       </MultiBinding>
     </Image.Source>
   </infraUI:GreyableImage -->
-  
+
 </ResourceDictionary>

@@ -59,7 +59,7 @@
   <ItemGroup>
     <Compile Include="Colors.cs" />
     <Compile Include="CommandExtension.cs" />
-    <Compile Include="DelegateCommandWithInputGesture.cs" />
+    <Compile Include="RichDelegateCommand.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="EnumListExtension.cs" />
     <Compile Include="FirstFocusedElementExtension.cs" />
@@ -114,6 +114,7 @@
     <Compile Include="UI\UiClipboardImageHelper.cs" />
     <Compile Include="UI\XamlToPngConverter.cs" />
     <Compile Include="UnityServiceLocator.cs" />
+    <Compile Include="UserInterfaceScaledEvent.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
