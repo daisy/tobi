@@ -31,7 +31,7 @@ namespace Tobi.Modules.MenuBar
         ///<summary>
         /// Delegates to <see cref="IShellPresenter.ZoomToggleCommand"/>
         ///</summary>
-        public ICommand ZoomToggleCommand { get; private set; }
+        //public ICommand ZoomToggleCommand { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
@@ -47,24 +47,20 @@ namespace Tobi.Modules.MenuBar
             Logger = logger;
             EventAggregator = eventAggregator;
 
-            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
+            //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
 
             NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_New, UserInterfaceStrings.Menu_New_,
                 new KeyGesture(Key.N, ModifierKeys.Control),
                 (VisualBrush)FindResource("document-new"),
                 NewCommand_Executed, NewCommand_CanExecute);
             NewKeyBinding = new KeyBinding(NewCommand, NewCommand.KeyGesture);
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
             shellPresenter.AddInputBinding(NewKeyBinding);
+
             ExitCommand = shellPresenter.ExitCommand;
 
             InitializeComponent();
-        }
-
-        private void OnUserInterfaceScaled(double obj)
-        {
-            //xxx
         }
 
         private void NewCommand_Executed(object parameter)

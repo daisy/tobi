@@ -128,12 +128,13 @@ namespace Tobi
 
         private void OnZoomValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            /*
             if (EventAggregator == null)
             {
                 return;
             }
-
             EventAggregator.GetEvent<UserInterfaceScaledEvent>().Publish(e.NewValue);
+             */
 
             foreach(InputBinding ib in InputBindings)
             {
