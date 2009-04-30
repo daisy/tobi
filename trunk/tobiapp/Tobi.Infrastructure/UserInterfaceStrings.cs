@@ -41,5 +41,7 @@
         public const string Menu_About = "_About";
 
         public static string UnhandledException = "An unhandled exception occurred, and the application is terminating. For more information, see your Application log.";
+        
+        public static string Audio_OpenFile = "Open a local WAV file";
     }
 }

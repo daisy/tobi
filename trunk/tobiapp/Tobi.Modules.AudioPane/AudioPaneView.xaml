@@ -395,6 +395,8 @@
 
     <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/>
+      
       <Button Style="{StaticResource IconButton}"
               Click="OnOpenFile"
               ToolTip="Open a local WAV file for playback test">
