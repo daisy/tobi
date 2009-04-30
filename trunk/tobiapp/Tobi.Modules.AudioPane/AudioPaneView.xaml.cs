@@ -468,13 +468,18 @@ namespace Tobi.Modules.AudioPane
         }
 
         private double m_TimeSelectionLeftX = -1;
-        private readonly Cursor m_WaveFormDefaultCursor = Cursors.ArrowCD;
+        //private readonly Cursor m_WaveFormDefaultCursor = Cursors.Pen;
 
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
+            if (m_WaveFormTimeTicksAdorner != null)
+            {
+                m_WaveFormTimeTicksAdorner.OnAdornerMouseMove(sender, e);
+            }
+
             if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
-                WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
                 return;
             }
 
@@ -502,14 +507,19 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.Width = right - left;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, left);
 
-            WaveFormCanvas.Cursor = Cursors.SizeWE;
+            //WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
 
         private void OnWaveFormMouseLeave(object sender, MouseEventArgs e)
         {
+            if (m_WaveFormTimeTicksAdorner != null)
+            {
+                m_WaveFormTimeTicksAdorner.OnAdornerMouseLeave(sender, e);
+            }
+
             if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
-                WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
                 return;
             }
 
@@ -577,7 +587,7 @@ namespace Tobi.Modules.AudioPane
 
         private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
-            WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+            //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
 
             Point p = e.GetPosition(WaveFormCanvas);
 
@@ -596,7 +606,7 @@ namespace Tobi.Modules.AudioPane
 
             ViewModel.IsSelectionSet = false;
 
-            WaveFormCanvas.Cursor = Cursors.SizeWE;
+            //WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
 
         private void OnResetPeakOverloadCountCh1(object sender, MouseButtonEventArgs e)
