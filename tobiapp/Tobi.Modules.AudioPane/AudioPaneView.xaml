@@ -37,7 +37,7 @@
   </Grid.RowDefinitions>
 
   <!-- GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/ -->
-  <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+  <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}"/>
 
   <!-- ScrollViewer Grid.Column="0" Grid.Row="0"
                   VerticalScrollBarVisibility="Auto"
@@ -334,64 +334,67 @@
 
     <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"
-                                 Style="{StaticResource IconButton}"/>
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/>
 
+      <Separator/>
+      
       <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
-              Style="{StaticResource IconButton}"
               IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
 
 
       <infraUI:TwoStateButtonRichCommand
         RichCommandOne="{Binding CommandPause}"
         RichCommandTwo="{Binding CommandPlay}"
-              Style="{StaticResource IconButton}"
               RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
 
       <infraUI:TwoStateButtonRichCommand
         RichCommandOne="{Binding CommandStopRecord}"
         RichCommandTwo="{Binding CommandStartRecord}"
-              Style="{StaticResource IconButton}"
               RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
 
+      <Separator/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
       <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepBack}"
-                                  Style="{StaticResource IconButton}"/>
+                                  />
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandRewind}"
-                                 Style="{StaticResource IconButton}"/>
-      
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandFastForward}"
-                                 Style="{StaticResource IconButton}"/>
+      <infraUI:RepeatButtonRichCommand RichCommand="{Binding CommandRewind}"
+                                 />
+
+      <infraUI:RepeatButtonRichCommand RichCommand="{Binding CommandFastForward}"
+                                 />
 
       <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepForward}"
-                                  Style="{StaticResource IconButton}"/>
+                                  />
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoEnd}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
+      <Separator/>
+      
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
+      <Separator/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
+      <Separator/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"
-                                 Style="{StaticResource IconButton}"/>
+                                 />
 
     </WrapPanel>
 

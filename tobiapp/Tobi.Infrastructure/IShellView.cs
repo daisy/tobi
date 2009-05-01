@@ -13,6 +13,8 @@ namespace Tobi
 
         bool SplitterDrag { get; }
 
+        double MagnificationLevel { get; set; }
+
         /*
         void DecreaseZoom(double? step);
         void IncreaseZoom(double? step);

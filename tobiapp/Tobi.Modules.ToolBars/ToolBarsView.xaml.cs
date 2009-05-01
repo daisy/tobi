@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 
 namespace Tobi.Modules.ToolBars
@@ -13,31 +15,30 @@ namespace Tobi.Modules.ToolBars
     /// </summary>
     public partial class ToolBarsView : INotifyPropertyChanged
     {
+        public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
+        public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
+
+        protected IUnityContainer Container { get; private set; }
+        public ILoggerFacade Logger { get; private set; }
+
         ///<summary>
         /// Default constructor
         ///</summary>
-        public ToolBarsView()
+        public ToolBarsView(IUnityContainer container, ILoggerFacade logger)
         {
+            Container = container;
+            Logger = logger;
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            if (shellPresenter != null)
+            {
+                MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
+                MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
+            }
+
             InitializeComponent();
         }
 
-        /*
-        private void OnButtonImageSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var image = sender as Image;
-            if (image == null)
-            {
-                return;
-            }
-            BindingExpressionBase beb = image.GetBindingExpression(Image.SourceProperty);
-            //BindingExpressionBase beb = BindingOperations.GetBindingExpressionBase(image, Image.SourceProperty);
-            if (beb != null)
-            {
-                beb.UpdateTarget();
-            }
-        }
-         * 
-         */
 
         #region INotifyPropertyChanged
 

@@ -6,7 +6,7 @@ using System.Windows.Documents;
 
 namespace Tobi.Infrastructure.UI
 {
-    public class ButtonRichCommand : RepeatButton
+    public class ButtonRichCommand : Button
     {
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
@@ -89,8 +89,31 @@ namespace Tobi.Infrastructure.UI
         }
     }
 
+    public class RepeatButtonRichCommand : RepeatButton
+    {
+        public static readonly DependencyProperty RichCommandProperty =
+            DependencyProperty.Register("RichCommand",
+                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RepeatButtonRichCommand),
+                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
+        private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ButtonRichCommand.OnRichCommandChanged(d, e);
+        }
 
+        public RichDelegateCommand<object> RichCommand
+        {
+            get
+            {
+                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+            }
+            set
+            {
+                SetValue(RichCommandProperty, value);
+            }
+        }
+    }
 
     public class TwoStateButtonRichCommand : Button
     {

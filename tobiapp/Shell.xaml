@@ -56,11 +56,12 @@
     </DockPanel.LayoutTransform>
     
     <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
-            ValueChanged="OnZoomValueChanged"
-        Value="1"
+            Visibility="Collapsed"
+        Value="{Binding MagnificationLevel}"
+            
                 Width="Auto" Height="Auto"
                 VerticalAlignment="Stretch"
-        Minimum="0.5" Maximum="10"
+        Minimum="0.5" Maximum="7"
         Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
 
     <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
@@ -69,10 +70,8 @@
     <ContentControl Focusable="False" DockPanel.Dock="Top"
                     cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
-    <!-- ContentControl Focusable="False" DockPanel.Dock="Top" 
-                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}">
-      
-    </ContentControl -->
+    <ContentControl Focusable="False" DockPanel.Dock="Top" 
+                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/>
 
     <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom"
                     cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/ -->
@@ -135,12 +134,12 @@
       </Grid.RowDefinitions>
 
       <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
-                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/>
+                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}"/>
       
       <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
                     Thumb.DragCompleted="OnSplitterDragCompleted"
                     Thumb.DragStarted="OnSplitterDragStarted"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="5"/>
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{StaticResource grid-splitter-thickness}"/>
 
       <ContentControl Focusable="False"
                       Grid.Column="0" Grid.Row="0" 

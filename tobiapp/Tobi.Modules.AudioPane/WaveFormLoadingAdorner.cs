@@ -11,6 +11,8 @@ namespace Tobi.Modules.AudioPane
         public WaveFormLoadingAdorner(FrameworkElement adornedElement)
             : base(adornedElement)
         {
+            IsHitTestVisible = false;
+            ClipToBounds = true;
         }
 
         protected override void OnRender(DrawingContext drawingContext)

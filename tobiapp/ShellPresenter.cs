@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
@@ -22,6 +23,9 @@ namespace Tobi
         private bool m_Exiting;
 
         public RichDelegateCommand<object> ExitCommand { get; private set; }
+
+        public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
+        public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
 
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
@@ -49,6 +53,13 @@ namespace Tobi
 
             Logger.Log("ShellPresenter.ctor", Category.Debug, Priority.Medium);
 
+            initCommands();
+
+        }
+
+        private void initCommands()
+        {
+            Logger.Log("ShellPresenter.initCommands", Category.Debug, Priority.Medium);
 
             ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
@@ -56,6 +67,27 @@ namespace Tobi
                                                                       (VisualBrush)Application.Current.FindResource("document-save"),
                                                             ExitCommand_Executed, obj => true);
             RegisterRichCommand(ExitCommand);
+            //
+
+            MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(null,
+                                                                       UserInterfaceStrings.UI_IncreaseMagnification,
+                                                                      new KeyGesture(Key.F2, ModifierKeys.Control),
+                                                                      RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
+                                                            obj => MagnifyUi(0.15), obj => true);
+            RegisterRichCommand(MagnifyUiIncreaseCommand);
+            //
+
+            MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(null,
+                                                                      UserInterfaceStrings.UI_DecreaseMagnification,
+                                                                      new KeyGesture(Key.F2, ModifierKeys.Control | ModifierKeys.Shift),
+                                                                      RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
+                                                            obj => MagnifyUi(-0.15), obj => true);
+            RegisterRichCommand(MagnifyUiDecreaseCommand);
+        }
+
+        private void MagnifyUi(double value)
+        {
+            View.MagnificationLevel += value;
         }
 
         private void exit()
