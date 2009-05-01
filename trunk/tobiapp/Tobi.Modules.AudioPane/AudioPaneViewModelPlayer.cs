@@ -496,6 +496,17 @@ namespace Tobi.Modules.AudioPane
             return false;
         }
 
+        private void AudioPlayer_PlayPause()
+        {
+            if (IsPlaying)
+            {
+                AudioPlayer_Pause();
+            }
+            else
+            {
+                AudioPlayer_Play();
+            }
+        }
 
         private void AudioPlayer_Pause()
         {

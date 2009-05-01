@@ -161,15 +161,15 @@ namespace Tobi.Modules.AudioPane
             //
             CommandPlay = new RichDelegateCommand<object>(null,
                 UserInterfaceStrings.Audio_Play,
-                new KeyGesture(Key.P, ModifierKeys.Control),
+                new KeyGesture(Key.Enter, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("media-playback-start"),
-                obj => AudioPlayer_Play(), obj => IsAudioLoaded);
+                obj => AudioPlayer_PlayPause(), obj => IsAudioLoaded);
 
             shellPresenter.RegisterRichCommand(CommandPlay);
             //
             CommandPause = new RichDelegateCommand<object>(null,
                 UserInterfaceStrings.Audio_Pause,
-                new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift),
+                null,
                 (VisualBrush)Application.Current.FindResource("media-playback-pause"),
                 obj => AudioPlayer_Pause(), obj => IsAudioLoaded);
 
@@ -177,7 +177,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandStartRecord = new RichDelegateCommand<object>(null,
                 UserInterfaceStrings.Audio_StartRecord,
-                new KeyGesture(Key.Enter, ModifierKeys.Control),
+                new KeyGesture(Key.Enter, ModifierKeys.Control | ModifierKeys.Shift),
                 (VisualBrush)Application.Current.FindResource("media-record"),
                 obj => AudioRecorder_StartStop(), obj => true);
 
