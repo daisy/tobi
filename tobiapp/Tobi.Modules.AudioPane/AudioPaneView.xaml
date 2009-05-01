@@ -635,15 +635,15 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
                                  />
 
-      <Separator/>
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
-                                 />
-
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
-                                 />
 
       <Separator/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"
+                                 />
+      <Separator/>
+
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
+                                 />
+      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
                                  />
 
     </WrapPanel>
