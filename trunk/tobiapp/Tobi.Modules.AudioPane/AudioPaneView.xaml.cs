@@ -311,8 +311,8 @@ namespace Tobi.Modules.AudioPane
                 if (m_WaveFormDragX != -1)
                 {
                     double offset = p.X - m_WaveFormDragX;
-                    double ratio = WaveFormCanvas.ActualWidth / WaveFormScroll.ViewportWidth;
-                    WaveFormScroll.ScrollToHorizontalOffset(WaveFormScroll.HorizontalOffset + offset/ratio);
+                    //double ratio = WaveFormCanvas.ActualWidth / WaveFormScroll.ViewportWidth;
+                    WaveFormScroll.ScrollToHorizontalOffset(WaveFormScroll.HorizontalOffset + offset);
                     m_WaveFormDragX = p.X;
                 }
                 WaveFormCanvas.Cursor = m_WaveFormDragMoveCursor;

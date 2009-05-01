@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
@@ -17,6 +14,7 @@ namespace Tobi.Modules.ToolBars
     {
         public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
         public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
+        public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
         public ILoggerFacade Logger { get; private set; }
@@ -34,6 +32,7 @@ namespace Tobi.Modules.ToolBars
             {
                 MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
                 MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
+                ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
             }
 
             InitializeComponent();

@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Tobi.KeyboardShortcuts"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure">
+
+  <UI:SortableListView
+x:Name="list"
+    ItemsSource="{Binding RegisteredRichCommands, Mode=OneWay}"
+              SelectionMode="Single"
+                       Width="500"
+            Height="400"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+AlternationCount="2"
+            >
+
+    <ListView.Resources>
+      <ToolTip x:Key="imageIconTooltip"
+         DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               
+               >
+        <ContentControl
+                          Width="{Binding Path=DataContext.IconWidth_Large}"
+                            
+                            Height="{Binding Path=DataContext.IconHeight_Large}"
+                            
+                Content="{Binding Path=DataContext.IconLarge}"/>
+
+      </ToolTip>
+
+    </ListView.Resources>
+
+    <ListView.View>
+      <GridView AllowsColumnReorder="true">
+        <GridViewColumn Header="Icon"
+                        Width="50">
+          <GridViewColumn.CellTemplate>
+                                 <DataTemplate>
+
+                                   <ContentControl
+                                                     Width="{Binding Path=DataContext.IconWidth_Medium}"
+                            
+                                                       Height="{Binding Path=DataContext.IconHeight_Medium}"
+                                           Content="{Binding Path=DataContext.IconMedium,
+                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
+                                           ToolTip="{StaticResource imageIconTooltip}">
+                                   </ContentControl>
+            </DataTemplate>
+            
+          </GridViewColumn.CellTemplate>
+          
+        </GridViewColumn> 
+
+        <GridViewColumn Header="Keyboard shortcut"
+                        UI:SortableListView.SortPropertyName="KeyGestureText"
+           DisplayMemberBinding="{Binding KeyGestureText}"  />
+
+        <GridViewColumn Header="Short Description"
+                        UI:SortableListView.SortPropertyName="ShortDescription"
+           DisplayMemberBinding="{Binding ShortDescription}" />
+
+        <GridViewColumn Header="Long Description"
+                        UI:SortableListView.SortPropertyName="LongDescription"
+           DisplayMemberBinding="{Binding LongDescription}" />
+      </GridView>
+    </ListView.View>
+    <ListView.ItemContainerStyle>
+
+      <Style TargetType="{x:Type ListViewItem}">
+        <Style.Triggers>
+          <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+          </Trigger>
+          <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+          </Trigger -->
+        </Style.Triggers>
+      </Style>
+
+    </ListView.ItemContainerStyle>
+  </UI:SortableListView>
+</UserControl>

@@ -59,8 +59,9 @@ namespace Tobi.Modules.MenuBar
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_New, UserInterfaceStrings.Menu_New_,
-                new KeyGesture(Key.N, ModifierKeys.Control),
+            NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_New,
+                UserInterfaceStrings.Menu_New_,
+                UserInterfaceStrings.Menu_New_KEYS,
                 (VisualBrush)FindResource("document-new"),
                 NewCommand_Executed, obj => true);
             shellPresenter.RegisterRichCommand(NewCommand);

@@ -18,6 +18,7 @@
 
       <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiDecreaseCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiIncreaseCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
 
     </WrapPanel>
     

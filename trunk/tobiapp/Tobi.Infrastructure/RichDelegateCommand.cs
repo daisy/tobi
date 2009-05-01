@@ -115,7 +115,7 @@ namespace Tobi.Infrastructure
                 }
             }
         }
-        private Image m_IconSmall = null;
+        //private Image m_IconSmall = null;
         public Image IconSmall
         {
             get
@@ -124,6 +124,7 @@ namespace Tobi.Infrastructure
                 {
                     return null;
                 }
+                Image m_IconSmall = null;
                 if (m_IconSmall == null)
                 {
                     m_IconSmall = createImage(0);
@@ -160,7 +161,7 @@ namespace Tobi.Infrastructure
                 }
             }
         }
-        private Image m_IconMedium = null;
+        //private Image m_IconMedium = null;
         public Image IconMedium
         {
             get
@@ -169,6 +170,7 @@ namespace Tobi.Infrastructure
                 {
                     return null;
                 }
+                Image m_IconMedium = null;
                 if (m_IconMedium == null)
                 {
                     m_IconMedium = createImage(1);
@@ -204,7 +206,7 @@ namespace Tobi.Infrastructure
                 }
             }
         }
-        private Image m_IconLarge = null;
+        //private Image m_IconLarge = null;
         public Image IconLarge
         {
             get
@@ -213,6 +215,7 @@ namespace Tobi.Infrastructure
                 {
                     return null;
                 }
+                Image m_IconLarge = null;
                 if (m_IconLarge == null)
                 {
                     m_IconLarge = createImage(2);
