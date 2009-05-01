@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Infrastructure;
 using urakawa;
@@ -24,7 +25,10 @@ namespace Tobi.Modules.NavigationPane
 
         private ObservableCollection<Page> m_Pages = new ObservableCollection<Page>();
         private HeadingsNavigator m_HeadingsNavigator;
-        private IEventAggregator m_eventAggregator;
+
+
+        protected IEventAggregator EventAggregator { private set; get; }
+        protected ILoggerFacade Logger { private set; get; }
 
         private bool m_ignoreTreeNodeSelectedEvent = false;
         private bool m_ignoreHeadingSelected = false;
@@ -63,14 +67,17 @@ namespace Tobi.Modules.NavigationPane
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public NavigationPaneView(IEventAggregator eventAggregator)
+        public NavigationPaneView(IEventAggregator eventAggregator, ILoggerFacade logger)
         {
-            m_eventAggregator = eventAggregator;
+            EventAggregator = eventAggregator;
+            Logger = logger;
+
+            DataContext = this;
 
             InitializeComponent();
 
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
-            m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
         }
 
         private void OnHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -89,7 +96,10 @@ namespace Tobi.Modules.NavigationPane
                 UpdatePageListSelection(treeNode);
 
                 m_ignoreTreeNodeSelectedEvent = true;
-                m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+
+                Logger.Log("-- PublishEvent: NavigationPaneView.OnHeadingSelected", Category.Debug, Priority.Medium);
+
+                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
             }
         }
 
@@ -111,7 +121,10 @@ namespace Tobi.Modules.NavigationPane
                     UpdateContentTreeSelection(treeNode);
 
                     m_ignoreTreeNodeSelectedEvent = true;
-                    m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+
+                    Logger.Log("-- PublishEvent: NavigationPaneView.OnPageSelected", Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
                 }
             }
         }

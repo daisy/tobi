@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
@@ -49,21 +50,26 @@ namespace Tobi.Modules.DocumentPane
 
 
         protected IUnityContainer Container { get; private set; }
-        private IEventAggregator m_eventAggregator;
+
+        protected ILoggerFacade Logger { private set; get; }
+
+        protected IEventAggregator EventAggregator { private set; get; }
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public DocumentPaneView(IUnityContainer container, IEventAggregator eventAggregator)
+        public DocumentPaneView(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
-            m_eventAggregator = eventAggregator;
+            EventAggregator = eventAggregator;
             Container = container;
+            Logger = logger;
+
+            DataContext = this;
 
             InitializeComponent();
 
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
-            m_eventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
-            //DataContext = this;
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
         }
 
         private List<TreeNode> PathToCurrentTreeNode;
@@ -231,7 +237,10 @@ namespace Tobi.Modules.DocumentPane
             }
             TreeNodeWrapper wrapper = (TreeNodeWrapper) ui.SelectedItem;
             wrapper.Popup.IsOpen = false;
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(wrapper.TreeNode);
+
+            Logger.Log("-- PublishEvent: DocumentPaneView.OnListOfNodesSelectionChanged", Category.Debug, Priority.Medium);
+
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(wrapper.TreeNode);
         }
 
         private void OnBreadCrumbButtonClick(object sender, RoutedEventArgs e)
@@ -242,7 +251,9 @@ namespace Tobi.Modules.DocumentPane
                 return;
             }
 
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)ui.Tag);
+            Logger.Log("-- PublishEvent: DocumentPaneView.OnBreadCrumbButtonClick", Category.Debug, Priority.Medium);
+
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)ui.Tag);
         }
 
         public string FilePath
@@ -615,13 +626,19 @@ namespace Tobi.Modules.DocumentPane
         private void OnMouseDownTextElementWithNode(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
+
+            Logger.Log("-- PublishEvent: DocumentPaneView.OnMouseDownTextElementWithNode", Category.Debug, Priority.Medium);
+
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
         }
 
         private void OnMouseDownTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
+
+            Logger.Log("-- PublishEvent: DocumentPaneView.OnMouseDownTextElementWithNodeAndAudio", Category.Debug, Priority.Medium);
+
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
         }
 
         private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
@@ -2191,7 +2208,9 @@ namespace Tobi.Modules.DocumentPane
             {
                 if (textElement.Tag is TreeNode)
                 {
-                    m_eventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
+                    Logger.Log("-- PublishEvent: DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
                 }
                 else
                 {

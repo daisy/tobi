@@ -10,20 +10,45 @@
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-  <WrapPanel Orientation="Horizontal">
-
-
 
     <WrapPanel Orientation="Horizontal">
 
+      <UI:ButtonRichCommand RichCommand="{Binding NewCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding OpenCommand}"/>
+      
+      <UI:ButtonRichCommand RichCommand="{Binding SaveCommand}"/>
+      <!-- UI:ButtonRichCommand RichCommand="{Binding SaveAsCommand}"/ -->
+      <Separator/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding CutCommand}"/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding PasteCommand}"/>
+      <Separator/>
+      <UI:ButtonRichCommand RichCommand="{Binding UndoCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding RedoCommand}"/>
+      <Separator/>
+
+      <!-- UI:ButtonRichCommand RichCommand="{Binding NavPreviousCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding NavNextCommand}"/>
+      <Separator/ -->
+      
       <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiDecreaseCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiIncreaseCommand}"/>
+
+      <Separator/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding PreferencesCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
+      <Separator/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding HelpCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding WebHomeCommand}"/>
 
     </WrapPanel>
-    
 
-    <StackPanel Orientation="Horizontal">
+
+    <!-- StackPanel Orientation="Horizontal">
       <TextBlock>Width: </TextBlock>
 
       <ComboBox x:Name="ComboWidth" Margin="2"
@@ -39,10 +64,10 @@
                 ItemsSource="{Binding IconHeights, Mode=OneWay}"
                 SelectedItem="{Binding IconHeight, Mode=TwoWay}" >
       </ComboBox>
-    </StackPanel>
+    </StackPanel -->
 
 
-    <ToolBarTray Focusable="False">
+    <!-- ToolBarTray Focusable="False">
 
     <ToolBar
 KeyboardNavigation.TabNavigation="Continue">
@@ -56,10 +81,6 @@ KeyboardNavigation.TabNavigation="Continue">
         Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
       </Button>
 
-      <Button>
-        <Image Source="{StaticResource Horizon_Image_Refresh}"
-        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
-      </Button>
       <Button>
         <Image Source="{StaticResource Horizon_Image_Printer}"
         Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
@@ -77,6 +98,10 @@ KeyboardNavigation.TabNavigation="Continue">
         Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
       </Button>
 
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Refresh}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
     </ToolBar>
     <ToolBar
 KeyboardNavigation.TabNavigation="Continue">
@@ -89,6 +114,7 @@ KeyboardNavigation.TabNavigation="Continue">
         <Image Source="{StaticResource Horizon_Image_Forward}"
         Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
       </Button>
+
       <Button>
         <Image Source="{StaticResource Horizon_Image_Up}"
         Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
@@ -219,6 +245,6 @@ KeyboardNavigation.TabNavigation="Continue">
 
     </ToolBar>
 
-  </ToolBarTray>
-  </WrapPanel>
+  </ToolBarTray -->
+  
 </UserControl>

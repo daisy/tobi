@@ -29,6 +29,26 @@ namespace Tobi
 
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
 
+        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
+        public RichDelegateCommand<object> SaveCommand { get; private set; }
+
+        public RichDelegateCommand<object> NewCommand { get; private set; }
+        public RichDelegateCommand<object> OpenCommand { get; private set; }
+
+        public RichDelegateCommand<object> UndoCommand { get; private set; }
+        public RichDelegateCommand<object> RedoCommand { get; private set; }
+
+        public RichDelegateCommand<object> CopyCommand { get; private set; }
+        public RichDelegateCommand<object> CutCommand { get; private set; }
+        public RichDelegateCommand<object> PasteCommand { get; private set; }
+
+        public RichDelegateCommand<object> HelpCommand { get; private set; }
+        public RichDelegateCommand<object> PreferencesCommand { get; private set; }
+        public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+
+        public RichDelegateCommand<object> NavNextCommand { get; private set; }
+        public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
+
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IRegionManager RegionManager { get; private set; }
@@ -71,16 +91,16 @@ namespace Tobi
             RegisterRichCommand(ExitCommand);
             //
 
-            MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(null,
-                                                                       UserInterfaceStrings.UI_IncreaseMagnification,
+            MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_IncreaseMagnification,
+                                                                       UserInterfaceStrings.UI_IncreaseMagnification_,
                                                                       UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
                                                             obj => MagnifyUi(0.15), obj => true);
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
 
-            MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(null,
-                                                                      UserInterfaceStrings.UI_DecreaseMagnification,
+            MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_DecreaseMagnification,
+                                                                      UserInterfaceStrings.UI_DecreaseMagnification_,
                                                                       UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
                                                             obj => MagnifyUi(-0.15), obj => true);
@@ -88,11 +108,128 @@ namespace Tobi
             //
 
             ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_ManageShortcuts,
-                                                                      UserInterfaceStrings.UI_ManageShortcuts,
+                                                                      UserInterfaceStrings.UI_ManageShortcuts_,
                                                                       UserInterfaceStrings.UI_ManageShortcuts_KEYS,
                                                                       (VisualBrush)Application.Current.FindResource("preferences-desktop-keyboard-shortcuts"),
                                                             obj => manageShortcuts(), obj => true);
             RegisterRichCommand(ManageShortcutsCommand);
+            //
+            SaveAsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.SaveAs,
+                UserInterfaceStrings.SaveAs_,
+                UserInterfaceStrings.SaveAs_KEYS,
+                (VisualBrush)Application.Current.FindResource("document-save"),
+                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
+                null, obj => true);
+
+            RegisterRichCommand(SaveAsCommand);
+            //
+            SaveCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Save,
+                UserInterfaceStrings.Save_,
+                UserInterfaceStrings.Save_KEYS,
+                (VisualBrush)Application.Current.FindResource("media-floppy"),
+                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
+                null, obj => true);
+
+            RegisterRichCommand(SaveCommand);
+            //
+            NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.New,
+                UserInterfaceStrings.New_,
+                UserInterfaceStrings.New_KEYS,
+                (VisualBrush)Application.Current.FindResource("document-new"),
+                null, obj => true);
+
+            RegisterRichCommand(NewCommand);
+            //
+            OpenCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Open,
+                UserInterfaceStrings.Open_,
+                UserInterfaceStrings.Open_KEYS,
+                (VisualBrush)Application.Current.FindResource("document-open"),
+                null, obj => true);
+
+            RegisterRichCommand(OpenCommand);
+            //
+            UndoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Undo,
+                UserInterfaceStrings.Undo_,
+                UserInterfaceStrings.Undo_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-undo"),
+                null, obj => true);
+
+            RegisterRichCommand(UndoCommand);
+            //
+            RedoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Redo,
+                UserInterfaceStrings.Redo_,
+                UserInterfaceStrings.Redo_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-redo"),
+                null, obj => true);
+
+            RegisterRichCommand(RedoCommand);
+            //
+            CutCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Cut,
+                UserInterfaceStrings.Cut_,
+                UserInterfaceStrings.Cut_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-cut"),
+                null, obj => true);
+
+            RegisterRichCommand(CutCommand);
+            //
+            CopyCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Copy,
+                UserInterfaceStrings.Copy_,
+                UserInterfaceStrings.Copy_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-copy"),
+                null, obj => true);
+
+            RegisterRichCommand(CopyCommand);
+            //
+            PasteCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Paste,
+                UserInterfaceStrings.Paste_,
+                UserInterfaceStrings.Paste_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-paste"),
+                null, obj => true);
+
+            RegisterRichCommand(PasteCommand);
+            //
+            HelpCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Help,
+                UserInterfaceStrings.Help_,
+                UserInterfaceStrings.Help_KEYS,
+                (VisualBrush)Application.Current.FindResource("help-browser"),
+                null, obj => true);
+
+            RegisterRichCommand(HelpCommand);
+            //
+            PreferencesCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Preferences,
+                UserInterfaceStrings.Preferences_,
+                UserInterfaceStrings.Preferences_KEYS,
+                (VisualBrush)Application.Current.FindResource("preferences-system"),
+                null, obj => true);
+
+            RegisterRichCommand(PreferencesCommand);
+            //
+            WebHomeCommand = new RichDelegateCommand<object>(UserInterfaceStrings.WebHome,
+                UserInterfaceStrings.WebHome_,
+                UserInterfaceStrings.WebHome_KEYS,
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
+                //(VisualBrush)Application.Current.FindResource("go-home"),
+                null, obj => true);
+
+            RegisterRichCommand(WebHomeCommand);
+            //
+            NavNextCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavNext,
+                UserInterfaceStrings.NavNext_,
+                UserInterfaceStrings.NavNext_KEYS,
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
+                null, obj => true);
+
+            RegisterRichCommand(NavNextCommand);
+            //
+            NavPreviousCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavPrevious,
+                UserInterfaceStrings.NavPrevious_,
+                UserInterfaceStrings.NavPrevious_KEYS,
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
+                null, obj => true);
+
+            RegisterRichCommand(NavPreviousCommand);
+            //
         }
 
         private void manageShortcuts()
@@ -106,14 +243,12 @@ namespace Tobi
                 dialog.MaxWidth = 600;
                 dialog.MaxHeight = 500;
                 dialog.TopMost = InteropWindowZOrder.TopMost;
-                dialog.TaskDialogWindow.Title = UserInterfaceStrings.UI_ManageShortcuts;
+                dialog.TaskDialogWindow.Title = UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.UI_ManageShortcuts);
                 dialog.TaskDialogButton = TaskDialogButton.Custom;
                 dialog.Button1Text = "_Ok";
                 dialog.DefaultResult = TaskDialogResult.Button1;
                 dialog.IsButton1Cancel = true;
-
-                var userControl = new KeyboardShortcuts(this);
-                dialog.Content = userControl;
+                dialog.Content = new KeyboardShortcuts(this);
 
                 dialog.Show();
             }

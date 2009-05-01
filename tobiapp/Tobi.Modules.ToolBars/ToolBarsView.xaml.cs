@@ -15,6 +15,25 @@ namespace Tobi.Modules.ToolBars
         public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
         public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
+        public RichDelegateCommand<object> SaveCommand { get; private set; }
+        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
+
+        public RichDelegateCommand<object> NewCommand { get; private set; }
+        public RichDelegateCommand<object> OpenCommand { get; private set; }
+
+        public RichDelegateCommand<object> UndoCommand { get; private set; }
+        public RichDelegateCommand<object> RedoCommand { get; private set; }
+
+        public RichDelegateCommand<object> CopyCommand { get; private set; }
+        public RichDelegateCommand<object> CutCommand { get; private set; }
+        public RichDelegateCommand<object> PasteCommand { get; private set; }
+
+        public RichDelegateCommand<object> HelpCommand { get; private set; }
+        public RichDelegateCommand<object> PreferencesCommand { get; private set; }
+        public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+
+        public RichDelegateCommand<object> NavNextCommand { get; private set; }
+        public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
         public ILoggerFacade Logger { get; private set; }
@@ -33,6 +52,26 @@ namespace Tobi.Modules.ToolBars
                 MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
                 MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
                 ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
+
+                SaveCommand = shellPresenter.SaveCommand;
+                SaveAsCommand = shellPresenter.SaveAsCommand;
+
+                UndoCommand = shellPresenter.UndoCommand;
+                RedoCommand = shellPresenter.RedoCommand;
+
+                OpenCommand = shellPresenter.OpenCommand;
+                NewCommand = shellPresenter.NewCommand;
+
+                CopyCommand = shellPresenter.CopyCommand;
+                CutCommand = shellPresenter.CutCommand;
+                PasteCommand = shellPresenter.PasteCommand;
+
+                HelpCommand = shellPresenter.HelpCommand;
+                PreferencesCommand = shellPresenter.PreferencesCommand;
+                WebHomeCommand = shellPresenter.WebHomeCommand;
+
+                NavNextCommand = shellPresenter.NavNextCommand;
+                NavPreviousCommand = shellPresenter.NavPreviousCommand;
             }
 
             InitializeComponent();

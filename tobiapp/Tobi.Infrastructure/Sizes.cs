@@ -19,8 +19,8 @@ namespace Tobi.Infrastructure
         ///</summary>
         public const double DefaultWindowHeight = 600;
 
-        public const double IconWidth_Small = 16;
-        public const double IconHeight_Small = 16;
+        public const double IconWidth_Small = 18;
+        public const double IconHeight_Small = 18;
         
         public const double IconWidth_Medium = 24;
         public const double IconHeight_Medium = 24;

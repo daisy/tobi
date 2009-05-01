@@ -9,7 +9,6 @@
     xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
 Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}"
   TabStripPlacement="Bottom">
 
 
@@ -89,14 +88,14 @@ Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.Region
 
     <ListView x:Name="ListView" ItemsSource="{Binding Pages}"
               SelectionMode="Single" SelectionChanged="OnPageSelected">
-      <!-- ListView.View>
+      <ListView.View>
         <GridView>
-          <GridViewColumn Header="Page"
+          <GridViewColumn Header="Page number/name"
              DisplayMemberBinding="{Binding Name}" />
-          <GridViewColumn Width="70" Header="Id"
-             DisplayMemberBinding="{Binding Id}"  />
+          <!-- GridViewColumn Width="70" Header="Id"
+             DisplayMemberBinding="{Binding Id}"  / -->
         </GridView>
-      </ListView.View -->
+      </ListView.View>
     </ListView>
 
   </TabItem>

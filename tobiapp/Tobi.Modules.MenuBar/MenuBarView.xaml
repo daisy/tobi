@@ -5,8 +5,7 @@
     xmlns:local="clr-namespace:Tobi.Modules.MenuBar"
     xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
-             
-           DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             >
 
   <!-- UserControl.Resources>
     <ResourceDictionary>
@@ -23,9 +22,9 @@
       <infraUI:MenuItemRichCommand RichCommand="{Binding NewCommand}"
                 CommandParameter="{Binding}"
                 />
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Open}"/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Save}"/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_SaveAs}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding OpenCommand}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding SaveCommand}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding SaveAsCommand}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Close}"/>
       <Separator/>
       <infraUI:MenuItemRichCommand RichCommand="{Binding ExitCommand}"/>
@@ -33,18 +32,17 @@
 
     <!-- Edit Menu -->
     <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Edit}">
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Undo}"/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Redo}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding UndoCommand}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding RedoCommand}"/>
       <Separator/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Copy}"/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Cut}"/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Paste}"/>
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Delete}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>
     </MenuItem>
 
     <!-- Tools Menu -->
     <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Tools}">
-      <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Options}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding PreferencesCommand}"/>
       <Separator/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Addins}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Logging}"/>
@@ -81,6 +79,8 @@
 
     <!-- Help Menu -->
     <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_Help}">
+      <infraUI:MenuItemRichCommand RichCommand="{Binding WebHomeCommand}"/>
+      <infraUI:MenuItemRichCommand RichCommand="{Binding HelpCommand}"/>
       <MenuItem Header="{x:Static infra:UserInterfaceStrings.Menu_About}"/>
     </MenuItem>
 
