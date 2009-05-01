@@ -19,46 +19,6 @@
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
   >
 
-  <Grid.Resources>
-    <ResourceDictionary>
-      <!-- ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/SharedResources.xaml"/>
-      </ResourceDictionary.MergedDictionaries -->
-
-      <!-- Style x:Key="IconButtonNeedsAudio" BasedOn="{StaticResource IconButton}">
-        <Setter Property="UIElement.IsEnabled" Value="{Binding IsAudioLoaded, Mode=OneWay}"/>
-      </Style>
-
-      <Style x:Key="IconButtonPlayPause" BasedOn="{StaticResource IconButtonNeedsAudio}">
-        
-        <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-start}"/>
-        <Setter Property="FrameworkElement.ToolTip" Value="Start playback"/>
-        
-        <Style.Triggers>
-          <DataTrigger Binding="{Binding Path=IsPlaying}" Value="True">
-            <Setter Property="FrameworkElement.ToolTip" Value="Pause playback"/>
-            <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-pause}"/>
-          </DataTrigger>
-        </Style.Triggers>
-      </Style -->
-
-      <Style x:Key="IconButtonRecordOrStop" BasedOn="{StaticResource IconButton}">
-
-        <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-record}"/>
-        <Setter Property="FrameworkElement.ToolTip" Value="Start recording"/>
-
-        <Style.Triggers>
-          <DataTrigger Binding="{Binding Path=IsRecording}" Value="True">
-            <Setter Property="FrameworkElement.ToolTip" Value="Stop recording"/>
-            <Setter Property="ContentControl.Content" Value="{StaticResource Image_media-playback-stop}"/>
-          </DataTrigger>
-        </Style.Triggers>
-      </Style>
-      
-    </ResourceDictionary>
-  </Grid.Resources>
-
-
   <!-- Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}"  -->
 
   <!-- ad:DockableContent Title="Audio Waveform and PeakMeter" DockableStyle="DockableToBorders" -->
@@ -206,7 +166,8 @@
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
               SnapsToDevicePixels="False">
-        <!-- -->
+
+        
         <Image x:Name="WaveFormImage"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
@@ -387,15 +348,11 @@
               Style="{StaticResource IconButton}"
               RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
 
-      <!-- Button
-        Style="{StaticResource IconButtonPlayPause}"
-        Click="OnPlayPause">
-      </Button -->
-
-      <Button
-        Style="{StaticResource IconButtonRecordOrStop}"
-        Click="OnRecordOrStop">
-      </Button>
+      <infraUI:TwoStateButtonRichCommand
+        RichCommandOne="{Binding CommandStopRecord}"
+        RichCommandTwo="{Binding CommandStartRecord}"
+              Style="{StaticResource IconButton}"
+              RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  Style="{StaticResource IconButton}"/>

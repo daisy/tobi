@@ -54,29 +54,6 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        private void OnRecordOrStop(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.IsRecording)
-            {
-                OnStopRecord(sender, e);
-            }
-            else
-            {
-                OnRecord(sender, e);
-            }
-        }
-        private void OnStopRecord(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioRecorder_Stop();
-        }
-
-        private void OnRecord(object sender, RoutedEventArgs e)
-        {
-            ViewModel.AudioRecorder_Start();
-        }
-
-
-
         private double m_SelectionBackup_X = 0;
         private double m_SelectionBackup_Width = 0;
 
@@ -154,12 +131,12 @@ namespace Tobi.Modules.AudioPane
             if (ViewModel.AudioPlayer_GetPcmFormat() != null)
             {
                 double selectionTimeLeft = ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
-                double selectionTimeRight = ViewModel.AudioPlayer_ConvertByteToMilliseconds((m_TimeSelectionLeftX+WaveFormTimeSelectionRect.Width) * BytesPerPixel);
+                double selectionTimeRight = ViewModel.AudioPlayer_ConvertByteToMilliseconds((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
 
                 if (ViewModel.LastPlayHeadTime < selectionTimeLeft || ViewModel.LastPlayHeadTime > selectionTimeRight)
                 {
                     ViewModel.LastPlayHeadTime =
-                        ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_TimeSelectionLeftX*BytesPerPixel);
+                        ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
                 }
             }
 
@@ -288,6 +265,25 @@ namespace Tobi.Modules.AudioPane
             return WaveFormTimeSelectionRect.Width;
         }
 
+        public void InitGraphicalCommandBindings()
+        {
+            var mouseGest = new MouseGesture { MouseAction = MouseAction.LeftDoubleClick };
+
+            var mouseBind = new MouseBinding { Gesture = mouseGest, Command = ViewModel.CommandSelectAll };
+
+            WaveFormCanvas.InputBindings.Add(mouseBind);
+
+            var mouseGest2 = new MouseGesture
+                                 {
+                                     MouseAction = MouseAction.LeftDoubleClick,
+                                     Modifiers = ModifierKeys.Control
+                                 };
+
+            var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = ViewModel.CommandClearSelection };
+
+            WaveFormCanvas.InputBindings.Add(mouseBind2);
+        }
+
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
             if (m_WaveFormTimeTicksAdorner != null)
@@ -348,7 +344,7 @@ namespace Tobi.Modules.AudioPane
 
         private void selectionFinished(double x)
         {
-            if (Math.Abs(m_TimeSelectionLeftX-x) <= 6)
+            if (Math.Abs(m_TimeSelectionLeftX - x) <= 6)
             {
                 ClearSelection();
                 m_TimeSelectionLeftX = x;

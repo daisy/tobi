@@ -65,6 +65,8 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandAutoPlay { get; private set; }
         public RichDelegateCommand<object> CommandPlay { get; private set; }
         public RichDelegateCommand<object> CommandPause { get; private set; }
+        public RichDelegateCommand<object> CommandStartRecord { get; private set; }
+        public RichDelegateCommand<object> CommandStopRecord { get; private set; }
 
         private void initializeCommands()
         {
@@ -82,7 +84,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(null,
                 "Switch to previous audio",
-                null,
+                new KeyGesture(Key.Down, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("go-first"),
                 obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithTreeNode);
 
@@ -90,7 +92,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandSwitchPhraseNext = new RichDelegateCommand<object>(null,
                 "Switch to next audio",
-                null,
+                new KeyGesture(Key.Up, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("go-last"),
                 obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithTreeNode);
 
@@ -98,7 +100,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandGotoBegining = new RichDelegateCommand<object>(null,
                 "Rewind to begining of the audio stream",
-                null,
+                new KeyGesture(Key.Left, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt),
                 (VisualBrush)Application.Current.FindResource("go-previous"),
                 obj => GotoBegining(), obj => IsAudioLoaded);
 
@@ -106,7 +108,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandGotoEnd = new RichDelegateCommand<object>(null,
                 "Fast Forward to the end of the audio stream",
-                null,
+                new KeyGesture(Key.Right, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt),
                 (VisualBrush)Application.Current.FindResource("go-next"),
                 obj => GotoEnd(), obj => IsAudioLoaded);
 
@@ -114,7 +116,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandStepBack = new RichDelegateCommand<object>(null,
                 "Step back one phrase",
-                null,
+                new KeyGesture(Key.Left, ModifierKeys.Control | ModifierKeys.Shift),
                 (VisualBrush)Application.Current.FindResource("media-skip-backward"),
                 obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithSubTreeNodes);
 
@@ -122,7 +124,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandStepForward = new RichDelegateCommand<object>(null,
                 "Step forward one phrase",
-                null,
+                new KeyGesture(Key.Right, ModifierKeys.Control | ModifierKeys.Shift),
                 (VisualBrush)Application.Current.FindResource("media-skip-forward"),
                 obj => AudioPlayer_Stop(), obj => IsAudioLoadedWithSubTreeNodes);
 
@@ -130,7 +132,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandFastForward = new RichDelegateCommand<object>(null,
                 "Fast-forward by a pre-defined time increment",
-                null,
+                new KeyGesture(Key.Right, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("media-seek-forward"),
                 obj => FastForward(), obj => IsAudioLoaded);
 
@@ -138,7 +140,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandRewind = new RichDelegateCommand<object>(null,
                 "Rewind by a pre-defined time increment",
-                null,
+                new KeyGesture(Key.Left, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("media-seek-backward"),
                 obj => Rewind(), obj => IsAudioLoaded);
 
@@ -146,7 +148,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandSelectAll = new RichDelegateCommand<object>(null,
                 "Select all",
-                null,
+                new KeyGesture(Key.A, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("view-fullscreen"),
                 obj => SelectAll(), obj => true);
 
@@ -154,7 +156,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandClearSelection = new RichDelegateCommand<object>(null,
                 "Clear audio selection",
-                null,
+                new KeyGesture(Key.D, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("edit-clear"),
                 obj => ClearSelection(), obj => IsSelectionSet);
 
@@ -162,7 +164,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandZoomSelection = new RichDelegateCommand<object>(null,
                 "Zoom waveform selection into view",
-                null,
+                new KeyGesture(Key.W, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("system-search"),
                 obj => ZoomSelection(), obj => IsSelectionSet);
 
@@ -170,7 +172,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandZoomFitFull = new RichDelegateCommand<object>(null,
                 "Fit the entire audio waveform into view",
-                null,
+                new KeyGesture(Key.W, ModifierKeys.Control | ModifierKeys.Shift),
                 (VisualBrush)Application.Current.FindResource("utilities-system-monitor"),
                 obj => ZoomFitFull(), obj => true);
 
@@ -186,7 +188,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandAutoPlay = new RichDelegateCommand<object>(null,
                 "Switch autoplay on/off",
-                null,
+                new KeyGesture(Key.Y, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("go-jump"),
                 obj => { }, obj => true);
 
@@ -195,7 +197,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandPlay = new RichDelegateCommand<object>(null,
                 "Play",
-                null,
+                new KeyGesture(Key.P, ModifierKeys.Control),
                 (VisualBrush)Application.Current.FindResource("media-playback-start"),
                 obj => Play(), obj => IsAudioLoaded);
 
@@ -203,11 +205,33 @@ namespace Tobi.Modules.AudioPane
             //
             CommandPause = new RichDelegateCommand<object>(null,
                 "Pause",
-                null,
+                new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift),
                 (VisualBrush)Application.Current.FindResource("media-playback-pause"),
                 obj => Pause(), obj => IsAudioLoaded);
 
             shellPresenter.RegisterRichCommand(CommandPause);
+            //
+            CommandStartRecord = new RichDelegateCommand<object>(null,
+                "Start recording",
+                new KeyGesture(Key.R, ModifierKeys.Control),
+                (VisualBrush)Application.Current.FindResource("media-record"),
+                obj => AudioRecorder_Start(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandStartRecord);
+            //
+            CommandStopRecord = new RichDelegateCommand<object>(null,
+                "Stop recording",
+                new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift),
+                (VisualBrush)Application.Current.FindResource("media-playback-stop"),
+                obj => AudioRecorder_Stop(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandStopRecord);
+
+            if (View != null)
+            {
+                View.InitGraphicalCommandBindings();
+            }
+
         }
 
         public void Play()
@@ -671,11 +695,15 @@ namespace Tobi.Modules.AudioPane
         public void AudioRecorder_Start()
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_Start", Category.Debug, Priority.Medium);
+            IsRecording = true;
+            OnPropertyChanged("IsRecording");
         }
 
         public void AudioRecorder_Stop()
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_Stop", Category.Debug, Priority.Medium);
+            IsRecording = false;
+            OnPropertyChanged("IsRecording");
         }
 
         #endregion Audio Recorder
@@ -843,10 +871,7 @@ namespace Tobi.Modules.AudioPane
 
         public bool IsRecording
         {
-            get
-            {
-                return false;
-            }
+            get; set;
         }
 
         public bool IsPlaying
