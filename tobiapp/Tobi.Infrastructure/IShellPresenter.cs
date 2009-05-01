@@ -22,6 +22,7 @@ namespace Tobi
         RichDelegateCommand<object> ExitCommand { get; }
         RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; }
         RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }
+        RichDelegateCommand<object> ManageShortcutsCommand { get; }
 
         ///<summary>
         /// Adds a <see cref="KeyBinding"/> to the Shell window

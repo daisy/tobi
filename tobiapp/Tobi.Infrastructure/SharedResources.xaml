@@ -1,121 +1,121 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:Infrastructure="clr-namespace:Tobi.Infrastructure">
 
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-start.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-start.xaml"/>
     
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-stop.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-record.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-stop.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-record.xaml"/>
     
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-backward.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-forward.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-backward.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-forward.xaml"/>
     
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-backward.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-forward.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-backward.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-forward.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-open.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-save.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-new.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-open.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-save.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-new.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-top.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-bottom.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-top.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-bottom.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-up.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-down.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-up.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-down.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-first.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-last.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-first.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-last.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-previous.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-next.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-previous.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-next.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/system-search.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/system-search.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-add.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-remove.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-add.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/list-remove.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-clear.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-clear.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-copy.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-cut.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-paste.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-copy.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-cut.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-paste.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-redo.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-undo.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-redo.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-undo.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-home.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-home.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
 
-        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
+        <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/help-browser.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/help-browser.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-desktop-accessibility.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-desktop-keyboard-shortcuts.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-system.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-desktop-accessibility.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-desktop-keyboard-shortcuts.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-system.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/folder.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-floppy.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/folder.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-floppy.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-find.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-find.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/format-indent-less.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/format-indent-more.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/format-indent-less.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/format-indent-more.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/accessories-text-editor.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/applications-graphics.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/accessories-text-editor.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/applications-graphics.xaml"/>
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-high.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-low.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-muted.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-high.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-low.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-muted.xaml"/>
 
     <!-- ========== -->
 
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Add.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Error.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Lock.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save_As.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Back.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Exit.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Open.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Search.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Block.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/File.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Padlock.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Undo.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Check.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Printer.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Configurator.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find_Next.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Redo.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up1.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Delete.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Forward.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Refresh.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Warning.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Help.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_in.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down1.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right1.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_out.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Edit.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left1.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save.xaml"/>
-    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Add.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Error.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Lock.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save_As.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Back.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Exit.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Open.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Search.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Block.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/File.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Padlock.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Undo.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Check.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Printer.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Configurator.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find_Next.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Redo.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up1.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Delete.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Forward.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Refresh.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Warning.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Help.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_in.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down1.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right1.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_out.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Edit.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left1.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save.xaml"/>
+    <ResourceDictionary    Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/>
     
   </ResourceDictionary.MergedDictionaries>
 

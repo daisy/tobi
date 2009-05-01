@@ -114,6 +114,7 @@
     <Compile Include="UI\SmallColorPicker.xaml.cs">
       <DependentUpon>SmallColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SortableListView.cs" />
     <Compile Include="UI\TextMediaTextBox.cs" />
     <Compile Include="UI\UiClipboardImageHelper.cs" />
     <Compile Include="UI\UserInterfaceScaledEvent.cs" />

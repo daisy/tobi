@@ -30,13 +30,21 @@ namespace Tobi.Infrastructure.UI
             ConfigureButtonFromCommand(button, command);
         }
 
+        public static bool ShowTextLabel
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand<object> command)
         {
             button.Command = command;
 
             button.ToolTip = command.LongDescription + (command.KeyGesture != null ? " [" + command.KeyGestureText + "]" : "");
 
-            if (String.IsNullOrEmpty(command.ShortDescription))
+            if (String.IsNullOrEmpty(command.ShortDescription) || !ShowTextLabel)
             {
                 button.Content = command.IconMedium;
             }

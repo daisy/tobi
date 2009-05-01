@@ -27,6 +27,8 @@ namespace Tobi
         public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
         public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
 
+        public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
+
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IRegionManager RegionManager { get; private set; }
@@ -63,7 +65,7 @@ namespace Tobi
 
             ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
-                                                                      new KeyGesture(Key.Q, ModifierKeys.Control),
+                                                                      UserInterfaceStrings.Menu_Exit_KEYS,
                                                                       (VisualBrush)Application.Current.FindResource("document-save"),
                                                             ExitCommand_Executed, obj => true);
             RegisterRichCommand(ExitCommand);
@@ -71,7 +73,7 @@ namespace Tobi
 
             MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(null,
                                                                        UserInterfaceStrings.UI_IncreaseMagnification,
-                                                                      new KeyGesture(Key.F2, ModifierKeys.Control),
+                                                                      UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
                                                             obj => MagnifyUi(0.15), obj => true);
             RegisterRichCommand(MagnifyUiIncreaseCommand);
@@ -79,10 +81,42 @@ namespace Tobi
 
             MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(null,
                                                                       UserInterfaceStrings.UI_DecreaseMagnification,
-                                                                      new KeyGesture(Key.F2, ModifierKeys.Control | ModifierKeys.Shift),
+                                                                      UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
                                                             obj => MagnifyUi(-0.15), obj => true);
             RegisterRichCommand(MagnifyUiDecreaseCommand);
+            //
+
+            ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_ManageShortcuts,
+                                                                      UserInterfaceStrings.UI_ManageShortcuts,
+                                                                      UserInterfaceStrings.UI_ManageShortcuts_KEYS,
+                                                                      (VisualBrush)Application.Current.FindResource("preferences-desktop-keyboard-shortcuts"),
+                                                            obj => manageShortcuts(), obj => true);
+            RegisterRichCommand(ManageShortcutsCommand);
+        }
+
+        private void manageShortcuts()
+        {
+            Logger.Log("ShellPresenter.manageShortcuts", Category.Debug, Priority.Medium);
+
+            var window = View as Window;
+            if (window != null)
+            {
+                var dialog = new TaskDialog();
+                dialog.MaxWidth = 600;
+                dialog.MaxHeight = 500;
+                dialog.TopMost = InteropWindowZOrder.TopMost;
+                dialog.TaskDialogWindow.Title = UserInterfaceStrings.UI_ManageShortcuts;
+                dialog.TaskDialogButton = TaskDialogButton.Custom;
+                dialog.Button1Text = "_Ok";
+                dialog.DefaultResult = TaskDialogResult.Button1;
+                dialog.IsButton1Cancel = true;
+
+                var userControl = new KeyboardShortcuts(this);
+                dialog.Content = userControl;
+
+                dialog.Show();
+            }
         }
 
         private void MagnifyUi(double value)
@@ -219,6 +253,14 @@ namespace Tobi
 
         private readonly List<RichDelegateCommand<object>> m_listOfRegisteredRichCommands =
             new List<RichDelegateCommand<object>>();
+
+        public List<RichDelegateCommand<object>> RegisteredRichCommands
+        {
+            get
+            {
+                return m_listOfRegisteredRichCommands;
+            }
+        }
 
         public void SetZoomValue(double value)
         {
