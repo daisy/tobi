@@ -148,10 +148,10 @@
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsKeyboardFocused" Value="true">
-              <Setter TargetName="Border" Property="Background"
-                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              <!-- Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" / -->
               <Setter TargetName="Border" Property="BorderBrush"
-                      Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
 
               <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}" />
                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SolidBorderBrush}" / -->

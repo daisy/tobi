@@ -4,13 +4,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using AudioLib;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Win32;
 using urakawa.media.timing;
+using Control = System.Windows.Controls.Control;
+using Cursor=System.Windows.Input.Cursor;
+using Cursors = System.Windows.Input.Cursors;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -253,7 +257,9 @@ namespace Tobi.Modules.AudioPane
         }
 
         private double m_TimeSelectionLeftX = -1;
-        //private readonly Cursor m_WaveFormDefaultCursor = Cursors.Pen;
+        private readonly Cursor m_WaveFormDefaultCursor = Cursors.Arrow;
+        private readonly Cursor m_WaveFormDragMoveCursor = Cursors.ScrollAll;
+        private readonly Cursor m_WaveFormDragSelectCursor = Cursors.SizeWE;
 
         public double GetSelectionLeft()
         {
@@ -284,6 +290,8 @@ namespace Tobi.Modules.AudioPane
             WaveFormCanvas.InputBindings.Add(mouseBind2);
         }
 
+        private double m_WaveFormDragX = -1;
+
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
             if (m_WaveFormTimeTicksAdorner != null)
@@ -293,11 +301,23 @@ namespace Tobi.Modules.AudioPane
 
             if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
-                //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
                 return;
             }
-
+            
             Point p = e.GetPosition(WaveFormCanvas);
+
+            if (isControlKeyDown())
+            {
+                if (m_WaveFormDragX != -1)
+                {
+                    double offset = p.X - m_WaveFormDragX;
+                    WaveFormScroll.ScrollToHorizontalOffset(WaveFormScroll.HorizontalOffset+offset);
+                    m_WaveFormDragX = p.X;
+                }
+                WaveFormCanvas.Cursor = m_WaveFormDragMoveCursor;
+                return;
+            }
 
             if (p.X == m_TimeSelectionLeftX)
             {
@@ -305,6 +325,8 @@ namespace Tobi.Modules.AudioPane
                 m_TimeSelectionLeftX = p.X;
 
                 ViewModel.IsSelectionSet = false;
+
+                WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
                 return;
             }
 
@@ -321,11 +343,20 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.Width = right - left;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, left);
 
-            //WaveFormCanvas.Cursor = Cursors.SizeWE;
+            WaveFormCanvas.Cursor = m_WaveFormDragSelectCursor;
+        }
+
+        private void OnWaveFormMouseEnter(object sender, MouseEventArgs e)
+        {
+            WaveFormCanvas.Cursor = isControlKeyDown() ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor;
         }
 
         private void OnWaveFormMouseLeave(object sender, MouseEventArgs e)
         {
+            WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+
+            m_WaveFormDragX = -1;
+
             if (m_WaveFormTimeTicksAdorner != null)
             {
                 m_WaveFormTimeTicksAdorner.OnAdornerMouseLeave(sender, e);
@@ -333,7 +364,6 @@ namespace Tobi.Modules.AudioPane
 
             if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
-                //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
                 return;
             }
 
@@ -401,26 +431,42 @@ namespace Tobi.Modules.AudioPane
 
         private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
-            //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+            WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+
+            m_WaveFormDragX = -1;
 
             Point p = e.GetPosition(WaveFormCanvas);
 
             selectionFinished(p.X);
         }
 
+        private bool isControlKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None;
+
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
+
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.AudioPlayer_Stop();
+            WaveFormCanvas.Cursor = isControlKeyDown() ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor;
 
             Point p = e.GetPosition(WaveFormCanvas);
+
+            if (isControlKeyDown())
+            {
+                m_WaveFormDragX = p.X;
+            }
+
+            ViewModel.AudioPlayer_Stop();
 
             backupSelection();
             ClearSelection();
             m_TimeSelectionLeftX = p.X;
 
             ViewModel.IsSelectionSet = false;
-
-            //WaveFormCanvas.Cursor = Cursors.SizeWE;
         }
 
         private void OnResetPeakOverloadCountCh1(object sender, MouseButtonEventArgs e)
