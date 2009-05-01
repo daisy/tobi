@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -24,6 +25,15 @@ namespace Tobi.Infrastructure.UI
                 if (frameworkElement != null)
                 {
                     visualBrush = new VisualBrush(frameworkElement);
+                }
+                else
+                {
+                    var drawImage = values[1] as DrawingImage;
+                    if (drawImage != null)
+                    {
+                        var image = new Image {Source = drawImage};
+                        visualBrush = new VisualBrush(image);
+                    }
                 }
             }
 

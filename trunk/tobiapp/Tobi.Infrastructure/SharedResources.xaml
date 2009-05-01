@@ -7,16 +7,25 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-start.xaml"/>
+    
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-stop.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-record.xaml"/>
+    
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-backward.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-seek-forward.xaml"/>
+    
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-backward.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-skip-forward.xaml"/>
 
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-open.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-save.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/document-new.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-top.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-bottom.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-up.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-down.xaml"/>
 
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-first.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-last.xaml"/>
@@ -34,111 +43,172 @@
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-refresh.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/view-fullscreen.xaml"/>
 
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-copy.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-cut.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-paste.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-redo.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-undo.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-home.xaml"/>
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/go-jump.xaml"/>
 
     <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
 
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/utilities-system-monitor.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/help-browser.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-desktop-accessibility.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-desktop-keyboard-shortcuts.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/preferences-system.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/folder.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-floppy.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/edit-find.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/format-indent-less.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/format-indent-more.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/accessories-text-editor.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/applications-graphics.xaml"/>
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-high.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-low.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/tango-icons/audio-volume-muted.xaml"/>
+
+    <!-- ========== -->
+
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Add.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Error.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Lock.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save_As.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Back.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Exit.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Open.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Search.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Block.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/File.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Padlock.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Undo.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Check.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Printer.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Configurator.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Find_Next.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Redo.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Up1.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Delete.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Forward.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Refresh.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Warning.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Help.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_in.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Down1.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Right1.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Zoom_out.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Edit.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Left1.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Save.xaml"/>
+    <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/xaml-icons/Home.xaml"/>
+    
   </ResourceDictionary.MergedDictionaries>
 
   <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 
   <infraUI:BooleanNotConverter x:Key="BooleanNotConverter"/>
 
-  <Style x:Key="IconSmallImage" TargetType="{x:Type Image}">
-    <Setter Property="Stretch" Value="Fill"/>
-    <Setter Property="SnapsToDevicePixels" Value="False"/>
-    <Setter Property="Width" Value="{x:Static Infrastructure:Sizes.IconWidth_Small}"/>
-    <Setter Property="Height" Value="{x:Static Infrastructure:Sizes.IconHeight_Small}"/>
-  </Style>
+  <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
 
-  <Style x:Key="ButtonImage" TargetType="{x:Type Image}">
-    <Setter Property="Stretch" Value="Fill"/>
-    <Setter Property="SnapsToDevicePixels" Value="False"/>
-    <Setter Property="Width" Value="{x:Static Infrastructure:Sizes.IconWidth_Medium}"/>
-    <Setter Property="Height" Value="{x:Static Infrastructure:Sizes.IconHeight_Medium}"/>
-  </Style>
+  <Style x:Key="ToolBarButtonBaseStyle" TargetType="{x:Type ButtonBase}">
 
-
-  <Style x:Key="IconButton">
-    <Setter Property="Control.Padding" Value="0"/>
     <Setter Property="RepeatButton.Delay" Value="0"/>
     <Setter Property="RepeatButton.Interval" Value="100"/>
+
+    <Setter Property="SnapsToDevicePixels" Value="false"/>
+    <Setter Property="OverridesDefaultStyle" Value="true"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border
+            x:Name="Border"
+            BorderThickness="1"
+            Background="Transparent"
+            BorderBrush="Transparent">
+            <ContentPresenter
+              Margin="2"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              RecognizesAccessKey="True"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="true">
+              <Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SolidBorderBrush}" / -->
+            </Trigger>
+
+            <Trigger Property="IsMouseOver" Value="true">
+              <Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SolidBorderBrush}" / -->
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="true">
+              <Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" / -->
+            </Trigger>
+
+            <Trigger Property="ToggleButton.IsChecked" Value="true">
+              <Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" /-->
+              </Trigger>
+
+            <!-- Trigger Property="IsEnabled" Value="false">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+              </Trigger -->
+
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
   </Style>
 
-  <infraUI:GreyableImage x:Key="Image_media-playback-stop"
-                         x:Shared="False"
-                         Style="{StaticResource ButtonImage}">
-    <Image.Source>
-      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-        <Binding Source="{StaticResource media-playback-stop}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-      </MultiBinding>
-    </Image.Source>
-  </infraUI:GreyableImage>
+  <Style x:Key="{x:Static ToolBar.ButtonStyleKey}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"
+         TargetType="{x:Type Button}"/>
 
-  <infraUI:GreyableImage x:Key="Image_media-record"
-                         x:Shared="False"
-                         Style="{StaticResource ButtonImage}">
-    <Image.Source>
-      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-        <Binding Source="{StaticResource media-record}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-      </MultiBinding>
-    </Image.Source>
-  </infraUI:GreyableImage>
+  <Style TargetType="{x:Type infraUI:ButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  <Style TargetType="{x:Type infraUI:RepeatButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  <Style TargetType="{x:Type infraUI:ToggleButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  <Style TargetType="{x:Type infraUI:TwoStateButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
 
-  <infraUI:GreyableImage x:Key="Image_media-playback-start"
-                         x:Shared="False"
-                         Style="{StaticResource ButtonImage}">
-    <Image.Source>
-      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-        <Binding Source="{StaticResource media-playback-start}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-      </MultiBinding>
-    </Image.Source>
-  </infraUI:GreyableImage>
-
-  <infraUI:GreyableImage x:Key="Image_media-playback-pause"
-                         x:Shared="False"
-    Style="{StaticResource ButtonImage}">
-    <Image.Source>
-      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-        <!-- Binding RelativeSource="{x:Static RelativeSource.Self}" Mode="OneWay"/ -->
-        <Binding Source="{StaticResource media-playback-pause}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconWidth_Medium}" Mode="OneWay"/>
-        <Binding Source="{x:Static Infrastructure:Sizes.IconHeight_Medium}" Mode="OneWay"/>
-      </MultiBinding>
-    </Image.Source>
-  </infraUI:GreyableImage>
-
-  <!-- infraUI:GreyableImage x:Key="Image_document-new"
-                         x:Shared="False"
-    Style="{StaticResource IconSmallImage}">
-    <Image.Source>
-      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-        <Binding Source="{StaticResource document-new}" Mode="OneWay"/>
-        <Binding Source="{StaticResource IconSmallWidth}" Mode="OneWay"/>
-        <Binding Source="{StaticResource IconSmallHeight}" Mode="OneWay"/>
-      </MultiBinding>
-    </Image.Source>
-  </infraUI:GreyableImage>
-
-  <infraUI:GreyableImage x:Key="Image_document-save"
-                         x:Shared="False"
-    Style="{StaticResource IconSmallImage}">
-    <Image.Source>
-      <MultiBinding Converter="{StaticResource RenderTargetBitmapImageSourceConverter}">
-        <Binding Source="{StaticResource document-save}" Mode="OneWay"/>
-        <Binding Source="{StaticResource IconSmallWidth}" Mode="OneWay"/>
-        <Binding Source="{StaticResource IconSmallHeight}" Mode="OneWay"/>
-      </MultiBinding>
-    </Image.Source>
-  </infraUI:GreyableImage -->
+  <System:Double x:Key="grid-splitter-thickness">2.5</System:Double>
 
 </ResourceDictionary>

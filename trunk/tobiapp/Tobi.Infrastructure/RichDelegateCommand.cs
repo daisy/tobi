@@ -41,6 +41,12 @@ namespace Tobi.Infrastructure
 
         #endregion INotifyPropertyChanged
 
+        public static VisualBrush ConvertIconFormat(DrawingImage drawImage)
+        {
+            var image = new Image { Source = drawImage };
+            return new VisualBrush(image);
+        }
+
         private void init(string shortDescription, string longDescription, KeyGesture keyGesture, VisualBrush icon)
         {
             ShortDescription = (String.IsNullOrEmpty(shortDescription) ? "" : shortDescription);
@@ -49,6 +55,7 @@ namespace Tobi.Infrastructure
             Icon = icon;
         }
 
+        /*
         public RichDelegateCommand(String shortDescription, String longDescription,
                                 KeyGesture keyGesture,
                                 VisualBrush icon,
@@ -56,7 +63,7 @@ namespace Tobi.Infrastructure
             : base(executeMethod)
         {
             init(shortDescription, longDescription, keyGesture, icon);
-        }
+        }*/
 
         public RichDelegateCommand(String shortDescription, String longDescription,
                             KeyGesture keyGesture,

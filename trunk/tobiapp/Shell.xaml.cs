@@ -12,7 +12,7 @@ namespace Tobi
     /// </summary>
     public partial class Shell : IShellView
     {
-        protected IUnityContainer Container { get; private set;  }
+        protected IUnityContainer Container { get; private set; }
 
         protected IEventAggregator EventAggregator { get; private set; }
 
@@ -127,7 +127,55 @@ namespace Tobi
             m_SplitterDrag = true;
         }
 
-        private void OnZoomValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        public static readonly DependencyProperty MagnificationLevelProperty =
+            DependencyProperty.Register("MagnificationLevel",
+            typeof(double),
+            typeof(Shell),
+            new PropertyMetadata(1.0, OnMagnificationLevelChanged, OnMagnificationLevelCoerce));
+
+        public double MagnificationLevel
+        {
+            get { return (double)GetValue(MagnificationLevelProperty); }
+            set
+            {
+                double actualValue = value;
+                if (actualValue > ZoomSlider.Maximum)
+                {
+                    actualValue = ZoomSlider.Maximum;
+                }
+                if (actualValue < ZoomSlider.Minimum)
+                {
+                    actualValue = ZoomSlider.Minimum;
+                }
+                SetValue(MagnificationLevelProperty, actualValue);
+            }
+        }
+
+        private static void OnMagnificationLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var shell = d as Shell;
+            if (shell == null) return;
+            shell.NotifyMagnificationLevel();
+        }
+
+        private static object OnMagnificationLevelCoerce(DependencyObject d, object basevalue)
+        {
+            var shell = d as Shell;
+            if (shell == null) return 1.0;
+
+            var value = (Double)basevalue;
+            if (value > shell.ZoomSlider.Maximum)
+            {
+                value = shell.ZoomSlider.Maximum;
+            }
+            if (value < shell.ZoomSlider.Minimum)
+            {
+                value = shell.ZoomSlider.Minimum;
+            }
+            return value;
+        }
+
+        private void NotifyMagnificationLevel()
         {
             if (m_InConstructor)
             {
@@ -137,9 +185,8 @@ namespace Tobi
             var shellPresenter = Container.Resolve<IShellPresenter>();
             if (shellPresenter != null)
             {
-                shellPresenter.SetZoomValue(e.NewValue);
+                shellPresenter.SetZoomValue(MagnificationLevel);
             }
-
             /*
             foreach(InputBinding ib in InputBindings)
             {
@@ -193,28 +240,4 @@ namespace Tobi
  * 
  * 
  * 
-public static readonly DependencyProperty ZoomValueProperty =
-    DependencyProperty.Register("ZoomValue",
-    typeof(double),
-    typeof(Shell),
-    new PropertyMetadata(new PropertyChangedCallback(OnZoomValueChanged)));
-
-public double ZoomValue
-{
-    get { return (double)GetValue(ZoomValueProperty); }
-    set {
-        SetValue(ZoomValueProperty, value);
-        ScaleTransform.ScaleX = value;
-    }
-}
-
-private static void OnZoomValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-{
-    var oldZoom = ((Shell)d).ZoomValue;
-    var newZoom = (double)e.NewValue;
-    if (newZoom != oldZoom)
-    {
-        ((Shell)d).ZoomValue = newZoom;
-    }
-}
  */

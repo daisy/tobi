@@ -364,7 +364,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (ViewModel.IsAutoPlay)
                 {
-                    ViewModel.Play();
+                    ViewModel.AudioPlayer_Play();
                 }
 
                 return;
@@ -449,6 +449,8 @@ namespace Tobi.Modules.AudioPane
                 m_WaveFormTimeTicksAdorner = null;
                 return;
             }
+            layer.ClipToBounds = true;
+
             m_WaveFormTimeTicksAdorner = new WaveFormTimeTicksAdorner(WaveFormScroll, this);
             layer.Add(m_WaveFormTimeTicksAdorner);
             m_WaveFormTimeTicksAdorner.Visibility = Visibility.Visible;

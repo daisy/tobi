@@ -40,8 +40,39 @@
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";
 
-        public static string UnhandledException = "An unhandled exception occurred, and the application is terminating. For more information, see your Application log.";
-        
-        public static string Audio_OpenFile = "Open a local WAV file";
+        public const string UnhandledException = "An unhandled exception occurred, and the application is terminating. For more information, see your Application log.";
+
+        public const string Audio_OpenFile = "Open a local WAV file";
+
+        public const string UI_IncreaseMagnification = "Increase the UI magnification level";
+        public const string UI_DecreaseMagnification = "Decrease the UI magnification level";
+
+        public const string Audio_SwitchPrevious = "Switch to previous audio";
+        public const string Audio_SwitchNext = "Switch to next audio";
+
+        public const string Audio_GotoBegin = "Rewind to begining of the audio stream";
+        public const string Audio_GotoEnd = "Fast Forward to the end of the audio stream";
+
+        public const string Audio_StepBack = "Step back one phrase";
+        public const string Audio_StepForward = "Step forward one phrase";
+
+        public const string Audio_FastForward = "Fast-forward by a pre-defined time increment";
+        public const string Audio_Rewind = "Rewind by a pre-defined time increment";
+
+        public const string Audio_ClearSelection = "Clear audio selection";
+        public const string Audio_ZoomSelection = "Zoom waveform selection into view";
+
+        public const string Audio_FitFull = "Fit the entire audio waveform into view";
+        public const string Audio_Reload = "Reload the audio waveform data";
+
+        public const string Audio_StopRecord = "Stop recording";
+        public const string Audio_StartRecord = "Start recording";
+
+        public const string Audio_Pause = "Pause";
+        public const string Audio_Play = "Play";
+
+        public const string Audio_AutoPlay = "Switch autoplay on/off";
+
+        public const string SelectAll = "Select all";
     }
 }

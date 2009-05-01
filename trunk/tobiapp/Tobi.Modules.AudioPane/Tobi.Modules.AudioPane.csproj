@@ -68,7 +68,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioPaneViewModel.cs" />
+    <Compile Include="AudioPaneViewModelCommands.cs" />
     <Compile Include="AudioPaneViewModelPartial.cs" />
+    <Compile Include="AudioPaneViewModelPlayer.cs" />
+    <Compile Include="AudioPaneViewModelRecorder.cs" />
     <Compile Include="AudioPaneViewPartial.cs" />
     <Compile Include="IAudioPaneView.cs" />
     <Compile Include="PeakMeterBarData.cs" />
