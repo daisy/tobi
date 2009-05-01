@@ -76,6 +76,7 @@ namespace Tobi.Infrastructure.UI
 
                 // Create Opacity Mask for greyscale image as FormatConvertedBitmap does not keep transparency info
                 autoGreyScaleImg.OpacityMask = new ImageBrush(((FormatConvertedBitmap)autoGreyScaleImg.Source).Source); //equivalent to new ImageBrush(bitmapImage)
+                autoGreyScaleImg.OpacityMask.Opacity = 0.4;
             }
             else
             {

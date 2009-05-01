@@ -32,5 +32,6 @@
         void Refresh();
         double GetSelectionLeft();
         double GetSelectionWidth();
+        void InitGraphicalCommandBindings();
     }
 }
