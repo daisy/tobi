@@ -23,6 +23,25 @@ namespace Tobi
         RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; }
         RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }
         RichDelegateCommand<object> ManageShortcutsCommand { get; }
+        RichDelegateCommand<object> SaveCommand { get; }
+        RichDelegateCommand<object> SaveAsCommand { get; }
+
+        RichDelegateCommand<object> NewCommand { get; }
+        RichDelegateCommand<object> OpenCommand { get; }
+
+        RichDelegateCommand<object> UndoCommand { get; }
+        RichDelegateCommand<object> RedoCommand { get; }
+
+        RichDelegateCommand<object> CopyCommand { get; }
+        RichDelegateCommand<object> CutCommand { get; }
+        RichDelegateCommand<object> PasteCommand { get; }
+
+        RichDelegateCommand<object> HelpCommand { get; }
+        RichDelegateCommand<object> PreferencesCommand { get; }
+        RichDelegateCommand<object> WebHomeCommand { get; }
+
+        RichDelegateCommand<object> NavNextCommand { get; }
+        RichDelegateCommand<object> NavPreviousCommand { get; }
 
         ///<summary>
         /// Adds a <see cref="KeyBinding"/> to the Shell window

@@ -188,14 +188,14 @@ namespace Tobi.Modules.AudioPane
                 sumDataPrev = sumData;
             }
 
-            if (View != null)
-            {
-                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
-            }
-
             if (subTreeNode == null || (subTreeNode == m_CurrentSubTreeNode && subTreeNode != m_CurrentTreeNode))
             {
                 return;
+            }
+
+            if (View != null)
+            {
+                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
             }
 
             m_CurrentSubTreeNode = subTreeNode;
@@ -203,6 +203,8 @@ namespace Tobi.Modules.AudioPane
 
             if (m_CurrentSubTreeNode != m_CurrentTreeNode)
             {
+                Logger.Log("-- PublishEvent: AudioPaneViewModel.updateWaveFormPlayHead", Category.Debug, Priority.Medium);
+
                 EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(m_CurrentSubTreeNode);
             }
         }
@@ -758,6 +760,8 @@ namespace Tobi.Modules.AudioPane
                 TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)
                 {
+                    Logger.Log("-- PublishEvent: AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
+
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                 }
             }
