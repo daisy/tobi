@@ -10,6 +10,31 @@ using Tobi.Infrastructure.UI;
 
 namespace Tobi.Infrastructure
 {
+    /*
+     * 1 <Canvas>
+ 2     <!-- Step 3: Command is associated with methods -->
+ 3     <Canvas.CommandBindings>
+ 4         <CommandBinding Command="ApplicationCommands.Open" CanExecute="CommandBindingOpen_CanExecute" 
+ 5             Executed="CommandBindingOpen_Executed" />
+ 6     </Canvas.CommandBindings>
+ 7     
+ 8     <!-- Step 1 & 2: ApplicationCommands.Open, with three input sources: the button, pressing Ctrl+O, 
+ 9         or clicking the middle mouse button -->
+10     <Canvas.InputBindings>
+11         <KeyBinding Command="ApplicationCommands.Open" Key="O" Modifiers="Control" />
+12         <MouseBinding Command="ApplicationCommands.Open" Gesture="MiddleClick" />
+13     </Canvas.InputBindings>
+14     <Button Command="ApplicationCommands.Open" Name="button2">Open</Button>
+15 </Canvas>
+There are over 150 built-in commands with WPF, divided into 5 categories and implemented as static properties on these 5 classes in the System.Windows.Input namespace:
+
+   1. ApplicationCommands - common commands in applications, such as Open, Save, Close, Cut, Copy, Paste
+   2. ComponentCommands - commands for moving, scrolling, selecting, such as ScrollPageDown
+   3. MediaCommands - commands when using media, such as Play, Stop, IncreaseVolume, DecreaseVolume
+   4. NavigationCommands - commands for page navigation, such as NextPage, BrowseHome, Stop
+   5. EditingCommands - commands for document editing, such as AlignLeft, MoveToLineEnd, ToggleBold
+
+     */
     ///<summary>
     /// Extension to <see cref="DelegateCommand<T>"/> that supports a <see cref="KeyGesture"/>
     /// (for example, to display a shortcut in <see cref="MenuItem"/>, next to the label),
