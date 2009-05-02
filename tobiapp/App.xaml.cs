@@ -45,7 +45,7 @@ namespace Tobi
             PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
 
-            SplashScreen = new SplashScreen("Splashscreen1.png");
+            SplashScreen = new SplashScreen("TobiSplashScreen.png");
             SplashScreen.Show(false);
 
             base.OnStartup(e);
