@@ -4,7 +4,8 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.DocumentPane"
            Focusable="False"
-           LastChildFill="True" Background="White">
+           LastChildFill="True" 
+        Background="White">
     
   <Grid DockPanel.Dock="Top">
     <Grid.ColumnDefinitions>
@@ -24,21 +25,13 @@
              Grid.Row="0" Grid.Column="1"/>
     
     
-    <WrapPanel x:Name="BreadcrumbPanel" Orientation="Horizontal"
+    <WrapPanel Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+               x:Name="BreadcrumbPanel" Orientation="Horizontal"
                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
     </WrapPanel>
   </Grid>
-  
-  <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Page"
-                      Background="White">
-    <FlowDocumentReader.ContextMenu>
-      <ContextMenu>
-        <MenuItem Header="Menu Placeholder 1"/>
-        <Separator/>
-        <MenuItem Header="Menu Placeholder 2"/>
-        <MenuItem Header="Menu Placeholder 2"/>
-      </ContextMenu>
-    </FlowDocumentReader.ContextMenu>
-</FlowDocumentReader>
+
+  <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Scroll"
+                      Background="White" IsFindEnabled="False"/>
 
 </DockPanel>

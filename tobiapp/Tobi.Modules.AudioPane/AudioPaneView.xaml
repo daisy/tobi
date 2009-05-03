@@ -315,7 +315,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch"
                 Width="{StaticResource grid-splitter-thickness}">
 
-    <GridSplitter.Triggers>
+    <!-- GridSplitter.Triggers -->
 
       <!-- EventTrigger RoutedEvent="Control.MouseDoubleClick">
         <BeginStoryboard>
@@ -338,15 +338,15 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <!-- DataTrigger Binding="{Binding ElementName=columnContentPeakMeter, Path=Visibility}" Value="Collapsed">
           <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         </DataTrigger -->
-      
-      <EventTrigger RoutedEvent="Control.MouseEnter">
+
+    <!-- EventTrigger RoutedEvent="Control.MouseEnter">
         <BeginStoryboard>
 
           <Storyboard>
             <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
                                            Storyboard.TargetProperty="(Control.Background)">
               <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-            </ObjectAnimationUsingKeyFrames>
+            </ObjectAnimationUsingKeyFrames -->
 
             <!-- ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
                                            Storyboard.TargetName="columnContentPeakMeter"
@@ -359,7 +359,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                                            Storyboard.TargetProperty="(ColumnDefinition.Width)">
               <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static GridLength.Auto}"/>
             </ObjectAnimationUsingKeyFrames -->
-          </Storyboard>
+    <!-- /Storyboard>
         </BeginStoryboard>
       </EventTrigger>
       <EventTrigger RoutedEvent="Control.MouseLeave">
@@ -373,7 +373,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
           </Storyboard>
         </BeginStoryboard>
       </EventTrigger>
-    </GridSplitter.Triggers>
+    </GridSplitter.Triggers -->
 
   
 </GridSplitter>
