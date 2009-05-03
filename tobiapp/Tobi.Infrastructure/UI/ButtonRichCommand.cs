@@ -42,7 +42,7 @@ namespace Tobi.Infrastructure.UI
         {
             button.Command = command;
 
-            button.ToolTip = command.LongDescription + (command.KeyGesture != null ? " [" + command.KeyGestureText + "]" : "");
+            button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " [" + command.KeyGestureText + "]" : "");
 
             if (String.IsNullOrEmpty(command.ShortDescription) || !ShowTextLabel)
             {
@@ -133,7 +133,7 @@ namespace Tobi.Infrastructure.UI
 
         private static void OnRichCommandOneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ButtonRichCommand.OnRichCommandChanged(d, e);
+            //ButtonRichCommand.OnRichCommandChanged(d, e);
         }
 
         public RichDelegateCommand<object> RichCommandOne
@@ -187,9 +187,17 @@ namespace Tobi.Infrastructure.UI
             var choice = (Boolean)e.NewValue;
 
             RichDelegateCommand<object> command = button.RichCommandOne;
+            if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
+            {
+                command.KeyGestureText = button.RichCommandTwo.KeyGestureText;
+            }
             if (!choice)
             {
                 command = button.RichCommandTwo;
+                if (command.KeyGesture == null && button.RichCommandOne.KeyGesture != null)
+                {
+                    command.KeyGestureText = button.RichCommandOne.KeyGestureText;
+                }
             }
             ButtonRichCommand.ConfigureButtonFromCommand(button, command);
         }
