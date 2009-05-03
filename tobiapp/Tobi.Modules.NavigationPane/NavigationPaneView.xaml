@@ -18,7 +18,7 @@ Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.Region
 
 
   <TabItem Header="TOC">
-    
+
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
       <Grid.ColumnDefinitions>
@@ -35,87 +35,102 @@ Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.Region
       <Button Click="OnCollapseAll"
               Grid.Row="1" Grid.Column="0">Collapse all</Button -->
 
-      <ScrollViewer 
+      <ScrollViewer
                 Grid.Row="2" Grid.Column="0"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Visible"
                     Width="Auto">
-        
-      <TreeView x:Name="TreeView"
-                DataContext="{Binding HeadingsNavigator}"
-                ItemsSource="{Binding Roots}"
-                SelectedItemChanged="OnHeadingSelected">
 
-        <TreeView.ItemContainerStyle>
-          <Style TargetType="{x:Type TreeViewItem}">
-            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-            <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" /-->
-            <Setter Property="FontWeight" Value="Normal" />
-            <Style.Triggers>
-              <Trigger Property="IsSelected" Value="True">
-                <Setter Property="FontWeight" Value="Bold" />
-              </Trigger>
-            </Style.Triggers>
-          </Style>
-        </TreeView.ItemContainerStyle>
+        <TreeView x:Name="TreeView"
+                  DataContext="{Binding HeadingsNavigator}"
+                  ItemsSource="{Binding Roots}"
+                  SelectedItemChanged="OnHeadingSelected">
+
+          <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+              <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+              <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" /-->
+              <Setter Property="FontSize" Value="15" />
+              <Setter Property="FontWeight" Value="Normal" />
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="FontWeight" Value="Bold" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </TreeView.ItemContainerStyle>
 
 
-        <TreeView.Resources>
+          <TreeView.Resources>
 
-          <HierarchicalDataTemplate       DataType="{x:Type local:HeadingTreeNodeWrapper}"
-                                          ItemsSource="{Binding Children}">
+            <HierarchicalDataTemplate       DataType="{x:Type local:HeadingTreeNodeWrapper}"
+                                            ItemsSource="{Binding Children}">
 
-            <TextBlock Text="{Binding Path=Title}">
+              <TextBlock Text="{Binding Path=Title}">
 
-              <TextBlock.ContextMenu>
-                <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
-             RelativeSource={x:Static RelativeSource.Self}}" -->
-                
-                <ContextMenu>
-                  <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
-                                          CommandParameter="{Binding Path=.,
-             RelativeSource={x:Static RelativeSource.Self}}"/>
-                  
-                  <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
-                </ContextMenu>
-              </TextBlock.ContextMenu>
-            </TextBlock>
-
-            <HierarchicalDataTemplate.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding Path=Title}">
-
-                  <TextBlock.ContextMenu>
-                    <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
+                <TextBlock.ContextMenu>
+                  <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
              RelativeSource={x:Static RelativeSource.Self}}" -->
 
-                    <ContextMenu>
-                      <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
-                                              CommandParameter="{Binding Path=.,
+                  <ContextMenu>
+                    <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
+                                            CommandParameter="{Binding Path=.,
              RelativeSource={x:Static RelativeSource.Self}}"/>
 
-                      <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
-                    </ContextMenu>
-                  </TextBlock.ContextMenu>
-                </TextBlock>
-              </DataTemplate>
-            </HierarchicalDataTemplate.ItemTemplate>
-          </HierarchicalDataTemplate>
-        </TreeView.Resources>
+                    <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                  </ContextMenu>
+                </TextBlock.ContextMenu>
+              </TextBlock>
 
-      </TreeView>
-    </ScrollViewer></Grid>
+              <HierarchicalDataTemplate.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Path=Title}">
+
+                    <TextBlock.ContextMenu>
+                      <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
+             RelativeSource={x:Static RelativeSource.Self}}" -->
+
+                      <ContextMenu>
+                        <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
+                                                CommandParameter="{Binding Path=.,
+             RelativeSource={x:Static RelativeSource.Self}}"/>
+
+                        <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                      </ContextMenu>
+                    </TextBlock.ContextMenu>
+                  </TextBlock>
+                </DataTemplate>
+              </HierarchicalDataTemplate.ItemTemplate>
+            </HierarchicalDataTemplate>
+          </TreeView.Resources>
+
+        </TreeView>
+      </ScrollViewer>
+    </Grid>
   </TabItem>
 
   <!-- /ad:DockableContent -->
-  
-  
+
+
   <!-- ad:DockableContent
   Title="Pages" DockableStyle="DockableToBorders" -->
   <TabItem Header="Pages">
 
     <ListView x:Name="ListView" ItemsSource="{Binding Pages}"
               SelectionMode="Single" SelectionChanged="OnPageSelected">
+      <ListView.ItemContainerStyle>
+        <Style TargetType="{x:Type ListViewItem}">
+          
+          <Setter Property="FontSize" Value="15" />
+          <Setter Property="FontWeight" Value="Normal" />
+          
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="FontWeight" Value="Bold" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </ListView.ItemContainerStyle>
       <ListView.View>
         <GridView>
           <GridViewColumn Header="Page number/name"
@@ -128,9 +143,9 @@ Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.Region
 
   </TabItem>
   <!-- /ad:DockableContent -->
-  
-  
-  
-  </UI:LazyKeepAliveTabControl>
+
+
+
+</UI:LazyKeepAliveTabControl>
 
 <!-- /ad:DockablePane -->

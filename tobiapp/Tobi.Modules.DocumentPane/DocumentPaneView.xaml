@@ -6,8 +6,18 @@
            Focusable="False"
            LastChildFill="True" 
         Background="White">
-    
-  <Grid DockPanel.Dock="Top">
+
+  <Border DockPanel.Dock="Top"
+          BorderThickness="0,0,0,2"
+          BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+  <WrapPanel
+             Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+             x:Name="BreadcrumbPanel" Orientation="Horizontal"
+             >
+  </WrapPanel>
+  </Border>
+
+  <!-- Grid DockPanel.Dock="Top">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto"/>
       <ColumnDefinition />
@@ -23,13 +33,8 @@
     <TextBox Text="{Binding FilePath, Mode=OneWay}"
              IsEnabled="False"
              Grid.Row="0" Grid.Column="1"/>
-    
-    
-    <WrapPanel Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
-               x:Name="BreadcrumbPanel" Orientation="Horizontal"
-               Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-    </WrapPanel>
-  </Grid>
+   
+  </Grid -->
 
   <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Scroll"
                       Background="White" IsFindEnabled="False"/>

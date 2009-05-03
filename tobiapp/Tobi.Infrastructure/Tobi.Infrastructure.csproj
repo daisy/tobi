@@ -62,6 +62,8 @@
     <Compile Include="CommandExtension.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="HelpProvider.cs" />
+    <Compile Include="PageFoundByFlowDocumentParserEvent.cs" />
+    <Compile Include="ProjectLoadedEvent.cs" />
     <Compile Include="RichDelegateCommand.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="EnumListExtension.cs" />

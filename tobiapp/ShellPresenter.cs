@@ -1,24 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
+using Microsoft.Win32;
 using Sid.Windows.Controls;
 using Tobi.Infrastructure;
 using Tobi.Modules.MenuBar;
-using Tobi.Modules.NavigationPane;
 using urakawa;
+using XukImport;
 
 namespace Tobi
 {
     public class ShellPresenter : IShellPresenter
     {
+        public Project DocumentProject
+        {
+            get; set;
+        }
+
+        public string DocumentFilePath
+        {
+            get; set;
+        }
+
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool m_Exiting;
 
@@ -146,7 +157,7 @@ namespace Tobi
                 UserInterfaceStrings.Open_,
                 UserInterfaceStrings.Open_KEYS,
                 (VisualBrush)Application.Current.FindResource("document-open"),
-                null, obj => true);
+                obj => OpenFile(), obj => true);
 
             RegisterRichCommand(OpenCommand);
             //
@@ -231,6 +242,36 @@ namespace Tobi
 
             RegisterRichCommand(NavPreviousCommand);
             //
+        }
+
+        public void OpenFile()
+        {
+            var dlg = new OpenFileDialog();
+            dlg.FileName = "dtbook"; // Default file name
+            dlg.DefaultExt = ".xml"; // Default file extension
+            dlg.Filter = "DTBook, OPF or XUK (.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk";
+            bool? result = dlg.ShowDialog();
+            if (result == false)
+            {
+                return;
+            }
+            DocumentFilePath = dlg.FileName;
+            if (Path.GetExtension(DocumentFilePath) == ".xuk")
+            {
+                DocumentProject = new Project();
+
+                Uri uri = new Uri(DocumentFilePath, UriKind.Absolute);
+                DocumentProject.OpenXuk(uri);
+            }
+            else
+            {
+                var converter = new DaisyToXuk(DocumentFilePath);
+                DocumentProject = converter.Project;
+            }
+
+            Logger.Log("-- PublishEvent [ProjectLoadedEvent] ShellPresenter.OpenFile", Category.Debug, Priority.Medium);
+
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
         }
 
         private void manageShortcuts()
@@ -329,20 +370,6 @@ namespace Tobi
 
             var menuView = Container.Resolve<MenuBarView>();
             menuView.EnsureViewMenuCheckState(view.RegionName, makeVisible);
-        }
-
-        public void ProjectLoaded(Project proj)
-        {
-            Logger.Log("ShellPresenter.ProjectLoaded", Category.Debug, Priority.Medium);
-
-            NavigationPaneView navPane = Container.Resolve<NavigationPaneView>();
-            navPane.ResetNavigation(proj);
-        }
-
-        public void PageEncountered(TextElement textElement)
-        {
-            NavigationPaneView navPane = Container.Resolve<NavigationPaneView>();
-            navPane.AddPage(textElement);
         }
 
         private bool askUserConfirmExit()

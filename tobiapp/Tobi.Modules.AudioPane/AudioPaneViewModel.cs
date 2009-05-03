@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Media;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
 using AudioLib;
-using AudioLib.Events.Player;
 using AudioLib.Events.VuMeter;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
-using Tobi.Infrastructure.UI;
 using urakawa.core;
-using urakawa.media.data.audio;
-using urakawa.media.timing;
 
 namespace Tobi.Modules.AudioPane
 {

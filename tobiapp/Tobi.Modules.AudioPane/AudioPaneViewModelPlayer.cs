@@ -203,7 +203,7 @@ namespace Tobi.Modules.AudioPane
 
             if (m_CurrentSubTreeNode != m_CurrentTreeNode)
             {
-                Logger.Log("-- PublishEvent: AudioPaneViewModel.updateWaveFormPlayHead", Category.Debug, Priority.Medium);
+                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead", Category.Debug, Priority.Medium);
 
                 EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(m_CurrentSubTreeNode);
             }
@@ -760,7 +760,7 @@ namespace Tobi.Modules.AudioPane
                 TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)
                 {
-                    Logger.Log("-- PublishEvent: AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                 }
