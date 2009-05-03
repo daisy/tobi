@@ -4,9 +4,11 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
+using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
@@ -29,6 +31,7 @@ namespace Tobi.Modules.NavigationPane
 
         protected IEventAggregator EventAggregator { private set; get; }
         protected ILoggerFacade Logger { private set; get; }
+        protected IUnityContainer Container { private set; get; }
 
         private bool m_ignoreTreeNodeSelectedEvent = false;
         private bool m_ignoreHeadingSelected = false;
@@ -64,15 +67,37 @@ namespace Tobi.Modules.NavigationPane
             Pages.Add(new Page(data));
         }
 
+        public static RichDelegateCommand<object> CommandExpandAll { get; private set; }
+        public static RichDelegateCommand<object> CommandCollapseAll { get; private set; }
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public NavigationPaneView(IEventAggregator eventAggregator, ILoggerFacade logger)
+        public NavigationPaneView(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
             EventAggregator = eventAggregator;
             Logger = logger;
+            Container = container;
 
             DataContext = this;
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            //
+            CommandExpandAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeExpandAll,
+                UserInterfaceStrings.TreeExpandAll_,
+                null,
+                (VisualBrush)Application.Current.FindResource("list-add"),
+                obj => OnExpandAll(null, null), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandExpandAll);
+            //
+            CommandCollapseAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeCollapseAll,
+                UserInterfaceStrings.TreeCollapseAll_,
+                null,
+                (VisualBrush)Application.Current.FindResource("list-remove"),
+                obj => OnCollapseAll(null, null), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandCollapseAll);
 
             InitializeComponent();
 

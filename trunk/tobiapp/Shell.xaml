@@ -136,7 +136,7 @@
       <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
                     HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}">
 
-        <GridSplitter.Triggers>
+        <!-- GridSplitter.Triggers>
           <EventTrigger RoutedEvent="Control.MouseEnter">
             <BeginStoryboard>
 
@@ -159,7 +159,7 @@
               </Storyboard>
             </BeginStoryboard>
           </EventTrigger>
-        </GridSplitter.Triggers>
+        </GridSplitter.Triggers -->
 
 
       </GridSplitter>
@@ -169,7 +169,7 @@
                     Thumb.DragStarted="OnSplitterDragStarted"
                     HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{StaticResource grid-splitter-thickness}">
 
-        <GridSplitter.Triggers>
+        <!-- GridSplitter.Triggers>
 
           <EventTrigger RoutedEvent="Control.MouseEnter">
             <BeginStoryboard>
@@ -193,7 +193,7 @@
               </Storyboard>
             </BeginStoryboard>
           </EventTrigger>
-        </GridSplitter.Triggers>
+        </GridSplitter.Triggers -->
 
 
       </GridSplitter>

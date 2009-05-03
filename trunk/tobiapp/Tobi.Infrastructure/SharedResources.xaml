@@ -123,8 +123,7 @@
 
   <SolidColorBrush x:Key="SystemColorsControl" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"></SolidColorBrush -->
 
-  <!-- MOVED to each individual GridSplitter so we can use DynamicResource and support system-wide colors (limitation of the styles and control templates which can only work with freezable static values)
-  Style TargetType="{x:Type GridSplitter}">
+  <Style TargetType="{x:Type GridSplitter}">
 
     <Style.Triggers>
       <EventTrigger RoutedEvent="Control.MouseEnter">
@@ -150,7 +149,7 @@
         </BeginStoryboard>
       </EventTrigger>
     </Style.Triggers>
-  </Style -->
+  </Style>
   
   <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 

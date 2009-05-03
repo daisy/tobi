@@ -30,10 +30,10 @@ Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.Region
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
 
-      <Button Click="OnExpandAll"
+      <!-- Button Click="OnExpandAll"
               Grid.Row="0" Grid.Column="0">Expand all</Button>
       <Button Click="OnCollapseAll"
-              Grid.Row="1" Grid.Column="0">Collapse all</Button>
+              Grid.Row="1" Grid.Column="0">Collapse all</Button -->
 
       <ScrollViewer 
                 Grid.Row="2" Grid.Column="0"
@@ -65,11 +65,39 @@ Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.Region
           <HierarchicalDataTemplate       DataType="{x:Type local:HeadingTreeNodeWrapper}"
                                           ItemsSource="{Binding Children}">
 
-            <TextBlock Text="{Binding Path=Title}"/>
+            <TextBlock Text="{Binding Path=Title}">
+
+              <TextBlock.ContextMenu>
+                <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
+             RelativeSource={x:Static RelativeSource.Self}}" -->
+                
+                <ContextMenu>
+                  <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
+                                          CommandParameter="{Binding Path=.,
+             RelativeSource={x:Static RelativeSource.Self}}"/>
+                  
+                  <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                </ContextMenu>
+              </TextBlock.ContextMenu>
+            </TextBlock>
 
             <HierarchicalDataTemplate.ItemTemplate>
               <DataTemplate>
-                <TextBlock Text="{Binding Path=Title}"/>
+                <TextBlock Text="{Binding Path=Title}">
+
+                  <TextBlock.ContextMenu>
+                    <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
+             RelativeSource={x:Static RelativeSource.Self}}" -->
+
+                    <ContextMenu>
+                      <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
+                                              CommandParameter="{Binding Path=.,
+             RelativeSource={x:Static RelativeSource.Self}}"/>
+
+                      <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                    </ContextMenu>
+                  </TextBlock.ContextMenu>
+                </TextBlock>
               </DataTemplate>
             </HierarchicalDataTemplate.ItemTemplate>
           </HierarchicalDataTemplate>

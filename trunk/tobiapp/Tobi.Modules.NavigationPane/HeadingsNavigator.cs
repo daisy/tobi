@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
 using urakawa.navigation;
@@ -219,6 +220,9 @@ namespace Tobi.Modules.NavigationPane
             }
         }
 
+        public RichDelegateCommand<object> CommandExpandAll { get; private set; }
+        public RichDelegateCommand<object> CommandCollapseAll { get; private set; }
+
         public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
         {
             m_parent = parent;
@@ -226,6 +230,9 @@ namespace Tobi.Modules.NavigationPane
             m_navigator = navigator;
             m_isExpanded = false;
             m_TreeNodeHeading = null;
+
+            CommandExpandAll = NavigationPaneView.CommandExpandAll;
+            CommandCollapseAll = NavigationPaneView.CommandCollapseAll;
 
             if (m_TreeNode == null)
             {

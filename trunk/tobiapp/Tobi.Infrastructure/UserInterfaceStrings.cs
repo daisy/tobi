@@ -13,6 +13,12 @@ namespace Tobi.Infrastructure
             return str.Replace("_", "");
         }
 
+        public const string TreeExpandAll = "E_xpand all";
+        public const string TreeExpandAll_ = "Expand all children in the tree";
+
+        public const string TreeCollapseAll = "_Collapse all";
+        public const string TreeCollapseAll_ = "Collapse all children in the tree";
+
         public const string Menu_File = "_File";
 
         public const string Menu_Exit = "_Quit";
