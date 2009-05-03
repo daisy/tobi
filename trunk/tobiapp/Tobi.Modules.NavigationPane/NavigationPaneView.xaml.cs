@@ -12,8 +12,6 @@ using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
-using urakawa.navigation;
-using urakawa.xuk;
 
 namespace Tobi.Modules.NavigationPane
 {
@@ -55,14 +53,14 @@ namespace Tobi.Modules.NavigationPane
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
-        public void ResetNavigation(Project project)
+        private void OnProjectLoaded(Project project)
         {
             m_HeadingsNavigator = new HeadingsNavigator(project);
             TreeView.DataContext = HeadingsNavigator;
             Pages.Clear();
         }
 
-        public void AddPage(TextElement data)
+        public void OnPageFoundByFlowDocumentParser(TextElement data)
         {
             Pages.Add(new Page(data));
         }
@@ -103,6 +101,8 @@ namespace Tobi.Modules.NavigationPane
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Subscribe(OnPageFoundByFlowDocumentParser, ThreadOption.UIThread);
         }
 
         private void OnHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -122,7 +122,7 @@ namespace Tobi.Modules.NavigationPane
 
                 m_ignoreTreeNodeSelectedEvent = true;
 
-                Logger.Log("-- PublishEvent: NavigationPaneView.OnHeadingSelected", Category.Debug, Priority.Medium);
+                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] NavigationPaneView.OnHeadingSelected", Category.Debug, Priority.Medium);
 
                 EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
             }
@@ -147,7 +147,7 @@ namespace Tobi.Modules.NavigationPane
 
                     m_ignoreTreeNodeSelectedEvent = true;
 
-                    Logger.Log("-- PublishEvent: NavigationPaneView.OnPageSelected", Category.Debug, Priority.Medium);
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] NavigationPaneView.OnPageSelected", Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
                 }
@@ -180,6 +180,7 @@ namespace Tobi.Modules.NavigationPane
                     {
                         m_ignorePageSelected = true;
                         ListView.SelectedItem = pageToSelect;
+                        ListView.ScrollIntoView(pageToSelect);
                     }
                     return;
                 }

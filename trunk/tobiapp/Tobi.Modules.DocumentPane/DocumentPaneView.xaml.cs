@@ -14,7 +14,6 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
-using Microsoft.Win32;
 using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
@@ -22,7 +21,6 @@ using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.property.xml;
 using urakawa.xuk;
-using XukImport;
 
 namespace Tobi.Modules.DocumentPane
 {
@@ -70,6 +68,7 @@ namespace Tobi.Modules.DocumentPane
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
         }
 
         private List<TreeNode> PathToCurrentTreeNode;
@@ -107,13 +106,14 @@ namespace Tobi.Modules.DocumentPane
             {
                 QualifiedName qname = n.GetXmlElementQName();
                 Button butt = new Button
-                {
-                    Tag = n,
-                    BorderBrush = null,
-                    Background = Brushes.Transparent,
-                    Foreground = Brushes.Blue,
-                    Cursor = Cursors.Hand
-                };
+                                  {
+                                      Tag = n,
+                                      BorderBrush = null,
+                                      Background = Brushes.Transparent,
+                                      Foreground = Brushes.Blue,
+                                      Cursor = Cursors.Hand
+                                  };
+                butt.FontSize *= 1.3;
 
                 Run run = new Run((qname != null ? qname.LocalName : "TEXT")) { TextDecorations = TextDecorations.Underline };
                 butt.Content = run;
@@ -133,8 +133,10 @@ namespace Tobi.Modules.DocumentPane
                         BorderBrush = null,
                         Background = Brushes.Transparent,
                         Foreground = Brushes.Black,
-                        Cursor = Cursors.Cross
+                        Cursor = Cursors.Cross,
+                        FontWeight = FontWeights.ExtraBold
                     };
+                    tb.FontSize *= 1.2;
 
                     tb.Click += OnBreadCrumbSeparatorClick;
 
@@ -235,10 +237,10 @@ namespace Tobi.Modules.DocumentPane
             {
                 return;
             }
-            TreeNodeWrapper wrapper = (TreeNodeWrapper) ui.SelectedItem;
+            TreeNodeWrapper wrapper = (TreeNodeWrapper)ui.SelectedItem;
             wrapper.Popup.IsOpen = false;
 
-            Logger.Log("-- PublishEvent: DocumentPaneView.OnListOfNodesSelectionChanged", Category.Debug, Priority.Medium);
+            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnListOfNodesSelectionChanged", Category.Debug, Priority.Medium);
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(wrapper.TreeNode);
         }
@@ -251,23 +253,9 @@ namespace Tobi.Modules.DocumentPane
                 return;
             }
 
-            Logger.Log("-- PublishEvent: DocumentPaneView.OnBreadCrumbButtonClick", Category.Debug, Priority.Medium);
+            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnBreadCrumbButtonClick", Category.Debug, Priority.Medium);
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)ui.Tag);
-        }
-
-        public string FilePath
-        {
-            get
-            {
-                return m_FilePath;
-            }
-            set
-            {
-                if (m_FilePath == value) return;
-                m_FilePath = value;
-                OnPropertyChanged("FilePath");
-            }
         }
 
         delegate void DelegateSectionInitializer(Section secstion);
@@ -276,9 +264,7 @@ namespace Tobi.Modules.DocumentPane
         delegate void DelegateSpanInitializer(Span span);
         delegate void DelegateParagraphInitializer(Paragraph para);
 
-        private string m_FilePath;
         private FlowDocument m_FlowDoc;
-        private Project m_XukProject;
 
         private int m_currentTD;
         private bool m_firstTR;
@@ -309,32 +295,8 @@ namespace Tobi.Modules.DocumentPane
             return " " + strTrimmed + " "; // quick and dirty hack: need to normalize spaces at XML parsing stage.
         }
 
-        private void OnOpenFile(object sender, RoutedEventArgs e)
+        private void OnProjectLoaded(Project project)
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.FileName = "dtbook"; // Default file name
-            dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBook, OPF or XUK (.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk";
-            bool? result = dlg.ShowDialog();
-            if (result == false)
-            {
-                return;
-            }
-
-            FilePath = dlg.FileName;
-            if (Path.GetExtension(FilePath) == ".xuk")
-            {
-                m_XukProject = new Project();
-
-                Uri uri = new Uri(FilePath, UriKind.Absolute);
-                m_XukProject.OpenXuk(uri);
-            }
-            else
-            {
-                DaisyToXuk converter = new DaisyToXuk(FilePath);
-                m_XukProject = converter.Project;
-            }
-
             BreadcrumbPanel.Children.Clear();
             PathToCurrentTreeNode = null;
 
@@ -344,13 +306,10 @@ namespace Tobi.Modules.DocumentPane
             }
             m_idLinkTargets = new Dictionary<string, TextElement>();
 
-            IShellPresenter shellPres = Container.Resolve<IShellPresenter>();
-            shellPres.ProjectLoaded(m_XukProject);
-
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
 
-            createFlowDocumentFromXuk();
+            createFlowDocumentFromXuk(project);
 
             if (m_FlowDoc == null)
             {
@@ -397,9 +356,9 @@ namespace Tobi.Modules.DocumentPane
 
         }
 
-        private void createFlowDocumentFromXuk()
+        private void createFlowDocumentFromXuk(Project project)
         {
-            TreeNode root = m_XukProject.GetPresentation(0).RootNode;
+            TreeNode root = project.GetPresentation(0).RootNode;
             TreeNode nodeBook = getTreeNodeWithXmlElementName(root, "book");
             if (nodeBook == null)
             {
@@ -441,7 +400,8 @@ namespace Tobi.Modules.DocumentPane
             {
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
-                string dirPath = Path.GetDirectoryName(FilePath);
+                var shellPresenter = Container.Resolve<IShellPresenter>();
+                string dirPath = Path.GetDirectoryName(shellPresenter.DocumentFilePath);
                 string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
 
                 try
@@ -627,7 +587,7 @@ namespace Tobi.Modules.DocumentPane
         {
             e.Handled = true;
 
-            Logger.Log("-- PublishEvent: DocumentPaneView.OnMouseDownTextElementWithNode", Category.Debug, Priority.Medium);
+            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElementWithNode", Category.Debug, Priority.Medium);
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
         }
@@ -636,7 +596,7 @@ namespace Tobi.Modules.DocumentPane
         {
             e.Handled = true;
 
-            Logger.Log("-- PublishEvent: DocumentPaneView.OnMouseDownTextElementWithNodeAndAudio", Category.Debug, Priority.Medium);
+            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElementWithNodeAndAudio", Category.Debug, Priority.Medium);
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(((TextElement)sender).Tag as TreeNode);
         }
@@ -1321,8 +1281,10 @@ namespace Tobi.Modules.DocumentPane
                 return parent;
             }
 
+            var shellPres = Container.Resolve<IShellPresenter>();
+
             if (qname.NamespaceUri.Length == 0
-                || qname.NamespaceUri == m_XukProject.GetPresentation(0).PropertyFactory.DefaultXmlNamespaceUri)
+                || qname.NamespaceUri == shellPres.DocumentProject.GetPresentation(0).PropertyFactory.DefaultXmlNamespaceUri)
             {
                 // node.ChildCount ?
                 // String.IsNullOrEmpty(textMedia.Text) ?
@@ -1669,8 +1631,9 @@ namespace Tobi.Modules.DocumentPane
                 data.Name = IdToName(attr.Value);
                 data.ToolTip = data.Name;
 
-                IShellPresenter shellPres = Container.Resolve<IShellPresenter>();
-                shellPres.PageEncountered(data);
+                Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
+
+                EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
             }
         }
 
@@ -2208,7 +2171,7 @@ namespace Tobi.Modules.DocumentPane
             {
                 if (textElement.Tag is TreeNode)
                 {
-                    Logger.Log("-- PublishEvent: DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
                 }
@@ -2219,7 +2182,7 @@ namespace Tobi.Modules.DocumentPane
             }
         }
 
-        
+
         public void BringIntoViewAndHighlightSub(TextElement textElement)
         {
             textElement.BringIntoView();
@@ -2273,7 +2236,7 @@ namespace Tobi.Modules.DocumentPane
 
             m_lastHighlighted = textElement;
             m_lastHighlightedSub = null;
-            
+
             m_lastHighlighted_Background = m_lastHighlighted.Background;
             m_lastHighlighted.Background = Brushes.Yellow;
 

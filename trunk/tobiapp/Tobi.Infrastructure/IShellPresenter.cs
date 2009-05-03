@@ -1,6 +1,4 @@
-﻿using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Tobi.Infrastructure;
 using urakawa;
 
@@ -46,20 +44,20 @@ namespace Tobi
         ///<summary>
         /// Adds a <see cref="KeyBinding"/> to the Shell window
         ///</summary>
-        bool AddInputBinding(InputBinding inputBinding);
+        //bool AddInputBinding(InputBinding inputBinding);
 
+        /// <summary>
+        /// registers a command and adds the corresponding input binding to the main window
+        /// </summary>
+        /// <param name="command"></param>
         void RegisterRichCommand(RichDelegateCommand<object> command);
 
-        ///<summary>
-        /// The shell window is closing, returns true if application is shutting down
-        ///</summary>
+        string DocumentFilePath { get; }
+        Project DocumentProject { get; }
+
+        // TODO: The methods below are only called by the view,
+        // we should perharps inject the Presenter into the View instead.
         bool OnShellWindowClosing();
-
-        void ToggleView(bool? show, IToggableView view);
-
-        //TODO: the methods below are not part of the final design, they're here just to compile and run the experiments.
-        void ProjectLoaded(Project proj);
-        void PageEncountered(TextElement textElement);
         void SetZoomValue(double value);
     }
 }
