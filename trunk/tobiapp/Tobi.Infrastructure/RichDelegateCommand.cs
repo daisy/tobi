@@ -285,12 +285,17 @@ There are over 150 built-in commands with WPF, divided into 5 categories and imp
             private set;
         }
 
+        private string m_KeyGestureText = "";
         public string KeyGestureText
         {
+            set
+            {
+                m_KeyGestureText = value;
+            }
             get
             {
                 //return KeyGesture.DisplayString;
-                return (KeyGesture == null ? "" : KeyGesture.GetDisplayStringForCulture(CultureInfo.CurrentCulture)); //CultureInfo.InvariantCulture
+                return (KeyGesture == null ? m_KeyGestureText : KeyGesture.GetDisplayStringForCulture(CultureInfo.CurrentCulture)); //CultureInfo.InvariantCulture
             }
         }
 

@@ -82,15 +82,15 @@ namespace Tobi.Infrastructure
         public static KeyGesture Paste_KEYS = new KeyGesture(Key.V, ModifierKeys.Control);
 
         public const string Help = "_Help";
-        public const string Help_ = "Get help...";
+        public const string Help_ = "Get help";
         public static KeyGesture Help_KEYS = new KeyGesture(Key.F1, ModifierKeys.None);
 
         public const string Preferences = "_Preferences";
-        public const string Preferences_ = "Application configuration...";
+        public const string Preferences_ = "Application configuration";
         public static KeyGesture Preferences_KEYS = new KeyGesture(Key.F2, ModifierKeys.None);
 
         public const string WebHome = "Tobi-_web";
-        public const string WebHome_ = "Go online to the Tobi homepage...";
+        public const string WebHome_ = "Open the Tobi homepage";
         public static KeyGesture WebHome_KEYS = new KeyGesture(Key.F1, ModifierKeys.Control);
 
         public const string NavNext = "_Next";
