@@ -9,7 +9,7 @@ namespace Tobi.Infrastructure.UI
      * 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (Run curRun in LogicalTreeHelperHelper.GetChildren<Run>(flowRdr1.Document, true))
+            foreach (Run curRun in WpfTreeHelper.GetChildren<Run>(flowRdr1.Document, true))
                 curRun.MouseDown += new MouseButtonEventHandler(curRun_MouseDown);
 
         }

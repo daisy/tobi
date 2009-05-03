@@ -86,7 +86,8 @@ namespace Tobi
             ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       UserInterfaceStrings.Menu_Exit_KEYS,
-                                                                      (VisualBrush)Application.Current.FindResource("document-save"),
+                                                                      RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
+                                                                      //(VisualBrush)Application.Current.FindResource("document-save"),
                                                             ExitCommand_Executed, obj => true);
             RegisterRichCommand(ExitCommand);
             //

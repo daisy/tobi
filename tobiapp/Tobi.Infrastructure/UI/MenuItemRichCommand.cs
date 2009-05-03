@@ -28,7 +28,10 @@ namespace Tobi.Infrastructure.UI
             menuItem.Header = command.ShortDescription;
             menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " [" + command.KeyGestureText + "]" : "");
             menuItem.InputGestureText = command.KeyGestureText;
-            menuItem.Icon = command.IconSmall;
+
+            Image image = command.IconSmall;
+            image.Margin = new Thickness(0, 2, 0, 2);
+            menuItem.Icon = image;
         }
 
         public RichDelegateCommand<object> RichCommand

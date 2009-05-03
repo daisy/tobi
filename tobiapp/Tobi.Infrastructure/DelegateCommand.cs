@@ -106,11 +106,6 @@ namespace Tobi.Infrastructure
         /// </summary>
         public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
         {
-            if (executeMethod == null)
-            {
-                throw new ArgumentNullException("executeMethod");
-            }
-
             _executeMethod = executeMethod;
             _canExecuteMethod = canExecuteMethod;
             _isAutomaticRequeryDisabled = isAutomaticRequeryDisabled;
@@ -275,11 +270,6 @@ namespace Tobi.Infrastructure
         /// </summary>
         public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
         {
-            if (executeMethod == null)
-            {
-                throw new ArgumentNullException("executeMethod");
-            }
-
             _executeMethod = executeMethod;
             _canExecuteMethod = canExecuteMethod;
             _isAutomaticRequeryDisabled = isAutomaticRequeryDisabled;

@@ -119,6 +119,39 @@
     
   </ResourceDictionary.MergedDictionaries>
 
+  <!-- SolidColorBrush x:Key="SystemColorsHighlight" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"></SolidColorBrush>
+
+  <SolidColorBrush x:Key="SystemColorsControl" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"></SolidColorBrush -->
+
+  <!-- MOVED to each individual GridSplitter so we can use DynamicResource and support system-wide colors (limitation of the styles and control templates which can only work with freezable static values)
+  Style TargetType="{x:Type GridSplitter}">
+
+    <Style.Triggers>
+      <EventTrigger RoutedEvent="Control.MouseEnter">
+        <BeginStoryboard>
+
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetProperty="(Control.Background)">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static SystemColors.HighlightBrush}"/>
+            </ObjectAnimationUsingKeyFrames>
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+      <EventTrigger RoutedEvent="Control.MouseLeave">
+        <BeginStoryboard>
+
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetProperty="Background">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static SystemColors.ControlBrush}"/>
+            </ObjectAnimationUsingKeyFrames>
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+    </Style.Triggers>
+  </Style -->
+  
   <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 
   <infraUI:BooleanNotConverter x:Key="BooleanNotConverter"/>
@@ -130,7 +163,7 @@
     <Setter Property="RepeatButton.Delay" Value="0"/>
     <Setter Property="RepeatButton.Interval" Value="100"/>
 
-    <Setter Property="SnapsToDevicePixels" Value="false"/>
+    <Setter Property="SnapsToDevicePixels" Value="true"/>
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="Template">
       <Setter.Value>
@@ -209,6 +242,6 @@
   <Style TargetType="{x:Type infraUI:TwoStateButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
 
-  <System:Double x:Key="grid-splitter-thickness">2.5</System:Double>
+  <System:Double x:Key="grid-splitter-thickness">4.5</System:Double>
 
 </ResourceDictionary>

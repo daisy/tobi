@@ -134,12 +134,69 @@
       </Grid.RowDefinitions>
 
       <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
-                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}"/>
+                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}">
+
+        <GridSplitter.Triggers>
+          <EventTrigger RoutedEvent="Control.MouseEnter">
+            <BeginStoryboard>
+
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                               Storyboard.TargetProperty="(Control.Background)">
+                  <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </BeginStoryboard>
+          </EventTrigger>
+          <EventTrigger RoutedEvent="Control.MouseLeave">
+            <BeginStoryboard>
+
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                               Storyboard.TargetProperty="Background">
+                  <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </BeginStoryboard>
+          </EventTrigger>
+        </GridSplitter.Triggers>
+
+
+      </GridSplitter>
       
       <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
                     Thumb.DragCompleted="OnSplitterDragCompleted"
                     Thumb.DragStarted="OnSplitterDragStarted"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{StaticResource grid-splitter-thickness}"/>
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{StaticResource grid-splitter-thickness}">
+
+        <GridSplitter.Triggers>
+
+          <EventTrigger RoutedEvent="Control.MouseEnter">
+            <BeginStoryboard>
+
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                               Storyboard.TargetProperty="(Control.Background)">
+                  <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </BeginStoryboard>
+          </EventTrigger>
+          <EventTrigger RoutedEvent="Control.MouseLeave">
+            <BeginStoryboard>
+
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                               Storyboard.TargetProperty="Background">
+                  <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </BeginStoryboard>
+          </EventTrigger>
+        </GridSplitter.Triggers>
+
+
+      </GridSplitter>
 
       <ContentControl Focusable="False"
                       Grid.Column="0" Grid.Row="0" 

@@ -67,7 +67,7 @@ namespace Tobi.Infrastructure.UI
 
             var rectangle = new Rectangle
             {
-                SnapsToDevicePixels = false,
+                SnapsToDevicePixels = true,
                 StrokeThickness = 0,
                 Height = height,
                 Width = width,

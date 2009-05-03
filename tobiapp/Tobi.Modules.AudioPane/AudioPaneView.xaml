@@ -264,8 +264,33 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       </Setter>
     </Style>
 
+    <System:Double x:Key="columnPeakMeterWidth">50.0</System:Double>
+    
+    <GridLength x:Key="columnPeakMeterGridWidth">50.0</GridLength>
+    
+    <Storyboard x:Key="splitterPeakMeterExpand">
+      
+      <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                     Storyboard.TargetName="columnContentPeakMeter"
+                                     Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}"/>
+      </ObjectAnimationUsingKeyFrames>
+      
+      <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                     Storyboard.TargetName="columnPeakMeter"
+                                     Storyboard.TargetProperty="(ColumnDefinition.Width)">
+        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{StaticResource columnPeakMeterWidth}"/>
+      </ObjectAnimationUsingKeyFrames>
+      
+    </Storyboard>
+    
   </Grid.Resources>
-
+  
+  <Grid.Triggers>
+    <EventTrigger RoutedEvent="Control.MouseLeftButtonDown" SourceName="splitterPeakMeter">
+      <BeginStoryboard Storyboard="{StaticResource splitterPeakMeterExpand}"/>
+    </EventTrigger>
+  </Grid.Triggers>
 
   <!-- Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}"  -->
 
@@ -277,7 +302,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <ColumnDefinition Width="Auto"/ -->
     <ColumnDefinition Width="*"/>
     <ColumnDefinition Width="Auto"/>
-    <ColumnDefinition Width="50"/>
+    <ColumnDefinition Width="{StaticResource columnPeakMeterGridWidth}" x:Name="columnPeakMeter"/>
   </Grid.ColumnDefinitions>
   <Grid.RowDefinitions>
     <RowDefinition Height="*"/>
@@ -285,7 +310,73 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   </Grid.RowDefinitions>
 
   <!-- GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/ -->
-  <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}"/>
+  <GridSplitter
+    x:Name="splitterPeakMeter"
+    Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                Width="{StaticResource grid-splitter-thickness}">
+
+    <GridSplitter.Triggers>
+
+      <!-- EventTrigger RoutedEvent="Control.MouseDoubleClick">
+        <BeginStoryboard>
+          <Storyboard>
+          <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                         Storyboard.TargetName="columnPeakMeter"
+                                         Storyboard.TargetProperty="(ColumnDefinition.Width)">
+            <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static GridLength.Auto}"/>
+          </ObjectAnimationUsingKeyFrames>
+
+          <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                         Storyboard.TargetName="columnContentPeakMeter"
+                                         Storyboard.TargetProperty="(UIElement.Visibility)">
+            <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Collapsed}"/>
+          </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger -->
+      
+      <!-- DataTrigger Binding="{Binding ElementName=columnContentPeakMeter, Path=Visibility}" Value="Collapsed">
+          <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+        </DataTrigger -->
+      
+      <EventTrigger RoutedEvent="Control.MouseEnter">
+        <BeginStoryboard>
+
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetProperty="(Control.Background)">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+            </ObjectAnimationUsingKeyFrames>
+
+            <!-- ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetName="columnContentPeakMeter"
+                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}"/>
+            </ObjectAnimationUsingKeyFrames>
+
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetName="columnPeakMeter"
+                                           Storyboard.TargetProperty="(ColumnDefinition.Width)">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static GridLength.Auto}"/>
+            </ObjectAnimationUsingKeyFrames -->
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+      <EventTrigger RoutedEvent="Control.MouseLeave">
+        <BeginStoryboard>
+
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetProperty="Background">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            </ObjectAnimationUsingKeyFrames>
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+    </GridSplitter.Triggers>
+
+  
+</GridSplitter>
 
   <!-- ScrollViewer Grid.Column="0" Grid.Row="0"
                   VerticalScrollBarVisibility="Auto"
@@ -415,7 +506,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               Background="Black"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
-              SnapsToDevicePixels="False">
+              SnapsToDevicePixels="True">
 
         
         <Image x:Name="WaveFormImage"
@@ -427,13 +518,15 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                Canvas.Left="0"
                Canvas.Top="0"
-               RenderOptions.EdgeMode="Unspecified" SnapsToDevicePixels="False"
+               RenderOptions.EdgeMode="Unspecified"
+               SnapsToDevicePixels="True"
                RenderOptions.BitmapScalingMode="HighQuality"/>
 
         <Path x:Name="WaveFormTimeRangePath"
               Canvas.ZIndex="1"
               StrokeThickness="1"
-              RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False">
+              RenderOptions.EdgeMode="Aliased"
+              SnapsToDevicePixels="True">
           <Path.Fill>
             <SolidColorBrush Color="{Binding Path=ColorMarkers, Mode=OneWay}"/>
           </Path.Fill>
@@ -447,7 +540,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
           Canvas.ZIndex="2"
               StrokeThickness="0"
               Stroke="Lime"
-          RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
+          RenderOptions.EdgeMode="Aliased"
+          SnapsToDevicePixels="True"
                    Canvas.Top="0"
                    Canvas.Left="0"
                    Width="0"
@@ -461,7 +555,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         <Path x:Name="WaveFormPlayHeadPath"
               Canvas.ZIndex="3"
               StrokeThickness="1.2"
-              RenderOptions.EdgeMode="Unspecified" SnapsToDevicePixels="True">
+              RenderOptions.EdgeMode="Unspecified"
+              SnapsToDevicePixels="True">
           <Path.Stroke>
             <SolidColorBrush Color="{Binding Path=ColorPlayhead, Mode=OneWay}"/>
           </Path.Stroke>
@@ -475,8 +570,11 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
 
 
-  <Grid Grid.Column="2" Grid.Row="0"
-        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+  <Grid
+    x:Name="columnContentPeakMeter"
+    Grid.Column="2" Grid.Row="0"
+        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    MinWidth="{StaticResource columnPeakMeterWidth}">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width=".50*"/>
       <ColumnDefinition Width=".50*"/>
@@ -515,7 +613,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         Canvas.ZIndex="0"
             StrokeThickness="0"
             Stroke="Green"
-        RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
+        RenderOptions.EdgeMode="Aliased"
+        SnapsToDevicePixels="True"
                  Canvas.Top="0"
                  Canvas.Left="0"
                  Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
@@ -539,7 +638,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         Canvas.ZIndex="2"
             StrokeThickness="0"
             Stroke="Lime"
-        RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
+        RenderOptions.EdgeMode="Aliased"
+        SnapsToDevicePixels="True"
                  Canvas.Top="0"
                  Canvas.Left="0"
                  Width="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneWay}"
@@ -552,7 +652,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <Path x:Name="PeakMeterPathCh1"
             Canvas.ZIndex="1"
             StrokeThickness="1"
-            RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
+            RenderOptions.EdgeMode="Aliased"
+            SnapsToDevicePixels="True"
                 >
         <Path.Fill>
           <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
@@ -566,7 +667,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <Path x:Name="PeakMeterPathCh2"
           Canvas.ZIndex="1"
           StrokeThickness="2"
-            RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="False"
+            RenderOptions.EdgeMode="Aliased"
+            SnapsToDevicePixels="True"
                 >
         <Path.Fill>
           <SolidColorBrush Color="Black" PresentationOptions:Freeze="true"/>
@@ -580,7 +682,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
 
   <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
-             DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True">
+             DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True"
+             
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
     <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
