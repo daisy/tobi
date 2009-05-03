@@ -182,18 +182,21 @@ namespace Tobi.Modules.AudioPane
                 sumDataPrev = sumData;
             }
 
-            if (subTreeNode == null || (subTreeNode == m_CurrentSubTreeNode && subTreeNode != m_CurrentTreeNode))
-            {
-                return;
-            }
-
             if (View != null)
             {
                 View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
             }
 
-            m_CurrentSubTreeNode = subTreeNode;
-            OnPropertyChanged("IsAudioLoadedWithSubTreeNodes");
+            if (subTreeNode == null || (subTreeNode == m_CurrentSubTreeNode && subTreeNode != m_CurrentTreeNode))
+            {
+                return;
+            }
+
+            if (m_CurrentSubTreeNode != subTreeNode)
+            {
+                m_CurrentSubTreeNode = subTreeNode;
+                OnPropertyChanged("IsAudioLoadedWithSubTreeNodes");
+            }
 
             if (m_CurrentSubTreeNode != m_CurrentTreeNode)
             {
