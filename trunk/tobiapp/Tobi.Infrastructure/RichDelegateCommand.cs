@@ -443,7 +443,7 @@ There are over 150 built-in commands with WPF, divided into 5 categories and imp
             Image image = new AutoGreyableImage
             {
                 Stretch = Stretch.Fill,
-                SnapsToDevicePixels = false,
+                SnapsToDevicePixels = true,
                 Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : Sizes.IconWidth_Large)),
                 Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : Sizes.IconHeight_Large))
             };

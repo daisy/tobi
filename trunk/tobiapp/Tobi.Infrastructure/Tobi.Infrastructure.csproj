@@ -83,9 +83,11 @@
     <Compile Include="UI\BindableRun.cs" />
     <Compile Include="UI\BindableRunTextMedia.cs" />
     <Compile Include="UI\BooleanNotConverter.cs" />
+    <Compile Include="UI\CollapsibleGridSplitter.cs" />
     <Compile Include="UI\ComboColorPicker.xaml.cs">
       <DependentUpon>ComboColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\DockSplitter.cs" />
     <Compile Include="UI\FlowDocumentFindReplace.cs" />
     <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
@@ -105,7 +107,7 @@
     <Compile Include="UI\LoadingUserControl.xaml.cs">
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\LogicalTreeHelperHelper.cs" />
+    <Compile Include="UI\WpfTreeHelper.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\MenuShortcutManager.cs" />
     <Compile Include="UI\Placeholder.cs" />

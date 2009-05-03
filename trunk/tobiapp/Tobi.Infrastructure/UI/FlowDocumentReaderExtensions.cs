@@ -34,7 +34,7 @@ namespace Tobi.Infrastructure.UI
     {
         public static TextPointer GetPositionFromPoint(FlowDocumentReader thiz, Point searchForPoint)
         {
-            foreach (Run curRun in LogicalTreeHelperHelper.GetChildren<Run>(thiz, true))
+            foreach (Run curRun in WpfTreeHelper.GetChildren<Run>(thiz, true))
             {
                 TextPointer ptr = RunExtensions.GetPositionFromPoint(curRun, searchForPoint);
 
