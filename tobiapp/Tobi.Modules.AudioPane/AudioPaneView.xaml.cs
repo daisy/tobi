@@ -738,6 +738,11 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
+            if (BytesPerPixel <= 0)
+            {
+                return;
+            }
+
             long bytes = ViewModel.AudioPlayer_GetPcmFormat().GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
             double pixels = bytes / BytesPerPixel;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using AudioLib;
 using AudioLib.Events.VuMeter;
 using Microsoft.Practices.Composite.Events;
@@ -6,6 +7,7 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
+using urakawa;
 using urakawa.core;
 
 namespace Tobi.Modules.AudioPane
@@ -47,8 +49,25 @@ namespace Tobi.Modules.AudioPane
         {
             initializeCommands();
             initializeAudioStuff();
+
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+        }
+
+        private void setRecordingDirectory(string path)
+        {
+            m_Recorder.AssetsDirectory = path;
+            if (!Directory.Exists(m_Recorder.AssetsDirectory))
+            {
+                Directory.CreateDirectory(m_Recorder.AssetsDirectory);
+            }
+        }
+
+        private void OnProjectLoaded(Project obj)
+        {
+            var shell = Container.Resolve<IShellPresenter>();
+            setRecordingDirectory(shell.DocumentProject.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
         }
 
         private void initializeAudioStuff()
@@ -56,13 +75,15 @@ namespace Tobi.Modules.AudioPane
             Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
 
             m_Player = new AudioPlayer();
-            m_Player.SetDevice(GetWindowsFormsHookControl(), @"auto");
+            m_Player.SetDevice(GetWindowsFormsHookControl(), @"fakename");
             m_Player.StateChanged += OnPlayerStateChanged;
             m_Player.EndOfAudioAsset += OnEndOfAudioAsset;
             LastPlayHeadTime = 0;
 
             m_Recorder = new AudioRecorder();
+            m_Recorder.SetDevice(@"fakename");
             m_Recorder.StateChanged += OnRecorderStateChanged;
+            //m_Recorder.UpdateVuMeterFromRecorder += OnUpdateVuMeterFromRecorder;
 
             m_VuMeter = new VuMeter(m_Player, m_Recorder);
             m_VuMeter.UpdatePeakMeter += OnUpdateVuMeter;
@@ -359,7 +380,8 @@ namespace Tobi.Modules.AudioPane
 
         public void UpdatePeakMeter()
         {
-            if (m_PcmFormat == null || m_Player.State != AudioPlayerState.Playing)
+            if (m_PcmFormat == null || m_Player.State != AudioPlayerState.Playing
+                && (m_Recorder.State != AudioRecorderState.Recording && m_Recorder.State != AudioRecorderState.Monitoring))
             {
                 if (View != null)
                 {
@@ -406,7 +428,7 @@ namespace Tobi.Modules.AudioPane
             if (e.PeakValues != null && e.PeakValues.Length > 0)
             {
                 m_PeakMeterValues[0] = e.PeakValues[0];
-                if (m_PcmFormat.NumberOfChannels > 1)
+                if (m_PcmFormat != null && m_PcmFormat.NumberOfChannels > 1)
                 {
                     m_PeakMeterValues[1] = e.PeakValues[1];
                 }

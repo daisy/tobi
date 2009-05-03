@@ -63,12 +63,6 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        public bool IsRecording
-        {
-            get;
-            set;
-        }
-
         public bool IsPlaying
         {
             get
