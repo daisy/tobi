@@ -18,7 +18,16 @@ namespace Tobi.Modules.AudioPane
         {
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
-            PeakOverloadLabelCh2.Visibility = ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels == 1 ? Visibility.Collapsed : Visibility.Visible;
+            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels == 1)
+            {
+                PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
+                PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 2);
+            }
+            else
+            {
+                PeakOverloadLabelCh2.Visibility = Visibility.Visible;
+                PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 1);
+            }
 
             double height = WaveFormCanvas.ActualHeight;
             if (height == Double.NaN || height == 0)
@@ -116,7 +125,7 @@ namespace Tobi.Modules.AudioPane
                     sgcCh2 = geometryCh2.Open();
                 }
 
-#region LOOP
+                #region LOOP
 
                 int read;
                 while ((read = ViewModel.AudioPlayer_GetPlayStream().Read(bytes, 0, bytes.Length)) > 0)
@@ -353,7 +362,7 @@ namespace Tobi.Modules.AudioPane
                     }
                 }
 
-#endregion LOOP
+                #endregion LOOP
 
                 //
                 Brush brushColorBars = new SolidColorBrush(ViewModel.ColorWaveBars);
