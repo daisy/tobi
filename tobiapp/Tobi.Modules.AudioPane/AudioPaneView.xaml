@@ -32,7 +32,7 @@
 
     <SolidColorBrush x:Key="VerticalScrollBarBorderBackground" Color="black" />
     <SolidColorBrush x:Key="NormalBrush" Color="#333333" />
-    <SolidColorBrush x:Key="NormalBorderBrush" Color="black" />
+    <SolidColorBrush x:Key="NormalBorderBrush" Color="#666666" />
     <SolidColorBrush x:Key="GlyphBrush" Color="silver" />
     <SolidColorBrush x:Key="PressedBrush" Color="black" />
 
@@ -101,7 +101,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
           CornerRadius="3"
           Background="{TemplateBinding Background}"
           BorderBrush="{TemplateBinding BorderBrush}"
-          BorderThickness="2" />
+          BorderThickness="1" />
           </ControlTemplate>
         </Setter.Value>
       </Setter>
@@ -591,6 +591,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                FontWeight="Heavy"
                MouseDown="OnResetPeakOverloadCountCh1"/>
+    
     <TextBlock x:Name="PeakOverloadLabelCh2"
                Grid.Row="0" Grid.Column="1"
                Text="{Binding Path=PeakOverloadCountCh2, Mode=OneWay}"
