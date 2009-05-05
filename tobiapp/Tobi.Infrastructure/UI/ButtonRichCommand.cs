@@ -44,15 +44,19 @@ namespace Tobi.Infrastructure.UI
 
             button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " [" + command.KeyGestureText + "]" : "");
 
+
+            Image image = command.IconMedium;
+            image.Margin = new Thickness(2, 2, 2, 2);
+
             if (String.IsNullOrEmpty(command.ShortDescription) || !ShowTextLabel)
             {
-                button.Content = command.IconMedium;
+                button.Content = image;
             }
             else
             {
                 var panel = new StackPanel { Orientation = Orientation.Horizontal };
                 panel.Children.Add(new TextBlock(new Run(command.ShortDescription)));
-                panel.Children.Add(command.IconMedium);
+                panel.Children.Add(image);
                 button.Content = panel;
             }
         }

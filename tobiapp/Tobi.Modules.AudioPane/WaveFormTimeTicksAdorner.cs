@@ -79,25 +79,48 @@ namespace Tobi.Modules.AudioPane
 
 
 
-            long minorTickInterval_milliseconds = 1000; //1s minor ticks
+            double minorTickInterval_milliseconds = 1000; //1s minor ticks
             double minorTickInterval_pixels =
                 m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(minorTickInterval_milliseconds)
                     / m_AudioPaneView.BytesPerPixel;
 
-            if (minorTickInterval_pixels > 30)
-            {
-                minorTickInterval_pixels = 30;
-                double newTime = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels);
-                newTime = Math.Round(newTime);
-                if (newTime % 10 != 0)
-                {
-                    newTime = Math.Round(newTime / 10) * 10;
-                    minorTickInterval_pixels =
-                        m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(newTime)
-                            / m_AudioPaneView.BytesPerPixel;
-                }
+            const double idealTickInterval = 20;
 
-                minorTickInterval_milliseconds = (long)newTime;
+            bool tooSmall = minorTickInterval_pixels < idealTickInterval;
+            bool tooLarge = minorTickInterval_pixels > idealTickInterval;
+
+            bool needReAdjusting = false;
+            if (tooSmall || tooLarge)
+            {
+                minorTickInterval_pixels = idealTickInterval;
+
+                minorTickInterval_milliseconds =
+                    m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(
+                                            m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels);
+                minorTickInterval_milliseconds = Math.Round(minorTickInterval_milliseconds);
+
+                if (minorTickInterval_milliseconds > 0)
+                {
+                    if (minorTickInterval_milliseconds % 10 != 0)
+                    {
+                        minorTickInterval_milliseconds = Math.Round(minorTickInterval_milliseconds / 10) * 10;
+                        if (minorTickInterval_milliseconds > 0)
+                        {
+                            minorTickInterval_pixels =
+                                m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(
+                                        minorTickInterval_milliseconds)
+                                                / m_AudioPaneView.BytesPerPixel;
+                        }
+                        else
+                        {
+                            needReAdjusting = true;
+                        }
+                    }
+                }
+                else
+                {
+                    needReAdjusting = true;
+                }
             }
 
             double hoffset = m_AudioPaneView.WaveFormScroll.HorizontalOffset;
@@ -108,6 +131,8 @@ namespace Tobi.Modules.AudioPane
                                 (hoffset - (numberOfEntireTicksHidden * minorTickInterval_pixels));
 
             drawingContext.PushOpacity(0.6);
+
+            const double horizontalMargin = 2;
 
             int count = numberOfEntireTicksHidden;
             double currentTickX = firstTickX;
@@ -135,14 +160,14 @@ namespace Tobi.Modules.AudioPane
 
                     if (m_MousePosX != -1)
                     {
-                        var point = new Point(posX,
+                        var point = new Point(posX - horizontalMargin,
                                               tickHeight * 2);
 
                         drawingContext.Pop();
 
                         drawingContext.DrawRectangle(renderBrush, null,
                                                      new Rect(point,
-                                                              new Size(formattedText.Width,
+                                                              new Size(formattedText.Width + horizontalMargin*2,
                                                                        formattedText.Height)));
 
                         drawingContext.PushOpacity(0.6);
@@ -185,8 +210,8 @@ namespace Tobi.Modules.AudioPane
                                         heightAvailable - formattedText.Height - tickHeight);
 
                 drawingContext.DrawRectangle(renderBrush, null,
-                                             new Rect(point,
-                                                      new Size(formattedText.Width,
+                                             new Rect(new Point(point.X - horizontalMargin, point.Y),
+                                                      new Size(formattedText.Width + horizontalMargin*2,
                                                                formattedText.Height)));
 
                 drawingContext.DrawText(formattedText, point);
