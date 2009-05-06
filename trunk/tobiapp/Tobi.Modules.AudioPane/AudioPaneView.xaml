@@ -682,12 +682,13 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   </Grid>
 
 
-  <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
-             DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True"
-             
-        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-    <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal">
+  <infraUI:WrapPanelLastChildFill
+    LastChildFill="True"
+    Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+      DockPanel.Dock="Left"
+      Orientation="Horizontal"
+      Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/>
 
@@ -751,25 +752,33 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
                                  />
 
-    </WrapPanel>
 
-    <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
-    <Slider x:Name="ZoomSlider"
-            Thumb.DragCompleted="OnZoomSliderDragCompleted"
-            Thumb.DragStarted="OnZoomSliderDragStarted"
-            IsMoveToPointEnabled="True"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Value="1000"
-            Minimum="800"
-            Maximum="10000"
-            TickFrequency="500"
-            Delay="1000"
-            Interval="1000"
-            LargeChange="500"
-            SmallChange="200"/>
+    <!-- DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+             
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 LastChildFill="True"
+             
+            Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" -->
 
-  </DockPanel>
+        <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
+        <Slider x:Name="ZoomSlider"
+                Thumb.DragCompleted="OnZoomSliderDragCompleted"
+                Thumb.DragStarted="OnZoomSliderDragStarted"
+                IsMoveToPointEnabled="True"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Value="1000"
+                Minimum="800"
+                Maximum="10000"
+                TickFrequency="500"
+                Delay="1000"
+                Interval="1000"
+                LargeChange="500"
+                SmallChange="200"/>
+
+      </infraUI:WrapPanelLastChildFill>
+
+
 </Grid >
 
 <!-- /ad:DockableContent -->

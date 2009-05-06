@@ -124,6 +124,7 @@
     <Compile Include="UI\TextMediaTextBox.cs" />
     <Compile Include="UI\UiClipboardImageHelper.cs" />
     <Compile Include="UI\UserInterfaceScaledEvent.cs" />
+    <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XamlToPngConverter.cs" />
     <Compile Include="UnityServiceLocator.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
