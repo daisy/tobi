@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite;
 
-namespace Tobi.Infrastructure
+namespace Tobi.Infrastructure.Commanding
 {
-	public class ActiveAware : IActiveAware
+    public class ActiveAware : IActiveAware
     {
         private readonly object LOCK = new object();
         private bool _isActive;
@@ -19,7 +19,7 @@ namespace Tobi.Infrastructure
         /// Fired if the <see cref="IsActive"/> property changes.
         /// </summary>
         public event EventHandler IsActiveChanged
-		{
+        {
             add
             {
                 lock (LOCK)
@@ -75,8 +75,8 @@ namespace Tobi.Infrastructure
         }
 
         #endregion
-	}
-	
+    }
+
     /// <summary>
     ///     This class allows delegating the commanding logic to methods passed as parameters,
     ///     and enables a View to bind commands to objects that are not part of the element tree.
@@ -177,18 +177,18 @@ namespace Tobi.Infrastructure
         /// </summary>
         protected virtual void OnCanExecuteChanged()
         {
-				Dispatcher dispatcher = null;
-	            if (Application.Current != null)
-	            {
-	                dispatcher = Application.Current.Dispatcher;
-	            }
-	            if (dispatcher == null || dispatcher.CheckAccess())
-	            {
-		            CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
-	                return;
-	            }
+            Dispatcher dispatcher = null;
+            if (Application.Current != null)
+            {
+                dispatcher = Application.Current.Dispatcher;
+            }
+            if (dispatcher == null || dispatcher.CheckAccess())
+            {
+                CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
+                return;
+            }
 
-	            dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)OnCanExecuteChanged);
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)OnCanExecuteChanged);
         }
 
         #endregion
@@ -315,14 +315,14 @@ namespace Tobi.Infrastructure
         /// </summary>
         protected virtual void OnCanExecuteChanged()
         {
-			Dispatcher dispatcher = null;
+            Dispatcher dispatcher = null;
             if (Application.Current != null)
             {
                 dispatcher = Application.Current.Dispatcher;
             }
             if (dispatcher == null || dispatcher.CheckAccess())
             {
-	            CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
+                CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
                 return;
             }
 

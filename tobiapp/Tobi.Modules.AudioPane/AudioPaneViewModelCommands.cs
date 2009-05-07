@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 
 
 namespace Tobi.Modules.AudioPane

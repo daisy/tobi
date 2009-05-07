@@ -1,5 +1,5 @@
 ﻿using System.Windows.Input;
-using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 using urakawa;
 
 namespace Tobi

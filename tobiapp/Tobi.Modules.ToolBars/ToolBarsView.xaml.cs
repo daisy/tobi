@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 
 namespace Tobi.Modules.ToolBars
 {
