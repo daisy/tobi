@@ -7,7 +7,7 @@ using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 
 namespace Tobi.Modules.UserInterfaceZoom
 {

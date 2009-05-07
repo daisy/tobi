@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
@@ -8,36 +8,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Tobi.Infrastructure.UI;
 
-namespace Tobi.Infrastructure
+namespace Tobi.Infrastructure.Commanding
 {
-    /*
-     * 1 <Canvas>
- 2     <!-- Step 3: Command is associated with methods -->
- 3     <Canvas.CommandBindings>
- 4         <CommandBinding Command="ApplicationCommands.Open" CanExecute="CommandBindingOpen_CanExecute" 
- 5             Executed="CommandBindingOpen_Executed" />
- 6     </Canvas.CommandBindings>
- 7     
- 8     <!-- Step 1 & 2: ApplicationCommands.Open, with three input sources: the button, pressing Ctrl+O, 
- 9         or clicking the middle mouse button -->
-10     <Canvas.InputBindings>
-11         <KeyBinding Command="ApplicationCommands.Open" Key="O" Modifiers="Control" />
-12         <MouseBinding Command="ApplicationCommands.Open" Gesture="MiddleClick" />
-13     </Canvas.InputBindings>
-14     <Button Command="ApplicationCommands.Open" Name="button2">Open</Button>
-15 </Canvas>
-There are over 150 built-in commands with WPF, divided into 5 categories and implemented as static properties on these 5 classes in the System.Windows.Input namespace:
-
-   1. ApplicationCommands - common commands in applications, such as Open, Save, Close, Cut, Copy, Paste
-   2. ComponentCommands - commands for moving, scrolling, selecting, such as ScrollPageDown
-   3. MediaCommands - commands when using media, such as Play, Stop, IncreaseVolume, DecreaseVolume
-   4. NavigationCommands - commands for page navigation, such as NextPage, BrowseHome, Stop
-   5. EditingCommands - commands for document editing, such as AlignLeft, MoveToLineEnd, ToggleBold
-
-     */
     ///<summary>
-    /// Extension to <see cref="DelegateCommand<T>"/> that supports a <see cref="KeyGesture"/>
-    /// (for example, to display a shortcut in <see cref="MenuItem"/>, next to the label),
+    /// Extension to <see cref="KeyGesture<T>"/> that supports a <see cref="MenuItem"/>
+    /// (for example, to display a shortcut in <see cref="DelegateCommand"/>, next to the label),
     /// as well as a scalable icon (with 3 pre-determined sizes), and descriptions (text labels)
     ///</summary>
     ///<typeparam name="T"></typeparam>
@@ -91,10 +66,10 @@ There are over 150 built-in commands with WPF, divided into 5 categories and imp
         }*/
 
         public RichDelegateCommand(String shortDescription, String longDescription,
-                            KeyGesture keyGesture,
-                            VisualBrush icon,
-                            Action<T> executeMethod,
-                            Func<T, bool> canExecuteMethod)
+                                   KeyGesture keyGesture,
+                                   VisualBrush icon,
+                                   Action<T> executeMethod,
+                                   Func<T, bool> canExecuteMethod)
             : base(executeMethod, canExecuteMethod)
         {
             init(shortDescription, longDescription, keyGesture, icon);
@@ -390,28 +365,28 @@ There are over 150 built-in commands with WPF, divided into 5 categories and imp
             var bindingMulti = new MultiBinding { Converter = new RenderTargetBitmapImageSourceConverter() };
 
             var bindingVisualBrush = new Binding
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                Path = new PropertyPath("Icon")
-                //Path = new PropertyPath(IconProperty)
-            };
+                                         {
+                                             Mode = BindingMode.OneWay,
+                                             Source = this,
+                                             Path = new PropertyPath("Icon")
+                                             //Path = new PropertyPath(IconProperty)
+                                         };
             bindingMulti.Bindings.Add(bindingVisualBrush);
 
             var bindingWidth = new Binding
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                Path = new PropertyPath("IconWidth_" + size)
-            };
+                                   {
+                                       Mode = BindingMode.OneWay,
+                                       Source = this,
+                                       Path = new PropertyPath("IconWidth_" + size)
+                                   };
             bindingMulti.Bindings.Add(bindingWidth);
 
             var bindingHeight = new Binding
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                Path = new PropertyPath("IconHeight_" + size)
-            };
+                                    {
+                                        Mode = BindingMode.OneWay,
+                                        Source = this,
+                                        Path = new PropertyPath("IconHeight_" + size)
+                                    };
             bindingMulti.Bindings.Add(bindingHeight);
 
             bindingMulti.ConverterParameter = false;
@@ -446,12 +421,12 @@ There are over 150 built-in commands with WPF, divided into 5 categories and imp
         private Image createImage(int size)
         {
             Image image = new AutoGreyableImage
-            {
-                Stretch = Stretch.Fill,
-                SnapsToDevicePixels = true,
-                Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : Sizes.IconWidth_Large)),
-                Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : Sizes.IconHeight_Large))
-            };
+                              {
+                                  Stretch = Stretch.Fill,
+                                  SnapsToDevicePixels = true,
+                                  Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : Sizes.IconWidth_Large)),
+                                  Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : Sizes.IconHeight_Large))
+                              };
 
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);

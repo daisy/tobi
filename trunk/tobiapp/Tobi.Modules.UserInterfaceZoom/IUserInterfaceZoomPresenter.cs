@@ -1,4 +1,4 @@
-﻿using Tobi.Infrastructure;
+﻿using Tobi.Infrastructure.Commanding;
 
 namespace Tobi.Modules.UserInterfaceZoom
 {

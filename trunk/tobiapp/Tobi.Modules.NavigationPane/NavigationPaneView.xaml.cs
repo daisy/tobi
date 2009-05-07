@@ -10,6 +10,7 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 using urakawa;
 using urakawa.core;
 

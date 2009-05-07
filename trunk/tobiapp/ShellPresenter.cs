@@ -12,6 +12,7 @@ using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Sid.Windows.Controls;
 using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 using Tobi.Modules.MenuBar;
 using urakawa;
 using XukImport;

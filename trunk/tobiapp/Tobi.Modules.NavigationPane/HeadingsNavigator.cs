@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 using urakawa;
 using urakawa.core;
 using urakawa.navigation;
