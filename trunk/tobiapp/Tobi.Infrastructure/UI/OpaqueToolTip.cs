@@ -18,12 +18,12 @@ namespace Tobi.Infrastructure.UI
         {
             if (newTemplate != null)
             {
-                this.Visibility = ((UIElement) this).Visibility.Collapsed;
+                this.Visibility = Visibility.Collapsed;
                 this.IsOpen = true;
                 Popup popup = GetPopupFromVisualChild(this);
                 if (popup != null) popup.AllowsTransparency = false;
                 this.IsOpen = false;
-                this.Visibility = ((UIElement) this).Visibility.Visible;
+                this.Visibility = Visibility.Visible;
             }
         }
 

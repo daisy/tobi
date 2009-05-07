@@ -444,7 +444,7 @@ namespace Tobi.Modules.AudioPane
                 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged(() => "ColorEnvelopeOutline);
+                OnPropertyChanged(() => ColorEnvelopeOutline);
             }
         }
 

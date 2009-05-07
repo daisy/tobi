@@ -59,7 +59,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Colors.cs" />
-    <Compile Include="CommandExtension.cs" />
+    <Compile Include="Commanding\AttachedTrigger\CommandParameter.cs" />
+    <Compile Include="Commanding\AttachedTrigger\CommandSource.cs" />
+    <Compile Include="Commanding\AttachedTrigger\CommandTrigger.cs" />
+    <Compile Include="Commanding\AttachedTrigger\CommandTriggerGroup.cs" />
+    <Compile Include="Commanding\AttachedTrigger\EventCommandTrigger.cs" />
+    <Compile Include="Commanding\AttachedTrigger\ICommandTrigger.cs" />
+    <Compile Include="Commanding\AttachedTrigger\PropertyCommandTrigger.cs" />
+    <Compile Include="Commanding\CommandExtension.cs" />
     <Compile Include="DataBindingDebugConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="HelpProvider.cs" />
