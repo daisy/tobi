@@ -72,7 +72,7 @@ namespace Tobi.Modules.AudioPane
 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("DecibelResolution");
+                OnPropertyChanged(() => DecibelResolution);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Tobi.Modules.AudioPane
 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("WaveStepX");
+                OnPropertyChanged(() => WaveStepX);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsUseDecibelsAdjust");
+                OnPropertyChanged(() => IsUseDecibelsAdjust);
             }
         }
 
@@ -150,7 +150,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsUseDecibels");
+                OnPropertyChanged(() => IsUseDecibels);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsUseDecibelsNoAverage");
+                OnPropertyChanged(() => IsUseDecibelsNoAverage);
             }
         }
 
@@ -210,7 +210,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsBackgroundVisible");
+                OnPropertyChanged(() => IsBackgroundVisible);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsWaveFillVisible");
+                OnPropertyChanged(() => IsWaveFillVisible);
             }
         }
 
@@ -270,7 +270,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsEnvelopeVisible");
+                OnPropertyChanged(() => IsEnvelopeVisible);
             }
         }
 
@@ -290,7 +290,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("IsEnvelopeFilled");
+                OnPropertyChanged(() => IsEnvelopeFilled);
             }
         }
 
@@ -305,7 +305,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_ColorTimeSelection == value) return;
                 m_ColorTimeSelection = value;
-                OnPropertyChanged("ColorTimeSelection");
+                OnPropertyChanged(() => ColorTimeSelection);
             }
         }
 
@@ -321,7 +321,7 @@ namespace Tobi.Modules.AudioPane
                 if (m_ColorPlayhead == value) return;
                 m_ColorPlayhead = value;
                 AudioPlayer_UpdateWaveFormPlayHead();
-                OnPropertyChanged("ColorPlayhead");
+                OnPropertyChanged(() => ColorPlayhead);
             }
         }
 
@@ -337,7 +337,7 @@ namespace Tobi.Modules.AudioPane
                 if (m_ColorPlayheadFill == value) return;
                 m_ColorPlayheadFill = value;
                 AudioPlayer_UpdateWaveFormPlayHead();
-                OnPropertyChanged("ColorPlayheadFill");
+                OnPropertyChanged(() => ColorPlayheadFill);
             }
         }
 
@@ -358,7 +358,7 @@ namespace Tobi.Modules.AudioPane
 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("ColorWaveBackground");
+                OnPropertyChanged(() => ColorWaveBackground);
             }
         }
 
@@ -380,7 +380,7 @@ namespace Tobi.Modules.AudioPane
 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("ColorMarkers");
+                OnPropertyChanged(() => ColorMarkers);
             }
         }
 
@@ -401,7 +401,7 @@ namespace Tobi.Modules.AudioPane
 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("ColorWaveBars");
+                OnPropertyChanged(() => ColorWaveBars);
             }
         }
 
@@ -423,7 +423,7 @@ namespace Tobi.Modules.AudioPane
 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("ColorEnvelopeFill");
+                OnPropertyChanged(() => ColorEnvelopeFill);
             }
         }
 
@@ -444,7 +444,7 @@ namespace Tobi.Modules.AudioPane
                 
                     View.StartWaveFormLoadTimer(20, false);
                 }
-                OnPropertyChanged("ColorEnvelopeOutline");
+                OnPropertyChanged(() => "ColorEnvelopeOutline);
             }
         }
 

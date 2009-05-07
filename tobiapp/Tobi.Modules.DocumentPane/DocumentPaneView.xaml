@@ -37,6 +37,7 @@
   </Grid -->
 
   <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Scroll"
+                      FontFamily="Palatino Linotype"
                       Background="White" IsFindEnabled="False"/>
 
 </DockPanel>

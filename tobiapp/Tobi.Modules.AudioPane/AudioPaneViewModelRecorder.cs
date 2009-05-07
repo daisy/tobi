@@ -85,7 +85,7 @@ namespace Tobi.Modules.AudioPane
             m_Recorder.StartRecording(m_PcmFormat);
 
             IsRecording = true;
-            OnPropertyChanged("IsRecording");
+            OnPropertyChanged(()=>IsRecording);
         }
 
         public void AudioRecorder_Stop()
@@ -107,7 +107,7 @@ namespace Tobi.Modules.AudioPane
             m_Recorder.StopRecording();
 
             IsRecording = false;
-            OnPropertyChanged("IsRecording");
+            OnPropertyChanged(() => IsRecording);
 
             if (!string.IsNullOrEmpty(m_Recorder.RecordedFilePath))
             {
