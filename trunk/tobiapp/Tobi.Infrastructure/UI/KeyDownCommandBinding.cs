@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Practices.Composite.Presentation.Commands;
 
 namespace Tobi.Infrastructure.UI
 {
@@ -41,8 +37,8 @@ namespace Tobi.Infrastructure.UI
     /**
      * Example of use:
      * 
-     * <TextBox framework:CreateKeyDownCommandBinding.Command="{Binding MyCommand}">
-    <framework:CreateKeyDownCommandBinding.Key>Enter</framework:CreateKeyDownCommandBinding.Key>
+     * <TextBox framework:KeyDownCommandBinding.Command="{Binding MyCommand}">
+    <framework:KeyDownCommandBinding.Key>Enter</framework:KeyDownCommandBinding.Key>
 </TextBox>
      */
 

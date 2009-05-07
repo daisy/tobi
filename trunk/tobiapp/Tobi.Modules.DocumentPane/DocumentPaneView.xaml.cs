@@ -105,9 +105,16 @@ namespace Tobi.Modules.DocumentPane
             foreach (TreeNode n in PathToCurrentTreeNode)
             {
                 QualifiedName qname = n.GetXmlElementQName();
+
+                //TODO: could use Label+Hyperlink+TextBlock instead of button
+                // (not with NavigateUri+RequestNavigate, because it requires a valid URI.
+                // instead we use the Tag property which contains a reference to a TreeNode, 
+                // so we can use the Click event)
+
                 Button butt = new Button
                                   {
                                       Tag = n,
+                                      BorderThickness = new Thickness(0.0),
                                       BorderBrush = null,
                                       Background = Brushes.Transparent,
                                       Foreground = Brushes.Blue,
@@ -131,6 +138,7 @@ namespace Tobi.Modules.DocumentPane
                         Content = run2,
                         Tag = n,
                         BorderBrush = null,
+                        BorderThickness = new Thickness(0.0),
                         Background = Brushes.Transparent,
                         Foreground = Brushes.Black,
                         Cursor = Cursors.Cross,
@@ -366,6 +374,7 @@ namespace Tobi.Modules.DocumentPane
             }
 
             m_FlowDoc = new FlowDocument();
+            m_FlowDoc.FontFamily = new FontFamily("Palatino Linotype");
             //m_FlowDoc.Blocks.Clear();
 
             walkBookTreeAndGenerateFlowDocument(nodeBook, null);
@@ -1539,8 +1548,57 @@ namespace Tobi.Modules.DocumentPane
                     case "dfn":
                     case "abbr":
                     case "q":
+                    case "rbc":
+                    case "rtc":
+                    case "rp":
                         {
                             return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                        }
+                    case "ruby":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.Background = Brushes.BlanchedAlmond;
+                                }
+                                );
+                        }
+                    case "rb":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.Inlines.Add(new Run(" "));
+                                    data.TextDecorations = TextDecorations.OverLine;
+                                });
+
+                        }
+                    case "rt":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    //var converter = new FontFamilyConverter();
+                                    //data.FontFamily = (FontFamily)converter.ConvertFrom("Meiryo");
+
+                                    //data.FontFamily = new FontFamily("Meiryo");
+
+                                    data.Typography.Variants = FontVariants.Subscript;
+
+                                    var xmlProp = node.GetProperty<XmlProperty>();
+                                    if (xmlProp != null)
+                                    {
+                                        var attr = xmlProp.GetAttribute("rbspan");
+
+                                        if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                                        {
+                                            data.TextDecorations = TextDecorations.Underline;
+                                            return;
+                                        }
+                                    }
+                                    data.Inlines.Add(new Run(" "));
+                                }
+                                );
                         }
                     case "acronym":
                         {
@@ -1548,9 +1606,12 @@ namespace Tobi.Modules.DocumentPane
                                 data =>
                                 {
                                     XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                                    XmlAttribute attr = xmlProp.GetAttribute("pronounce");
+                                    if (xmlProp == null) return;
 
-                                    if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                                    XmlAttribute attr = xmlProp.GetAttribute("pronounce");
+                                    if (attr == null) return;
+
+                                    if (!String.IsNullOrEmpty(attr.Value))
                                     {
                                         data.ToolTip = "pronounce = " + attr.Value;
                                     }

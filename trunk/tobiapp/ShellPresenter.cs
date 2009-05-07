@@ -249,7 +249,7 @@ namespace Tobi
             var dlg = new OpenFileDialog();
             dlg.FileName = "dtbook"; // Default file name
             dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBook, OPF or XUK (.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk";
+            dlg.Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub";
             bool? result = dlg.ShowDialog();
             if (result == false)
             {

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using Tobi.Infrastructure.Onyx.Reflection;
 
 namespace Tobi.Infrastructure
 {
@@ -30,15 +31,14 @@ namespace Tobi.Infrastructure
         [DebuggerStepThrough]
         public void VerifyPropertyName(string propertyName)
         {
-            // Verify that the property name matches a real,  
-            // public, instance property on this object.
-            if (TypeDescriptor.GetProperties(this)[propertyName] == null)
+            //TypeDescriptor.GetProperties(this)[propertyName] == null
+            if (!string.IsNullOrEmpty(propertyName) && GetType().GetProperty(propertyName) == null)
             {
                 string msg = String.Format("Invalid property name ! ({0})", propertyName);
 
                 if (ThrowOnInvalidPropertyName)
                 {
-                    throw new Exception(msg);
+                throw new ArgumentException(msg, Reflect.GetField(() => propertyName).Name);
                 }
 
                 Debug.Fail(msg);
@@ -84,6 +84,11 @@ namespace Tobi.Infrastructure
             VerifyPropertyName(propertyName);
 
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected void OnPropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
+        {
+            OnPropertyChanged(Reflect.GetProperty(expression).Name);
         }
 
         #endregion INotifyPropertyChanged

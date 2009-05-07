@@ -60,8 +60,11 @@
   <ItemGroup>
     <Compile Include="Colors.cs" />
     <Compile Include="CommandExtension.cs" />
+    <Compile Include="DataBindingDebugConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="HelpProvider.cs" />
+    <Compile Include="Onyx\Reflection\Reflect.cs" />
+    <Compile Include="Onyx\Reflection\ReflectOn.cs" />
     <Compile Include="PageFoundByFlowDocumentParserEvent.cs" />
     <Compile Include="ProjectLoadedEvent.cs" />
     <Compile Include="RichDelegateCommand.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="UI\LoadingUserControl.xaml.cs">
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\OpaqueToolTip.cs" />
     <Compile Include="UI\WpfTreeHelper.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\MenuShortcutManager.cs" />
