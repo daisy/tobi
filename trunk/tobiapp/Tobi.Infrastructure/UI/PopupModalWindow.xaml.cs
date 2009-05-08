@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Tobi.Infrastructure.Onyx.Reflection;
 
 namespace Tobi.Infrastructure.UI
@@ -39,10 +41,17 @@ namespace Tobi.Infrastructure.UI
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            if (AllowEscapeAndCloseButton && e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
-                m_ButtonTriggersClose = false;
-                Close();
+                if (AllowEscapeAndCloseButton)
+                {
+                    m_ButtonTriggersClose = false;
+                    Close();
+                }
+                else
+                {
+                    SystemSounds.Asterisk.Play();
+                }
             }
             base.OnKeyUp(e);
         }
@@ -53,6 +62,7 @@ namespace Tobi.Infrastructure.UI
 
             if (!AllowEscapeAndCloseButton)
             {
+                SystemSounds.Asterisk.Play();
                 e.Cancel = true;
                 return;
             }
@@ -62,6 +72,18 @@ namespace Tobi.Infrastructure.UI
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                //pack://application:,,,/Tobi.Infrastructure;component/tango-icons/media-playback-pause.xaml
+                Uri iconUri = new Uri("pack://application:,,,/Tobi;component/Tobi.ico", UriKind.Absolute);
+                //Uri iconUri = new Uri("Tobi.ico", UriKind.RelativeOrAbsolute);
+                Icon = BitmapFrame.Create(iconUri);
+            }
+            finally
+            {
+                //ignore
+            }
+
             OnPropertyChangedButtonsSet();
 
             Button buttonToFocus = ButtonOK;
@@ -124,6 +146,53 @@ namespace Tobi.Infrastructure.UI
             YesNoCancel,
             Close,
         }
+            
+#region ButtonDefault
+        public bool IsButtonDefault_Close
+        {
+            get
+            {
+                return DefaultDialogButton == DialogButton.Close;
+            }
+        }
+        public bool IsButtonDefault_Apply
+        {
+            get
+            {
+                return DefaultDialogButton == DialogButton.Apply;
+            }
+        }
+        public bool IsButtonDefault_Ok
+        {
+            get
+            {
+                return DefaultDialogButton == DialogButton.Ok;
+            }
+        }
+        public bool IsButtonDefault_Cancel
+        {
+            get
+            {
+                return DefaultDialogButton == DialogButton.Cancel;
+            }
+        }
+        public bool IsButtonDefault_Yes
+        {
+            get
+            {
+                return DefaultDialogButton == DialogButton.Yes;
+            }
+        }
+        public bool IsButtonDefault_No
+        {
+            get
+            {
+                return DefaultDialogButton == DialogButton.No;
+            }
+        }
+
+#endregion ButtonDefault
+#region ButtonActive
         public bool IsButtonActive_Close
         {
             get
@@ -173,6 +242,8 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
+#endregion ButtonActive
+
         public DialogButton ClickedDialogButton
         {
             get;
@@ -201,6 +272,15 @@ namespace Tobi.Infrastructure.UI
 
             OnPropertyChanged(() => IsButtonActive_Yes);
             OnPropertyChanged(() => IsButtonActive_No);
+
+            OnPropertyChanged(() => IsButtonDefault_Close);
+            OnPropertyChanged(() => IsButtonDefault_Apply);
+
+            OnPropertyChanged(() => IsButtonDefault_Ok);
+            OnPropertyChanged(() => IsButtonDefault_Cancel);
+
+            OnPropertyChanged(() => IsButtonDefault_Yes);
+            OnPropertyChanged(() => IsButtonDefault_No);
         }
 
         public new void Show()
@@ -235,6 +315,8 @@ namespace Tobi.Infrastructure.UI
         }
 
         #endregion INotifyPropertyChanged
+        
+#region ButtonClick
 
         private void OnOkButtonClick(object sender, RoutedEventArgs e)
         {
@@ -270,5 +352,6 @@ namespace Tobi.Infrastructure.UI
         {
             ClickedDialogButton = DialogButton.Apply;
         }
+#endregion ButtonClick
     }
 }

@@ -11,7 +11,6 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
-using Sid.Windows.Controls;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
@@ -410,6 +409,16 @@ namespace Tobi
         private bool askUserConfirmExit()
         {
             Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
+
+            /*
+            try
+            {
+                throw new ArgumentException("Opps !", new ArgumentOutOfRangeException("Oops 2 !!"));
+            }
+            catch (Exception ex)
+            {
+                App.handleException(ex);
+            }*/
 
             var window = View as Window;
 

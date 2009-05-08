@@ -57,7 +57,7 @@ namespace Tobi.Infrastructure
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";
 
-        public const string UnhandledException = "An unhandled exception occurred, and the application is terminating. For more information, see your Application log.";
+        public const string UnhandledException = "An unhandled exception occurred, the application is now closing. For more information, see the 'Tobi.log' file.";
 
         public const string Audio_OpenFile = "_Open audio";
         public const string Audio_OpenFile_ = "Open a local WAV file";
