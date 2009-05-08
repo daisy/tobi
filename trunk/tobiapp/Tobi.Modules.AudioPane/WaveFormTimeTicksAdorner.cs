@@ -19,9 +19,34 @@ namespace Tobi.Modules.AudioPane
             m_AudioPaneView = view;
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
+
+            m_penTick = new Pen(Brushes.White, 1);
+            m_penTick.Freeze();
+
+            m_renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.8 };
+            m_renderBrush.Freeze();
+
+            m_point1 = new Point(1, 1);
+            m_point2 = new Point(1, 1);
+
+            m_typeFace = new Typeface("Helvetica");
+
+            m_culture = CultureInfo.GetCultureInfo("en-us");
+
+            m_point3 = new Point(1,1);
+
+            m_rectRect = new Rect(1, 1, 1, 1);
         }
 
+        private Typeface m_typeFace;
+        private CultureInfo m_culture;
         private double m_MousePosX = -1;
+        private Pen m_penTick;
+        private SolidColorBrush m_renderBrush;
+        private Point m_point1;
+        private Point m_point2;
+        private Point m_point3;
+        private Rect m_rectRect;
 
         public void OnAdornerMouseLeave(object sender, MouseEventArgs e)
         {
@@ -54,10 +79,6 @@ namespace Tobi.Modules.AudioPane
                                                       new Size(widthAvailable,
                                                                heightAvailable))); */
 
-            var penTick = new Pen(Brushes.White, 1);
-
-            var renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.8 };
-
             const double tickHeight = 3;
 
             /*if (m_MousePosX != -1)
@@ -76,8 +97,6 @@ namespace Tobi.Modules.AudioPane
                                                        new Size(widthAvailable,
                                                                 tickHeight + tickHeight + formattedTextTMP.Height)));
              }*/
-
-
 
             double minorTickInterval_milliseconds = 1000; //1s minor ticks
             double minorTickInterval_pixels =
@@ -142,16 +161,21 @@ namespace Tobi.Modules.AudioPane
 
                 if (count % 5 == 0)
                 {
-                    drawingContext.DrawLine(penTick, new Point(currentTickX, 0),
-                                            new Point(currentTickX, tickHeight * 2));
+                    m_point1.X = currentTickX;
+                    m_point1.Y = 0;
+
+                    m_point2.X = currentTickX;
+                    m_point2.Y = tickHeight * 2;
+
+                    drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
                     double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX);
                     double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
                     var formattedText = new FormattedText(
-                        formatTimeSpan(TimeSpan.FromMilliseconds(ms)),
-                        CultureInfo.GetCultureInfo("en-us"),
+                        FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
+                        m_culture,
                         FlowDirection.LeftToRight,
-                        new Typeface("Helvetica"),
+                        m_typeFace,
                         12,
                         Brushes.White
                         );
@@ -160,25 +184,30 @@ namespace Tobi.Modules.AudioPane
 
                     if (m_MousePosX != -1)
                     {
-                        var point = new Point(posX - horizontalMargin,
-                                              tickHeight * 2);
+                        m_rectRect.X = posX - horizontalMargin;
+                        m_rectRect.Y = tickHeight*2;
+                        m_rectRect.Width = formattedText.Width + horizontalMargin*2;
+                        m_rectRect.Height = formattedText.Height;
 
                         drawingContext.Pop();
 
-                        drawingContext.DrawRectangle(renderBrush, null,
-                                                     new Rect(point,
-                                                              new Size(formattedText.Width + horizontalMargin*2,
-                                                                       formattedText.Height)));
+                        drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
 
                         drawingContext.PushOpacity(0.6);
                     }
-                    drawingContext.DrawText(formattedText, new Point(posX,
-                                                                tickHeight * 2));
+                    m_point3.X = posX;
+                    m_point3.Y = tickHeight*2;
+                    drawingContext.DrawText(formattedText, m_point3);
                 }
                 else
                 {
-                    drawingContext.DrawLine(penTick, new Point(currentTickX, 0),
-                                                    new Point(currentTickX, tickHeight));
+                    m_point1.X = currentTickX;
+                    m_point1.Y = 0;
+
+                    m_point2.X = currentTickX;
+                    m_point2.Y = tickHeight;
+
+                    drawingContext.DrawLine(m_penTick, m_point1, m_point2);
                 }
 
                 currentTickX += minorTickInterval_pixels;
@@ -189,16 +218,21 @@ namespace Tobi.Modules.AudioPane
                 double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX);
                 double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
                 var formattedText = new FormattedText(
-                    formatTimeSpan(TimeSpan.FromMilliseconds(ms)),
-                    CultureInfo.GetCultureInfo("en-us"),
+                    FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
+                    m_culture,
                     FlowDirection.LeftToRight,
-                    new Typeface("Helvetica"),
+                    m_typeFace,
                     12,
                     Brushes.White
                     );
 
-                drawingContext.DrawLine(penTick, new Point(m_MousePosX, 0),
-                                                new Point(m_MousePosX, heightAvailable));
+                m_point1.X = m_MousePosX;
+                m_point1.Y = 0;
+
+                m_point2.X = m_MousePosX;
+                m_point2.Y = heightAvailable;
+
+                drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
                 double xPos = Math.Max(5, m_MousePosX - formattedText.Width / 2);
                 xPos = Math.Min(xPos, widthAvailable - formattedText.Width - 5);
@@ -206,19 +240,23 @@ namespace Tobi.Modules.AudioPane
 
                 drawingContext.Pop();
 
-                var point = new Point(xPos,
-                                        heightAvailable - formattedText.Height - tickHeight);
+                m_point3.X = xPos;
+                m_point3.Y = heightAvailable - formattedText.Height - tickHeight;
 
-                drawingContext.DrawRectangle(renderBrush, null,
-                                             new Rect(new Point(point.X - horizontalMargin, point.Y),
-                                                      new Size(formattedText.Width + horizontalMargin*2,
-                                                               formattedText.Height)));
 
-                drawingContext.DrawText(formattedText, point);
+                m_rectRect.X = m_point3.X - horizontalMargin;
+                m_rectRect.Y = m_point3.Y;
+                m_rectRect.Width = formattedText.Width + horizontalMargin*2;
+                m_rectRect.Height = formattedText.Height;
+
+
+                drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+
+                drawingContext.DrawText(formattedText, m_point3);
             }
         }
 
-        private static string formatTimeSpan(TimeSpan time)
+        private static string FormatTimeSpan(TimeSpan time)
         {
             return
                 (time.Hours != 0 ? time.Hours + "h" : "") +
@@ -226,6 +264,5 @@ namespace Tobi.Modules.AudioPane
                 (time.Seconds != 0 ? time.Seconds + "s" : "") +
                 (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
-
     }
 }

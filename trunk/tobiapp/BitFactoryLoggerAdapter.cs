@@ -1,36 +1,26 @@
-﻿
-using System;
+﻿using System;
+using System.IO;
+using BitFactory.Logging;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Tobi
 {
-    ///<summary>
-    /// Our own logger, based on the Logger from Microsoft.Practices.EnterpriseLibrary.Logging
-    ///</summary>
-    public class EntLibLoggerAdapter : ILoggerFacade
+    public class BitFactoryLoggerAdapter : ILoggerFacade
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public EntLibLoggerAdapter()
+        private CompositeLogger m_Logger;
+
+        public BitFactoryLoggerAdapter()
         {
-#if (DEBUG)
-            /*
-            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-             
-            try
-            {
-                Console.SetWindowPosition(0, 0);
-                Console.Title = "Tobi Log Window";
-            }
-            finally
-            {
-                //ignore
-            }
-            Console.Beep();
-             */
-#endif
+            m_Logger = new CompositeLogger();
+
+            Logger consoleLogger = TextWriterLogger.NewConsoleLogger();
+
+            string logPath = Directory.GetCurrentDirectory() + @"\Tobi.log";
+
+            Logger fileLogger = new FileLogger(logPath);
+
+            m_Logger.AddLogger("console", consoleLogger);
+            m_Logger.AddLogger("file", fileLogger);
         }
 
         #region ILoggerFacade Members
@@ -40,50 +30,60 @@ namespace Tobi
         //</summary>
         public void Log(string message, Category category, Priority priority)
         {
-            Logger.Write(message, category.ToString(), (int)priority);
-
-#if (DEBUG)
             switch (category)
             {
                 case Category.Info:
                     {
+                        m_Logger.Log(LogSeverity.Info, message);
+#if (DEBUG)
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("Info ");
                         consoleWritePriority(priority);
                         Console.WriteLine(" [" + message + "]");
+#endif
                     }
                     break;
                 case Category.Warn:
                     {
+                        m_Logger.Log(LogSeverity.Warning, message);
+#if (DEBUG)
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("Warn ");
                         consoleWritePriority(priority);
                         Console.WriteLine(" [" + message + "]");
+#endif
                     }
                     break;
 
                 case Category.Exception:
                     {
+                        m_Logger.Log(LogSeverity.Error, message);
+#if (DEBUG)
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("Exception ");
                         consoleWritePriority(priority);
                         Console.WriteLine(" [" + message + "]");
+#endif
                     }
                     break;
 
                 case Category.Debug:
                     {
+                        m_Logger.Log(LogSeverity.Debug, message);
+#if (DEBUG)
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("Debug ");
                         consoleWritePriority(priority);
                         Console.WriteLine(" [" + message + "]");
+#endif
                     }
                     break;
             }
-#endif
         }
 
         #endregion
+
+#if (DEBUG)
 
         private void consoleWritePriority(Priority priority)
         {
@@ -113,5 +113,6 @@ namespace Tobi
                     break;
             }
         }
+#endif
     }
 }

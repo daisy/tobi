@@ -307,6 +307,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   <Grid.RowDefinitions>
     <RowDefinition Height="*"/>
     <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
 
   <!-- GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/ -->
@@ -686,7 +687,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   <infraUI:WrapPanelLastChildFill
     LastChildFill="True"
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
-      DockPanel.Dock="Left"
       Orientation="Horizontal"
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
@@ -778,6 +778,40 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
       </infraUI:WrapPanelLastChildFill>
 
+  <DockPanel 
+    Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+    HorizontalAlignment="Stretch"
+    LastChildFill="True">
+
+    <TextBlock
+      FontWeight="ExtraBlack"
+    DockPanel.Dock="Right"
+    Margin="0, 0, 15, 0" VerticalAlignment="Center" Text="{Binding CurrentTimeString, Mode=OneWay}"/>
+    
+  <StackPanel 
+      Orientation="Horizontal"
+                  HorizontalAlignment="Left"
+      Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Playback: </TextBlock>
+    <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
+              SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
+              DisplayMemberPath="Name"
+              SelectedValuePath="Name"
+              Margin="2"/>
+
+    <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Recording: </TextBlock>
+    <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
+              SelectedItem="{Binding InputDevice, Mode=TwoWay}"
+              DisplayMemberPath="Name"
+              SelectedValuePath="Name"
+              Margin="2"/>
+
+    <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{Binding CurrentPcmFormatString, Mode=OneWay}"/>
+    
+  </StackPanel>
+
+  </DockPanel>
 
 </Grid >
 

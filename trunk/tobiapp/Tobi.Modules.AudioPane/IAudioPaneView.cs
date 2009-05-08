@@ -8,6 +8,9 @@
     public interface IAudioPaneView
     {
 // ReSharper disable InconsistentNaming
+        void RefreshUI_TimeMessageClear();
+        void RefreshUI_TimeMessageInvalidate();
+        void RefreshUI_TimeMessageInitiate();
         void RefreshUI_AllReset();
         void RefreshUI_LoadWaveForm();
         void RefreshUI_LoadingMessage(bool visible);

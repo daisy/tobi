@@ -51,6 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BitFactory.Logging, Version=1.4.1.0, Culture=neutral, PublicKeyToken=de68848483a294a9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ExternalLibs\BitFactory.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ExternalLibs\CAL\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
@@ -126,11 +130,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvalonDockRegion.cs" />
+    <Compile Include="BitFactoryLoggerAdapter.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandLineDictionary.cs" />
     <Compile Include="CommandLineParser.cs" />
+    <Compile Include="DirectoryInfoConverter.cs" />
     <Compile Include="EntLibLoggerAdapter.cs" />
+    <Compile Include="FileInfoConverter.cs" />
     <Compile Include="KeyboardShortcuts.xaml.cs">
       <DependentUpon>KeyboardShortcuts.xaml</DependentUpon>
     </Compile>
@@ -147,6 +154,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="RequiredAttribute.cs" />
     <Compile Include="ShellPresenter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
