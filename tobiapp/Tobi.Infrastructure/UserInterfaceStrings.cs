@@ -13,6 +13,16 @@ namespace Tobi.Infrastructure
             return str.Replace("_", "");
         }
 
+
+        public const string Ok = "_Ok";
+        public const string Cancel = "_Cancel";
+
+        public const string Yes = "_Yes";
+        public const string No = "_No";
+
+        public const string Apply = "_Apply";
+        public const string Close = "_Close";
+
         public const string TreeExpandAll = "E_xpand all";
         public const string TreeExpandAll_ = "Expand all children in the tree";
 
@@ -20,6 +30,9 @@ namespace Tobi.Infrastructure
         public const string TreeCollapseAll_ = "Collapse all children in the tree";
 
         public const string Menu_File = "_File";
+
+        public const string Exit = "E_xit";
+        public const string ExitConfirm = "Are you sure you want to exit Tobi ?";
 
         public const string Menu_Exit = "_Quit";
         public const string Menu_Exit_ = "Exit the application";
@@ -117,9 +130,9 @@ namespace Tobi.Infrastructure
         public const string UI_DecreaseMagnification_ = "Decrease the UI magnification level";
         public static KeyGesture UI_DecreaseMagnification_KEYS = new KeyGesture(Key.Down, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
-        public const string UI_ManageShortcuts = "_Keyboard shortcuts";
-        public const string UI_ManageShortcuts_ = "View keyboard shortcuts";
-        public static KeyGesture UI_ManageShortcuts_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control);
+        public const string ManageShortcuts = "_Keyboard shortcuts";
+        public const string ManageShortcuts_ = "View keyboard shortcuts";
+        public static KeyGesture ManageShortcuts_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control);
 
 
         public const string Audio_SwitchPrevious = "_Previous audio";
