@@ -9,6 +9,8 @@
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
     xmlns:huddled="clr-namespace:Huddled.Wpf;assembly=Tobi.Infrastructure" 
 
+        ResizeMode="CanResizeWithGrip"
+        
     Title="{Binding WindowTitle}"
     Closing="OnClosing"
     Topmost="False"
