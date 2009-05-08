@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
@@ -13,6 +14,7 @@ using Microsoft.Win32;
 using Sid.Windows.Controls;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
+using Tobi.Infrastructure.UI;
 using Tobi.Modules.MenuBar;
 using urakawa;
 using XukImport;
@@ -23,12 +25,14 @@ namespace Tobi
     {
         public Project DocumentProject
         {
-            get; set;
+            get;
+            set;
         }
 
         public string DocumentFilePath
         {
-            get; set;
+            get;
+            set;
         }
 
         // To avoid the shutting-down loop in OnShellWindowClosing()
@@ -99,7 +103,7 @@ namespace Tobi
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       UserInterfaceStrings.Menu_Exit_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
-                                                                      //(VisualBrush)Application.Current.FindResource("document-save"),
+                //(VisualBrush)Application.Current.FindResource("document-save"),
                                                             ExitCommand_Executed, obj => true);
             RegisterRichCommand(ExitCommand);
             //
@@ -120,9 +124,9 @@ namespace Tobi
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
 
-            ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_ManageShortcuts,
-                                                                      UserInterfaceStrings.UI_ManageShortcuts_,
-                                                                      UserInterfaceStrings.UI_ManageShortcuts_KEYS,
+            ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.ManageShortcuts,
+                                                                      UserInterfaceStrings.ManageShortcuts_,
+                                                                      UserInterfaceStrings.ManageShortcuts_KEYS,
                                                                       (VisualBrush)Application.Current.FindResource("preferences-desktop-keyboard-shortcuts"),
                                                             obj => manageShortcuts(), obj => true);
             RegisterRichCommand(ManageShortcutsCommand);
@@ -280,21 +284,51 @@ namespace Tobi
             Logger.Log("ShellPresenter.manageShortcuts", Category.Debug, Priority.Medium);
 
             var window = View as Window;
-            if (window != null)
-            {
-                var dialog = new TaskDialog();
-                dialog.MaxWidth = 600;
-                dialog.MaxHeight = 500;
-                dialog.TopMost = InteropWindowZOrder.TopMost;
-                dialog.TaskDialogWindow.Title = UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.UI_ManageShortcuts);
-                dialog.TaskDialogButton = TaskDialogButton.Custom;
-                dialog.Button1Text = "_Ok";
-                dialog.DefaultResult = TaskDialogResult.Button1;
-                dialog.IsButton1Cancel = true;
-                dialog.Content = new KeyboardShortcuts(this);
 
-                dialog.Show();
-            }
+            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.ManageShortcuts),
+                                                   new KeyboardShortcuts(this),
+                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true)
+                                                   {
+                                                       Height = 600,
+                                                       Width = 500
+                                                   };
+            windowPopup.Show();
+
+            /*
+            var windowPopup = new Window()
+            {
+                Owner = (window ?? Application.Current.MainWindow),
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Title = UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.ManageShortcuts),
+                Height = 600,
+                Width = 500,
+                Content = new KeyboardShortcuts(this)
+            };
+            windowPopup.ShowDialog();
+             * */
+
+            /*
+        if (window != null)
+        {
+            var dialog = new TaskDialog();
+            dialog.MaxWidth = 600;
+            dialog.MaxHeight = 500;
+            dialog.TopMost = InteropWindowZOrder.TopMost;
+            dialog.TaskDialogWindow.Title = UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.ManageShortcuts);
+            dialog.TaskDialogButton = TaskDialogButton.Custom;
+            dialog.Button1Text = "_Ok";
+            dialog.DefaultResult = TaskDialogResult.Button1;
+            dialog.IsButton1Cancel = true;
+            dialog.Content = new KeyboardShortcuts(this);
+            dialog.Show();
+                
+        } * */
+
         }
 
         private void MagnifyUi(double value)
@@ -378,6 +412,35 @@ namespace Tobi
             Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
 
             var window = View as Window;
+
+            var label = new TextBlock
+                            {
+                                Text = UserInterfaceStrings.ExitConfirm,
+                                Margin = new Thickness(15),
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                            };
+            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.Exit),
+                                                   label,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.No,
+                                                   true)
+            {
+                Height = 140,
+                Width = 300
+            };
+            windowPopup.Show();
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
+            {
+                return true;
+            }
+
+            return false;
+
+
             if (window != null)
             {
                 /*MessageBoxResult result = MessageBox.Show(window, "Confirm quit ?", "Tobi asks:",
@@ -387,6 +450,7 @@ namespace Tobi
                     return false;
                 }*/
 
+                /*
                 TaskDialogResult result = TaskDialog.Show(window, "Exit Tobi ?",
                     "Are you sure you want to exit Tobi ?",
                     "Press OK to exit, CANCEL to return to the application.",
@@ -402,7 +466,7 @@ namespace Tobi
                 if (result != TaskDialogResult.Ok)
                 {
                     return false;
-                }
+                }*/
             }
             return true;
         }

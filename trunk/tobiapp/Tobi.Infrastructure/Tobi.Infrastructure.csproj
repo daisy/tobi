@@ -119,6 +119,9 @@
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\OpaqueToolTip.cs" />
+    <Compile Include="UI\PopupModalWindow.xaml.cs">
+      <DependentUpon>PopupModalWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\WpfTreeHelper.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\MenuShortcutManager.cs" />
@@ -473,6 +476,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\LoadingUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\PopupModalWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
