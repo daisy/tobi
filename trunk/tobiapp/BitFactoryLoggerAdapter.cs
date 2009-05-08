@@ -25,9 +25,6 @@ namespace Tobi
 
         #region ILoggerFacade Members
 
-        //<summary>
-        // Simply delegates to the Logger from Microsoft.Practices.EnterpriseLibrary.Logging
-        //</summary>
         public void Log(string message, Category category, Priority priority)
         {
             switch (category)
