@@ -127,6 +127,9 @@
   <ItemGroup>
     <Compile Include="AvalonDockRegion.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandLineDictionary.cs" />
+    <Compile Include="CommandLineParser.cs" />
     <Compile Include="EntLibLoggerAdapter.cs" />
     <Compile Include="KeyboardShortcuts.xaml.cs">
       <DependentUpon>KeyboardShortcuts.xaml</DependentUpon>

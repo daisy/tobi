@@ -7,8 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
-using Sid.Windows.Controls;
+using Microsoft.Test;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.UI;
 
@@ -21,12 +20,14 @@ namespace Tobi
     {
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            ((TextBox)sender).SelectAll();
+            if (((TextBox)sender).SelectionLength == 0)
+                ((TextBox)sender).SelectAll();
         }
 
         public SplashScreen SplashScreen
         {
-            get; set;
+            get;
+            set;
         }
 
         ///<summary>
@@ -60,7 +61,7 @@ namespace Tobi
                   new FrameworkPropertyMetadata(
                      XmlLanguage.GetLanguage(
                      CultureInfo.CurrentCulture.IetfLanguageTag)));
-            
+
             EventManager.RegisterClassHandler(typeof(TextBox),
                 UIElement.GotFocusEvent,
                 new RoutedEventHandler(TextBox_GotFocus));
@@ -109,7 +110,7 @@ namespace Tobi
 
             var margin = new Thickness(10, 10, 10, 0);
 
-            var panel = new DockPanel {LastChildFill = true};
+            var panel = new DockPanel { LastChildFill = true };
 
             string logPath = Directory.GetCurrentDirectory() + @"\Tobi.log";
 
@@ -212,7 +213,46 @@ namespace Tobi
 
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
-            bool debug = true;
+            // Ignore 0 index:
+            //Environment.GetCommandLineArgs()
+
+            //Tobi.exe -verbose -debuglevel:3
+            var d = CommandLineDictionary.FromArguments(e.Args, '-', ':');
+
+            //bool verbose = d.ContainsKey("verbose");
+            //int testId = Int32.Parse(d["debuglevel"]);
+
+            //or:
+
+            /*
+             * public class CommandLineArguments
+{
+   bool? Verbose { get; set; }
+   int? DebugLevel { get; set; }
+}
+
+CommandLineArguments a = new CommandLineArguments();
+CommandLineParser.ParseArguments(a, args);
+             */
+
+            //or:
+
+            /*
+             public class RunCommand : Command
+{
+   bool? Verbose { get; set; }
+   int? RunId { get; set; }
+
+   public override void Execute()
+   {
+      // Implement your "run" execution logic here.
+   }
+}
+
+Command c = new RunCommand();
+CommandLineParser.ParseArguments(c, args); 
+c.Execute();
+             */
         }
     }
 }
