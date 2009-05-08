@@ -13,6 +13,7 @@ namespace Tobi.Infrastructure
             return str.Replace("_", "");
         }
 
+        public const string Loading = "Loading...";
 
         public const string Ok = "_Ok";
         public const string Cancel = "_Cancel";

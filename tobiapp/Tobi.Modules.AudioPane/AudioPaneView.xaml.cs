@@ -513,7 +513,7 @@ namespace Tobi.Modules.AudioPane
             layer.Add(m_WaveFormTimeTicksAdorner);
             m_WaveFormTimeTicksAdorner.Visibility = Visibility.Visible;
 
-            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll);
+            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll, this);
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
         }
@@ -1031,6 +1031,7 @@ namespace Tobi.Modules.AudioPane
             if (m_WaveFormLoadingAdorner != null)
             {
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+                m_WaveFormTimeTicksAdorner.InvalidateVisual();
             }
         }
 
@@ -1044,6 +1045,58 @@ namespace Tobi.Modules.AudioPane
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
             }
         }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        public void RefreshUI_TimeMessageInvalidate()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(DispatcherPriority.Render, new ThreadStart(RefreshUI_TimeMessageInvalidate));
+                return;
+            }
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        public void RefreshUI_TimeMessageClear()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageClear));
+                return;
+            }
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.DisplayRecorderTime = false;
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+            }
+        }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        public void RefreshUI_TimeMessageInitiate()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageInitiate));
+                return;
+            }
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.DisplayRecorderTime = true;
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+                m_WaveFormTimeTicksAdorner.InvalidateVisual();
+            }
+        }
+
         // ReSharper restore InconsistentNaming
 
         /// <summary>

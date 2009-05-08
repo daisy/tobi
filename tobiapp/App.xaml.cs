@@ -36,6 +36,58 @@ namespace Tobi
         ///<param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Ignore 0 index:
+            //Environment.GetCommandLineArgs()
+
+            //Tobi.exe -verbose -debuglevel:3
+            var d = CommandLineDictionary.FromArguments(e.Args, '-', ':');
+
+            //bool verbose = d.ContainsKey("verbose");
+            //int testId = Int32.Parse(d["debuglevel"]);
+
+            //or:
+
+            /*
+             * public class CommandLineArguments
+{
+   bool? Verbose { get; set; }
+   int? DebugLevel { get; set; }
+}
+
+CommandLineArguments a = new CommandLineArguments();
+CommandLineParser.ParseArguments(a, args);
+             */
+
+            //or:
+
+            /*
+             public class RunCommand : Command
+{
+   bool? Verbose { get; set; }
+   int? RunId { get; set; }
+
+   public override void Execute()
+   {
+      // Implement your "run" execution logic here.
+   }
+}
+
+Command c = new RunCommand();
+CommandLineParser.ParseArguments(c, args); 
+c.Execute();
+             */
+
+            SplashScreen = new SplashScreen("TobiSplashScreen.png");
+            SplashScreen.Show(false);
+
+            string logPath = Directory.GetCurrentDirectory() + @"\Tobi.log";
+            if (File.Exists(logPath))
+            {
+                Console.Write("Deleting log file [" + logPath + "]...");
+                File.Delete(logPath);
+                Console.Write("File deleted [" + logPath + "].");
+            }
+
             PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
             PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
@@ -48,9 +100,6 @@ namespace Tobi
             PresentationTraceSources.MarkupSource.Switch.Level = SourceLevels.All;
             PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
-
-            SplashScreen = new SplashScreen("TobiSplashScreen.png");
-            SplashScreen.Show(false);
 
             base.OnStartup(e);
 
@@ -65,6 +114,8 @@ namespace Tobi
             EventManager.RegisterClassHandler(typeof(TextBox),
                 UIElement.GotFocusEvent,
                 new RoutedEventHandler(TextBox_GotFocus));
+
+
 
 #if (DEBUG)
             runInDebugMode();
@@ -213,46 +264,6 @@ namespace Tobi
 
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
-            // Ignore 0 index:
-            //Environment.GetCommandLineArgs()
-
-            //Tobi.exe -verbose -debuglevel:3
-            var d = CommandLineDictionary.FromArguments(e.Args, '-', ':');
-
-            //bool verbose = d.ContainsKey("verbose");
-            //int testId = Int32.Parse(d["debuglevel"]);
-
-            //or:
-
-            /*
-             * public class CommandLineArguments
-{
-   bool? Verbose { get; set; }
-   int? DebugLevel { get; set; }
-}
-
-CommandLineArguments a = new CommandLineArguments();
-CommandLineParser.ParseArguments(a, args);
-             */
-
-            //or:
-
-            /*
-             public class RunCommand : Command
-{
-   bool? Verbose { get; set; }
-   int? RunId { get; set; }
-
-   public override void Execute()
-   {
-      // Implement your "run" execution logic here.
-   }
-}
-
-Command c = new RunCommand();
-CommandLineParser.ParseArguments(c, args); 
-c.Execute();
-             */
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using urakawa.media.data.audio;
@@ -12,6 +14,32 @@ namespace Tobi.Modules.AudioPane
         #region Audio Recorder
 
         private AudioRecorder m_Recorder;
+
+        public List<InputDevice> InputDevices
+        {
+            get
+            {
+                return m_Recorder.InputDevices;
+            }
+        }
+        public InputDevice InputDevice
+        {
+            get
+            {
+                return m_Recorder.InputDevice;
+            }
+            set
+            {
+                if (value != null && m_Recorder.InputDevice != value)
+                {
+                    if (m_Recorder.State != AudioRecorderState.Stopped)
+                    {
+                        return;
+                    }
+                    m_Recorder.InputDevice = value;
+                }
+            }
+        }
 
         // ReSharper disable MemberCanBeMadeStatic.Local
         private void OnRecorderStateChanged(object sender, AudioLib.Events.Recorder.StateChangedEventArgs e)
@@ -28,6 +56,12 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StopPeakMeterTimer();
                 }
+                OnPropertyChanged(() => CurrentTimeString);
+                
+                if (View != null)
+                {
+                    View.RefreshUI_TimeMessageClear();
+                }
             }
             if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
             {
@@ -40,6 +74,12 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.StartPeakMeterTimer();
+                }
+
+                OnPropertyChanged(() => CurrentTimeString);
+                if (View != null)
+                {
+                    View.RefreshUI_TimeMessageInitiate();
                 }
             }
         }
@@ -86,6 +126,7 @@ namespace Tobi.Modules.AudioPane
 
             IsRecording = true;
             OnPropertyChanged(()=>IsRecording);
+            OnPropertyChanged(() => CurrentTimeString);
         }
 
         public void AudioRecorder_Stop()
@@ -108,6 +149,7 @@ namespace Tobi.Modules.AudioPane
 
             IsRecording = false;
             OnPropertyChanged(() => IsRecording);
+            OnPropertyChanged(() => CurrentTimeString);
 
             if (!string.IsNullOrEmpty(m_Recorder.RecordedFilePath))
             {

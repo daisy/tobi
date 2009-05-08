@@ -126,10 +126,6 @@ namespace Tobi.Modules.AudioPane
 
             resetAllInternalPlayerValues();
 
-            OnPropertyChanged(() => IsAudioLoaded);
-            OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-            OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-
             if (node == null)
             {
                 return;
@@ -139,6 +135,7 @@ namespace Tobi.Modules.AudioPane
             {
                 m_Player.Stop();
                 OnPropertyChanged(() => IsPlaying);
+                OnPropertyChanged(() => CurrentTimeString);
             }
 
             LastPlayHeadTime = 0;
@@ -197,6 +194,7 @@ namespace Tobi.Modules.AudioPane
                     OnPropertyChanged(() => IsAudioLoaded);
                     OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
                     OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
+                    OnPropertyChanged(() => CurrentTimeString);
                 }
                 return m_PlayStream;
             };
@@ -204,10 +202,6 @@ namespace Tobi.Modules.AudioPane
             if (m_CurrentAudioStreamProvider() == null)
             {
                 resetAllInternalPlayerValues();
-
-                OnPropertyChanged(() => IsAudioLoaded);
-                OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-                OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
 
                 return;
             }
@@ -219,6 +213,7 @@ namespace Tobi.Modules.AudioPane
             OnPropertyChanged(() => IsAudioLoaded);
             OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
             OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
+            OnPropertyChanged(() => CurrentTimeString);
 
             loadAndPlay();
         }
@@ -339,6 +334,37 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        public String CurrentTimeString
+        {
+            get
+            {
+                if (m_PcmFormat == null)
+                {
+                    return "";
+                }
+
+                if (m_Recorder.State == AudioRecorderState.Recording)
+                {
+                    var timeSpan = TimeSpan.FromMilliseconds(m_Recorder.TimeOfAsset);
+                    return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                }
+                
+                if (m_Player.State == AudioPlayerState.Playing)
+                {
+                    var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTimePosition);
+                    return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                }
+                
+                if (m_Player.State == AudioPlayerState.Paused || m_Player.State == AudioPlayerState.Stopped)
+                {
+                    var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);
+                    return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                }
+
+                return "";
+            }
+        }
+
         #endregion Public Properties
 
         #region VuMeter / PeakMeter
@@ -425,6 +451,19 @@ namespace Tobi.Modules.AudioPane
 
         private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
         {
+            if (m_Recorder.State == AudioRecorderState.Recording)
+            {
+                if (View != null)
+                {
+                    View.RefreshUI_TimeMessageInvalidate();
+                }
+                else
+                {
+                    // WARNING: generates many events per seconds in the data binding pipeline (INotifyPropertyChanged)
+                    OnPropertyChanged(() => CurrentTimeString);
+                }
+            }
+
             if (e.PeakValues != null && e.PeakValues.Length > 0)
             {
                 m_PeakMeterValues[0] = e.PeakValues[0];

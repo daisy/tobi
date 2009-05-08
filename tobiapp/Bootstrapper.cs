@@ -1,7 +1,4 @@
-﻿using System.Windows.Input;
-using AvalonDock;
-using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Regions;
+﻿using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
@@ -9,10 +6,8 @@ using Microsoft.Practices.Unity;
 using Tobi.Modules.AudioPane;
 using Tobi.Modules.DocumentPane;
 using Tobi.Modules.NavigationPane;
-using Tobi.Modules.StatusBar;
 using Tobi.Modules.MenuBar;
 using Tobi.Modules.ToolBars;
-using Tobi.Modules.UserInterfaceZoom;
 
 namespace Tobi
 {
@@ -21,7 +16,7 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
-        private readonly EntLibLoggerAdapter _logger = new EntLibLoggerAdapter();
+        private readonly BitFactoryLoggerAdapter _logger = new BitFactoryLoggerAdapter(); //EntLibLoggerAdapter();
 
         ///<summary>
         /// Overriding the default TRACE logger with our own (available application-wide, through the DI container)
