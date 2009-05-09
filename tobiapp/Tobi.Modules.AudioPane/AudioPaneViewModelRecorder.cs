@@ -47,6 +47,9 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnRecorderStateChanged", Category.Debug, Priority.Medium);
 
+            OnPropertyChanged(() => CanSwapOutputDevice);
+            OnPropertyChanged(() => CanSwapInputDevice);
+
             OnPropertyChanged(() => CanOpenFile);
             OnPropertyChanged(() => IsRecording);
             OnPropertyChanged(() => IsMonitoring);
