@@ -45,8 +45,12 @@ namespace Tobi.Modules.AudioPane
         private void OnRecorderStateChanged(object sender, AudioLib.Events.Recorder.StateChangedEventArgs e)
         // ReSharper restore MemberCanBeMadeStatic.Local
         {
-            //m_Recorder.State == AudioLib.AudioRecorderState.Monitoring
             Logger.Log("AudioPaneViewModel.OnRecorderStateChanged", Category.Debug, Priority.Medium);
+
+            OnPropertyChanged(() => CanOpenFile);
+            OnPropertyChanged(() => IsRecording);
+            OnPropertyChanged(() => IsMonitoring);
+            OnPropertyChanged(() => CurrentTimeString);
 
             if ((e.OldState == AudioRecorderState.Recording || e.OldState == AudioRecorderState.Monitoring)
                 && m_Recorder.State == AudioRecorderState.Stopped)
@@ -56,8 +60,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.StopPeakMeterTimer();
                 }
-                OnPropertyChanged(() => CurrentTimeString);
-                
+
                 if (View != null)
                 {
                     View.RefreshUI_TimeMessageClear();
@@ -76,7 +79,6 @@ namespace Tobi.Modules.AudioPane
                     View.StartPeakMeterTimer();
                 }
 
-                OnPropertyChanged(() => CurrentTimeString);
                 if (View != null)
                 {
                     View.RefreshUI_TimeMessageInitiate();
@@ -86,10 +88,61 @@ namespace Tobi.Modules.AudioPane
 
         public bool IsRecording
         {
-            get;
-            set;
+            get
+            {
+                return m_Recorder.State == AudioRecorderState.Recording;
+            }
         }
 
+        public bool IsMonitoring
+        {
+            get
+            {
+                return m_Recorder.State == AudioRecorderState.Monitoring;
+            }
+        }
+
+        public void AudioRecorder_StartStopMonitor()
+        {
+            Logger.Log("AudioPaneViewModel.AudioRecorder_StartStopMonitor", Category.Debug, Priority.Medium);
+            if (IsMonitoring)
+            {
+                AudioRecorder_StopMonitor();
+            }
+            else
+            {
+                AudioRecorder_StartMonitor();
+            }
+        }
+
+        public void AudioRecorder_StartMonitor()
+        {
+            Logger.Log("AudioPaneViewModel.AudioRecorder_StartMonitor", Category.Debug, Priority.Medium);
+
+            var shell = Container.Resolve<IShellPresenter>();
+
+            if (shell.DocumentProject == null)
+            {
+                setRecordingDirectory(Directory.GetCurrentDirectory());
+                m_PcmFormat = new PCMFormatInfo();
+            }
+            else
+            {
+                if (m_PcmFormat == null)
+                {
+                    m_PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                }
+            }
+
+            m_Recorder.StartListening(m_PcmFormat);
+        }
+
+        public void AudioRecorder_StopMonitor()
+        {
+            Logger.Log("AudioPaneViewModel.AudioRecorder_StopMonitor", Category.Debug, Priority.Medium);
+
+            m_Recorder.StopRecording();
+        }
         public void AudioRecorder_StartStop()
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_StartStop", Category.Debug, Priority.Medium);
@@ -123,10 +176,6 @@ namespace Tobi.Modules.AudioPane
             }
 
             m_Recorder.StartRecording(m_PcmFormat);
-
-            IsRecording = true;
-            OnPropertyChanged(()=>IsRecording);
-            OnPropertyChanged(() => CurrentTimeString);
         }
 
         public void AudioRecorder_Stop()
@@ -138,7 +187,7 @@ namespace Tobi.Modules.AudioPane
             if (shell.DocumentProject != null)
             {
                 var mediaData =
-                    (WavAudioMediaData) shell.DocumentProject.GetPresentation(0).MediaDataFactory.CreateAudioMediaData();
+                    (WavAudioMediaData)shell.DocumentProject.GetPresentation(0).MediaDataFactory.CreateAudioMediaData();
 
                 ManagedAudioMedia managedMedia =
                     shell.DocumentProject.GetPresentation(0).MediaFactory.CreateManagedAudioMedia();
@@ -146,10 +195,6 @@ namespace Tobi.Modules.AudioPane
             }
 
             m_Recorder.StopRecording();
-
-            IsRecording = false;
-            OnPropertyChanged(() => IsRecording);
-            OnPropertyChanged(() => CurrentTimeString);
 
             if (!string.IsNullOrEmpty(m_Recorder.RecordedFilePath))
             {

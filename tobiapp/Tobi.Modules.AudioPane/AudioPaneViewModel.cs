@@ -134,8 +134,6 @@ namespace Tobi.Modules.AudioPane
             if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
             {
                 m_Player.Stop();
-                OnPropertyChanged(() => IsPlaying);
-                OnPropertyChanged(() => CurrentTimeString);
             }
 
             LastPlayHeadTime = 0;
@@ -241,6 +239,7 @@ namespace Tobi.Modules.AudioPane
                 if (m_WavFilePath == value) return;
                 m_WavFilePath = value;
                 OnPropertyChanged(() => FilePath);
+                OnPropertyChanged(() => IsAudioLoaded);
             }
         }
 
@@ -343,7 +342,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
 
-                if (m_Recorder.State == AudioRecorderState.Recording)
+                if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Recorder.TimeOfAsset);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
@@ -451,17 +450,15 @@ namespace Tobi.Modules.AudioPane
 
         private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
         {
-            if (m_Recorder.State == AudioRecorderState.Recording)
+            if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
             {
                 if (View != null)
                 {
                     View.RefreshUI_TimeMessageInvalidate();
                 }
-                else
-                {
-                    // WARNING: generates many events per seconds in the data binding pipeline (INotifyPropertyChanged)
-                    OnPropertyChanged(() => CurrentTimeString);
-                }
+
+                // TODO: generates too many events per seconds in the data binding pipeline (INotifyPropertyChanged)
+                OnPropertyChanged(() => CurrentTimeString);
             }
 
             if (e.PeakValues != null && e.PeakValues.Length > 0)
