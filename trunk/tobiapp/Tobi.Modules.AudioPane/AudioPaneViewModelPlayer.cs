@@ -25,6 +25,22 @@ namespace Tobi.Modules.AudioPane
         private AudioPlayer m_Player;
         private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
 
+        public bool CanSwapOutputDevice
+        {
+            get
+            {
+                return !IsMonitoring && !IsRecording;
+            }
+        }
+
+        public bool CanSwapInputDevice
+        {
+            get
+            {
+                return !IsMonitoring && !IsRecording;
+            }
+        }
+
         public List<OutputDevice> OutputDevices
         {
             get
@@ -173,6 +189,7 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
+            OnPropertyChanged(() => WaveFormTotalTimeString);
             OnPropertyChanged(() => CurrentPcmFormatString);
             OnPropertyChanged(() => IsAudioLoaded);
             OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
@@ -664,6 +681,7 @@ namespace Tobi.Modules.AudioPane
             OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
             OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
             OnPropertyChanged(() => CurrentTimeString);
+            OnPropertyChanged(() => WaveFormTotalTimeString);
         }
 
         public void AudioPlayer_LoadAndPlayFromFile(string path)
@@ -707,6 +725,7 @@ namespace Tobi.Modules.AudioPane
 
                     m_DataLength = m_PlayStream.Length;
 
+                    OnPropertyChanged(() => WaveFormTotalTimeString);
                     OnPropertyChanged(() => IsAudioLoaded);
                     OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
                     OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
@@ -719,14 +738,9 @@ namespace Tobi.Modules.AudioPane
             {
                 resetAllInternalPlayerValues();
 
-                FilePath = "Could not get file stream !";
+                FilePath = null;
                 return;
             }
-
-            OnPropertyChanged(() => IsAudioLoaded);
-            OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-            OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-            OnPropertyChanged(() => CurrentTimeString);
 
             loadAndPlay();
         }
@@ -774,6 +788,8 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
 
+            OnPropertyChanged(() => CanSwapOutputDevice);
+            OnPropertyChanged(() => CanSwapInputDevice);
             OnPropertyChanged(() => IsPlaying);
 
             if (m_PcmFormat != null)
@@ -809,6 +825,9 @@ namespace Tobi.Modules.AudioPane
         private void OnPlayerStateChanged(object sender, StateChangedEventArgs e)
         {
             Logger.Log("AudioPaneViewModel.OnPlayerStateChanged", Category.Debug, Priority.Medium);
+
+            OnPropertyChanged(() => CanSwapOutputDevice);
+            OnPropertyChanged(() => CanSwapInputDevice);
 
             OnPropertyChanged(() => IsPlaying);
             OnPropertyChanged(() => CurrentTimeString);

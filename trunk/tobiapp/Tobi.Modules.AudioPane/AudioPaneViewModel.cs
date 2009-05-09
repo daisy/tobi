@@ -124,8 +124,6 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
 
-            resetAllInternalPlayerValues();
-
             if (node == null)
             {
                 return;
@@ -135,6 +133,8 @@ namespace Tobi.Modules.AudioPane
             {
                 m_Player.Stop();
             }
+
+            resetAllInternalPlayerValues();
 
             LastPlayHeadTime = 0;
 
@@ -189,6 +189,7 @@ namespace Tobi.Modules.AudioPane
                     }
                     m_DataLength = m_PlayStream.Length;
 
+                    OnPropertyChanged(() => WaveFormTotalTimeString);
                     OnPropertyChanged(() => IsAudioLoaded);
                     OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
                     OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
@@ -206,12 +207,7 @@ namespace Tobi.Modules.AudioPane
 
             m_EndOffsetOfPlayStream = m_DataLength;
 
-            FilePath = "";
-
-            OnPropertyChanged(() => IsAudioLoaded);
-            OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-            OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-            OnPropertyChanged(() => CurrentTimeString);
+            FilePath = null;
 
             loadAndPlay();
         }
@@ -332,7 +328,18 @@ namespace Tobi.Modules.AudioPane
                 return false;
             }
         }
-
+        public string WaveFormTotalTimeString
+        {
+            get
+            {
+                if (m_PcmFormat == null)
+                {
+                    return "";
+                }
+                var timeSpan = TimeSpan.FromMilliseconds(AudioPlayer_ConvertByteToMilliseconds(AudioPlayer_GetDataLength()));
+                return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+            }
+        }
         public String CurrentTimeString
         {
             get

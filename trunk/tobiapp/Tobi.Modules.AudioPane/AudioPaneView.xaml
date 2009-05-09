@@ -108,7 +108,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     </Style>
 
     <System:Double x:Key="scrollthickness">14</System:Double>
-    
+
     <ControlTemplate x:Key="VerticalScrollBar"
   TargetType="{x:Type ScrollBar}">
       <Grid >
@@ -265,27 +265,27 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     </Style>
 
     <System:Double x:Key="columnPeakMeterWidth">50.0</System:Double>
-    
+
     <GridLength x:Key="columnPeakMeterGridWidth">50.0</GridLength>
-    
+
     <Storyboard x:Key="splitterPeakMeterExpand">
-      
+
       <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
                                      Storyboard.TargetName="columnContentPeakMeter"
                                      Storyboard.TargetProperty="(UIElement.Visibility)">
         <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}"/>
       </ObjectAnimationUsingKeyFrames>
-      
+
       <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
                                      Storyboard.TargetName="columnPeakMeter"
                                      Storyboard.TargetProperty="(ColumnDefinition.Width)">
         <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{StaticResource columnPeakMeterWidth}"/>
       </ObjectAnimationUsingKeyFrames>
-      
+
     </Storyboard>
-    
+
   </Grid.Resources>
-  
+
   <Grid.Triggers>
     <EventTrigger RoutedEvent="Control.MouseLeftButtonDown" SourceName="splitterPeakMeter">
       <BeginStoryboard Storyboard="{StaticResource splitterPeakMeterExpand}"/>
@@ -318,7 +318,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <!-- GridSplitter.Triggers -->
 
-      <!-- EventTrigger RoutedEvent="Control.MouseDoubleClick">
+    <!-- EventTrigger RoutedEvent="Control.MouseDoubleClick">
         <BeginStoryboard>
           <Storyboard>
           <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
@@ -335,8 +335,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             </Storyboard>
         </BeginStoryboard>
       </EventTrigger -->
-      
-      <!-- DataTrigger Binding="{Binding ElementName=columnContentPeakMeter, Path=Visibility}" Value="Collapsed">
+
+    <!-- DataTrigger Binding="{Binding ElementName=columnContentPeakMeter, Path=Visibility}" Value="Collapsed">
           <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         </DataTrigger -->
 
@@ -349,7 +349,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
             </ObjectAnimationUsingKeyFrames -->
 
-            <!-- ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+    <!-- ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
                                            Storyboard.TargetName="columnContentPeakMeter"
                                            Storyboard.TargetProperty="(UIElement.Visibility)">
               <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}"/>
@@ -376,8 +376,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       </EventTrigger>
     </GridSplitter.Triggers -->
 
-  
-</GridSplitter>
+
+  </GridSplitter>
 
   <!-- ScrollViewer Grid.Column="0" Grid.Row="0"
                   VerticalScrollBarVisibility="Auto"
@@ -509,7 +509,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   HorizontalAlignment="Left"
               SnapsToDevicePixels="True">
 
-        
+
         <Image x:Name="WaveFormImage"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
@@ -592,7 +592,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                FontWeight="Heavy"
                MouseDown="OnResetPeakOverloadCountCh1"/>
-    
+
     <TextBlock x:Name="PeakOverloadLabelCh2"
                Grid.Row="0" Grid.Column="1"
                Text="{Binding Path=PeakOverloadCountCh2, Mode=OneWay}"
@@ -690,70 +690,70 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       Orientation="Horizontal"
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/>
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/>
 
-      <Separator/>
-      
-      <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
-              IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
+    <Separator/>
 
-      <infraUI:TwoStateButtonRichCommand
-        RichCommandOne="{Binding CommandPause}"
-        RichCommandTwo="{Binding CommandPlay}"
-              RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
+    <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
+            IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
+
+    <infraUI:TwoStateButtonRichCommand
+      RichCommandOne="{Binding CommandPause}"
+      RichCommandTwo="{Binding CommandPlay}"
+            RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
 
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
             RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
-    
+
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandStopRecord}"
       RichCommandTwo="{Binding CommandStartRecord}"
             RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
-    
-      <Separator/>
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
+
+    <Separator/>
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
                                  />
 
-      <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepBack}"
+    <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepBack}"
                                   />
 
-      <infraUI:RepeatButtonRichCommand RichCommand="{Binding CommandRewind}"
+    <infraUI:RepeatButtonRichCommand RichCommand="{Binding CommandRewind}"
                                  />
 
-      <infraUI:RepeatButtonRichCommand RichCommand="{Binding CommandFastForward}"
+    <infraUI:RepeatButtonRichCommand RichCommand="{Binding CommandFastForward}"
                                  />
 
-      <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepForward}"
+    <infraUI:ButtonRichCommand  RichCommand="{Binding CommandStepForward}"
                                   />
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoEnd}"
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoEnd}"
                                  />
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
-      <Separator/>
-      
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
+    <Separator/>
+
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
                                  />
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
                                  />
 
 
-      <Separator/>
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"
+    <Separator/>
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"
                                  />
-      <Separator/>
+    <Separator/>
 
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
                                  />
-      <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
                                  />
 
 
@@ -764,56 +764,69 @@ Value="{StaticResource DisabledForegroundBrush}"/>
              
             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" -->
 
-        <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
-        <Slider x:Name="ZoomSlider"
-                Thumb.DragCompleted="OnZoomSliderDragCompleted"
-                Thumb.DragStarted="OnZoomSliderDragStarted"
-                IsMoveToPointEnabled="True"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Value="1000"
-                Minimum="800"
-                Maximum="10000"
-                TickFrequency="500"
-                Delay="1000"
-                Interval="1000"
-                LargeChange="500"
-                SmallChange="200"/>
+    <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
+    <Slider x:Name="ZoomSlider"
+            Thumb.DragCompleted="OnZoomSliderDragCompleted"
+            Thumb.DragStarted="OnZoomSliderDragStarted"
+            IsMoveToPointEnabled="True"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Value="1000"
+            Minimum="800"
+            Maximum="10000"
+            TickFrequency="500"
+            Delay="1000"
+            Interval="1000"
+            LargeChange="500"
+            SmallChange="200"/>
 
-      </infraUI:WrapPanelLastChildFill>
+  </infraUI:WrapPanelLastChildFill>
 
-  <DockPanel 
+  <DockPanel
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
     HorizontalAlignment="Stretch"
     LastChildFill="True">
 
     <TextBlock
+      FontWeight="ExtraBold"
+    DockPanel.Dock="Right"
+    Margin="0, 0, 15, 0"
+      VerticalAlignment="Center" Text="{Binding WaveFormTotalTimeString, Mode=OneWay}"/>
+
+    <TextBlock
+      FontWeight="ExtraBold"
+    DockPanel.Dock="Right"
+      VerticalAlignment="Center" Text=" / "/>
+
+    <TextBlock
       FontWeight="ExtraBlack"
     DockPanel.Dock="Right"
-    Margin="0, 0, 15, 0" VerticalAlignment="Center" Text="{Binding CurrentTimeString, Mode=OneWay}"/>
-    
-  <StackPanel 
-      Orientation="Horizontal"
-                  HorizontalAlignment="Left"
-      Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+      VerticalAlignment="Center" Text="{Binding CurrentTimeString, Mode=OneWay}"/>
 
-    <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Playback: </TextBlock>
-    <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
-              SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
-              DisplayMemberPath="Name"
-              SelectedValuePath="Name"
-              Margin="2"/>
+    <StackPanel
+        Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-    <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Recording: </TextBlock>
-    <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
-              SelectedItem="{Binding InputDevice, Mode=TwoWay}"
-              DisplayMemberPath="Name"
-              SelectedValuePath="Name"
-              Margin="2"/>
+      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Playback: </TextBlock>
+      <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
+                SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
+                DisplayMemberPath="Name"
+                SelectedValuePath="Name"
+                Margin="2"
+                IsEnabled="{Binding CanSwapOutputDevice, Mode=OneWay}"/>
 
-    <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{Binding CurrentPcmFormatString, Mode=OneWay}"/>
-    
-  </StackPanel>
+      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Recording: </TextBlock>
+      <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
+                SelectedItem="{Binding InputDevice, Mode=TwoWay}"
+                DisplayMemberPath="Name"
+                SelectedValuePath="Name"
+                Margin="2"
+                IsEnabled="{Binding CanSwapInputDevice, Mode=OneWay}"/>
+
+      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{Binding CurrentPcmFormatString, Mode=OneWay}"/>
+
+    </StackPanel>
 
   </DockPanel>
 

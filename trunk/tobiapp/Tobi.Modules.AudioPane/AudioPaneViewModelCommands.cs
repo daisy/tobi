@@ -39,28 +39,28 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return IsAudioLoadedWithTreeNode;
+                return IsAudioLoadedWithTreeNode && !IsRecording && !IsMonitoring;
             }
         }
         public bool CanSwitchPhraseNext
         {
             get
             {
-                return IsAudioLoadedWithTreeNode;
+                return IsAudioLoadedWithTreeNode && !IsRecording && !IsMonitoring;
             }
         }
         public bool CanGotoBegining
         {
             get
             {
-                return IsAudioLoaded;
+                return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
         public bool CanGotoEnd
         {
             get
             {
-                return IsAudioLoaded;
+                return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
         public bool CanPlay
@@ -109,21 +109,21 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return IsAudioLoaded;
+                return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
         public bool CanFastForward
         {
             get
             {
-                return IsAudioLoaded;
+                return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
         public bool CanStepBack
         {
             get
             {
-                return IsAudioLoadedWithSubTreeNodes;
+                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring;
             }
         }
 
@@ -131,7 +131,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return IsAudioLoadedWithSubTreeNodes;
+                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring;
             }
         }
 
