@@ -697,17 +697,21 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
               IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
 
-
       <infraUI:TwoStateButtonRichCommand
         RichCommandOne="{Binding CommandPause}"
         RichCommandTwo="{Binding CommandPlay}"
               RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
 
-      <infraUI:TwoStateButtonRichCommand
-        RichCommandOne="{Binding CommandStopRecord}"
-        RichCommandTwo="{Binding CommandStartRecord}"
-              RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
-
+    <infraUI:TwoStateButtonRichCommand
+      RichCommandOne="{Binding CommandStopMonitor}"
+      RichCommandTwo="{Binding CommandStartMonitor}"
+            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
+    
+    <infraUI:TwoStateButtonRichCommand
+      RichCommandOne="{Binding CommandStopRecord}"
+      RichCommandTwo="{Binding CommandStartRecord}"
+            RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
+    
       <Separator/>
       <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />

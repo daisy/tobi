@@ -195,6 +195,14 @@ namespace Tobi.Infrastructure
         public static KeyGesture Audio_StartRecord_KEYS = new KeyGesture(Key.R,
                                                                      ModifierKeys.Control);
 
+        public const string Audio_StopMonitor = "St_op monitoring";
+        public const string Audio_StopMonitor_ = "Stop the audio input monitoring";
+
+        public const string Audio_StartMonitor = "St_art monitoring";
+        public const string Audio_StartMonitor_ = "Start monitoring audio input";
+        public static KeyGesture Audio_StartMonitor_KEYS = new KeyGesture(Key.M,
+                                                                     ModifierKeys.Control);
+
         public const string Audio_Pause = "_Pause";
         public const string Audio_Pause_ = "Pause playback";
 
