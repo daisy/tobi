@@ -700,16 +700,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandPause}"
       RichCommandTwo="{Binding CommandPlay}"
+      InputBindingManager="{Binding InputBindingManager}"
             RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
 
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
+      InputBindingManager="{Binding InputBindingManager}"
             RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
 
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandStopRecord}"
       RichCommandTwo="{Binding CommandStartRecord}"
+      InputBindingManager="{Binding InputBindingManager}"
             RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
 
     <Separator/>

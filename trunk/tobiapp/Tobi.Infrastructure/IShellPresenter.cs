@@ -4,10 +4,16 @@ using urakawa;
 
 namespace Tobi
 {
+    public interface IInputBindingManager
+    {
+        bool AddInputBinding(InputBinding inputBinding);
+        void RemoveInputBinding(InputBinding inputBinding);
+    }
+
     ///<summary>
     /// The contract for the Presenter
     ///</summary>
-    public interface IShellPresenter
+    public interface IShellPresenter : IInputBindingManager
     {
         ///<summary>
         /// The View associated with this Presenter
@@ -51,7 +57,7 @@ namespace Tobi
         /// </summary>
         /// <param name="command"></param>
         void RegisterRichCommand(RichDelegateCommand<object> command);
-
+        
         string DocumentFilePath { get; }
         Project DocumentProject { get; }
 
