@@ -217,6 +217,16 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        public IInputBindingManager InputBindingManager
+        {
+            get
+            {
+                var shellPresenter = Container.Resolve<IShellPresenter>();
+
+                return shellPresenter;
+            }
+        }
+
         private void initializeCommands()
         {
             Logger.Log("AudioPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
@@ -356,7 +366,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandPause = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_Pause,
                 UserInterfaceStrings.Audio_Pause_,
-                null,
+                UserInterfaceStrings.Audio_Pause_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-playback-pause"),
                 obj => AudioPlayer_Pause(), obj => CanPause);
 
@@ -372,7 +382,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandStopRecord = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StopRecord,
                 UserInterfaceStrings.Audio_StopRecord_,
-                null,
+                UserInterfaceStrings.Audio_StopRecord_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-playback-stop"),
                 obj => AudioRecorder_Stop(), obj => CanStopRecord);
 
@@ -388,7 +398,7 @@ namespace Tobi.Modules.AudioPane
             //
             CommandStopMonitor = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StopMonitor,
                 UserInterfaceStrings.Audio_StopMonitor_,
-                null,
+                UserInterfaceStrings.Audio_StopMonitor_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-playback-stop"),
                 obj => AudioRecorder_StopMonitor(), obj => CanStopMonitor);
 

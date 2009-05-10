@@ -196,28 +196,6 @@ namespace Tobi.Infrastructure
         public const string Audio_Reload = "_Reload audio";
         public const string Audio_Reload_ = "Reload the audio waveform data";
 
-        public const string Audio_StopRecord = "St_op recording";
-        public const string Audio_StopRecord_ = "Stop the current recording";
-
-        public const string Audio_StartRecord = "St_art recording";
-        public const string Audio_StartRecord_ = "Start recording audio";
-        public static KeyGesture Audio_StartRecord_KEYS = new KeyGesture(Key.R,
-                                                                     ModifierKeys.Control);
-
-        public const string Audio_StopMonitor = "St_op monitoring";
-        public const string Audio_StopMonitor_ = "Stop the audio input monitoring";
-
-        public const string Audio_StartMonitor = "St_art monitoring";
-        public const string Audio_StartMonitor_ = "Start monitoring audio input";
-        public static KeyGesture Audio_StartMonitor_KEYS = new KeyGesture(Key.M,
-                                                                     ModifierKeys.Control);
-
-        public const string Audio_Pause = "_Pause";
-        public const string Audio_Pause_ = "Pause playback";
-
-        public const string Audio_Play = "Pla_y";
-        public const string Audio_Play_ = "Start playback";
-        public static KeyGesture Audio_Play_KEYS = new KeyGesture(Key.P, ModifierKeys.Control);
 
         public const string Audio_AutoPlay = "_Toggle autoplay";
         public const string Audio_AutoPlay_ = "Switch autoplay on/off";
@@ -226,5 +204,35 @@ namespace Tobi.Infrastructure
         public const string SelectAll = "_Select all";
         public const string SelectAll_ = "Select all content";
         public static KeyGesture SelectAll_KEYS = new KeyGesture(Key.A, ModifierKeys.Control);
+
+
+
+        public const string Audio_StartRecord = "St_art recording";
+        public const string Audio_StartRecord_ = "Start recording audio";
+        public static KeyGesture Audio_StartRecord_KEYS = new KeyGesture(Key.R,
+                                                                     ModifierKeys.Control);
+
+        public const string Audio_StopRecord = "St_op recording";
+        public const string Audio_StopRecord_ = "Stop the current recording";
+        public static KeyGesture Audio_StopRecord_KEYS = Audio_StartRecord_KEYS;
+
+        public const string Audio_StartMonitor = "St_art monitoring";
+        public const string Audio_StartMonitor_ = "Start monitoring audio input";
+        public static KeyGesture Audio_StartMonitor_KEYS = new KeyGesture(Key.M,
+                                                                     ModifierKeys.Control);
+
+        public const string Audio_StopMonitor = "St_op monitoring";
+        public const string Audio_StopMonitor_ = "Stop the audio input monitoring";
+        public static KeyGesture Audio_StopMonitor_KEYS = Audio_StartMonitor_KEYS;
+
+
+        public const string Audio_Play = "Pla_y";
+        public const string Audio_Play_ = "Start playback";
+        public static KeyGesture Audio_Play_KEYS = new KeyGesture(Key.P, ModifierKeys.Control);
+
+        public const string Audio_Pause = "_Pause";
+        public const string Audio_Pause_ = "Pause playback";
+        public static KeyGesture Audio_Pause_KEYS = Audio_Play_KEYS;
+
     }
 }

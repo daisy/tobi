@@ -27,7 +27,7 @@ namespace Tobi.Infrastructure.UI
             menuItem.Command = command;
 
             menuItem.Header = command.ShortDescription;
-            menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " [" + command.KeyGestureText + "]" : "");
+            menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " " + command.KeyGestureText + " " : "");
             menuItem.InputGestureText = command.KeyGestureText;
 
             Image image = command.IconSmall;

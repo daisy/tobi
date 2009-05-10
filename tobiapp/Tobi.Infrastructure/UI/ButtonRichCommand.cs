@@ -44,7 +44,7 @@ namespace Tobi.Infrastructure.UI
         {
             button.Command = command;
 
-            button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " [" + command.KeyGestureText + "]" : "");
+            button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
 
 
             Image image = command.IconMedium;
@@ -131,6 +131,30 @@ namespace Tobi.Infrastructure.UI
 
     public class TwoStateButtonRichCommand : Button
     {
+        public static readonly DependencyProperty InputBindingManagerProperty =
+            DependencyProperty.Register("InputBindingManager",
+                                        typeof(IInputBindingManager),
+                                        typeof(TwoStateButtonRichCommand),
+                                        new PropertyMetadata(new PropertyChangedCallback(OnInputBindingManagerChanged)));
+
+        private static void OnInputBindingManagerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ;
+        }
+
+        public IInputBindingManager InputBindingManager
+        {
+            get
+            {
+                return (IInputBindingManager)GetValue(InputBindingManagerProperty);
+            }
+            set
+            {
+                SetValue(InputBindingManagerProperty, value);
+            }
+        }
+
+
         public static readonly DependencyProperty RichCommandOneProperty =
             DependencyProperty.Register("RichCommandOne",
                                         typeof(RichDelegateCommand<object>),
@@ -193,16 +217,35 @@ namespace Tobi.Infrastructure.UI
             var choice = (Boolean)e.NewValue;
 
             RichDelegateCommand<object> command = button.RichCommandOne;
+
             if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
             {
                 command.KeyGestureText = button.RichCommandTwo.KeyGestureText;
             }
+
+            if (command.KeyGesture != null
+                    && command.KeyGesture.Equals(button.RichCommandTwo.KeyGesture)
+                    && button.InputBindingManager != null)
+            {
+                button.InputBindingManager.RemoveInputBinding(button.RichCommandTwo.KeyBinding);
+                button.InputBindingManager.AddInputBinding(command.KeyBinding);
+            }
+
             if (!choice)
             {
                 command = button.RichCommandTwo;
+
                 if (command.KeyGesture == null && button.RichCommandOne.KeyGesture != null)
                 {
                     command.KeyGestureText = button.RichCommandOne.KeyGestureText;
+                }
+
+                if (command.KeyGesture != null
+                   && command.KeyGesture.Equals(button.RichCommandOne.KeyGesture)
+                   && button.InputBindingManager != null)
+                {
+                    button.InputBindingManager.RemoveInputBinding(button.RichCommandOne.KeyBinding);
+                    button.InputBindingManager.AddInputBinding(command.KeyBinding);
                 }
             }
             ButtonRichCommand.ConfigureButtonFromCommand(button, command);
