@@ -17,14 +17,62 @@ namespace Tobi.Modules.AudioPane
         #region Audio Player
 
         private Stream m_PlayStream;
-        private List<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
-        private long m_DataLength;
-        private PCMFormatInfo m_PcmFormat;
         private long m_StreamRiffHeaderEndPos;
 
         private AudioPlayer m_Player;
         private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
 
+        private List<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
+        public List<TreeNodeAndStreamDataLength> PlayStreamMarkers
+        {
+            get
+            {
+                return m_PlayStreamMarkers;
+            }
+            set
+            {
+                if (m_PlayStreamMarkers == value) return;
+                if (value == null)
+                {
+                    m_PlayStreamMarkers.Clear();
+                }
+                m_PlayStreamMarkers = value;
+                OnPropertyChanged(() => PlayStreamMarkers);
+            }
+        }
+
+        private long m_DataLength;
+        public long DataLength
+        {
+            get
+            {
+                return m_DataLength;
+            }
+            set
+            {
+                if (m_DataLength == value) return;
+                m_DataLength = value;
+                OnPropertyChanged(() => DataLength);
+            }
+        }
+
+        private PCMFormatInfo m_PcmFormat;
+        public PCMFormatInfo PcmFormat
+        {
+            get
+            {
+                return m_PcmFormat;
+            }
+            set
+            {
+                if (m_PcmFormat == value) return;
+                m_PcmFormat = value;
+                OnPropertyChanged(() => PcmFormat);
+            }
+        }
+
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanSwapOutputDevice
         {
             get
@@ -33,6 +81,8 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanSwapInputDevice
         {
             get
@@ -84,7 +134,7 @@ namespace Tobi.Modules.AudioPane
             {
                 m_LastPlayHeadTime = value;
                 updateWaveFormPlayHead(m_LastPlayHeadTime);
-                OnPropertyChanged(() => CurrentTimeString);
+                OnPropertyChanged(() => LastPlayHeadTime);
 
                 /*
                 if (View != null)
@@ -116,31 +166,42 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return (m_PcmFormat != null && m_Player.State == AudioPlayerState.Playing);
+                return (PcmFormat != null && m_Player.State == AudioPlayerState.Playing);
             }
         }
 
+
+        [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
+        [NotifyDependsOn("PlayStreamMarkers")]
+        [NotifyDependsOn("CurrentTreeNode")]
+        [NotifyDependsOn("CurrentSubTreeNode")]
         public bool IsAudioLoadedWithSubTreeNodes
         {
             get
             {
-                return (IsAudioLoadedWithTreeNode && m_CurrentTreeNode != m_CurrentSubTreeNode && m_PlayStreamMarkers != null);
+                return (IsAudioLoadedWithTreeNode && CurrentTreeNode != CurrentSubTreeNode && PlayStreamMarkers != null);
             }
         }
 
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("CurrentTreeNode")]
         public bool IsAudioLoadedWithTreeNode
         {
             get
             {
-                return (IsAudioLoaded && m_CurrentTreeNode != null);
+                return (IsAudioLoaded && CurrentTreeNode != null);
             }
         }
 
+        [NotifyDependsOn("FilePath")]
+        [NotifyDependsOn("PcmFormat")]
+        [NotifyDependsOn("CurrentTreeNode")]
         public bool IsAudioLoaded
         {
             get
             {
-                return m_PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || m_CurrentTreeNode != null);
+                return PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null);
             }
         }
 
@@ -154,16 +215,14 @@ namespace Tobi.Modules.AudioPane
             }
             //else the stream is now open
 
-            m_EndOffsetOfPlayStream = m_DataLength;
+            m_EndOffsetOfPlayStream = DataLength;
 
             if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
             {
                 m_Player.Stop();
             }
 
-            m_PcmFormat = null;
-            OnPropertyChanged(() => IsAudioLoaded);
-            OnPropertyChanged(() => CurrentPcmFormatString);
+            PcmFormat = null;
 
             if (View != null)
             {
@@ -173,28 +232,21 @@ namespace Tobi.Modules.AudioPane
             PeakOverloadCountCh1 = 0;
             PeakOverloadCountCh2 = 0;
 
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 m_PlayStream.Position = 0;
                 m_PlayStream.Seek(0, SeekOrigin.Begin);
 
                 if (FilePath.Length > 0)
                 {
-                    m_PcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_PlayStream);
+                    PcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_PlayStream);
                     m_StreamRiffHeaderEndPos = m_PlayStream.Position;
                 }
                 else
                 {
-                    m_PcmFormat = m_CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                    PcmFormat = CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                 }
             }
-
-            OnPropertyChanged(() => WaveFormTotalTimeString);
-            OnPropertyChanged(() => CurrentPcmFormatString);
-            OnPropertyChanged(() => IsAudioLoaded);
-            OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-            OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-            OnPropertyChanged(() => CurrentTimeString);
 
             if (View != null)
             {
@@ -212,18 +264,18 @@ namespace Tobi.Modules.AudioPane
             //infinite loop, do not uncomment !
             //LastPlayHeadTime = time;
 
-            if (m_PlayStreamMarkers == null)
+            if (PlayStreamMarkers == null)
             {
                 return;
             }
 
             TreeNode subTreeNode = null;
 
-            long byteOffset = AudioPlayer_GetPcmFormat().GetByteForTime(new Time(LastPlayHeadTime));
+            long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
 
             long sumData = 0;
             long sumDataPrev = 0;
-            foreach (TreeNodeAndStreamDataLength markers in m_PlayStreamMarkers)
+            foreach (TreeNodeAndStreamDataLength markers in PlayStreamMarkers)
             {
                 sumData += markers.m_LocalStreamDataLength;
                 if (byteOffset <= sumData)
@@ -239,46 +291,45 @@ namespace Tobi.Modules.AudioPane
                 View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
             }
 
-            if (subTreeNode == null || (subTreeNode == m_CurrentSubTreeNode && subTreeNode != m_CurrentTreeNode))
+            if (subTreeNode == null || (subTreeNode == CurrentSubTreeNode && subTreeNode != CurrentTreeNode))
             {
                 return;
             }
 
-            if (m_CurrentSubTreeNode != subTreeNode)
+            if (CurrentSubTreeNode != subTreeNode)
             {
-                m_CurrentSubTreeNode = subTreeNode;
-                OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
+                CurrentSubTreeNode = subTreeNode;
             }
 
-            if (m_CurrentSubTreeNode != m_CurrentTreeNode)
+            if (CurrentSubTreeNode != CurrentTreeNode)
             {
                 Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead", Category.Debug, Priority.Medium);
 
-                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(m_CurrentSubTreeNode);
+                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
             }
         }
 
         public double AudioPlayer_ConvertByteToMilliseconds(double bytes)
         {
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 return 0;
             }
-            return 1000.0 * bytes / ((double)m_PcmFormat.SampleRate * m_PcmFormat.NumberOfChannels * m_PcmFormat.BitDepth / 8.0);
+            return 1000.0 * bytes / ((double)PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0);
         }
 
         public double AudioPlayer_ConvertMillisecondsToByte(double ms)
         {
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 return 0;
             }
-            return (ms * m_PcmFormat.SampleRate * m_PcmFormat.NumberOfChannels * m_PcmFormat.BitDepth / 8.0) / 1000.0;
+            return (ms * PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0) / 1000.0;
         }
 
         public void AudioPlayer_UpdateWaveFormPlayHead()
         {
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 if (View != null)
                 {
@@ -301,7 +352,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
 
-            if (!(m_PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || m_CurrentTreeNode != null)))
+            if (!(PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null)))
             {
                 return;
             }
@@ -316,7 +367,7 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
-            if (m_PcmFormat.BitDepth != 16)
+            if (PcmFormat.BitDepth != 16)
             {
                 if (!wasPlaying)
                 {
@@ -328,16 +379,11 @@ namespace Tobi.Modules.AudioPane
 
             if (m_CurrentAudioStreamProvider() == null)
             {
-                OnPropertyChanged(() => IsAudioLoaded);
-                OnPropertyChanged(() => CurrentTimeString);
-                OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-                OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-
                 return;
             }
             // else: the stream is now open
 
-            if (m_DataLength == 0)
+            if (DataLength == 0)
             {
                 return; //weird bug
             }
@@ -359,10 +405,10 @@ namespace Tobi.Modules.AudioPane
 
             if (play)
             {
-                TimeDelta dur = m_PcmFormat.GetDuration(m_DataLength);
+                TimeDelta dur = PcmFormat.GetDuration(DataLength);
                 m_Player.Play(m_CurrentAudioStreamProvider,
                               dur,
-                              m_PcmFormat);
+                              PcmFormat);
             }
         }
 
@@ -373,7 +419,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_TogglePlayPause", Category.Debug, Priority.Medium);
 
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 return;
             }
@@ -409,12 +455,12 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_PlayFromTo", Category.Debug, Priority.Medium);
 
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 return;
             }
 
-            m_EndOffsetOfPlayStream = m_DataLength;
+            m_EndOffsetOfPlayStream = DataLength;
 
             if (m_Player.State == AudioPlayerState.Paused)
             {
@@ -427,11 +473,11 @@ namespace Tobi.Modules.AudioPane
                 {
                     m_CurrentAudioStreamProvider(); // ensure m_PlayStream is open
 
-                    m_EndOffsetOfPlayStream = m_DataLength;
+                    m_EndOffsetOfPlayStream = DataLength;
 
                     m_Player.Play(m_CurrentAudioStreamProvider,
-                                  m_PcmFormat.GetDuration(m_DataLength),
-                                  m_PcmFormat,
+                                  PcmFormat.GetDuration(DataLength),
+                                  PcmFormat,
                                   AudioPlayer_ConvertByteToMilliseconds(bytesStart)
                         );
                 }
@@ -452,8 +498,8 @@ namespace Tobi.Modules.AudioPane
                 m_CurrentAudioStreamProvider(); // ensure m_PlayStream is open
 
                 m_Player.Play(m_CurrentAudioStreamProvider,
-                              m_PcmFormat.GetDuration(m_DataLength),
-                              m_PcmFormat,
+                              PcmFormat.GetDuration(DataLength),
+                              PcmFormat,
                               AudioPlayer_ConvertByteToMilliseconds(bytesStart),
                               AudioPlayer_ConvertByteToMilliseconds(bytesEnd)
                     );
@@ -464,7 +510,7 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_Play()
         {
-            if (AudioPlayer_GetPcmFormat() == null)
+            if (PcmFormat == null)
             {
                 return;
             }
@@ -519,7 +565,7 @@ namespace Tobi.Modules.AudioPane
             double from = AudioPlayer_ConvertByteToMilliseconds(begin);
             double to = AudioPlayer_ConvertByteToMilliseconds(end);
 
-            var pcmInfo = AudioPlayer_GetPcmFormat();
+            var pcmInfo = PcmFormat;
 
             long startPosition = 0;
             if (from > 0)
@@ -556,7 +602,7 @@ namespace Tobi.Modules.AudioPane
 
         private void AudioPlayer_Pause()
         {
-            if (AudioPlayer_GetPcmFormat() == null)
+            if (PcmFormat == null)
             {
                 return;
             }
@@ -572,7 +618,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_Stop", Category.Debug, Priority.Medium);
 
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 return;
             }
@@ -653,35 +699,28 @@ namespace Tobi.Modules.AudioPane
         }
         public long AudioPlayer_GetDataLength()
         {
-            if (m_PcmFormat == null)
+            if (PcmFormat == null)
             {
                 return 0;
             }
 
-            return m_DataLength;
+            return DataLength;
         }
 
         private void resetAllInternalPlayerValues()
         {
             Logger.Log("AudioPaneViewModel.resetAllInternalPlayerValues", Category.Debug, Priority.Medium);
 
-            m_CurrentTreeNode = null;
-            m_CurrentSubTreeNode = null;
-            m_PlayStreamMarkers = null;
-            m_PcmFormat = null;
-            m_DataLength = 0;
+            CurrentTreeNode = null;
+            CurrentSubTreeNode = null;
+            PlayStreamMarkers = null;
+            PcmFormat = null;
+            DataLength = 0;
             m_EndOffsetOfPlayStream = 0;
-            m_WavFilePath = "";
+            FilePath = "";
             m_StreamRiffHeaderEndPos = 0;
             m_PlayStream = null;
             m_LastPlayHeadTime = 0;
-
-            OnPropertyChanged(() => CurrentPcmFormatString);
-            OnPropertyChanged(() => IsAudioLoaded);
-            OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-            OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-            OnPropertyChanged(() => CurrentTimeString);
-            OnPropertyChanged(() => WaveFormTotalTimeString);
         }
 
         public void AudioPlayer_LoadAndPlayFromFile(string path)
@@ -705,11 +744,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_PlayStream == null)
                 {
-                    if (m_PlayStreamMarkers != null)
-                    {
-                        m_PlayStreamMarkers.Clear();
-                        m_PlayStreamMarkers = null;
-                    }
+                    PlayStreamMarkers = null;
                     if (!String.IsNullOrEmpty(FilePath))
                     {
                         if (!File.Exists(FilePath))
@@ -723,13 +758,7 @@ namespace Tobi.Modules.AudioPane
                         return null;
                     }
 
-                    m_DataLength = m_PlayStream.Length;
-
-                    OnPropertyChanged(() => WaveFormTotalTimeString);
-                    OnPropertyChanged(() => IsAudioLoaded);
-                    OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-                    OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-                    OnPropertyChanged(() => CurrentTimeString);
+                    DataLength = m_PlayStream.Length;
                 }
                 return m_PlayStream;
             };
@@ -745,17 +774,13 @@ namespace Tobi.Modules.AudioPane
             loadAndPlay();
         }
 
+        [NotifyDependsOn("PcmFormat")]
         public String CurrentPcmFormatString
         {
             get
             {
-                return (m_PcmFormat != null ? m_PcmFormat.ToString() : "");
+                return (PcmFormat != null ? PcmFormat.ToString() : "");
             }
-        }
-
-        public PCMFormatInfo AudioPlayer_GetPcmFormat()
-        {
-            return m_PcmFormat;
         }
 
         public Stream AudioPlayer_GetPlayStream()
@@ -777,42 +802,34 @@ namespace Tobi.Modules.AudioPane
             m_PlayStream.Seek(m_StreamRiffHeaderEndPos, SeekOrigin.Begin);
         }
 
-        public List<TreeNodeAndStreamDataLength> AudioPlayer_GetPlayStreamMarkers()
-        {
-            return m_PlayStreamMarkers;
-        }
-
         #region Event / Callbacks
 
         private void OnEndOfAudioAsset(object sender, EndOfAudioAssetEventArgs e)
         {
             Logger.Log("AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => CanSwapOutputDevice);
-            OnPropertyChanged(() => CanSwapInputDevice);
             OnPropertyChanged(() => IsPlaying);
 
-            if (m_PcmFormat != null)
+            if (PcmFormat != null)
             {
                 //double time = m_PcmFormat.GetDuration(m_DataLength).TimeDeltaAsMillisecondDouble;
                 //long bytes = (long) m_Player.CurrentTimePosition;
 
-                double time = m_PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
+                double time = PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
                 LastPlayHeadTime = time;
                 //updateWaveFormPlayHead(time);
             }
-            OnPropertyChanged(() => CurrentTimeString);
 
             UpdatePeakMeter();
 
-            if (FilePath.Length > 0 || m_CurrentTreeNode == null)
+            if (FilePath.Length > 0 || CurrentTreeNode == null)
             {
                 return;
             }
 
-            if (m_EndOffsetOfPlayStream == m_DataLength && IsAutoPlay)
+            if (m_EndOffsetOfPlayStream == DataLength && IsAutoPlay)
             {
-                TreeNode nextNode = m_CurrentTreeNode.GetNextSiblingWithManagedAudio();
+                TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
@@ -826,11 +843,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnPlayerStateChanged", Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => CanSwapOutputDevice);
-            OnPropertyChanged(() => CanSwapInputDevice);
-
             OnPropertyChanged(() => IsPlaying);
-            OnPropertyChanged(() => CurrentTimeString);
 
             if (e.OldState == AudioPlayerState.Playing
                 && (m_Player.State == AudioPlayerState.Paused

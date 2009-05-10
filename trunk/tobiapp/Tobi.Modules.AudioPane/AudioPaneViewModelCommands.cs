@@ -5,6 +5,7 @@ using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
+using Tobi.Infrastructure.Onyx.Reflection;
 
 
 namespace Tobi.Modules.AudioPane
@@ -35,6 +36,9 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandStartMonitor { get; private set; }
         public RichDelegateCommand<object> CommandStopMonitor { get; private set; }
 
+        [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanSwitchPhrasePrevious
         {
             get
@@ -42,6 +46,10 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoadedWithTreeNode && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanSwitchPhraseNext
         {
             get
@@ -49,6 +57,10 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoadedWithTreeNode && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanGotoBegining
         {
             get
@@ -56,6 +68,10 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanGotoEnd
         {
             get
@@ -63,6 +79,11 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsPlaying")]
         public bool CanPlay
         {
             get
@@ -70,6 +91,9 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsPlaying")]
         public bool CanPause
         {
             get
@@ -77,6 +101,10 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoaded && IsPlaying;
             }
         }
+
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsPlaying")]
         public bool CanRecord
         {
             get
@@ -84,6 +112,8 @@ namespace Tobi.Modules.AudioPane
                 return !IsPlaying && !IsMonitoring && !IsRecording;
             }
         }
+
+        [NotifyDependsOn("IsRecording")]
         public bool CanStopRecord
         {
             get
@@ -91,6 +121,10 @@ namespace Tobi.Modules.AudioPane
                 return IsRecording;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanMonitor
         {
             get
@@ -98,6 +132,8 @@ namespace Tobi.Modules.AudioPane
                 return !IsPlaying && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanStopMonitor
         {
             get
@@ -105,6 +141,10 @@ namespace Tobi.Modules.AudioPane
                 return IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanRewind
         {
             get
@@ -112,6 +152,10 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanFastForward
         {
             get
@@ -119,6 +163,10 @@ namespace Tobi.Modules.AudioPane
                 return IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoadedWithSubTreeNodes")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanStepBack
         {
             get
@@ -127,6 +175,9 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        [NotifyDependsOn("IsAudioLoadedWithSubTreeNodes")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanStepForward
         {
             get
@@ -135,6 +186,8 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
         public bool CanOpenFile
         {
             get
