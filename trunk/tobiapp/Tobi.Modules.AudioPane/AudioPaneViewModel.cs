@@ -282,6 +282,8 @@ namespace Tobi.Modules.AudioPane
 
         public void ClearSelection()
         {
+            SelectionBegin = -1.0;
+            SelectionEnd = -1.0;
             if (View != null)
             {
                 View.ClearSelection();
@@ -290,6 +292,8 @@ namespace Tobi.Modules.AudioPane
 
         public void SelectAll()
         {
+            SelectionBegin = 0;
+            SelectionEnd = AudioPlayer_ConvertByteToMilliseconds(DataLength);
             if (View != null)
             {
                 View.ExpandSelection();
@@ -315,22 +319,6 @@ namespace Tobi.Modules.AudioPane
             }
 
             AudioPlayer_LoadAndPlayFromFile(filePath);
-        }
-
-        public bool IsSelectionSet
-        {
-            get
-            {
-                if (View != null)
-                {
-                    return View.IsSelectionSet;
-                }
-                return false;
-            }
-            set
-            {
-                OnPropertyChanged(() => IsSelectionSet);
-            }
         }
 
         public bool ResizeDrag

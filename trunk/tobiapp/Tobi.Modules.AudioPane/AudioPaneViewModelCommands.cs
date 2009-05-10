@@ -35,6 +35,9 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandStopRecord { get; private set; }
         public RichDelegateCommand<object> CommandStartMonitor { get; private set; }
         public RichDelegateCommand<object> CommandStopMonitor { get; private set; }
+        public RichDelegateCommand<object> CommandBeginSelection { get; private set; }
+        public RichDelegateCommand<object> CommandEndSelection { get; private set; }
+
 
         [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
         [NotifyDependsOn("IsRecording")]
@@ -193,6 +196,24 @@ namespace Tobi.Modules.AudioPane
             get
             {
                 return !IsMonitoring && !IsRecording;
+            }
+        }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        public bool CanBeginSelection
+        {
+            get
+            {
+                return IsAudioLoaded;
+            }
+        }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        public bool CanEndSelection
+        {
+            get
+            {
+                return IsAudioLoaded && m_SelectionBeginTmp >= 0;
             }
         }
 
@@ -372,7 +393,23 @@ namespace Tobi.Modules.AudioPane
                 obj => AudioRecorder_StopMonitor(), obj => CanStopMonitor);
 
             shellPresenter.RegisterRichCommand(CommandStopMonitor);
+            //
+            CommandEndSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_EndSelection,
+                UserInterfaceStrings.Audio_EndSelection_,
+                UserInterfaceStrings.Audio_EndSelection_KEYS,
+                (VisualBrush)Application.Current.FindResource("format-indent-more"),
+                obj => EndSelection(), obj => CanEndSelection);
 
+            shellPresenter.RegisterRichCommand(CommandEndSelection);
+            //
+            CommandBeginSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_BeginSelection,
+                UserInterfaceStrings.Audio_BeginSelection_,
+                UserInterfaceStrings.Audio_BeginSelection_KEYS,
+                (VisualBrush)Application.Current.FindResource("format-indent-less"),
+                obj => BeginSelection(), obj => CanBeginSelection);
+
+            shellPresenter.RegisterRichCommand(CommandBeginSelection);
+            //
             if (View != null)
             {
                 View.InitGraphicalCommandBindings();

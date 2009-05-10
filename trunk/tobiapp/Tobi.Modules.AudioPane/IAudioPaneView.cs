@@ -22,7 +22,6 @@
 // ReSharper restore InconsistentNaming
         string OpenFileDialog();
         double BytesPerPixel { get; set; }
-        bool IsSelectionSet { get; }
         void StopWaveFormTimer();
         void StartWaveFormTimer();
         void StopPeakMeterTimer();
@@ -33,8 +32,7 @@
         void ZoomSelection();
         void ZoomFitFull();
         void Refresh();
-        double GetSelectionLeft();
-        double GetSelectionWidth();
         void InitGraphicalCommandBindings();
+        void SetSelection(double begin, double end);
     }
 }

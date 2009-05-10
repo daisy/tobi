@@ -270,7 +270,11 @@ namespace Tobi.Infrastructure.Commanding
             get
             {
                 //return KeyGesture.DisplayString;
-                return (KeyGesture == null ? m_KeyGestureText : KeyGesture.GetDisplayStringForCulture(CultureInfo.CurrentCulture)); //CultureInfo.InvariantCulture
+                return (KeyGesture == null ? m_KeyGestureText :
+                    KeyGesture.GetDisplayStringForCulture(CultureInfo.CurrentCulture)
+                    .Replace("Oem4", "[")
+                    .Replace("Oem6", "]")
+                    ); //CultureInfo.InvariantCulture
             }
         }
 

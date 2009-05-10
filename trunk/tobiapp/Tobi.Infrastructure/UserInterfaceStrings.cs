@@ -24,6 +24,15 @@ namespace Tobi.Infrastructure
         public const string Apply = "_Apply";
         public const string Close = "_Close";
 
+
+        public const string Audio_BeginSelection = "_Begin selection";
+        public const string Audio_BeginSelection_ = "Begin audio waveform selection";
+        public static KeyGesture Audio_BeginSelection_KEYS = new KeyGesture(Key.OemOpenBrackets, ModifierKeys.Control);
+
+        public const string Audio_EndSelection = "_End selection";
+        public const string Audio_EndSelection_ = "End audio waveform selection";
+        public static KeyGesture Audio_EndSelection_KEYS = new KeyGesture(Key.OemCloseBrackets, ModifierKeys.Control);
+
         public const string TreeExpandAll = "E_xpand all";
         public const string TreeExpandAll_ = "Expand all children in the tree";
 
