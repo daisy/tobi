@@ -739,6 +739,12 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <Separator/>
 
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}"
+                                 />
+
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandEndSelection}"
+                                 />
+
     <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
                                  />
 

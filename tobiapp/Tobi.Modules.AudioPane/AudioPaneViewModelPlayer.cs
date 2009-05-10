@@ -22,6 +22,84 @@ namespace Tobi.Modules.AudioPane
         private AudioPlayer m_Player;
         private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
 
+        private double m_SelectionBeginTmp = -1;
+
+        public void BeginSelection()
+        {
+            m_SelectionBeginTmp = LastPlayHeadTime;
+        }
+
+        public void EndSelection()
+        {
+            if (m_SelectionBeginTmp < 0)
+            {
+                return;
+            }
+            double begin = m_SelectionBeginTmp;
+            double end = LastPlayHeadTime;
+
+            if (begin == end)
+            {
+                ClearSelection();
+                return;
+            }
+
+            if (begin > end)
+            {
+                double tmp = begin;
+                begin = end;
+                end = tmp;
+            }
+
+            SelectionBegin = begin;
+            SelectionEnd = end;
+
+            if (View != null)
+            {
+                View.SetSelection(SelectionBegin, SelectionEnd);
+            }
+        }
+
+        [NotifyDependsOn("SelectionBegin")]
+        [NotifyDependsOn("SelectionEnd")]
+        public bool IsSelectionSet
+        {
+            get
+            {
+                return SelectionBegin >= 0 && SelectionEnd >= 0;
+            }
+        }
+
+        private double m_SelectionBegin;
+        public double SelectionBegin
+        {
+            get
+            {
+                return m_SelectionBegin;
+            }
+            set
+            {
+                if (m_SelectionBegin == value) return;
+                m_SelectionBegin = value;
+                OnPropertyChanged(() => SelectionBegin);
+            }
+        }
+
+        private double m_SelectionEnd;
+        public double SelectionEnd
+        {
+            get
+            {
+                return m_SelectionEnd;
+            }
+            set
+            {
+                if (m_SelectionEnd == value) return;
+                m_SelectionEnd = value;
+                OnPropertyChanged(() => SelectionEnd);
+            }
+        }
+
         private List<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
         public List<TreeNodeAndStreamDataLength> PlayStreamMarkers
         {
@@ -115,7 +193,7 @@ namespace Tobi.Modules.AudioPane
                         AudioPlayer_Stop();
                     }
                     m_Player.SetDevice(GetWindowsFormsHookControl(), value);
-                    if (time != -1)
+                    if (time >= 0)
                     {
                         AudioPlayer_PlayFrom(AudioPlayer_ConvertMillisecondsToByte(time));
                     }
@@ -162,6 +240,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        [NotifyDependsOn("PcmFormat")]
         public bool IsPlaying
         {
             get
@@ -247,6 +326,8 @@ namespace Tobi.Modules.AudioPane
                     PcmFormat = CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                 }
             }
+
+            LastPlayHeadTime = 0;
 
             if (View != null)
             {
@@ -467,7 +548,7 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Stop();
             }
 
-            if (bytesEnd == -1)
+            if (bytesEnd < 0)
             {
                 if (m_Player.State == AudioPlayerState.Stopped)
                 {
@@ -521,7 +602,7 @@ namespace Tobi.Modules.AudioPane
 
             double byteLastPlayHeadTime = AudioPlayer_ConvertMillisecondsToByte(LastPlayHeadTime);
 
-            if (View == null || View.GetSelectionLeft() == -1)
+            if (!IsSelectionSet)
             {
                 if (LastPlayHeadTime >=
                         AudioPlayer_ConvertByteToMilliseconds(
@@ -537,8 +618,8 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                double byteSelectionLeft = Math.Round(View.GetSelectionLeft() * View.BytesPerPixel);
-                double byteSelectionRight = Math.Round((View.GetSelectionLeft() + View.GetSelectionWidth()) * View.BytesPerPixel);
+                double byteSelectionLeft = Math.Round(AudioPlayer_ConvertMillisecondsToByte(SelectionBegin));
+                double byteSelectionRight = Math.Round(AudioPlayer_ConvertMillisecondsToByte(SelectionEnd));
 
                 byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
 
@@ -707,6 +788,7 @@ namespace Tobi.Modules.AudioPane
             PlayStreamMarkers = null;
             PcmFormat = null;
             DataLength = 0;
+            ClearSelection();
 
             m_EndOffsetOfPlayStream = 0;
             FilePath = "";

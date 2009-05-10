@@ -141,6 +141,7 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StopRecording();
         }
+
         public void AudioRecorder_StartStop()
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_StartStop", Category.Debug, Priority.Medium);

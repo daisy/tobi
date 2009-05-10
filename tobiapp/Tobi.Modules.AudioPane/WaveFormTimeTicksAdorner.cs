@@ -213,7 +213,7 @@ namespace Tobi.Modules.AudioPane
                 currentTickX += minorTickInterval_pixels;
             }
 
-            if (m_MousePosX != -1)
+            if (m_MousePosX >= 0)
             {
                 double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX);
                 double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
