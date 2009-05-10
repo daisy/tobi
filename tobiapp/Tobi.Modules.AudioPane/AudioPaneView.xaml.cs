@@ -128,7 +128,7 @@ namespace Tobi.Modules.AudioPane
                 ZoomSlider.Maximum = newSliderValue;
             }
 
-            if (ViewModel.AudioPlayer_GetPcmFormat() != null)
+            if (ViewModel.PcmFormat != null)
             {
                 double selectionTimeLeft = ViewModel.AudioPlayer_ConvertByteToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
                 double selectionTimeRight = ViewModel.AudioPlayer_ConvertByteToMilliseconds((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
@@ -225,7 +225,7 @@ namespace Tobi.Modules.AudioPane
 
             ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
 
-            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            if (ViewModel.PcmFormat == null)
             {
                 return;
             }
@@ -390,7 +390,7 @@ namespace Tobi.Modules.AudioPane
             {
                 restoreSelection();
 
-                if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+                if (ViewModel.PcmFormat == null)
                 {
                     return;
                 }
@@ -422,7 +422,7 @@ namespace Tobi.Modules.AudioPane
 
             if (ViewModel.IsAutoPlay)
             {
-                if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+                if (ViewModel.PcmFormat == null)
                 {
                     return;
                 }
@@ -729,7 +729,7 @@ namespace Tobi.Modules.AudioPane
         /// </summary>
         public void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
         {
-            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            if (ViewModel.PcmFormat == null)
             {
                 if (m_TimeSelectionLeftX != -1)
                 {
@@ -744,7 +744,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            long bytes = ViewModel.AudioPlayer_GetPcmFormat().GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
+            long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
             double pixels = bytes / BytesPerPixel;
 
             StreamGeometry geometry;
@@ -887,7 +887,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             double barWidth = PeakMeterCanvas.ActualWidth;
-            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+            if (ViewModel.PcmFormat.NumberOfChannels > 1)
             {
                 barWidth = barWidth / 2;
             }
@@ -916,7 +916,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             StreamGeometry geometry2 = null;
-            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+            if (ViewModel.PcmFormat.NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -949,7 +949,7 @@ namespace Tobi.Modules.AudioPane
             {
                 PeakMeterPathCh1.InvalidateVisual();
             }
-            if (ViewModel.AudioPlayer_GetPcmFormat().NumberOfChannels > 1)
+            if (ViewModel.PcmFormat.NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -1031,7 +1031,7 @@ namespace Tobi.Modules.AudioPane
             if (m_WaveFormLoadingAdorner != null)
             {
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
-                m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                m_WaveFormLoadingAdorner.InvalidateVisual();
             }
         }
 
@@ -1093,7 +1093,7 @@ namespace Tobi.Modules.AudioPane
             {
                 m_WaveFormLoadingAdorner.DisplayRecorderTime = true;
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
-                m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                m_WaveFormLoadingAdorner.InvalidateVisual();
             }
         }
 
@@ -1226,7 +1226,7 @@ namespace Tobi.Modules.AudioPane
 
         public void StartWaveFormLoadTimer(double delay, bool play)
         {
-            if (ViewModel.AudioPlayer_GetPcmFormat() == null)
+            if (ViewModel.PcmFormat == null)
             {
                 return;
             }

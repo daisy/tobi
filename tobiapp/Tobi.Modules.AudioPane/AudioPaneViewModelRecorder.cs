@@ -47,13 +47,8 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnRecorderStateChanged", Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => CanSwapOutputDevice);
-            OnPropertyChanged(() => CanSwapInputDevice);
-
-            OnPropertyChanged(() => CanOpenFile);
             OnPropertyChanged(() => IsRecording);
             OnPropertyChanged(() => IsMonitoring);
-            OnPropertyChanged(() => CurrentTimeString);
 
             if ((e.OldState == AudioRecorderState.Recording || e.OldState == AudioRecorderState.Monitoring)
                 && m_Recorder.State == AudioRecorderState.Stopped)
@@ -127,17 +122,17 @@ namespace Tobi.Modules.AudioPane
             if (shell.DocumentProject == null)
             {
                 setRecordingDirectory(Directory.GetCurrentDirectory());
-                m_PcmFormat = new PCMFormatInfo();
+                PcmFormat = new PCMFormatInfo();
             }
             else
             {
-                if (m_PcmFormat == null)
+                if (PcmFormat == null)
                 {
-                    m_PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                    PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
                 }
             }
 
-            m_Recorder.StartListening(m_PcmFormat);
+            m_Recorder.StartListening(PcmFormat);
         }
 
         public void AudioRecorder_StopMonitor()
@@ -168,17 +163,17 @@ namespace Tobi.Modules.AudioPane
             if (shell.DocumentProject == null)
             {
                 setRecordingDirectory(Directory.GetCurrentDirectory());
-                m_PcmFormat = new PCMFormatInfo();
+                PcmFormat = new PCMFormatInfo();
             }
             else
             {
-                if (m_PcmFormat == null)
+                if (PcmFormat == null)
                 {
-                    m_PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                    PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
                 }
             }
 
-            m_Recorder.StartRecording(m_PcmFormat);
+            m_Recorder.StartRecording(PcmFormat);
         }
 
         public void AudioRecorder_Stop()

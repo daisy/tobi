@@ -145,26 +145,23 @@ namespace Tobi.Modules.AudioPane
                 View.RefreshUI_AllReset();
             }
 
-            m_CurrentTreeNode = node;
-            m_CurrentSubTreeNode = node;
+            CurrentTreeNode = node;
+            CurrentSubTreeNode = node;
 
             m_CurrentAudioStreamProvider = () =>
             {
-                if (m_CurrentTreeNode == null) return null;
+                if (CurrentTreeNode == null) return null;
 
                 if (m_PlayStream == null)
                 {
-                    if (m_PlayStreamMarkers != null)
-                    {
-                        m_PlayStreamMarkers.Clear();
-                        m_PlayStreamMarkers = null;
-                    }
 
-                    StreamWithMarkers? sm = m_CurrentTreeNode.GetManagedAudioDataFlattened();
+                    PlayStreamMarkers = null;
+
+                    StreamWithMarkers? sm = CurrentTreeNode.GetManagedAudioDataFlattened();
 
                     if (sm == null)
                     {
-                        TreeNode ancerstor = m_CurrentTreeNode.GetFirstAncestorWithManagedAudio();
+                        TreeNode ancerstor = CurrentTreeNode.GetFirstAncestorWithManagedAudio();
                         if (ancerstor == null)
                         {
                             return null;
@@ -173,27 +170,21 @@ namespace Tobi.Modules.AudioPane
                         StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
                         if (sma != null)
                         {
-                            m_CurrentTreeNode = ancerstor;
+                            CurrentTreeNode = ancerstor;
                             m_PlayStream = sma.GetValueOrDefault().m_Stream;
-                            m_PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
+                            PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
                         }
                     }
                     else
                     {
                         m_PlayStream = sm.GetValueOrDefault().m_Stream;
-                        m_PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
+                        PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
                     }
                     if (m_PlayStream == null)
                     {
                         return null;
                     }
-                    m_DataLength = m_PlayStream.Length;
-
-                    OnPropertyChanged(() => WaveFormTotalTimeString);
-                    OnPropertyChanged(() => IsAudioLoaded);
-                    OnPropertyChanged(() => IsAudioLoadedWithTreeNode);
-                    OnPropertyChanged(() => IsAudioLoadedWithSubTreeNodes);
-                    OnPropertyChanged(() => CurrentTimeString);
+                    DataLength = m_PlayStream.Length;
                 }
                 return m_PlayStream;
             };
@@ -205,7 +196,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            m_EndOffsetOfPlayStream = m_DataLength;
+            m_EndOffsetOfPlayStream = DataLength;
 
             FilePath = null;
 
@@ -216,12 +207,39 @@ namespace Tobi.Modules.AudioPane
 
         #region Private Class Attributes
 
-        private TreeNode m_CurrentTreeNode;
-        private TreeNode m_CurrentSubTreeNode;
-
         #endregion Private Class Attributes
 
         #region Public Properties
+
+        private TreeNode m_CurrentTreeNode;
+        public TreeNode CurrentTreeNode
+        {
+            get
+            {
+                return m_CurrentTreeNode;
+            }
+            set
+            {
+                if (m_CurrentTreeNode == value) return;
+                m_CurrentTreeNode = value;
+                OnPropertyChanged(() => CurrentTreeNode);
+            }
+        }
+
+        private TreeNode m_CurrentSubTreeNode;
+        public TreeNode CurrentSubTreeNode
+        {
+            get
+            {
+                return m_CurrentSubTreeNode;
+            }
+            set
+            {
+                if (m_CurrentSubTreeNode == value) return;
+                m_CurrentSubTreeNode = value;
+                OnPropertyChanged(() => CurrentSubTreeNode);
+            }
+        }
 
         private string m_WavFilePath;
         public string FilePath
@@ -235,7 +253,6 @@ namespace Tobi.Modules.AudioPane
                 if (m_WavFilePath == value) return;
                 m_WavFilePath = value;
                 OnPropertyChanged(() => FilePath);
-                OnPropertyChanged(() => IsAudioLoaded);
             }
         }
 
@@ -328,11 +345,14 @@ namespace Tobi.Modules.AudioPane
                 return false;
             }
         }
+
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("DataLength")]
         public string WaveFormTotalTimeString
         {
             get
             {
-                if (m_PcmFormat == null)
+                if (! IsAudioLoaded)
                 {
                     return "";
                 }
@@ -340,22 +360,37 @@ namespace Tobi.Modules.AudioPane
                 return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
             }
         }
+
+        public double RecorderCurrentDuration
+        {
+            get
+            {
+                return m_Recorder.TimeOfAsset;
+            }
+        }
+
+        [NotifyDependsOn("PcmFormat")]
+        [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("LastPlayHeadTime")]
+        [NotifyDependsOn("RecorderCurrentDuration")]
         public String CurrentTimeString
         {
             get
             {
-                if (m_PcmFormat == null)
+                if (PcmFormat == null)
                 {
                     return "";
                 }
 
-                if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
+                if (IsRecording || IsMonitoring)
                 {
-                    var timeSpan = TimeSpan.FromMilliseconds(m_Recorder.TimeOfAsset);
+                    var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
                 }
                 
-                if (m_Player.State == AudioPlayerState.Playing)
+                if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTimePosition);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
@@ -412,7 +447,7 @@ namespace Tobi.Modules.AudioPane
 
         public void UpdatePeakMeter()
         {
-            if (m_PcmFormat == null || m_Player.State != AudioPlayerState.Playing
+            if (PcmFormat == null || m_Player.State != AudioPlayerState.Playing
                 && (m_Recorder.State != AudioRecorderState.Recording && m_Recorder.State != AudioRecorderState.Monitoring))
             {
                 if (View != null)
@@ -422,7 +457,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
             PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
-            if (m_PcmFormat.NumberOfChannels > 1)
+            if (PcmFormat.NumberOfChannels > 1)
             {
                 PeakMeterBarDataCh2.ValueDb = m_PeakMeterValues[1];
             }
@@ -457,7 +492,7 @@ namespace Tobi.Modules.AudioPane
 
         private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
         {
-            if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
+            if (IsRecording || IsMonitoring)
             {
                 if (View != null)
                 {
@@ -465,13 +500,13 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 // TODO: generates too many events per seconds in the data binding pipeline (INotifyPropertyChanged)
-                OnPropertyChanged(() => CurrentTimeString);
+                OnPropertyChanged(() => RecorderCurrentDuration);
             }
 
             if (e.PeakValues != null && e.PeakValues.Length > 0)
             {
                 m_PeakMeterValues[0] = e.PeakValues[0];
-                if (m_PcmFormat != null && m_PcmFormat.NumberOfChannels > 1)
+                if (PcmFormat != null && PcmFormat.NumberOfChannels > 1)
                 {
                     m_PeakMeterValues[1] = e.PeakValues[1];
                 }
