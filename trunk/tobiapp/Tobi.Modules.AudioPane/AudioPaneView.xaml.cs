@@ -221,7 +221,7 @@ namespace Tobi.Modules.AudioPane
                 WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
             }
 
-            BytesPerPixel = ViewModel.AudioPlayer_GetDataLength() / width;
+            BytesPerPixel = ViewModel.DataLength / width;
 
             ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
 

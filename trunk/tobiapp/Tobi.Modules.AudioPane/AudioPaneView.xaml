@@ -791,7 +791,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       FontWeight="ExtraBold"
     DockPanel.Dock="Right"
     Margin="0, 0, 15, 0"
-      VerticalAlignment="Center" Text="{Binding WaveFormTotalTimeString, Mode=OneWay}"/>
+      VerticalAlignment="Center" Text="{Binding TimeStringTotalWaveform, Mode=OneWay}"/>
 
     <TextBlock
       FontWeight="ExtraBold"
@@ -801,7 +801,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <TextBlock
       FontWeight="ExtraBlack"
     DockPanel.Dock="Right"
-      VerticalAlignment="Center" Text="{Binding CurrentTimeString, Mode=OneWay}"/>
+      VerticalAlignment="Center" Text="{Binding TimeStringCurrent, Mode=OneWay}"/>
 
     <StackPanel
         Orientation="Horizontal"
@@ -824,7 +824,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                 Margin="2"
                 IsEnabled="{Binding CanSwapInputDevice, Mode=OneWay}"/>
 
-      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{Binding CurrentPcmFormatString, Mode=OneWay}"/>
+      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{Binding PcmFormatString, Mode=OneWay}"/>
 
     </StackPanel>
 
