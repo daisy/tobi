@@ -41,7 +41,7 @@ namespace Tobi.Modules.AudioPane
                 width = WaveFormCanvas.Width;
             }
 
-            BytesPerPixel = ViewModel.AudioPlayer_GetDataLength() / width;
+            BytesPerPixel = ViewModel.DataLength / width;
 
             int byteDepth = ViewModel.PcmFormat.BitDepth / 8; //bytes per sample (data for one channel only)
 

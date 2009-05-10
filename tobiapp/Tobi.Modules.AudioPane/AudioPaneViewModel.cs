@@ -348,7 +348,7 @@ namespace Tobi.Modules.AudioPane
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("DataLength")]
-        public string WaveFormTotalTimeString
+        public string TimeStringTotalWaveform
         {
             get
             {
@@ -356,7 +356,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     return "";
                 }
-                var timeSpan = TimeSpan.FromMilliseconds(AudioPlayer_ConvertByteToMilliseconds(AudioPlayer_GetDataLength()));
+                var timeSpan = TimeSpan.FromMilliseconds(AudioPlayer_ConvertByteToMilliseconds(DataLength));
                 return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
             }
         }
@@ -369,13 +369,16 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        // TODO: LastPlayHeadTime and RecorderCurrentDuration(triggered from OnUpdateVuMeter)
+        // refresh many times per seconds, which floods the data binding infrastructure with INotifiedPropertyChanged events.
+        // We might need to optimize this part in the near future, to avoid performance issues.
         [NotifyDependsOn("PcmFormat")]
         [NotifyDependsOn("IsPlaying")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("LastPlayHeadTime")]
         [NotifyDependsOn("RecorderCurrentDuration")]
-        public String CurrentTimeString
+        public String TimeStringCurrent
         {
             get
             {

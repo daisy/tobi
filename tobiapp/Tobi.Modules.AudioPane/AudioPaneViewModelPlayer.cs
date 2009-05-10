@@ -525,7 +525,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (LastPlayHeadTime >=
                         AudioPlayer_ConvertByteToMilliseconds(
-                                            AudioPlayer_GetDataLength()))
+                                            DataLength))
                 {
                     LastPlayHeadTime = 0;
                     AudioPlayer_PlayFrom(0);
@@ -581,7 +581,7 @@ namespace Tobi.Modules.AudioPane
             }
             if (startPosition >= 0 &&
                 (endPosition == 0 || startPosition < endPosition) &&
-                endPosition <= pcmInfo.GetDataLength(pcmInfo.GetDuration(AudioPlayer_GetDataLength())))
+                endPosition <= pcmInfo.GetDataLength(pcmInfo.GetDuration(DataLength)))
             {
                 return true;
             }
@@ -659,7 +659,7 @@ namespace Tobi.Modules.AudioPane
 
             AudioPlayer_Stop();
             double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
-            double max = AudioPlayer_ConvertByteToMilliseconds(AudioPlayer_GetDataLength());
+            double max = AudioPlayer_ConvertByteToMilliseconds(DataLength);
             if (newTime > max)
             {
                 newTime = max;
@@ -679,7 +679,7 @@ namespace Tobi.Modules.AudioPane
         public void AudioPlayer_GotoEnd()
         {
             AudioPlayer_Stop();
-            LastPlayHeadTime = AudioPlayer_ConvertByteToMilliseconds(AudioPlayer_GetDataLength());
+            LastPlayHeadTime = AudioPlayer_ConvertByteToMilliseconds(DataLength);
         }
 
         public void AudioPlayer_GotoBegining()
@@ -697,15 +697,6 @@ namespace Tobi.Modules.AudioPane
                 }
             }
         }
-        public long AudioPlayer_GetDataLength()
-        {
-            if (PcmFormat == null)
-            {
-                return 0;
-            }
-
-            return DataLength;
-        }
 
         private void resetAllInternalPlayerValues()
         {
@@ -716,6 +707,7 @@ namespace Tobi.Modules.AudioPane
             PlayStreamMarkers = null;
             PcmFormat = null;
             DataLength = 0;
+
             m_EndOffsetOfPlayStream = 0;
             FilePath = "";
             m_StreamRiffHeaderEndPos = 0;
@@ -775,7 +767,7 @@ namespace Tobi.Modules.AudioPane
         }
 
         [NotifyDependsOn("PcmFormat")]
-        public String CurrentPcmFormatString
+        public String PcmFormatString
         {
             get
             {

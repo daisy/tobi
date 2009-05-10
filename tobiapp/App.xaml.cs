@@ -80,13 +80,7 @@ c.Execute();
             SplashScreen = new SplashScreen("TobiSplashScreen.png");
             SplashScreen.Show(false);
 
-            string logPath = Directory.GetCurrentDirectory() + @"\Tobi.log";
-            if (File.Exists(logPath))
-            {
-                Console.Write("Deleting log file [" + logPath + "]...");
-                File.Delete(logPath);
-                Console.Write("File deleted [" + logPath + "].");
-            }
+            BitFactoryLoggerAdapter.DeleteLogFile();
 
             PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;

@@ -7,7 +7,20 @@ namespace Tobi
 {
     public class BitFactoryLoggerAdapter : ILoggerFacade
     {
+        private static readonly string LOG_FILE_NAME = "Tobi.log";
+
         private CompositeLogger m_Logger;
+
+        public static void DeleteLogFile()
+        {
+            string logPath = Directory.GetCurrentDirectory() + @"\" + LOG_FILE_NAME;
+            if (File.Exists(logPath))
+            {
+                Console.Write("Deleting log file [" + logPath + "]...");
+                File.Delete(logPath);
+                Console.Write("File deleted [" + logPath + "].");
+            }
+        }
 
         public BitFactoryLoggerAdapter()
         {
@@ -15,7 +28,7 @@ namespace Tobi
 
             Logger consoleLogger = TextWriterLogger.NewConsoleLogger();
 
-            string logPath = Directory.GetCurrentDirectory() + @"\Tobi.log";
+            string logPath = Directory.GetCurrentDirectory() + @"\" + LOG_FILE_NAME;
 
             Logger fileLogger = new FileLogger(logPath);
 
@@ -32,7 +45,7 @@ namespace Tobi
                 case Category.Info:
                     {
                         m_Logger.Log(LogSeverity.Info, message);
-#if (DEBUG)
+#if (false && DEBUG)
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("Info ");
                         consoleWritePriority(priority);
@@ -43,7 +56,7 @@ namespace Tobi
                 case Category.Warn:
                     {
                         m_Logger.Log(LogSeverity.Warning, message);
-#if (DEBUG)
+#if (false && DEBUG)
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("Warn ");
                         consoleWritePriority(priority);
@@ -55,7 +68,7 @@ namespace Tobi
                 case Category.Exception:
                     {
                         m_Logger.Log(LogSeverity.Error, message);
-#if (DEBUG)
+#if (false && DEBUG)
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("Exception ");
                         consoleWritePriority(priority);
@@ -67,7 +80,7 @@ namespace Tobi
                 case Category.Debug:
                     {
                         m_Logger.Log(LogSeverity.Debug, message);
-#if (DEBUG)
+#if (false && DEBUG)
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("Debug ");
                         consoleWritePriority(priority);
@@ -80,7 +93,7 @@ namespace Tobi
 
         #endregion
 
-#if (DEBUG)
+#if (false && DEBUG)
 
         private void consoleWritePriority(Priority priority)
         {
