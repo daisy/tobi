@@ -72,7 +72,7 @@ namespace Tobi.Modules.AudioPane
             const int tolerance = 5;
             try
             {
-                if (ViewModel.FilePath.Length > 0)
+                if (!string.IsNullOrEmpty(ViewModel.FilePath))
                 {
                     ViewModel.AudioPlayer_ResetPlayStreamPosition();
                 }
