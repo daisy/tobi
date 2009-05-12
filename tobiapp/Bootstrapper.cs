@@ -5,6 +5,7 @@ using System.Windows;
 using Microsoft.Practices.Unity;
 using Tobi.Modules.AudioPane;
 using Tobi.Modules.DocumentPane;
+using Tobi.Modules.MetadataPane;
 using Tobi.Modules.NavigationPane;
 using Tobi.Modules.MenuBar;
 using Tobi.Modules.ToolBars;
@@ -16,14 +17,14 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
-        private readonly BitFactoryLoggerAdapter _logger = new BitFactoryLoggerAdapter(); //EntLibLoggerAdapter();
+        private readonly BitFactoryLoggerAdapter m_Logger = new BitFactoryLoggerAdapter(); //EntLibLoggerAdapter();
 
         ///<summary>
         /// Overriding the default TRACE logger with our own (available application-wide, through the DI container)
         ///</summary>
         protected override ILoggerFacade LoggerFacade
         {
-            get { return _logger; }
+            get { return m_Logger; }
         }
 
         ///<summary>
@@ -47,21 +48,22 @@ namespace Tobi
             return shellView as DependencyObject;
         }
 
-        protected override void InitializeModules()
+        /*
+    protected override void InitializeModules()
+    {
+        base.InitializeModules();
+
+        var moduleCatalog = Container.Resolve<IModuleCatalog>();
+        foreach (var module in moduleCatalog.Modules)
         {
-            base.InitializeModules();
-
-            var moduleCatalog = Container.Resolve<IModuleCatalog>();
-            foreach (var module in moduleCatalog.Modules)
+            if (module.ModuleName == "MyModuleName")
             {
-
-                if (module.ModuleName == "MyModuleName")
-                {
-                    var moduleManager = Container.Resolve<IModuleManager>();
-                    moduleManager.LoadModule(module.ModuleName);
-                }
+                var moduleManager = Container.Resolve<IModuleManager>();
+                moduleManager.LoadModule(module.ModuleName);
             }
         }
+    }
+         */
 
         /// <summary>
         /// Tobi loads its main Modules statically
@@ -71,15 +73,15 @@ namespace Tobi
             //return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
 
             return new ModuleCatalog()
-                .AddModule(typeof (MenuBarModule))
-                .AddModule(typeof (NavigationPaneModule), "DocumentPaneModule")
-                .AddModule(typeof (DocumentPaneModule))
-                .AddModule(typeof (AudioPaneModule))
-                .AddModule(typeof (ToolBarsModule));
+                .AddModule(typeof(MenuBarModule))
+                .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
+                .AddModule(typeof(DocumentPaneModule))
+                .AddModule(typeof(AudioPaneModule))
+                .AddModule(typeof(MetadataPaneModule))
+                .AddModule(typeof(ToolBarsModule), "MetadataPaneModule"); // TODO: remove this dependency, currently necessary to retrieve the local Command and inject it into a button
 
-                //.AddModule(typeof (StatusBarModule));
-            
-                //.AddModule(typeof(UserInterfaceZoomModule))
+            //.AddModule(typeof (StatusBarModule));
+            //.AddModule(typeof(UserInterfaceZoomModule))
         }
     }
 }

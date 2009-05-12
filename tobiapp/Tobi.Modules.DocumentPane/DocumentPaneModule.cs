@@ -10,7 +10,7 @@ namespace Tobi.Modules.DocumentPane
     ///</summary>
     public class DocumentPaneModule : IModule
     {
-        private readonly IUnityContainer m_container;
+        private readonly IUnityContainer m_Container;
 
         ///<summary>
         /// Dependency Injection constructor
@@ -18,7 +18,7 @@ namespace Tobi.Modules.DocumentPane
         ///<param name="container">The DI container</param>
         public DocumentPaneModule(IUnityContainer container)
         {
-            m_container = container;
+            m_Container = container;
         }
 
         ///<summary>
@@ -27,12 +27,12 @@ namespace Tobi.Modules.DocumentPane
         ///</summary>
         public void Initialize()
         {
-            m_container.RegisterType<DocumentPaneView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<DocumentPaneView>(new ContainerControlledLifetimeManager());
 
-            var regionManager = m_container.Resolve<IRegionManager>();
+            var regionManager = m_Container.Resolve<IRegionManager>();
+            var view = m_Container.Resolve<DocumentPaneView>();
+
             IRegion targetRegion = regionManager.Regions[RegionNames.DocumentPane];
-
-            var view = m_container.Resolve<DocumentPaneView>();
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }

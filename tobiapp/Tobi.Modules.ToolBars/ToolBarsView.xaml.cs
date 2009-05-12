@@ -4,6 +4,7 @@ using System.ComponentModel;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure.Commanding;
+using Tobi.Modules.MetadataPane;
 
 namespace Tobi.Modules.ToolBars
 {
@@ -35,6 +36,9 @@ namespace Tobi.Modules.ToolBars
         public RichDelegateCommand<object> NavNextCommand { get; private set; }
         public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
 
+
+        public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
+
         protected IUnityContainer Container { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
@@ -45,6 +49,13 @@ namespace Tobi.Modules.ToolBars
         {
             Container = container;
             Logger = logger;
+
+            // TODO: UGLY ! We need a much better design for sharing commands
+            var metadata = Container.Resolve<MetadataPaneViewModel>();
+            if (metadata != null)
+            {
+                CommandShowMetadataPane = metadata.CommandShowMetadataPane;
+            }
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
             if (shellPresenter != null)

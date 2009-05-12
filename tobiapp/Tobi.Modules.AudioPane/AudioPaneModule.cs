@@ -28,13 +28,19 @@ namespace Tobi.Modules.AudioPane
         ///</summary>
         public void Initialize()
         {
+            // Although we don't need an AudioPaneView or AudioPaneViewModel instance
+            // globally available in the DI Container to the rest of the applicatin,
+            // we need the constructors to be injected with some dependencies,
+            // and it's nice to benefit from the DIC lifetime management,
+            // so we do the following:
+            m_Container.RegisterType<IAudioPaneView, AudioPaneView>(new ContainerControlledLifetimeManager());
             m_Container.RegisterType<AudioPaneViewModel>(new ContainerControlledLifetimeManager());
-            m_Container.RegisterType<AudioPaneView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
+            var view = m_Container.Resolve<IAudioPaneView>();
+
             IRegion targetRegion = regionManager.Regions[RegionNames.AudioPane];
 
-            var view = m_Container.Resolve<AudioPaneView>();
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }

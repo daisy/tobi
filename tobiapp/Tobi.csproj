@@ -117,7 +117,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AvalonDockRegion.cs" />
     <Compile Include="BitFactoryLoggerAdapter.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Command.cs" />
@@ -163,10 +162,6 @@
       <Project>{FB4B9F00-DAE4-46C4-B789-7A693198FA61}</Project>
       <Name>DaisyToXuk</Name>
     </ProjectReference>
-    <ProjectReference Include="ExternalLibs\AvalonDock\Lib.AvalonDock.csproj">
-      <Project>{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}</Project>
-      <Name>Lib.AvalonDock</Name>
-    </ProjectReference>
     <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
       <Name>Lib.Composite.Presentation</Name>
@@ -179,10 +174,6 @@
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
     </ProjectReference>
-    <ProjectReference Include="ExternalLibs\TaskDialog\TaskDialog\Lib.TaskDialog.csproj">
-      <Project>{F6B58070-8452-4A49-94B1-E38123120859}</Project>
-      <Name>Lib.TaskDialog</Name>
-    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Modules.AudioPane</Name>
@@ -191,6 +182,10 @@
       <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
       <Name>Tobi.Modules.DocumentPane</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
+      <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>
+      <Name>Tobi.Modules.MetadataPane</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Modules.NavigationPane.csproj">
       <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
       <Name>Tobi.Modules.NavigationPane</Name>
@@ -198,10 +193,6 @@
     <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Modules.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
       <Name>Tobi.Modules.ToolBars</Name>
-    </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.UserInterfaceZoom\Tobi.Modules.UserInterfaceZoom.csproj">
-      <Project>{81A33B16-0EEC-49FD-8AAB-3EA87E8C8B29}</Project>
-      <Name>Tobi.Modules.UserInterfaceZoom</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

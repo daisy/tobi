@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -554,7 +552,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormBackground));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormBackground));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_WaveFormBackground));
                 return;
             }
 
@@ -602,7 +601,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_AllReset));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_AllReset));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_AllReset));
                 return;
             }
 
@@ -800,23 +800,26 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(RefreshUI_WaveFormPlayHead_NoDispatcherCheck));
+                //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(RefreshUI_WaveFormPlayHead_NoDispatcherCheck));
+                Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(RefreshUI_WaveFormPlayHead_NoDispatcherCheck));
                 return;
             }
             RefreshUI_WaveFormPlayHead_NoDispatcherCheck();
         }
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private long m_WaveFormChunkMarkersLeftBytes = 0;
-        private long m_WaveFormChunkMarkersRightBytes = 0;
-        // ReSharper restore RedundantDefaultFieldInitializer
         /// <summary>
-        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
-        // ReSharper disable InconsistentNaming
-        private void RefreshUI_WaveFormChunkMarkers()
-        // ReSharper restore InconsistentNaming
+        /// <param name="bytesLeft"></param>
+        /// <param name="bytesRight"></param>
+        public void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight)));
+                return;
+            }
             ViewModel.Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
@@ -825,8 +828,8 @@ namespace Tobi.Modules.AudioPane
                 height = WaveFormCanvas.Height;
             }
 
-            double pixelsLeft = m_WaveFormChunkMarkersLeftBytes / BytesPerPixel;
-            double pixelsRight = m_WaveFormChunkMarkersRightBytes / BytesPerPixel;
+            double pixelsLeft = bytesLeft / BytesPerPixel;
+            double pixelsRight = bytesRight / BytesPerPixel;
 
             StreamGeometry geometryRange;
             if (WaveFormTimeRangePath.Data == null)
@@ -862,25 +865,6 @@ namespace Tobi.Modules.AudioPane
         }
 
         /// <summary>
-        /// (ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        /// <param name="bytesLeft"></param>
-        /// <param name="bytesRight"></param>
-        public void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight)
-        {
-            m_WaveFormChunkMarkersLeftBytes = bytesLeft;
-            m_WaveFormChunkMarkersRightBytes = bytesRight;
-
-            if (!Dispatcher.CheckAccess())
-            {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                return;
-            }
-
-            RefreshUI_WaveFormChunkMarkers();
-        }
-
-        /// <summary>
         /// Refreshes the PeakMeterCanvas
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -888,7 +872,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_PeakMeter));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_PeakMeter));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
                 return;
             }
 
@@ -1019,11 +1004,13 @@ namespace Tobi.Modules.AudioPane
             {
                 if (black)
                 {
-                    Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_PeakMeterBlackoutOn));
+                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_PeakMeterBlackoutOn));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_PeakMeterBlackoutOn));
                 }
                 else
                 {
-                    Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_PeakMeterBlackoutOff));
+                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_PeakMeterBlackoutOff));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_PeakMeterBlackoutOff));
                 }
             }
         }
@@ -1059,7 +1046,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Render, new ThreadStart(RefreshUI_TimeMessageInvalidate));
+                //Dispatcher.Invoke(DispatcherPriority.Render, new ThreadStart(RefreshUI_TimeMessageInvalidate));
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(RefreshUI_TimeMessageInvalidate));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -1075,7 +1063,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageClear));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageClear));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_TimeMessageClear));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -1092,7 +1081,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageInitiate));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageInitiate));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_TimeMessageInitiate));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -1127,11 +1117,13 @@ namespace Tobi.Modules.AudioPane
             {
                 if (visible)
                 {
-                    Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_LoadingMessageVisible));
+                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_LoadingMessageVisible));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_LoadingMessageVisible));
                 }
                 else
                 {
-                    Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_LoadingMessageHidden));
+                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_LoadingMessageHidden));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_LoadingMessageHidden));
                 }
             }
         }

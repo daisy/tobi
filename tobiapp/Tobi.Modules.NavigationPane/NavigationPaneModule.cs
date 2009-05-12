@@ -13,16 +13,15 @@ namespace Tobi.Modules.NavigationPane
     /// [ModuleDependency("DocumentPaneModule")] ALREADY CONFIGURED IN THE MODULE CATALOG
     public class NavigationPaneModule : IModule
     {
-        private readonly IUnityContainer m_container;
+        private readonly IUnityContainer m_Container;
 
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        ///<param name="docModule">The navigation depends on the documentr</param>
         public NavigationPaneModule(IUnityContainer container)
         {
-            m_container = container;
+            m_Container = container;
         }
 
         ///<summary>
@@ -31,12 +30,12 @@ namespace Tobi.Modules.NavigationPane
         ///</summary>
         public void Initialize()
         {
-            m_container.RegisterType<NavigationPaneView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<NavigationPaneView>(new ContainerControlledLifetimeManager());
 
-            var regionManager = m_container.Resolve<IRegionManager>();
+            var regionManager = m_Container.Resolve<IRegionManager>();
+            var view = m_Container.Resolve<NavigationPaneView>();
+
             IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPane];
-
-            var view = m_container.Resolve<NavigationPaneView>();
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }

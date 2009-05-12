@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using Tobi.Infrastructure.Commanding;
 
@@ -127,6 +128,12 @@ namespace Tobi.Infrastructure.UI
                 SetValue(RichCommandProperty, value);
             }
         }
+    }
+
+    public interface IInputBindingManager
+    {
+        bool AddInputBinding(InputBinding inputBinding);
+        void RemoveInputBinding(InputBinding inputBinding);
     }
 
     public class TwoStateButtonRichCommand : Button

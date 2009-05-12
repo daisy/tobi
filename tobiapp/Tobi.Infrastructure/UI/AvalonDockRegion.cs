@@ -34,26 +34,26 @@ namespace AvalonDock
                     if (m_selector is DockablePane)
                     {
                         managedContent = new DockableContent
-                                             {
-                                                 Name = Name,
-                                                 Content = newView,
-                                                 DockableStyle = DockableStyle.Document,
-                                                 Title = header,
-                                                 Background = null,
-                                                 IsEnabled = true
-                                             };
+                        {
+                            Name = Name,
+                            Content = newView,
+                            DockableStyle = DockableStyle.Document,
+                            Title = header,
+                            Background = null,
+                            IsEnabled = true
+                        };
                     }
                     else if (m_selector is DocumentPane)
                     {
                         managedContent = new DocumentContent
-                                             {
-                                                 Name = Name,
-                                                 Content = newView,
-                                                 Title = header,
-                                                 Background = null,
-                                                 IsEnabled = true
-                                             };
-                        ((DocumentContent) managedContent).Closed += OnDocumentContentClosed;
+                        {
+                            Name = Name,
+                            Content = newView,
+                            Title = header,
+                            Background = null,
+                            IsEnabled = true
+                        };
+                        ((DocumentContent)managedContent).Closed += OnDocumentContentClosed;
                     }
 
                     if (managedContent != null)

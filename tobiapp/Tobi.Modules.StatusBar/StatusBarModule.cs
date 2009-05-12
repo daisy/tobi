@@ -11,18 +11,15 @@ namespace Tobi.Modules.StatusBar
     ///</summary>
     public class StatusBarModule : IModule
     {
-        private readonly IRegionManager _regionManager;
-        private readonly IUnityContainer _container;
+        private readonly IUnityContainer m_Container;
 
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        ///<param name="regionManager">The CAG-WPF region manager</param>
-        public StatusBarModule(IUnityContainer container, IRegionManager regionManager)
+        public StatusBarModule(IUnityContainer container)
         {
-            _regionManager = regionManager;
-            _container = container;
+            m_Container = container;
         }
 
         ///<summary>
@@ -31,11 +28,12 @@ namespace Tobi.Modules.StatusBar
         ///</summary>
         public void Initialize()
         {
-            _container.RegisterType<StatusBarView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<StatusBarView>(new ContainerControlledLifetimeManager());
 
-            IRegion targetRegion = _regionManager.Regions[RegionNames.StatusBar];
-            var view = _container.Resolve<StatusBarView>();
+            var regionManager = m_Container.Resolve<IRegionManager>();
+            var view = m_Container.Resolve<StatusBarView>();
 
+            IRegion targetRegion = regionManager.Regions[RegionNames.StatusBar];
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }

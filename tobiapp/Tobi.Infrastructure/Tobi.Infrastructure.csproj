@@ -91,6 +91,7 @@
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TreeViewHelper.cs" />
     <Compile Include="UI\AutoGreyableImage.cs" />
+    <Compile Include="UI\AvalonDockRegion.cs" />
     <Compile Include="UI\BindableRun.cs" />
     <Compile Include="UI\BindableRunTextMedia.cs" />
     <Compile Include="UI\BooleanNotConverter.cs" />
@@ -139,7 +140,6 @@
     <Compile Include="UI\UserInterfaceScaledEvent.cs" />
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XamlToPngConverter.cs" />
-    <Compile Include="UnityServiceLocator.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
@@ -149,6 +149,10 @@
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\AvalonDock\Lib.AvalonDock.csproj">
+      <Project>{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}</Project>
+      <Name>Lib.AvalonDock</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
@@ -161,10 +165,6 @@
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\ServiceLocation\Lib.ServiceLocation.csproj">
-      <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>
-      <Name>Lib.ServiceLocation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

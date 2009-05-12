@@ -1,15 +1,10 @@
 ﻿using System.Windows.Input;
 using Tobi.Infrastructure.Commanding;
+using Tobi.Infrastructure.UI;
 using urakawa;
 
 namespace Tobi
 {
-    public interface IInputBindingManager
-    {
-        bool AddInputBinding(InputBinding inputBinding);
-        void RemoveInputBinding(InputBinding inputBinding);
-    }
-
     ///<summary>
     /// The contract for the Presenter
     ///</summary>
