@@ -11,18 +11,15 @@ namespace Tobi.Modules.ToolBars
     ///</summary>
     public class ToolBarsModule : IModule
     {
-        private readonly IRegionManager _regionManager;
-        private readonly IUnityContainer _container;
+        private readonly IUnityContainer m_Container;
 
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        ///<param name="regionManager">The CAG-WPF region manager</param>
-        public ToolBarsModule(IUnityContainer container, IRegionManager regionManager)
+        public ToolBarsModule(IUnityContainer container)
         {
-            _regionManager = regionManager;
-            _container = container;
+            m_Container = container;
         }
 
         ///<summary>
@@ -31,11 +28,12 @@ namespace Tobi.Modules.ToolBars
         ///</summary>
         public void Initialize()
         {
-            _container.RegisterType<ToolBarsView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<ToolBarsView>(new ContainerControlledLifetimeManager());
 
-            IRegion targetRegion = _regionManager.Regions[RegionNames.ToolBars];
-            var view = _container.Resolve<ToolBarsView>();
+            var regionManager = m_Container.Resolve<IRegionManager>();
+            var view = m_Container.Resolve<ToolBarsView>();
 
+            IRegion targetRegion = regionManager.Regions[RegionNames.ToolBars];
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }

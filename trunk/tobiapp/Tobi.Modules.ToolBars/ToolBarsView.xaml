@@ -20,6 +20,9 @@
       <!-- UI:ButtonRichCommand RichCommand="{Binding SaveAsCommand}"/ -->
       <Separator/>
 
+      <UI:ButtonRichCommand RichCommand="{Binding CommandShowMetadataPane}"/>
+      <Separator/>
+      
       <UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding CutCommand}"/>
 
@@ -28,7 +31,7 @@
       <UI:ButtonRichCommand RichCommand="{Binding UndoCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding RedoCommand}"/>
       <Separator/>
-
+      
       <!-- UI:ButtonRichCommand RichCommand="{Binding NavPreviousCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding NavNextCommand}"/>
       <Separator/ -->

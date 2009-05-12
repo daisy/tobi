@@ -64,10 +64,11 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private void OnProjectLoaded(Project obj)
+        private void OnProjectLoaded(Project project)
         {
-            var shell = Container.Resolve<IShellPresenter>();
-            setRecordingDirectory(shell.DocumentProject.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
+            //var shell = Container.Resolve<IShellPresenter>();
+            //shell.DocumentProject
+            setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
         }
 
         private void initializeAudioStuff()

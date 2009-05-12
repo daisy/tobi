@@ -6,4 +6,8 @@ namespace Tobi.Infrastructure
     public class ProjectLoadedEvent : CompositePresentationEvent<Project>
     {
     }
+
+    public class ProjectUnLoadedEvent : CompositePresentationEvent<Project>
+    {
+    }
 }

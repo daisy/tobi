@@ -25,6 +25,10 @@ namespace Tobi.Infrastructure
         public const string Close = "_Close";
 
 
+        public const string ShowMetadata = "_Edit metadata";
+        public const string ShowMetadata_ = "Opens the metadata viewer/editor";
+        public static KeyGesture ShowMetadata_KEYS = new KeyGesture(Key.E, ModifierKeys.Control);
+
         public const string Audio_BeginSelection = "_Begin selection";
         public const string Audio_BeginSelection_ = "Begin audio waveform selection";
         public static KeyGesture Audio_BeginSelection_KEYS = new KeyGesture(Key.OemOpenBrackets, ModifierKeys.Control);

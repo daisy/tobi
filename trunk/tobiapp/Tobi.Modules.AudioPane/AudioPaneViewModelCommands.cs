@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
-using Tobi.Infrastructure.Onyx.Reflection;
+using Tobi.Infrastructure.UI;
 
 
 namespace Tobi.Modules.AudioPane

@@ -366,46 +366,6 @@ namespace Tobi
             return false;
         }
 
-        public void ToggleView(bool? show, IToggableView view)
-        {
-            Logger.Log("ShellPresenter.ToggleView", Category.Debug, Priority.Medium);
-
-            var region = RegionManager.Regions[view.RegionName];
-            var isVisible = region.ActiveViews.Contains(view);
-
-            var makeVisible = true;
-            switch (show)
-            {
-                case null:
-                    {
-                        makeVisible = !isVisible;
-                    }
-                    break;
-                default:
-                    {
-                        makeVisible = (bool)show;
-                    }
-                    break;
-            }
-            if (makeVisible)
-            {
-                if (!isVisible)
-                {
-                    region.Add(view);
-                    region.Activate(view);
-                }
-                view.FocusControl();
-            }
-            else if (isVisible)
-            {
-                region.Deactivate(view);
-                region.Remove(view);
-            }
-
-            var menuView = Container.Resolve<MenuBarView>();
-            menuView.EnsureViewMenuCheckState(view.RegionName, makeVisible);
-        }
-
         private bool askUserConfirmExit()
         {
             Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
@@ -572,3 +532,47 @@ namespace Tobi
         }
     }
 }
+
+/*
+ 
+        public void ToggleView(bool? show, IToggableView view)
+        {
+            Logger.Log("ShellPresenter.ToggleView", Category.Debug, Priority.Medium);
+
+            var region = RegionManager.Regions[view.RegionName];
+            var isVisible = region.ActiveViews.Contains(view);
+
+            var makeVisible = true;
+            switch (show)
+            {
+                case null:
+                    {
+                        makeVisible = !isVisible;
+                    }
+                    break;
+                default:
+                    {
+                        makeVisible = (bool)show;
+                    }
+                    break;
+            }
+            if (makeVisible)
+            {
+                if (!isVisible)
+                {
+                    region.Add(view);
+                    region.Activate(view);
+                }
+                view.FocusControl();
+            }
+            else if (isVisible)
+            {
+                region.Deactivate(view);
+                region.Remove(view);
+            }
+
+            var menuView = Container.Resolve<MenuBarView>();
+            menuView.EnsureViewMenuCheckState(view.RegionName, makeVisible);
+        }
+
+ */

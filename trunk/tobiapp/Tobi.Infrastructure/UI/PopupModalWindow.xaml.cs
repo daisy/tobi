@@ -68,6 +68,8 @@ namespace Tobi.Infrastructure.UI
             }
 
             ClickedDialogButton = DialogButton.ESC;
+
+            ContentPlaceHolder.Content = null;
         }
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)

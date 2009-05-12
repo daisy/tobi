@@ -12,18 +12,15 @@ namespace Tobi.Modules.MenuBar
     ///</summary>
     public class MenuBarModule : IModule
     {
-        private readonly IRegionManager m_regionManager;
-        private readonly IUnityContainer m_container;
+        private readonly IUnityContainer m_Container;
 
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        ///<param name="regionManager">The CAG-WPF region manager</param>
-        public MenuBarModule(IUnityContainer container, IRegionManager regionManager)
+        public MenuBarModule(IUnityContainer container)
         {
-            m_regionManager = regionManager;
-            m_container = container;
+            m_Container = container;
         }
 
         ///<summary>
@@ -32,11 +29,12 @@ namespace Tobi.Modules.MenuBar
         ///</summary>
         public void Initialize()
         {
-            m_container.RegisterType<MenuBarView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<MenuBarView>(new ContainerControlledLifetimeManager());
 
-            IRegion targetRegion = m_regionManager.Regions[RegionNames.MenuBar];
-            var view = m_container.Resolve<MenuBarView>();
+            var regionManager = m_Container.Resolve<IRegionManager>();
+            var view = m_Container.Resolve<MenuBarView>();
 
+            IRegion targetRegion = regionManager.Regions[RegionNames.MenuBar];
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }
