@@ -316,7 +316,7 @@ namespace Tobi.Modules.AudioPane
                 m_PlayStream.Position = 0;
                 m_PlayStream.Seek(0, SeekOrigin.Begin);
 
-                if (FilePath.Length > 0)
+                if (!String.IsNullOrEmpty(FilePath))
                 {
                     PcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_PlayStream);
                     m_StreamRiffHeaderEndPos = m_PlayStream.Position;
@@ -791,7 +791,7 @@ namespace Tobi.Modules.AudioPane
             ClearSelection();
 
             m_EndOffsetOfPlayStream = 0;
-            FilePath = "";
+            FilePath = null;
             m_StreamRiffHeaderEndPos = 0;
             m_PlayStream = null;
             m_LastPlayHeadTime = 0;
@@ -896,7 +896,7 @@ namespace Tobi.Modules.AudioPane
 
             UpdatePeakMeter();
 
-            if (FilePath.Length > 0 || CurrentTreeNode == null)
+            if (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode == null)
             {
                 return;
             }
