@@ -63,11 +63,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentPaneView_StructureBreadcrumb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DocumentPaneModule.cs" />
     <Compile Include="DocumentPaneView.xaml.cs">
       <DependentUpon>DocumentPaneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="XukToFlowDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="DocumentPaneView.xaml">
