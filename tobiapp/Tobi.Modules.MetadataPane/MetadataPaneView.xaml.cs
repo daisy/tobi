@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.Composite.Logging;
 
+//testing
 namespace Tobi.Modules.MetadataPane
 {
     /// <summary>
