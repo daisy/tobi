@@ -3,26 +3,66 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-x:Name="list"
+    xmlns:local="clr-namespace:Frustration"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    x:Name="list"
     ItemsSource="{Binding Metadatas, Mode=OneWay}"
-              SelectionMode="Single"
-
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
-AlternationCount="2"
-            >
-
-  <ListView.View>
+    SelectionMode="Single"
+    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+    ScrollViewer.VerticalScrollBarVisibility="Visible"
+    AlternationCount="2">
+    
+    <ListView.Resources>
+        <DataTemplate x:Key="SimpleTextTemplate">
+            <TextBox Text="{Binding Content}"/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="PrettyColorsTemplate">
+            <StackPanel>
+                <TextBox Text="{Binding Content}" Background="Bisque" Foreground="DarkViolet"/>
+            </StackPanel>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="DateTemplate">
+            <TextBox> <!-- Validation.ErrorTemplate="{StaticResource DateErrorTemplate}"> -->
+                <TextBox.Text>
+                    <Binding Path="Content">
+                        <Binding.ValidationRules>
+                            <local:DateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="DateErrorTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBox BorderBrush="Red" Background="Pink" 
+                         ToolTip="{Binding RelativeSource={RelativeSource Self}, 
+                                   Path=(Validation.Errors)[0].ErrorContent}">
+                    <Binding Path="Content"/>
+                </TextBox>
+                <TextBlock Foreground="Red" Text="!!"/>
+            </StackPanel>
+        </DataTemplate>
+        
+        <local:MetadataTypeTemplateSelector DefaultTemplate="{StaticResource SimpleTextTemplate}" 
+                                            PrettyTemplate="{StaticResource PrettyColorsTemplate}" 
+                                            DateTemplate="{StaticResource DateTemplate}"
+                                            x:Key="metadataTemplateSelector" />
+        
+    </ListView.Resources>
+    
+    <ListView.View>
     <GridView AllowsColumnReorder="false">
       <GridViewColumn Header="Name"
                       UI:SortableListView.SortPropertyName="Name"
-         DisplayMemberBinding="{Binding Name}"  />
+                      DisplayMemberBinding="{Binding Name}"/>
 
       <GridViewColumn Header="Content"
                       UI:SortableListView.SortPropertyName="Content"
-         DisplayMemberBinding="{Binding Content}" />
+                      CellTemplateSelector="{StaticResource metadataTemplateSelector}"/>
     </GridView>
   </ListView.View>
   <ListView.ItemContainerStyle>
