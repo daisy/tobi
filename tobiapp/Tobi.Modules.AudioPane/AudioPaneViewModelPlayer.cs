@@ -488,8 +488,8 @@ namespace Tobi.Modules.AudioPane
             {
                 TimeDelta dur = PcmFormat.GetDuration(DataLength);
                 m_Player.Play(m_CurrentAudioStreamProvider,
-                              dur,
-                              PcmFormat);
+                              dur.TimeDeltaAsMillisecondDouble,
+                              new AudioLibPCMFormat (PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth));
             }
         }
 
@@ -557,8 +557,8 @@ namespace Tobi.Modules.AudioPane
                     m_EndOffsetOfPlayStream = DataLength;
 
                     m_Player.Play(m_CurrentAudioStreamProvider,
-                                  PcmFormat.GetDuration(DataLength),
-                                  PcmFormat,
+                                  PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble,
+                                  new AudioLibPCMFormat( PcmFormat.NumberOfChannels,PcmFormat.SampleRate,PcmFormat.BitDepth),
                                   AudioPlayer_ConvertByteToMilliseconds(bytesStart)
                         );
                 }
@@ -579,8 +579,8 @@ namespace Tobi.Modules.AudioPane
                 m_CurrentAudioStreamProvider(); // ensure m_PlayStream is open
 
                 m_Player.Play(m_CurrentAudioStreamProvider,
-                              PcmFormat.GetDuration(DataLength),
-                              PcmFormat,
+                              PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble,
+                              new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth),
                               AudioPlayer_ConvertByteToMilliseconds(bytesStart),
                               AudioPlayer_ConvertByteToMilliseconds(bytesEnd)
                     );
