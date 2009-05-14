@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Media;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -77,6 +79,9 @@ CommandLineParser.ParseArguments(c, args);
 c.Execute();
              */
 
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+
+
             SplashScreen = new SplashScreen("TobiSplashScreen.png");
             SplashScreen.Show(false);
 
@@ -116,6 +121,26 @@ c.Execute();
 #else
             runInReleaseMode();
 #endif
+        }
+
+        private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        {
+            Assembly parentAssembly = Assembly.GetExecutingAssembly();
+
+            var name = args.Name.Substring(0, args.Name.IndexOf(',')) + ".dll";
+            var resourceName = parentAssembly.GetManifestResourceNames().First(s => s.EndsWith(name));
+
+            using (Stream stream = parentAssembly.GetManifestResourceStream(resourceName))
+            {
+                if (stream != null)
+                {
+                    var block = new byte[stream.Length];
+                    stream.Read(block, 0, block.Length);
+                    return Assembly.Load(block);
+                }
+            }
+
+            return null;
         }
 
         private static void runInDebugMode()
