@@ -132,7 +132,7 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
-            m_Recorder.StartListening(PcmFormat);
+            m_Recorder.StartListening(new AudioLibPCMFormat ( PcmFormat.NumberOfChannels, PcmFormat.SampleRate ,PcmFormat.BitDepth));
         }
 
         public void AudioRecorder_StopMonitor()
@@ -174,7 +174,7 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
-            m_Recorder.StartRecording(PcmFormat);
+            m_Recorder.StartRecording(new AudioLibPCMFormat ( PcmFormat.NumberOfChannels , PcmFormat.SampleRate, PcmFormat.BitDepth));
         }
 
         public void AudioRecorder_Stop()
