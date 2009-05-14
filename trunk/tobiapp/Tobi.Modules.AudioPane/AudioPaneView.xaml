@@ -802,7 +802,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       VerticalAlignment="Center" Text="{Binding TimeStringTotalWaveform, Mode=OneWay}"/>
 
     <TextBlock
-      FontWeight="ExtraBold"
+      Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
     DockPanel.Dock="Right"
       VerticalAlignment="Center" Text=" / "/>
 

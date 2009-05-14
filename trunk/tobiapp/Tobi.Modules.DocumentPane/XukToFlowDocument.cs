@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,7 +93,6 @@ namespace Tobi.Modules.DocumentPane
             m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
         }
 
-
         public delegate void DelegateOnRequestNavigate(Uri uri);
         private DelegateOnRequestNavigate m_DelegateOnRequestNavigate;
 
@@ -102,6 +100,14 @@ namespace Tobi.Modules.DocumentPane
         {
             e.Handled = true;
             m_DelegateOnRequestNavigate(e.Uri);
+        }
+
+        private void formatCaptionCell(TableCell cell)
+        {
+            cell.BorderBrush = Brushes.BlueViolet;
+            cell.BorderThickness = new Thickness(2);
+            cell.Background = Brushes.LightYellow;
+            cell.Foreground = Brushes.Navy;
         }
 
         private string trimSpecial(string str)
@@ -113,6 +119,190 @@ namespace Tobi.Modules.DocumentPane
             }
             return " " + strTrimmed + " "; // quick and dirty hack: need to normalize spaces at XML parsing stage.
         }
+
+        private void formatListHeader(Paragraph data)
+        {
+            data.BorderBrush = Brushes.Blue;
+            data.BorderThickness = new Thickness(2.0);
+            data.Padding = new Thickness(2.0);
+            data.FontWeight = FontWeights.Bold;
+            data.FontSize = m_FlowDoc.FontSize * 1.2;
+            data.Background = Brushes.Lavender;
+            data.Foreground = Brushes.DarkSlateBlue;
+        }
+
+        private void formatPageNumberAndSetId(TreeNode node, Paragraph data)
+        {
+            setTag(data, node);
+
+            data.BorderBrush = Brushes.Orange;
+            data.BorderThickness = new Thickness(2.0);
+            data.Padding = new Thickness(2.0);
+            data.FontWeight = FontWeights.Bold;
+            data.FontSize = m_FlowDoc.FontSize * 1.2;
+            data.Background = Brushes.LightYellow;
+            data.Foreground = Brushes.DarkOrange;
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute attr = xmlProp.GetAttribute("id");
+
+            if (attr != null &&
+                !String.IsNullOrEmpty(attr.Value))
+            {
+                data.Name = IdToName(attr.Value);
+                data.ToolTip = data.Name;
+
+                Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
+
+                EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
+            }
+        }
+
+        private void addInline(TextElement parent, Inline data)
+        {
+            if (parent == null)
+            {
+                addInlineInBlocks(data, m_FlowDoc.Blocks);
+            }
+            else if (parent is Paragraph)
+            {
+                ((Paragraph)parent).Inlines.Add(data);
+            }
+            else if (parent is Span)
+            {
+                ((Span)parent).Inlines.Add(data);
+            }
+            else if (parent is TableCell)
+            {
+                addInlineInBlocks(data, ((TableCell)parent).Blocks);
+            }
+            else if (parent is Section)
+            {
+                addInlineInBlocks(data, ((Section)parent).Blocks);
+            }
+            else if (parent is Floater)
+            {
+                addInlineInBlocks(data, ((Floater)parent).Blocks);
+            }
+            else if (parent is Figure)
+            {
+                addInlineInBlocks(data, ((Figure)parent).Blocks);
+            }
+            else if (parent is ListItem)
+            {
+                addInlineInBlocks(data, ((ListItem)parent).Blocks);
+            }
+            else
+            {
+                throw new Exception("The given parent TextElement is not valid in this context.");
+            }
+        }
+
+        private void addInlineInBlocks(Inline data, BlockCollection blocks)
+        {
+            Block lastBlock = blocks.LastBlock;
+            if (lastBlock != null && lastBlock is Section)
+            {
+                Block lastBlock2 = ((Section)lastBlock).Blocks.LastBlock;
+                if (lastBlock2 != null && lastBlock2 is Paragraph && lastBlock2.Tag != null && lastBlock2.Tag is bool && ((bool)lastBlock2.Tag))
+                {
+                    ((Paragraph)lastBlock2).Inlines.Add(data);
+                }
+                else
+                {
+                    Paragraph para = new Paragraph(data);
+                    para.Tag = true;
+                    ((Section)lastBlock).Blocks.Add(para);
+                }
+            }
+            else if (lastBlock != null && lastBlock is Paragraph && lastBlock.Tag != null && lastBlock.Tag is bool && ((bool)lastBlock.Tag))
+            {
+                ((Paragraph)lastBlock).Inlines.Add(data);
+            }
+            else
+            {
+                Paragraph para = new Paragraph(data);
+                para.Tag = true;
+                blocks.Add(new Section(para));
+            }
+        }
+
+        private void addBlock(TextElement parent, Block data)
+        {
+            if (parent == null)
+            {
+                m_FlowDoc.Blocks.Add(data);
+            }
+            else if (parent is TableCell)
+            {
+                ((TableCell)parent).Blocks.Add(data);
+            }
+            else if (parent is Section)
+            {
+                ((Section)parent).Blocks.Add(data);
+            }
+            else if (parent is Floater)
+            {
+                ((Floater)parent).Blocks.Add(data);
+            }
+            else if (parent is Figure)
+            {
+                ((Figure)parent).Blocks.Add(data);
+            }
+            else if (parent is ListItem)
+            {
+                ((ListItem)parent).Blocks.Add(data);
+            }
+            else
+            {
+                throw new Exception("The given parent TextElement is not valid in this context.");
+            }
+        }
+
+        private void setTag(TextElement data, TreeNode node)
+        {
+            data.Tag = node;
+
+            ManagedAudioMedia media = node.GetManagedAudioMedia();
+            if (media != null)
+            {
+                //data.Foreground = Brushes.Red;
+                data.Background = Brushes.LightGoldenrodYellow;
+                data.Cursor = Cursors.Hand;
+                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                return;
+            }
+            SequenceMedia seqMedia = node.GetAudioSequenceMedia();
+            if (seqMedia != null && !seqMedia.AllowMultipleTypes && seqMedia.Count > 0)
+            {
+                if (seqMedia.GetItem(0) is ManagedAudioMedia)
+                {
+                    //data.Foreground = Brushes.Red;
+                    data.Background = Brushes.LightGoldenrodYellow;
+                    data.Cursor = Cursors.Cross;
+                    data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                    return;
+                }
+            }
+            if (node.GetTextMedia() != null)
+            {
+                //data.Foreground = Brushes.Green;
+                //data.Background = Brushes.LimeGreen;
+                data.Cursor = Cursors.Pen;
+                data.MouseDown += OnMouseDownTextElementWithNode;
+            }
+        }
+
+        public static string IdToName(string id)
+        {
+            return id.Replace("-", "_DaSh_");
+        }
+
+        public static string NameToId(string name)
+        {
+            return name.Replace("_DaSh_", "-");
+        }
+
         private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             if (parent is Table)
@@ -248,6 +438,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
+        
         private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Bold data = new Bold();
@@ -274,6 +465,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
+        
         private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Italic data = new Italic();
@@ -318,6 +510,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
+        
         private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             m_cellsToExpand.Clear();
@@ -406,14 +599,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
-        private void formatCaptionCell(TableCell cell)
-        {
-            cell.BorderBrush = Brushes.BlueViolet;
-            cell.BorderThickness = new Thickness(2);
-            cell.Background = Brushes.LightYellow;
-            cell.Foreground = Brushes.Navy;
-        }
-
+        
         private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             if (node.ChildCount == 0)
@@ -556,6 +742,7 @@ namespace Tobi.Modules.DocumentPane
                 }
             }
         }
+        
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Hyperlink data = new Hyperlink();
@@ -776,6 +963,153 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        {
+            if (node.ChildCount != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
+            {
+                throw new Exception("Node has children or text exists when processing image ??");
+            }
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute srcAttr = xmlProp.GetAttribute("src");
+
+            if (srcAttr == null) return parent;
+
+            Image image = new Image();
+
+            if (srcAttr.Value.StartsWith("http://"))
+            {
+                try
+                {
+                    image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
+                }
+                catch (Exception)
+                {
+                    return parent;
+                }
+            }
+            else
+            {
+                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+
+                string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+                string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+
+                try
+                {
+                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)); // { CacheOption = BitmapCacheOption.OnLoad };
+                }
+                catch (Exception)
+                {
+                    return parent;
+                }
+            }
+
+            image.Stretch = Stretch.Uniform;
+            image.StretchDirection = StretchDirection.Both;
+
+            if (image.Source is BitmapSource)
+            {
+                BitmapSource bitmap = (BitmapSource)image.Source;
+                int ph = bitmap.PixelHeight;
+                int pw = bitmap.PixelWidth;
+                double dpix = bitmap.DpiX;
+                double dpiy = bitmap.DpiY;
+                image.Width = ph;
+                image.Height = pw;
+            }
+            XmlAttribute srcW = xmlProp.GetAttribute("width");
+            if (srcW != null)
+            {
+                double ww = Double.Parse(srcW.Value);
+                image.Width = ww;
+            }
+            XmlAttribute srcH = xmlProp.GetAttribute("height");
+            if (srcH != null)
+            {
+                double hh = Double.Parse(srcH.Value);
+                image.Height = hh;
+            }
+
+            image.MinWidth = image.Width;
+            image.MinHeight = image.Height;
+            //image.MaxWidth = image.Width;
+            //image.MaxHeight = image.Height;
+
+            //BlockUIContainer img = new BlockUIContainer(image);
+            //addBlock(parent, img);
+
+            //InlineUIContainer img = new InlineUIContainer(image);
+            //addInline(parent, img);
+
+            BlockUIContainer img = new BlockUIContainer(image);
+
+            img.BorderBrush = Brushes.RoyalBlue;
+            img.BorderThickness = new Thickness(2.0);
+
+            setTag(img, node);
+
+            //Floater floater = new Floater();
+            //floater.Blocks.Add(img);
+            //floater.Width = image.Width;
+            //addInline(parent, floater);
+
+
+            //Figure figure = new Figure(img);
+            //figure.Width = image.Width;
+            //addInline(parent, figure);
+
+            addBlock(parent, img);
+
+            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
+
+            if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
+            {
+                image.ToolTip = trimSpecial(altAttr.Value);
+                Paragraph paraAlt = new Paragraph(new Run("ALT: " + trimSpecial(altAttr.Value)));
+                paraAlt.BorderBrush = Brushes.CadetBlue;
+                paraAlt.BorderThickness = new Thickness(1.0);
+                paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
+                addBlock(parent, paraAlt);
+            }
+
+
+            return parent;
+
+            /*
+                WebClient webClient = new WebClient();
+                fullImagePath = srcAttr.Value;
+                byte[] imageContent = webClient.DownloadData(srcAttr.Value);
+                Stream stream = new MemoryStream(imageContent);
+                 */
+            /*
+             * stream = new FileStream(fullImagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+             * 
+             * 
+            if (fullImagePath.EndsWith(".jpg") || fullImagePath.EndsWith(".jpeg"))
+            {
+                BitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+            else if (fullImagePath.EndsWith(".png"))
+            {
+                BitmapDecoder dec = new PngBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+            else if (fullImagePath.EndsWith(".bmp"))
+            {
+                BitmapDecoder dec = new BmpBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+            else if (fullImagePath.EndsWith(".gif"))
+            {
+                BitmapDecoder dec = new GifBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                image.Source = dec.Frames[0];
+            }
+             */
+        }
+
         private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             if (qname == null)
@@ -1161,144 +1495,6 @@ namespace Tobi.Modules.DocumentPane
             return parent;
         }
 
-        private void formatListHeader(Paragraph data)
-        {
-            data.BorderBrush = Brushes.Blue;
-            data.BorderThickness = new Thickness(2.0);
-            data.Padding = new Thickness(2.0);
-            data.FontWeight = FontWeights.Bold;
-            data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.Lavender;
-            data.Foreground = Brushes.DarkSlateBlue;
-        }
-
-        private void formatPageNumberAndSetId(TreeNode node, Paragraph data)
-        {
-            setTag(data, node);
-
-            data.BorderBrush = Brushes.Orange;
-            data.BorderThickness = new Thickness(2.0);
-            data.Padding = new Thickness(2.0);
-            data.FontWeight = FontWeights.Bold;
-            data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.LightYellow;
-            data.Foreground = Brushes.DarkOrange;
-
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-            XmlAttribute attr = xmlProp.GetAttribute("id");
-
-            if (attr != null &&
-                !String.IsNullOrEmpty(attr.Value))
-            {
-                data.Name = IdToName(attr.Value);
-                data.ToolTip = data.Name;
-
-                Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
-
-                EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
-            }
-        }
-
-        private void addInline(TextElement parent, Inline data)
-        {
-            if (parent == null)
-            {
-                addInlineInBlocks(data, m_FlowDoc.Blocks);
-            }
-            else if (parent is Paragraph)
-            {
-                ((Paragraph)parent).Inlines.Add(data);
-            }
-            else if (parent is Span)
-            {
-                ((Span)parent).Inlines.Add(data);
-            }
-            else if (parent is TableCell)
-            {
-                addInlineInBlocks(data, ((TableCell)parent).Blocks);
-            }
-            else if (parent is Section)
-            {
-                addInlineInBlocks(data, ((Section)parent).Blocks);
-            }
-            else if (parent is Floater)
-            {
-                addInlineInBlocks(data, ((Floater)parent).Blocks);
-            }
-            else if (parent is Figure)
-            {
-                addInlineInBlocks(data, ((Figure)parent).Blocks);
-            }
-            else if (parent is ListItem)
-            {
-                addInlineInBlocks(data, ((ListItem)parent).Blocks);
-            }
-            else
-            {
-                throw new Exception("The given parent TextElement is not valid in this context.");
-            }
-        }
-
-        private void addInlineInBlocks(Inline data, BlockCollection blocks)
-        {
-            Block lastBlock = blocks.LastBlock;
-            if (lastBlock != null && lastBlock is Section)
-            {
-                Block lastBlock2 = ((Section)lastBlock).Blocks.LastBlock;
-                if (lastBlock2 != null && lastBlock2 is Paragraph && lastBlock2.Tag != null && lastBlock2.Tag is bool && ((bool)lastBlock2.Tag))
-                {
-                    ((Paragraph)lastBlock2).Inlines.Add(data);
-                }
-                else
-                {
-                    Paragraph para = new Paragraph(data);
-                    para.Tag = true;
-                    ((Section)lastBlock).Blocks.Add(para);
-                }
-            }
-            else if (lastBlock != null && lastBlock is Paragraph && lastBlock.Tag != null && lastBlock.Tag is bool && ((bool)lastBlock.Tag))
-            {
-                ((Paragraph)lastBlock).Inlines.Add(data);
-            }
-            else
-            {
-                Paragraph para = new Paragraph(data);
-                para.Tag = true;
-                blocks.Add(new Section(para));
-            }
-        }
-
-        private void addBlock(TextElement parent, Block data)
-        {
-            if (parent == null)
-            {
-                m_FlowDoc.Blocks.Add(data);
-            }
-            else if (parent is TableCell)
-            {
-                ((TableCell)parent).Blocks.Add(data);
-            }
-            else if (parent is Section)
-            {
-                ((Section)parent).Blocks.Add(data);
-            }
-            else if (parent is Floater)
-            {
-                ((Floater)parent).Blocks.Add(data);
-            }
-            else if (parent is Figure)
-            {
-                ((Figure)parent).Blocks.Add(data);
-            }
-            else if (parent is ListItem)
-            {
-                ((ListItem)parent).Blocks.Add(data);
-            }
-            else
-            {
-                throw new Exception("The given parent TextElement is not valid in this context.");
-            }
-        }
         private void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
             TextElement parentNext = parent;
@@ -1463,197 +1659,5 @@ namespace Tobi.Modules.DocumentPane
                 }
             }
         }
-
-        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
-        {
-            if (node.ChildCount != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
-            {
-                throw new Exception("Node has children or text exists when processing image ??");
-            }
-
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-            XmlAttribute srcAttr = xmlProp.GetAttribute("src");
-
-            if (srcAttr == null) return parent;
-
-            Image image = new Image();
-
-            if (srcAttr.Value.StartsWith("http://"))
-            {
-                try
-                {
-                    image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
-                }
-                catch (Exception)
-                {
-                    return parent;
-                }
-            }
-            else
-            {
-                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-
-                string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
-                string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
-
-                try
-                {
-                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)); // { CacheOption = BitmapCacheOption.OnLoad };
-                }
-                catch (Exception)
-                {
-                    return parent;
-                }
-            }
-
-            image.Stretch = Stretch.Uniform;
-            image.StretchDirection = StretchDirection.Both;
-
-            if (image.Source is BitmapSource)
-            {
-                BitmapSource bitmap = (BitmapSource)image.Source;
-                int ph = bitmap.PixelHeight;
-                int pw = bitmap.PixelWidth;
-                double dpix = bitmap.DpiX;
-                double dpiy = bitmap.DpiY;
-                image.Width = ph;
-                image.Height = pw;
-            }
-            XmlAttribute srcW = xmlProp.GetAttribute("width");
-            if (srcW != null)
-            {
-                double ww = Double.Parse(srcW.Value);
-                image.Width = ww;
-            }
-            XmlAttribute srcH = xmlProp.GetAttribute("height");
-            if (srcH != null)
-            {
-                double hh = Double.Parse(srcH.Value);
-                image.Height = hh;
-            }
-
-            image.MinWidth = image.Width;
-            image.MinHeight = image.Height;
-            //image.MaxWidth = image.Width;
-            //image.MaxHeight = image.Height;
-
-            //BlockUIContainer img = new BlockUIContainer(image);
-            //addBlock(parent, img);
-
-            //InlineUIContainer img = new InlineUIContainer(image);
-            //addInline(parent, img);
-
-            BlockUIContainer img = new BlockUIContainer(image);
-
-            img.BorderBrush = Brushes.RoyalBlue;
-            img.BorderThickness = new Thickness(2.0);
-
-            setTag(img, node);
-
-            //Floater floater = new Floater();
-            //floater.Blocks.Add(img);
-            //floater.Width = image.Width;
-            //addInline(parent, floater);
-
-
-            //Figure figure = new Figure(img);
-            //figure.Width = image.Width;
-            //addInline(parent, figure);
-
-            addBlock(parent, img);
-
-            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
-
-            if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
-            {
-                image.ToolTip = trimSpecial(altAttr.Value);
-                Paragraph paraAlt = new Paragraph(new Run("ALT: " + trimSpecial(altAttr.Value)));
-                paraAlt.BorderBrush = Brushes.CadetBlue;
-                paraAlt.BorderThickness = new Thickness(1.0);
-                paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
-                addBlock(parent, paraAlt);
-            }
-
-
-            return parent;
-
-            /*
-                WebClient webClient = new WebClient();
-                fullImagePath = srcAttr.Value;
-                byte[] imageContent = webClient.DownloadData(srcAttr.Value);
-                Stream stream = new MemoryStream(imageContent);
-                 */
-            /*
-             * stream = new FileStream(fullImagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-             * 
-             * 
-            if (fullImagePath.EndsWith(".jpg") || fullImagePath.EndsWith(".jpeg"))
-            {
-                BitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-            else if (fullImagePath.EndsWith(".png"))
-            {
-                BitmapDecoder dec = new PngBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-            else if (fullImagePath.EndsWith(".bmp"))
-            {
-                BitmapDecoder dec = new BmpBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-            else if (fullImagePath.EndsWith(".gif"))
-            {
-                BitmapDecoder dec = new GifBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-             */
-        }
-
-        private void setTag(TextElement data, TreeNode node)
-        {
-            data.Tag = node;
-
-            ManagedAudioMedia media = node.GetManagedAudioMedia();
-            if (media != null)
-            {
-                //data.Foreground = Brushes.Red;
-                data.Background = Brushes.LightGoldenrodYellow;
-                data.Cursor = Cursors.Hand;
-                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                return;
-            }
-            SequenceMedia seqMedia = node.GetAudioSequenceMedia();
-            if (seqMedia != null && !seqMedia.AllowMultipleTypes && seqMedia.Count > 0)
-            {
-                if (seqMedia.GetItem(0) is ManagedAudioMedia)
-                {
-                    //data.Foreground = Brushes.Red;
-                    data.Background = Brushes.LightGoldenrodYellow;
-                    data.Cursor = Cursors.Cross;
-                    data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                    return;
-                }
-            }
-            if (node.GetTextMedia() != null)
-            {
-                //data.Foreground = Brushes.Green;
-                //data.Background = Brushes.LimeGreen;
-                data.Cursor = Cursors.Pen;
-                data.MouseDown += OnMouseDownTextElementWithNode;
-            }
-        }
-
-
-        public static string IdToName(string id)
-        {
-            return id.Replace("-", "_DaSh_");
-        }
-
-        public static string NameToId(string name)
-        {
-            return name.Replace("_DaSh_", "-");
-        }
-
     }
 }
