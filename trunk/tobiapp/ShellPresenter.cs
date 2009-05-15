@@ -290,11 +290,7 @@ namespace Tobi
                                                    new KeyboardShortcuts(this),
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true)
-                                                   {
-                                                       Height = 600,
-                                                       Width = 500
-                                                   };
+                                                   true, 500, 600);
             windowPopup.Show();
 
             /*
@@ -389,17 +385,15 @@ namespace Tobi
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
                             };
+            label.Focusable = false;
+
             var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Exit),
                                                    label,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true)
-            {
-                Height = 140,
-                Width = 300
-            };
+                                                   true, 300, 140);
             windowPopup.Show();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)

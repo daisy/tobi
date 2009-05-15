@@ -119,11 +119,7 @@ namespace Tobi.Modules.MetadataPane
                                                    View,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true)
-            {
-                Height = 600,
-                Width = 500
-            };
+                                                   true, 500, 600);
             windowPopup.Show();
         }
 

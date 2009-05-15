@@ -7,22 +7,37 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="OnWindowLoaded"
-        Closing="OnWindowClosing">
+        Closing="OnWindowClosing"
+        
+        >
+  <!-- 
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
+  
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
 
     <Style TargetType="{x:Type Button}">
-      <Setter Property="Padding" Value="3"></Setter>
-      <Setter Property="Margin" Value="3"></Setter>
+      <Setter Property="Padding" Value="5"></Setter>
+      <Setter Property="Margin" Value="8"></Setter>
       <Setter Property="MinWidth" Value="50"></Setter>
     </Style>
   </Window.Resources>
     <DockPanel LastChildFill="True">
+
+      <DockPanel.LayoutTransform>
+        <ScaleTransform
+              ScaleX="{Binding MagnificationLevel, Mode=OneWay}"
+                        ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
+      </DockPanel.LayoutTransform>
+      
       <StackPanel DockPanel.Dock="Bottom"
                   Orientation="Horizontal"
-                  HorizontalAlignment="Right">
+                  HorizontalAlignment="Right"
+                  
+        DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                  AncestorType={x:Type Window}}, Path=.}"
+                  >
         <Button x:Name="ButtonOK"
                 Click="OnOkButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Ok}"
@@ -65,10 +80,11 @@
                 Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Close, Converter={StaticResource booleanToVisibilityConverter}}"
                 Content="{x:Static Infrastructure:UserInterfaceStrings.Close}"/>
 
-        <Rectangle Width="15"/>
+        <Rectangle Width="10"/>
       </StackPanel>
       <ContentControl x:Name="ContentPlaceHolder"
                   HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"></ContentControl>
+                  VerticalAlignment="Stretch"
+                      Focusable="False"></ContentControl>
     </DockPanel>
 </Window>
