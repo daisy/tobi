@@ -63,8 +63,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLib", "..\..\..\urakaw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaisyToXuk", "..\..\..\urakawa-sdk\trunk\csharp\XukImport\DaisyToXuk\DaisyToXuk.csproj", "{FB4B9F00-DAE4-46C4-B789-7A693198FA61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.AvalonDock", "ExternalLibs\AvalonDock\Lib.AvalonDock.csproj", "{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAudio", "..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\NAudio.csproj", "{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLayer", "..\..\..\urakawa-sdk\trunk\csharp\audio\NLayer\NLayer.csproj", "{1AFB5B4A-BF93-4720-84FA-78A711342C98}"
@@ -201,14 +199,6 @@ Global
 		{FB4B9F00-DAE4-46C4-B789-7A693198FA61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB4B9F00-DAE4-46C4-B789-7A693198FA61}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{FB4B9F00-DAE4-46C4-B789-7A693198FA61}.test|Any CPU.Build.0 = Release|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.test|Any CPU.ActiveCfg = Release|Any CPU
-		{2FF700C2-A38A-48BD-A637-8CAFD4FE6237}.test|Any CPU.Build.0 = Release|Any CPU
 		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU

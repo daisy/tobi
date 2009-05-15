@@ -261,11 +261,7 @@ c.Execute();
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false)
-            {
-                Height = 300,
-                Width = 500
-            };
+                                                   false, 500, 300);
 
             SystemSounds.Exclamation.Play();
             windowPopup.Show();

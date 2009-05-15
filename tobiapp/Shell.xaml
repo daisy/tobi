@@ -5,7 +5,6 @@
         
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi"
-    xmlns:ad="clr-namespace:AvalonDock;assembly=AvalonDock"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
     xmlns:huddled="clr-namespace:Huddled.Wpf;assembly=Tobi.Infrastructure" 
 

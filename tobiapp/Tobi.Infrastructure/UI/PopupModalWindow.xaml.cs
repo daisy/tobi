@@ -20,10 +20,24 @@ namespace Tobi.Infrastructure.UI
         }
 
         public PopupModalWindow(Window window, string title, object content,
-            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton)
+            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
             : this()
         {
             Owner = window;
+            DataContext = Owner;
+
+            var shellView = Owner as IShellView;
+            if (shellView != null)
+            {
+                Width = Math.Min(SystemParameters.WorkArea.Width, shellView.MagnificationLevel * width);
+                Height = Math.Min(SystemParameters.WorkArea.Height, shellView.MagnificationLevel * height);
+            }
+            else
+            {
+                Width = width;
+                Height = height;
+            }
+
             Title = title;
             Icon = null;
             ContentPlaceHolder.Content = content;
