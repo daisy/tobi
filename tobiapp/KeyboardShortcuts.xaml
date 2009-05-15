@@ -45,7 +45,8 @@ AlternationCount="2"
                                            Content="{Binding Path=DataContext.IconMedium,
                     RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                      
-                                           ToolTip="{StaticResource imageIconTooltip}">
+                                           ToolTip="{StaticResource imageIconTooltip}"
+                                                   Margin="2, 4, 2, 4">
                                    </ContentControl>
             </DataTemplate>
             
