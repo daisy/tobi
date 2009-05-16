@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
@@ -36,7 +37,6 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandStopMonitor { get; private set; }
         public RichDelegateCommand<object> CommandBeginSelection { get; private set; }
         public RichDelegateCommand<object> CommandEndSelection { get; private set; }
-
 
         [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
         [NotifyDependsOn("IsRecording")]
