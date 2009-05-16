@@ -7,6 +7,7 @@ using System.Media;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Navigation;
@@ -22,6 +23,70 @@ namespace Tobi
     /// </summary>
     public partial class App
     {
+        public class FocusOutlineAdorner : Adorner
+        {
+            private Pen m_pen;
+            private Rect m_rectRect;
+
+            public FocusOutlineAdorner(UIElement adornedElement)
+                : base(adornedElement)
+            {
+                m_pen = new Pen(Brushes.Red, 1);
+                m_pen.Freeze();
+                m_rectRect = new Rect(0, 0, 1, 1);
+            }
+
+            protected override void OnRender(DrawingContext drawingContext)
+            {
+                var fe = AdornedElement as FrameworkElement;
+                if (fe == null)
+                {
+                    return;
+                }
+                m_rectRect.Width = fe.ActualWidth;
+                m_rectRect.Height = fe.ActualHeight;
+
+                drawingContext.DrawRectangle(null, m_pen, m_rectRect);
+            }
+        }
+
+        private void UIElement_LostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            var ui = ((UIElement)sender);
+
+            var oldALayer = AdornerLayer.GetAdornerLayer(ui);
+            if (oldALayer == null)
+            {
+                return;
+            }
+            Adorner[] adorners = oldALayer.GetAdorners(ui);
+            if (adorners == null)
+            {
+                return;
+            }
+            foreach (Adorner adorner in adorners)
+            {
+                if (adorner is FocusOutlineAdorner)
+                {
+                    oldALayer.Remove(adorner);
+                }
+            }
+        }
+
+        private void UIElement_GotKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            var ui = ((UIElement)sender);
+
+            var aLayer = AdornerLayer.GetAdornerLayer(ui);
+            if (aLayer == null)
+            {
+                return;
+            }
+            var theAdorner = new FocusOutlineAdorner(ui);
+            aLayer.Add(theAdorner);
+            theAdorner.InvalidateVisual();
+        }
+
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (((TextBox)sender).SelectionLength == 0)
@@ -121,6 +186,15 @@ c.Execute();
                 UIElement.GotFocusEvent,
                 new RoutedEventHandler(TextBox_GotFocus));
 
+            /*
+            EventManager.RegisterClassHandler(typeof(UIElement),
+                UIElement.GotKeyboardFocusEvent,
+                new RoutedEventHandler(UIElement_GotKeyboardFocus));
+
+            EventManager.RegisterClassHandler(typeof(UIElement),
+                UIElement.LostKeyboardFocusEvent,
+                new RoutedEventHandler(UIElement_LostKeyboardFocus));
+             * */
 
 
 #if (FALSE && DEBUG)
@@ -180,7 +254,7 @@ c.Execute();
         public static void logException(Exception ex)
         {
             if (LOGGER == null) return;
-            
+
             if (ex.Message != null)
             {
                 LOGGER.Log(ex.Message, Category.Exception, Priority.High);

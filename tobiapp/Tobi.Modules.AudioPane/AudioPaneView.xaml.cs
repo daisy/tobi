@@ -1261,5 +1261,15 @@ namespace Tobi.Modules.AudioPane
             ViewModel.AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
         }
         #endregion DispatcherTimers
+
+
+        public void FocusOnRoot()
+        {
+            /*
+            ui.Focus();
+            FocusManager.SetFocusedElement(this, ui);
+            Keyboard.Focus(ui);
+             * */
+        }
     }
 }
