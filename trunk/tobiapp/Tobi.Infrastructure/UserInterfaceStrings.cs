@@ -13,6 +13,10 @@ namespace Tobi.Infrastructure
             return str.Replace("_", "");
         }
 
+        public const string ComboLabel_Playback = "Playback: ";
+        public const string ComboLabel_Recording = "Recording: ";
+        
+
         public const string Loading = "Loading...";
 
         public const string Ok = "_Ok";

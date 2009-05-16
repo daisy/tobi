@@ -496,7 +496,6 @@ namespace Tobi.Modules.AudioPane
 
                 var drawImg = new DrawingImage(drawGrp);
                 drawImg.Freeze();
-
                 m_WaveFormImageSourceDrawingImage = drawImg;
 
                 /*
@@ -539,14 +538,14 @@ namespace Tobi.Modules.AudioPane
                 sgcMarkers.LineTo(new Point(0.5, height), true, false);
 
                 long sumData = 0;
-                foreach (TreeNodeAndStreamDataLength markers in ViewModel.PlayStreamMarkers)
+                foreach (TreeNodeAndStreamDataLength marker in ViewModel.PlayStreamMarkers)
                 {
-                    double pixels = (sumData + markers.m_LocalStreamDataLength) / BytesPerPixel;
+                    double pixels = (sumData + marker.m_LocalStreamDataLength) / BytesPerPixel;
 
                     sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
                     sgcMarkers.LineTo(new Point(pixels, height), true, false);
 
-                    sumData += markers.m_LocalStreamDataLength;
+                    sumData += marker.m_LocalStreamDataLength;
                 }
                 sgcMarkers.Close();
             }

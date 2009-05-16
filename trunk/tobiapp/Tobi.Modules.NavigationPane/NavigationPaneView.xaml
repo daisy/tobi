@@ -7,10 +7,9 @@
     xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
     xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
-Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}"
   TabStripPlacement="Bottom">
 
-
+<!-- Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}" -->
 
   <!-- ad:DockableContent
   Title="TOC" DockableStyle="DockableToBorders" -->

@@ -356,12 +356,12 @@ namespace Tobi.Modules.AudioPane
 
             long sumData = 0;
             long sumDataPrev = 0;
-            foreach (TreeNodeAndStreamDataLength markers in PlayStreamMarkers)
+            foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
-                sumData += markers.m_LocalStreamDataLength;
+                sumData += marker.m_LocalStreamDataLength;
                 if (byteOffset <= sumData)
                 {
-                    subTreeNode = markers.m_TreeNode;
+                    subTreeNode = marker.m_TreeNode;
                     break;
                 }
                 sumDataPrev = sumData;

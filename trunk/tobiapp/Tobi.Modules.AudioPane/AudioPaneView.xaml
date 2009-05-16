@@ -816,7 +816,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                     HorizontalAlignment="Left"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Playback: </TextBlock>
+      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static infra:UserInterfaceStrings.ComboLabel_Playback}"/>
       <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
                 SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
                 DisplayMemberPath="Name"
@@ -824,7 +824,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                 Margin="2"
                 IsEnabled="{Binding CanSwapOutputDevice, Mode=OneWay}"/>
 
-      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center"> Recording: </TextBlock>
+      <TextBlock Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static infra:UserInterfaceStrings.ComboLabel_Recording}"/>
       <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
                 SelectedItem="{Binding InputDevice, Mode=TwoWay}"
                 DisplayMemberPath="Name"

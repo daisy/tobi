@@ -362,7 +362,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private Color m_ColorMarkers = Colors.Maroon;
+        private Color m_ColorMarkers = Colors.BlueViolet;
         public Color ColorMarkers
         {
             get
