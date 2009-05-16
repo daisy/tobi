@@ -135,7 +135,7 @@ namespace Tobi
                 UserInterfaceStrings.SaveAs_KEYS,
                 (VisualBrush)Application.Current.FindResource("document-save"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(SaveAsCommand);
             //
@@ -145,7 +145,7 @@ namespace Tobi
                 UserInterfaceStrings.Save_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-floppy"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(SaveCommand);
             //
@@ -153,7 +153,7 @@ namespace Tobi
                 UserInterfaceStrings.New_,
                 UserInterfaceStrings.New_KEYS,
                 (VisualBrush)Application.Current.FindResource("document-new"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(NewCommand);
             //
@@ -169,7 +169,7 @@ namespace Tobi
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-undo"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(UndoCommand);
             //
@@ -177,7 +177,7 @@ namespace Tobi
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-redo"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(RedoCommand);
             //
@@ -185,7 +185,7 @@ namespace Tobi
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-cut"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(CutCommand);
             //
@@ -193,7 +193,7 @@ namespace Tobi
                 UserInterfaceStrings.Copy_,
                 UserInterfaceStrings.Copy_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-copy"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(CopyCommand);
             //
@@ -201,7 +201,7 @@ namespace Tobi
                 UserInterfaceStrings.Paste_,
                 UserInterfaceStrings.Paste_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-paste"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(PasteCommand);
             //
@@ -209,7 +209,7 @@ namespace Tobi
                 UserInterfaceStrings.Help_,
                 UserInterfaceStrings.Help_KEYS,
                 (VisualBrush)Application.Current.FindResource("help-browser"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(HelpCommand);
             //
@@ -217,7 +217,7 @@ namespace Tobi
                 UserInterfaceStrings.Preferences_,
                 UserInterfaceStrings.Preferences_KEYS,
                 (VisualBrush)Application.Current.FindResource("preferences-system"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(PreferencesCommand);
             //
@@ -226,7 +226,7 @@ namespace Tobi
                 UserInterfaceStrings.WebHome_KEYS,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
                 //(VisualBrush)Application.Current.FindResource("go-home"),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(WebHomeCommand);
             //
@@ -234,7 +234,7 @@ namespace Tobi
                 UserInterfaceStrings.NavNext_,
                 UserInterfaceStrings.NavNext_KEYS,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(NavNextCommand);
             //
@@ -242,7 +242,7 @@ namespace Tobi
                 UserInterfaceStrings.NavPrevious_,
                 UserInterfaceStrings.NavPrevious_KEYS,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
-                null, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(NavPreviousCommand);
             //
@@ -381,7 +381,7 @@ namespace Tobi
             var label = new TextBlock
                             {
                                 Text = UserInterfaceStrings.ExitConfirm,
-                                Margin = new Thickness(15),
+                                Margin = new Thickness(8, 0, 8, 0),
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
                                 Focusable = false,
@@ -396,12 +396,26 @@ namespace Tobi
             var panel = new StackPanel
                             {
                                 Orientation = Orientation.Horizontal,
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Stretch,
                             };
             panel.Children.Add(fakeCommand.IconLarge);
             panel.Children.Add(label);
-            panel.Margin = new Thickness(10, 10, 10, 10);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
 
-            var details = new Label { Content = "HERE ! \n blablablabla" };
+            var details = new TextBox
+            {
+                Text = "Any unsaved changes in your document will be lost !",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                TextWrapping = TextWrapping.Wrap,
+                IsReadOnly = true,
+                Background = SystemColors.ControlBrush,
+                BorderBrush = SystemColors.ControlDarkDarkBrush,
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(8),
+                SnapsToDevicePixels = true
+            };
 
             var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
                                                    UserInterfaceStrings.EscapeMnemonic(
@@ -409,7 +423,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 170, details);
+                                                   true, 300, 160, details);
 
             fakeCommand.IconDrawScale = View.MagnificationLevel;
 

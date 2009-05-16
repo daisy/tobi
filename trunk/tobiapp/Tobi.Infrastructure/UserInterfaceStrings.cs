@@ -15,7 +15,9 @@ namespace Tobi.Infrastructure
 
         public const string ComboLabel_Playback = "Playback: ";
         public const string ComboLabel_Recording = "Recording: ";
-        
+
+
+        public const string Unexpected = "Unexpected problem !";
 
         public const string Loading = "Loading...";
 

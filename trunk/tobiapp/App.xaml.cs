@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Navigation;
 using Microsoft.Test;
 using Tobi.Infrastructure;
@@ -121,7 +122,7 @@ c.Execute();
 
 
 
-#if (DEBUG)
+#if (FALSE && DEBUG)
             runInDebugMode();
 #else
             runInReleaseMode();
@@ -164,16 +165,16 @@ c.Execute();
             }
             catch (Exception ex)
             {
-                handleException(ex);
+                handleException(ex, true);
             }
         }
 
         private static void appDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            handleException(e.ExceptionObject as Exception);
+            handleException(e.ExceptionObject as Exception, e.IsTerminating);
         }
 
-        public static void handleException(Exception ex)
+        public static void handleException(Exception ex, bool doExit)
         {
             if (ex == null)
                 return;
@@ -183,7 +184,7 @@ c.Execute();
             //TaskDialog.ShowException("Unhandled Exception !", UserInterfaceStrings.UnhandledException, ex);
 
 
-            var margin = new Thickness(10, 10, 10, 0);
+            var margin = new Thickness(0, 0, 0, 8);
 
             var panel = new DockPanel { LastChildFill = true };
 
@@ -197,7 +198,10 @@ c.Execute();
                                 HorizontalAlignment = HorizontalAlignment.Stretch,
                                 VerticalAlignment = VerticalAlignment.Top,
                                 TextWrapping = TextWrapping.Wrap,
-                                IsReadOnly = true
+                                IsReadOnly = true,
+                                BorderBrush = Brushes.Red,
+                                BorderThickness = new Thickness(1),
+                                SnapsToDevicePixels = true
                             };
             labelMsg.SetValue(DockPanel.DockProperty, Dock.Top);
             panel.Children.Add(labelMsg);
@@ -209,7 +213,11 @@ c.Execute();
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
                 TextWrapping = TextWrapping.Wrap,
-                IsReadOnly = true
+                IsReadOnly = true,
+                Background = SystemColors.ControlBrush,
+                BorderBrush = SystemColors.ControlDarkBrush,
+                BorderThickness = new Thickness(1),
+                SnapsToDevicePixels = true
             };
             labelSummary.SetValue(DockPanel.DockProperty, Dock.Top);
             panel.Children.Add(labelSummary);
@@ -221,6 +229,10 @@ c.Execute();
                                      VerticalAlignment = VerticalAlignment.Stretch,
                                      TextWrapping = TextWrapping.Wrap,
                                      IsReadOnly = true,
+                                     Background = SystemColors.ControlBrush,
+                                     BorderBrush = SystemColors.ControlDarkDarkBrush,
+                                     BorderThickness = new Thickness(1),
+                                     SnapsToDevicePixels = true
                                  };
 
             var scroll = new ScrollViewer
@@ -262,7 +274,7 @@ c.Execute();
 
             var windowPopup = new PopupModalWindow(Current.MainWindow,
                                                    UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.Exit),
+                                                       UserInterfaceStrings.Unexpected),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
@@ -271,7 +283,8 @@ c.Execute();
             SystemSounds.Exclamation.Play();
             windowPopup.Show();
 
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
+                && doExit)
             {
                 Environment.Exit(1);
             }
