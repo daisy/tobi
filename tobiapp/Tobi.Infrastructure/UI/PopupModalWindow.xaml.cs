@@ -104,8 +104,8 @@ namespace Tobi.Infrastructure.UI
             }
             else
             {
-                Width = width;
-                Height = height;
+                Width = Math.Min(SystemParameters.WorkArea.Width, width);
+                Height = Math.Min(SystemParameters.WorkArea.Height, height);
             }
 
             Title = title;

@@ -90,6 +90,8 @@ namespace Tobi
 
             Logger.Log("ShellPresenter.ctor", Category.Debug, Priority.Medium);
 
+            App.LOGGER = Logger;
+
             initCommands();
 
         }
@@ -145,7 +147,10 @@ namespace Tobi
                 UserInterfaceStrings.Save_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-floppy"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj => { throw new NotImplementedException("Functionality not implemented, sorry :(",
+                    new NotImplementedException("Just trying nested expections",
+                        new NotImplementedException("The last inner exception ! :)")));
+                }, obj => true);
 
             RegisterRichCommand(SaveCommand);
             //
