@@ -21,11 +21,11 @@ AlternationCount="2"
                
                >
         <ContentControl
-                          Width="{Binding Path=DataContext.IconWidth_Large}"
+                          Width="{Binding Path=DataContext.IconWidth_XLarge}"
                             
-                            Height="{Binding Path=DataContext.IconHeight_Large}"
+                            Height="{Binding Path=DataContext.IconHeight_XLarge}"
                             
-                Content="{Binding Path=DataContext.IconLarge}"/>
+                Content="{Binding Path=DataContext.IconXLarge}"/>
 
       </ToolTip>
 

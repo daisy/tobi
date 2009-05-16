@@ -131,7 +131,7 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
         <RowDefinition Height="Auto"/>
-        <RowDefinition Height="150"/>
+        <RowDefinition Height="200"/>
       </Grid.RowDefinitions>
 
       <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"

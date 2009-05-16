@@ -225,6 +225,50 @@ namespace Tobi.Infrastructure.Commanding
             }
         }
 
+        private double m_IconHeight_XLarge = Sizes.IconHeight_XLarge;
+        public double IconHeight_XLarge
+        {
+            get { return m_IconHeight_XLarge; }
+            private set
+            {
+                if (m_IconHeight_XLarge != value)
+                {
+                    m_IconHeight_XLarge = value;
+                    OnPropertyChanged("IconHeight_XLarge");
+                }
+            }
+        }
+        private double m_IconWidth_XLarge = Sizes.IconWidth_XLarge;
+        public double IconWidth_XLarge
+        {
+            get { return m_IconWidth_XLarge; }
+            private set
+            {
+                if (m_IconWidth_XLarge != value)
+                {
+                    m_IconWidth_XLarge = value;
+                    OnPropertyChanged("IconWidth_XLarge");
+                }
+            }
+        }
+        //private Image m_IconXLarge = null;
+        public Image IconXLarge
+        {
+            get
+            {
+                if (Icon == null)
+                {
+                    return null;
+                }
+                Image m_IconXLarge = null;
+                if (m_IconXLarge == null)
+                {
+                    m_IconXLarge = createImage(3);
+                    assignMultiBinding(m_IconXLarge, "XLarge");
+                }
+                return m_IconXLarge;
+            }
+        }
         public String ShortDescription
         {
             get;
@@ -429,8 +473,8 @@ namespace Tobi.Infrastructure.Commanding
                               {
                                   Stretch = Stretch.Fill,
                                   SnapsToDevicePixels = true,
-                                  Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : Sizes.IconWidth_Large)),
-                                  Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : Sizes.IconHeight_Large))
+                                  Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : (size == 2 ? Sizes.IconWidth_Large : Sizes.IconWidth_XLarge))),
+                                  Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : (size == 2 ? Sizes.IconHeight_Large : Sizes.IconHeight_XLarge)))
                               };
 
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);

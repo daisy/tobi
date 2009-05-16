@@ -43,7 +43,7 @@ namespace Tobi.Modules.AudioPane
 
         #region Private Class Attributes
 
-        private const int m_ArrowDepth = 6;
+        private const double m_ArrowDepth = 6;
 
         private WaveFormLoadingAdorner m_WaveFormLoadingAdorner;
         private WaveFormTimeTicksAdorner m_WaveFormTimeTicksAdorner;
@@ -841,16 +841,18 @@ namespace Tobi.Modules.AudioPane
                 geometryRange = (StreamGeometry)WaveFormTimeRangePath.Data;
             }
 
+            double thickNezz = m_ArrowDepth/2;
+
             using (StreamGeometryContext sgc = geometryRange.Open())
             {
-                sgc.BeginFigure(new Point(pixelsLeft, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixelsRight, height - m_ArrowDepth), false, false);
+                sgc.BeginFigure(new Point(pixelsLeft, height - thickNezz), true, false);
+                sgc.LineTo(new Point(pixelsRight, height - thickNezz), false, false);
                 sgc.LineTo(new Point(pixelsRight, height), false, false);
                 sgc.LineTo(new Point(pixelsLeft, height), false, false);
                 sgc.LineTo(new Point(pixelsLeft, 0), false, false);
                 sgc.LineTo(new Point(pixelsRight, 0), false, false);
-                sgc.LineTo(new Point(pixelsRight, m_ArrowDepth), false, false);
-                sgc.LineTo(new Point(pixelsLeft, m_ArrowDepth), false, false);
+                sgc.LineTo(new Point(pixelsRight, thickNezz), false, false);
+                sgc.LineTo(new Point(pixelsLeft, thickNezz), false, false);
                 sgc.LineTo(new Point(pixelsLeft, 0), false, false);
 
                 sgc.Close();

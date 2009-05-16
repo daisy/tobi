@@ -25,7 +25,10 @@ namespace Tobi.Infrastructure
         public const double IconWidth_Medium = 24;
         public const double IconHeight_Medium = 24;
 
-        public const double IconWidth_Large = 48;
-        public const double IconHeight_Large = 48;
+        public const double IconWidth_Large = 40;
+        public const double IconHeight_Large = 40;
+
+        public const double IconWidth_XLarge = 60;
+        public const double IconHeight_XLarge = 60;
     }
 }

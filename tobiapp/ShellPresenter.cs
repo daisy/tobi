@@ -384,16 +384,33 @@ namespace Tobi
                                 Margin = new Thickness(15),
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
+                                Focusable = false,
                             };
-            label.Focusable = false;
+
+            var fakeCommand = new RichDelegateCommand<object>(null,
+                null,
+                null,
+                (VisualBrush)Application.Current.FindResource("help-browser"),
+                null, obj => true);
+
+            var panel = new StackPanel
+                            {
+                                Orientation = Orientation.Horizontal,
+                            };
+            panel.Children.Add(fakeCommand.IconLarge);
+            panel.Children.Add(label);
+            panel.Margin = new Thickness(10, 10, 10, 10);
 
             var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Exit),
-                                                   label,
+                                                   panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 140);
+                                                   true, 300, 145);
+
+            fakeCommand.IconDrawScale = View.MagnificationLevel;
+
             windowPopup.Show();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
