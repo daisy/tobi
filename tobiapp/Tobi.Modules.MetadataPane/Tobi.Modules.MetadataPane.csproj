@@ -65,6 +65,7 @@
       <DependentUpon>MetadataPaneView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MetadataPaneViewModel.cs" />
+    <Compile Include="MetadataValidationRules.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
