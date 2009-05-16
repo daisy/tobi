@@ -14,29 +14,54 @@
     AlternationCount="2">
     
     <ListView.Resources>
-        <DataTemplate x:Key="SimpleTextTemplate">
-            <TextBox Text="{Binding Content}"/>
-        </DataTemplate>
-        
-        <DataTemplate x:Key="PrettyColorsTemplate">
+        <DataTemplate x:Key="ReadOnlyTemplate">
             <StackPanel>
-                <TextBox Text="{Binding Content}" Background="Bisque" Foreground="DarkViolet"/>
+                <TextBlock Text="{Binding Content}" Background="AliceBlue"/>
             </StackPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="OptionalStringTemplate">
+            <TextBox Text="{Binding Content}" Background="Yellow"/>
+        </DataTemplate>
         
-        <DataTemplate x:Key="DateTemplate">
-            <TextBox> <!-- Validation.ErrorTemplate="{StaticResource DateErrorTemplate}"> -->
+        <DataTemplate x:Key="RequiredStringTemplate">
+            <TextBox Background="BurlyWood">
+                
                 <TextBox.Text>
                     <Binding Path="Content">
                         <Binding.ValidationRules>
-                            <local:DateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
+                            <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty."/>
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
             </TextBox>
         </DataTemplate>
-        
-        <DataTemplate x:Key="DateErrorTemplate">
+       
+        <DataTemplate x:Key="OptionalDateTemplate">
+            <TextBox Background="Green"><!-- Validation.ErrorTemplate="{StaticResource ErrorTemplate}"> -->
+                <TextBox.Text>
+                    <Binding Path="Content">
+                        <Binding.ValidationRules>
+                            <local:OptionalDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="RequiredDateTemplate">
+            <TextBox Background="LightBlue"><!-- Validation.ErrorTemplate="{StaticResource ErrorTemplate}">-->
+                <TextBox.Text>
+                    <Binding Path="Content">
+                        <Binding.ValidationRules>
+                            <local:RequiredDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </DataTemplate>
+
+        <ControlTemplate x:Key="ErrorTemplate">
             <StackPanel Orientation="Horizontal">
                 <TextBox BorderBrush="Red" Background="Pink" 
                          ToolTip="{Binding RelativeSource={RelativeSource Self}, 
@@ -45,12 +70,16 @@
                 </TextBox>
                 <TextBlock Foreground="Red" Text="!!"/>
             </StackPanel>
-        </DataTemplate>
-        
-        <local:MetadataTypeTemplateSelector DefaultTemplate="{StaticResource SimpleTextTemplate}" 
-                                            PrettyTemplate="{StaticResource PrettyColorsTemplate}" 
-                                            DateTemplate="{StaticResource DateTemplate}"
-                                            x:Key="metadataTemplateSelector" />
+        </ControlTemplate>
+
+        <local:MetadataTypeTemplateSelector 
+            RequiredDateTemplate="{StaticResource RequiredDateTemplate}"
+            RequiredStringTemplate="{StaticResource RequiredStringTemplate}"
+            OptionalStringTemplate="{StaticResource OptionalStringTemplate}" 
+            OptionalDateTemplate="{StaticResource OptionalDateTemplate}"
+            ReadOnlyTemplate="{StaticResource ReadOnlyTemplate}" 
+            DefaultTemplate="{StaticResource OptionalStringTemplate}"
+            x:Key="metadataTemplateSelector" />
         
     </ListView.Resources>
     

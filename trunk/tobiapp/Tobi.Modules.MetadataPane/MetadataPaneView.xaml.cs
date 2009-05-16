@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using urakawa.metadata;
+using System.Collections.Generic;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -50,57 +51,85 @@ namespace Frustration
 {
     public class MetadataTypeTemplateSelector : DataTemplateSelector
     {
+        public DataTemplate OptionalStringTemplate { get; set; }
+        public DataTemplate OptionalDateTemplate { get; set; }
+        public DataTemplate RequiredStringTemplate { get; set; }
+        public DataTemplate RequiredDateTemplate { get; set; }
+        public DataTemplate ReadOnlyTemplate { get; set;}
         public DataTemplate DefaultTemplate { get; set; }
-        public DataTemplate PrettyTemplate { get; set; }
-        public DataTemplate DateTemplate { get; set; }
+
+        private static readonly List<string> _requiredDateFields = new List<string>
+                                                                       {
+                                                                           "dc:Date"
+                                                                       };
+
+        private static readonly List<string> _optionalDateFields = new List<string>
+                                                                       {
+                                                                           "dtb:sourceDate",
+                                                                           "dtb:producedDate",
+                                                                           "dtb:revisionDate"
+                                                                       };
+
+        private static readonly List<string> _requiredStringFields = new List<string>
+                                                                         {
+                                                                             "dc:Title",
+                                                                             "dc:Publisher",
+                                                                             "dc:Identifier",
+                                                                             "dc:Language",
+                                                                             "dtb:totalTime"
+                                                                         };
+
+        private static readonly List<string> _optionalStringFields = new List<string>
+                                                                         {
+                                                                             "dc:Creator",
+                                                                             "dc:Subject",
+                                                                             "dc:Description",
+                                                                             "dc:Contributor",
+                                                                             "dc:Source",
+                                                                             "dc:Relation",
+                                                                             "dc:Coverage",
+                                                                             "dc:Rights",
+                                                                             "dtb:sourceEdition",
+                                                                             "dtb:sourcePublisher",
+                                                                             "dtb:sourceRights",
+                                                                             "dtb:sourceTitle",
+                                                                             "dtb:narrator",
+                                                                             "dtb:producer",
+                                                                             "dtb:revision",
+                                                                             "dtb:revisionDescription"
+                                                                         };
+
+        private static readonly List<string> _readonlyStringFields = new List<string>
+                                                                         {
+                                                                             "dc:Format",
+                                                                             "dtb:multimediaType",
+                                                                             "dtb:multimediaContent",
+                                                                             "dtb:totalTime",
+                                                                             "dc:Type",
+                                                                             "dtb:audioFormat"
+                                                                         };
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             System.Diagnostics.Debug.Assert(item is Metadata);
 
-            Metadata metadata= (Metadata)item;
-            if (metadata.Name == "dc:Date")
-                return DateTemplate;
-            else if (metadata.Name == "dc:Language")
-                return PrettyTemplate;
+            Metadata metadata = (Metadata)item;
+
+            string res = _requiredDateFields.Find(s => s == metadata.Name);
+            string res2 = _requiredStringFields.Find(s => s == metadata.Name);
+
+            if (_requiredDateFields.Find(s => s == metadata.Name) != null)
+                return RequiredDateTemplate;
+            else if (_requiredStringFields.Find(s => s == metadata.Name) != null)
+                return RequiredStringTemplate;
+            else if (_optionalDateFields.Find(s => s == metadata.Name) != null)
+                return OptionalDateTemplate;
+            else if (_optionalStringFields.Find(s => s == metadata.Name) != null)
+                return OptionalStringTemplate;
+            else if (_readonlyStringFields.Find(s => s == metadata.Name) != null)
+                return ReadOnlyTemplate;
             else
                 return DefaultTemplate;
         }
     }
-
-    //YYYY-MM-DD is the required format
-    public class DateValidationRule : ValidationRule
-    {
-        public string ErrorMessage { get; set;}
-
-        public override ValidationResult Validate(object obj, System.Globalization.CultureInfo cultureInfo)
-        {
-            ValidationResult result = new ValidationResult(true, null);
-
-            string date = (string) obj;
-            string[] dateArray = date.Split('-');
-            if (dateArray.Length != 3)
-            {
-                result = new ValidationResult(false, ErrorMessage);
-                return result;
-            }
-            string year = dateArray[0];
-            string month = dateArray[1];
-            string day = dateArray[2];
-
-            try
-            {
-                DateTime testDate = new DateTime(
-                    Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day));
-            }
-            catch
-            {
-                result = new ValidationResult(false, ErrorMessage);
-            }
-            return result;
-        }
-    }
-
-
-
 }

@@ -121,6 +121,8 @@ namespace Tobi.Modules.MetadataPane
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 600);
             windowPopup.Show();
+            
+           
         }
 
         #endregion Commands
