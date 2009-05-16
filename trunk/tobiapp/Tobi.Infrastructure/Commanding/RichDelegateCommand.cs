@@ -70,7 +70,7 @@ namespace Tobi.Infrastructure.Commanding
                                    VisualBrush icon,
                                    Action<T> executeMethod,
                                    Func<T, bool> canExecuteMethod)
-            : base(executeMethod, canExecuteMethod)
+            : base(executeMethod, canExecuteMethod, false)
         {
             init(shortDescription, longDescription, keyGesture, icon);
         }

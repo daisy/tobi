@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Infrastructure="clr-namespace:Tobi.Infrastructure"
+    xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI"
     Height="480" Width="640"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -16,29 +17,51 @@
   
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
-
-    <Style TargetType="{x:Type Button}">
-      <Setter Property="Padding" Value="5"></Setter>
-      <Setter Property="Margin" Value="4, 8, 4, 8"></Setter>
-      <Setter Property="MinWidth" Value="50"></Setter>
-    </Style>
   </Window.Resources>
+  
     <DockPanel LastChildFill="True">
 
       <DockPanel.LayoutTransform>
+        <!-- WARNING: DataModel must be Shell (see constructor) -->
         <ScaleTransform
               ScaleX="{Binding MagnificationLevel, Mode=OneWay}"
                         ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
       </DockPanel.LayoutTransform>
-      
-      <StackPanel DockPanel.Dock="Bottom"
-                  Orientation="Horizontal"
-                  HorizontalAlignment="Right"
-                  
+
+
+      <DockPanel
         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                   AncestorType={x:Type Window}}, Path=.}"
-                  >
-        <Button x:Name="ButtonOK"
+        LastChildFill="True" DockPanel.Dock="Bottom"
+                 Margin="8">
+
+        <infraUI:TwoStateToggleButtonRichCommand
+          Style="{StaticResource ToolBarButtonBaseStyle}"
+          
+        InputBindingManager="{Binding InputBindingManager}"
+          
+          RichCommandOne="{Binding CommandDetailsCollapse}"
+          RichCommandTwo="{Binding CommandDetailsExpand}"
+                RichCommandActive="{Binding IsDetailsExpanded, Mode=OneWay}"
+          DockPanel.Dock="Left"
+          Visibility="{Binding Mode=OneWay, Path=CanDetailsExpand, Converter={StaticResource booleanToVisibilityConverter}}"/>
+        
+        <StackPanel
+                  Orientation="Horizontal"
+                  HorizontalAlignment="Right">
+
+
+          <StackPanel.Resources>
+
+            <Style TargetType="{x:Type Button}">
+              <Setter Property="Padding" Value="5"></Setter>
+              <Setter Property="Margin" Value="0, 0, 4, 0"></Setter>
+              <Setter Property="MinWidth" Value="50"></Setter>
+            </Style>
+            
+          </StackPanel.Resources>
+
+          <Button x:Name="ButtonOK"
                 Click="OnOkButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Ok}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Ok}"
@@ -81,10 +104,34 @@
                 Content="{x:Static Infrastructure:UserInterfaceStrings.Close}"/>
 
         <Rectangle Width="10"/>
+      
       </StackPanel>
+    </DockPanel>
+      <Grid 
+        DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                  AncestorType={x:Type Window}}, Path=.}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height=".5*"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
       <ContentControl x:Name="ContentPlaceHolder"
+                      Grid.Row="0"
+                      Grid.Column="0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                       Focusable="False"></ContentControl>
+      
+      <ContentControl x:Name="DetailsPlaceHolder"
+                      Grid.Row="1"
+                      Grid.Column="0"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                      Focusable="False"
+                      Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"></ContentControl>
+      </Grid>
     </DockPanel>
 </Window>

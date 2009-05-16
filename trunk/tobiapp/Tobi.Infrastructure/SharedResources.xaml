@@ -234,10 +234,13 @@
 
   <Style TargetType="{x:Type infraUI:ButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  
   <Style TargetType="{x:Type infraUI:RepeatButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  
   <Style TargetType="{x:Type infraUI:ToggleButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  
   <Style TargetType="{x:Type infraUI:TwoStateButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
 

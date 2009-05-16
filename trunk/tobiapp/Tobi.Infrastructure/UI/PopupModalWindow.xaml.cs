@@ -4,7 +4,9 @@ using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.Onyx.Reflection;
 
 namespace Tobi.Infrastructure.UI
@@ -12,15 +14,81 @@ namespace Tobi.Infrastructure.UI
     /// <summary>
     /// Interaction logic for PopupModalWindow.xaml
     /// </summary>
-    public partial class PopupModalWindow : INotifyPropertyChanged
+    public partial class PopupModalWindow : INotifyPropertyChanged, IInputBindingManager
     {
+        public RichDelegateCommand<object> CommandDetailsExpand { get; private set; }
+        public RichDelegateCommand<object> CommandDetailsCollapse { get; private set; }
+
+        public IInputBindingManager InputBindingManager
+        {
+            get
+            {
+                return this;
+            }
+        }
+
         public PopupModalWindow()
         {
             InitializeComponent();
+
+            CommandDetailsExpand = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsExpand,
+                UserInterfaceStrings.DetailsExpand_,
+                UserInterfaceStrings.DetailsExpand_KEYS,
+                (VisualBrush)Application.Current.FindResource("go-down"),
+                obj => IsDetailsExpanded = true, obj => CanDetailsExpand);
+
+            AddInputBinding(CommandDetailsExpand.KeyBinding);
+
+            CommandDetailsCollapse = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsCollapse,
+                UserInterfaceStrings.DetailsCollapse_,
+                UserInterfaceStrings.DetailsCollapse_KEYS,
+                (VisualBrush)Application.Current.FindResource("go-up"),
+                obj => IsDetailsExpanded = false, obj => CanDetailsCollapse);
+
+            AddInputBinding(CommandDetailsCollapse.KeyBinding);
+
+            m_IsDetailsExpanded = false;
+        }
+
+        private bool m_IsDetailsExpanded = false;
+        public bool IsDetailsExpanded
+        {
+            set
+            {
+                if (m_IsDetailsExpanded != value)
+                {
+                    m_IsDetailsExpanded = value;
+                    if (m_IsDetailsExpanded)
+                    {
+                        Top -= 50;
+                        Height += 50;
+                    }
+                    else
+                    {
+                        Top += 50;
+                        Height -= 50;
+                    }
+
+                    OnPropertyChanged(() => IsDetailsExpanded);
+                }
+            }
+            get { return m_IsDetailsExpanded; }
+        }
+
+        [NotifyDependsOn("IsDetailsExpanded")]
+        public bool CanDetailsExpand
+        {
+            get { return DetailsPlaceHolder.Content != null && !IsDetailsExpanded; }
+        }
+
+        [NotifyDependsOn("IsDetailsExpanded")]
+        public bool CanDetailsCollapse
+        {
+            get { return DetailsPlaceHolder.Content != null && IsDetailsExpanded; }
         }
 
         public PopupModalWindow(Window window, string title, object content,
-            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
+            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height, object details)
             : this()
         {
             Owner = window;
@@ -41,9 +109,16 @@ namespace Tobi.Infrastructure.UI
             Title = title;
             Icon = null;
             ContentPlaceHolder.Content = content;
+            DetailsPlaceHolder.Content = details;
             DialogButtons = buttons;
             DefaultDialogButton = button;
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
+        }
+
+        public PopupModalWindow(Window window, string title, object content,
+            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
+            : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null)
+        {
         }
 
         private bool m_ButtonTriggersClose = false;
@@ -369,5 +444,16 @@ namespace Tobi.Infrastructure.UI
             ClickedDialogButton = DialogButton.Apply;
         }
 #endregion ButtonClick
+
+        public bool AddInputBinding(InputBinding inputBinding)
+        {
+            InputBindings.Add(inputBinding);
+            return true;
+        }
+
+        public void RemoveInputBinding(InputBinding inputBinding)
+        {
+            InputBindings.Remove(inputBinding);
+        }
     }
 }
