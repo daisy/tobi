@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using Microsoft.Practices.Composite.Logging;
 using Microsoft.Test;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.UI;
@@ -174,15 +175,33 @@ c.Execute();
             handleException(e.ExceptionObject as Exception, e.IsTerminating);
         }
 
+        public static ILoggerFacade LOGGER = null;
+
+        public static void logException(Exception ex)
+        {
+            if (LOGGER == null) return;
+            
+            if (ex.Message != null)
+            {
+                LOGGER.Log(ex.Message, Category.Exception, Priority.High);
+            }
+            if (ex.StackTrace != null)
+            {
+                LOGGER.Log(ex.StackTrace, Category.Exception, Priority.High);
+            }
+
+            if (ex.InnerException != null)
+            {
+                logException(ex.InnerException);
+            }
+        }
+
         public static void handleException(Exception ex, bool doExit)
         {
             if (ex == null)
                 return;
 
-            //ExceptionPolicy.HandleException(ex, "Default Policy");
-            //MessageBox.Show(UserInterfaceStrings.UnhandledException);
-            //TaskDialog.ShowException("Unhandled Exception !", UserInterfaceStrings.UnhandledException, ex);
-
+            logException(ex);
 
             var margin = new Thickness(0, 0, 0, 8);
 
@@ -278,7 +297,7 @@ c.Execute();
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 500, 300);
+                                                   false, 500, 500);
 
             SystemSounds.Exclamation.Play();
             windowPopup.Show();
