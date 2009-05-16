@@ -350,7 +350,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_AutoPlay_,
                 UserInterfaceStrings.Audio_AutoPlay_KEYS,
                 (VisualBrush)Application.Current.FindResource("go-jump"),
-                obj => { }, obj => true);
+                obj => IsAutoPlay = !IsAutoPlay, obj => true);
 
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
             //
