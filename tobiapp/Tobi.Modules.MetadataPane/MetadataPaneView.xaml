@@ -29,9 +29,9 @@
                 
                 <TextBox.Text>
                     <Binding Path="Content">
-                        <Binding.ValidationRules>
+                      <!-- Binding.ValidationRules>
                             <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty."/>
-                        </Binding.ValidationRules>
+                        </Binding.ValidationRules -->
                     </Binding>
                 </TextBox.Text>
             </TextBox>
@@ -41,9 +41,9 @@
             <TextBox Background="Green"><!-- Validation.ErrorTemplate="{StaticResource ErrorTemplate}"> -->
                 <TextBox.Text>
                     <Binding Path="Content">
-                        <Binding.ValidationRules>
+                      <!-- Binding.ValidationRules>
                             <local:OptionalDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
-                        </Binding.ValidationRules>
+                        </Binding.ValidationRules -->
                     </Binding>
                 </TextBox.Text>
             </TextBox>
@@ -53,9 +53,9 @@
             <TextBox Background="LightBlue"><!-- Validation.ErrorTemplate="{StaticResource ErrorTemplate}">-->
                 <TextBox.Text>
                     <Binding Path="Content">
-                        <Binding.ValidationRules>
+                      <!-- Binding.ValidationRules>
                             <local:RequiredDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
-                        </Binding.ValidationRules>
+                        </Binding.ValidationRules -->
                     </Binding>
                 </TextBox.Text>
             </TextBox>

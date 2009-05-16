@@ -34,7 +34,7 @@ namespace Tobi.Modules.AudioPane
 
             m_culture = CultureInfo.GetCultureInfo("en-us");
 
-            m_point3 = new Point(1,1);
+            m_point3 = new Point(1, 1);
 
             m_rectRect = new Rect(1, 1, 1, 1);
         }
@@ -206,7 +206,7 @@ namespace Tobi.Modules.AudioPane
                     drawingContext.PushClip(clipGeo);
 
                     drawingContext.DrawText(formattedText, m_point3);
-                    
+
                     drawingContext.Pop();
                 }
                 else
@@ -238,6 +238,54 @@ namespace Tobi.Modules.AudioPane
                     widthChunk = pixelsRight - pixelsLeft;
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
                     {
+                        double bytes = m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft);
+                        double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
+
+                        var formattedTextDuration = new FormattedText(
+                                                FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
+                                                              m_culture,
+                                                              FlowDirection.LeftToRight,
+                                                              m_typeFace,
+                                                              12,
+                                                              Brushes.LightGray
+                            );
+
+                        m_point3.X = pixelsLeft - hoffset + horizontalMargin + tickHeight;
+                        if (m_point3.X < tickHeight)
+                        {
+                            widthChunk += m_point3.X;
+                            m_point3.X = tickHeight;
+                        }
+
+                        m_point3.Y = heightAvailable - formattedTextDuration.Height - formattedTextDuration.Height - tickHeight - tickHeight - tickHeight;
+
+                        double diff = (pixelsRight - hoffset) - widthAvailable;
+                        if (diff > 0)
+                        {
+                            widthChunk -= diff;
+                        }
+
+                        double minW = Math.Min(formattedTextDuration.Width + horizontalMargin * 2,
+                                                widthChunk - tickHeight - tickHeight - 1);
+                        if (minW > 0)
+                        {
+                            m_rectRect.X = m_point3.X - horizontalMargin;
+                            m_rectRect.Y = m_point3.Y;
+                            m_rectRect.Width = minW;
+                            m_rectRect.Height = formattedTextDuration.Height;
+
+                            drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+
+                            var clipGeo = new RectangleGeometry(m_rectRect);
+                            clipGeo.Freeze();
+                            drawingContext.PushClip(clipGeo);
+
+                            drawingContext.DrawText(formattedTextDuration, m_point3);
+
+                            drawingContext.Pop(); //PushClip
+                        }
+
+
                         string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened();
                         if (!String.IsNullOrEmpty(nodeTxt))
                         {
@@ -255,22 +303,10 @@ namespace Tobi.Modules.AudioPane
 
                             FormattedText formattedTextDots = null;
 
-                            m_point3.X = pixelsLeft - hoffset + horizontalMargin + tickHeight;
-                            if (m_point3.X < tickHeight)
-                            {
-                                widthChunk += m_point3.X;
-                                m_point3.X = tickHeight;
-                            }
-
-                            double diff = (pixelsRight - hoffset) - widthAvailable;
-                            if (diff > 0)
-                            {
-                                widthChunk -= diff;
-                            }
-
                             m_point3.Y = heightAvailable - formattedText.Height - tickHeight - tickHeight;
 
-                            double minW = Math.Min(formattedText.Width + horizontalMargin * 2, widthChunk - tickHeight - tickHeight - 1);
+                            minW = Math.Min(formattedText.Width + horizontalMargin * 2,
+                                                widthChunk - tickHeight - tickHeight - 1);
                             if (minW > 0)
                             {
                                 m_rectRect.X = m_point3.X - horizontalMargin;
@@ -367,7 +403,7 @@ namespace Tobi.Modules.AudioPane
 
                 m_rectRect.X = m_point3.X - horizontalMargin;
                 m_rectRect.Y = m_point3.Y;
-                m_rectRect.Width = formattedText.Width + horizontalMargin*2;
+                m_rectRect.Width = formattedText.Width + horizontalMargin * 2;
                 m_rectRect.Height = formattedText.Height;
                 drawingContext.DrawRectangle(m_renderBrush, m_penTick, m_rectRect);
 
