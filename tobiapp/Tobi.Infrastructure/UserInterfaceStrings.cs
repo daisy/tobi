@@ -83,6 +83,15 @@ namespace Tobi.Infrastructure
                                                                                 ModifierKeys.Control |
                                                                                 ModifierKeys.Shift);
 
+
+        public const string DetailsExpand = "_Show details";
+        public const string DetailsExpand_ = "Display detailed information";
+        public static KeyGesture DetailsExpand_KEYS = new KeyGesture(Key.D, ModifierKeys.Control);
+
+        public const string DetailsCollapse = "_Hide details";
+        public const string DetailsCollapse_ = "Hide detailed information";
+        public static KeyGesture DetailsCollapse_KEYS = DetailsExpand_KEYS;
+
         public const string New = "_New";
         public const string New_ = "New document";
         public static KeyGesture New_KEYS = new KeyGesture(Key.N, ModifierKeys.Control);
@@ -207,7 +216,7 @@ namespace Tobi.Infrastructure
 
         public const string Audio_AutoPlay = "_Toggle autoplay";
         public const string Audio_AutoPlay_ = "Switch autoplay on/off";
-        public static KeyGesture Audio_AutoPlay_KEYS = new KeyGesture(Key.Y, ModifierKeys.Control);
+        public static KeyGesture Audio_AutoPlay_KEYS = new KeyGesture(Key.G, ModifierKeys.Control);
 
         public const string SelectAll = "_Select all";
         public const string SelectAll_ = "Select all content";

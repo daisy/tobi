@@ -248,6 +248,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             Maximum="{TemplateBinding ScrollableHeight}"
             ViewportSize="{TemplateBinding ViewportHeight}"
             Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+              
               <ScrollBar Name="PART_HorizontalScrollBar"
             Orientation="Horizontal"
             Grid.Row="1"

@@ -89,14 +89,19 @@ c.Execute();
 
             PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
+
             PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+
             PresentationTraceSources.DependencyPropertySource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.DependencyPropertySource.Switch.Level = SourceLevels.All;
+
             PresentationTraceSources.DocumentsSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.DocumentsSource.Switch.Level = SourceLevels.All;
+
             PresentationTraceSources.MarkupSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.MarkupSource.Switch.Level = SourceLevels.All;
+
             PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
 

@@ -401,13 +401,15 @@ namespace Tobi
             panel.Children.Add(label);
             panel.Margin = new Thickness(10, 10, 10, 10);
 
+            var details = new Label { Content = "HERE ! \n blablablabla" };
+
             var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Exit),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 145);
+                                                   true, 300, 170, details);
 
             fakeCommand.IconDrawScale = View.MagnificationLevel;
 
