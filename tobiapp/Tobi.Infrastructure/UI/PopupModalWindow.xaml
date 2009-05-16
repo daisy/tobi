@@ -33,10 +33,25 @@
         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                   AncestorType={x:Type Window}}, Path=.}"
         LastChildFill="True" DockPanel.Dock="Bottom"
-                 Margin="8">
+                 Margin="8, 0, 8, 8"
+        >
 
-        <infraUI:TwoStateToggleButtonRichCommand
+        <Rectangle DockPanel.Dock="Top"
+                   Margin="0, 0, 0, 8"
+                   Height="1"
+                   HorizontalAlignment="Stretch"
+                   StrokeThickness="1"
+                   Stroke="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                    Fill="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                SnapsToDevicePixels="True"
+                   />
+
+        <!-- 
+          IsChecked="{Binding IsDetailsExpanded, Mode=OneWay}" -->
+        <infraUI:TwoStateButtonRichCommand
           Style="{StaticResource ToolBarButtonBaseStyle}"
+          
+          ShowTextLabel="true"
           
         InputBindingManager="{Binding InputBindingManager}"
           
@@ -116,22 +131,25 @@
         <Grid.RowDefinitions>
           <RowDefinition Height=".5*"/>
           <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-      <ContentControl x:Name="ContentPlaceHolder"
+
+        <ContentControl x:Name="ContentPlaceHolder"
+                      Margin="8, 8, 8, 0"
                       Grid.Row="0"
                       Grid.Column="0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
-                      Focusable="False"></ContentControl>
-      
-      <ContentControl x:Name="DetailsPlaceHolder"
+                      Focusable="False"/>
+
+        <ContentControl x:Name="DetailsPlaceHolder"
+                    Margin="8, 8, 8, 0"
                       Grid.Row="1"
                       Grid.Column="0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                       Focusable="False"
-                      Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"></ContentControl>
+                      Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"/>
       </Grid>
     </DockPanel>
 </Window>

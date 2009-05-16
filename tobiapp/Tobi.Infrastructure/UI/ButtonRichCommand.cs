@@ -2,12 +2,20 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Tobi.Infrastructure.Commanding;
 
 namespace Tobi.Infrastructure.UI
 {
+    public interface IInputBindingManager
+    {
+        bool AddInputBinding(InputBinding inputBinding);
+        void RemoveInputBinding(InputBinding inputBinding);
+    }
+
+    /// <summary>
+    /// //////////////////////////////////////////
+    /// </summary>
     public class ButtonRichCommand : Button
     {
         public static readonly DependencyProperty RichCommandProperty =
@@ -16,9 +24,9 @@ namespace Tobi.Infrastructure.UI
                                         typeof(ButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
-        internal static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var button = d as ButtonBase;
+            var button = d as ButtonRichCommand;
             if (button == null)
             {
                 return;
@@ -29,36 +37,57 @@ namespace Tobi.Infrastructure.UI
                 return;
             }
 
-            ConfigureButtonFromCommand(button, command);
+            ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
-        public static bool ShowTextLabel
+        public static readonly DependencyProperty ShowTextLabelProperty =
+            DependencyProperty.Register("ShowTextLabel",
+                                        typeof(bool),
+                                        typeof(ButtonRichCommand),
+                                        new PropertyMetadata(false));
+
+        public bool ShowTextLabel
         {
             get
             {
-                return false;
+                return (bool)GetValue(ShowTextLabelProperty);
+            }
+            set
+            {
+                SetValue(ShowTextLabelProperty, value);
             }
         }
 
-        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand<object> command)
+        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand<object> command, bool showTextLabel)
         {
             button.Command = command;
 
             button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
 
-
             Image image = command.IconMedium;
             image.Margin = new Thickness(2, 2, 2, 2);
 
-            if (String.IsNullOrEmpty(command.ShortDescription) || !ShowTextLabel)
+            if (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription))
             {
                 button.Content = image;
             }
             else
             {
-                var panel = new StackPanel { Orientation = Orientation.Horizontal };
-                panel.Children.Add(new TextBlock(new Run(command.ShortDescription)));
+                var panel = new StackPanel
+                                {
+                                    Orientation = Orientation.Horizontal
+                                };
                 panel.Children.Add(image);
+                var tb = new Label
+                             {
+                                 VerticalAlignment = VerticalAlignment.Center,
+                                 Content = command.ShortDescription,
+                                 //Margin = new Thickness(8, 0, 0, 0)
+                             };
+
+                //tb.Content = new Run(UserInterfaceStrings.EscapeMnemonic(command.ShortDescription));
+
+                panel.Children.Add(tb);
                 button.Content = panel;
             }
         }
@@ -77,6 +106,9 @@ namespace Tobi.Infrastructure.UI
         }
     }
 
+    /// <summary>
+    /// //////////////////////////////////////////
+    /// </summary>
     public class ToggleButtonRichCommand : ToggleButton
     {
         public static readonly DependencyProperty RichCommandProperty =
@@ -87,9 +119,37 @@ namespace Tobi.Infrastructure.UI
 
         private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ButtonRichCommand.OnRichCommandChanged(d, e);
+            var button = d as ToggleButtonRichCommand;
+            if (button == null)
+            {
+                return;
+            }
+            var command = e.NewValue as RichDelegateCommand<object>;
+            if (command == null)
+            {
+                return;
+            }
+
+            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
+        public static readonly DependencyProperty ShowTextLabelProperty =
+            DependencyProperty.Register("ShowTextLabel",
+                                        typeof(bool),
+                                        typeof(ToggleButtonRichCommand),
+                                        new PropertyMetadata(false));
+
+        public bool ShowTextLabel
+        {
+            get
+            {
+                return (bool)GetValue(ShowTextLabelProperty);
+            }
+            set
+            {
+                SetValue(ShowTextLabelProperty, value);
+            }
+        }
         public RichDelegateCommand<object> RichCommand
         {
             get
@@ -103,6 +163,9 @@ namespace Tobi.Infrastructure.UI
         }
     }
 
+    /// <summary>
+    /// //////////////////////////////////////////
+    /// </summary>
     public class RepeatButtonRichCommand : RepeatButton
     {
         public static readonly DependencyProperty RichCommandProperty =
@@ -113,9 +176,37 @@ namespace Tobi.Infrastructure.UI
 
         private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ButtonRichCommand.OnRichCommandChanged(d, e);
+            var button = d as RepeatButtonRichCommand;
+            if (button == null)
+            {
+                return;
+            }
+            var command = e.NewValue as RichDelegateCommand<object>;
+            if (command == null)
+            {
+                return;
+            }
+
+            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
+        public static readonly DependencyProperty ShowTextLabelProperty =
+            DependencyProperty.Register("ShowTextLabel",
+                                        typeof(bool),
+                                        typeof(RepeatButtonRichCommand),
+                                        new PropertyMetadata(false));
+
+        public bool ShowTextLabel
+        {
+            get
+            {
+                return (bool)GetValue(ShowTextLabelProperty);
+            }
+            set
+            {
+                SetValue(ShowTextLabelProperty, value);
+            }
+        }
         public RichDelegateCommand<object> RichCommand
         {
             get
@@ -129,12 +220,9 @@ namespace Tobi.Infrastructure.UI
         }
     }
 
-    public interface IInputBindingManager
-    {
-        bool AddInputBinding(InputBinding inputBinding);
-        void RemoveInputBinding(InputBinding inputBinding);
-    }
-
+    /// <summary>
+    /// //////////////////////////////////////////
+    /// </summary>
     public class TwoStateToggleButtonRichCommand : ToggleButton
     {
         public static readonly DependencyProperty InputBindingManagerProperty =
@@ -207,6 +295,23 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
+        public static readonly DependencyProperty ShowTextLabelProperty =
+            DependencyProperty.Register("ShowTextLabel",
+                                        typeof(bool),
+                                        typeof(TwoStateToggleButtonRichCommand),
+                                        new PropertyMetadata(false));
+
+        public bool ShowTextLabel
+        {
+            get
+            {
+                return (bool)GetValue(ShowTextLabelProperty);
+            }
+            set
+            {
+                SetValue(ShowTextLabelProperty, value);
+            }
+        }
         public static readonly DependencyProperty RichCommandActiveProperty =
             DependencyProperty.Register("RichCommandActive",
                                         typeof(Boolean),
@@ -255,7 +360,7 @@ namespace Tobi.Infrastructure.UI
                 }
             }
 
-            ButtonRichCommand.ConfigureButtonFromCommand(button, command);
+            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
         /// <summary>
@@ -274,6 +379,10 @@ namespace Tobi.Infrastructure.UI
             }
         }
     }
+
+    /// <summary>
+    /// //////////////////////////////////////////
+    /// </summary>
     public class TwoStateButtonRichCommand : Button
     {
         public static readonly DependencyProperty InputBindingManagerProperty =
@@ -346,6 +455,23 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
+        public static readonly DependencyProperty ShowTextLabelProperty =
+            DependencyProperty.Register("ShowTextLabel",
+                                        typeof(bool),
+                                        typeof(TwoStateButtonRichCommand),
+                                        new PropertyMetadata(false));
+
+        public bool ShowTextLabel
+        {
+            get
+            {
+                return (bool)GetValue(ShowTextLabelProperty);
+            }
+            set
+            {
+                SetValue(ShowTextLabelProperty, value);
+            }
+        }
         public static readonly DependencyProperty RichCommandActiveProperty =
             DependencyProperty.Register("RichCommandActive",
                                         typeof(Boolean),
@@ -393,7 +519,7 @@ namespace Tobi.Infrastructure.UI
                     button.InputBindingManager.AddInputBinding(command.KeyBinding);
                 }
             }
-            ButtonRichCommand.ConfigureButtonFromCommand(button, command);
+            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
         /// <summary>

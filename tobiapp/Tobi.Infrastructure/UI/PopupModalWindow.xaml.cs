@@ -35,7 +35,8 @@ namespace Tobi.Infrastructure.UI
                 UserInterfaceStrings.DetailsExpand_,
                 UserInterfaceStrings.DetailsExpand_KEYS,
                 (VisualBrush)Application.Current.FindResource("go-down"),
-                obj => IsDetailsExpanded = true, obj => CanDetailsExpand);
+                obj => IsDetailsExpanded = true,
+                obj => CanDetailsExpand);
 
             AddInputBinding(CommandDetailsExpand.KeyBinding);
 
@@ -43,7 +44,8 @@ namespace Tobi.Infrastructure.UI
                 UserInterfaceStrings.DetailsCollapse_,
                 UserInterfaceStrings.DetailsCollapse_KEYS,
                 (VisualBrush)Application.Current.FindResource("go-up"),
-                obj => IsDetailsExpanded = false, obj => CanDetailsCollapse);
+                obj => IsDetailsExpanded = false,
+                obj => CanDetailsCollapse);
 
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
 
@@ -60,12 +62,12 @@ namespace Tobi.Infrastructure.UI
                     m_IsDetailsExpanded = value;
                     if (m_IsDetailsExpanded)
                     {
-                        Top -= 50;
+                        //Top -= 50;
                         Height += 50;
                     }
                     else
                     {
-                        Top += 50;
+                        //Top += 50;
                         Height -= 50;
                     }
 
