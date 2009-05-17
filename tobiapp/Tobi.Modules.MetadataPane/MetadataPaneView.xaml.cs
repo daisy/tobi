@@ -1,13 +1,6 @@
 ﻿using Microsoft.Practices.Composite.Logging;
-
-using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
 using urakawa.metadata;
 using System.Collections.Generic;
 
@@ -40,9 +33,6 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Construction
     }
-
-
-   
 }
 
 //if this class is in the Tobi.Modules.MetadataPane namespace, the XAML doesn't "see" it

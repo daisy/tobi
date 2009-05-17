@@ -101,7 +101,7 @@ namespace Tobi.Modules.MetadataPane
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
                 (VisualBrush)Application.Current.FindResource("accessories-text-editor"),
-                obj => showMetadata(), obj => true);
+                obj => showMetadata(), obj => canShowMetadata);
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
         }
@@ -121,8 +121,12 @@ namespace Tobi.Modules.MetadataPane
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 600);
             windowPopup.Show();
-            
-           
+        }
+
+        [NotifyDependsOn("Project")]
+        private bool canShowMetadata
+        {
+            get { return Project != null && Project.NumberOfPresentations > 0; }
         }
 
         #endregion Commands
@@ -132,7 +136,7 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                if (Project == null)
+                if (Project == null || Project.NumberOfPresentations <= 0)
                 {
                     return null;
                 }

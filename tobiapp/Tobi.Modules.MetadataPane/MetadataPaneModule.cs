@@ -38,8 +38,6 @@ namespace Tobi.Modules.MetadataPane
             targetRegion.Add(view);
             targetRegion.Activate(view);
              * */
-            
         }
-       
     }
 }
