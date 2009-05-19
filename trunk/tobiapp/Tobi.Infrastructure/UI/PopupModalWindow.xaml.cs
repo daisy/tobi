@@ -149,6 +149,8 @@ namespace Tobi.Infrastructure.UI
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
+            ContentPlaceHolder.Content = null;
+
             if (m_ButtonTriggersClose) return;
 
             if (!AllowEscapeAndCloseButton)
@@ -159,8 +161,6 @@ namespace Tobi.Infrastructure.UI
             }
 
             ClickedDialogButton = DialogButton.ESC;
-
-            ContentPlaceHolder.Content = null;
         }
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
