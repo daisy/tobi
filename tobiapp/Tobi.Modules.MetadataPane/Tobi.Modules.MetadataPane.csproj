@@ -65,7 +65,9 @@
       <DependentUpon>MetadataPaneView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MetadataPaneViewModel.cs" />
+    <Compile Include="MetadataValidationRules.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupportedMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">

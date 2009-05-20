@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
+using Tobi.Modules.MetadataPane;
 using urakawa.metadata;
 using System.Collections.Generic;
 
@@ -48,78 +49,53 @@ namespace Frustration
         public DataTemplate ReadOnlyTemplate { get; set;}
         public DataTemplate DefaultTemplate { get; set; }
 
-        private static readonly List<string> _requiredDateFields = new List<string>
-                                                                       {
-                                                                           "dc:Date"
-                                                                       };
-
-        private static readonly List<string> _optionalDateFields = new List<string>
-                                                                       {
-                                                                           "dtb:sourceDate",
-                                                                           "dtb:producedDate",
-                                                                           "dtb:revisionDate"
-                                                                       };
-
-        private static readonly List<string> _requiredStringFields = new List<string>
-                                                                         {
-                                                                             "dc:Title",
-                                                                             "dc:Publisher",
-                                                                             "dc:Identifier",
-                                                                             "dc:Language",
-                                                                             "dtb:totalTime"
-                                                                         };
-
-        private static readonly List<string> _optionalStringFields = new List<string>
-                                                                         {
-                                                                             "dc:Creator",
-                                                                             "dc:Subject",
-                                                                             "dc:Description",
-                                                                             "dc:Contributor",
-                                                                             "dc:Source",
-                                                                             "dc:Relation",
-                                                                             "dc:Coverage",
-                                                                             "dc:Rights",
-                                                                             "dtb:sourceEdition",
-                                                                             "dtb:sourcePublisher",
-                                                                             "dtb:sourceRights",
-                                                                             "dtb:sourceTitle",
-                                                                             "dtb:narrator",
-                                                                             "dtb:producer",
-                                                                             "dtb:revision",
-                                                                             "dtb:revisionDescription"
-                                                                         };
-
-        private static readonly List<string> _readonlyStringFields = new List<string>
-                                                                         {
-                                                                             "dc:Format",
-                                                                             "dtb:multimediaType",
-                                                                             "dtb:multimediaContent",
-                                                                             "dtb:totalTime",
-                                                                             "dc:Type",
-                                                                             "dtb:audioFormat"
-                                                                         };
-
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             System.Diagnostics.Debug.Assert(item is Metadata);
 
             Metadata metadata = (Metadata)item;
+            
+            //TODO: move this to a more sensible place where it only gets called once per Tobi instance
+            //it contains all the metadata supported by Tobi
+            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list = new List<SupportedMetadataItem>();
+            Tobi.Modules.MetadataPane.CreateSupportedMetadataList createSupportedMetadataList = 
+                new Tobi.Modules.MetadataPane.CreateSupportedMetadataList(list);
 
-            string res = _requiredDateFields.Find(s => s == metadata.Name);
-            string res2 = _requiredStringFields.Find(s => s == metadata.Name);
+            int index = list.FindIndex(0, s => s.Name == metadata.Name);
+            if (index != -1)
+            {
+                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
+                //TODO: this assumes that when a field is readonly, we will just display it as a default (short) string
+                //this is probably an ok assumption for now, but we'll want to change it later.
+                if (metaitem.IsReadOnly)
+                    return ReadOnlyTemplate;
 
-            if (_requiredDateFields.Find(s => s == metadata.Name) != null)
-                return RequiredDateTemplate;
-            else if (_requiredStringFields.Find(s => s == metadata.Name) != null)
-                return RequiredStringTemplate;
-            else if (_optionalDateFields.Find(s => s == metadata.Name) != null)
-                return OptionalDateTemplate;
-            else if (_optionalStringFields.Find(s => s == metadata.Name) != null)
-                return OptionalStringTemplate;
-            else if (_readonlyStringFields.Find(s => s == metadata.Name) != null)
-                return ReadOnlyTemplate;
+                if (metaitem.FieldType == SupportedMetadataFieldType.Date)
+                {
+                    if (metaitem.IsRequired)
+                        return RequiredDateTemplate;
+                    else
+                        return OptionalDateTemplate;
+                }
+
+                else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString || 
+                    metaitem.FieldType == SupportedMetadataFieldType.LongString)
+                {
+                    if (metaitem.IsRequired)
+                        return RequiredStringTemplate;
+                    else
+                        return OptionalStringTemplate;
+                }
+
+                else
+                {
+                    return DefaultTemplate;
+                }
+            }
             else
+            {
                 return DefaultTemplate;
+            }
         }
     }
 }
