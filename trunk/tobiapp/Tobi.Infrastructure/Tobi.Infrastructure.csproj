@@ -42,6 +42,9 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="PresentationFramework.Aero">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -123,6 +126,7 @@
     <Compile Include="UI\PopupModalWindow.xaml.cs">
       <DependentUpon>PopupModalWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\WatermarkTextBox.cs" />
     <Compile Include="UI\WpfTreeHelper.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\MenuShortcutManager.cs" />
@@ -480,6 +484,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SmallColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

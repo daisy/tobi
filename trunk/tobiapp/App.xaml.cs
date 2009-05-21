@@ -99,6 +99,20 @@ namespace Tobi
             set;
         }
 
+        /// <summary>
+        /// Application Entry Point.
+        /// </summary>
+        [STAThreadAttribute()]
+        [DebuggerNonUserCodeAttribute()]
+        [LoaderOptimization(LoaderOptimization.SingleDomain)]
+        public static void Main()
+        {
+            var app = new App();
+            app.InitializeComponent();
+            app.ShutdownMode = ShutdownMode.OnMainWindowClose; //Application.Current
+            app.Run();
+        }
+
         ///<summary>
         /// Implements 2 runtimes: DEBUG and RELEASE
         ///</summary>
@@ -207,6 +221,7 @@ c.Execute();
         private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
             Assembly parentAssembly = Assembly.GetExecutingAssembly();
+            //Application.ResourceAssembly = parentAssembly;
 
             var name = args.Name.Substring(0, args.Name.IndexOf(',')) + ".dll";
             var resourceName = parentAssembly.GetManifestResourceNames().First(s => s.EndsWith(name));
@@ -279,25 +294,8 @@ c.Execute();
 
             var margin = new Thickness(0, 0, 0, 8);
 
-            var panel = new DockPanel { LastChildFill = true };
-
-            string logPath = Directory.GetCurrentDirectory() + @"\Tobi.log";
-
-            var labelMsg = new TextBox
-                            {
-                                FontWeight = FontWeights.ExtraBlack,
-                                Text = UserInterfaceStrings.UnhandledException + String.Format("\n[{0}]", logPath),
-                                Margin = margin,
-                                HorizontalAlignment = HorizontalAlignment.Stretch,
-                                VerticalAlignment = VerticalAlignment.Top,
-                                TextWrapping = TextWrapping.Wrap,
-                                IsReadOnly = true,
-                                BorderBrush = Brushes.Red,
-                                BorderThickness = new Thickness(1),
-                                SnapsToDevicePixels = true
-                            };
-            labelMsg.SetValue(DockPanel.DockProperty, Dock.Top);
-            panel.Children.Add(labelMsg);
+            //var panel = new DockPanel { LastChildFill = true };
+            var panel = new StackPanel { Orientation = Orientation.Vertical };
 
             var labelSummary = new TextBox
             {
@@ -307,13 +305,32 @@ c.Execute();
                 VerticalAlignment = VerticalAlignment.Top,
                 TextWrapping = TextWrapping.Wrap,
                 IsReadOnly = true,
-                Background = SystemColors.ControlBrush,
+                Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = SystemColors.ControlDarkBrush,
                 BorderThickness = new Thickness(1),
-                SnapsToDevicePixels = true
+                SnapsToDevicePixels = true,
+                Padding = new Thickness(5)
             };
-            labelSummary.SetValue(DockPanel.DockProperty, Dock.Top);
+            //labelSummary.SetValue(DockPanel.DockProperty, Dock.Top);
             panel.Children.Add(labelSummary);
+
+            var labelMsg = new TextBox
+                            {
+                                FontWeight = FontWeights.ExtraBlack,
+                                Text = UserInterfaceStrings.UnhandledException + String.Format(" [{0}]", BitFactoryLoggerAdapter.LOG_FILE_PATH),
+                                Margin = margin,
+                                HorizontalAlignment = HorizontalAlignment.Stretch,
+                                VerticalAlignment = VerticalAlignment.Top,
+                                TextWrapping = TextWrapping.Wrap,
+                                IsReadOnly = true,
+                                BorderBrush = Brushes.Red,
+                                BorderThickness = new Thickness(1),
+                                SnapsToDevicePixels = true,
+                                Padding = new Thickness(5)
+                            };
+            //labelMsg.SetValue(DockPanel.DockProperty, Dock.Top);
+            panel.Children.Add(labelMsg);
+
 
             var stackTrace = new TextBox
                                  {
@@ -322,20 +339,21 @@ c.Execute();
                                      VerticalAlignment = VerticalAlignment.Stretch,
                                      TextWrapping = TextWrapping.Wrap,
                                      IsReadOnly = true,
-                                     Background = SystemColors.ControlBrush,
+                                     Background = SystemColors.ControlLightLightBrush,
                                      BorderBrush = SystemColors.ControlDarkDarkBrush,
                                      BorderThickness = new Thickness(1),
-                                     SnapsToDevicePixels = true
+                                     SnapsToDevicePixels = true,
+                                     Padding = new Thickness(5)
                                  };
 
-            var scroll = new ScrollViewer
+            var details = new ScrollViewer
                              {
                                  Content = stackTrace,
                                  Margin = margin,
                                  HorizontalAlignment = HorizontalAlignment.Stretch,
-                                 VerticalAlignment = VerticalAlignment.Stretch,
+                                 VerticalAlignment = VerticalAlignment.Stretch
                              };
-            panel.Children.Add(scroll);
+            //panel.Children.Add(scroll);
 
             /*
             var logStr = String.Format("CANNOT OPEN [{0}] !", logPath);
@@ -371,7 +389,7 @@ c.Execute();
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 500, 500);
+                                                   false, 500, 200, details, 100);
 
             SystemSounds.Exclamation.Play();
             windowPopup.Show();
