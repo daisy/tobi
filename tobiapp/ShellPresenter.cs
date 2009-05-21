@@ -415,10 +415,10 @@ namespace Tobi
                 VerticalAlignment = VerticalAlignment.Stretch,
                 TextWrapping = TextWrapping.Wrap,
                 IsReadOnly = true,
-                Background = SystemColors.ControlBrush,
+                Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = SystemColors.ControlDarkDarkBrush,
                 BorderThickness = new Thickness(1),
-                Padding = new Thickness(8),
+                Padding = new Thickness(6),
                 SnapsToDevicePixels = true
             };
 
@@ -428,7 +428,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 160, details);
+                                                   true, 300, 160, details, 40);
 
             fakeCommand.IconDrawScale = View.MagnificationLevel;
 

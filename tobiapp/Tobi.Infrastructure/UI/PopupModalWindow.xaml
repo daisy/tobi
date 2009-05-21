@@ -122,20 +122,21 @@
       
       </StackPanel>
     </DockPanel>
-      <Grid 
+      <DockPanel 
+        LastChildFill="True"
         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                   AncestorType={x:Type Window}}, Path=.}">
-        <Grid.ColumnDefinitions>
+        <!-- Grid.ColumnDefinitions>
           <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
           <RowDefinition Height=".5*"/>
           <RowDefinition Height="Auto"/>
-          <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions -->
 
         <ContentControl x:Name="ContentPlaceHolder"
                       Margin="8, 8, 8, 0"
+                         DockPanel.Dock="Top"
                       Grid.Row="0"
                       Grid.Column="0"
                   HorizontalAlignment="Stretch"
@@ -150,6 +151,6 @@
                   VerticalAlignment="Stretch"
                       Focusable="False"
                       Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"/>
-      </Grid>
+      </DockPanel>
     </DockPanel>
 </Window>

@@ -695,7 +695,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <Separator/>
 
     <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
-            IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"/>
+            IsChecked="{Binding IsAutoPlay, Mode=OneWay}"/>
 
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandPause}"

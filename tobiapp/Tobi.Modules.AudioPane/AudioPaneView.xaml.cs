@@ -625,6 +625,16 @@ namespace Tobi.Modules.AudioPane
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
 
             m_WaveFormImageSourceDrawingImage = null;
+
+            if (m_WaveFormTimeTicksAdorner != null)
+            {
+                m_WaveFormTimeTicksAdorner.InvalidateVisual();
+            }
+
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.InvalidateVisual();
+            }
         }
 
         private void scrollInView(double pixels)

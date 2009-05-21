@@ -63,12 +63,12 @@ namespace Tobi.Infrastructure.UI
                     if (m_IsDetailsExpanded)
                     {
                         //Top -= 50;
-                        Height += 50;
+                        Height += DetailsHeight;
                     }
                     else
                     {
                         //Top += 50;
-                        Height -= 50;
+                        Height -= DetailsHeight;
                     }
 
                     OnPropertyChanged(() => IsDetailsExpanded);
@@ -76,6 +76,8 @@ namespace Tobi.Infrastructure.UI
             }
             get { return m_IsDetailsExpanded; }
         }
+
+        public double DetailsHeight { get; set; }
 
         [NotifyDependsOn("IsDetailsExpanded")]
         public bool CanDetailsExpand
@@ -89,8 +91,11 @@ namespace Tobi.Infrastructure.UI
             get { return DetailsPlaceHolder.Content != null && IsDetailsExpanded; }
         }
 
-        public PopupModalWindow(Window window, string title, object content,
-            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height, object details)
+        public PopupModalWindow(Window window, string title,
+            object content,
+            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
+            double width, double height,
+            object details, double detailsHeight)
             : this()
         {
             Owner = window;
@@ -112,6 +117,7 @@ namespace Tobi.Infrastructure.UI
             Icon = null;
             ContentPlaceHolder.Content = content;
             DetailsPlaceHolder.Content = details;
+            DetailsHeight = detailsHeight;
             DialogButtons = buttons;
             DefaultDialogButton = button;
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
@@ -119,7 +125,7 @@ namespace Tobi.Infrastructure.UI
 
         public PopupModalWindow(Window window, string title, object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
-            : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null)
+            : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null, 0)
         {
         }
 
