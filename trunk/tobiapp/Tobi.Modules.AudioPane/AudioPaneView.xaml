@@ -590,7 +590,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Text="{Binding Path=PeakOverloadCountCh1, Mode=OneWay}"
                TextAlignment="Center"
         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-               FontWeight="Heavy"
+               FontWeight="Normal"
                MouseDown="OnResetPeakOverloadCountCh1"/>
 
     <TextBlock x:Name="PeakOverloadLabelCh2"
@@ -598,7 +598,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Text="{Binding Path=PeakOverloadCountCh2, Mode=OneWay}"
                TextAlignment="Center"
         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-               FontWeight="Heavy"
+               FontWeight="Normal"
                MouseDown="OnResetPeakOverloadCountCh2"/>
 
     <Canvas x:Name="PeakMeterCanvas"
@@ -787,7 +787,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             Delay="1000"
             Interval="1000"
             LargeChange="500"
-            SmallChange="200"/>
+            SmallChange="200"
+            Margin="3"/>
 
   </infraUI:WrapPanelLastChildFill>
 
@@ -797,7 +798,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     LastChildFill="True">
 
     <TextBlock
-      FontWeight="ExtraBold"
+      FontWeight="Normal"
     DockPanel.Dock="Right"
     Margin="0, 0, 15, 0"
       VerticalAlignment="Center" Text="{Binding TimeStringTotalWaveform, Mode=OneWay}"/>
@@ -808,7 +809,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       VerticalAlignment="Center" Text=" / "/>
 
     <TextBlock
-      FontWeight="ExtraBlack"
+      FontWeight="Normal"
     DockPanel.Dock="Right"
       VerticalAlignment="Center" Text="{Binding TimeStringCurrent, Mode=OneWay}"/>
 

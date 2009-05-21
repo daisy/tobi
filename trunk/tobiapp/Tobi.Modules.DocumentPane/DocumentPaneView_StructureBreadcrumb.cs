@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
 using urakawa.core;
@@ -18,6 +19,8 @@ namespace Tobi.Modules.DocumentPane
 
         private void updateBreadcrumbPanel(TreeNode node)
         {
+            var style = (Style)Application.Current.FindResource("ToolBarButtonBaseStyle");
+
             BreadcrumbPanel.Children.Clear();
 
             if (PathToCurrentTreeNode == null || !PathToCurrentTreeNode.Contains(node))
@@ -42,18 +45,18 @@ namespace Tobi.Modules.DocumentPane
                 // instead we use the Tag property which contains a reference to a TreeNode, 
                 // so we can use the Click event)
 
-                Button butt = new Button
+                var butt = new Button
                 {
                     Tag = n,
-                    Style=null,
                     BorderThickness = new Thickness(0.0),
                     BorderBrush = null,
                     Background = Brushes.Transparent,
                     Foreground = Brushes.Blue,
-                    Cursor = Cursors.Hand
+                    Cursor = Cursors.Hand,
+                    Style = style
                 };
 
-                Run run = new Run((qname != null ? qname.LocalName : "TEXT")) { TextDecorations = TextDecorations.Underline };
+                var run = new Run((qname != null ? qname.LocalName : "TEXT")) { TextDecorations = TextDecorations.Underline };
                 butt.Content = run;
 
                 butt.Click += OnBreadCrumbButtonClick;
@@ -62,18 +65,19 @@ namespace Tobi.Modules.DocumentPane
 
                 if (counter < PathToCurrentTreeNode.Count - 1)
                 {
-                    Run run2 = new Run(">");
+                    var arrow = (Path)Application.Current.FindResource("Arrow");
 
-                    Button tb = new Button
+                    var tb = new Button
                     {
-                        Content = run2,
+                        Content = arrow,
                         Tag = n,
                         BorderBrush = null,
                         BorderThickness = new Thickness(0.0),
                         Background = Brushes.Transparent,
                         Foreground = Brushes.Black,
                         Cursor = Cursors.Cross,
-                        FontWeight = FontWeights.ExtraBold
+                        FontWeight = FontWeights.ExtraBold,
+                        Style = style
                     };
 
                     tb.Click += OnBreadCrumbSeparatorClick;
@@ -92,25 +96,22 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnBreadCrumbSeparatorClick(object sender, RoutedEventArgs e)
         {
-            Button ui = sender as Button;
+            var ui = sender as Button;
             if (ui == null)
             {
                 return;
             }
 
-            TreeNode node = (TreeNode)ui.Tag;
+            var node = (TreeNode)ui.Tag;
 
-            Popup popup = new Popup();
-            popup.IsOpen = false;
-            popup.Width = 120;
-            popup.Height = 150;
+            var popup = new Popup {IsOpen = false, Width = 120, Height = 150};
             BreadcrumbPanel.Children.Add(popup);
             popup.PlacementTarget = ui;
             popup.LostFocus += OnPopupLostFocus;
             popup.LostMouseCapture += OnPopupLostFocus;
             popup.LostKeyboardFocus += OnPopupLostKeyboardFocus;
 
-            ListView listOfNodes = new ListView();
+            var listOfNodes = new ListView();
             listOfNodes.SelectionChanged += OnListOfNodesSelectionChanged;
 
             foreach (TreeNode child in node.ListOfChildren)
@@ -122,11 +123,13 @@ namespace Tobi.Modules.DocumentPane
                 });
             }
 
-            ScrollViewer scroll = new ScrollViewer();
-            scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-            scroll.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            var scroll = new ScrollViewer
+                             {
+                                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                 Content = listOfNodes
+                             };
 
-            scroll.Content = listOfNodes;
             popup.Child = scroll;
             popup.IsOpen = true;
             popup.Focus();
@@ -134,7 +137,7 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnPopupLostFocus(object sender, RoutedEventArgs e)
         {
-            Popup ui = sender as Popup;
+            var ui = sender as Popup;
             if (ui == null)
             {
                 return;
@@ -144,7 +147,7 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnPopupLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            Popup ui = sender as Popup;
+            var ui = sender as Popup;
             if (ui == null)
             {
                 return;
@@ -154,12 +157,12 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnListOfNodesSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListView ui = sender as ListView;
+            var ui = sender as ListView;
             if (ui == null)
             {
                 return;
             }
-            TreeNodeWrapper wrapper = (TreeNodeWrapper)ui.SelectedItem;
+            var wrapper = (TreeNodeWrapper)ui.SelectedItem;
             wrapper.Popup.IsOpen = false;
 
             Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnListOfNodesSelectionChanged", Category.Debug, Priority.Medium);
@@ -169,7 +172,7 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnBreadCrumbButtonClick(object sender, RoutedEventArgs e)
         {
-            Button ui = sender as Button;
+            var ui = sender as Button;
             if (ui == null)
             {
                 return;

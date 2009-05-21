@@ -150,8 +150,16 @@
       </EventTrigger>
     </Style.Triggers>
   </Style>
-  
-  <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
+
+  <Path x:Key="Arrow"
+        x:Shared="false"
+				   Fill ="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+				   VerticalAlignment ="Center"
+				   HorizontalAlignment ="Center"
+				   StrokeThickness = "1"
+				   Data            = "M 0,0 L 6,3 L 0,6 L 0,0"/>
+
+    <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 
   <infraUI:BooleanNotConverter x:Key="BooleanNotConverter"/>
 
@@ -159,6 +167,13 @@
 
   <Style x:Key="ToolBarButtonBaseStyle" TargetType="{x:Type ButtonBase}">
 
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="true">
+
+        <Setter Property="Foreground"
+                Value="Red" />
+      </Trigger>
+    </Style.Triggers>
     <Setter Property="RepeatButton.Delay" Value="0"/>
     <Setter Property="RepeatButton.Interval" Value="100"/>
 
@@ -190,28 +205,37 @@
             </Trigger>
 
             <Trigger Property="IsMouseOver" Value="true">
+              
               <Setter TargetName="Border" Property="Background"
                       Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              
               <Setter TargetName="Border" Property="BorderBrush"
                       Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              
               <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}" />
                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SolidBorderBrush}" / -->
             </Trigger>
 
             <Trigger Property="IsPressed" Value="true">
+              
               <Setter TargetName="Border" Property="Background"
                       Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              
               <Setter TargetName="Border" Property="BorderBrush"
                       Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              
               <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" / -->
             </Trigger>
 
             <Trigger Property="ToggleButton.IsChecked" Value="true">
+              
               <Setter TargetName="Border" Property="Background"
                       Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              
               <Setter TargetName="Border" Property="BorderBrush"
                       Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              
               <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" /-->
               </Trigger>

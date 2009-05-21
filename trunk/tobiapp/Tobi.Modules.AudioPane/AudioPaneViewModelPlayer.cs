@@ -280,7 +280,8 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null);
+                return PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null)
+                    && (View == null || View.BytesPerPixel != 0);
             }
         }
 

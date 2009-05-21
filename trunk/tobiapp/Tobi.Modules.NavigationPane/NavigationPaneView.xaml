@@ -7,17 +7,84 @@
     xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
     xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
-  TabStripPlacement="Bottom">
+  TabStripPlacement="Bottom"
+  BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+  BorderThickness="0">
 
 <!-- Regions:RegionManager.RegionManager="{Binding Path=(Regions:RegionManager.RegionManager), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=OneWay}" -->
 
   <!-- ad:DockableContent
   Title="TOC" DockableStyle="DockableToBorders" -->
 
+  <TabControl.Resources>
+    <!-- Style TargetType="{x:Type TabControl}">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type TabControl}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <TabPanel
+                  Grid.Row="0"
+                  Panel.ZIndex="1"
+                  Margin="0,0,4,-1"
+                  IsItemsHost="True"
+                  Background="Transparent" />
+              <Border
+                  Grid.Row="1"
+                  BorderBrush="Black"
+                  BorderThickness="1"
+                  CornerRadius="0, 12, 12, 12"
+                  SnapsToDevicePixels="True">
+                <Border.Background>
+                  <LinearGradientBrush>
+                    <GradientStop Color="LightBlue" Offset="0" />
+                    <GradientStop Color="White" Offset="1" />
+                  </LinearGradientBrush>
+                </Border.Background>
+                <ContentPresenter ContentSource="SelectedContent" />
+              </Border>
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style -->
+
+    <Style TargetType="{x:Type TabItem}">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type TabItem}">
+            <Border
+                Name="Border"
+                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
+                BorderThickness="1"
+                CornerRadius="0,0,4,4"
+                SnapsToDevicePixels="True">
+              <ContentPresenter x:Name="ContentSite"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                ContentSource="Header"
+                Margin="8,2,8,2"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="1,0,1,1" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </TabControl.Resources>
 
   <TabItem Header="TOC">
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <!-- Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
       <Grid.ColumnDefinitions>
         <ColumnDefinition/>
@@ -28,12 +95,13 @@
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
 
-      <!-- Button Click="OnExpandAll"
+      <Button Click="OnExpandAll"
               Grid.Row="0" Grid.Column="0">Expand all</Button>
       <Button Click="OnCollapseAll"
               Grid.Row="1" Grid.Column="0">Collapse all</Button -->
 
       <ScrollViewer
+        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 Grid.Row="2" Grid.Column="0"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Visible"
@@ -104,7 +172,7 @@
 
         </TreeView>
       </ScrollViewer>
-    </Grid>
+    
   </TabItem>
 
   <!-- /ad:DockableContent -->
@@ -114,12 +182,21 @@
   Title="Pages" DockableStyle="DockableToBorders" -->
   <TabItem Header="Pages">
 
-    <ListView x:Name="ListView" ItemsSource="{Binding Pages}"
-              SelectionMode="Single" SelectionChanged="OnPageSelected">
-      <ListView.ItemContainerStyle>
-        <Style TargetType="{x:Type ListViewItem}">
-          
-          <Setter Property="FontSize" Value="15" />
+    <ListBox x:Name="ListView" ItemsSource="{Binding Pages}"
+              SelectionMode="Single"
+             SelectionChanged="OnPageSelected"
+             DisplayMemberPath="Name">
+
+      <!-- ListBox.ItemTemplate>
+        <DataTemplate>
+          <Label Content="{Binding Name}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate -->
+      
+      <ListBox.ItemContainerStyle>
+        <Style TargetType="{x:Type ListBoxItem}">
+
+          <!-- Setter Property="FontSize" Value="15" / -->
           <Setter Property="FontWeight" Value="Normal" />
           
           <Style.Triggers>
@@ -128,16 +205,14 @@
             </Trigger>
           </Style.Triggers>
         </Style>
-      </ListView.ItemContainerStyle>
-      <ListView.View>
+      </ListBox.ItemContainerStyle>
+      <!-- ListView.View>
         <GridView>
           <GridViewColumn Header="Page number/name"
              DisplayMemberBinding="{Binding Name}" />
-          <!-- GridViewColumn Width="70" Header="Id"
-             DisplayMemberBinding="{Binding Id}"  / -->
         </GridView>
-      </ListView.View>
-    </ListView>
+      </ListView.View -->
+    </ListBox>
 
   </TabItem>
   <!-- /ad:DockableContent -->

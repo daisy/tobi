@@ -32,6 +32,7 @@ namespace Tobi.Infrastructure.UI
 
             Image image = command.IconSmall;
             image.Margin = new Thickness(0, 2, 0, 2);
+            image.VerticalAlignment = VerticalAlignment.Center;
             menuItem.Icon = image;
         }
 
