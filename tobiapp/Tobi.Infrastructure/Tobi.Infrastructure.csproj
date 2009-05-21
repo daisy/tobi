@@ -118,6 +118,7 @@
     <Compile Include="UI\KeyDownCommandBinding.cs" />
     <Compile Include="UI\LazyKeepAliveTabControl.cs" />
     <Compile Include="UI\ListBoxExtensions.cs" />
+    <Compile Include="UI\ListViewCustomComparer.cs" />
     <Compile Include="UI\ListViewExtensions.cs" />
     <Compile Include="UI\LoadingUserControl.xaml.cs">
       <DependentUpon>LoadingUserControl.xaml</DependentUpon>

@@ -12,73 +12,74 @@ x:Name="list"
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
 AlternationCount="2"
+    VirtualizingStackPanel.IsVirtualizing="False"
             >
 
-    <ListView.Resources>
-      <ToolTip x:Key="imageIconTooltip"
-         DataContext="{Binding Path=PlacementTarget,
+  <ListView.Resources>
+    <ToolTip x:Key="imageIconTooltip"
+       DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
                
                >
-        <ContentControl
-                          Width="{Binding Path=DataContext.IconWidth_XLarge}"
+      <ContentControl
+                        Width="{Binding Path=DataContext.IconWidth_XLarge}"
                             
-                            Height="{Binding Path=DataContext.IconHeight_XLarge}"
+                          Height="{Binding Path=DataContext.IconHeight_XLarge}"
                             
-                Content="{Binding Path=DataContext.IconXLarge}"/>
+              Content="{Binding Path=DataContext.IconXLarge}"/>
 
-      </ToolTip>
+    </ToolTip>
 
-    </ListView.Resources>
+  </ListView.Resources>
 
-    <ListView.View>
-      <GridView AllowsColumnReorder="true">
-        <GridViewColumn Header="Icon">
-          <GridViewColumn.CellTemplate>
-                                 <DataTemplate>
+  <ListView.View>
+    <GridView AllowsColumnReorder="true">
+      <GridViewColumn Header="Icon">
+        <GridViewColumn.CellTemplate>
+          <DataTemplate>
 
-                                   <ContentControl Focusable="False"
-                                                     Width="{Binding Path=IconWidth_Medium}"
+            <ContentControl Focusable="False"
+                              Width="{Binding Path=IconWidth_Medium}"
                             
-                                                       Height="{Binding Path=IconHeight_Medium}"
+                                Height="{Binding Path=IconHeight_Medium}"
                                                      
-                                           Content="{Binding Path=DataContext.IconMedium,
+                    Content="{Binding Path=DataContext.IconMedium,
                     RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                      
-                                           ToolTip="{StaticResource imageIconTooltip}"
-                                                   Margin="2, 4, 2, 4">
-                                   </ContentControl>
-            </DataTemplate>
-            
-          </GridViewColumn.CellTemplate>
-          
-        </GridViewColumn> 
+                    ToolTip="{StaticResource imageIconTooltip}"
+                            Margin="2, 4, 2, 4">
+            </ContentControl>
+          </DataTemplate>
 
-        <GridViewColumn Header="Keyboard shortcut"
-                        UI:SortableListView.SortPropertyName="KeyGestureText"
-           DisplayMemberBinding="{Binding KeyGestureText}"  />
+        </GridViewColumn.CellTemplate>
 
-        <GridViewColumn Header="Short Description"
-                        UI:SortableListView.SortPropertyName="ShortDescription"
-           DisplayMemberBinding="{Binding ShortDescription}" />
+      </GridViewColumn>
 
-        <GridViewColumn Header="Long Description"
-                        UI:SortableListView.SortPropertyName="LongDescription"
-           DisplayMemberBinding="{Binding LongDescription}" />
-      </GridView>
-    </ListView.View>
-    <ListView.ItemContainerStyle>
+      <GridViewColumn Header="Keyboard shortcut"
+                      UI:SortableListView.SortPropertyName="KeyGestureText"
+         DisplayMemberBinding="{Binding KeyGestureText}"  />
 
-      <Style TargetType="{x:Type ListViewItem}">
-        <Style.Triggers>
-          <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-          </Trigger>
-          <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
+      <GridViewColumn Header="Short Description"
+                      UI:SortableListView.SortPropertyName="ShortDescription"
+         DisplayMemberBinding="{Binding ShortDescription}" />
+
+      <GridViewColumn Header="Long Description"
+                      UI:SortableListView.SortPropertyName="LongDescription"
+         DisplayMemberBinding="{Binding LongDescription}" />
+    </GridView>
+  </ListView.View>
+  <ListView.ItemContainerStyle>
+
+    <Style TargetType="{x:Type ListViewItem}">
+      <Style.Triggers>
+        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+          <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        </Trigger>
+        <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
           </Trigger -->
-        </Style.Triggers>
-      </Style>
+      </Style.Triggers>
+    </Style>
 
-    </ListView.ItemContainerStyle>
-  </UI:SortableListView>
+  </ListView.ItemContainerStyle>
+</UI:SortableListView>
