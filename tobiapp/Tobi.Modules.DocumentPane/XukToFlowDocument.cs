@@ -23,7 +23,7 @@ namespace Tobi.Modules.DocumentPane
     {
         protected ILoggerFacade Logger { private set; get; }
         protected IEventAggregator EventAggregator { private set; get; }
-        
+
         public XukToFlowDocument(ILoggerFacade logger, IEventAggregator aggregator,
             DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
             DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
@@ -275,16 +275,14 @@ namespace Tobi.Modules.DocumentPane
             }
 
             SequenceMedia seqMedia = node.GetAudioSequenceMedia();
-            if (seqMedia != null && !seqMedia.AllowMultipleTypes && seqMedia.Count > 0)
+            if (seqMedia != null && !seqMedia.AllowMultipleTypes
+                && seqMedia.Count > 0 && seqMedia.GetItem(0) is ManagedAudioMedia)
             {
-                if (seqMedia.GetItem(0) is ManagedAudioMedia)
-                {
-                    data.Foreground = Brushes.Black;
-                    //data.Background = Brushes.LightGoldenrodYellow;
-                    data.Cursor = Cursors.Cross;
-                    data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                    return;
-                }
+                data.Foreground = Brushes.Black;
+                //data.Background = Brushes.LightGoldenrodYellow;
+                data.Cursor = Cursors.Cross;
+                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                return;
             }
 
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
@@ -451,7 +449,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
-        
+
         private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Bold data = new Bold();
@@ -478,7 +476,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
-        
+
         private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Italic data = new Italic();
@@ -523,7 +521,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
-        
+
         private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             m_cellsToExpand.Clear();
@@ -612,7 +610,7 @@ namespace Tobi.Modules.DocumentPane
                 return data;
             }
         }
-        
+
         private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             if (node.ChildCount == 0)
@@ -755,7 +753,7 @@ namespace Tobi.Modules.DocumentPane
                 }
             }
         }
-        
+
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             Hyperlink data = new Hyperlink();

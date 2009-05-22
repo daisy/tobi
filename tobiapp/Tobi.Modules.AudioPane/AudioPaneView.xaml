@@ -717,8 +717,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
 
     <Separator/>
-    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
-                                 />
 
     <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
                                  />
@@ -736,9 +734,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                                   />
 
     <infraUI:ButtonRichCommand RichCommand="{Binding CommandGotoEnd}"
-                                 />
-
-    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
     <Separator/>

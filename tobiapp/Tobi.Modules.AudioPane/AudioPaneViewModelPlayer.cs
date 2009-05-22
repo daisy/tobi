@@ -195,7 +195,7 @@ namespace Tobi.Modules.AudioPane
                     m_Player.SetDevice(GetWindowsFormsHookControl(), value);
                     if (time >= 0)
                     {
-                        AudioPlayer_PlayFrom(AudioPlayer_ConvertMillisecondsToByte(time));
+                        AudioPlayer_PlayFrom(AudioPlayer_ConvertMillisecondsToBytes(time));
                     }
                 }
             }
@@ -353,7 +353,8 @@ namespace Tobi.Modules.AudioPane
 
             TreeNode subTreeNode = null;
 
-            long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
+            //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
+            long byteOffset = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime));
 
             long sumData = 0;
             long sumDataPrev = 0;
@@ -391,7 +392,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        public double AudioPlayer_ConvertByteToMilliseconds(double bytes)
+        public double AudioPlayer_ConvertBytesToMilliseconds(double bytes)
         {
             if (PcmFormat == null)
             {
@@ -400,7 +401,7 @@ namespace Tobi.Modules.AudioPane
             return 1000.0 * bytes / ((double)PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0);
         }
 
-        public double AudioPlayer_ConvertMillisecondsToByte(double ms)
+        public double AudioPlayer_ConvertMillisecondsToBytes(double ms)
         {
             if (PcmFormat == null)
             {
@@ -560,12 +561,12 @@ namespace Tobi.Modules.AudioPane
                     m_Player.Play(m_CurrentAudioStreamProvider,
                                   PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble,
                                   new AudioLibPCMFormat( PcmFormat.NumberOfChannels,PcmFormat.SampleRate,PcmFormat.BitDepth),
-                                  AudioPlayer_ConvertByteToMilliseconds(bytesStart)
+                                  AudioPlayer_ConvertBytesToMilliseconds(bytesStart)
                         );
                 }
                 else if (m_Player.State == AudioPlayerState.Playing)
                 {
-                    m_Player.CurrentTimePosition = AudioPlayer_ConvertByteToMilliseconds(bytesStart);
+                    m_Player.CurrentTimePosition = AudioPlayer_ConvertBytesToMilliseconds(bytesStart);
                 }
             }
             else
@@ -582,8 +583,8 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Play(m_CurrentAudioStreamProvider,
                               PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble,
                               new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth),
-                              AudioPlayer_ConvertByteToMilliseconds(bytesStart),
-                              AudioPlayer_ConvertByteToMilliseconds(bytesEnd)
+                              AudioPlayer_ConvertBytesToMilliseconds(bytesStart),
+                              AudioPlayer_ConvertBytesToMilliseconds(bytesEnd)
                     );
             }
 
@@ -601,12 +602,12 @@ namespace Tobi.Modules.AudioPane
 
             Logger.Log("AudioPaneViewModel.AudioPlayer_Play", Category.Debug, Priority.Medium);
 
-            double byteLastPlayHeadTime = AudioPlayer_ConvertMillisecondsToByte(LastPlayHeadTime);
+            double byteLastPlayHeadTime = AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime);
 
             if (!IsSelectionSet)
             {
                 if (LastPlayHeadTime >=
-                        AudioPlayer_ConvertByteToMilliseconds(
+                        AudioPlayer_ConvertBytesToMilliseconds(
                                             DataLength))
                 {
                     LastPlayHeadTime = 0;
@@ -619,8 +620,8 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                double byteSelectionLeft = Math.Round(AudioPlayer_ConvertMillisecondsToByte(SelectionBegin));
-                double byteSelectionRight = Math.Round(AudioPlayer_ConvertMillisecondsToByte(SelectionEnd));
+                double byteSelectionLeft = Math.Round(AudioPlayer_ConvertMillisecondsToBytes(SelectionBegin));
+                double byteSelectionRight = Math.Round(AudioPlayer_ConvertMillisecondsToBytes(SelectionEnd));
 
                 byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
 
@@ -644,8 +645,8 @@ namespace Tobi.Modules.AudioPane
 
         private bool verifyBeginEndPlayerValues(double begin, double end)
         {
-            double from = AudioPlayer_ConvertByteToMilliseconds(begin);
-            double to = AudioPlayer_ConvertByteToMilliseconds(end);
+            double from = AudioPlayer_ConvertBytesToMilliseconds(begin);
+            double to = AudioPlayer_ConvertBytesToMilliseconds(end);
 
             var pcmInfo = PcmFormat;
 
@@ -715,7 +716,7 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_Rewind()
         {
-            Logger.Log("AudioPaneView.OnRewind", Category.Debug, Priority.Medium);
+            Logger.Log("AudioPaneViewModel.AudioPlayer_Rewind", Category.Debug, Priority.Medium);
 
             AudioPlayer_Stop();
             double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
@@ -737,11 +738,11 @@ namespace Tobi.Modules.AudioPane
         }
         public void AudioPlayer_FastForward()
         {
-            Logger.Log("AudioPaneView.OnFastForward", Category.Debug, Priority.Medium);
+            Logger.Log("AudioPaneViewModel.AudioPlayer_FastForward", Category.Debug, Priority.Medium);
 
             AudioPlayer_Stop();
             double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
-            double max = AudioPlayer_ConvertByteToMilliseconds(DataLength);
+            double max = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
             if (newTime > max)
             {
                 newTime = max;
@@ -758,15 +759,138 @@ namespace Tobi.Modules.AudioPane
                 }
             }
         }
+
+        public void AudioPlayer_StepBack()
+        {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_StepBack", Category.Debug, Priority.Medium);
+
+            AudioPlayer_Stop();
+
+            long prev = -1;
+            long begin = 0;
+
+            var bytes = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime));
+
+            bool moved = false;
+
+            foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+            {
+                long end = (begin + marker.m_LocalStreamDataLength);
+                if (bytes >= begin && bytes <= end)
+                {
+                    if (prev == -1)
+                    {
+                        LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(begin);
+                        SystemSounds.Exclamation.Play();
+                        moved = true;
+                        break;
+                    }
+
+                    LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(prev);
+                    moved = true;
+                    break;
+                }
+                prev = begin;
+                begin += (marker.m_LocalStreamDataLength + 1);
+            }
+
+            if (moved && IsAutoPlay)
+            {
+                if (View != null)
+                {
+                    View.ClearSelection();
+                    AudioPlayer_Play();
+                }
+            }
+        }
+
+        public void AudioPlayer_StepForward()
+        {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_StepForward", Category.Debug, Priority.Medium);
+
+            if (PlayStreamMarkers == null || PlayStreamMarkers.Count ==0)
+            {
+                return;
+            }
+
+            AudioPlayer_Stop();
+
+            long begin = 0;
+
+            var bytes = (long) Math.Round(AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime));
+
+            bool moved = false;
+            bool found = false;
+
+            foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+            {
+                if (found)
+                {
+                    LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(begin);
+                    moved = true;
+                    break;
+                }
+
+                long end = (begin + marker.m_LocalStreamDataLength);
+                if (bytes >= begin && bytes <= end)
+                {
+                    found = true;
+                }
+                
+                begin += (marker.m_LocalStreamDataLength + 1);
+            }
+
+            if (!found)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
+
+            if (!moved)
+            {
+                SystemSounds.Exclamation.Play();
+            }
+
+            if (moved && IsAutoPlay)
+            {
+                if (View != null)
+                {
+                    View.ClearSelection();
+                    AudioPlayer_Play();
+                }
+            }
+        }
+
         public void AudioPlayer_GotoEnd()
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_GotoEnd", Category.Debug, Priority.Medium);
+
+            if (PlayStreamMarkers == null || PlayStreamMarkers.Count == 0)
+            {
+                return;
+            }
+
             AudioPlayer_Stop();
-            LastPlayHeadTime = AudioPlayer_ConvertByteToMilliseconds(DataLength);
+
+            double end = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+
+            if (LastPlayHeadTime == end)
+            {
+                SystemSounds.Exclamation.Play();
+            }
+
+            LastPlayHeadTime = end;
         }
 
         public void AudioPlayer_GotoBegining()
         {
+            Logger.Log("AudioPaneViewModel.AudioPlayer_GotoBegining", Category.Debug, Priority.Medium);
+            
             AudioPlayer_Stop();
+
+            if (LastPlayHeadTime == 0)
+            {
+                SystemSounds.Exclamation.Play();
+            }
 
             LastPlayHeadTime = 0;
 

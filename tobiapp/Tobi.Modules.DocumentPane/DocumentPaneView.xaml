@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.DocumentPane"
+    xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
            Focusable="False"
            LastChildFill="True" 
         Background="White">
@@ -37,8 +38,26 @@
              Grid.Row="0" Grid.Column="1"/>
    
   </Grid -->
+  
+  <WrapPanel DockPanel.Dock="Bottom"
+        Focusable="False"
+               Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+               Orientation="Horizontal"
+             HorizontalAlignment="Right"
+             >
+  <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
+                                 />
 
-  <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Scroll"
+
+  <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
+                                 />
+
+  </WrapPanel>
+
+  <FlowDocumentScrollViewer x:Name="FlowDocReader"
                       FontFamily="Palatino Linotype"
-                      Background="White" IsFindEnabled="False"/>
+                      Background="White"
+                      />
+  
+  <!-- FlowDocumentReader i IsFindEnabled="False" ViewingMode="Scroll" -->
 </DockPanel>

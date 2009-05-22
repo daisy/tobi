@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
@@ -15,8 +14,6 @@ namespace Tobi.Modules.AudioPane
         #region Commands
 
         public RichDelegateCommand<object> CommandOpenFile { get; private set; }
-        public RichDelegateCommand<object> CommandSwitchPhrasePrevious { get; private set; }
-        public RichDelegateCommand<object> CommandSwitchPhraseNext { get; private set; }
         public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
         public RichDelegateCommand<object> CommandGotoEnd { get; private set; }
         public RichDelegateCommand<object> CommandStepBack { get; private set; }
@@ -37,28 +34,6 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandStopMonitor { get; private set; }
         public RichDelegateCommand<object> CommandBeginSelection { get; private set; }
         public RichDelegateCommand<object> CommandEndSelection { get; private set; }
-
-        [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
-        [NotifyDependsOn("IsRecording")]
-        [NotifyDependsOn("IsMonitoring")]
-        public bool CanSwitchPhrasePrevious
-        {
-            get
-            {
-                return IsAudioLoadedWithTreeNode && !IsRecording && !IsMonitoring;
-            }
-        }
-
-        [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
-        [NotifyDependsOn("IsRecording")]
-        [NotifyDependsOn("IsMonitoring")]
-        public bool CanSwitchPhraseNext
-        {
-            get
-            {
-                return IsAudioLoadedWithTreeNode && !IsRecording && !IsMonitoring;
-            }
-        }
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
@@ -169,22 +144,24 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsAudioLoadedWithSubTreeNodes")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("PlayStreamMarkers")]
         public bool CanStepBack
         {
             get
             {
-                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring;
+                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
             }
         }
 
         [NotifyDependsOn("IsAudioLoadedWithSubTreeNodes")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("PlayStreamMarkers")]
         public bool CanStepForward
         {
             get
             {
-                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring;
+                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
             }
         }
 
@@ -240,26 +217,10 @@ namespace Tobi.Modules.AudioPane
 
             shellPresenter.RegisterRichCommand(CommandOpenFile);
             //
-            CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_SwitchPrevious,
-                UserInterfaceStrings.Audio_SwitchPrevious_,
-                UserInterfaceStrings.Audio_SwitchPrevious_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-first"),
-                obj => AudioPlayer_Stop(), obj => CanSwitchPhrasePrevious);
-
-            shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
-            //
-            CommandSwitchPhraseNext = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_SwitchNext,
-                UserInterfaceStrings.Audio_SwitchNext_,
-                UserInterfaceStrings.Audio_SwitchNext_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-last"),
-                obj => AudioPlayer_Stop(), obj => CanSwitchPhraseNext);
-
-            shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
-            //
             CommandGotoBegining = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
                 UserInterfaceStrings.Audio_GotoBegin_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-previous"),
+                (VisualBrush)Application.Current.FindResource("go-first"),
                 obj => AudioPlayer_GotoBegining(), obj => CanGotoBegining);
 
             shellPresenter.RegisterRichCommand(CommandGotoBegining);
@@ -267,7 +228,7 @@ namespace Tobi.Modules.AudioPane
             CommandGotoEnd = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_GotoEnd,
                 UserInterfaceStrings.Audio_GotoEnd_,
                 UserInterfaceStrings.Audio_GotoEnd_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-next"),
+                (VisualBrush)Application.Current.FindResource("go-last"),
                 obj => AudioPlayer_GotoEnd(), obj => CanGotoEnd);
 
             shellPresenter.RegisterRichCommand(CommandGotoEnd);
@@ -276,7 +237,7 @@ namespace Tobi.Modules.AudioPane
                  UserInterfaceStrings.Audio_StepBack_,
                  UserInterfaceStrings.Audio_StepBack_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-skip-backward"),
-                obj => AudioPlayer_Stop(), obj => CanStepBack);
+                obj => AudioPlayer_StepBack(), obj => CanStepBack);
 
             shellPresenter.RegisterRichCommand(CommandStepBack);
             //
@@ -284,7 +245,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_StepForward_,
                 UserInterfaceStrings.Audio_StepForward_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-skip-forward"),
-                obj => AudioPlayer_Stop(), obj => CanStepForward);
+                obj => AudioPlayer_StepForward(), obj => CanStepForward);
 
             shellPresenter.RegisterRichCommand(CommandStepForward);
             //
