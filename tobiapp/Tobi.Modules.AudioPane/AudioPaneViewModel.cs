@@ -51,8 +51,11 @@ namespace Tobi.Modules.AudioPane
             initializeAudioStuff();
 
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
-            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+
+            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
         }
 
         private void setRecordingDirectory(string path)
@@ -122,6 +125,32 @@ namespace Tobi.Modules.AudioPane
         #region Event / Callbacks
 
         private bool m_SkipTreeNodeSelectedEvent = false;
+
+        private void OnSubTreeNodeSelected(TreeNode node)
+        {
+            Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
+
+            if (node == null)
+            {
+                return;
+            }
+
+            if (!IsAudioLoadedWithSubTreeNodes)
+            {
+                return;
+            }
+
+            long sumData = 0;
+            foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+            {
+                if (node == marker.m_TreeNode)
+                {
+                    LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(sumData);
+                    break;
+                }
+                sumData += (marker.m_LocalStreamDataLength + 1);
+            }
+        }
 
         private void OnTreeNodeSelected(TreeNode node)
         {
@@ -354,7 +383,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                if (! IsAudioLoaded)
+                if (!IsAudioLoaded)
                 {
                     return "";
                 }
@@ -394,13 +423,13 @@ namespace Tobi.Modules.AudioPane
                     var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
                 }
-                
+
                 if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTimePosition);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
                 }
-                
+
                 if (m_Player.State == AudioPlayerState.Paused || m_Player.State == AudioPlayerState.Stopped)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);

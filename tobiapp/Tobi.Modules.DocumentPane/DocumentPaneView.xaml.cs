@@ -108,26 +108,38 @@ namespace Tobi.Modules.DocumentPane
             {
                 return;
             }
+
             if (CurrentTreeNode == CurrentSubTreeNode)
             {
-                TreeNode prevNode = CurrentTreeNode.PreviousSibling;
-                if (prevNode != null)
+                TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
+                if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
                                Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(prevNode);
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                 }
             }
             else
             {
-                TreeNode prevNode = CurrentSubTreeNode.PreviousSibling;
-                if (prevNode != null)
+                TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(false);
+                if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
                                Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(prevNode);
+                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                }
+                else
+                {
+                    nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
+                    if (nextNode != null)
+                    {
+                        Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                                   Category.Debug, Priority.Medium);
+
+                        EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    }
                 }
             }
         }
@@ -147,9 +159,10 @@ namespace Tobi.Modules.DocumentPane
             {
                 return;
             }
+
             if (CurrentTreeNode == CurrentSubTreeNode)
             {
-                TreeNode nextNode = CurrentTreeNode.NextSibling;
+                TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithText();
                 if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
@@ -160,7 +173,7 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
-                TreeNode nextNode = CurrentSubTreeNode.NextSibling;
+                TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(false);
                 if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
@@ -168,8 +181,20 @@ namespace Tobi.Modules.DocumentPane
 
                     EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
                 }
+                else
+                {
+                    nextNode = CurrentTreeNode.GetNextSiblingWithText();
+                    if (nextNode != null)
+                    {
+                        Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                                   Category.Debug, Priority.Medium);
+
+                        EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    }
+                }
             }
         }
+
         [NotifyDependsOn("CurrentTreeNode")]
         public bool CanSwitchPhraseNext
         {
@@ -291,7 +316,7 @@ namespace Tobi.Modules.DocumentPane
         }
         private void OnSubTreeNodeSelected(TreeNode node)
         {
-            if (node == null)
+            if (node == null || CurrentTreeNode == null)
             {
                 return;
             }
