@@ -9,17 +9,19 @@ using System.Windows.Shapes;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
 using urakawa.core;
+using urakawa.media.data.audio;
 using urakawa.xuk;
 
 namespace Tobi.Modules.DocumentPane
 {
     public partial class DocumentPaneView
     {
+        Style m_ButtonStyle = (Style)Application.Current.FindResource("ToolBarButtonBaseStyle");
+
         private List<TreeNode> PathToCurrentTreeNode;
 
         private void updateBreadcrumbPanel(TreeNode node)
         {
-            var style = (Style)Application.Current.FindResource("ToolBarButtonBaseStyle");
 
             BreadcrumbPanel.Children.Clear();
 
@@ -45,15 +47,20 @@ namespace Tobi.Modules.DocumentPane
                 // instead we use the Tag property which contains a reference to a TreeNode, 
                 // so we can use the Click event)
 
+                var seqMedia = n.GetAudioSequenceMedia();
+                bool withMedia = n.GetManagedAudioMedia() != null
+                    || (seqMedia != null && !seqMedia.AllowMultipleTypes
+                        && seqMedia.Count > 0 && seqMedia.GetItem(0) is ManagedAudioMedia);
+
                 var butt = new Button
                 {
                     Tag = n,
                     BorderThickness = new Thickness(0.0),
                     BorderBrush = null,
                     Background = Brushes.Transparent,
-                    Foreground = Brushes.Blue,
+                    Foreground = (withMedia ? Brushes.Blue : Brushes.CadetBlue),
                     Cursor = Cursors.Hand,
-                    Style = style
+                    Style = m_ButtonStyle
                 };
 
                 var run = new Run((qname != null ? qname.LocalName : "TEXT")) { TextDecorations = TextDecorations.Underline };
@@ -77,7 +84,7 @@ namespace Tobi.Modules.DocumentPane
                         Foreground = Brushes.Black,
                         Cursor = Cursors.Cross,
                         FontWeight = FontWeights.ExtraBold,
-                        Style = style
+                        Style = m_ButtonStyle
                     };
 
                     tb.Click += OnBreadCrumbSeparatorClick;
@@ -85,9 +92,19 @@ namespace Tobi.Modules.DocumentPane
                     BreadcrumbPanel.Children.Add(tb);
                 }
 
-                if (n == node)
+                if (CurrentTreeNode == CurrentSubTreeNode)
                 {
-                    run.FontWeight = FontWeights.Heavy;
+                    if (n == node)
+                    {
+                        run.FontWeight = FontWeights.Heavy;
+                    }
+                }
+                else
+                {
+                    if (n == CurrentTreeNode)
+                    {
+                        run.FontWeight = FontWeights.Heavy;
+                    }
                 }
 
                 counter++;

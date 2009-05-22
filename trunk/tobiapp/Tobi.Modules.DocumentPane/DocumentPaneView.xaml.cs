@@ -10,6 +10,7 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 using urakawa;
 using urakawa.core;
 using urakawa.xuk;
@@ -37,6 +38,9 @@ namespace Tobi.Modules.DocumentPane
     /// </summary>
     public partial class DocumentPaneView : INotifyPropertyChanged
     {
+        public RichDelegateCommand<object> CommandSwitchPhrasePrevious { get; private set; }
+        public RichDelegateCommand<object> CommandSwitchPhraseNext { get; private set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -72,11 +76,107 @@ namespace Tobi.Modules.DocumentPane
 
             DataContext = this;
 
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+
+            CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(UserInterfaceStrings.Event_SwitchPrevious,
+                UserInterfaceStrings.Event_SwitchPrevious_,
+                UserInterfaceStrings.Event_SwitchPrevious_KEYS,
+                (VisualBrush)Application.Current.FindResource("go-previous"),
+                obj => SwitchPhrasePrevious(), obj => CanSwitchPhrasePrevious);
+
+            shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
+            //
+            CommandSwitchPhraseNext = new RichDelegateCommand<object>(UserInterfaceStrings.Event_SwitchNext,
+                UserInterfaceStrings.Event_SwitchNext_,
+                UserInterfaceStrings.Event_SwitchNext_KEYS,
+                (VisualBrush)Application.Current.FindResource("go-next"),
+                obj => SwitchPhraseNext(), obj => CanSwitchPhraseNext);
+
+            shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
+            //
+
             InitializeComponent();
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+        }
+
+        private void SwitchPhrasePrevious()
+        {
+            if (CurrentTreeNode == null)
+            {
+                return;
+            }
+            if (CurrentTreeNode == CurrentSubTreeNode)
+            {
+                TreeNode prevNode = CurrentTreeNode.PreviousSibling;
+                if (prevNode != null)
+                {
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(prevNode);
+                }
+            }
+            else
+            {
+                TreeNode prevNode = CurrentSubTreeNode.PreviousSibling;
+                if (prevNode != null)
+                {
+                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(prevNode);
+                }
+            }
+        }
+
+        [NotifyDependsOn("CurrentTreeNode")]
+        public bool CanSwitchPhrasePrevious
+        {
+            get
+            {
+                return CurrentTreeNode != null;
+            }
+        }
+
+        private void SwitchPhraseNext()
+        {
+            if (CurrentTreeNode == null)
+            {
+                return;
+            }
+            if (CurrentTreeNode == CurrentSubTreeNode)
+            {
+                TreeNode nextNode = CurrentTreeNode.NextSibling;
+                if (nextNode != null)
+                {
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                }
+            }
+            else
+            {
+                TreeNode nextNode = CurrentSubTreeNode.NextSibling;
+                if (nextNode != null)
+                {
+                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                }
+            }
+        }
+        [NotifyDependsOn("CurrentTreeNode")]
+        public bool CanSwitchPhraseNext
+        {
+            get
+            {
+                return CurrentTreeNode != null;
+            }
         }
 
         private FlowDocument m_FlowDoc;
@@ -98,6 +198,9 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnProjectLoaded(Project project)
         {
+            CurrentTreeNode = null;
+            CurrentSubTreeNode = null;
+
             BreadcrumbPanel.Children.Clear();
             PathToCurrentTreeNode = null;
 
@@ -157,14 +260,54 @@ namespace Tobi.Modules.DocumentPane
 
         }
 
+        private TreeNode m_CurrentTreeNode;
+        public TreeNode CurrentTreeNode
+        {
+            get
+            {
+                return m_CurrentTreeNode;
+            }
+            set
+            {
+                if (m_CurrentTreeNode == value) return;
+                m_CurrentTreeNode = value;
+                //OnPropertyChanged(() => CurrentTreeNode);
+            }
+        }
+
+        private TreeNode m_CurrentSubTreeNode;
+        public TreeNode CurrentSubTreeNode
+        {
+            get
+            {
+                return m_CurrentSubTreeNode;
+            }
+            set
+            {
+                if (m_CurrentSubTreeNode == value) return;
+                m_CurrentSubTreeNode = value;
+                //OnPropertyChanged(() => CurrentSubTreeNode);
+            }
+        }
         private void OnSubTreeNodeSelected(TreeNode node)
         {
+            if (node == null)
+            {
+                return;
+            }
+            CurrentSubTreeNode = node;
             BringIntoViewAndHighlightSub(node);
             updateBreadcrumbPanel(node);
         }
 
         private void OnTreeNodeSelected(TreeNode node)
         {
+            if (node == null)
+            {
+                return;
+            }
+            CurrentTreeNode = node;
+            CurrentSubTreeNode = CurrentTreeNode;
             BringIntoViewAndHighlight(node);
             updateBreadcrumbPanel(node);
         }
@@ -196,9 +339,9 @@ namespace Tobi.Modules.DocumentPane
                                 }
                             },
                             (name, data) =>
-                                {
-                                    m_idLinkTargets.Add(name, data);
-                                });
+                            {
+                                m_idLinkTargets.Add(name, data);
+                            });
             m_FlowDoc = converter.Convert(nodeBook);
         }
 

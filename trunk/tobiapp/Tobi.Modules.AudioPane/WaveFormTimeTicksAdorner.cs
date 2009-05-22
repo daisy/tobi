@@ -101,7 +101,7 @@ namespace Tobi.Modules.AudioPane
 
             double minorTickInterval_milliseconds = 1000; //1s minor ticks
             double minorTickInterval_pixels =
-                m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(minorTickInterval_milliseconds)
+                m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToBytes(minorTickInterval_milliseconds)
                     / m_AudioPaneView.BytesPerPixel;
 
             const double idealTickInterval = 20;
@@ -115,7 +115,7 @@ namespace Tobi.Modules.AudioPane
                 minorTickInterval_pixels = idealTickInterval;
 
                 minorTickInterval_milliseconds =
-                    m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(
+                    m_AudioPaneView.ViewModel.AudioPlayer_ConvertBytesToMilliseconds(
                                             m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels);
                 minorTickInterval_milliseconds = Math.Round(minorTickInterval_milliseconds);
 
@@ -127,7 +127,7 @@ namespace Tobi.Modules.AudioPane
                         if (minorTickInterval_milliseconds > 0)
                         {
                             minorTickInterval_pixels =
-                                m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToByte(
+                                m_AudioPaneView.ViewModel.AudioPlayer_ConvertMillisecondsToBytes(
                                         minorTickInterval_milliseconds)
                                                 / m_AudioPaneView.BytesPerPixel;
                         }
@@ -171,7 +171,7 @@ namespace Tobi.Modules.AudioPane
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
                     double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX);
-                    double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
+                    double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytes);
 
                     var formattedText = new FormattedText(
                         FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
@@ -239,7 +239,7 @@ namespace Tobi.Modules.AudioPane
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
                     {
                         double bytes = m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft);
-                        double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
+                        double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytes);
 
                         var formattedTextDuration = new FormattedText(
                                                 FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
@@ -372,7 +372,7 @@ namespace Tobi.Modules.AudioPane
             if (m_MousePosX >= 0)
             {
                 double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX);
-                double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertByteToMilliseconds(bytes);
+                double ms = m_AudioPaneView.ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytes);
                 var formattedText = new FormattedText(
                     FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
                     m_culture,

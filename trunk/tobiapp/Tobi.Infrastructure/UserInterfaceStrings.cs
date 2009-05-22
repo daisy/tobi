@@ -165,13 +165,13 @@ namespace Tobi.Infrastructure
         public static KeyGesture ManageShortcuts_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control);
 
 
-        public const string Audio_SwitchPrevious = "_Previous audio";
-        public const string Audio_SwitchPrevious_ = "Switch to previous audio";
-        public static KeyGesture Audio_SwitchPrevious_KEYS = new KeyGesture(Key.Down, ModifierKeys.Control);
+        public const string Event_SwitchPrevious = "_Previous phrase";
+        public const string Event_SwitchPrevious_ = "Select the previous phrase";
+        public static KeyGesture Event_SwitchPrevious_KEYS = new KeyGesture(Key.Down, ModifierKeys.Control);
 
-        public const string Audio_SwitchNext = "_Next audio";
-        public const string Audio_SwitchNext_ = "Switch to next audio";
-        public static KeyGesture Audio_SwitchNext_KEYS = new KeyGesture(Key.Up, ModifierKeys.Control);
+        public const string Event_SwitchNext = "_Next phrase";
+        public const string Event_SwitchNext_ = "Select the next phrase";
+        public static KeyGesture Event_SwitchNext_KEYS = new KeyGesture(Key.Up, ModifierKeys.Control);
 
         public const string Audio_GotoBegin = "_Rewind to begin";
         public const string Audio_GotoBegin_ = "Rewind to the begining of the audio stream";

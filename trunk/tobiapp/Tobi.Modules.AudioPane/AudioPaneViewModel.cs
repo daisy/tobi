@@ -307,7 +307,7 @@ namespace Tobi.Modules.AudioPane
         public void SelectAll()
         {
             SelectionBegin = 0;
-            SelectionEnd = AudioPlayer_ConvertByteToMilliseconds(DataLength);
+            SelectionEnd = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
             if (View != null)
             {
                 View.ExpandSelection();
@@ -358,7 +358,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     return "";
                 }
-                var timeSpan = TimeSpan.FromMilliseconds(AudioPlayer_ConvertByteToMilliseconds(DataLength));
+                var timeSpan = TimeSpan.FromMilliseconds(AudioPlayer_ConvertBytesToMilliseconds(DataLength));
                 return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
             }
         }
