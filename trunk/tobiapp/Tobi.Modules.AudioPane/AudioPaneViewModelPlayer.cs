@@ -780,15 +780,19 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private void resetAllInternalPlayerValues()
+        private void resetAllInternalValues()
         {
-            Logger.Log("AudioPaneViewModel.resetAllInternalPlayerValues", Category.Debug, Priority.Medium);
-
+            Logger.Log("AudioPaneViewModel.resetAllInternalValues", Category.Debug, Priority.Medium);
+            
+            m_SkipTreeNodeSelectedEvent = false;
+            
             CurrentTreeNode = null;
             CurrentSubTreeNode = null;
+            
             PlayStreamMarkers = null;
             PcmFormat = null;
             DataLength = 0;
+            
             ClearSelection();
 
             m_EndOffsetOfPlayStream = 0;
@@ -802,7 +806,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_LoadAndPlayFromFile", Category.Debug, Priority.Medium);
 
-            resetAllInternalPlayerValues();
+            resetAllInternalValues();
 
             FilePath = path;
 
@@ -840,7 +844,7 @@ namespace Tobi.Modules.AudioPane
 
             if (m_CurrentAudioStreamProvider() == null)
             {
-                resetAllInternalPlayerValues();
+                resetAllInternalValues();
 
                 FilePath = null;
                 return;

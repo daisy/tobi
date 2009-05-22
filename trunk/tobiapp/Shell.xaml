@@ -69,9 +69,13 @@
 
 
     <ContentControl Focusable="False" DockPanel.Dock="Top"
+                    
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                     cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
 
-    <ContentControl Focusable="False" DockPanel.Dock="Top" 
+    <ContentControl Focusable="False" DockPanel.Dock="Top"
+                    
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                     cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/>
 
     <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom"
@@ -122,7 +126,9 @@
 
     </ad:DockingManager -->
 
-    <Grid>
+    <Grid
+      
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="200"/>
         <ColumnDefinition Width="Auto"/>
@@ -134,7 +140,7 @@
         <RowDefinition Height="200"/>
       </Grid.RowDefinitions>
 
-      <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+      <GridSplitter Focusable="False" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
                     HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}">
 
         <!-- GridSplitter.Triggers>
@@ -165,7 +171,7 @@
 
       </GridSplitter>
       
-      <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
+      <GridSplitter  Focusable="False" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
                     Thumb.DragCompleted="OnSplitterDragCompleted"
                     Thumb.DragStarted="OnSplitterDragStarted"
                     HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{StaticResource grid-splitter-thickness}">
@@ -199,15 +205,21 @@
 
       </GridSplitter>
 
-      <ContentControl Focusable="False"
+      <ContentControl 
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        Focusable="False"
                       Grid.Column="0" Grid.Row="0" 
                       cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
 
-      <ContentControl Focusable="False"
+      <ContentControl 
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        Focusable="False"
                       Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"
                       cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
 
-      <ContentControl Focusable="False"
+      <ContentControl 
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        Focusable="False"
                       Grid.Column="2" Grid.Row="0"
                       cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
     </Grid>

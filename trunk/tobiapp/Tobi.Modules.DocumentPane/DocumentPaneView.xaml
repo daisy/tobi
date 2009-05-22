@@ -8,10 +8,12 @@
         Background="White">
 
   <Border DockPanel.Dock="Top"
-          BorderThickness="0,0,0,2"
-          BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
-  <WrapPanel
-             Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+          Focusable="False"
+          BorderThickness="1,1,1,1"
+          BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+    <WrapPanel
+      Focusable="False"
+             Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
              x:Name="BreadcrumbPanel" Orientation="Horizontal"
              >
   </WrapPanel>
@@ -39,5 +41,4 @@
   <FlowDocumentReader x:Name="FlowDocReader" ViewingMode="Scroll"
                       FontFamily="Palatino Linotype"
                       Background="White" IsFindEnabled="False"/>
-
 </DockPanel>
