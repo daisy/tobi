@@ -121,6 +121,8 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
+        private bool m_SkipTreeNodeSelectedEvent = false;
+
         private void OnTreeNodeSelected(TreeNode node)
         {
             Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
@@ -130,12 +132,18 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
+            if (m_SkipTreeNodeSelectedEvent)
+            {
+                m_SkipTreeNodeSelectedEvent = false;
+                return;
+            }
+
             if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
             {
                 m_Player.Stop();
             }
 
-            resetAllInternalPlayerValues();
+            resetAllInternalValues();
 
             LastPlayHeadTime = 0;
 
@@ -155,7 +163,6 @@ namespace Tobi.Modules.AudioPane
 
                 if (m_PlayStream == null)
                 {
-
                     PlayStreamMarkers = null;
 
                     StreamWithMarkers? sm = CurrentTreeNode.GetManagedAudioDataFlattened();
@@ -171,7 +178,13 @@ namespace Tobi.Modules.AudioPane
                         StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
                         if (sma != null)
                         {
+                            CurrentSubTreeNode = CurrentTreeNode;
                             CurrentTreeNode = ancerstor;
+
+                            m_SkipTreeNodeSelectedEvent = true;
+                            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentTreeNode);
+                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
+
                             m_PlayStream = sma.GetValueOrDefault().m_Stream;
                             PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
                         }
@@ -192,7 +205,7 @@ namespace Tobi.Modules.AudioPane
 
             if (m_CurrentAudioStreamProvider() == null)
             {
-                resetAllInternalPlayerValues();
+                resetAllInternalValues();
 
                 return;
             }

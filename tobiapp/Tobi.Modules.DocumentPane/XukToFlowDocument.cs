@@ -51,7 +51,7 @@ namespace Tobi.Modules.DocumentPane
 
             m_FlowDoc = new FlowDocument
                             {
-                                FontFamily = new FontFamily("Palatino Linotype")
+                                //FontFamily = new FontFamily("Palatino Linotype")
                             };
 
             walkBookTreeAndGenerateFlowDocument(m_TreeNode, null);
@@ -262,31 +262,44 @@ namespace Tobi.Modules.DocumentPane
         private void setTag(TextElement data, TreeNode node)
         {
             data.Tag = node;
+            data.Foreground = Brushes.Red;
 
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
-                //data.Foreground = Brushes.Red;
-                data.Background = Brushes.LightGoldenrodYellow;
+                data.Foreground = Brushes.Black;
+                //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.Hand;
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 return;
             }
+
             SequenceMedia seqMedia = node.GetAudioSequenceMedia();
             if (seqMedia != null && !seqMedia.AllowMultipleTypes && seqMedia.Count > 0)
             {
                 if (seqMedia.GetItem(0) is ManagedAudioMedia)
                 {
-                    //data.Foreground = Brushes.Red;
-                    data.Background = Brushes.LightGoldenrodYellow;
+                    data.Foreground = Brushes.Black;
+                    //data.Background = Brushes.LightGoldenrodYellow;
                     data.Cursor = Cursors.Cross;
                     data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                     return;
                 }
             }
+
+            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
+            if (ancerstor != null)
+            {
+                data.Foreground = Brushes.Black;
+                //data.Background = Brushes.LightGoldenrodYellow;
+                data.Cursor = Cursors.SizeAll;
+                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                return;
+            }
+
             if (node.GetTextMedia() != null)
             {
-                //data.Foreground = Brushes.Green;
+                data.Foreground = Brushes.DarkGray;
                 //data.Background = Brushes.LimeGreen;
                 data.Cursor = Cursors.Pen;
                 data.MouseDown += OnMouseDownTextElementWithNode;

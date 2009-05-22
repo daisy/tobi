@@ -113,7 +113,14 @@ namespace Tobi.Modules.NavigationPane
 
             if (handler != null)
             {
-                handler(this, e);
+                try
+                {
+                    handler(this, e);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //swallow (some strange framework-raised first-chance exception)
+                }
             }
         }
 

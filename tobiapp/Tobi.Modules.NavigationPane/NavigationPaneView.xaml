@@ -59,8 +59,8 @@
             <Border
                 Name="Border"
                 Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
-                BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                BorderThickness="1.5,0,1.5,1.5"
                 CornerRadius="0,0,4,4"
                 SnapsToDevicePixels="True">
               <ContentPresenter x:Name="ContentSite"
@@ -72,8 +72,10 @@
             <ControlTemplate.Triggers>
               <Trigger Property="IsSelected" Value="True">
                 <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
                 <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                <Setter TargetName="Border" Property="BorderThickness" Value="1,0,1,1" />
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>

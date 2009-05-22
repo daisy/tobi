@@ -115,6 +115,7 @@
     <Compile Include="UI\HuddledPartial\NativeMethodsKeyboard.cs" />
     <Compile Include="UI\HuddledPartial\NativeMethodsWindow.cs" />
     <Compile Include="UI\HuddledPartial\SnapToBehavior.cs" />
+    <Compile Include="UI\InstalledFonts.cs" />
     <Compile Include="UI\KeyDownCommandBinding.cs" />
     <Compile Include="UI\LazyKeepAliveTabControl.cs" />
     <Compile Include="UI\ListBoxExtensions.cs" />

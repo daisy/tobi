@@ -495,18 +495,18 @@ namespace Tobi.Modules.DocumentPane
                     {
                         m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
                         m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
-                        ((Block)m_lastHighlighted).BorderBrush = Brushes.Blue;
-                        ((Block)m_lastHighlighted).BorderThickness = new Thickness(1.5);
+                        ((Block)m_lastHighlighted).BorderBrush = Brushes.OrangeRed;
+                        ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
                     }
                 }
             }
             m_lastHighlightedSub = textElement;
 
             m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
-            m_lastHighlightedSub.Background = Brushes.LightCoral;
+            m_lastHighlightedSub.Background = Brushes.Yellow;
 
             m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
-            m_lastHighlightedSub.Foreground = Brushes.Blue;
+            m_lastHighlightedSub.Foreground = Brushes.Black;
         }
 
         public void BringIntoViewAndHighlight(TextElement textElement)
@@ -534,10 +534,10 @@ namespace Tobi.Modules.DocumentPane
             m_lastHighlightedSub = null;
 
             m_lastHighlighted_Background = m_lastHighlighted.Background;
-            m_lastHighlighted.Background = Brushes.Yellow;
+            m_lastHighlighted.Background = Brushes.LightGoldenrodYellow;
 
             m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
-            m_lastHighlighted.Foreground = Brushes.Red;
+            m_lastHighlighted.Foreground = Brushes.Black;
         }
     }
 }
