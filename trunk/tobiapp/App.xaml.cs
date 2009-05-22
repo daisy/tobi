@@ -109,17 +109,15 @@ namespace Tobi
         {
             var app = new App();
             app.InitializeComponent();
-            app.ShutdownMode = ShutdownMode.OnMainWindowClose; //Application.Current
             app.Run();
         }
 
         ///<summary>
-        /// Implements 2 runtimes: DEBUG and RELEASE
+        /// Called after Main()
         ///</summary>
         ///<param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
-        {
-            // Ignore 0 index:
+        { // Ignore 0 index:
             //Environment.GetCommandLineArgs()
 
             //Tobi.exe -verbose -debuglevel:3
@@ -160,13 +158,20 @@ CommandLineParser.ParseArguments(c, args);
 c.Execute();
              */
 
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            base.OnStartup(e);
+        }
 
+        /// <summary>
+        /// Called after OnStartup()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnApplicationStartup(object sender, StartupEventArgs e)
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
             SplashScreen = new SplashScreen("TobiSplashScreen.png");
             SplashScreen.Show(false);
-
-            BitFactoryLoggerAdapter.DeleteLogFile();
 
             PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
@@ -185,8 +190,6 @@ c.Execute();
 
             PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
             PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
-
-            base.OnStartup(e);
 
             ShutdownMode = ShutdownMode.OnMainWindowClose;
 
@@ -210,6 +213,7 @@ c.Execute();
                 new RoutedEventHandler(UIElement_LostKeyboardFocus));
              * */
 
+            BitFactoryLoggerAdapter.DeleteLogFile();
 
 #if (FALSE && DEBUG)
             runInDebugMode();
@@ -397,17 +401,9 @@ c.Execute();
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
                 && doExit)
             {
-                Environment.Exit(1);
+                Application.Current.Shutdown();
+                //Environment.Exit(1);
             }
-        }
-
-        private void OnApplicationLoadCompleted(object sender, NavigationEventArgs e)
-        {
-            bool debug = true;
-        }
-
-        private void OnApplicationStartup(object sender, StartupEventArgs e)
-        {
         }
     }
 }
