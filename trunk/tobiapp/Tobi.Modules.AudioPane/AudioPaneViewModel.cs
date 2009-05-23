@@ -130,7 +130,8 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
 
-            if (node == null)
+            if (node == null || CurrentTreeNode == null
+                || !node.IsDescendantOf(CurrentTreeNode))
             {
                 return;
             }

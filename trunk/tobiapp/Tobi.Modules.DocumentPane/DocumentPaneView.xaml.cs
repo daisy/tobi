@@ -122,7 +122,7 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
-                TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(false);
+                TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(CurrentTreeNode);
                 if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
@@ -173,7 +173,7 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
-                TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(false);
+                TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(CurrentTreeNode);
                 if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
@@ -314,9 +314,11 @@ namespace Tobi.Modules.DocumentPane
                 //OnPropertyChanged(() => CurrentSubTreeNode);
             }
         }
+
         private void OnSubTreeNodeSelected(TreeNode node)
         {
-            if (node == null || CurrentTreeNode == null)
+            if (node == null || CurrentTreeNode == null
+                || !node.IsDescendantOf(CurrentTreeNode))
             {
                 return;
             }
@@ -331,6 +333,7 @@ namespace Tobi.Modules.DocumentPane
             {
                 return;
             }
+
             CurrentTreeNode = node;
             CurrentSubTreeNode = CurrentTreeNode;
             BringIntoViewAndHighlight(node);
