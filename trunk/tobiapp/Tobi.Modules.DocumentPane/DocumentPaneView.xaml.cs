@@ -351,19 +351,31 @@ namespace Tobi.Modules.DocumentPane
                     {
                         subTreeNode = CurrentSubTreeNode;
                     }
+                    else if (node.IsDescendantOf(CurrentTreeNode))
+                    {
+                        subTreeNode = node;
+                    }
                 }
             }
 
-            CurrentTreeNode = node;
-            CurrentSubTreeNode = CurrentTreeNode;
-            BringIntoViewAndHighlight(node);
-            updateBreadcrumbPanel(node);
-
-            if (subTreeNode != null)
+            if (subTreeNode == node)
             {
-                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected", Category.Debug, Priority.Medium);
-                                
-                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+                System.Diagnostics.Debugger.Break(); // should never happen !
+            }
+            else
+            {
+                CurrentTreeNode = node;
+                CurrentSubTreeNode = CurrentTreeNode;
+                BringIntoViewAndHighlight(node);
+                updateBreadcrumbPanel(node);
+
+                if (subTreeNode != null)
+                {
+                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+                }
             }
         }
 
@@ -380,8 +392,29 @@ namespace Tobi.Modules.DocumentPane
                             OnMouseUpFlowDoc,
                             (textElem) =>
                             {
-                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement", Category.Debug, Priority.Medium);
-                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(textElem.Tag as TreeNode);
+                                var node = textElem.Tag as TreeNode;
+                                if (node == null)
+                                {
+                                    return;
+                                }
+
+                                if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
+                                    && node.IsDescendantOf(CurrentTreeNode))
+                                {
+                                    Logger.Log(
+                                        "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+                                        Category.Debug, Priority.Medium);
+
+                                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
+                                }
+                                else
+                                {
+                                    Logger.Log(
+                                        "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+                                        Category.Debug, Priority.Medium);
+
+                                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+                                }
                             },
                             (uri) =>
                             {
