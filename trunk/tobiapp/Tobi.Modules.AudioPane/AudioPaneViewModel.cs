@@ -162,6 +162,9 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
+            CurrentTreeNode = node;
+            CurrentSubTreeNode = node;
+
             if (m_SkipTreeNodeSelectedEvent)
             {
                 m_SkipTreeNodeSelectedEvent = false;
@@ -183,9 +186,6 @@ namespace Tobi.Modules.AudioPane
 
                 View.RefreshUI_AllReset();
             }
-
-            CurrentTreeNode = node;
-            CurrentSubTreeNode = node;
 
             m_CurrentAudioStreamProvider = () =>
             {
@@ -212,7 +212,13 @@ namespace Tobi.Modules.AudioPane
                             CurrentTreeNode = ancerstor;
 
                             m_SkipTreeNodeSelectedEvent = true;
+
+                            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+                                
                             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentTreeNode);
+
+                            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+                            
                             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
 
                             m_PlayStream = sma.GetValueOrDefault().m_Stream;
