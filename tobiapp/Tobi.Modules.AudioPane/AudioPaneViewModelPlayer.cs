@@ -910,9 +910,6 @@ namespace Tobi.Modules.AudioPane
             
             m_SkipTreeNodeSelectedEvent = false;
             
-            CurrentTreeNode = null;
-            CurrentSubTreeNode = null;
-            
             PlayStreamMarkers = null;
             PcmFormat = null;
             DataLength = 0;
@@ -929,6 +926,9 @@ namespace Tobi.Modules.AudioPane
         public void AudioPlayer_LoadAndPlayFromFile(string path)
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_LoadAndPlayFromFile", Category.Debug, Priority.Medium);
+
+            CurrentTreeNode = null;
+            CurrentSubTreeNode = null;
 
             resetAllInternalValues();
 

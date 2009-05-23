@@ -334,10 +334,37 @@ namespace Tobi.Modules.DocumentPane
                 return;
             }
 
+            TreeNode subTreeNode = null;
+
+            if (CurrentTreeNode != null)
+            {
+                if (CurrentSubTreeNode == CurrentTreeNode)
+                {
+                    if (node.IsAncestorOf(CurrentTreeNode))
+                    {
+                        subTreeNode = CurrentTreeNode;
+                    }
+                }
+                else
+                {
+                    if (node.IsAncestorOf(CurrentSubTreeNode))
+                    {
+                        subTreeNode = CurrentSubTreeNode;
+                    }
+                }
+            }
+
             CurrentTreeNode = node;
             CurrentSubTreeNode = CurrentTreeNode;
             BringIntoViewAndHighlight(node);
             updateBreadcrumbPanel(node);
+
+            if (subTreeNode != null)
+            {
+                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected", Category.Debug, Priority.Medium);
+                                
+                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+            }
         }
 
         private void createFlowDocumentFromXuk(Project project)
