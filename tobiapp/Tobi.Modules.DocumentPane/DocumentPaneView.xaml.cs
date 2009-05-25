@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
+using System.Windows.Annotations;
+using System.Windows.Annotations.Storage;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -101,6 +104,46 @@ namespace Tobi.Modules.DocumentPane
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
         }
+
+        /*
+        private void annotationsOn()
+        {
+            AnnotationService service = AnnotationService.GetService(FlowDocReader);
+
+            if (service == null)
+            {
+                string dir = Path.GetDirectoryName(UserInterfaceStrings.LOG_FILE_PATH);
+                Stream annoStream = new FileStream(dir + @"\annotations.xml", FileMode.OpenOrCreate);
+                service = new AnnotationService(FlowDocReader);
+                AnnotationStore store = new XmlStreamStore(annoStream);
+                service.Enable(store);
+            }
+
+            AnnotationService.CreateTextStickyNoteCommand.CanExecuteChanged += new EventHandler(OnAnnotationCanExecuteChanged);
+        }
+
+        TextSelection m_TextSelection = null;
+
+        public void OnAnnotationCanExecuteChanged(object o, EventArgs e)
+        {
+            if (m_TextSelection != FlowDocReader.Selection)
+            {
+                m_TextSelection = FlowDocReader.Selection;
+                OnMouseUpFlowDoc();
+            }
+        }
+
+        private void annotationsOff()
+        {
+            AnnotationService service = AnnotationService.GetService(FlowDocReader);
+
+            if (service != null && service.IsEnabled)
+            {
+                service.Store.Flush();
+                service.Disable();
+                //AnnotationStream.Close();
+            }
+        }*/
 
         private void SwitchPhrasePrevious()
         {
@@ -256,6 +299,8 @@ namespace Tobi.Modules.DocumentPane
 
             FlowDocReader.Zoom = 110;
             FlowDocReader.Document = m_FlowDoc;
+
+            //annotationsOn();
 
             /*
             string dirPath = Path.GetDirectoryName(FilePath);

@@ -56,6 +56,8 @@ namespace Tobi.Modules.DocumentPane
 
             walkBookTreeAndGenerateFlowDocument(m_TreeNode, null);
 
+            m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
+
             return m_FlowDoc;
         }
 
@@ -74,7 +76,7 @@ namespace Tobi.Modules.DocumentPane
         private DelegateOnMouseUpFlowDoc m_DelegateOnMouseUpFlowDoc;
         private void OnMouseUpFlowDoc(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
             m_DelegateOnMouseUpFlowDoc();
         }
 
@@ -83,13 +85,13 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnMouseDownTextElementWithNode(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
             m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
         }
 
         private void OnMouseDownTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
             m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
         }
 
@@ -98,7 +100,7 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
             m_DelegateOnRequestNavigate(e.Uri);
         }
 

@@ -4,6 +4,7 @@
     xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.DocumentPane"
     xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+    xmlns:Annotations="clr-namespace:System.Windows.Annotations;assembly=PresentationFramework"
            Focusable="False"
            LastChildFill="True" 
         Background="White">
@@ -45,6 +46,8 @@
                Orientation="Horizontal"
              HorizontalAlignment="Right"
              >
+    <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
+    
   <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />
 
@@ -57,6 +60,7 @@
   <FlowDocumentScrollViewer x:Name="FlowDocReader"
                       FontFamily="Palatino Linotype"
                       Background="White"
+                            IsSelectionEnabled="True"
                       />
   
   <!-- FlowDocumentReader i IsFindEnabled="False" ViewingMode="Scroll" -->

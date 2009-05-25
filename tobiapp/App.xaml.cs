@@ -321,7 +321,7 @@ c.Execute();
             var labelMsg = new TextBox
                             {
                                 FontWeight = FontWeights.ExtraBlack,
-                                Text = UserInterfaceStrings.UnhandledException + String.Format(" [{0}]", BitFactoryLoggerAdapter.LOG_FILE_PATH),
+                                Text = UserInterfaceStrings.UnhandledException,
                                 Margin = margin,
                                 HorizontalAlignment = HorizontalAlignment.Stretch,
                                 VerticalAlignment = VerticalAlignment.Top,

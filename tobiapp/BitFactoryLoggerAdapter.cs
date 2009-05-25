@@ -9,27 +9,15 @@ namespace Tobi
 {
     public class BitFactoryLoggerAdapter : ILoggerFacade
     {
-        public static readonly string LOG_FILE_PATH;
-        static BitFactoryLoggerAdapter()
-        {
-            //Directory.GetCurrentDirectory()
-            //string apppath = (new FileInfo(Assembly.GetExecutingAssembly().CodeBase)).DirectoryName;
-            //AppDomain.CurrentDomain.BaseDirectory
-
-            string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + UserInterfaceStrings.LOG_FILE_NAME;
-        }
-
         private CompositeLogger m_Logger;
 
         public static void DeleteLogFile()
         {
-            string logPath = Directory.GetCurrentDirectory() + @"\" + UserInterfaceStrings.LOG_FILE_NAME;
-            if (File.Exists(logPath))
+            if (File.Exists(UserInterfaceStrings.LOG_FILE_PATH))
             {
-                Console.Write("Deleting log file [" + logPath + "]...");
-                File.Delete(logPath);
-                Console.Write("File deleted [" + logPath + "].");
+                Console.Write("Deleting log file [" + UserInterfaceStrings.LOG_FILE_PATH + "]...");
+                File.Delete(UserInterfaceStrings.LOG_FILE_PATH);
+                Console.Write("File deleted [" + UserInterfaceStrings.LOG_FILE_PATH + "].");
             }
         }
 
@@ -40,7 +28,7 @@ namespace Tobi
             Logger consoleLogger = TextWriterLogger.NewConsoleLogger();
             m_Logger.AddLogger("console", consoleLogger);
 
-            Logger fileLogger = new FileLogger(LOG_FILE_PATH);
+            Logger fileLogger = new FileLogger(UserInterfaceStrings.LOG_FILE_PATH);
             m_Logger.AddLogger("file", fileLogger);
         }
 
