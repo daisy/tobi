@@ -7,7 +7,7 @@
     xmlns:Annotations="clr-namespace:System.Windows.Annotations;assembly=PresentationFramework"
            Focusable="False"
            LastChildFill="True" 
-        Background="White">
+        Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
   <Border DockPanel.Dock="Top"
           Focusable="False"
@@ -15,7 +15,7 @@
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
     <WrapPanel
       Focusable="False"
-             Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              x:Name="BreadcrumbPanel" Orientation="Horizontal"
              >
   </WrapPanel>
@@ -42,7 +42,7 @@
   
   <WrapPanel DockPanel.Dock="Bottom"
         Focusable="False"
-               Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+               Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                Orientation="Horizontal"
              HorizontalAlignment="Right"
              >
@@ -59,7 +59,8 @@
 
   <FlowDocumentScrollViewer x:Name="FlowDocReader"
                       FontFamily="Palatino Linotype"
-                      Background="White"
+                      Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                            Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                             IsSelectionEnabled="True"
                       />
   
