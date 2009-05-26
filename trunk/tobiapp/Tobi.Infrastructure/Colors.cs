@@ -8,6 +8,8 @@ namespace Tobi.Infrastructure
     ///</summary>
     public static class Colors
     {
+        // System colors: http://www.informit.com/articles/article.aspx?p=25357&seqNum=4
+
         private static System.Drawing.Color _color;
         static Colors()
         {
