@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Windows.Input;
 using AudioLib;
 using AudioLib.Events.VuMeter;
 using Microsoft.Practices.Composite.Events;
@@ -48,6 +50,10 @@ namespace Tobi.Modules.AudioPane
         protected void Initialize()
         {
             initializeCommands();
+
+            // Removed because called too many times.
+            //PropertyChanged += OnViewModelPropertyChanged;
+
             initializeAudioStuff();
 
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
@@ -56,6 +62,16 @@ namespace Tobi.Modules.AudioPane
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+        }
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.StartsWith("Can"))
+            {
+                Logger.Log("@@ AudioPaneViewModel.OnViewModelPropertyChanged: [" + e.PropertyName + "]", Category.Debug, Priority.High);
+
+                CommandManager.InvalidateRequerySuggested();
+            }
         }
 
         private void setRecordingDirectory(string path)

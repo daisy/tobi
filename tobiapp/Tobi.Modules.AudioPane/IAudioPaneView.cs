@@ -12,7 +12,7 @@
         void RefreshUI_TimeMessageInvalidate();
         void RefreshUI_TimeMessageInitiate();
         void RefreshUI_AllReset();
-        void RefreshUI_LoadWaveForm();
+        void RefreshUI_LoadWaveForm(bool wasPlaying, bool play);
         void RefreshUI_LoadingMessage(bool visible);
         void RefreshUI_PeakMeter();
         void RefreshUI_PeakMeterBlackout(bool black);

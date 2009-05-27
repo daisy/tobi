@@ -112,7 +112,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             double widthToUse = WaveFormScroll.ViewportWidth;
-            if (widthToUse == Double.NaN || widthToUse == 0)
+            if (double.IsNaN(widthToUse) || widthToUse == 0)
             {
                 widthToUse = WaveFormScroll.ActualWidth;
             }
@@ -155,7 +155,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
 
             double widthToUse = WaveFormScroll.ViewportWidth;
-            if (widthToUse == Double.NaN || widthToUse == 0)
+            if (double.IsNaN(Double.NaN) || widthToUse == 0)
             {
                 widthToUse = WaveFormScroll.ActualWidth;
             }
@@ -215,7 +215,7 @@ namespace Tobi.Modules.AudioPane
             double oldWidth = e.PreviousSize.Width;
 
             double width = WaveFormCanvas.ActualWidth;
-            if (width == Double.NaN || width == 0)
+            if (double.IsNaN(width) || width == 0)
             {
                 width = WaveFormCanvas.Width;
             }
@@ -247,6 +247,11 @@ namespace Tobi.Modules.AudioPane
             }
 
             if (m_ZoomSliderDrag || ViewModel.ResizeDrag)
+            {
+                return;
+            }
+
+            if (oldWidth == width)
             {
                 return;
             }
@@ -560,13 +565,13 @@ namespace Tobi.Modules.AudioPane
             ViewModel.Logger.Log("AudioPaneView.RefreshUI_WaveFormBackground", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
-            if (height == Double.NaN || height == 0)
+            if (double.IsNaN(height) || height == 0)
             {
                 height = WaveFormCanvas.Height;
             }
 
             double width = WaveFormCanvas.ActualWidth;
-            if (width == Double.NaN || width == 0)
+            if (double.IsNaN(width) || width == 0)
             {
                 width = WaveFormCanvas.Width;
             }
@@ -776,7 +781,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             double height = WaveFormCanvas.ActualHeight;
-            if (height == Double.NaN || height == 0)
+            if (double.IsNaN(height) || height == 0)
             {
                 height = WaveFormCanvas.Height;
             }
@@ -835,7 +840,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
-            if (height == Double.NaN || height == 0)
+            if (double.IsNaN(height) || height == 0)
             {
                 height = WaveFormCanvas.Height;
             }
@@ -1235,6 +1240,11 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
+            if (ViewModel.IsWaveFormLoading)
+            {
+                return;
+            }
+
             lock (LOCK)
             {
                 m_ForcePlayAfterWaveFormLoaded = play;
@@ -1268,8 +1278,12 @@ namespace Tobi.Modules.AudioPane
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
-            RefreshUI_LoadingMessage(true);
             m_WaveFormLoadTimer.Stop();
+            if (ViewModel.IsWaveFormLoading)
+            {
+                return;
+            }
+            RefreshUI_LoadingMessage(true);
             ViewModel.AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
         }
         #endregion DispatcherTimers
