@@ -38,22 +38,24 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanGotoBegining
         {
             get
             {
-                return IsAudioLoaded && !IsRecording && !IsMonitoring;
+                return !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanGotoEnd
         {
             get
             {
-                return IsAudioLoaded && !IsRecording && !IsMonitoring;
+                return !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
 
@@ -61,83 +63,91 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanPlay
         {
             get
             {
-                return IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording;
+                return !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanPause
         {
             get
             {
-                return IsAudioLoaded && IsPlaying;
+                return !IsWaveFormLoading && IsAudioLoaded && IsPlaying;
             }
         }
 
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanRecord
         {
             get
             {
-                return !IsPlaying && !IsMonitoring && !IsRecording;
+                return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording;
             }
         }
 
         [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanStopRecord
         {
             get
             {
-                return IsRecording;
+                return !IsWaveFormLoading && IsRecording;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanMonitor
         {
             get
             {
-                return !IsPlaying && !IsRecording && !IsMonitoring;
+                return !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring;
             }
         }
 
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanStopMonitor
         {
             get
             {
-                return IsMonitoring;
+                return !IsWaveFormLoading && IsMonitoring;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanRewind
         {
             get
             {
-                return IsAudioLoaded && !IsRecording && !IsMonitoring;
+                return !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanFastForward
         {
             get
             {
-                return IsAudioLoaded && !IsRecording && !IsMonitoring;
+                return !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring;
             }
         }
 
@@ -145,11 +155,12 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("PlayStreamMarkers")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanStepBack
         {
             get
             {
-                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
+                return !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
             }
         }
 
@@ -157,39 +168,43 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("PlayStreamMarkers")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanStepForward
         {
             get
             {
-                return IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
+                return !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
             }
         }
 
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanOpenFile
         {
             get
             {
-                return !IsMonitoring && !IsRecording;
+                return !IsWaveFormLoading && !IsMonitoring && !IsRecording;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanBeginSelection
         {
             get
             {
-                return IsAudioLoaded;
+                return !IsWaveFormLoading && IsAudioLoaded;
             }
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanEndSelection
         {
             get
             {
-                return IsAudioLoaded && m_SelectionBeginTmp >= 0;
+                return !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0;
             }
         }
 
@@ -269,7 +284,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.SelectAll_,
                 UserInterfaceStrings.SelectAll_KEYS,
                 (VisualBrush)Application.Current.FindResource("view-fullscreen"),
-                obj => SelectAll(), obj => true);
+                obj => SelectAll(), obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandSelectAll);
             //
@@ -277,7 +292,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_ClearSelection_,
                 UserInterfaceStrings.Audio_ClearSelection_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-clear"),
-                obj => ClearSelection(), obj => IsSelectionSet);
+                obj => ClearSelection(), obj => !IsWaveFormLoading && IsSelectionSet);
 
             shellPresenter.RegisterRichCommand(CommandClearSelection);
             //
@@ -286,7 +301,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_ZoomSelection_KEYS,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
                 //(VisualBrush)Application.Current.FindResource("system-search"),
-                obj => ZoomSelection(), obj => IsSelectionSet);
+                obj => ZoomSelection(), obj => !IsWaveFormLoading && IsSelectionSet);
 
             shellPresenter.RegisterRichCommand(CommandZoomSelection);
             //
@@ -294,7 +309,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_FitFull_,
                 UserInterfaceStrings.Audio_FitFull_KEYS,
                 (VisualBrush)Application.Current.FindResource("utilities-system-monitor"),
-                obj => ZoomFitFull(), obj => true);
+                obj => ZoomFitFull(), obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandZoomFitFull);
             //
@@ -303,7 +318,7 @@ namespace Tobi.Modules.AudioPane
                 null,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //(VisualBrush)Application.Current.FindResource("view-refresh"),
-                obj => Refresh(), obj => IsAudioLoaded);
+                obj => Refresh(), obj => !IsWaveFormLoading && IsAudioLoaded);
 
             shellPresenter.RegisterRichCommand(CommandRefresh);
             //
@@ -311,7 +326,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_AutoPlay_,
                 UserInterfaceStrings.Audio_AutoPlay_KEYS,
                 (VisualBrush)Application.Current.FindResource("go-jump"),
-                obj => IsAutoPlay = !IsAutoPlay, obj => true);
+                obj => IsAutoPlay = !IsAutoPlay, obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
             //
@@ -384,7 +399,6 @@ namespace Tobi.Modules.AudioPane
             {
                 View.InitGraphicalCommandBindings();
             }
-
         }
 
         #endregion Commands

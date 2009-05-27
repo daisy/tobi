@@ -182,9 +182,7 @@ namespace Tobi.Modules.DocumentPane
             var wrapper = (TreeNodeWrapper)ui.SelectedItem;
             wrapper.Popup.IsOpen = false;
 
-            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnListOfNodesSelectionChanged", Category.Debug, Priority.Medium);
-
-            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(wrapper.TreeNode);
+            selectNode(wrapper.TreeNode);
         }
 
         private void OnBreadCrumbButtonClick(object sender, RoutedEventArgs e)
@@ -195,9 +193,7 @@ namespace Tobi.Modules.DocumentPane
                 return;
             }
 
-            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnBreadCrumbButtonClick", Category.Debug, Priority.Medium);
-
-            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)ui.Tag);
+            selectNode((TreeNode)ui.Tag);
         }
 
     }

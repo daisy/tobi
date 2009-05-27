@@ -24,6 +24,8 @@
              http://msdn2.microsoft.com/en-us/library/ms742173(VS.85).aspx
              for the default Stles that the ScrollViewer has out of the box
          -->
+    <infra:BoolToOppositeBoolConverter x:Key="oppositeConverter" />
+    <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
 
     <SolidColorBrush x:Key="HorizontalNormalBrush" Color="blue" />
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="red" />
@@ -308,13 +310,15 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <RowDefinition Height="*"/>
     <RowDefinition Height="Auto"/>
     <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
 
   <!-- GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"/ -->
   <GridSplitter
+    Grid.Column="1" Grid.Row="0"
      Focusable="False"
     x:Name="splitterPeakMeter"
-    Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+     HorizontalAlignment="Center" VerticalAlignment="Stretch"
                 Width="{StaticResource grid-splitter-thickness}">
 
     <!-- GridSplitter.Triggers -->
@@ -467,7 +471,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <WindowsFormsHost x:Name="WinFormHost"
                       DockPanel.Dock="Left"
                       Focusable="False"/>
-
+    
 
     <!-- Grid DockPanel.Dock="Top">
 
@@ -495,7 +499,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   HorizontalScrollBarVisibility="Visible"
                   Background="Black"
                   VerticalAlignment="Stretch"
-                  ScrollChanged="OnWaveFormScrollChanged">
+                  ScrollChanged="OnWaveFormScrollChanged"
+                  
+            IsEnabled="{Binding IsWaveFormLoading, Converter={StaticResource oppositeConverter}}">
 
       <Canvas x:Name="WaveFormCanvas"
               SizeChanged="OnWaveFormCanvasSizeChanged"
@@ -508,7 +514,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               Background="Black"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
-              SnapsToDevicePixels="True">
+              SnapsToDevicePixels="True"
+              
+            IsEnabled="{Binding IsWaveFormLoading, Converter={StaticResource oppositeConverter}}">
 
 
         <Image x:Name="WaveFormImage"
@@ -570,7 +578,18 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     </ScrollViewer>
   </DockPanel>
 
-
+  <ProgressBar Grid.Column="0" Grid.Row="0"
+                x:Name="WaveFormProgress"
+               Orientation="Horizontal"
+               IsIndeterminate="True"
+               Value="0"
+               Minimum="0"
+               Maximum="100"
+               Height="18"
+               VerticalAlignment="Bottom"
+               Visibility="{Binding Path=IsWaveFormLoading,
+                            Converter={StaticResource boolToVisConverter},
+                            Mode=OneWay}" />
 
   <Grid
     x:Name="columnContentPeakMeter"
@@ -683,8 +702,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     </Canvas>
   </Grid>
 
-
-
   <infraUI:WrapPanelLastChildFill
     LastChildFill="True"
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
@@ -784,7 +801,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             Interval="1000"
             LargeChange="500"
             SmallChange="200"
-            Margin="3"/>
+            Margin="3"
+            IsEnabled="{Binding IsWaveFormLoading, Converter={StaticResource oppositeConverter}}"/>
 
   </infraUI:WrapPanelLastChildFill>
 

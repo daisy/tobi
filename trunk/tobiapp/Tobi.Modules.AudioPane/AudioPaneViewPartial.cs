@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using urakawa.core;
 
 namespace Tobi.Modules.AudioPane
 {
     public partial class AudioPaneView
     {
+        private double m_ProgressVisibleOffset = 0;
+
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
         // ReSharper disable InconsistentNaming
-        public void RefreshUI_LoadWaveForm()
+        public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
         {
-            //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
-
             if (ViewModel.PcmFormat.NumberOfChannels == 1)
             {
                 PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
@@ -29,16 +31,16 @@ namespace Tobi.Modules.AudioPane
                 PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 1);
             }
 
-            double height = WaveFormCanvas.ActualHeight;
-            if (height == Double.NaN || height == 0)
-            {
-                height = WaveFormCanvas.Height;
-            }
 
             double width = WaveFormCanvas.ActualWidth;
-            if (width == Double.NaN || width == 0)
+            if (double.IsNaN(width) || width == 0)
             {
                 width = WaveFormCanvas.Width;
+            }
+            double height = WaveFormCanvas.ActualHeight;
+            if (double.IsNaN(height) || height == 0)
+            {
+                height = WaveFormCanvas.Height;
             }
 
             BytesPerPixel = ViewModel.DataLength / width;
@@ -50,6 +52,60 @@ namespace Tobi.Modules.AudioPane
 
             int bytesPerStep = samplesPerStep * byteDepth;
 
+            var estimatedCapacity = (int)(width / (bytesPerStep / BytesPerPixel)) + 1;
+
+            if (estimatedCapacity * ViewModel.PcmFormat.NumberOfChannels > 501)
+            {
+                bool vertical = WaveFormProgress.Orientation == Orientation.Vertical;
+                double sizeProgress = (vertical ? WaveFormScroll.Height : WaveFormScroll.Width);
+                if (double.IsNaN(sizeProgress) || sizeProgress == 0)
+                {
+                    sizeProgress = (vertical ? WaveFormScroll.ActualHeight : WaveFormScroll.ActualWidth);
+                }
+
+                //WaveFormProgress.SmallChange = 100;
+                
+                double numberOfVisibleXIncrements = sizeProgress / 35; // scrollbar update will be triggered every 35 pixels, which will minimize the Dispatcher access while reading the audio bytes and therefore increase performance.
+                double progressStep = estimatedCapacity / numberOfVisibleXIncrements;
+
+                //WaveFormProgress.LargeChange = progressStep;
+                m_ProgressVisibleOffset = Math.Floor(progressStep);
+
+                WaveFormProgress.IsIndeterminate = false;
+                WaveFormProgress.Value = 0;
+                WaveFormProgress.Minimum = 0;
+                WaveFormProgress.Maximum = estimatedCapacity;
+
+                ViewModel.IsWaveFormLoading = true;
+
+                var fileWorker = new BackgroundWorker();
+                fileWorker.DoWork += (sender, e) => LoadWaveForm(true, width, height, wasPlaying, play);
+                fileWorker.RunWorkerCompleted += (sender, e) =>
+                {
+                    WaveFormProgress.IsIndeterminate = true;
+                    ViewModel.IsWaveFormLoading = false;
+                };
+                fileWorker.RunWorkerAsync();
+            }
+            else
+            {
+                LoadWaveForm(false, width, height, wasPlaying, play);
+            }
+        }
+
+        private void LoadWaveForm(bool inBackgroundThread, double width, double height, bool wasPlaying, bool play)
+        {
+            //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
+
+            int byteDepth = ViewModel.PcmFormat.BitDepth / 8; //bytes per sample (data for one channel only)
+
+            var samplesPerStep = (int)Math.Floor((BytesPerPixel * ViewModel.WaveStepX) / byteDepth);
+            samplesPerStep += (samplesPerStep % ViewModel.PcmFormat.NumberOfChannels);
+
+            int bytesPerStep = samplesPerStep * byteDepth;
+
+            var estimatedCapacity = (int)(width / (bytesPerStep / BytesPerPixel)) + 1;
+
             var bytes = new byte[bytesPerStep]; // Int 8 unsigned
             var samples = new short[samplesPerStep]; // Int 16 signed
 
@@ -59,11 +115,18 @@ namespace Tobi.Modules.AudioPane
             List<Point> listBottomPointsCh2 = null;
             if (ViewModel.IsEnvelopeVisible)
             {
-                var estimatedCapacity = (int)(width / (bytesPerStep / BytesPerPixel)) + 1;
                 listTopPointsCh1 = new List<Point>(estimatedCapacity);
-                listTopPointsCh2 = new List<Point>(estimatedCapacity);
                 listBottomPointsCh1 = new List<Point>(estimatedCapacity);
-                listBottomPointsCh2 = new List<Point>(estimatedCapacity);
+                if (ViewModel.PcmFormat.NumberOfChannels > 1)
+                {
+                    listTopPointsCh2 = new List<Point>(estimatedCapacity);
+                    listBottomPointsCh2 = new List<Point>(estimatedCapacity);
+                }
+                else
+                {
+                    listTopPointsCh2 = new List<Point>(1);
+                    listBottomPointsCh2 = new List<Point>(1);
+                }
             }
 
             double x = 0.5;
@@ -126,6 +189,8 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 #region LOOP
+
+                double sumProgress = 0;
 
                 int read;
                 while ((read = ViewModel.AudioPlayer_GetPlayStream().Read(bytes, 0, bytes.Length)) > 0)
@@ -355,6 +420,21 @@ namespace Tobi.Modules.AudioPane
                         }
                     }
 
+                    if (inBackgroundThread)
+                    {
+                        sumProgress++;
+                        if (sumProgress >= m_ProgressVisibleOffset)
+                        {
+                            sumProgress = 0;
+
+                            //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                            {
+                                WaveFormProgress.Value += m_ProgressVisibleOffset;
+                            }));
+                        }
+                    }
+
                     x += (read / BytesPerPixel); //ViewModel.WaveStepX;
                     if (x > width)
                     {
@@ -363,6 +443,15 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 #endregion LOOP
+
+                if (inBackgroundThread)
+                {
+                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                    {
+                        WaveFormProgress.IsIndeterminate = true;
+                    }));
+                }
 
                 //
                 Brush brushColorBars = new SolidColorBrush(ViewModel.ColorWaveBars);
@@ -510,18 +599,32 @@ namespace Tobi.Modules.AudioPane
                 }
                 renderBitmap.Render(drawingVisual);
                 renderBitmap.Freeze();
-                WaveFormImage.Source = renderBitmap;
 
+                if (inBackgroundThread)
+                {
+                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                    {
+                                        WaveFormImage.Source = renderBitmap;
+                                        m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                                    }));
+                }
+                else
+                {
+                    WaveFormImage.Source = renderBitmap;
+                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                }
+            }
+            finally
+            {
                 RefreshUI_LoadingMessage(false);
 
                 ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
 
-                m_WaveFormTimeTicksAdorner.InvalidateVisual();
-            }
-            finally
-            {
                 // ensure the stream is closed before we resume the player
                 ViewModel.AudioPlayer_ClosePlayStream();
+
+                ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
             }
         }
 

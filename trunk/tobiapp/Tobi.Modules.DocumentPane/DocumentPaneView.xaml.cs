@@ -443,23 +443,7 @@ namespace Tobi.Modules.DocumentPane
                                     return;
                                 }
 
-                                if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
-                                    && node.IsDescendantOf(CurrentTreeNode))
-                                {
-                                    Logger.Log(
-                                        "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
-                                        Category.Debug, Priority.Medium);
-
-                                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
-                                }
-                                else
-                                {
-                                    Logger.Log(
-                                        "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
-                                        Category.Debug, Priority.Medium);
-
-                                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
-                                }
+                                selectNode(node);
                             },
                             (uri) =>
                             {
@@ -476,6 +460,27 @@ namespace Tobi.Modules.DocumentPane
                                 m_idLinkTargets.Add(name, data);
                             });
             m_FlowDoc = converter.Convert(nodeBook);
+        }
+
+        private void selectNode(TreeNode node)
+        {
+            if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
+                && node.IsDescendantOf(CurrentTreeNode))
+            {
+                Logger.Log(
+                    "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+                    Category.Debug, Priority.Medium);
+
+                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
+            }
+            else
+            {
+                Logger.Log(
+                    "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+                    Category.Debug, Priority.Medium);
+
+                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+            }
         }
 
         private void OnMouseUpFlowDoc()
