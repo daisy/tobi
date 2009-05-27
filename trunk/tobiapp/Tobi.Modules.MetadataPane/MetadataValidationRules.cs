@@ -5,55 +5,6 @@ using System.Text;
 using System.Windows.Controls;
 using System.Globalization;
 
-/* Required Metadata (from Z39.86-2005)
- * dc:Title
- * dc:Publisher
- * dc:Date - YYYY[-MM[-DD]]
- *  should we be "smart" and convert other date formats?  probably add this at some point.
- * dc:Format "ANSI/NISO z39.86-2005"
- *  @scheme for format - does Urakawa SDK support it?
- * dc:Identifier
- * dc:Language RFC 3066 (validated as a string only)
- *  could be a cool searchable list of all RFC 3066 codes.  in the future.
- * dtb:multimediaType audioOnly, audioNCX, audioPartText, audioFullText, textPartAudio, textNCX
- * dtb:multimediaContent audio, text, image
- * dtb:totalTime a SMIL clock value
- * 
- * Optional Metadata (from Z39.86-2005)
- * dc:Creator
- *  @role, @file-as -- does Urakawa SDK suppor these?
- * dc:Subject
- * dc:Description
- * dc:Contributor
- *  @role, @file-as -- does Urakawa SDK support these?
- * dc:Type - From the Dublin Core Type list (recommended are audio, text, and image)
- * dc:Source - use the ISBN if available - the UI should recommend this but not require it
- * dc:Relation
- * dc:Coverage
- * dc:Rights
- * dtb:sourceDate - YYYY[-MM[-DD]]
- * dtb:sourceEdition
- * dtb:sourcePublisher
- * dtb:sourceRights
- * dtb:sourceTitle
- * dtb:narrator
- * dtb:producer
- * dtb:producedDate - YYYY[-MM[-DD]] - Date of first generation of the complete DTB
- * dtb:revision
- * dtb:revisionDate - YYYY[-MM[-DD]] - Date associated with the specific dtb:revision
- * dtb:revisionDescription
- * dtb:audioFormat - such as MP4-AAC, MP3, WAV
- * 
- * Of these, it seems that some will (should) be automatically filled in by Tobi.
- * They are read-only fields for now.
- * dc:Format, dtb:multimediaType, dtb:multimediaContent, dtb:totalTime, dc:Type, dtb:audioFormat
- * 
- * It would also make sense for Tobi to fill in the revisionDate whenever the revision is incremented. 
- * However, it is unclear right now how the dtb:revision value is calculated (in the metadata it is 
- * an editable string)
- * 
- * */
-
 namespace Frustration
 {
     public abstract class BaseValidationRule : ValidationRule
