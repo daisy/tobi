@@ -10,12 +10,16 @@ namespace Tobi.Infrastructure
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+#if DEBUG
             Debugger.Break();
+#endif
             return value;
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+#if DEBUG
             Debugger.Break();
+#endif
             return value;
         }
 
