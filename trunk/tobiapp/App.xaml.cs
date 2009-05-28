@@ -362,7 +362,7 @@ c.Execute();
             /*
             var logStr = String.Format("CANNOT OPEN [{0}] !", logPath);
 
-            var logFile = File.Open(logPath, FileMode.Open, FileAccess.Read);
+            var logFile = File.Open(logPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             if (logFile.CanRead)
             {
                 logFile.Close();

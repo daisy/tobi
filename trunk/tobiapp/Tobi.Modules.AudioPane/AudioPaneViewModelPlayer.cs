@@ -10,6 +10,7 @@ using Tobi.Infrastructure;
 using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
+using System.Diagnostics;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -870,7 +871,9 @@ namespace Tobi.Modules.AudioPane
 
             if (!found)
             {
-                System.Diagnostics.Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
             }
 
             if (!moved)
@@ -985,7 +988,7 @@ namespace Tobi.Modules.AudioPane
                         {
                             return null;
                         }
-                        m_PlayStream = File.Open(FilePath, FileMode.Open);
+                        m_PlayStream = File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     }
                     if (m_PlayStream == null)
                     {

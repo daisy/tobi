@@ -17,6 +17,7 @@ using Tobi.Infrastructure.Commanding;
 using urakawa;
 using urakawa.core;
 using urakawa.xuk;
+using System.Diagnostics;
 
 namespace Tobi.Modules.DocumentPane
 {
@@ -405,7 +406,9 @@ namespace Tobi.Modules.DocumentPane
 
             if (subTreeNode == node)
             {
-                System.Diagnostics.Debugger.Break(); // should never happen !
+#if DEBUG
+            Debugger.Break();
+#endif
             }
             else
             {

@@ -10,6 +10,8 @@ namespace Tobi.Infrastructure
     ///</summary>
     public static class UserInterfaceStrings
     {
+        public static readonly string UnhandledException;
+
         public static readonly string LOG_FILE_NAME = "Tobi.log";
         public static readonly string LOG_FILE_PATH;
         static UserInterfaceStrings()
@@ -20,6 +22,8 @@ namespace Tobi.Infrastructure
 
             string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
+            
+            UnhandledException = "An unhandled exception occurred, the application is now closing. For more information, see the '" + LOG_FILE_NAME + "' file: [ " + LOG_FILE_PATH + " ].";
         }
 
         public static string EscapeMnemonic(string str)
@@ -90,8 +94,6 @@ namespace Tobi.Infrastructure
 
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";
-
-        public static readonly string UnhandledException = "An unhandled exception occurred, the application is now closing. For more information, see the '" + LOG_FILE_NAME + "' file: [ " + LOG_FILE_PATH + " ].";
 
         public const string Audio_OpenFile = "_Open audio";
         public const string Audio_OpenFile_ = "Open a local WAV file";
