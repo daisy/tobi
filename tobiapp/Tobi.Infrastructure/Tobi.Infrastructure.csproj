@@ -95,6 +95,7 @@
     <Compile Include="StringXamlConverter.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TreeViewHelper.cs" />
+    <Compile Include="TriggerTracing.cs" />
     <Compile Include="UI\AutoGreyableImage.cs" />
     <Compile Include="UI\BindableRun.cs" />
     <Compile Include="UI\BindableRunTextMedia.cs" />
