@@ -14,9 +14,7 @@ using Microsoft.Win32;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
-using Tobi.Modules.MenuBar;
 using urakawa;
-using XukImport;
 
 namespace Tobi
 {
@@ -274,7 +272,7 @@ namespace Tobi
             }
             else
             {
-                var converter = new DaisyToXuk(DocumentFilePath);
+                var converter = new XukImport.DaisyToXuk(DocumentFilePath);
                 DocumentProject = converter.Project;
             }
 
