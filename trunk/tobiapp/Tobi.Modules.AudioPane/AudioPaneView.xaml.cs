@@ -8,7 +8,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
-using urakawa.media.timing;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -1224,71 +1223,9 @@ namespace Tobi.Modules.AudioPane
             ViewModel.UpdatePeakMeter();
         }
 
-
-        private DispatcherTimer m_WaveFormLoadTimer;
-
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_ForcePlayAfterWaveFormLoaded = false;
-        // ReSharper restore RedundantDefaultFieldInitializer
-
-        private static readonly Object LOCK = new Object();
-
-        public void StartWaveFormLoadTimer(double delay, bool play)
-        {
-            if (ViewModel.PcmFormat == null)
-            {
-                return;
-            }
-
-            if (ViewModel.IsWaveFormLoading)
-            {
-                return;
-            }
-
-            lock (LOCK)
-            {
-                m_ForcePlayAfterWaveFormLoaded = play;
-
-                RefreshUI_LoadingMessage(true);
-
-                if (m_WaveFormLoadTimer == null)
-                {
-                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
-                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
-                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-                    if (delay == 0)
-                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
-                    {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
-                        //TODO: does this work ?? (immediate dispatch)
-                    }
-                    else
-                    {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
-                    }
-                }
-                else if (m_WaveFormLoadTimer.IsEnabled)
-                {
-                    m_WaveFormLoadTimer.Stop();
-                }
-
-                m_WaveFormLoadTimer.Start();
-            }
-        }
-
-        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
-        {
-            m_WaveFormLoadTimer.Stop();
-            if (ViewModel.IsWaveFormLoading)
-            {
-                return;
-            }
-            RefreshUI_LoadingMessage(true);
-            ViewModel.AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
-        }
         #endregion DispatcherTimers
 
-
+        // TODO: this is not wired to anything yet
         public void FocusOnRoot()
         {
             /*
