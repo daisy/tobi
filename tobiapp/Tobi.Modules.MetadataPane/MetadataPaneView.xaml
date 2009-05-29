@@ -11,8 +11,8 @@
             <Setter Property="Margin" Value="4"/>
         </Style>
 
-        <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}"
-           >
+        <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}" 
+               BasedOn="{StaticResource metadataBaseStyle}">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="true">
                     <Setter Property="ToolTip" Value="Insert Error Details Here!!!"/>
@@ -39,7 +39,7 @@
             <Setter Property="Background" Value="Gray"/>
         </Style>
 
-        <Style x:Key="metadatRequiredStyle" TargetType="{x:Type TextBox}" 
+        <Style x:Key="metadataRequiredStyle" TargetType="{x:Type TextBox}" 
            BasedOn="{StaticResource metadataBaseStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
@@ -56,12 +56,24 @@
         AlternationCount="2">
         <ListView.Resources>
     		
-		    <DataTemplate x:Key="ReadOnlyTemplate">
+            <!-- for the name field -->
+            <DataTemplate x:Key="RequiredNameTemplate">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="RecommendedNameTemplate">
+                <TextBlock Text="{Binding Name}"/> 
+            </DataTemplate>
+            <DataTemplate x:Key="OptionalNameTemplate">
+                <TextBlock Text="{Binding Name}"/>
+            </DataTemplate>
+            
+            <!-- for the content field-->
+            <DataTemplate x:Key="ReadOnlyTemplate">
                 <StackPanel>
                     <TextBlock Text="{Binding Content}"/>
                 </StackPanel>
             </DataTemplate>
-
+            
             <DataTemplate x:Key="OptionalStringTemplate">
                 <TextBox Text="{Binding Content}"/>
             </DataTemplate>
@@ -103,14 +115,20 @@
             </DataTemplate>
 
             
-            <local:MetadataTypeTemplateSelector 
+            <local:MetadataContentTypeTemplateSelector 
                 RequiredDateTemplate="{StaticResource RequiredDateTemplate}"
                 RequiredStringTemplate="{StaticResource RequiredStringTemplate}"
                 OptionalStringTemplate="{StaticResource OptionalStringTemplate}" 
                 OptionalDateTemplate="{StaticResource OptionalDateTemplate}"
                 ReadOnlyTemplate="{StaticResource ReadOnlyTemplate}" 
                 DefaultTemplate="{StaticResource OptionalStringTemplate}"
-                x:Key="metadataTemplateSelector" />
+                x:Key="metadataContentTemplateSelector" />
+            
+            <local:MetadataNameTypeTemplateSelector
+                RequiredTemplate="{StaticResource RequiredNameTemplate}"
+                RecommendedTemplate="{StaticResource RecommendedNameTemplate}"
+                OptionalTemplate="{StaticResource OptionalNameTemplate}"
+                x:Key="metadataNameTemplateSelector"/>
             
         </ListView.Resources>
         
@@ -118,11 +136,11 @@
         <GridView AllowsColumnReorder="false">
           <GridViewColumn Header="Name"
                           UI:SortableListView.SortPropertyName="Name"
-                          DisplayMemberBinding="{Binding Name}"/>
+                          CellTemplateSelector="{StaticResource metadataNameTemplateSelector}"/>
 
           <GridViewColumn Header="Content"
                           UI:SortableListView.SortPropertyName="Content"
-                          CellTemplateSelector="{StaticResource metadataTemplateSelector}"/>
+                          CellTemplateSelector="{StaticResource metadataContentTemplateSelector}"/>
         </GridView>
       </ListView.View>
         
@@ -139,6 +157,9 @@
       </ListView.ItemContainerStyle>
     </UI:SortableListView>
     
+    <Button Click="Add_Metadata_Click">Add</Button>
+    <Button Click="Fake_Button_Click">Fake</Button>
+
     <StackPanel Orientation="Horizontal">
         <TextBox Width="100">Does nothing right now</TextBox>
         <Button>Lookup</Button>

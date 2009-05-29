@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Composite.Logging;
+﻿using System;
+using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
 using Tobi.Modules.MetadataPane;
@@ -33,6 +34,16 @@ namespace Tobi.Modules.MetadataPane
         }
 
         #endregion Construction
+
+        private void Add_Metadata_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException("Dear user:  sorry!");
+        }
+
+        private void Fake_Button_Click(object sender, RoutedEventArgs e)
+        {
+            //mess with the data in the data model and test that the changes were reflected
+        }
     }
 }
 
@@ -40,7 +51,7 @@ namespace Tobi.Modules.MetadataPane
 //there must be an easy fix, but for today ... 
 namespace Frustration
 {
-    public class MetadataTypeTemplateSelector : DataTemplateSelector
+    public class MetadataContentTypeTemplateSelector : DataTemplateSelector
     {
         public DataTemplate OptionalStringTemplate { get; set; }
         public DataTemplate OptionalDateTemplate { get; set; }
@@ -51,16 +62,10 @@ namespace Frustration
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            System.Diagnostics.Debug.Assert(item is Metadata);
-
             Metadata metadata = (Metadata)item;
             
-            //TODO: move this to a more sensible place where it only gets called once per Tobi instance
-            //it contains all the metadata supported by Tobi
-            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list = new List<SupportedMetadataItem>();
-            Tobi.Modules.MetadataPane.CreateSupportedMetadataList createSupportedMetadataList = 
-                new Tobi.Modules.MetadataPane.CreateSupportedMetadataList(list);
-
+            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
+                Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
             int index = list.FindIndex(0, s => s.Name == metadata.Name);
             if (index != -1)
             {
@@ -72,7 +77,7 @@ namespace Frustration
 
                 if (metaitem.FieldType == SupportedMetadataFieldType.Date)
                 {
-                    if (metaitem.IsRequired)
+                    if (metaitem.Occurence == MetadataOccurence.Required)
                         return RequiredDateTemplate;
                     else
                         return OptionalDateTemplate;
@@ -81,7 +86,7 @@ namespace Frustration
                 else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString || 
                     metaitem.FieldType == SupportedMetadataFieldType.LongString)
                 {
-                    if (metaitem.IsRequired)
+                    if (metaitem.Occurence == MetadataOccurence.Required)
                         return RequiredStringTemplate;
                     else
                         return OptionalStringTemplate;
@@ -96,6 +101,32 @@ namespace Frustration
             {
                 return DefaultTemplate;
             }
+        }
+    }
+
+    public class MetadataNameTypeTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate OptionalTemplate { get; set; }
+        public DataTemplate RecommendedTemplate { get; set; }
+        public DataTemplate RequiredTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            Metadata metadata = (Metadata)item;
+            
+            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
+                Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
+            int index = list.FindIndex(0, s => s.Name == metadata.Name);
+            if (index != -1)
+            {
+                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
+
+                if (metaitem.Occurence == MetadataOccurence.Required)
+                    return RequiredTemplate;
+                else if (metaitem.Occurence == MetadataOccurence.Recommended)
+                    return RecommendedTemplate;
+            }
+            return OptionalTemplate;
         }
     }
 }
