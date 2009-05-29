@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
@@ -10,6 +11,9 @@ using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
 using urakawa;
 using urakawa.metadata;
+using urakawa.events.presentation;
+using urakawa.events.metadata;
+using System.Collections.ObjectModel;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -72,6 +76,13 @@ namespace Tobi.Modules.MetadataPane
 
         private void OnProjectUnLoaded(Project obj)
         {
+            List<Metadata> list = obj.GetPresentation(0).ListOfMetadata;
+            //unhook up the events
+            foreach (Metadata metadata in list)
+            {
+                metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+                metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+            }
             OnProjectLoaded(null);
         }
 
@@ -83,8 +94,24 @@ namespace Tobi.Modules.MetadataPane
             //shell.DocumentProject
 
             Project = project;
+
+            project.GetPresentation(0).MetadataAdded += new System.EventHandler<MetadataAddedEventArgs>
+                (this.OnMetadataAdded);
+            project.GetPresentation(0).MetadataDeleted += new System.EventHandler<MetadataDeletedEventArgs>
+                (this.OnMetadataDeleted);
+            if (project != null)
+            {
+                List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
+                //hook up the events
+                foreach (Metadata metadata in list)
+                {
+                    metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+                    metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+                }
+            }
         }
 
+        
         #endregion Initialization
 
         #region Commands
@@ -131,8 +158,10 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Commands
 
+        //public ObservableCollection<Metadata> ObservableMetadatas;
+        
         [NotifyDependsOn("Project")]
-        public List<Metadata> Metadatas
+        public ObservableCollection<Metadata> Metadatas 
         {
             get
             {
@@ -140,9 +169,31 @@ namespace Tobi.Modules.MetadataPane
                 {
                     return null;
                 }
-
-                return Project.GetPresentation(0).ListOfMetadata;
+                //let's waste some memory...
+                return new ObservableCollection<Metadata>(Project.GetPresentation(0).ListOfMetadata);
             }
+        }
+
+        public void OnMetadataDeleted(object sender, MetadataDeletedEventArgs eventArgs)
+        {
+            eventArgs.DeletedMetadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+            eventArgs.DeletedMetadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+        }
+
+        public void OnMetadataAdded(object sender, MetadataAddedEventArgs eventArgs)
+        {
+            eventArgs.AddedMetadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+            eventArgs.AddedMetadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+        }
+
+        void OnContentChanged(object sender, ContentChangedEventArgs e)
+        {
+            throw new System.NotImplementedException("Dear user: sorry!");   
+        }
+
+        void OnNameChanged(object sender, NameChangedEventArgs e)
+        {
+            throw new System.NotImplementedException("Dear user: sorry!");
         }
     }
 }
