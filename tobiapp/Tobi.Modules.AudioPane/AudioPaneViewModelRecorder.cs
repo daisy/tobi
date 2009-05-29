@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
@@ -10,7 +9,6 @@ namespace Tobi.Modules.AudioPane
 {
     public partial class AudioPaneViewModel
     {
-
         #region Audio Recorder
 
         private AudioRecorder m_Recorder;
@@ -61,7 +59,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (View != null)
                 {
-                    View.RefreshUI_TimeMessageClear();
+                    View.TimeMessageHide();
                 }
             }
             if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
@@ -79,7 +77,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (View != null)
                 {
-                    View.RefreshUI_TimeMessageInitiate();
+                    View.TimeMessageShow();
                 }
             }
         }

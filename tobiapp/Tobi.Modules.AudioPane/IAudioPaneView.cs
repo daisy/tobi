@@ -8,30 +8,29 @@
     public interface IAudioPaneView
     {
 // ReSharper disable InconsistentNaming
-        void RefreshUI_TimeMessageClear();
-        void RefreshUI_TimeMessageInvalidate();
-        void RefreshUI_TimeMessageInitiate();
-        void RefreshUI_AllReset();
+        void ResetAll();
         void RefreshUI_LoadWaveForm(bool wasPlaying, bool play);
-        void RefreshUI_LoadingMessage(bool visible);
         void RefreshUI_PeakMeter();
         void RefreshUI_PeakMeterBlackout(bool black);
-        void RefreshUI_WaveFormBackground();
         void RefreshUI_WaveFormPlayHead();
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
 // ReSharper restore InconsistentNaming
+
+        void TimeMessageHide();
+        void TimeMessageRefresh();
+        void TimeMessageShow();
+        void ShowHideWaveFormLoadingMessage(bool visible);
+        void ResetWaveFormEmpty();
         string OpenFileDialog();
         double BytesPerPixel { get; set; }
         void StopWaveFormTimer();
         void StartWaveFormTimer();
         void StopPeakMeterTimer();
         void StartPeakMeterTimer();
-        void StartWaveFormLoadTimer(double delay, bool play);
         void ClearSelection();
         void ExpandSelection();
         void ZoomSelection();
         void ZoomFitFull();
-        void Refresh();
         void InitGraphicalCommandBindings();
         void SetSelection(double begin, double end);
     }

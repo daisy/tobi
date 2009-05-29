@@ -318,7 +318,7 @@ namespace Tobi.Modules.AudioPane
                 null,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //(VisualBrush)Application.Current.FindResource("view-refresh"),
-                obj => Refresh(), obj => !IsWaveFormLoading && IsAudioLoaded);
+                obj => ReloadWaveForm(), obj => !IsWaveFormLoading && IsAudioLoaded);
 
             shellPresenter.RegisterRichCommand(CommandRefresh);
             //

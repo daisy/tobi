@@ -12,74 +12,13 @@ namespace Tobi.Modules.AudioPane
 {
     public partial class AudioPaneView
     {
-        private DispatcherTimer m_WaveFormLoadTimer;
-
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_ForcePlayAfterWaveFormLoaded = false;
-        // ReSharper restore RedundantDefaultFieldInitializer
-
-        private static readonly Object LOCK = new Object();
-
-        public void StartWaveFormLoadTimer(double delay, bool play)
-        {
-            if (ViewModel.PcmFormat == null)
-            {
-                return;
-            }
-
-            if (ViewModel.IsWaveFormLoading)
-            {
-                return;
-            }
-
-            lock (LOCK)
-            {
-                m_ForcePlayAfterWaveFormLoaded = play;
-
-                RefreshUI_LoadingMessage(true);
-
-                if (m_WaveFormLoadTimer == null)
-                {
-                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
-                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
-                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-                    if (delay == 0)
-                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
-                    {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
-                        //TODO: does this work ?? (immediate dispatch)
-                    }
-                    else
-                    {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
-                    }
-                }
-                else if (m_WaveFormLoadTimer.IsEnabled)
-                {
-                    m_WaveFormLoadTimer.Stop();
-                }
-
-                m_WaveFormLoadTimer.Start();
-            }
-        }
-
-        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
-        {
-            m_WaveFormLoadTimer.Stop();
-            if (ViewModel.IsWaveFormLoading)
-            {
-                return;
-            }
-            RefreshUI_LoadingMessage(true);
-            ViewModel.AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
-        }
-
         private double m_ProgressVisibleOffset = 0;
+
+        private DrawingImage m_WaveFormImageSourceDrawingImage;
 
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-        // ReSharper disable InconsistentNaming
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
         {
             if (ViewModel.PcmFormat.NumberOfChannels == 1)
@@ -92,7 +31,6 @@ namespace Tobi.Modules.AudioPane
                 PeakOverloadLabelCh2.Visibility = Visibility.Visible;
                 PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 1);
             }
-
 
             double width = WaveFormCanvas.ActualWidth;
             if (double.IsNaN(width) || width == 0)
@@ -126,7 +64,7 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 //WaveFormProgress.SmallChange = 100;
-                
+
                 double numberOfVisibleXIncrements = sizeProgress / 20; // progressbar update will be triggered every 35 pixels, which will minimize the Dispatcher access while reading the audio bytes and therefore increase performance.
                 double progressStep = estimatedCapacity / numberOfVisibleXIncrements;
 
@@ -154,6 +92,8 @@ namespace Tobi.Modules.AudioPane
                 loadWaveForm(false, width, height, wasPlaying, play);
             }
         }
+
+        // ReSharper disable InconsistentNaming
 
         private void loadWaveForm(bool inBackgroundThread, double width, double height, bool wasPlaying, bool play)
         {
@@ -666,10 +606,10 @@ namespace Tobi.Modules.AudioPane
                 {
                     //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                                    {
-                                        WaveFormImage.Source = renderBitmap;
-                                        m_WaveFormTimeTicksAdorner.InvalidateVisual();
-                                    }));
+                    {
+                        WaveFormImage.Source = renderBitmap;
+                        m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                    }));
                 }
                 else
                 {
@@ -679,7 +619,7 @@ namespace Tobi.Modules.AudioPane
             }
             finally
             {
-                RefreshUI_LoadingMessage(false);
+                ShowHideWaveFormLoadingMessage(false);
 
                 ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
 
@@ -689,8 +629,6 @@ namespace Tobi.Modules.AudioPane
                 ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
             }
         }
-
-        private DrawingImage m_WaveFormImageSourceDrawingImage;
 
         private GeometryDrawing createGeometry_Markers(double height)
         {
@@ -742,7 +680,6 @@ namespace Tobi.Modules.AudioPane
 
             return geoDrawBack;
         }
-
 
         private void createGeometry_envelope(out GeometryDrawing geoDraw1_envelope, out GeometryDrawing geoDraw2_envelope,
             ref List<Point> listTopPointsCh1, ref List<Point> listTopPointsCh2,
@@ -992,6 +929,7 @@ namespace Tobi.Modules.AudioPane
                 geoDraw2_envelope.Freeze();
             }
         }
+        
+        // ReSharper restore InconsistentNaming
     }
-    // ReSharper restore InconsistentNaming
 }
