@@ -72,7 +72,8 @@
     <Compile Include="AudioPaneViewModelPartial.cs" />
     <Compile Include="AudioPaneViewModelPlayer.cs" />
     <Compile Include="AudioPaneViewModelRecorder.cs" />
-    <Compile Include="AudioPaneViewPartial.cs" />
+    <Compile Include="AudioPaneView_WaveFormLoader.cs" />
+    <Compile Include="AudioPaneView_WaveFormSelection.cs" />
     <Compile Include="IAudioPaneView.cs" />
     <Compile Include="PeakMeterBarData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

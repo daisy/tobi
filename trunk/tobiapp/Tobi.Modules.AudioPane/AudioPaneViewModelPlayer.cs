@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Media;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AudioLib;
 using AudioLib.Events.Player;
 using Microsoft.Practices.Composite.Logging;
@@ -332,10 +333,7 @@ namespace Tobi.Modules.AudioPane
 
             LastPlayHeadTime = 0;
 
-            if (View != null)
-            {
-                View.StartWaveFormLoadTimer(10, IsAutoPlay);
-            }
+            ReloadWaveForm();
         }
 
         private void updateWaveFormPlayHead(double time)
@@ -451,6 +449,82 @@ namespace Tobi.Modules.AudioPane
                     CommandManager.InvalidateRequerySuggested();
                 }
             }
+        }
+
+        public void ReloadWaveForm()
+        {
+            StartWaveFormLoadTimer(500, false);
+        }
+
+        private DispatcherTimer m_WaveFormLoadTimer;
+
+        // ReSharper disable RedundantDefaultFieldInitializer
+        private bool m_ForcePlayAfterWaveFormLoaded = false;
+        // ReSharper restore RedundantDefaultFieldInitializer
+
+        private static readonly Object LOCK = new Object();
+
+        private void StartWaveFormLoadTimer(double delay, bool play)
+        {
+            if (PcmFormat == null)
+            {
+                return;
+            }
+
+            if (IsWaveFormLoading)
+            {
+                return;
+            }
+
+            lock (LOCK)
+            {
+                m_ForcePlayAfterWaveFormLoaded = play;
+
+                if (View != null)
+                {
+                    View.ShowHideWaveFormLoadingMessage(true);
+                }
+
+                if (m_WaveFormLoadTimer == null)
+                {
+                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
+                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
+                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+                    if (delay == 0)
+                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+                    {
+                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
+                        //TODO: does this work ?? (immediate dispatch)
+                    }
+                    else
+                    {
+                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
+                    }
+                }
+                else if (m_WaveFormLoadTimer.IsEnabled)
+                {
+                    m_WaveFormLoadTimer.Stop();
+                }
+
+                m_WaveFormLoadTimer.Start();
+            }
+        }
+
+        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
+        {
+            m_WaveFormLoadTimer.Stop();
+
+            if (IsWaveFormLoading)
+            {
+                return;
+            }
+
+            if (View != null)
+            {
+                View.ShowHideWaveFormLoadingMessage(true);
+            }
+
+            AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
         }
 
         public void AudioPlayer_LoadWaveForm(bool play)
@@ -972,9 +1046,7 @@ namespace Tobi.Modules.AudioPane
 
             if (View != null)
             {
-                View.RefreshUI_WaveFormBackground();
-
-                View.RefreshUI_AllReset();
+                View.ResetAll();
             }
 
             m_CurrentAudioStreamProvider = () =>

@@ -198,9 +198,7 @@ namespace Tobi.Modules.AudioPane
 
             if (View != null)
             {
-                View.RefreshUI_WaveFormBackground();
-
-                View.RefreshUI_AllReset();
+                View.ResetAll();
             }
 
             m_CurrentAudioStreamProvider = () =>
@@ -319,14 +317,6 @@ namespace Tobi.Modules.AudioPane
                 if (m_WavFilePath == value) return;
                 m_WavFilePath = value;
                 OnPropertyChanged(() => FilePath);
-            }
-        }
-
-        public void Refresh()
-        {
-            if (View != null)
-            {
-                View.Refresh();
             }
         }
 
@@ -553,7 +543,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (View != null)
                 {
-                    View.RefreshUI_TimeMessageInvalidate();
+                    View.TimeMessageRefresh();
                 }
 
                 // TODO: generates too many events per seconds in the data binding pipeline (INotifyPropertyChanged)

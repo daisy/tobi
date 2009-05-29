@@ -38,6 +38,25 @@ namespace Tobi.Modules.AudioPane
             WinFormHost.Child = ViewModel.GetWindowsFormsHookControl();
         }
 
+        public void InitGraphicalCommandBindings()
+        {
+            var mouseGest = new MouseGesture { MouseAction = MouseAction.LeftDoubleClick };
+
+            var mouseBind = new MouseBinding { Gesture = mouseGest, Command = ViewModel.CommandSelectAll };
+
+            WaveFormCanvas.InputBindings.Add(mouseBind);
+
+            var mouseGest2 = new MouseGesture
+            {
+                MouseAction = MouseAction.LeftDoubleClick,
+                Modifiers = ModifierKeys.Control
+            };
+
+            var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = ViewModel.CommandClearSelection };
+
+            WaveFormCanvas.InputBindings.Add(mouseBind2);
+        }
+
         #endregion Construction
 
         #region Private Class Attributes
@@ -47,128 +66,16 @@ namespace Tobi.Modules.AudioPane
         private WaveFormLoadingAdorner m_WaveFormLoadingAdorner;
         private WaveFormTimeTicksAdorner m_WaveFormTimeTicksAdorner;
 
+        private double m_WaveFormDragX = -1;
+        private bool m_ControlKeyWasDownAtLastMouseMove = false;
+
+        private readonly Cursor m_WaveFormDefaultCursor = Cursors.Arrow;
+        private readonly Cursor m_WaveFormDragMoveCursor = Cursors.ScrollAll;
+        private readonly Cursor m_WaveFormDragSelectCursor = Cursors.SizeWE;
+
         #endregion Private Class Attributes
 
         #region Event / Callbacks
-
-        private double m_SelectionBackup_X = 0;
-        private double m_SelectionBackup_Width = 0;
-
-        private void restoreSelection()
-        {
-            m_TimeSelectionLeftX = m_SelectionBackup_X;
-            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
-            WaveFormTimeSelectionRect.Width = m_SelectionBackup_Width;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-
-            ViewModel.SelectionBegin = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
-            ViewModel.SelectionEnd = ViewModel.AudioPlayer_ConvertBytesToMilliseconds((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
-        }
-
-        private void backupSelection()
-        {
-            m_SelectionBackup_X = m_TimeSelectionLeftX;
-            m_SelectionBackup_Width = WaveFormTimeSelectionRect.Width;
-        }
-
-        public void ExpandSelection()
-        {
-            ViewModel.Logger.Log("AudioPaneView.expandSelection", Category.Debug, Priority.Medium);
-
-            m_TimeSelectionLeftX = 0;
-            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
-            WaveFormTimeSelectionRect.Width = WaveFormCanvas.ActualWidth;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-        }
-
-        public void SetSelection(double begin, double end)
-        {
-            ViewModel.Logger.Log("AudioPaneView.SetSelection", Category.Debug, Priority.Medium);
-
-            m_TimeSelectionLeftX = ViewModel.AudioPlayer_ConvertMillisecondsToBytes(begin) / BytesPerPixel;
-            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
-            WaveFormTimeSelectionRect.Width = ViewModel.AudioPlayer_ConvertMillisecondsToBytes(end) / BytesPerPixel - m_TimeSelectionLeftX;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-        }
-
-        public void ClearSelection()
-        {
-            ViewModel.Logger.Log("AudioPaneView.ClearSelection", Category.Debug, Priority.Medium);
-
-            m_TimeSelectionLeftX = -1;
-            WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
-            WaveFormTimeSelectionRect.Width = 0;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-        }
-
-        public void ZoomSelection()
-        {
-            ViewModel.Logger.Log("AudioPaneView.OnZoomSelection", Category.Debug, Priority.Medium);
-
-            if (m_TimeSelectionLeftX < 0)
-            {
-                return;
-            }
-
-            double widthToUse = WaveFormScroll.ViewportWidth;
-            if (double.IsNaN(widthToUse) || widthToUse == 0)
-            {
-                widthToUse = WaveFormScroll.ActualWidth;
-            }
-
-            widthToUse -= 20;
-
-            double newSliderValue = ZoomSlider.Value * (widthToUse / WaveFormTimeSelectionRect.Width);
-
-            if (newSliderValue > 20000)
-            {
-                newSliderValue = 20000; //safeguard...image too large
-            }
-
-            if (newSliderValue < ZoomSlider.Minimum)
-            {
-                ZoomSlider.Minimum = newSliderValue;
-            }
-            if (newSliderValue > ZoomSlider.Maximum)
-            {
-                ZoomSlider.Maximum = newSliderValue;
-            }
-
-            if (ViewModel.PcmFormat != null)
-            {
-                double selectionTimeLeft = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
-                double selectionTimeRight = ViewModel.AudioPlayer_ConvertBytesToMilliseconds((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
-
-                if (ViewModel.LastPlayHeadTime < selectionTimeLeft || ViewModel.LastPlayHeadTime > selectionTimeRight)
-                {
-                    ViewModel.LastPlayHeadTime =
-                        ViewModel.AudioPlayer_ConvertBytesToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
-                }
-            }
-
-            ZoomSlider.Value = newSliderValue;
-        }
-
-        public void ZoomFitFull()
-        {
-            ViewModel.Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
-
-            double widthToUse = WaveFormScroll.ViewportWidth;
-            if (double.IsNaN(Double.NaN) || widthToUse == 0)
-            {
-                widthToUse = WaveFormScroll.ActualWidth;
-            }
-            if (widthToUse < ZoomSlider.Minimum)
-            {
-                ZoomSlider.Minimum = widthToUse;
-            }
-            if (widthToUse > ZoomSlider.Maximum)
-            {
-                ZoomSlider.Maximum = widthToUse;
-            }
-
-            ZoomSlider.Value = widthToUse;
-        }
 
         private void OnPeakMeterCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -188,7 +95,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = false;
 
-            StartWaveFormLoadTimer(500, false);
+            ViewModel.ReloadWaveForm();
         }
 
         private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -255,50 +162,8 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            StartWaveFormLoadTimer(500, false);
+            ViewModel.ReloadWaveForm();
         }
-
-        public void Refresh()
-        {
-            StartWaveFormLoadTimer(500, false);
-        }
-
-        private double m_TimeSelectionLeftX = -1;
-        private readonly Cursor m_WaveFormDefaultCursor = Cursors.Arrow;
-        private readonly Cursor m_WaveFormDragMoveCursor = Cursors.ScrollAll;
-        private readonly Cursor m_WaveFormDragSelectCursor = Cursors.SizeWE;
-
-        public double GetSelectionLeft()
-        {
-            return m_TimeSelectionLeftX;
-        }
-
-        public double GetSelectionWidth()
-        {
-            return WaveFormTimeSelectionRect.Width;
-        }
-
-        public void InitGraphicalCommandBindings()
-        {
-            var mouseGest = new MouseGesture { MouseAction = MouseAction.LeftDoubleClick };
-
-            var mouseBind = new MouseBinding { Gesture = mouseGest, Command = ViewModel.CommandSelectAll };
-
-            WaveFormCanvas.InputBindings.Add(mouseBind);
-
-            var mouseGest2 = new MouseGesture
-                                 {
-                                     MouseAction = MouseAction.LeftDoubleClick,
-                                     Modifiers = ModifierKeys.Control
-                                 };
-
-            var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = ViewModel.CommandClearSelection };
-
-            WaveFormCanvas.InputBindings.Add(mouseBind2);
-        }
-
-        private double m_WaveFormDragX = -1;
-        private bool m_ControlKeyWasDownAtLastMouseMove = false;
 
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
@@ -387,64 +252,6 @@ namespace Tobi.Modules.AudioPane
             m_ControlKeyWasDownAtLastMouseMove = false;
         }
 
-        private void selectionFinished(double x)
-        {
-            if (Math.Abs(m_TimeSelectionLeftX - x) <= 6)
-            {
-                ClearSelection();
-                m_TimeSelectionLeftX = x;
-            }
-
-            if (x == m_TimeSelectionLeftX)
-            {
-                restoreSelection();
-
-                if (ViewModel.PcmFormat == null)
-                {
-                    return;
-                }
-
-                double bytes = x * BytesPerPixel;
-                ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytes);
-
-                if (ViewModel.IsAutoPlay)
-                {
-                    ViewModel.AudioPlayer_Play();
-                }
-
-                return;
-            }
-
-            double right = x;
-
-            if (x < m_TimeSelectionLeftX)
-            {
-                right = m_TimeSelectionLeftX;
-                m_TimeSelectionLeftX = x;
-            }
-
-            WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
-            WaveFormTimeSelectionRect.Width = right - m_TimeSelectionLeftX;
-            WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-
-            ViewModel.SelectionBegin = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
-            ViewModel.SelectionEnd = ViewModel.AudioPlayer_ConvertBytesToMilliseconds((m_TimeSelectionLeftX+WaveFormTimeSelectionRect.Width) * BytesPerPixel);
-
-            if (ViewModel.IsAutoPlay)
-            {
-                if (ViewModel.PcmFormat == null)
-                {
-                    return;
-                }
-
-                double bytesFrom = m_TimeSelectionLeftX * BytesPerPixel;
-                ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytesFrom);
-                double bytesTo = right * BytesPerPixel;
-
-                ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
-            }
-        }
-
         private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
             WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
@@ -456,15 +263,6 @@ namespace Tobi.Modules.AudioPane
                 selectionFinished(p.X);
             }
             m_ControlKeyWasDownAtLastMouseMove = false;
-        }
-
-        private bool isControlKeyDown()
-        {
-            return (Keyboard.Modifiers &
-                    (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None;
-
-            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
-            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
         }
 
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
@@ -552,16 +350,16 @@ namespace Tobi.Modules.AudioPane
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_WaveFormBackground()
+        public void ResetWaveFormEmpty()
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormBackground));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_WaveFormBackground));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(ResetWaveFormEmpty));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(ResetWaveFormEmpty));
                 return;
             }
 
-            ViewModel.Logger.Log("AudioPaneView.RefreshUI_WaveFormBackground", Category.Debug, Priority.Medium);
+            ViewModel.Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
             if (double.IsNaN(height) || height == 0)
@@ -598,19 +396,20 @@ namespace Tobi.Modules.AudioPane
             drawImg.Freeze();
             WaveFormImage.Source = drawImg;
         }
+
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_AllReset()
+        public void ResetAll()
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_AllReset));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_AllReset));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(ResetAll));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(ResetAll));
                 return;
             }
 
-            ViewModel.Logger.Log("AudioPaneView.RefreshUI_AllReset", Category.Debug, Priority.Medium);
+            ViewModel.Logger.Log("AudioPaneView.ResetAll", Category.Debug, Priority.Medium);
 
             ClearSelection();
 
@@ -628,6 +427,8 @@ namespace Tobi.Modules.AudioPane
 
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
 
+            ResetWaveFormEmpty();
+
             m_WaveFormImageSourceDrawingImage = null;
 
             if (m_WaveFormTimeTicksAdorner != null)
@@ -639,174 +440,6 @@ namespace Tobi.Modules.AudioPane
             {
                 m_WaveFormLoadingAdorner.InvalidateVisual();
             }
-        }
-
-        private void scrollInView(double pixels)
-        {
-            double left = WaveFormScroll.HorizontalOffset;
-            double right = left + WaveFormScroll.ViewportWidth;
-            //bool b = WaveFormPlayHeadPath.IsVisible;
-
-            if (m_TimeSelectionLeftX < 0)
-            {
-                if (pixels < left || pixels > right)
-                {
-                    double offset = pixels - 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-            }
-            else
-            {
-                double timeSelectionRightX = m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width;
-
-                double minX = Math.Min(m_TimeSelectionLeftX, pixels);
-                minX = Math.Min(timeSelectionRightX, minX);
-
-                double maxX = Math.Max(m_TimeSelectionLeftX, pixels);
-                maxX = Math.Max(timeSelectionRightX, maxX);
-
-                double visibleWidth = (right - left);
-
-                if ((maxX - minX) <= (visibleWidth - 20))
-                {
-                    if (minX < left)
-                    {
-                        double offset = minX - 10;
-                        if (offset < 0)
-                        {
-                            offset = 0;
-                        }
-                        WaveFormScroll.ScrollToHorizontalOffset(offset);
-                    }
-                    else if (maxX > right)
-                    {
-                        double offset = maxX - visibleWidth + 10;
-                        if (offset < 0)
-                        {
-                            offset = 0;
-                        }
-                        WaveFormScroll.ScrollToHorizontalOffset(offset);
-                    }
-                }
-                else if (pixels >= timeSelectionRightX)
-                {
-                    double offset = pixels - visibleWidth + 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-                else if (pixels <= timeSelectionRightX)
-                {
-                    double offset = pixels - 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-                else if ((timeSelectionRightX - pixels) <= (visibleWidth - 10))
-                {
-                    double offset = pixels - 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-                else if ((pixels - m_TimeSelectionLeftX) <= (visibleWidth - 10))
-                {
-                    double offset = m_TimeSelectionLeftX - 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-                else
-                {
-                    double offset = pixels - 10;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-
-                    WaveFormScroll.ScrollToHorizontalOffset(offset);
-                }
-            }
-        }
-
-        /// <summary>
-        /// (ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        public void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
-        {
-            if (ViewModel.PcmFormat == null)
-            {
-                if (m_TimeSelectionLeftX >= 0)
-                {
-                    scrollInView(m_TimeSelectionLeftX + 1);
-                }
-
-                return;
-            }
-
-            if (BytesPerPixel <= 0)
-            {
-                return;
-            }
-
-            //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = (long) Math.Round(ViewModel.AudioPlayer_ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime));
-
-            double pixels = bytes / BytesPerPixel;
-
-            StreamGeometry geometry;
-            if (WaveFormPlayHeadPath.Data == null)
-            {
-                geometry = new StreamGeometry();
-            }
-            else
-            {
-                geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
-            }
-
-            double height = WaveFormCanvas.ActualHeight;
-            if (double.IsNaN(height) || height == 0)
-            {
-                height = WaveFormCanvas.Height;
-            }
-
-            using (StreamGeometryContext sgc = geometry.Open())
-            {
-                sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
-                sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
-                sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
-                sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
-                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
-
-                sgc.Close();
-            }
-
-            if (WaveFormPlayHeadPath.Data == null)
-            {
-                WaveFormPlayHeadPath.Data = geometry;
-            }
-
-            WaveFormPlayHeadPath.InvalidateVisual();
-
-            scrollInView(pixels);
         }
 
         /// <summary>
@@ -974,33 +607,6 @@ namespace Tobi.Modules.AudioPane
 
         }
 
-        // ReSharper disable InconsistentNaming
-        /// <summary>
-        /// (DOES NOT ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        private void refreshUI_PeakMeterBlackoutOn()
-        {
-            PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
-        }
-
-        /// <summary>
-        /// (DOES NOT ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        private void refreshUI_PeakMeterBlackoutOff()
-        {
-            PeakMeterCanvasOpaqueMask.Visibility = Visibility.Hidden;
-
-            if (PeakMeterPathCh1.Data != null)
-            {
-                ((StreamGeometry)PeakMeterPathCh1.Data).Clear();
-            }
-            if (PeakMeterPathCh2.Data != null)
-            {
-                ((StreamGeometry)PeakMeterPathCh2.Data).Clear();
-            }
-        }
-        // ReSharper restore InconsistentNaming
-
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -1033,39 +639,15 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        // ReSharper disable InconsistentNaming
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-        private void refreshUI_LoadingMessageVisible()
-        {
-            if (m_WaveFormLoadingAdorner != null)
-            {
-                m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
-                m_WaveFormLoadingAdorner.InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// (DOES NOT ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        private void refreshUI_LoadingMessageHidden()
-        {
-            if (m_WaveFormLoadingAdorner != null)
-            {
-                m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
-            }
-        }
-
-        /// <summary>
-        /// (DOES NOT ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        public void RefreshUI_TimeMessageInvalidate()
+        public void TimeMessageRefresh()
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Render, new ThreadStart(RefreshUI_TimeMessageInvalidate));
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(RefreshUI_TimeMessageInvalidate));
+                //Dispatcher.Invoke(DispatcherPriority.Render, new ThreadStart(TimeMessageRefresh));
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(TimeMessageRefresh));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -1077,12 +659,12 @@ namespace Tobi.Modules.AudioPane
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_TimeMessageClear()
+        public void TimeMessageHide()
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageClear));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_TimeMessageClear));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(TimeMessageHide));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(TimeMessageHide));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -1095,12 +677,12 @@ namespace Tobi.Modules.AudioPane
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_TimeMessageInitiate()
+        public void TimeMessageShow()
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_TimeMessageInitiate));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_TimeMessageInitiate));
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(TimeMessageShow));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(TimeMessageShow));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -1111,14 +693,12 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        // ReSharper restore InconsistentNaming
-
         /// <summary>
         /// Shows or hides the loading message in the adorner layer
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
         /// <param name="visible"></param>
-        public void RefreshUI_LoadingMessage(bool visible)
+        public void ShowHideWaveFormLoadingMessage(bool visible)
         {
             if (Dispatcher.CheckAccess())
             {
@@ -1144,6 +724,27 @@ namespace Tobi.Modules.AudioPane
                     Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_LoadingMessageHidden));
                 }
             }
+        }
+
+        public void ZoomFitFull()
+        {
+            ViewModel.Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
+
+            double widthToUse = WaveFormScroll.ViewportWidth;
+            if (double.IsNaN(Double.NaN) || widthToUse == 0)
+            {
+                widthToUse = WaveFormScroll.ActualWidth;
+            }
+            if (widthToUse < ZoomSlider.Minimum)
+            {
+                ZoomSlider.Minimum = widthToUse;
+            }
+            if (widthToUse > ZoomSlider.Maximum)
+            {
+                ZoomSlider.Maximum = widthToUse;
+            }
+
+            ZoomSlider.Value = widthToUse;
         }
 
         #region DispatcherTimers
@@ -1224,6 +825,235 @@ namespace Tobi.Modules.AudioPane
         }
 
         #endregion DispatcherTimers
+
+        // ReSharper disable InconsistentNaming
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        private void refreshUI_PeakMeterBlackoutOn()
+        {
+            PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        private void refreshUI_PeakMeterBlackoutOff()
+        {
+            PeakMeterCanvasOpaqueMask.Visibility = Visibility.Hidden;
+
+            if (PeakMeterPathCh1.Data != null)
+            {
+                ((StreamGeometry)PeakMeterPathCh1.Data).Clear();
+            }
+            if (PeakMeterPathCh2.Data != null)
+            {
+                ((StreamGeometry)PeakMeterPathCh2.Data).Clear();
+            }
+        }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        private void refreshUI_LoadingMessageVisible()
+        {
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
+                m_WaveFormLoadingAdorner.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        private void refreshUI_LoadingMessageHidden()
+        {
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+            }
+        }
+
+        /// <summary>
+        /// (ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        private void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
+        {
+            if (ViewModel.PcmFormat == null)
+            {
+                if (m_TimeSelectionLeftX >= 0)
+                {
+                    scrollInView(m_TimeSelectionLeftX + 1);
+                }
+
+                return;
+            }
+
+            if (BytesPerPixel <= 0)
+            {
+                return;
+            }
+
+            //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
+            long bytes = (long)Math.Round(ViewModel.AudioPlayer_ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime));
+
+            double pixels = bytes / BytesPerPixel;
+
+            StreamGeometry geometry;
+            if (WaveFormPlayHeadPath.Data == null)
+            {
+                geometry = new StreamGeometry();
+            }
+            else
+            {
+                geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
+            }
+
+            double height = WaveFormCanvas.ActualHeight;
+            if (double.IsNaN(height) || height == 0)
+            {
+                height = WaveFormCanvas.Height;
+            }
+
+            using (StreamGeometryContext sgc = geometry.Open())
+            {
+                sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
+                sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
+                sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
+                sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
+                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+                sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
+                sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
+                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+
+                sgc.Close();
+            }
+
+            if (WaveFormPlayHeadPath.Data == null)
+            {
+                WaveFormPlayHeadPath.Data = geometry;
+            }
+
+            WaveFormPlayHeadPath.InvalidateVisual();
+
+            scrollInView(pixels);
+        }
+
+        // ReSharper restore InconsistentNaming
+
+        private void scrollInView(double pixels)
+        {
+            double left = WaveFormScroll.HorizontalOffset;
+            double right = left + WaveFormScroll.ViewportWidth;
+            //bool b = WaveFormPlayHeadPath.IsVisible;
+
+            if (m_TimeSelectionLeftX < 0)
+            {
+                if (pixels < left || pixels > right)
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+            }
+            else
+            {
+                double timeSelectionRightX = m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width;
+
+                double minX = Math.Min(m_TimeSelectionLeftX, pixels);
+                minX = Math.Min(timeSelectionRightX, minX);
+
+                double maxX = Math.Max(m_TimeSelectionLeftX, pixels);
+                maxX = Math.Max(timeSelectionRightX, maxX);
+
+                double visibleWidth = (right - left);
+
+                if ((maxX - minX) <= (visibleWidth - 20))
+                {
+                    if (minX < left)
+                    {
+                        double offset = minX - 10;
+                        if (offset < 0)
+                        {
+                            offset = 0;
+                        }
+                        WaveFormScroll.ScrollToHorizontalOffset(offset);
+                    }
+                    else if (maxX > right)
+                    {
+                        double offset = maxX - visibleWidth + 10;
+                        if (offset < 0)
+                        {
+                            offset = 0;
+                        }
+                        WaveFormScroll.ScrollToHorizontalOffset(offset);
+                    }
+                }
+                else if (pixels >= timeSelectionRightX)
+                {
+                    double offset = pixels - visibleWidth + 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else if (pixels <= timeSelectionRightX)
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else if ((timeSelectionRightX - pixels) <= (visibleWidth - 10))
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else if ((pixels - m_TimeSelectionLeftX) <= (visibleWidth - 10))
+                {
+                    double offset = m_TimeSelectionLeftX - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+                else
+                {
+                    double offset = pixels - 10;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    WaveFormScroll.ScrollToHorizontalOffset(offset);
+                }
+            }
+        }
+
+        private bool isControlKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None;
+
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
 
         // TODO: this is not wired to anything yet
         public void FocusOnRoot()
