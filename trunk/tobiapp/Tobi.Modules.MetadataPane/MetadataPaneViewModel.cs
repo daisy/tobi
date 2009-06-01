@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
@@ -146,7 +145,7 @@ namespace Tobi.Modules.MetadataPane
                                                    View,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 500, 600);
+                                                   true, 500, 500);
             windowPopup.Show();
         }
 

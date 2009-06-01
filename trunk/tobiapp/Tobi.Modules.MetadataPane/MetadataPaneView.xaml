@@ -1,168 +1,192 @@
-﻿<StackPanel
+﻿<DockPanel
     x:Class="Tobi.Modules.MetadataPane.MetadataPaneView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
-    xmlns:local="clr-namespace:Frustration">
-    
-    <StackPanel.Resources>
-        
-        <Style x:Key="metadataBaseStyle" TargetType="{x:Type Control}">
-            <Setter Property="Margin" Value="4"/>
-        </Style>
+    xmlns:local="clr-namespace:Frustration"
+    LastChildFill="True">
 
-        <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}" 
-               BasedOn="{StaticResource metadataBaseStyle}">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="ToolTip" Value="Insert Error Details Here!!!"/>
-                    <Setter Property="BorderBrush" Value="Red"/>
-                    <Setter Property="Background" Value="Pink"/>
-                </Trigger>
-            </Style.Triggers>
-            <Setter Property="Validation.ErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox>
-                                <Binding Path="Content"/>
-                            </TextBox>
-                            <TextBlock Foreground="Red" Text="Insert error details!!"/>
-                        </StackPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+  <DockPanel.Resources>
 
-        <Style x:Key="metadataReadOnlyStyle" TargetType="{x:Type TextBlock}" 
+    <Style x:Key="metadataBaseStyle" TargetType="{x:Type Control}">
+      <Setter Property="Margin" Value="4"/>
+    </Style>
+
+    <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}"
            BasedOn="{StaticResource metadataBaseStyle}">
-            <Setter Property="Background" Value="Gray"/>
-        </Style>
+      <Style.Triggers>
+        <Trigger Property="Validation.HasError" Value="true">
+          <Setter Property="ToolTip" Value="Insert Error Details Here!!!"/>
+          <Setter Property="BorderBrush" Value="Red"/>
+          <Setter Property="Background" Value="Pink"/>
+        </Trigger>
+      </Style.Triggers>
+      <Setter Property="Validation.ErrorTemplate">
+        <Setter.Value>
+          <ControlTemplate>
+            <StackPanel Orientation="Horizontal">
+              <TextBox>
+                <Binding Path="Content"/>
+              </TextBox>
+              <TextBlock Foreground="Red" Text="Insert error details!!"/>
+            </StackPanel>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
 
-        <Style x:Key="metadataRequiredStyle" TargetType="{x:Type TextBox}" 
-           BasedOn="{StaticResource metadataBaseStyle}">
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
+    <Style x:Key="metadataReadOnlyStyle" TargetType="{x:Type TextBlock}"
+       BasedOn="{StaticResource metadataBaseStyle}">
+      <Setter Property="Background" Value="Gray"/>
+    </Style>
 
-    </StackPanel.Resources>
-    <UI:SortableListView
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        x:Name="list"
-        ItemsSource="{Binding Metadatas, Mode=OneWay}"
-        SelectionMode="Single"
-        ScrollViewer.HorizontalScrollBarVisibility="Visible"
-        ScrollViewer.VerticalScrollBarVisibility="Visible"
-        AlternationCount="2">
-        <ListView.Resources>
-    		
-            <!-- for the name field -->
-            <DataTemplate x:Key="RequiredNameTemplate">
-                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-            </DataTemplate>
-            <DataTemplate x:Key="RecommendedNameTemplate">
-                <TextBlock Text="{Binding Name}"/> 
-            </DataTemplate>
-            <DataTemplate x:Key="OptionalNameTemplate">
-                <TextBlock Text="{Binding Name}"/>
-            </DataTemplate>
-            
-            <!-- for the content field-->
-            <DataTemplate x:Key="ReadOnlyTemplate">
-                <StackPanel>
-                    <TextBlock Text="{Binding Content}"/>
-                </StackPanel>
-            </DataTemplate>
-            
-            <DataTemplate x:Key="OptionalStringTemplate">
-                <TextBox Text="{Binding Content}"/>
-            </DataTemplate>
-            
-            <DataTemplate x:Key="RequiredStringTemplate">
-                <TextBox Style="{StaticResource metadataErrorStyle}">
-                    <TextBox.Text>
-                        <Binding Path="Content">
-                          <Binding.ValidationRules>
-                                <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty."/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-            </DataTemplate>
-           
-            <DataTemplate x:Key="OptionalDateTemplate">
-                <TextBox>
-                    <TextBox.Text>
-                        <Binding Path="Content">
-                          <Binding.ValidationRules>
-                                <local:OptionalDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-            </DataTemplate>
+    <Style x:Key="metadataRequiredStyle" TargetType="{x:Type TextBox}"
+       BasedOn="{StaticResource metadataBaseStyle}">
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
 
-            <DataTemplate x:Key="RequiredDateTemplate">
-                <TextBox Style="{StaticResource metadataErrorStyle}">
-                    <TextBox.Text>
-                        <Binding Path="Content">
-                          <Binding.ValidationRules>
-                                <local:RequiredDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-            </DataTemplate>
+  </DockPanel.Resources>
 
-            
-            <local:MetadataContentTypeTemplateSelector 
-                RequiredDateTemplate="{StaticResource RequiredDateTemplate}"
-                RequiredStringTemplate="{StaticResource RequiredStringTemplate}"
-                OptionalStringTemplate="{StaticResource OptionalStringTemplate}" 
-                OptionalDateTemplate="{StaticResource OptionalDateTemplate}"
-                ReadOnlyTemplate="{StaticResource ReadOnlyTemplate}" 
-                DefaultTemplate="{StaticResource OptionalStringTemplate}"
-                x:Key="metadataContentTemplateSelector" />
-            
-            <local:MetadataNameTypeTemplateSelector
-                RequiredTemplate="{StaticResource RequiredNameTemplate}"
-                RecommendedTemplate="{StaticResource RecommendedNameTemplate}"
-                OptionalTemplate="{StaticResource OptionalNameTemplate}"
-                x:Key="metadataNameTemplateSelector"/>
-            
-        </ListView.Resources>
-        
-        <ListView.View>
-        <GridView AllowsColumnReorder="false">
-          <GridViewColumn Header="Name"
-                          UI:SortableListView.SortPropertyName="Name"
-                          CellTemplateSelector="{StaticResource metadataNameTemplateSelector}"/>
+  <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical">
 
-          <GridViewColumn Header="Content"
-                          UI:SortableListView.SortPropertyName="Content"
-                          CellTemplateSelector="{StaticResource metadataContentTemplateSelector}"/>
-        </GridView>
-      </ListView.View>
-        
-      <ListView.ItemContainerStyle>
-
-        <Style TargetType="{x:Type ListViewItem}">
-          <Style.Triggers>
-            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-              <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-
-      </ListView.ItemContainerStyle>
-    </UI:SortableListView>
-    
     <Button Click="Add_Metadata_Click">Add</Button>
     <Button Click="Fake_Button_Click">Fake</Button>
 
     <StackPanel Orientation="Horizontal">
-        <TextBox Width="100">Does nothing right now</TextBox>
-        <Button>Lookup</Button>
+      <TextBox Width="100">Does nothing right now</TextBox>
+      <Button>Lookup</Button>
     </StackPanel>
-</StackPanel>
+
+  </StackPanel>
+
+
+  <UI:SortableListView
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      x:Name="list"
+      ItemsSource="{Binding Metadatas, Mode=OneWay}"
+      SelectionMode="Extended"
+      ScrollViewer.HorizontalScrollBarVisibility="Visible"
+      ScrollViewer.VerticalScrollBarVisibility="Visible"
+      AlternationCount="2">
+    
+    <ListView.Resources>
+
+      <!-- for the name field -->
+      <DataTemplate x:Key="RequiredNameTemplate">
+        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+      </DataTemplate>
+      <DataTemplate x:Key="RecommendedNameTemplate">
+        <TextBlock Text="{Binding Name}"/>
+      </DataTemplate>
+      <DataTemplate x:Key="OptionalNameTemplate">
+        <TextBlock Text="{Binding Name}"/>
+      </DataTemplate>
+
+      <!-- for the content field-->
+      <DataTemplate x:Key="ReadOnlyTemplate">
+        <StackPanel>
+          <TextBlock Text="{Binding Content}"/>
+        </StackPanel>
+      </DataTemplate>
+
+      <DataTemplate x:Key="OptionalStringTemplate">
+        <TextBox Text="{Binding Content}"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="RequiredStringTemplate">
+        <TextBox Style="{StaticResource metadataErrorStyle}">
+          <TextBox.Text>
+            <Binding Path="Content">
+              <Binding.ValidationRules>
+                <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty."/>
+              </Binding.ValidationRules>
+            </Binding>
+          </TextBox.Text>
+        </TextBox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="OptionalDateTemplate">
+        <TextBox>
+          <TextBox.Text>
+            <Binding Path="Content">
+              <Binding.ValidationRules>
+                <local:OptionalDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </TextBox.Text>
+        </TextBox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="RequiredDateTemplate">
+        <TextBox Style="{StaticResource metadataErrorStyle}">
+          <TextBox.Text>
+            <Binding Path="Content">
+              <Binding.ValidationRules>
+                <local:RequiredDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </TextBox.Text>
+        </TextBox>
+      </DataTemplate>
+
+
+      <local:MetadataContentTypeTemplateSelector
+          RequiredDateTemplate="{StaticResource RequiredDateTemplate}"
+          RequiredStringTemplate="{StaticResource RequiredStringTemplate}"
+          OptionalStringTemplate="{StaticResource OptionalStringTemplate}"
+          OptionalDateTemplate="{StaticResource OptionalDateTemplate}"
+          ReadOnlyTemplate="{StaticResource ReadOnlyTemplate}"
+          DefaultTemplate="{StaticResource OptionalStringTemplate}"
+          x:Key="metadataContentTemplateSelector" />
+
+      <local:MetadataNameTypeTemplateSelector
+          RequiredTemplate="{StaticResource RequiredNameTemplate}"
+          RecommendedTemplate="{StaticResource RecommendedNameTemplate}"
+          OptionalTemplate="{StaticResource OptionalNameTemplate}"
+          x:Key="metadataNameTemplateSelector"/>
+
+    </ListView.Resources>
+
+    <ListView.View>
+      <GridView AllowsColumnReorder="false">
+        <GridViewColumn>
+          <GridViewColumn.HeaderTemplate>
+            <DataTemplate>
+              <CheckBox Checked="AllSelectionChanged" Unchecked="AllSelectionChanged"/>
+            </DataTemplate>
+          </GridViewColumn.HeaderTemplate>
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox IsChecked="{Binding
+                          RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},
+                          Path=IsSelected, Mode=TwoWay}"/>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+        <GridViewColumn Header="Name"
+                        UI:SortableListView.SortPropertyName="Name"
+                        CellTemplateSelector="{StaticResource metadataNameTemplateSelector}"/>
+
+        <GridViewColumn Header="Content"
+                        UI:SortableListView.SortPropertyName="Content"
+                        CellTemplateSelector="{StaticResource metadataContentTemplateSelector}"/>
+      </GridView>
+    </ListView.View>
+
+    <ListView.ItemContainerStyle>
+
+      <Style TargetType="{x:Type ListViewItem}">
+        <Style.Triggers>
+          <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+    </ListView.ItemContainerStyle>
+  </UI:SortableListView>
+
+
+</DockPanel>
 
