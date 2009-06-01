@@ -93,13 +93,12 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
             return CanExecute((T)parameter);
         }
 
+        private readonly object LOCK = new object();
+        private EventHandler m_CanExecuteChangedEvent;
+
         ///<summary>
         ///Occurs when changes occur that affect whether or not the command should execute.
         ///</summary>
-        //public event EventHandler CanExecuteChanged;
-
-        private readonly object LOCK = new object();
-        private EventHandler m_CanExecuteChangedEvent;
         public event EventHandler CanExecuteChanged
         {
             add

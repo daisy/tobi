@@ -86,7 +86,9 @@ namespace Tobi.Infrastructure
 
         protected ViewModelBase()
         {
+#if DEBUG
             ThrowOnInvalidPropertyName = false;
+#endif
             Dispatcher = Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher;
 
             m_DependentPropertyList = new List<KeyValuePair<string, string>>();
@@ -154,7 +156,9 @@ namespace Tobi.Infrastructure
 
         private void OnPropertyChanged(string propertyName)
         {
+#if DEBUG
             VerifyPropertyName(propertyName);
+#endif
 
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
 
