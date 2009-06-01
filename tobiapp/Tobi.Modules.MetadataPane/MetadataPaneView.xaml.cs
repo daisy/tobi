@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls.Primitives;
 using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,9 +32,63 @@ namespace Tobi.Modules.MetadataPane
             DataContext = ViewModel;
 
             InitializeComponent();
+
+            list.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(OnHeaderResize), true);
         }
 
         #endregion Construction
+
+        private double m_CheckBoxColumnWidth = -1.0;
+
+        private void OnHeaderResize(object sender, DragDeltaEventArgs e)
+        {
+            var thumb = e.OriginalSource as Thumb;
+            if (thumb == null)
+            {
+                return;
+            }
+
+            var header = thumb.TemplatedParent as GridViewColumnHeader;
+            if (header == null)
+            {
+                return;
+            }
+
+            var view = list.View as GridView;
+            if (view == null)
+            {
+                return;
+            }
+
+            // If user tries to resize checkbox column, reset the width to fixed
+            if (view.Columns[0] == header.Column)
+            {
+                if (m_CheckBoxColumnWidth == -1.0)
+                {
+                    m_CheckBoxColumnWidth = header.Column.ActualWidth;
+                }
+                header.Column.Width = m_CheckBoxColumnWidth;
+                e.Handled = true;
+            }
+        }
+
+        private void AllSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var chkBox = sender as CheckBox;
+            if (chkBox != null)
+            {
+                bool check = chkBox.IsChecked.Value;
+
+                if (check)
+                {
+                    list.SelectAll();
+                }
+                else
+                {
+                    list.UnselectAll();
+                }
+            }
+        }
 
         private void Add_Metadata_Click(object sender, RoutedEventArgs e)
         {
@@ -57,13 +112,13 @@ namespace Frustration
         public DataTemplate OptionalDateTemplate { get; set; }
         public DataTemplate RequiredStringTemplate { get; set; }
         public DataTemplate RequiredDateTemplate { get; set; }
-        public DataTemplate ReadOnlyTemplate { get; set;}
+        public DataTemplate ReadOnlyTemplate { get; set; }
         public DataTemplate DefaultTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             Metadata metadata = (Metadata)item;
-            
+
             List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
                 Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
             int index = list.FindIndex(0, s => s.Name == metadata.Name);
@@ -83,7 +138,7 @@ namespace Frustration
                         return OptionalDateTemplate;
                 }
 
-                else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString || 
+                else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString ||
                     metaitem.FieldType == SupportedMetadataFieldType.LongString)
                 {
                     if (metaitem.Occurence == MetadataOccurence.Required)
@@ -113,7 +168,7 @@ namespace Frustration
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             Metadata metadata = (Metadata)item;
-            
+
             List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
                 Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
             int index = list.FindIndex(0, s => s.Name == metadata.Name);
