@@ -89,6 +89,7 @@
     <Compile Include="IToggableView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />
+    <Compile Include="SampleSingleton.cs" />
     <Compile Include="Sizes.cs" />
     <Compile Include="SortableObservableCollection.cs" />
     <Compile Include="StringExtensions.cs" />
@@ -105,6 +106,7 @@
       <DependentUpon>ComboColorPicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DockSplitter.cs" />
+    <Compile Include="UI\DynamicItemsControlRegionAdapter.cs" />
     <Compile Include="UI\FlowDocumentFindReplace.cs" />
     <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
@@ -130,6 +132,7 @@
     <Compile Include="UI\PopupModalWindow.xaml.cs">
       <DependentUpon>PopupModalWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ToolBarTrayRegionAdapter.cs" />
     <Compile Include="UI\WatermarkTextBox.cs" />
     <Compile Include="UI\WpfTreeHelper.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />

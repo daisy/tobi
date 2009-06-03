@@ -170,7 +170,7 @@ c.Execute();
         {
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
-            SplashScreen = new SplashScreen("TobiSplashScreen.png");
+            SplashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "TobiSplashScreen.png");
             SplashScreen.Show(false);
 
             PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
@@ -404,6 +404,14 @@ c.Execute();
                 Application.Current.Shutdown();
                 //Environment.Exit(1);
             }
+        }
+
+        public static void LoadAndMergeResourceDictionary(string path, string assemblyFullName)
+        {
+            string dictionaryName = string.Format("/{0};component/{1}", assemblyFullName, path);
+            var uri = new Uri(dictionaryName, UriKind.Relative);
+            var dictionary = (ResourceDictionary)Application.LoadComponent(uri);
+            Application.Current.Resources.MergedDictionaries.Add(dictionary);
         }
     }
 }
