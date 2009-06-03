@@ -1,8 +1,11 @@
-﻿using Microsoft.Practices.Composite.Logging;
+﻿using System.Windows.Controls;
+using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
 using Microsoft.Practices.Unity;
+using Tobi.Infrastructure.UI;
 using Tobi.Modules.AudioPane;
 using Tobi.Modules.DocumentPane;
 using Tobi.Modules.MetadataPane;
@@ -32,6 +35,8 @@ namespace Tobi
         ///</summary>
         protected override void ConfigureContainer()
         {
+            //Container.RegisterInstance<Dispatcher>(Dispatcher.CurrentDispatcher);
+
             Container.RegisterType<IShellView, Shell>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IShellPresenter, ShellPresenter>(new ContainerControlledLifetimeManager());
             base.ConfigureContainer();
@@ -82,6 +87,15 @@ namespace Tobi
 
             //.AddModule(typeof (StatusBarModule));
             //.AddModule(typeof(UserInterfaceZoomModule))
+        }
+
+        protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
+        {
+            var mappings = base.ConfigureRegionAdapterMappings() ?? Container.Resolve<RegionAdapterMappings>();
+            mappings.RegisterMapping(typeof(Menu), Container.Resolve<DynamicItemsControlRegionAdapter>());
+            mappings.RegisterMapping(typeof(MenuItem), Container.Resolve<DynamicItemsControlRegionAdapter>());
+            mappings.RegisterMapping(typeof(ToolBarTray), Container.Resolve<ToolBarTrayRegionAdapter>());
+            return mappings;
         }
     }
 }
