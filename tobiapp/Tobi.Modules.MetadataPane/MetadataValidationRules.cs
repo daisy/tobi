@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Globalization;
 
-namespace Frustration
+namespace Tobi.Modules.MetadataPane
 {
     public abstract class BaseValidationRule : ValidationRule
     {

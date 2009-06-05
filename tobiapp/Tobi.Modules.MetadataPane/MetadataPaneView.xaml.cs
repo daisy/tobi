@@ -99,12 +99,15 @@ namespace Tobi.Modules.MetadataPane
         {
             //mess with the data in the data model and test that the changes were reflected
         }
+
+        private void DatePicker_CalendarClosed(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
 
-//if this class is in the Tobi.Modules.MetadataPane namespace, the XAML doesn't "see" it
-//there must be an easy fix, but for today ... 
-namespace Frustration
+namespace Tobi.Modules.MetadataPane
 {
     public class MetadataContentTypeTemplateSelector : DataTemplateSelector
     {
@@ -183,5 +186,24 @@ namespace Frustration
             }
             return OptionalTemplate;
         }
+    }
+    public class ValueConverter : System.Windows.Data.IValueConverter
+    {
+
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string val = "abc";
+            //throw new NotImplementedException();
+            return val;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

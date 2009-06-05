@@ -32,8 +32,8 @@ namespace Tobi.Modules.MetadataPane
         public bool IsReadOnly { get; set; }
         public bool IsReapeatable { get; set; }
         public string Name { get; set; }
-        public string Description { get; set;} 
-
+        public string Description { get; set;}
+        
         public SupportedMetadataItem(string name, SupportedMetadataFieldType fieldType, 
             MetadataOccurence occurence, bool isReadOnly, bool isRepeatable, string description) 
         {
@@ -293,5 +293,18 @@ namespace Tobi.Modules.MetadataPane
                         false,
                         "The unique identifier.")
                 };
+    }
+
+    public class MetadataFilter
+    {
+        /// <summary>
+        /// based on the existing metadata, return a list of metadata fields available
+        /// for addition
+        /// </summary>
+        public List<SupportedMetadataItem> GetAvailableMetadata()
+        {
+            return SupportedMetadataList.MetadataList;
+            //Project.GetPresentation(0).ListOfMetadata
+        }
     }
 }
