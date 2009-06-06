@@ -122,6 +122,28 @@
   <!-- SolidColorBrush x:Key="SystemColorsHighlight" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"></SolidColorBrush>
 
   <SolidColorBrush x:Key="SystemColorsControl" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"></SolidColorBrush -->
+  
+<Geometry x:Key="DownArrow">M0,0 L1,0 0.5,1Z</Geometry>
+<Geometry x:Key="UpArrow">M0,1 L1,1 0.5,0Z</Geometry>
+<Geometry x:Key="RightArrow">M0,0 L1,0.5 0,1Z</Geometry>
+<Geometry x:Key="LeftArrow">M0,0.5 L1,1 1,0Z</Geometry>
+<Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
+
+  <!-- DownArrow
+  <Path Data="{StaticResource DownArrow}" Width="10" Height="8"
+    Stretch="Fill" Fill="Black" / -->
+
+  <!-- CloseX
+  <Path Data="{StaticResource CloseX}" Width="12" Height="12"
+    Stretch="Fill" Stroke="Black" StrokeThickness="3" Margin="10" / -->
+
+  <Path x:Key="Arrow"
+        x:Shared="false"
+				   Fill ="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+				   VerticalAlignment ="Center"
+				   HorizontalAlignment ="Center"
+				   StrokeThickness = "1"
+				   Data            = "M 0,0 L 6,3 L 0,6 L 0,0"/>
 
   <Style TargetType="{x:Type GridSplitter}">
 
@@ -150,14 +172,6 @@
       </EventTrigger>
     </Style.Triggers>
   </Style>
-
-  <Path x:Key="Arrow"
-        x:Shared="false"
-				   Fill ="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
-				   VerticalAlignment ="Center"
-				   HorizontalAlignment ="Center"
-				   StrokeThickness = "1"
-				   Data            = "M 0,0 L 6,3 L 0,6 L 0,0"/>
 
     <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 

@@ -133,6 +133,7 @@
       <DependentUpon>PopupModalWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ToolBarTrayRegionAdapter.cs" />
+    <Compile Include="UI\VisualExtensions.cs" />
     <Compile Include="UI\WatermarkTextBox.cs" />
     <Compile Include="UI\WpfTreeHelper.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
