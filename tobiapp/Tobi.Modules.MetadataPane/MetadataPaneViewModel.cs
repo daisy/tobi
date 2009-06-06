@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
@@ -13,6 +14,7 @@ using urakawa.metadata;
 using urakawa.events.presentation;
 using urakawa.events.metadata;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -26,7 +28,7 @@ namespace Tobi.Modules.MetadataPane
         protected IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-
+        
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -35,7 +37,7 @@ namespace Tobi.Modules.MetadataPane
             Container = container;
             EventAggregator = eventAggregator;
             Logger = logger;
-
+            m_Metadatas = null;
             Initialize();
         }
 
@@ -75,39 +77,13 @@ namespace Tobi.Modules.MetadataPane
 
         private void OnProjectUnLoaded(Project obj)
         {
-            List<Metadata> list = obj.GetPresentation(0).ListOfMetadata;
-            //unhook up the events
-            foreach (Metadata metadata in list)
-            {
-                metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-                metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
-            }
             OnProjectLoaded(null);
         }
 
         private void OnProjectLoaded(Project project)
         {
             Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), Category.Debug, Priority.Medium);
-
-            //var shell = Container.Resolve<IShellPresenter>();
-            //shell.DocumentProject
-
             Project = project;
-
-            project.GetPresentation(0).MetadataAdded += new System.EventHandler<MetadataAddedEventArgs>
-                (this.OnMetadataAdded);
-            project.GetPresentation(0).MetadataDeleted += new System.EventHandler<MetadataDeletedEventArgs>
-                (this.OnMetadataDeleted);
-            if (project != null)
-            {
-                List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
-                //hook up the events
-                foreach (Metadata metadata in list)
-                {
-                    metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-                    metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
-                }
-            }
         }
 
         
@@ -122,7 +98,7 @@ namespace Tobi.Modules.MetadataPane
             Logger.Log("MetadataPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            //
+            
             CommandShowMetadataPane = new RichDelegateCommand<object>(UserInterfaceStrings.ShowMetadata,
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
@@ -157,42 +133,159 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Commands
 
-        //public ObservableCollection<Metadata> ObservableMetadatas;
+        private ObservableMetadata m_Metadatas;
         
         [NotifyDependsOn("Project")]
-        public ObservableCollection<Metadata> Metadatas 
+        public ObservableMetadata Metadatas 
         {
             get
             {
                 if (Project == null || Project.NumberOfPresentations <= 0)
                 {
-                    return null;
+                    m_Metadatas = null;
                 }
-                //let's waste some memory...
-                return new ObservableCollection<Metadata>(Project.GetPresentation(0).ListOfMetadata);
+                else
+                {
+                    if (m_Metadatas == null)
+                    {
+                        m_Metadatas = new ObservableMetadata(Project.GetPresentation(0).ListOfMetadata);
+                        Project.GetPresentation(0).MetadataAdded += new System.EventHandler<MetadataAddedEventArgs>
+                            (m_Metadatas.OnMetadataAdded);
+                        Project.GetPresentation(0).MetadataDeleted += new System.EventHandler<MetadataDeletedEventArgs>
+                            (m_Metadatas.OnMetadataDeleted);
+                    }
+                }
+                return m_Metadatas;
+            }
+        }
+        public void CreateFakeData()
+        {
+            List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
+            Metadata metadata = list.Find(s => s.Name == "dc:Title");
+            metadata.Content = "Fake book about fake things";
+            
+        }
+
+        internal void RemoveMetadata(NotifyingMetadata metadata)
+        {
+            //TODO: warn against removing required metadata
+            Project.GetPresentation(0).DeleteMetadata(metadata.UrakawaMetadata);
+        }
+    }
+
+    public class NotifyingMetadata : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                try
+                {
+                    handler(this, e);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //swallow (some strange framework-raised first-chance exception)
+                }
             }
         }
 
-        public void OnMetadataDeleted(object sender, MetadataDeletedEventArgs eventArgs)
+        private Metadata m_Metadata;
+        public Metadata UrakawaMetadata
         {
-            eventArgs.DeletedMetadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-            eventArgs.DeletedMetadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+            get
+            {
+                return m_Metadata;
+            }
+        }
+        public NotifyingMetadata(Metadata metadata)
+        {
+            m_Metadata = metadata;
+            m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
+            m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
+        }
+        ~NotifyingMetadata()
+        {
+            RemoveEvents();
         }
 
-        public void OnMetadataAdded(object sender, MetadataAddedEventArgs eventArgs)
+        public string Content
         {
-            eventArgs.AddedMetadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-            eventArgs.AddedMetadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+            get
+            {
+                return m_Metadata.Content;
+            }
+            set
+            {
+                if (m_Metadata.Content == value) return;
+                m_Metadata.Content = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Content"));
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return m_Metadata.Name;
+            }
+            set
+            {
+                if (m_Metadata.Name == value) return;
+                m_Metadata.Name = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Name"));
+            }
         }
 
         void OnContentChanged(object sender, ContentChangedEventArgs e)
         {
-            throw new System.NotImplementedException("Dear user: sorry!");   
+           OnPropertyChanged(new PropertyChangedEventArgs("Content"));
         }
 
         void OnNameChanged(object sender, NameChangedEventArgs e)
         {
-            throw new System.NotImplementedException("Dear user: sorry!");
+            OnPropertyChanged(new PropertyChangedEventArgs("Name"));
         }
+
+        internal void RemoveEvents()
+        {
+            m_Metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+            m_Metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+        }
+    }
+
+    public class ObservableMetadata : ObservableCollection<NotifyingMetadata>
+    {
+        public ObservableMetadata(List<Metadata> metadatas)
+        {
+            foreach (Metadata metadata in metadatas)
+            {
+                this.Add(new NotifyingMetadata(metadata));
+            }
+        }
+        #region sdk-events
+        public void OnMetadataDeleted(object sender, MetadataDeletedEventArgs eventArgs)
+        {
+            foreach (NotifyingMetadata metadata in this)
+            {
+                if (metadata.Content == eventArgs.DeletedMetadata.Content &&
+                    metadata.Name == eventArgs.DeletedMetadata.Name)
+                {
+                    this.Remove(metadata);
+                    metadata.RemoveEvents();                
+                    break;
+                }
+            }
+        }
+
+        public void OnMetadataAdded(object sender, MetadataAddedEventArgs eventArgs)
+        {
+            this.Add(new NotifyingMetadata(eventArgs.AddedMetadata));
+        }
+        #endregion sdk-events
+
     }
 }

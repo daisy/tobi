@@ -16,7 +16,7 @@
                BasedOn="{StaticResource metadataBaseStyle}">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="ToolTip" Value="Insert Error Details Here!!!"/>
+                    <Setter Property="ToolTip" Value="Insert helpful tooltip here!!!"/>
                     <Setter Property="BorderBrush" Value="Red"/>
                     <Setter Property="Background" Value="Pink"/>
                 </Trigger>
@@ -24,12 +24,13 @@
             <Setter Property="Validation.ErrorTemplate">
                 <Setter.Value>
                     <ControlTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox>
+                        <DockPanel DockPanel.Dock="Right">
+                            <AdornedElementPlaceholder/>
+                            <!--<TextBox>
                                 <Binding Path="Content"/>
-                            </TextBox>
+                            </TextBox>-->
                             <TextBlock Foreground="Red" Text="Insert error details!!"/>
-                        </StackPanel>
+                        </DockPanel>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -45,17 +46,22 @@
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
 
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="200"/>
+        </Style>
     </DockPanel.Resources>
 
     <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical">
-
-        <Button Click="Add_Metadata_Click">Add</Button>
-        <Button Click="Fake_Button_Click">Fake</Button>
-
+        
         <StackPanel Orientation="Horizontal">
-            <TextBox Width="100">Does nothing right now</TextBox>
-            <Button>Lookup</Button>
+            <TextBox Width="200" x:Name="LookupField"></TextBox>
+            <Button Click="Lookup_Button_Click">Lookup</Button>
         </StackPanel>
+        
+        <Button Click="Add_Metadata_Button_Click">Add</Button>
+        <Button Click="Remove_Metadata_Button_Click">Remove</Button>
+        
+        <Button Click="Fake_Button_Click">Fake data</Button>
 
     </StackPanel>
 
