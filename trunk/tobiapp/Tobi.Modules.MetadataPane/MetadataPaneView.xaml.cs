@@ -90,19 +90,38 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
-        private void Add_Metadata_Click(object sender, RoutedEventArgs e)
+        private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException("Dear user:  sorry!");
         }
 
         private void Fake_Button_Click(object sender, RoutedEventArgs e)
         {
-            //mess with the data in the data model and test that the changes were reflected
+            ViewModel.CreateFakeData();
         }
 
-        private void DatePicker_CalendarClosed(object sender, RoutedEventArgs e)
+        private void Lookup_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            //TODO: report "not found"
+            if (LookupField.Text == "")
+                return;
+            
+            foreach (object obj in list.Items)
+            {
+                NotifyingMetadata metadata = (NotifyingMetadata) obj;
+                if (metadata.Name.ToLower().Contains(LookupField.Text.ToLower()))
+                {
+                    list.SelectedItems.Add(obj);
+                }
+            }
+        }
+        private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
+        {
+            while (list.SelectedItems.Count > 0)
+            {   
+                NotifyingMetadata metadata = (NotifyingMetadata)list.SelectedItem;
+                ViewModel.RemoveMetadata(metadata);
+            }
         }
     }
 }
@@ -120,7 +139,7 @@ namespace Tobi.Modules.MetadataPane
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            Metadata metadata = (Metadata)item;
+            NotifyingMetadata metadata = (NotifyingMetadata)item;
 
             List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
                 Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
@@ -170,7 +189,7 @@ namespace Tobi.Modules.MetadataPane
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            Metadata metadata = (Metadata)item;
+            NotifyingMetadata metadata = (NotifyingMetadata)item;
 
             List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
                 Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
@@ -187,6 +206,8 @@ namespace Tobi.Modules.MetadataPane
             return OptionalTemplate;
         }
     }
+    
+    //not in use right now
     public class ValueConverter : System.Windows.Data.IValueConverter
     {
 
