@@ -7,7 +7,6 @@ namespace Tobi.Infrastructure
     /*
      * [ModuleDependency("DesktopModule")]
      */
-
     [Module(ModuleName = "IndependentModule", OnDemand = true)]
     public class IndependentModule : IModule
     {

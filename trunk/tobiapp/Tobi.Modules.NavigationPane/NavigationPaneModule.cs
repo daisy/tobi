@@ -33,6 +33,9 @@ namespace Tobi.Modules.NavigationPane
             m_Container.RegisterType<NavigationPaneView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
+
+            //regionManager.RegisterViewWithRegion(RegionNames.NavigationPane, typeof(NavigationPaneView));
+
             var view = m_Container.Resolve<NavigationPaneView>();
 
             IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPane];

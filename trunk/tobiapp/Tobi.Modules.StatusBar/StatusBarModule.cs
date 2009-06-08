@@ -31,6 +31,9 @@ namespace Tobi.Modules.StatusBar
             m_Container.RegisterType<StatusBarView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
+
+            //regionManager.RegisterViewWithRegion(RegionNames.StatusBar, typeof(StatusBarView));
+
             var view = m_Container.Resolve<StatusBarView>();
 
             IRegion targetRegion = regionManager.Regions[RegionNames.StatusBar];

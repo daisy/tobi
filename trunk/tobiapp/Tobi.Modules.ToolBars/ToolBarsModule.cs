@@ -31,6 +31,9 @@ namespace Tobi.Modules.ToolBars
             m_Container.RegisterType<ToolBarsView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
+
+            //regionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(ToolBarsView));
+
             var view = m_Container.Resolve<ToolBarsView>();
 
             IRegion targetRegion = regionManager.Regions[RegionNames.ToolBars];

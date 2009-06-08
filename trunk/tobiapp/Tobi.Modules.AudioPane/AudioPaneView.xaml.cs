@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -55,6 +56,13 @@ namespace Tobi.Modules.AudioPane
             var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = ViewModel.CommandClearSelection };
 
             WaveFormCanvas.InputBindings.Add(mouseBind2);
+        }
+
+        ~AudioPaneView()
+        {
+#if DEBUG
+            ViewModel.Logger.Log("AudioPaneView garbage collected.", Category.Debug, Priority.Medium);
+#endif
         }
 
         #endregion Construction

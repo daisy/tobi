@@ -32,6 +32,9 @@ namespace Tobi.Modules.MenuBar
             m_Container.RegisterType<MenuBarView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
+
+            //regionManager.RegisterViewWithRegion(RegionNames.MenuBar, typeof(MenuBarView));
+
             var view = m_Container.Resolve<MenuBarView>();
 
             IRegion targetRegion = regionManager.Regions[RegionNames.MenuBar];
