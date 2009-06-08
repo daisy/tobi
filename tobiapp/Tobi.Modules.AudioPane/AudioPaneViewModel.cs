@@ -37,6 +37,13 @@ namespace Tobi.Modules.AudioPane
             Initialize();
         }
 
+        ~AudioPaneViewModel()
+        {
+#if DEBUG
+            Logger.Log("AudioPaneViewModel garbage collected.", Category.Debug, Priority.Medium);
+#endif
+        }
+
         #endregion Construction
 
         #region Initialization

@@ -30,6 +30,9 @@ namespace Tobi.Modules.DocumentPane
             m_Container.RegisterType<DocumentPaneView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
+
+            //regionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
+
             var view = m_Container.Resolve<DocumentPaneView>();
 
             IRegion targetRegion = regionManager.Regions[RegionNames.DocumentPane];

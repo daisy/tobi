@@ -37,8 +37,10 @@ namespace Tobi.Modules.AudioPane
             m_Container.RegisterType<AudioPaneViewModel>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
-            var view = m_Container.Resolve<IAudioPaneView>();
 
+            //regionManager.RegisterViewWithRegion(RegionNames.AudioPane, typeof(IAudioPaneView));
+
+            var view = m_Container.Resolve<IAudioPaneView>();
             IRegion targetRegion = regionManager.Regions[RegionNames.AudioPane];
 
             targetRegion.Add(view);
