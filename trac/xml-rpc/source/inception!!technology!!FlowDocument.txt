@@ -143,10 +143,13 @@ http://www.ddj.com/windows/209800469
 
 !DataBinding:
 
-
 http://blog.spencen.com/2008/01/19/html-to-flowdocument-converter.aspx
 
 http://code.logos.com/blog/2008/01/data_binding_in_a_flowdocument.html
+
+http://www.paulstovell.com/blog/attached-bindablerun
+
+http://fortes.com/2007/03/bindablerun
 
 Spell checking:
 

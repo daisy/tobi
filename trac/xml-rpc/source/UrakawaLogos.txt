@@ -36,3 +36,11 @@ Various drawings / logos made by our resident artist(s):
  title="logo"/>
 }}}
 
+[[BR]]
+
+{{{
+#!html
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/TobiLogoNew_TopBanner.png"
+ title="logo"/>
+}}}
+

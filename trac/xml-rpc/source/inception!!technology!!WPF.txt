@@ -6,6 +6,14 @@ http://learnwpf.com/
 
 http://japikse.blogspot.com/2008/07/wpf-layout-panels.html
 
+!StackOverFlow Tips and Tricks:
+
+http://stackoverflow.com/questions/tagged/wpf
+
+Kirupa tutorials:
+
+http://www.kirupa.com/blend_wpf/index.htm
+
 Exhaustive list of prominent WPF blogs:
 
 http://rhnatiuk.wordpress.com/2008/07/10/wpf-blogs/
@@ -18,17 +26,55 @@ Code snippets for Visual Studio:
 
 http://drwpf.com/blog/Home/tabid/36/EntryId/22/Default.aspx
 
+Command line arguments:
+
+http://blogs.msdn.com/avip/archive/2008/10/27/wpf-supporting-command-line-arguments-and-file-extensions.aspx
+
+The Ribbon control:
+
+http://msdn.microsoft.com/hr-hr/office/aa973809(en-us).aspx
+
+http://www.codeproject.com/KB/WPF/ribboncontrol.aspx
+
+http://www.codeproject.com/KB/WPF/ribbonbuilder.aspx
+
+http://www.uxpassion.com/2008/11/download-free-wpf-ribbon-windows-scenic-office-2007-style/
+
+http://www.uxpassion.com/2008/11/how-to-use-add-ribbon-to-wpf-applications/
+
+http://www.uxpassion.com/2008/11/how-to-use-add-ribbon-to-wpf-applications-part-2/
+
+http://www.uxpassion.com/2008/11/how-to-use-add-ribbon-to-wpf-applications-part-3/
+
+http://www.uxpassion.com/2008/12/how-to-use-add-ribbon-to-wpf-applications-part-4/
+
+MVVM and mapping commands with the Ribbon control:
+
+http://www.codeproject.com/KB/WPF/MapperCommandBinding.aspx
+
 WPF, coming from Winforms:
 
 http://www.codeproject.com/KB/WPF/winforms2wpf.aspx
+
+WPF vs Winforms for custom graphical control:
+
+http://www.codeproject.com/KB/WPF/WpfWinFormsBulletGraphs.aspx
 
 WPF application startup and windows:
 
 http://stuff.seans.com/2008/09/01/writing-a-screen-saver-in-wpf/
 
+WPF Application shutdown:
+
+http://www.grumpydev.com/2009/03/08/wpf-bootstrapping-notifyicon-shutdownmode-and-the-mysterious-vanishing-application/
+
 Native (Win32 Interop) behaviours library:
 
 http://huddledmasses.org/wpf-windows-that-snap-to-screen-edges/
+
+Slider control fine tuning:
+
+http://www.rhizohm.net//irhetoric/blog/80/default.aspx
 
 Guided tours:
 
@@ -54,6 +100,10 @@ http://marlongrech.wordpress.com/2008/03/20/more-than-just-mvc-for-wpf/
 
 http://marlongrech.wordpress.com/2008/03/21/creating-a-file-explorer-in-wpf-using-mvcm/
 
+Resizing a Popup with a Thumb:
+
+http://blog.paranoidferret.com/index.php/2008/12/17/wpf-tutorial-resizeable-popup/
+
 Dynamic UI zoom:
 
 http://msdnrss.thecoderblogs.com/2008/10/20/10-reasons-to-consider-wpf-for-your-next-desktop-application-reason-2-databinding
@@ -62,6 +112,10 @@ http://msdnrss.thecoderblogs.com/2008/10/20/10-reasons-to-consider-wpf-for-your-
 
 http://www.thejoyofcode.com/10_reasons_you_should_consider_WPF_for_your_next_desktop_application.aspx
 
+On-screen popup keyboard:
+
+http://www.codeproject.com/KB/WPF/OnScreenKeyboard.aspx
+
 BreadCrumb control:
 
 http://www.codeproject.com/KB/tree/WPFBreadcrumbBar.aspx
@@ -69,6 +123,14 @@ http://www.codeproject.com/KB/tree/WPFBreadcrumbBar.aspx
 Customized layout panels:
 
 http://blog.nerdplusart.com/archives/toolbox-panels
+
+LayoutTransform versus RenderTransform:
+
+http://wpfadventures.wordpress.com/2008/12/19/layouttransform-vs-rendertransform-whats-the-difference/
+
+Grid layout and reference by name (instead of by index):
+
+http://www.sysknowlogy.com/default,month,2008-12.aspx
 
 Collapsible panels:
 
@@ -106,13 +168,35 @@ http://blogs.msdn.com/vinsibal/archive/2008/08/11/net-3-5-sp1-and-wpf-datagrid-c
 
 http://blogs.msdn.com/jgoldb/archive/2008/08/28/improving-microsoft-datagrid-ctp-sorting-performance-part-2.aspx
 
+Data Grid: detect cell click (row, column):
+
+http://wpfadventures.wordpress.com/2008/12/02/wpf-datagrid-detecting-clicked-cell-and-row/
+
+Data Grid in depth:
+
+http://www.codeproject.com/KB/WPF/WPFDataGridExamples.aspx
+
 Disabled button Tooltip:
 
 http://dedjo.blogspot.com/2008/04/two-quick-wpf-tricks-show-tooltip-on.html
 
+Tooltip (popup) with native HWND content (trick with attached behavior):
+
+http://shevaspace.blogspot.com/2008/09/how-to-display-hwndhost-inside.html
+
 Radio button group data binding bug workaround:
 
 http://geekswithblogs.net/claraoscura/archive/2008/10/17/125901.aspx
+
+Data Binding for generic methods:
+
+http://www.codeproject.com/KB/WPF/GenericXAML.aspx
+
+Data binding with !BindingGroup:
+
+http://wpfadventures.wordpress.com/2008/11/28/using-bindinggroups-for-greater-control-over-input-validation/
+
+http://www.scottlogic.co.uk/blog/wpf/2009/01/bindinggroups-for-total-view-validation/
 
 Commands:
 
@@ -126,6 +210,16 @@ http://blogs.vertigo.com/personal/alanl/Blog/Lists/Posts/Post.aspx?ID=17
 
 http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1809894&SiteID=1
 
+RoutedUiCommand:
+
+http://www.softinsight.com/bnoyes/2008/11/09/TheTruthAboutRoutedCommandsRouting.aspx
+
+http://www.codeproject.com/KB/WPF/wpfcommands.aspx
+
+ICommand with built-in CommandManager (instead of RoutedCommand):
+
+http://joshsmithonwpf.wordpress.com/2008/06/17/allowing-commandmanager-to-query-your-icommand-objects/
+
 CommandBinding in XAML code-behind:
 
 http://marlongrech.wordpress.com/2008/11/26/avoiding-commandbinding-in-the-xaml-code-behind-files/
@@ -135,6 +229,10 @@ Trigger Command based on RoutedEvent:
 http://blog.functionalfun.net/2008/09/hooking-up-commands-to-events-in-wpf.html
 
 Model-View-ViewModel (MVVM) design pattern:
+
+http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
+
+http://www.japf.fr/?p=90
 
 http://joshsmithonwpf.wordpress.com/2008/12/01/the-philosophies-of-mvvm/
 
@@ -160,9 +258,22 @@ http://www.nikhilk.net/Entry.aspx?id=198
 
 http://martinfowler.com/eaaDev/PresentationModel.html
 
+Audio MP3 <-> WAV conversions (including re-sampling), C# wrapper for madlib and lame:
+
+http://www.codeproject.com/KB/audio-video/Aumplib.aspx
+
 Audio FFT C++ and WPF:
 
 http://blogs.windowsclient.net/ricciolocristian/archive/2008/02/16/audio-spectrum-using-wpf-and-c-cli.aspx
+
+Capturing and streaming sound by using DirectSound with C#:
+
+http://khason.net/blog/capturing-and-streaming-sound-by-using-directsound-with-c/
+
+Stream wrapper for audio PCM data and byte formats:
+
+http://mark-dot-net.blogspot.com/2008/06/naudio-wave-stream-architecture.html
+http://www.codeplex.com/naudio
 
 Audio !WaveForm:
 
@@ -188,11 +299,17 @@ http://blogs.microsoft.co.il/blogs/tamir/archive/2008/04/23/webcam-control-with-
 
 http://www.codeplex.com/VideoRendererElement
 
+VST plugins in managed C#:
+
+http://www.codeplex.com/vstnet
+
 Service registry use:
 
 http://alexshed.spaces.live.com/blog/cns!71C72270309CE838!161.entry
 
 Threading / Dispatcher:
+
+http://sachabarber.net/?p=411
 
 http://a2zdotnet.com/View.aspx?id=93
 
@@ -243,6 +360,10 @@ http://windowsclient.net/community/featured-blogs.aspx
 
 http://wpfdisciples.wordpress.com/
 
+Localization and M V VM:
+
+http://www.codeproject.com/KB/WPF/InternationalizedWizard.aspx
+
 Localization:
 
 http://www.odewit.net/ArticleContent.aspx?id=WpfLocalization&format=html&lang=en
@@ -260,6 +381,8 @@ http://intagger.blogspot.com/2008/07/wpf-application-localization-pattern_29.htm
 http://www.codeproject.com/KB/WPF/realtime_multilingual.aspx
 
 LocBaml:
+
+http://www.codeproject.com/KB/WPF/WPFUsingLocbaml.aspx
 
 http://msdn.microsoft.com/en-us/library/ms771568.aspx
 
@@ -297,6 +420,14 @@ http://blog.quantumbitdesigns.com/2008/07/22/programmatically-selecting-an-item-
 
 http://www.hardcodet.net/2008/03/prevent-wpf-tree-node-selection
 
+Tree and edit node text:
+
+http://www.codeproject.com/KB/WPF/editabletextblock.aspx
+
+Programmatically selecting an item in a TreeView:
+
+http://quickduck.com/blog/2008/12/11/selecting-an-item-in-a-treeview-in-wpf/
+
 Bring tree node into view (attached behavior demo):
 
 http://www.codeproject.com/KB/WPF/AttachedBehaviors.aspx
@@ -329,9 +460,21 @@ Text Ellipsis in Combo Box:
 
 http://joshsmithonwpf.wordpress.com/2008/10/11/showing-an-ellipsis-for-clipped-text-in-a-combobox/
 
+Attached Property to define a button image:
+
+http://www.hardcodet.net/2009/01/create-wpf-image-button-through-attached-properties
+
+http://blogs.msdn.com/knom/archive/2007/10/31/wpf-control-development-3-ways-to-build-an-imagebutton.aspx
+
 Text Ellipsis in any TextBox (Attached Properties in depth):
 
 http://tranxcoder.wordpress.com/2008/10/12/customizing-lookful-wpf-controls-take-2/
+
+"Activated" event for lists, trees, selector classes, etc.:
+
+http://kentb.blogspot.com/2006/12/listviewitemactivated-event-in-wpf.html
+
+http://serialseb.blogspot.com/2007/01/attached-events-by-example-adding.html
 
 Alternating color list:
 
@@ -339,14 +482,23 @@ http://blog.pixelingene.com/?p=91
 
 http://jamesmccaffrey.spaces.live.com/blog/cns!504C7CC53E7E7FE8!758.entry
 
+List with edit mode (trigger + template):
+
+http://developmentalmadness.blogspot.com/2008/12/in-place-list-editing-with-wpf.html
+
 XAML editor:
 
 http://www.kaxaml.com/
+
 http://www.codeplex.com/Kaxaml
 
 XAML Power Toys:
 
 http://karlshifflett.wordpress.com/xaml-power-toys/
+
+MoXAML Power Toys:
+
+http://peteohanlon.wordpress.com/moxaml-power-toys/
 
 Speech synth:
 
@@ -354,9 +506,21 @@ http://franksworld.com/blog/archive/2007/05/25/4656.aspx
 
 http://www.redmondpie.com/converting-text-to-speech-in-a-c-wpf-application/
 
+Image cropping and resizing:
+
+http://vinothnat.blogspot.com/2008/12/image-resizing-by-wpf-using.html
+
+http://vinothnat.blogspot.com/2008/12/image-cropping-by-wpf-using.html
+
+Clipping a native win32 surface:
+
+http://blogs.msdn.com/ryanvog/archive/2009/01/20/clipping-legacy-content-hosted-inside-a-wpf-scrolling-region.aspx
+
 Bitmap, image, waveform stuff (WPF is geared towards resolution-independence, so bitmaps are faster but not ideal for magnification for visually-impaired users):
 
 http://msdnrss.thecoderblogs.com/2008/09/19/wpfxaml-saving-a-window-or-canvas-as-a-png-bitmap/
+
+http://www.west-wind.com/Weblog/posts/150676.aspx
 
 http://genesisconduit.wordpress.com/2008/07/05/wpf-images-and-dpi-independence/
 
@@ -430,6 +594,14 @@ http://blogs.southworks.net/jdominguez/2008/08/icommand-for-silverlight-with-att
 
 http://blogs.southworks.net/jdominguez/2008/09/presentation-model-with-datatemplates-in-compositewpf-prism-sample/
 
+Composite CAG tutorial:
+
+http://www.devx.com/codemag/Article/40165?trk=DXRSS_DOTNET
+
+UI composition in CAG, View-First versus Presenter-First models:
+
+http://blogs.msdn.com/dphill/archive/2008/12/05/ui-composition-patterns.aspx
+
 Composite compared to AddIn in Blend:
 
 http://www.paulstovell.com/blog/expression-framework-versus-composite-wpf
@@ -439,6 +611,12 @@ Composite Application with MEF (Managed Extensibility Framework):
 http://www.global-webnet.net/BlogEngine/post/2008/09/29/MEF-CompositeWPF-under-one-roof.aspx
 
 http://blogs.msdn.com/brada/archive/2008/09/29/simple-introduction-to-composite-applications-with-the-managed-extensions-framework.aspx
+
+http://emcpadden.wordpress.com/2008/12/07/managed-extensibility-framework-and-others/
+
+Event Aggregator and MEF:
+
+http://denisvuyka.wordpress.com/2009/02/21/using-eventaggregator-with-mef/
 
 Dependency Injection with MEF (Managed Extensibility Framework):
 
@@ -466,6 +644,10 @@ Dynamically load XAML UI (and bind events):
 
 http://krishnabhargav.blogspot.com/2008/10/dynamically-create-wpf-ui-that-responds.html
 
+MEF for dynamically loading Resources / Themes:
+
+http://dotnet.org.za/rudi/archive/2008/12/04/mef-taking-extensibility-to-the-next-level.aspx
+
 Composite and Region registration:
 
 http://blogs.southworks.net/ejadib/2008/07/22/use-the-outlookbar-in-your-compositewpf-prism-applications/
@@ -484,9 +666,29 @@ http://blogs.microsoft.co.il/blogs/bursteg/archive/2007/08/13/Build-AddIns-with-
 
 http://pavanpodila.spaces.live.com/blog/cns!9C9E888164859398!439.entry
 
+Data Bindable Linq:
+
+http://www.codeplex.com/bindablelinq
+
 Custom Data Binding with Dependency Injection:
 
 http://slagd.com/?p=38
+
+WPF Data Binding with old-fashion Winforms binding:
+
+http://wpfmentor.blogspot.com/2008/12/observable-collections-independent-of.html
+
+Introduction to WPF data binding:
+
+http://www.devx.com/codemag/Article/40316?trk=DXRSS_LATEST
+
+Data Binding and StringFormat + TargetNullValue:
+
+http://karlshifflett.wordpress.com/2008/12/16/using-wpf-binding-stringformat-property-with-nullable-types/
+
+BindingList sorting using CollectionViewSource and an adpator pattern:
+
+http://wpfmentor.blogspot.com/2008/12/how-to-sort-bindinglist-using.html
 
 Data Binding: XAML vs behind-the-scenes programmatic approach
 
@@ -573,19 +775,19 @@ Default Templates howto:
 
 http://www.interact-sw.co.uk/iangblog/2007/02/14/wpfdefaulttemplate
 
-Default startup focus:
-
-http://cloudstore.blogspot.com/2008/06/setting-initial-focus-in-wpf.html
-
 Data Binding and Window preferences:
 
 http://blogs.windowsclient.net/bragi/archive/2008/07/03/using-settings-in-wpf-or-how-to-store-retrieve-window-pos-and-loc.aspx
 
+http://www.betsygeorge.com/blog/2008/12/23/dragging-and-maximizing-the-custom-window/
+
 http://betterthaneveryone.com/archive/2008/07/23/wpf-binding-and-background-colors.aspx
+
+http://blogs.microsoft.co.il/blogs/tamir/archive/2008/04/22/quick-wpf-tip-how-to-bind-to-wpf-application-resources-and-settings.aspx
 
 User settings and application configuration (data-bound):
 
-http://msdnrss.thecoderblogs.com/2008/07/23/user-settings-in-wpf/
+http://www.betsygeorge.com/blog/2008/12/18/saving-window-state-in-wpf/
 
 http://icr.ac.webfusion.co.uk/post/Improving-the-Improvements---Cleaning-up-and-adding-validation-to-Baby-Smash!-Options.aspx
 
@@ -639,7 +841,13 @@ http://blogs.windowsclient.net/nidonocu/archive/2008/03/03/wpf-themes-and-contro
 
 Decorators and Adorners, applied to diagramming:
 
+http://www.codeproject.com/KB/WPF/WPFDiagramDesigner_Part1.aspx
+
+http://www.codeproject.com/KB/WPF/WPFDiagramDesigner_Part2.aspx
+
 http://www.codeproject.com/KB/WPF/WPFDiagramDesigner_Part3.aspx
+
+http://www.codeproject.com/KB/WPF/WPFDiagramDesigner_Part4.aspx
 
 Fixing the broken Intellisense for dotNET3.5:
 
@@ -669,6 +877,8 @@ Drag and Drop:
 
 http://blogs.msdn.com/llobo/archive/2008/02/26/drag-drop-library-updated.aspx
 
+http://www.codeproject.com/KB/WPF/ListViewDragDropManager.aspx
+
 http://www.beacosta.com/blog/?p=53
 
 http://blog.pixelingene.com/?p=43
@@ -678,6 +888,8 @@ http://blogs.gotdotnet.com/jaimer/archive/2007/07/12/drag-drop-in-wpf-explained-
 http://blogs.msdn.com/jaimer/archive/2007/07/12/drag-drop-in-wpf-part2.aspx
 
 http://blogs.msdn.com/adamroot/archive/2008/02/01/shell-style-drag-and-drop-in-net-wpf-and-winforms.aspx
+
+http://www.codeproject.com/KB/WPF/WPFDragDrop.aspx
 
 Tab control customization:
 
@@ -697,6 +909,10 @@ http://www.codeplex.com/reflectoraddins
 
 Data (preemptive) Validation:
 
+http://www.codeproject.com/KB/WPF/GlobalWPFValidation.aspx
+
+http://karlshifflett.wordpress.com/mvvm/input-validation-ui-exceptions-model-validation-errors/
+
 http://joshsmithonwpf.wordpress.com/2008/11/14/using-a-viewmodel-to-provide-meaningful-validation-error-messages/
 
 http://joshsmithonwpf.wordpress.com/2008/10/08/binding-to-validationerrors0-without-creating-debug-spew/
@@ -709,6 +925,14 @@ http://www.codeproject.com/KB/WPF/WPF_SelfValidatingTextBox.aspx
 
 http://www.paulstovell.com/blog/validation-scopes-draft
 
+http://www.hardcodet.net/2009/01/combinding-wpf-validation-rules-and-idataerrorinfo-to-validate-conversion-errors
+
+http://peteohanlon.wordpress.com/2009/01/22/action-based-viewmodel-and-model-validation/
+
+Validation of data model using PostSharp aspects:
+
+http://thetreeknowseverything.net/2009/01/21/domain-model-validation-wpf/
+
 File selection control:
 
 http://www.hardcodet.net/2008/03/wpf-file-selection-control
@@ -720,6 +944,14 @@ http://www.hardcodet.net/2008/04/wpf-custom-binding-class
 Multi-binding:
 
 http://blog.paranoidferret.com/index.php/2008/07/21/wpf-tutorial-using-multibindings/
+
+Default startup focus:
+
+http://cloudstore.blogspot.com/2008/06/setting-initial-focus-in-wpf.html
+
+How Focus works:
+
+http://blogs.imeta.co.uk/jpanni/archive/2008/12/30/wpf-uielement.focus.aspx
 
 Keyboard focus and tab navigation:
 
@@ -747,6 +979,8 @@ http://www.scip.be/index.php?Page=ArticlesNET22&Lang=EN
 
 http://www.dev102.com/2008/07/17/wpf-binding-converter-best-practices/
 
+http://lambert.geek.nz/2009/03/03/stringformatconverter/
+
 Animate content between state:
 
 http://blogs.msdn.com/expression/archive/2008/07/18/animating-control-content-between-states.aspx
@@ -767,9 +1001,19 @@ Autoscroll-list:
 
 http://blogs.microsoft.co.il/blogs/tamir/archive/2008/11/10/auto-scroll-listbox-in-wpf.aspx
 
+Scrolling area, viewport and thumbnail navigator:
+
+http://www.thejoyofcode.com/WPF_ScrollViewer_Thumbnail.aspx
+
+http://www.thejoyofcode.com/Controllerizing_the_ScrollViewer_Thumbnail.aspx
+
+http://www.thejoyofcode.com/Making_the_ScrollViewerThumbnail_interactive.aspx
+
 ListBox DataTemplate:
 
 http://adanacp.spaces.live.com/blog/cns!5C91A5A30159F17B!341.entry
+
+http://www.codeproject.com/KB/WPF/CustomListBoxLayoutInWPF.aspx
 
 ListView sorting, editable grid view:
 
@@ -782,6 +1026,10 @@ http://blog.paranoidferret.com/index.php/2008/11/25/wpf-tutorial-using-the-listv
 Observable Collection:
 
 http://msdn.microsoft.com/en-gb/magazine/dd252944.aspx?pr=blog
+
+ICollectionView:
+
+http://marlongrech.wordpress.com/2008/11/22/icollectionview-explained/
 
 Cancellable progress bar:
 
@@ -799,9 +1047,13 @@ List items templating:
 
 http://blogs.msdn.com/wpfsdk/archive/2008/04/27/itemcontrols-don-t-properly-select-items-or-raise-events-when-bound-to-a-data-source.aspx
 
-Filtering a list:
+Filtering and sorting a list:
 
 http://joshsmithonwpf.wordpress.com/2008/08/26/filtering-a-list-of-items-with-the-propertyfiltergroupview-control/
+
+http://www.codeproject.com/KB/WPF/AutoFilterListView.aspx
+
+http://blogs.interknowlogy.com/joelrumerman/archive/2007/04/03/12497.aspx
 
 Dependency Properties explanation:
 
@@ -817,6 +1069,10 @@ http://agsmith.wordpress.com/2008/04/07/propertydescriptor-addvaluechanged-alter
 
 http://blogs.msdn.com/bencon/archive/2007/02/02/cool-trick-with-dependency-properties.aspx
 
+INotifyPropertyChanged wrapper using extension method, lambda expression and reflexion:
+
+http://www.ingebrigtsen.info/post/2008/12/11/INotifyPropertyChanged-revisited.aspx
+
 Run several distinct WPF apps in same process, using ApplicationDomains in separate threads:
 
 http://eprystupa.wordpress.com/2008/07/31/running-multiple-wpf-applications-in-the-same-process-using-appdomains/
@@ -827,8 +1083,13 @@ http://www.hanselman.com/blog/LearningWPFWithBabySmashManuallyManagingClickOnceA
 
 Auto-completing textbox:
 
+http://turhal.blogspot.com/2009/03/wpf-autocomplete-folder-textbox.html
+
+http://www.codeproject.com/KB/WPF/autocomplete-textbox.aspx
+
 http://www.ageektrapped.com/blog/the-missing-net-3-an-autocomplete-textbox-in-wpf-part-4-wpf-flourishes/
 
+http://www.c-sharpcorner.com/UploadFile/lycj/autocomplete-textbox12222008072614AM/autocomplete-textbox.aspx
 
 Cuebanner aka watermark content in empty controls:
 
@@ -864,10 +1125,13 @@ http://windowsclient.net/wpf/perf/wpf-perf-tool.aspx
 
 http://wpf.netfx3.com/files/folders/developer/entry10880.aspx
 
+Performance with Freezable:
+
+http://www.charlespetzold.com/blog/2009/01/Mind-Your-Freeze-and-Qs.html
+
 WPF/XAML Coding guidelines:
 
 http://www.paulstovell.com/blog/xaml-and-wpf-coding-guidelines
-
 
 http://blogs.vertigo.com/personal/alanl/Blog/archive/2007/11/26/wpf-resource-organization-organized-as-separate-files-by-type-vs-single-file.aspx
 
@@ -881,7 +1145,9 @@ Rounded corners + mask:
 
 http://chriscavanagh.wordpress.com/2008/10/03/wpf-easy-rounded-corners-for-anything/
 
-Some interesting projects:
+MSDN WPF Samples:
+
+http://msdn.microsoft.com/en-us/library/ms771633.aspx
 
 Essentials:
 
@@ -913,6 +1179,10 @@ http://www.codeplex.com/CommonServiceLocator
 
 Accessories:
 
+http://www.codeplex.com/odyssey
+
+http://www.codeplex.com/wpfextensions
+
 http://www.codeplex.com/dotwaywpf
 
 http://www.codeplex.com/dynamicdatadisplay
@@ -928,6 +1198,8 @@ http://www.codeplex.com/wpfpropertygrid
 http://www.codeplex.com/wpg
 
 http://www.codeplex.com/AvalonDock
+
+http://www.codeplex.com/GreyableImage
 
 http://www.codeplex.com/VideoRendererElement
 
