@@ -120,6 +120,25 @@ namespace Tobi.Modules.MetadataPane
         {
         }
 
+        public void InitDataTemplateSelectors(ContentTemplateSelector c, NameTemplateSelector n)
+        {  
+            //TODO: how to refer to a XAML data template? 
+
+            //c.RequiredDateTemplate = (DataTemplate)FindResource("RequiredDateContent");
+            //c.RequiredDateTemplate = (DataTemplate)this.list.Resources["RequiredDateContent"];
+            //c.RequiredDateTemplate = (DataTemplate)this.Resources.FindName("RequiredDateContent");
+            /*
+            c.RequiredStringTemplate = (DataTemplate)FindResource("RequiredStringContent");
+            c.OptionalStringTemplate = (DataTemplate)FindResource("OptionalStringContent");
+            c.OptionalDateTemplate = (DataTemplate)FindResource("OptionalDateContent");
+            c.ReadOnlyTemplate = (DataTemplate)FindResource("ReadOnlyContent");
+            c.DefaultTemplate = (DataTemplate)FindResource("OptionalStringContent");
+            */
+            /*n.RequiredTemplate = RequiredName;
+            n.RecommendedTemplate = RecommendedName;
+            n.OptionalTemplate = OptionalName;
+            n.SelectNameTemplate = SelectName;*/
+        }
        
     }
 
