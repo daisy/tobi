@@ -22,7 +22,7 @@ namespace Tobi.Modules.MetadataPane
     /// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
-    public class MetadataPaneViewModel : ViewModelBase, INotifyPropertyChanged
+    public class MetadataPaneViewModel : ViewModelBase
     {
         #region Construction
 
@@ -50,6 +50,7 @@ namespace Tobi.Modules.MetadataPane
         public void SetView(IMetadataPaneView view)
         {
             View = view;
+            View.InitDataTemplateSelectors(m_ContentTemplateSelector, m_NameTemplateSelector);
         }
 
         protected void Initialize()
@@ -64,7 +65,10 @@ namespace Tobi.Modules.MetadataPane
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
             m_ContentTemplateSelector = new ContentTemplateSelector();
+            
             m_NameTemplateSelector = new NameTemplateSelector();
+
+            
         }
 
         private Project m_Project;
@@ -183,7 +187,7 @@ namespace Tobi.Modules.MetadataPane
             metadata.Content = "";
             Project.GetPresentation(0).AddMetadata(metadata);
         }
-        
+
         private NameTemplateSelector m_NameTemplateSelector = null;
         public NameTemplateSelector NameTemplateSelectorProperty
         {
@@ -194,7 +198,7 @@ namespace Tobi.Modules.MetadataPane
             private set
             {
                 m_NameTemplateSelector = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("NameTemplateSelectorProperty"));
+                OnPropertyChanged(() => NameTemplateSelectorProperty);
             }
         }
 
@@ -208,11 +212,10 @@ namespace Tobi.Modules.MetadataPane
             private set
             {
                 m_ContentTemplateSelector = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("ContentTemplateSelectorProperty"));
+                OnPropertyChanged(() => ContentTemplateSelectorProperty);
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+       /* public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -229,6 +232,8 @@ namespace Tobi.Modules.MetadataPane
                 }
             }
         }
+         * */
+
     }
 
     public class ContentTemplateSelector : DataTemplateSelector

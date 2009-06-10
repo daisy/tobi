@@ -148,21 +148,21 @@
                 </StackPanel>
             </DataTemplate>
 
-           <!-- <local:ContentTemplateSelector
+           <!--<local:ContentTemplateSelector
                 RequiredDateTemplate="{StaticResource RequiredDateContent}"
                 RequiredStringTemplate="{StaticResource RequiredStringContent}"
                 OptionalStringTemplate="{StaticResource OptionalStringContent}"
                 OptionalDateTemplate="{StaticResource OptionalDateContent}"
                 ReadOnlyTemplate="{StaticResource ReadOnlyContent}"
                 DefaultTemplate="{StaticResource OptionalStringContent}"
-                x:Key="metadataContentTemplateSelector" />
+                x:Key="ContentTemplateSelectorProperty" />
 
             <local:NameTemplateSelector
                 RequiredTemplate="{StaticResource RequiredName}"
                 RecommendedTemplate="{StaticResource RecommendedName}"
                 OptionalTemplate="{StaticResource OptionalName}"
                 SelectNameTemplate="{StaticResource SelectName}"
-                x:Key="metadataNameTemplateSelector"/> -->
+                x:Key="NameTemplateSelectorProperty"/>-->
             
         </ListView.Resources>
 
