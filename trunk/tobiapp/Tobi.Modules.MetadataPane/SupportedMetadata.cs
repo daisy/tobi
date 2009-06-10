@@ -304,7 +304,7 @@ namespace Tobi.Modules.MetadataPane
         public List<SupportedMetadataItem> GetAvailableMetadata()
         {
             return SupportedMetadataList.MetadataList;
-            //Project.GetPresentation(0).ListOfMetadata
+
         }
     }
 }

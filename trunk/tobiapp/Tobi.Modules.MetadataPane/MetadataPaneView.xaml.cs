@@ -43,22 +43,13 @@ namespace Tobi.Modules.MetadataPane
         private void OnHeaderResize(object sender, DragDeltaEventArgs e)
         {
             var thumb = e.OriginalSource as Thumb;
-            if (thumb == null)
-            {
-                return;
-            }
-
+            if (thumb == null) return;
+            
             var header = thumb.TemplatedParent as GridViewColumnHeader;
-            if (header == null)
-            {
-                return;
-            }
-
+            if (header == null) return;
+            
             var view = list.View as GridView;
-            if (view == null)
-            {
-                return;
-            }
+            if (view == null) return;
 
             // If user tries to resize checkbox column, reset the width to fixed
             if (view.Columns[0] == header.Column)
@@ -92,9 +83,10 @@ namespace Tobi.Modules.MetadataPane
 
         private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException("Dear user:  sorry!");
+            ViewModel.AddEmptyMetadata();
         }
 
+        //fake data model interaction to test notification bindings
         private void Fake_Button_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.CreateFakeData();
@@ -108,7 +100,7 @@ namespace Tobi.Modules.MetadataPane
             
             foreach (object obj in list.Items)
             {
-                NotifyingMetadata metadata = (NotifyingMetadata) obj;
+                NotifyingMetadataItem metadata = (NotifyingMetadataItem) obj;
                 if (metadata.Name.ToLower().Contains(LookupField.Text.ToLower()))
                 {
                     list.SelectedItems.Add(obj);
@@ -119,94 +111,18 @@ namespace Tobi.Modules.MetadataPane
         {
             while (list.SelectedItems.Count > 0)
             {   
-                NotifyingMetadata metadata = (NotifyingMetadata)list.SelectedItem;
+                NotifyingMetadataItem metadata = (NotifyingMetadataItem)list.SelectedItem;
                 ViewModel.RemoveMetadata(metadata);
             }
         }
-    }
-}
 
-namespace Tobi.Modules.MetadataPane
-{
-    public class MetadataContentTypeTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate OptionalStringTemplate { get; set; }
-        public DataTemplate OptionalDateTemplate { get; set; }
-        public DataTemplate RequiredStringTemplate { get; set; }
-        public DataTemplate RequiredDateTemplate { get; set; }
-        public DataTemplate ReadOnlyTemplate { get; set; }
-        public DataTemplate DefaultTemplate { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        private void ComboBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            NotifyingMetadata metadata = (NotifyingMetadata)item;
-
-            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
-                Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
-            int index = list.FindIndex(0, s => s.Name == metadata.Name);
-            if (index != -1)
-            {
-                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
-                //TODO: this assumes that when a field is readonly, we will just display it as a default (short) string
-                //this is probably an ok assumption for now, but we'll want to change it later.
-                if (metaitem.IsReadOnly)
-                    return ReadOnlyTemplate;
-
-                if (metaitem.FieldType == SupportedMetadataFieldType.Date)
-                {
-                    if (metaitem.Occurence == MetadataOccurence.Required)
-                        return RequiredDateTemplate;
-                    else
-                        return OptionalDateTemplate;
-                }
-
-                else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString ||
-                    metaitem.FieldType == SupportedMetadataFieldType.LongString)
-                {
-                    if (metaitem.Occurence == MetadataOccurence.Required)
-                        return RequiredStringTemplate;
-                    else
-                        return OptionalStringTemplate;
-                }
-
-                else
-                {
-                    return DefaultTemplate;
-                }
-            }
-            else
-            {
-                return DefaultTemplate;
-            }
         }
+
+       
     }
 
-    public class MetadataNameTypeTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate OptionalTemplate { get; set; }
-        public DataTemplate RecommendedTemplate { get; set; }
-        public DataTemplate RequiredTemplate { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-            NotifyingMetadata metadata = (NotifyingMetadata)item;
-
-            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
-                Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
-            int index = list.FindIndex(0, s => s.Name == metadata.Name);
-            if (index != -1)
-            {
-                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
-
-                if (metaitem.Occurence == MetadataOccurence.Required)
-                    return RequiredTemplate;
-                else if (metaitem.Occurence == MetadataOccurence.Recommended)
-                    return RecommendedTemplate;
-            }
-            return OptionalTemplate;
-        }
-    }
-    
     //not in use right now
     public class ValueConverter : System.Windows.Data.IValueConverter
     {
