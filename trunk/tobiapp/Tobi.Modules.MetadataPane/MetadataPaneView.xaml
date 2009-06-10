@@ -184,11 +184,11 @@
                 </GridViewColumn>
                 <GridViewColumn Header="Name"
                         UI:SortableListView.SortPropertyName="Name"
-                        CellTemplateSelector="{Binding NameTemplateSelector}"/>
+                        CellTemplateSelector="{Binding NameTemplateSelectorProperty}"/>
 
                 <GridViewColumn Header="Content"
                         UI:SortableListView.SortPropertyName="Content"
-                        CellTemplateSelector="{Binding ContentTemplateSelector}"/>
+                        CellTemplateSelector="{Binding ContentTemplateSelectorProperty}"/>
             </GridView>
         </ListView.View>
 
