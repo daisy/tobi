@@ -15,13 +15,14 @@ using urakawa.events.presentation;
 using urakawa.events.metadata;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace Tobi.Modules.MetadataPane
 {
     /// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
-    public class MetadataPaneViewModel : ViewModelBase
+    public class MetadataPaneViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Construction
 
@@ -61,6 +62,9 @@ namespace Tobi.Modules.MetadataPane
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+
+            m_ContentTemplateSelector = new ContentTemplateSelector();
+            m_NameTemplateSelector = new NameTemplateSelector();
         }
 
         private Project m_Project;
@@ -82,7 +86,8 @@ namespace Tobi.Modules.MetadataPane
 
         private void OnProjectLoaded(Project project)
         {
-            Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), Category.Debug, Priority.Medium);
+            Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
+                Category.Debug, Priority.Medium);
             Project = project;
         }
 
@@ -133,10 +138,10 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Commands
 
-        private ObservableMetadata m_Metadatas;
+        private ObservableMetadataCollection m_Metadatas;
         
         [NotifyDependsOn("Project")]
-        public ObservableMetadata Metadatas 
+        public ObservableMetadataCollection Metadatas 
         {
             get
             {
@@ -148,7 +153,7 @@ namespace Tobi.Modules.MetadataPane
                 {
                     if (m_Metadatas == null)
                     {
-                        m_Metadatas = new ObservableMetadata(Project.GetPresentation(0).ListOfMetadata);
+                        m_Metadatas = new ObservableMetadataCollection(Project.GetPresentation(0).ListOfMetadata);
                         Project.GetPresentation(0).MetadataAdded += new System.EventHandler<MetadataAddedEventArgs>
                             (m_Metadatas.OnMetadataAdded);
                         Project.GetPresentation(0).MetadataDeleted += new System.EventHandler<MetadataDeletedEventArgs>
@@ -163,17 +168,159 @@ namespace Tobi.Modules.MetadataPane
             List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
             Metadata metadata = list.Find(s => s.Name == "dc:Title");
             metadata.Content = "Fake book about fake things";
-            
         }
 
-        internal void RemoveMetadata(NotifyingMetadata metadata)
+        public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
-            //TODO: warn against removing required metadata
+            //TODO: warn against or prevent removing required metadata
             Project.GetPresentation(0).DeleteMetadata(metadata.UrakawaMetadata);
+        }
+
+        public void AddEmptyMetadata()
+        {
+            Metadata metadata = new Metadata();
+            metadata.Name = "";
+            metadata.Content = "";
+            Project.GetPresentation(0).AddMetadata(metadata);
+        }
+        
+        private NameTemplateSelector m_NameTemplateSelector = null;
+        public NameTemplateSelector NameTemplateSelectorProperty
+        {
+            get
+            {
+                return m_NameTemplateSelector;
+            }
+            private set
+            {
+                m_NameTemplateSelector = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("NameTemplateSelectorProperty"));
+            }
+        }
+
+        private ContentTemplateSelector m_ContentTemplateSelector = null;
+        public ContentTemplateSelector ContentTemplateSelectorProperty
+        {
+            get
+            {
+                return m_ContentTemplateSelector;
+            }
+            private set
+            {
+                m_ContentTemplateSelector = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("ContentTemplateSelectorProperty"));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                try
+                {
+                    handler(this, e);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //swallow (some strange framework-raised first-chance exception)
+                }
+            }
         }
     }
 
-    public class NotifyingMetadata : INotifyPropertyChanged
+    public class ContentTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate OptionalStringTemplate { get; set; }
+        public DataTemplate OptionalDateTemplate { get; set; }
+        public DataTemplate RequiredStringTemplate { get; set; }
+        public DataTemplate RequiredDateTemplate { get; set; }
+        public DataTemplate ReadOnlyTemplate { get; set; }
+        public DataTemplate DefaultTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
+
+            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
+                Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
+            int index = list.FindIndex(0, s => s.Name == metadata.Name);
+            if (index != -1)
+            {
+                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
+                //TODO: this assumes that when a field is readonly, we will just display it as a default (short) string
+                //this is probably an ok assumption for now, but we'll want to change it later.
+                if (metaitem.IsReadOnly)
+                    return ReadOnlyTemplate;
+
+                if (metaitem.FieldType == SupportedMetadataFieldType.Date)
+                {
+                    if (metaitem.Occurence == MetadataOccurence.Required)
+                        return RequiredDateTemplate;
+                    else
+                        return OptionalDateTemplate;
+                }
+
+                else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString ||
+                    metaitem.FieldType == SupportedMetadataFieldType.LongString)
+                {
+                    if (metaitem.Occurence == MetadataOccurence.Required)
+                        return RequiredStringTemplate;
+                    else
+                        return OptionalStringTemplate;
+                }
+
+                else
+                {
+                    return DefaultTemplate;
+                }
+            }
+            else
+            {
+                return DefaultTemplate;
+            }
+        }
+    }
+
+    public class NameTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate OptionalTemplate { get; set; }
+        public DataTemplate RecommendedTemplate { get; set; }
+        public DataTemplate RequiredTemplate { get; set; }
+        public DataTemplate SelectNameTemplate { get; set; }
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+
+            NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
+
+            if (metadata.Name != "")
+            {
+                List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
+                    Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
+
+                int index = list.FindIndex(0, s => s.Name == metadata.Name);
+
+                if (index != -1)
+                {
+                    Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
+
+                    if (metaitem.Occurence == MetadataOccurence.Required)
+                        return RequiredTemplate;
+                    else if (metaitem.Occurence == MetadataOccurence.Recommended)
+                        return RecommendedTemplate;
+                }
+                return OptionalTemplate;
+            }
+            else
+            {
+                return SelectNameTemplate;
+            }
+        }
+    }
+    
+    public class NotifyingMetadataItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -201,13 +348,13 @@ namespace Tobi.Modules.MetadataPane
                 return m_Metadata;
             }
         }
-        public NotifyingMetadata(Metadata metadata)
+        public NotifyingMetadataItem(Metadata metadata)
         {
             m_Metadata = metadata;
             m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
             m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
         }
-        ~NotifyingMetadata()
+        ~NotifyingMetadataItem()
         {
             RemoveEvents();
         }
@@ -257,19 +404,19 @@ namespace Tobi.Modules.MetadataPane
         }
     }
 
-    public class ObservableMetadata : ObservableCollection<NotifyingMetadata>
+    public class ObservableMetadataCollection : ObservableCollection<NotifyingMetadataItem>
     {
-        public ObservableMetadata(List<Metadata> metadatas)
+        public ObservableMetadataCollection(List<Metadata> metadatas)
         {
             foreach (Metadata metadata in metadatas)
             {
-                this.Add(new NotifyingMetadata(metadata));
+                this.Add(new NotifyingMetadataItem(metadata));
             }
         }
         #region sdk-events
         public void OnMetadataDeleted(object sender, MetadataDeletedEventArgs eventArgs)
         {
-            foreach (NotifyingMetadata metadata in this)
+            foreach (NotifyingMetadataItem metadata in this)
             {
                 if (metadata.Content == eventArgs.DeletedMetadata.Content &&
                     metadata.Name == eventArgs.DeletedMetadata.Name)
@@ -283,9 +430,11 @@ namespace Tobi.Modules.MetadataPane
 
         public void OnMetadataAdded(object sender, MetadataAddedEventArgs eventArgs)
         {
-            this.Add(new NotifyingMetadata(eventArgs.AddedMetadata));
+            this.Add(new NotifyingMetadataItem(eventArgs.AddedMetadata));
         }
         #endregion sdk-events
 
     }
+
+    
 }
