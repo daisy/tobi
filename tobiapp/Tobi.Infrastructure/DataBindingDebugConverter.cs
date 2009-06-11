@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace Tobi.Infrastructure
 {
-    public class DataBindingDebugConverter : IValueConverter
+    public class DataBindingDebugConverter : MarkupExtension, IValueConverter
     {
         #region IValueConverter Members
 
@@ -24,5 +25,10 @@ namespace Tobi.Infrastructure
         }
 
         #endregion
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 }

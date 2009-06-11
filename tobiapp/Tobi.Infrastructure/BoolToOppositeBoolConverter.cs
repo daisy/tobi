@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace Tobi.Infrastructure
 {
-    public class BoolToOppositeBoolConverter : IValueConverter
+    public class BoolToOppositeBoolConverter : MarkupExtension, IValueConverter
     {
         #region IValueConverter Members
 
@@ -23,5 +24,10 @@ namespace Tobi.Infrastructure
         }
 
         #endregion
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 }

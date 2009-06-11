@@ -5,10 +5,11 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Markup;
 
 namespace Tobi.Infrastructure
 {
-    public class StringXamlConverter : IValueConverter
+    public class StringXamlConverter : MarkupExtension, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -49,6 +50,11 @@ namespace Tobi.Infrastructure
                 return xaml;
             }
             return value;
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 }

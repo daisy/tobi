@@ -175,7 +175,7 @@
 
     <infraUI:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/>
 
-  <infraUI:BooleanNotConverter x:Key="BooleanNotConverter"/>
+  <Infrastructure:BoolToOppositeBoolConverter x:Key="BooleanNotConverter"/>
 
   <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
 

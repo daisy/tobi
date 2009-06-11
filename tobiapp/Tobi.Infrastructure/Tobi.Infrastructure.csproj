@@ -101,7 +101,6 @@
     <Compile Include="UI\AutoGreyableImage.cs" />
     <Compile Include="UI\BindableRun.cs" />
     <Compile Include="UI\BindableRunTextMedia.cs" />
-    <Compile Include="UI\BooleanNotConverter.cs" />
     <Compile Include="UI\CollapsibleGridSplitter.cs" />
     <Compile Include="UI\ComboColorPicker.xaml.cs">
       <DependentUpon>ComboColorPicker.xaml</DependentUpon>
