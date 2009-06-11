@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Diagnostics;
 
@@ -182,7 +183,7 @@ namespace Tobi.Infrastructure.UI
     }
 
     [ValueConversion(typeof(Color), typeof(Brush))]
-    public class ColorToBrushConverter : IValueConverter
+    public class ColorToBrushConverter : MarkupExtension, IValueConverter
     {
         #region IValueConverter Members
 
@@ -200,5 +201,10 @@ namespace Tobi.Infrastructure.UI
         }
 
         #endregion
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 }
