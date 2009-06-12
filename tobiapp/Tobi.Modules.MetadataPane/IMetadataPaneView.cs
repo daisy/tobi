@@ -2,6 +2,6 @@
 {
     public interface IMetadataPaneView
     {
-        void InitDataTemplateSelectors(ContentTemplateSelector c, NameTemplateSelector n);
+        //void InitDataTemplateSelectors(ContentTemplateSelector c, NameTemplateSelector n);
     }
 }
