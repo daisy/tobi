@@ -8,11 +8,14 @@
     LastChildFill="True">
 
     <DockPanel.Resources>
+        <local:BoolToVisibilityConverter x:Key="boolToVis" />
 
-        <Style x:Key="metadataBaseStyle" TargetType="{x:Type Control}"/>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="200"/>
+        </Style>
 
-        <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}"
-               BasedOn="{StaticResource metadataBaseStyle}">
+        <!-- validation styles -->
+        <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="true">
                     <Setter Property="ToolTip" Value="Insert helpful tooltip here!!!"/>
@@ -36,14 +39,23 @@
            BasedOn="{StaticResource metadataBaseStyle}">
             <Setter Property="Background" Value="Gray"/>
         </Style>
-
-        <Style x:Key="metadataRequiredStyle" TargetType="{x:Type TextBox}"
-           BasedOn="{StaticResource metadataBaseStyle}">
+        
+        <Style TargetType="{x:Type TextBlock}" x:Key="NameStyle" >
+            <Setter Property="Visibility" 
+                    Value="{Binding Path=IsSelected,
+                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},
+                    Converter={StaticResource boolToVis},
+                    ConverterParameter=False}" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="RequiredNameStyle" BasedOn="{StaticResource NameStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Width" Value="200"/>
+        <Style TargetType="{x:Type FrameworkElement}" x:Key="NameEditStyle">
+            <Setter Property="Visibility" 
+                    Value="{Binding Path=IsSelected,
+                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},
+                    Converter={StaticResource boolToVis},
+                    ConverterParameter=True}" />
         </Style>
     </DockPanel.Resources>
 
@@ -58,7 +70,7 @@
         <Button Click="Remove_Metadata_Button_Click">Remove</Button>
 
         <Button Click="Fake_Button_Click">Fake data</Button>
-
+        <Button Click="Data_Model_Report_Click">Data model metadata</Button>
     </StackPanel>
 
 
@@ -72,31 +84,46 @@
       ScrollViewer.VerticalScrollBarVisibility="Visible"
       AlternationCount="2">
 
-        <ListView.Resources>
+        <UI:SortableListView.Resources>
 
             <ObjectDataProvider MethodName="GetAvailableMetadata" 
                                 ObjectType="{x:Type local:MetadataFilter}" 
                                 x:Key="odp">
             </ObjectDataProvider>
+           
 
-            
             <!-- for the name field -->
             <DataTemplate x:Key="RequiredName">
-                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                <Grid>
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
+                    <!-- the style is the bit of magic that switches when the item is in focus -->
+                    <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding Path=Name}"
+                          Style="{StaticResource NameEditStyle}"/>
+                </Grid>
             </DataTemplate>
             <DataTemplate x:Key="RecommendedName">
-                <TextBlock Text="{Binding Name}"/>
+                <Grid>
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
+                    <!-- the style is the bit of magic that switches when the item is in focus -->
+                    <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Name"
+                          Style="{StaticResource NameEditStyle}"/>
+                </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
-                <TextBlock Text="{Binding Name}"/>
-            </DataTemplate>
-            <!-- offer a drop down list of available metadata names-->
-            <DataTemplate x:Key="SelectName">
-                <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
+                <Grid>
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
+                    <!-- the style is the bit of magic that switches when the item is in focus -->
+                    <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
                           DisplayMemberPath="Name"
-                          SelectedValuePath="Name" LostFocus="ComboBox_LostFocus"/>
+                          SelectedValuePath="Name"
+                          Style="{StaticResource NameEditStyle}"/>
+                </Grid>
             </DataTemplate>
-
+           
             <!-- for the content field-->
             <DataTemplate x:Key="ReadOnlyContent">
                 <StackPanel>
@@ -148,25 +175,24 @@
                 </StackPanel>
             </DataTemplate>
 
-           <!--<local:ContentTemplateSelector
+            <local:ContentTemplateSelector
                 RequiredDateTemplate="{StaticResource RequiredDateContent}"
                 RequiredStringTemplate="{StaticResource RequiredStringContent}"
                 OptionalStringTemplate="{StaticResource OptionalStringContent}"
                 OptionalDateTemplate="{StaticResource OptionalDateContent}"
                 ReadOnlyTemplate="{StaticResource ReadOnlyContent}"
                 DefaultTemplate="{StaticResource OptionalStringContent}"
-                x:Key="ContentTemplateSelectorProperty" />
+                x:Key="ContentTemplateSelector" />
 
             <local:NameTemplateSelector
                 RequiredTemplate="{StaticResource RequiredName}"
                 RecommendedTemplate="{StaticResource RecommendedName}"
                 OptionalTemplate="{StaticResource OptionalName}"
-                SelectNameTemplate="{StaticResource SelectName}"
-                x:Key="NameTemplateSelectorProperty"/>-->
-            
-        </ListView.Resources>
+                x:Key="NameTemplateSelector"/>
 
-        <ListView.View>
+        </UI:SortableListView.Resources>
+
+        <UI:SortableListView.View>
             <GridView AllowsColumnReorder="false">
                 <GridViewColumn>
                     <GridViewColumn.HeaderTemplate>
@@ -184,15 +210,15 @@
                 </GridViewColumn>
                 <GridViewColumn Header="Name"
                         UI:SortableListView.SortPropertyName="Name"
-                        CellTemplateSelector="{Binding NameTemplateSelectorProperty}"/>
+                        CellTemplateSelector="{StaticResource NameTemplateSelector}"/>
 
                 <GridViewColumn Header="Content"
                         UI:SortableListView.SortPropertyName="Content"
-                        CellTemplateSelector="{Binding ContentTemplateSelectorProperty}"/>
+                        CellTemplateSelector="{StaticResource ContentTemplateSelector}"/>
             </GridView>
-        </ListView.View>
+        </UI:SortableListView.View>
 
-        <ListView.ItemContainerStyle>
+        <UI:SortableListView.ItemContainerStyle>
 
             <Style TargetType="{x:Type ListViewItem}">
                 <Style.Triggers>
@@ -202,7 +228,7 @@
                 </Style.Triggers>
             </Style>
 
-        </ListView.ItemContainerStyle>
+        </UI:SortableListView.ItemContainerStyle>
     </UI:SortableListView>
 
 

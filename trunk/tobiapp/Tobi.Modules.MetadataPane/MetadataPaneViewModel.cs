@@ -50,7 +50,7 @@ namespace Tobi.Modules.MetadataPane
         public void SetView(IMetadataPaneView view)
         {
             View = view;
-            View.InitDataTemplateSelectors(m_ContentTemplateSelector, m_NameTemplateSelector);
+            
         }
 
         protected void Initialize()
@@ -64,12 +64,7 @@ namespace Tobi.Modules.MetadataPane
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
-            m_ContentTemplateSelector = new ContentTemplateSelector();
-            
-            m_NameTemplateSelector = new NameTemplateSelector();
-
-            
-        }
+       }
 
         private Project m_Project;
         public Project Project
@@ -171,7 +166,8 @@ namespace Tobi.Modules.MetadataPane
         {
             List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
             Metadata metadata = list.Find(s => s.Name == "dc:Title");
-            metadata.Content = "Fake book about fake things";
+            if (metadata != null)
+                metadata.Content = "Fake book about fake things";
         }
 
         public void RemoveMetadata(NotifyingMetadataItem metadata)
@@ -187,55 +183,8 @@ namespace Tobi.Modules.MetadataPane
             metadata.Content = "";
             Project.GetPresentation(0).AddMetadata(metadata);
         }
-
-        private NameTemplateSelector m_NameTemplateSelector = null;
-        public NameTemplateSelector NameTemplateSelectorProperty
-        {
-            get
-            {
-                return m_NameTemplateSelector;
-            }
-            private set
-            {
-                m_NameTemplateSelector = value;
-                OnPropertyChanged(() => NameTemplateSelectorProperty);
-            }
-        }
-
-        private ContentTemplateSelector m_ContentTemplateSelector = null;
-        public ContentTemplateSelector ContentTemplateSelectorProperty
-        {
-            get
-            {
-                return m_ContentTemplateSelector;
-            }
-            private set
-            {
-                m_ContentTemplateSelector = value;
-                OnPropertyChanged(() => ContentTemplateSelectorProperty);
-            }
-        }
-       /* public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                try
-                {
-                    handler(this, e);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    //swallow (some strange framework-raised first-chance exception)
-                }
-            }
-        }
-         * */
-
     }
-
+    
     public class ContentTemplateSelector : DataTemplateSelector
     {
         public DataTemplate OptionalStringTemplate { get; set; }
@@ -294,57 +243,31 @@ namespace Tobi.Modules.MetadataPane
         public DataTemplate OptionalTemplate { get; set; }
         public DataTemplate RecommendedTemplate { get; set; }
         public DataTemplate RequiredTemplate { get; set; }
-        public DataTemplate SelectNameTemplate { get; set; }
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
 
             NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
 
-            if (metadata.Name != "")
-            {
-                List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
+            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
                     Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
 
-                int index = list.FindIndex(0, s => s.Name == metadata.Name);
+            int index = list.FindIndex(0, s => s.Name == metadata.Name);
 
-                if (index != -1)
-                {
-                    Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
-
-                    if (metaitem.Occurence == MetadataOccurence.Required)
-                        return RequiredTemplate;
-                    else if (metaitem.Occurence == MetadataOccurence.Recommended)
-                        return RecommendedTemplate;
-                }
-                return OptionalTemplate;
-            }
-            else
+            if (index != -1)
             {
-                return SelectNameTemplate;
+                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
+
+                if (metaitem.Occurence == MetadataOccurence.Required)
+                    return RequiredTemplate;
+                else if (metaitem.Occurence == MetadataOccurence.Recommended)
+                    return RecommendedTemplate;
             }
+            return OptionalTemplate;
         }
     }
     
-    public class NotifyingMetadataItem : INotifyPropertyChanged
+    public class NotifyingMetadataItem : PropertyChangedNotifyBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                try
-                {
-                    handler(this, e);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    //swallow (some strange framework-raised first-chance exception)
-                }
-            }
-        }
-
         private Metadata m_Metadata;
         public Metadata UrakawaMetadata
         {
@@ -374,7 +297,7 @@ namespace Tobi.Modules.MetadataPane
             {
                 if (m_Metadata.Content == value) return;
                 m_Metadata.Content = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Content"));
+                OnPropertyChanged(() => Content);
             }
         }
 
@@ -388,18 +311,18 @@ namespace Tobi.Modules.MetadataPane
             {
                 if (m_Metadata.Name == value) return;
                 m_Metadata.Name = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Name"));
+                OnPropertyChanged(() => Name);
             }
         }
 
         void OnContentChanged(object sender, ContentChangedEventArgs e)
         {
-           OnPropertyChanged(new PropertyChangedEventArgs("Content"));
+           OnPropertyChanged(() => Content);
         }
 
         void OnNameChanged(object sender, NameChangedEventArgs e)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs("Name"));
+            OnPropertyChanged(() => Name);
         }
 
         internal void RemoveEvents()

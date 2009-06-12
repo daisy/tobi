@@ -91,7 +91,15 @@ namespace Tobi.Modules.MetadataPane
         {
             ViewModel.CreateFakeData();
         }
-
+        private void Data_Model_Report_Click(object sender, RoutedEventArgs e)
+        {
+            string data = "";
+            foreach (Metadata m in ViewModel.Project.GetPresentation(0).ListOfMetadata)
+            {
+                data += string.Format("{0} = {1}\n", m.Name, m.Content);
+            }
+            MessageBox.Show(data);
+        }
         private void Lookup_Button_Click(object sender, RoutedEventArgs e)
         {
             //TODO: report "not found"
@@ -115,51 +123,24 @@ namespace Tobi.Modules.MetadataPane
                 ViewModel.RemoveMetadata(metadata);
             }
         }
-
-        private void ComboBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-        }
-
-        public void InitDataTemplateSelectors(ContentTemplateSelector c, NameTemplateSelector n)
-        {  
-            //TODO: how to refer to a XAML data template? 
-
-            //c.RequiredDateTemplate = (DataTemplate)FindResource("RequiredDateContent");
-            //c.RequiredDateTemplate = (DataTemplate)this.list.Resources["RequiredDateContent"];
-            //c.RequiredDateTemplate = (DataTemplate)this.Resources.FindName("RequiredDateContent");
-            /*
-            c.RequiredStringTemplate = (DataTemplate)FindResource("RequiredStringContent");
-            c.OptionalStringTemplate = (DataTemplate)FindResource("OptionalStringContent");
-            c.OptionalDateTemplate = (DataTemplate)FindResource("OptionalDateContent");
-            c.ReadOnlyTemplate = (DataTemplate)FindResource("ReadOnlyContent");
-            c.DefaultTemplate = (DataTemplate)FindResource("OptionalStringContent");
-            */
-            /*n.RequiredTemplate = RequiredName;
-            n.RecommendedTemplate = RecommendedName;
-            n.OptionalTemplate = OptionalName;
-            n.SelectNameTemplate = SelectName;*/
-        }
-       
     }
 
-    //not in use right now
-    public class ValueConverter : System.Windows.Data.IValueConverter
+    public class BoolToVisibilityConverter : System.Windows.Data.IValueConverter
     {
-
-        #region IValueConverter Members
-
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType,
+          object parameter, System.Globalization.CultureInfo culture)
         {
-            string val = "abc";
-            //throw new NotImplementedException();
-            return val;
+            bool param = bool.Parse(parameter as string);
+            bool val = (bool)value;
+
+            return val == param ? Visibility.Visible : Visibility.Hidden;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+          object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
+    
 }
