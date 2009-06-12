@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
+using System.Threading;
 using BitFactory.Logging;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
@@ -12,18 +12,28 @@ namespace Tobi
     {
         private CompositeLogger m_Logger;
 
-        public static void DeleteLogFile()
-        {
-            if (File.Exists(UserInterfaceStrings.LOG_FILE_PATH))
-            {
-                Console.Write("Deleting log file [" + UserInterfaceStrings.LOG_FILE_PATH + "]...");
-                File.Delete(UserInterfaceStrings.LOG_FILE_PATH);
-                Console.Write("File deleted [" + UserInterfaceStrings.LOG_FILE_PATH + "].");
-            }
-        }
-
         public BitFactoryLoggerAdapter()
         {
+            PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
+
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+
+            PresentationTraceSources.DependencyPropertySource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.DependencyPropertySource.Switch.Level = SourceLevels.All;
+
+            PresentationTraceSources.DocumentsSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.DocumentsSource.Switch.Level = SourceLevels.All;
+
+            PresentationTraceSources.MarkupSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.MarkupSource.Switch.Level = SourceLevels.All;
+
+            PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
+
+            Debug.Listeners.Add(new BitFactoryLoggerTraceListener(this));
+
             m_Logger = new CompositeLogger();
 
             Logger consoleLogger = TextWriterLogger.NewConsoleLogger();
@@ -31,6 +41,15 @@ namespace Tobi
 #if (true || DEBUG)
             consoleLogger.Formatter = new LogEntryFormatterCodeLocation();
 #endif
+
+            if (File.Exists(UserInterfaceStrings.LOG_FILE_PATH))
+            {
+                Log("Deleting log file [" + UserInterfaceStrings.LOG_FILE_PATH + "]...", Category.Debug, Priority.Medium);
+                File.Delete(UserInterfaceStrings.LOG_FILE_PATH);
+                Log("File deleted [" + UserInterfaceStrings.LOG_FILE_PATH + "].", Category.Debug, Priority.Medium);
+
+                Thread.Sleep(1000);
+            }
 
             Logger fileLogger = new FileLogger(UserInterfaceStrings.LOG_FILE_PATH);
             m_Logger.AddLogger("file", fileLogger);
@@ -52,7 +71,7 @@ namespace Tobi
                 message = message.Insert(0, codeLocation.ToString() + " -- ");
             }
 #endif
-            
+
             switch (category)
             {
                 case Category.Info:
@@ -137,6 +156,30 @@ namespace Tobi
             }
         }
 #endif
+    }
+
+    public class BitFactoryLoggerTraceListener : TraceListener
+    {
+        public BitFactoryLoggerTraceListener(BitFactoryLoggerAdapter logger)
+        {
+            Logger = logger;
+        }
+
+        protected BitFactoryLoggerAdapter Logger
+        {
+            get;
+            private set;
+        }
+
+        public override void Write(string message)
+        {
+            Logger.Log(message, Category.Info, Priority.Low);
+        }
+
+        public override void WriteLine(string message)
+        {
+            Write(message);
+        }
     }
 
     public class LogEntryFormatterCodeLocation : LogEntryFormatter
