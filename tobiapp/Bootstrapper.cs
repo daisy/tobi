@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics;
+using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.UnityExtensions;
@@ -20,7 +21,13 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
-        private readonly BitFactoryLoggerAdapter m_Logger = new BitFactoryLoggerAdapter(); //EntLibLoggerAdapter();
+        private readonly BitFactoryLoggerAdapter m_Logger;
+
+        public Bootstrapper()
+        {
+            m_Logger = new BitFactoryLoggerAdapter(); //EntLibLoggerAdapter();
+            Debug.WriteLine("Testing redirection of System.Diagnostics.Debug/Trace output to application logger. This message should not appear in release mode.");
+        }
 
         ///<summary>
         /// Overriding the default TRACE logger with our own (available application-wide, through the DI container)

@@ -19,7 +19,7 @@ namespace Tobi.Infrastructure
 
         #region Debug
 #if DEBUG
-
+        
         ~ViewModelBase()
         {
             string msg = string.Format("Finalized: ({0})", GetType().Name);

@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Navigation;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Test;
 using Tobi.Infrastructure;
@@ -173,24 +172,6 @@ c.Execute();
             SplashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "TobiSplashScreen.png");
             SplashScreen.Show(false);
 
-            PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
-            PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
-
-            PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
-            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
-
-            PresentationTraceSources.DependencyPropertySource.Listeners.Add(new ConsoleTraceListener());
-            PresentationTraceSources.DependencyPropertySource.Switch.Level = SourceLevels.All;
-
-            PresentationTraceSources.DocumentsSource.Listeners.Add(new ConsoleTraceListener());
-            PresentationTraceSources.DocumentsSource.Switch.Level = SourceLevels.All;
-
-            PresentationTraceSources.MarkupSource.Listeners.Add(new ConsoleTraceListener());
-            PresentationTraceSources.MarkupSource.Switch.Level = SourceLevels.All;
-
-            PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
-            PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
-
             ShutdownMode = ShutdownMode.OnMainWindowClose;
 
             FrameworkElement.LanguageProperty.OverrideMetadata(
@@ -212,8 +193,6 @@ c.Execute();
                 UIElement.LostKeyboardFocusEvent,
                 new RoutedEventHandler(UIElement_LostKeyboardFocus));
              * */
-
-            BitFactoryLoggerAdapter.DeleteLogFile();
 
 #if (FALSE && DEBUG)
             runInDebugMode();
