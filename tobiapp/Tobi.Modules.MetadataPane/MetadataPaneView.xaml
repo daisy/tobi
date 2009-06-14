@@ -11,35 +11,17 @@
         <local:BoolToVisibilityConverter x:Key="boolToVis" />
 
         <Style TargetType="{x:Type Button}">
-            <Setter Property="Width" Value="200"/>
+            <Setter Property="Width" Value="100"/>
         </Style>
 
-        <!-- validation styles -->
         <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="ToolTip" Value="Insert helpful tooltip here!!!"/>
-                    <Setter Property="BorderBrush" Value="Red"/>
-                    <Setter Property="Background" Value="Pink"/>
-                </Trigger>
-            </Style.Triggers>
-            <Setter Property="Validation.ErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <DockPanel DockPanel.Dock="Right">
-                            <AdornedElementPlaceholder/>
-                            <TextBlock Foreground="Red" Text="Insert error details!!"/>
-                        </DockPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="BorderBrush" Value="Red"/>
         </Style>
 
-        <Style x:Key="metadataReadOnlyStyle" TargetType="{x:Type TextBlock}"
-           BasedOn="{StaticResource metadataBaseStyle}">
+        <Style x:Key="metadataReadOnlyStyle" TargetType="{x:Type Control}">
             <Setter Property="Background" Value="Gray"/>
         </Style>
-        
+
         <Style TargetType="{x:Type TextBlock}" x:Key="NameStyle" >
             <Setter Property="Visibility" 
                     Value="{Binding Path=IsSelected,
@@ -47,7 +29,8 @@
                     Converter={StaticResource boolToVis},
                     ConverterParameter=False}" />
         </Style>
-        <Style TargetType="{x:Type TextBlock}" x:Key="RequiredNameStyle" BasedOn="{StaticResource NameStyle}">
+        <Style TargetType="{x:Type TextBlock}" x:Key="RequiredNameStyle" 
+               BasedOn="{StaticResource NameStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style TargetType="{x:Type FrameworkElement}" x:Key="NameEditStyle">
@@ -90,27 +73,32 @@
                                 ObjectType="{x:Type local:MetadataFilter}" 
                                 x:Key="odp">
             </ObjectDataProvider>
-           
+
+
+            <!-- errors -->
+            <DataTemplate DataType="{x:Type ValidationError}">
+                <TextBlock Text="{Binding Path=ErrorContent}" Foreground="Red"/>
+            </DataTemplate>
 
             <!-- for the name field -->
             <DataTemplate x:Key="RequiredName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
                     <!-- the style is the bit of magic that switches when the item is in focus -->
-                    <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
-                          DisplayMemberPath="Name"
+                    <!--<ComboBox ItemsSource="{Binding Source={StaticResource odp}, Path=Name}" 
                           SelectedItem="{Binding Path=Name}"
-                          Style="{StaticResource NameEditStyle}"/>
+                          Style="{StaticResource NameEditStyle}"/>-->
+
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="RecommendedName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
                     <!-- the style is the bit of magic that switches when the item is in focus -->
-                    <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
+                    <!--<ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
                           DisplayMemberPath="Name"
                           SelectedValuePath="Name"
-                          Style="{StaticResource NameEditStyle}"/>
+                          Style="{StaticResource NameEditStyle}"/>-->
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
@@ -118,12 +106,12 @@
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
                     <!-- the style is the bit of magic that switches when the item is in focus -->
                     <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
-                          DisplayMemberPath="Name"
-                          SelectedValuePath="Name"
+                          SelectedItem="{Binding Path=Name}"
                           Style="{StaticResource NameEditStyle}"/>
+                    
                 </Grid>
             </DataTemplate>
-           
+
             <!-- for the content field-->
             <DataTemplate x:Key="ReadOnlyContent">
                 <StackPanel>
@@ -136,43 +124,55 @@
             </DataTemplate>
 
             <DataTemplate x:Key="RequiredStringContent">
-                <TextBox Style="{StaticResource metadataErrorStyle}">
-                    <TextBox.Text>
-                        <Binding Path="Content">
+                <StackPanel>
+                    <TextBox x:Name="requiredString" Validation.ErrorTemplate="{x:Null}">
+                        <Binding Path="Content" UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
-                                <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty."/>
+                                <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
                             </Binding.ValidationRules>
                         </Binding>
-                    </TextBox.Text>
-                </TextBox>
+                    </TextBox>
+
+                    <ContentPresenter
+                        Content="{Binding ElementName=requiredString,
+                        Path=(Validation.Errors).CurrentItem}">
+                    </ContentPresenter>
+                </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="OptionalDateContent">
-                <StackPanel Orientation="Horizontal">
-                    <TextBox>
-                        <TextBox.Text>
-                            <Binding Path="Content">
-                                <Binding.ValidationRules>
-                                    <local:OptionalDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
+                <StackPanel>
+                    <TextBox x:Name="optionalDate" Validation.ErrorTemplate="{x:Null}">
+                        <Binding Path="Content" UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
+                            </Binding.ValidationRules>
+                        </Binding>
                     </TextBox>
+
+                    <ContentPresenter
+                        Content="{Binding ElementName=optionalDate,
+                        Path=(Validation.Errors).CurrentItem}">
+                    </ContentPresenter>
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="RequiredDateContent">
-                <StackPanel Orientation="Horizontal">
-                    <TextBox Style="{StaticResource metadataErrorStyle}">
-                        <TextBox.Text>
-                            <Binding Path="Content">
-                                <Binding.ValidationRules>
-                                    <local:RequiredDateValidationRule ErrorMessage="Please format date as YYYY-MM-DD"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
+                <StackPanel>
+                    <TextBox x:Name="requiredDate" Validation.ErrorTemplate="{x:Null}">
+                        <Binding Path="Content" UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
+                            </Binding.ValidationRules>
+                        </Binding>
                     </TextBox>
+
+                    <ContentPresenter
+                        Content="{Binding ElementName=requiredDate,
+                        Path=(Validation.Errors).CurrentItem}">
+                    </ContentPresenter>
                 </StackPanel>
+
             </DataTemplate>
 
             <local:ContentTemplateSelector
