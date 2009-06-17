@@ -64,6 +64,7 @@ namespace Tobi.Modules.MetadataPane
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
+            StatusText = "everything is wonderful";
        }
 
         private Project m_Project;
@@ -137,6 +138,20 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Commands
 
+        private string m_StatusText;
+        public string StatusText
+        {
+            get
+            {
+                return m_StatusText;
+            }
+            set
+            {
+                m_StatusText = value;
+                OnPropertyChanged(() => StatusText);
+            }
+        }
+
         private ObservableMetadataCollection m_Metadatas;
         
         [NotifyDependsOn("Project")]
@@ -182,6 +197,60 @@ namespace Tobi.Modules.MetadataPane
             metadata.Name = "";
             metadata.Content = "";
             Project.GetPresentation(0).AddMetadata(metadata);
+        }
+
+        /// <summary>
+        /// based on the existing metadata, return a list of metadata fields available
+        /// for addition
+        /// </summary>
+        public List<string> AvailableMetadata
+        {
+            get
+            {
+                return GetAvailableMetadata();
+            }
+        }
+        private List<string> GetAvailableMetadata()
+        {
+            List<Metadata> metadatas = Project.GetPresentation(0).ListOfMetadata;
+            List<string> list = new List<string>();
+            foreach (SupportedMetadataItem metadataItem in SupportedMetadataList.MetadataList)
+            {
+                //is this already in our project metadata list, and can it be repeated?
+                Metadata alreadyExists = metadatas.Find(s => s.Name == metadataItem.Name);
+                if (alreadyExists == null)
+                    list.Add(metadataItem.Name);
+                else if (alreadyExists != null && metadataItem.IsRepeatable)
+                    list.Add(metadataItem.Name);
+            }
+            return list;    
+        }
+
+        public void ValidateMetadata()
+        {
+            List<string> missing = new List<string>();
+            List<Metadata> metadatas = Project.GetPresentation(0).ListOfMetadata;
+             foreach (SupportedMetadataItem metadataItem in SupportedMetadataList.MetadataList)
+             {
+                 Metadata exists = metadatas.Find(s => s.Name == metadataItem.Name);
+                 if (metadataItem.Occurence == MetadataOccurence.Required && 
+                     metadataItem.IsReadOnly == false &&
+                     exists == null)
+                 {
+                     missing.Add(metadataItem.Name);
+                 }
+             }
+
+            if (missing.Count > 0)
+            {
+                string temp = string.Join(", ", missing.ToArray());
+                StatusText = string.Format("Missing: {0}", temp);
+            }
+            else
+            {
+                StatusText = "your metadata is great";
+            }
+                
         }
     }
     

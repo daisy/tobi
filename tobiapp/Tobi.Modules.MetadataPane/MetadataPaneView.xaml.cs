@@ -102,18 +102,25 @@ namespace Tobi.Modules.MetadataPane
         }
         private void Lookup_Button_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: report "not found"
             if (LookupField.Text == "")
+            {
+                ViewModel.StatusText = "Not found";
                 return;
-            
+            }
+
+            int count = 0;
+            //TODO: should we clear the selection first?
             foreach (object obj in list.Items)
             {
                 NotifyingMetadataItem metadata = (NotifyingMetadataItem) obj;
                 if (metadata.Name.ToLower().Contains(LookupField.Text.ToLower()))
                 {
+                    count++;
                     list.SelectedItems.Add(obj);
                 }
             }
+            if (count == 0)
+                ViewModel.StatusText = "Not found";
         }
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
@@ -129,6 +136,11 @@ namespace Tobi.Modules.MetadataPane
             NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
             string name = (string)e.AddedItems[0];
             if (metadata != null) metadata.Name = name;
+        }
+
+        private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ValidateMetadata();
         }
     }
 
