@@ -54,6 +54,14 @@
 
         <Button Click="Fake_Button_Click">Fake data</Button>
         <Button Click="Data_Model_Report_Click">Data model metadata</Button>
+        <Button Click="Validate_Metadata_Click">Validate</Button>
+        <StatusBar>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Status: "/>
+                <TextBlock Text="{Binding StatusText}"/>
+            </StackPanel>
+        </StatusBar>
+
     </StackPanel>
 
 
@@ -69,11 +77,6 @@
 
         <UI:SortableListView.Resources>
 
-            <ObjectDataProvider MethodName="GetAvailableMetadata" 
-                                ObjectType="{x:Type local:MetadataFilter}" 
-                                x:Key="odp">
-            </ObjectDataProvider>
-
 
             <!-- errors -->
             <DataTemplate DataType="{x:Type ValidationError}">
@@ -84,29 +87,23 @@
             <DataTemplate x:Key="RequiredName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
-                    <!-- the style is the bit of magic that switches when the item is in focus -->
-                    <!--<ComboBox ItemsSource="{Binding Source={StaticResource odp}, Path=Name}" 
-                          SelectedItem="{Binding Path=Name}"
-                          Style="{StaticResource NameEditStyle}"/>-->
-
+                    <ComboBox ItemsSource="{Binding AvailableMetadata}" 
+                          Style="{StaticResource NameEditStyle}"
+                          SelectionChanged="ComboBox_SelectionChanged"/>
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="RecommendedName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <!-- the style is the bit of magic that switches when the item is in focus -->
-                    <!--<ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
-                          DisplayMemberPath="Name"
-                          SelectedValuePath="Name"
-                          Style="{StaticResource NameEditStyle}"/>-->
+                    <ComboBox ItemsSource="{Binding AvailableMetadata}" 
+                          Style="{StaticResource NameEditStyle}"
+                          SelectionChanged="ComboBox_SelectionChanged"/>
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
-                <!-- the style is the bit of magic that switches when the item is in focus -->
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
-                          SelectedItem="{Binding Path=Name}"
+                    <ComboBox ItemsSource="{Binding AvailableMetadata}" 
                           Style="{StaticResource NameEditStyle}"
                           SelectionChanged="ComboBox_SelectionChanged"/>
                     
@@ -231,7 +228,5 @@
 
         </UI:SortableListView.ItemContainerStyle>
     </UI:SortableListView>
-
-
 </DockPanel>
 

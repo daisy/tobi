@@ -30,7 +30,7 @@ namespace Tobi.Modules.MetadataPane
         public SupportedMetadataFieldType FieldType { get; set; }
         public MetadataOccurence Occurence { get; set; }
         public bool IsReadOnly { get; set; }
-        public bool IsReapeatable { get; set; }
+        public bool IsRepeatable { get; set; }
         public string Name { get; set; }
         public string Description { get; set;}
         
@@ -295,20 +295,5 @@ namespace Tobi.Modules.MetadataPane
                 };
     }
 
-    public class MetadataFilter
-    {
-        /// <summary>
-        /// based on the existing metadata, return a list of metadata fields available
-        /// for addition
-        /// </summary>
-        public List<string> GetAvailableMetadata()
-        {
-            List<string> list = new List<string>();
-            foreach (SupportedMetadataItem metadataItem in SupportedMetadataList.MetadataList)
-            {
-                list.Add(metadataItem.Name);
-            }
-            return list;    
-        }
-    }
+        
 }
