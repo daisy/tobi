@@ -301,10 +301,14 @@ namespace Tobi.Modules.MetadataPane
         /// based on the existing metadata, return a list of metadata fields available
         /// for addition
         /// </summary>
-        public List<SupportedMetadataItem> GetAvailableMetadata()
+        public List<string> GetAvailableMetadata()
         {
-            return SupportedMetadataList.MetadataList;
-
+            List<string> list = new List<string>();
+            foreach (SupportedMetadataItem metadataItem in SupportedMetadataList.MetadataList)
+            {
+                list.Add(metadataItem.Name);
+            }
+            return list;    
         }
     }
 }

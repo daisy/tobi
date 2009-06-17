@@ -123,6 +123,13 @@ namespace Tobi.Modules.MetadataPane
                 ViewModel.RemoveMetadata(metadata);
             }
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
+            string name = (string)e.AddedItems[0];
+            if (metadata != null) metadata.Name = name;
+        }
     }
 
     public class BoolToVisibilityConverter : System.Windows.Data.IValueConverter

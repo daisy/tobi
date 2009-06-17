@@ -102,12 +102,13 @@
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
+                <!-- the style is the bit of magic that switches when the item is in focus -->
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <!-- the style is the bit of magic that switches when the item is in focus -->
                     <ComboBox ItemsSource="{Binding Source={StaticResource odp}}" 
                           SelectedItem="{Binding Path=Name}"
-                          Style="{StaticResource NameEditStyle}"/>
+                          Style="{StaticResource NameEditStyle}"
+                          SelectionChanged="ComboBox_SelectionChanged"/>
                     
                 </Grid>
             </DataTemplate>
