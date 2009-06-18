@@ -365,8 +365,14 @@ namespace Tobi.Modules.MetadataPane
             set
             {
                 if (m_Metadata.Content == value) return;
-                m_Metadata.Content = value;
-                OnPropertyChanged(() => Content);
+                
+                //we have to protect the Urakawa SDK from null metadata values ... 
+                if (value != null)
+                {
+                    m_Metadata.Content = value;
+                    OnPropertyChanged(() => Content);
+                }
+                
             }
         }
 
@@ -379,8 +385,12 @@ namespace Tobi.Modules.MetadataPane
             set
             {
                 if (m_Metadata.Name == value) return;
-                m_Metadata.Name = value;
-                OnPropertyChanged(() => Name);
+                //we have to protect the Urakawa SDK from null metadata values ... 
+                if (value != null)
+                {
+                    m_Metadata.Name = value;
+                    OnPropertyChanged(() => Name);
+                }
             }
         }
 
