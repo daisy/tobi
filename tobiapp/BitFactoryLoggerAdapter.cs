@@ -14,22 +14,24 @@ namespace Tobi
 
         public BitFactoryLoggerAdapter()
         {
-            PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new ConsoleTraceListener());
+			//PresentationTraceSources.TraceLevel=High;
+
+            PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new BitFactoryLoggerTraceListener());
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
 
-            PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new BitFactoryLoggerTraceListener());
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
 
-            PresentationTraceSources.DependencyPropertySource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.DependencyPropertySource.Listeners.Add(new BitFactoryLoggerTraceListener());
             PresentationTraceSources.DependencyPropertySource.Switch.Level = SourceLevels.All;
 
-            PresentationTraceSources.DocumentsSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.DocumentsSource.Listeners.Add(new BitFactoryLoggerTraceListener());
             PresentationTraceSources.DocumentsSource.Switch.Level = SourceLevels.All;
 
-            PresentationTraceSources.MarkupSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.MarkupSource.Listeners.Add(new BitFactoryLoggerTraceListener());
             PresentationTraceSources.MarkupSource.Switch.Level = SourceLevels.All;
 
-            PresentationTraceSources.NameScopeSource.Listeners.Add(new ConsoleTraceListener());
+            PresentationTraceSources.NameScopeSource.Listeners.Add(new BitFactoryLoggerTraceListener());
             PresentationTraceSources.NameScopeSource.Switch.Level = SourceLevels.All;
 
             Debug.Listeners.Add(new BitFactoryLoggerTraceListener(this));
