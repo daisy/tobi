@@ -87,25 +87,37 @@
             <DataTemplate x:Key="RequiredName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
-                    <ComboBox ItemsSource="{Binding AvailableMetadata}" 
+                    <ComboBox 
+                        ItemsSource="{Binding RelativeSource={RelativeSource
+FindAncestor, AncestorType={x:Type
+local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}" 
                           Style="{StaticResource NameEditStyle}"
-                          SelectionChanged="ComboBox_SelectionChanged"/>
+                          SelectionChanged="ComboBox_SelectionChanged"
+                        SelectedValue="{Binding Name}"/>
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="RecommendedName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox ItemsSource="{Binding AvailableMetadata}" 
+                    <ComboBox 
+                        ItemsSource="{Binding RelativeSource={RelativeSource
+FindAncestor, AncestorType={x:Type
+local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                           Style="{StaticResource NameEditStyle}"
-                          SelectionChanged="ComboBox_SelectionChanged"/>
+                          SelectionChanged="ComboBox_SelectionChanged"
+                        SelectedValue="{Binding Name}"/>
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox ItemsSource="{Binding AvailableMetadata}" 
+                    <ComboBox 
+                        ItemsSource="{Binding RelativeSource={RelativeSource
+FindAncestor, AncestorType={x:Type
+local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                           Style="{StaticResource NameEditStyle}"
-                          SelectionChanged="ComboBox_SelectionChanged"/>
+                          SelectionChanged="ComboBox_SelectionChanged"
+                        SelectedValue="{Binding Name}"/>
                     
                 </Grid>
             </DataTemplate>
