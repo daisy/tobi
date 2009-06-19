@@ -65,6 +65,8 @@ namespace Tobi.Modules.MetadataPane
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
             StatusText = "everything is wonderful";
+
+            RefreshDataTemplateSelectors();
        }
 
         private Project m_Project;
@@ -89,6 +91,8 @@ namespace Tobi.Modules.MetadataPane
             Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
                 Category.Debug, Priority.Medium);
             Project = project;
+            ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
+            NameTemplateSelectorProperty = new NameTemplateSelector((MetadataPaneView)View);
         }
 
         
@@ -97,7 +101,7 @@ namespace Tobi.Modules.MetadataPane
         #region Commands
 
         public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
-
+        
         private void initializeCommands()
         {
             Logger.Log("MetadataPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
@@ -138,6 +142,11 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Commands
 
+        public void RefreshDataTemplateSelectors()
+        {
+            ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
+            NameTemplateSelectorProperty = new NameTemplateSelector((MetadataPaneView)View);
+        }
         private string m_StatusText;
         public string StatusText
         {
@@ -252,6 +261,34 @@ namespace Tobi.Modules.MetadataPane
             }
                 
         }
+
+        private NameTemplateSelector m_NameTemplateSelector = null;
+        public NameTemplateSelector NameTemplateSelectorProperty
+        {
+            get
+            {
+                return m_NameTemplateSelector;
+            }
+            private set
+            {
+                m_NameTemplateSelector = value;
+                OnPropertyChanged(() => NameTemplateSelectorProperty);
+            }
+        }
+
+        private ContentTemplateSelector m_ContentTemplateSelector = null;
+        public ContentTemplateSelector ContentTemplateSelectorProperty
+        {
+            get
+            {
+                return m_ContentTemplateSelector;
+            }
+            private set
+            {
+                m_ContentTemplateSelector = value;
+                OnPropertyChanged(() => ContentTemplateSelectorProperty);
+            }
+        }
     }
     
     public class ContentTemplateSelector : DataTemplateSelector
@@ -262,6 +299,20 @@ namespace Tobi.Modules.MetadataPane
         public DataTemplate RequiredDateTemplate { get; set; }
         public DataTemplate ReadOnlyTemplate { get; set; }
         public DataTemplate DefaultTemplate { get; set; }
+
+        private MetadataPaneView m_View;
+        public ContentTemplateSelector(MetadataPaneView view)
+        {
+            if (view == null) return;
+            m_View = view;
+            
+            OptionalStringTemplate = (DataTemplate)m_View.list.Resources["OptionalStringContent"];
+            OptionalDateTemplate = (DataTemplate)m_View.list.Resources["OptionalDateContent"];
+            RequiredStringTemplate = (DataTemplate)m_View.list.Resources["RequiredStringContent"];
+            RequiredDateTemplate = (DataTemplate)m_View.list.Resources["RequiredDateContent"];
+            ReadOnlyTemplate = (DataTemplate)m_View.list.Resources["ReadOnlyContent"];
+            DefaultTemplate = OptionalStringTemplate;
+        }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -312,6 +363,18 @@ namespace Tobi.Modules.MetadataPane
         public DataTemplate OptionalTemplate { get; set; }
         public DataTemplate RecommendedTemplate { get; set; }
         public DataTemplate RequiredTemplate { get; set; }
+
+        private MetadataPaneView m_View;
+        public NameTemplateSelector(MetadataPaneView view)
+        {
+            if (view == null) return;
+
+            m_View = view;
+            OptionalTemplate = (DataTemplate)m_View.list.Resources["OptionalName"];
+            RecommendedTemplate = (DataTemplate)m_View.list.Resources["RecommendedName"];
+            RequiredTemplate = (DataTemplate)m_View.list.Resources["RequiredName"];
+        }
+
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
 
@@ -409,8 +472,12 @@ namespace Tobi.Modules.MetadataPane
             m_Metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
             m_Metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
         }
+
+        
+
     }
 
+    
     public class ObservableMetadataCollection : ObservableCollection<NotifyingMetadataItem>
     {
         public ObservableMetadataCollection(List<Metadata> metadatas)
