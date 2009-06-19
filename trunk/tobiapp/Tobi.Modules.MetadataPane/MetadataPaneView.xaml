@@ -5,7 +5,7 @@
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
     xmlns:local="clr-namespace:Tobi.Modules.MetadataPane"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    LastChildFill="True">
+    LastChildFill="True" Loaded="DockPanel_Loaded">
 
     <DockPanel.Resources>
         <local:BoolToVisibilityConverter x:Key="boolToVis" />
@@ -135,8 +135,8 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
 
             <DataTemplate x:Key="RequiredStringContent">
                 <StackPanel>
-                    <TextBox x:Name="requiredString" Validation.ErrorTemplate="{x:Null}">
-                        <Binding Path="Content" UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
+                    <TextBox x:Name="requiredString" Validation.ErrorTemplate="{x:Null}" LostFocus="requiredString_LostFocus">
+                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
                             </Binding.ValidationRules>
@@ -152,8 +152,8 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
 
             <DataTemplate x:Key="OptionalDateContent">
                 <StackPanel>
-                    <TextBox x:Name="optionalDate" Validation.ErrorTemplate="{x:Null}">
-                        <Binding Path="Content" UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
+                    <TextBox x:Name="optionalDate" Validation.ErrorTemplate="{x:Null}" LostFocus="optionalDate_LostFocus">
+                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
                             </Binding.ValidationRules>
@@ -169,8 +169,8 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
 
             <DataTemplate x:Key="RequiredDateContent">
                 <StackPanel>
-                    <TextBox x:Name="requiredDate" Validation.ErrorTemplate="{x:Null}">
-                        <Binding Path="Content" UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
+                    <TextBox x:Name="requiredDate" Validation.ErrorTemplate="{x:Null}" LostFocus="requiredDate_LostFocus">
+                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
                             </Binding.ValidationRules>
@@ -184,22 +184,6 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                 </StackPanel>
 
             </DataTemplate>
-
-            <local:ContentTemplateSelector
-                RequiredDateTemplate="{StaticResource RequiredDateContent}"
-                RequiredStringTemplate="{StaticResource RequiredStringContent}"
-                OptionalStringTemplate="{StaticResource OptionalStringContent}"
-                OptionalDateTemplate="{StaticResource OptionalDateContent}"
-                ReadOnlyTemplate="{StaticResource ReadOnlyContent}"
-                DefaultTemplate="{StaticResource OptionalStringContent}"
-                x:Key="ContentTemplateSelector" />
-
-            <local:NameTemplateSelector
-                RequiredTemplate="{StaticResource RequiredName}"
-                RecommendedTemplate="{StaticResource RecommendedName}"
-                OptionalTemplate="{StaticResource OptionalName}"
-                x:Key="NameTemplateSelector"/>
-
         </UI:SortableListView.Resources>
 
         <UI:SortableListView.View>
@@ -220,11 +204,11 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                 </GridViewColumn>
                 <GridViewColumn Header="Name"
                         UI:SortableListView.SortPropertyName="Name"
-                        CellTemplateSelector="{StaticResource NameTemplateSelector}"/>
+                        CellTemplateSelector="{Binding NameTemplateSelectorProperty}"/>
 
                 <GridViewColumn Header="Content"
                         UI:SortableListView.SortPropertyName="Content"
-                        CellTemplateSelector="{StaticResource ContentTemplateSelector}"/>
+                        CellTemplateSelector="{Binding ContentTemplateSelectorProperty}"/>
             </GridView>
         </UI:SortableListView.View>
 

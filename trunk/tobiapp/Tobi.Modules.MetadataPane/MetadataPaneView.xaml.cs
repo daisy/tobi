@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using Tobi.Modules.MetadataPane;
 using urakawa.metadata;
 using System.Collections.Generic;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -133,14 +135,42 @@ namespace Tobi.Modules.MetadataPane
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //after the data templates get refreshed, this function gets triggered again
+            if (e.AddedItems.Count == 0) return;
             NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
             string name = (string)e.AddedItems[0];
             if (metadata != null) metadata.Name = name;
+            ViewModel.RefreshDataTemplateSelectors();
+            //TODO: force a source update (as in the LostFocus events) here for
+            //the corresponding text box.  but how to find it? 
         }
 
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.ValidateMetadata();
+        }
+
+        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.RefreshDataTemplateSelectors();
+        }
+
+        private void requiredString_LostFocus(object sender, RoutedEventArgs e)
+        {
+            BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            be.UpdateSource();
+        }
+
+        private void optionalDate_LostFocus(object sender, RoutedEventArgs e)
+        {
+            BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            be.UpdateSource();
+        }
+
+        private void requiredDate_LostFocus(object sender, RoutedEventArgs e)
+        {
+            BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            be.UpdateSource();
         }
     }
 
