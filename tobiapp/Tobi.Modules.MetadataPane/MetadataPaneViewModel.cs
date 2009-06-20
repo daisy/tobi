@@ -191,7 +191,10 @@ namespace Tobi.Modules.MetadataPane
             List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
             Metadata metadata = list.Find(s => s.Name == "dc:Title");
             if (metadata != null)
-                metadata.Content = "Fake book about fake things";
+            {
+                //metadata.Content = "Fake book about fake things";
+                metadata.Name = "dtb:sourceDate";
+            }
         }
 
         public void RemoveMetadata(NotifyingMetadataItem metadata)
