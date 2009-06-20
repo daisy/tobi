@@ -142,7 +142,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                         <TextBox.Text>
                             <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                                 <Binding.ValidationRules>
-                                    <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
+                                    <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty" ValidatesOnTargetUpdated="True" />
                                 </Binding.ValidationRules>
                             </Binding>
                                 <!-- <MultiBinding Converter="{StaticResource contentTriggerConverter}" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
@@ -167,7 +167,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                     <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
                         <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
-                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
+                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD" ValidatesOnTargetUpdated="True"/>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox>
@@ -184,7 +184,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                     <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
                         <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
-                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
+                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD" ValidatesOnTargetUpdated="True"/>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox>
