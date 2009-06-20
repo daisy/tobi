@@ -76,8 +76,8 @@
       AlternationCount="2">
 
         <UI:SortableListView.Resources>
-
-
+            <!-- <local:ContentTriggerConverter x:Key="contentTriggerConverter"/> -->
+            
             <!-- errors -->
             <DataTemplate DataType="{x:Type ValidationError}">
                 <TextBlock Text="{Binding Path=ErrorContent}" Foreground="Red"/>
@@ -93,7 +93,8 @@ FindAncestor, AncestorType={x:Type
 local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}" 
                           Style="{StaticResource NameEditStyle}"
                           SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding Name}"/>
+                        SelectedValue="{Binding Name}"
+                        Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type GridViewRowPresenter}}}"/>
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="RecommendedName">
@@ -105,7 +106,8 @@ FindAncestor, AncestorType={x:Type
 local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                           Style="{StaticResource NameEditStyle}"
                           SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding Name}"/>
+                        SelectedValue="{Binding Name}"
+                        Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type GridViewRowPresenter}}}"/>
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
@@ -117,7 +119,8 @@ FindAncestor, AncestorType={x:Type
 local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                           Style="{StaticResource NameEditStyle}"
                           SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding Name}"/>
+                        SelectedValue="{Binding Name}"
+                         Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type GridViewRowPresenter}}}"/>
                     
                 </Grid>
             </DataTemplate>
@@ -135,16 +138,25 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
 
             <DataTemplate x:Key="RequiredStringContent">
                 <StackPanel>
-                    <TextBox x:Name="requiredString" Validation.ErrorTemplate="{x:Null}" LostFocus="requiredString_LostFocus">
-                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
-                            </Binding.ValidationRules>
-                        </Binding>
+                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
+                        <TextBox.Text>
+                            <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
+                                <Binding.ValidationRules>
+                                    <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                                <!-- <MultiBinding Converter="{StaticResource contentTriggerConverter}" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                <Binding Path="Content"/>
+                                <Binding Path="Name"/>
+                                <MultiBinding.ValidationRules>
+                                    <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
+                                </MultiBinding.ValidationRules>
+                            </MultiBinding>-->
+                            </TextBox.Text>
                     </TextBox>
 
                     <ContentPresenter
-                        Content="{Binding ElementName=requiredString,
+                        Content="{Binding ElementName=textBox,
                         Path=(Validation.Errors).CurrentItem}">
                     </ContentPresenter>
                 </StackPanel>
@@ -152,7 +164,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
 
             <DataTemplate x:Key="OptionalDateContent">
                 <StackPanel>
-                    <TextBox x:Name="optionalDate" Validation.ErrorTemplate="{x:Null}" LostFocus="optionalDate_LostFocus">
+                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
                         <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
@@ -161,7 +173,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                     </TextBox>
 
                     <ContentPresenter
-                        Content="{Binding ElementName=optionalDate,
+                        Content="{Binding ElementName=textBox,
                         Path=(Validation.Errors).CurrentItem}">
                     </ContentPresenter>
                 </StackPanel>
@@ -169,7 +181,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
 
             <DataTemplate x:Key="RequiredDateContent">
                 <StackPanel>
-                    <TextBox x:Name="requiredDate" Validation.ErrorTemplate="{x:Null}" LostFocus="requiredDate_LostFocus">
+                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
                         <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD"/>
@@ -178,7 +190,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                     </TextBox>
 
                     <ContentPresenter
-                        Content="{Binding ElementName=requiredDate,
+                        Content="{Binding ElementName=textBox,
                         Path=(Validation.Errors).CurrentItem}">
                     </ContentPresenter>
                 </StackPanel>
