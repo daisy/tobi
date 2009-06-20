@@ -16,7 +16,7 @@ namespace Tobi.Modules.MetadataPane
     public class RequiredStringValidationRule : BaseValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
+       {
             if (((string)value).Length > 0)
                 return new ValidationResult(true, null);
             else

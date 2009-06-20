@@ -138,11 +138,26 @@ namespace Tobi.Modules.MetadataPane
             //after the data templates get refreshed, this function gets triggered again
             if (e.AddedItems.Count == 0) return;
             NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
-            string name = (string)e.AddedItems[0];
+            string name = (string) e.AddedItems[0];
             if (metadata != null) metadata.Name = name;
             ViewModel.RefreshDataTemplateSelectors();
-            //TODO: force a source update (as in the LostFocus events) here for
+        
+            
+            
+            //TODO: force a source update (as in the LostFocus event) here for
             //the corresponding text box.  but how to find it? 
+            //idea from MS not working; rowPresenter is always null
+            //http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/fbd03126-ab8e-45fa-8b3b-f2baae35af87/
+            GridViewRowPresenter rowPresenter = ((ComboBox) sender).Tag as GridViewRowPresenter;
+            if (rowPresenter != null)
+            {
+                TextBox textBox = GetFrameworkElementByName<TextBox>(rowPresenter, "textBox");
+                if (textBox != null)
+                {
+                    BindingExpression be = textBox.GetBindingExpression(TextBox.TextProperty);
+                    if (be != null) be.UpdateSource();
+                }
+            }
         }
 
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
@@ -155,23 +170,33 @@ namespace Tobi.Modules.MetadataPane
             ViewModel.RefreshDataTemplateSelectors();
         }
 
-        private void requiredString_LostFocus(object sender, RoutedEventArgs e)
+        private void textBox_LostFocus(object sender, RoutedEventArgs e)
         {
             BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            be.UpdateSource();
+            if (be != null) be.UpdateSource();
         }
 
-        private void optionalDate_LostFocus(object sender, RoutedEventArgs e)
+        //from 
+        //http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/fbd03126-ab8e-45fa-8b3b-f2baae35af87/
+        public T GetFrameworkElementByName<T>(FrameworkElement referenceElement, String name) where T : FrameworkElement
         {
-            BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            be.UpdateSource();
-        }
+            FrameworkElement child = null;
+            for (Int32 i = 0; i < VisualTreeHelper.GetChildrenCount(referenceElement); i++)
+            {
+                child = VisualTreeHelper.GetChild(referenceElement, i) as FrameworkElement;
+                if (child != null && child.Name == name && child.GetType() == typeof(T))
+                {
+                    break;
+                }
 
-        private void requiredDate_LostFocus(object sender, RoutedEventArgs e)
-        {
-            BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            be.UpdateSource();
+                else if (child != null)
+                {
+                    child = GetFrameworkElementByName<T>(child, name);
+                }
+            }
+            return child as T;
         }
+        
     }
 
     public class BoolToVisibilityConverter : System.Windows.Data.IValueConverter
@@ -192,4 +217,22 @@ namespace Tobi.Modules.MetadataPane
         }
     }
     
+    /*public class ContentTriggerConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return values[0];
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            object[] values= new object[2];
+            values[0] = value;
+            return values;
+        }
+
+    }*/
+
+    
+        
 }
