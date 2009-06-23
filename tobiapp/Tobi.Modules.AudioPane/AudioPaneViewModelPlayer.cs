@@ -298,8 +298,6 @@ namespace Tobi.Modules.AudioPane
             }
             //else the stream is now open
 
-            m_EndOffsetOfPlayStream = DataLength;
-
             if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
             {
                 m_Player.Stop();
@@ -354,7 +352,7 @@ namespace Tobi.Modules.AudioPane
             TreeNode subTreeNode = null;
 
             //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
-            long byteOffset = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime));
+            long byteOffset = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(time));
 
             long sumData = 0;
             long sumDataPrev = 0;
@@ -369,14 +367,14 @@ namespace Tobi.Modules.AudioPane
                 sumDataPrev = sumData;
             }
 
-            if (View != null)
-            {
-                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
-            }
-
             if (subTreeNode == null || (subTreeNode == CurrentSubTreeNode && subTreeNode != CurrentTreeNode))
             {
                 return;
+            }
+
+            if (View != null)
+            {
+                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
             }
 
             if (CurrentSubTreeNode != subTreeNode)
@@ -428,7 +426,7 @@ namespace Tobi.Modules.AudioPane
             }
             LastPlayHeadTime = time;
 
-            updateWaveFormPlayHead(time);
+            //updateWaveFormPlayHead(time);
         }
 
         private bool m_IsWaveFormLoading;
@@ -453,7 +451,7 @@ namespace Tobi.Modules.AudioPane
 
         public void ReloadWaveForm()
         {
-            StartWaveFormLoadTimer(500, false);
+            StartWaveFormLoadTimer(500, IsAutoPlay);
         }
 
         private DispatcherTimer m_WaveFormLoadTimer;
@@ -1079,6 +1077,8 @@ namespace Tobi.Modules.AudioPane
                 FilePath = null;
                 return;
             }
+
+            m_EndOffsetOfPlayStream = DataLength;
 
             loadAndPlay();
         }
