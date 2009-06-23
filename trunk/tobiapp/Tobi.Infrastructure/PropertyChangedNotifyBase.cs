@@ -1,30 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using Tobi.Infrastructure.Onyx.Reflection;
 
 namespace Tobi.Infrastructure
 {
+    public interface INotifyPropertyChangedEx : INotifyPropertyChanged
+    {
+        void RaisePropertyChanged(PropertyChangedEventArgs e);
+    }
+
     /// <summary>
     /// Base implementation of INotifyPropertyChanged with automatic dependent property notification
     /// </summary>
-    public abstract class PropertyChangedNotifyBase : INotifyPropertyChanged, INotifyDependentPropertyChanged
+    public class PropertyChangedNotifyBase : INotifyPropertyChangedEx
     {
-        private readonly List<KeyValuePair<string, string>> m_DependentPropertyList;
+        private INotifyPropertyChangedEx m_ClassInstancePropertyHost;
+
+        // key,value = parent_property_name, child_property_name, where child depends on parent.
+        /*private readonly List<KeyValuePair<string, string>> m_DependentPropertyList;
         public List<KeyValuePair<string, string>> DependentPropertyList
         {
             get { return m_DependentPropertyList; }
+        }*/
+        private DependentPropsCache m_DependentPropsCache = new DependentPropsCache();
+
+        public PropertyChangedNotifyBase()
+        {
+            //m_DependentPropertyList = new List<KeyValuePair<string, string>>();
+            InitializeDependentProperties(this);
         }
 
-        protected PropertyChangedNotifyBase()
+        public void InitializeDependentProperties(INotifyPropertyChangedEx obj)
         {
-#if DEBUG
-            ThrowOnInvalidPropertyName = false;
-#endif
-            m_DependentPropertyList = new List<KeyValuePair<string, string>>();
-            NotifyDependsOnAttribute.BuildDependentPropertyList(this);
+            m_ClassInstancePropertyHost = obj;
+
+            //m_DependentPropertyList.Clear();
+            m_DependentPropsCache.Flush();
+
+            foreach (var property in obj.GetType().GetProperties())
+            {
+                var attributeArray = (NotifyDependsOnAttribute[])property.GetCustomAttributes(
+                                                typeof(NotifyDependsOnAttribute), false);
+
+                foreach (var attribute in attributeArray)
+                {
+                    //m_DependentPropertyList.Add(new KeyValuePair<string, string>(attribute.DependsOn, property.Name));
+                    m_DependentPropsCache.Add(attribute.DependsOn, property.Name);
+                }
+            }
         }
 
         #region Debug
@@ -38,73 +62,85 @@ namespace Tobi.Infrastructure
         [DebuggerStepThrough]
         public void VerifyPropertyName(string propertyName)
         {
-            //TypeDescriptor.GetProperties(this)[propertyName] == null
-            if (!string.IsNullOrEmpty(propertyName) && GetType().GetProperty(propertyName) == null)
+            //TypeDescriptor.GetProperties(m_ClassInstancePropertyHost)[propertyName] == null
+            if (!string.IsNullOrEmpty(propertyName) &&
+                m_ClassInstancePropertyHost.GetType().GetProperty(propertyName) == null)
             {
-                string msg = String.Format("Invalid property name ! ({0})", propertyName);
-
-                if (ThrowOnInvalidPropertyName)
-                {
-                    throw new ArgumentException(msg, Reflect.GetField(() => propertyName).Name);
-                }
-
+                string msg = String.Format("Invalid property name ! ({0} / {1})", propertyName, Reflect.GetField(() => propertyName).Name);
                 Debug.Fail(msg);
             }
         }
-
-        /// <summary>
-        /// Returns whether an exception is thrown, or if a Debug.Fail() is used
-        /// when an invalid property name is passed to the VerifyPropertyName method.
-        /// The default value is false, but subclasses used by unit tests might 
-        /// override this property's getter to return true.
-        /// </summary>
-        protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
 
 #endif // DEBUG
         #endregion Debug
 
         #region INotifyPropertyChanged
 
+        //private Dictionary<String, PropertyChangedEventArgs> m_cachePropertyChangedEventArgs;
+        private EventArgsCache m_EventArgsCache = new EventArgsCache();
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(PropertyChangedEventArgs e)
+        public void RaisePropertyChanged(PropertyChangedEventArgs e)
         {
-            //PropertyChanged.Invoke(this, e);
+            //m_ClassInstancePropertyHost.PropertyChanged.Invoke(m_ClassInstancePropertyHost, e);
 
             var handler = PropertyChanged;
 
             if (handler != null)
             {
-                handler(this, e);
+                handler(m_ClassInstancePropertyHost, e);
             }
         }
 
-        private void OnPropertyChanged(string propertyName)
+        private void RaisePropertyChanged(string propertyName)
         {
 #if DEBUG
             VerifyPropertyName(propertyName);
 #endif
+            /*
+            if (m_cachePropertyChangedEventArgs == null)
+            {
+                m_cachePropertyChangedEventArgs = new Dictionary<String, PropertyChangedEventArgs>();
+            }
 
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            PropertyChangedEventArgs argz = null;
+            if (m_cachePropertyChangedEventArgs.ContainsKey(propertyName))
+            {
+                argz = m_cachePropertyChangedEventArgs[propertyName];
+            }
+            else
+            {
+                argz = new PropertyChangedEventArgs(propertyName);
+                m_cachePropertyChangedEventArgs.Add(propertyName, argz);
+            }*/
+
+            PropertyChangedEventArgs argz = m_EventArgsCache.Handle(propertyName);
+            
+            m_ClassInstancePropertyHost.RaisePropertyChanged(argz);
+
+            /*
+            if (DependentPropertyList.Count <= 0) return;
 
             foreach (var p in DependentPropertyList.Where(x => x.Key.Equals(propertyName)))
             {
-                OnPropertyChanged(p.Value);
+                RaisePropertyChanged(p.Value);
+            }*/
+
+            if (m_DependentPropsCache.IsEmpty)
+            {
+                return;
             }
+
+            m_DependentPropsCache.Handle(propertyName, RaisePropertyChanged);
         }
 
-        protected void OnPropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
+        public void OnPropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
-            OnPropertyChanged(Reflect.GetProperty(expression).Name);
+            RaisePropertyChanged(Reflect.GetProperty(expression).Name);
         }
 
         #endregion INotifyPropertyChanged
-    }
-
-    public interface INotifyDependentPropertyChanged
-    {
-        // key,value = parent_property_name, child_property_name, where child depends on parent.
-        List<KeyValuePair<string, string>> DependentPropertyList { get; }
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
@@ -132,34 +168,154 @@ namespace Tobi.Infrastructure
         {
             DependsOn = Reflect.GetMember(expression).Name;
         }*/
+    }
 
-        public static void BuildDependentPropertyList(object obj)
+    public class DependentPropsCache
+    {
+        private CacheItem m_First;
+
+        protected class CacheItem
         {
-            if (obj == null)
+            public CacheData data;
+            public CacheItem nextItem;
+        }
+
+        protected struct CacheData
+        {
+            public string dependency;
+            public string dependent;
+        }
+
+        public void Handle(string dependency, Action<string> action)
+        {
+            if (IsEmpty)
             {
-                throw new ArgumentNullException("obj");
+                return;
             }
 
-            var obj_interface = (obj as INotifyDependentPropertyChanged);
-
-            if (obj_interface == null)
+            CacheItem current = m_First;
+            do
             {
-                throw new Exception(string.Format("Type {0} does not implement INotifyDependentPropertyChanged.", obj.GetType().Name));
-            }
-
-            obj_interface.DependentPropertyList.Clear();
-
-            // Build the list of dependent properties.
-            foreach (var property in obj.GetType().GetProperties())
-            {
-                // Find all of our attributes (may be multiple).
-                var attributeArray = (NotifyDependsOnAttribute[])property.GetCustomAttributes(typeof(NotifyDependsOnAttribute), false);
-
-                foreach (var attribute in attributeArray)
+                if (current.data.dependency == dependency)
                 {
-                    obj_interface.DependentPropertyList.Add(new KeyValuePair<string, string>(attribute.DependsOn, property.Name));
+                    action(current.data.dependent);
                 }
+                current = current.nextItem;
+            } while (current != null);
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_First == null;
             }
         }
-    }
+
+        public void Flush()
+        {
+            m_First = null;
+        }
+
+        public void Add(string dependency, string dependent)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    dependency = dependency,
+                    dependent = dependent
+                },
+                nextItem = null
+            };
+
+            if (m_First == null)
+            {
+                m_First = item;
+                return;
+            }
+
+            CacheItem last = m_First;
+            while (last.nextItem != null)
+            {
+                last = last.nextItem;
+            }
+            last.nextItem = item;
+        }
+    } 
+    public class EventArgsCache
+    {
+        private CacheItem m_First;
+
+        protected class CacheItem
+        {
+            public CacheData data;
+            public CacheItem nextItem;
+        }
+
+        protected struct CacheData
+        {
+            public string propertyName;
+            public PropertyChangedEventArgs argz;
+        }
+
+        public PropertyChangedEventArgs Handle(string propertyName)
+        {
+            PropertyChangedEventArgs argz = find(propertyName);
+
+            if (argz == null)
+            {
+                argz = new PropertyChangedEventArgs(propertyName);
+                add(propertyName, argz);
+            }
+
+            return argz;
+        }
+
+        private void add(string propertyName, PropertyChangedEventArgs argz)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    propertyName = propertyName,
+                    argz = argz
+                },
+                nextItem = null
+            };
+
+            if (m_First == null)
+            {
+                m_First = item;
+                return;
+            }
+
+            CacheItem last = m_First;
+            while (last.nextItem != null)
+            {
+                last = last.nextItem;
+            }
+            last.nextItem = item;
+        }
+
+        private PropertyChangedEventArgs find(string propertyName)
+        {
+            if (m_First == null)
+            {
+                return null;
+            }
+
+            CacheItem current = m_First;
+            do
+            {
+                if (current.data.propertyName == propertyName)
+                {
+                    return current.data.argz;
+                }
+                current = current.nextItem;
+            } while (current != null);
+
+            return null;
+        }
+    } 
 }

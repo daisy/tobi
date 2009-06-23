@@ -8,7 +8,7 @@ namespace Tobi.Infrastructure
     /// <summary>
     /// Base class for all ViewModels
     /// </summary>
-    public abstract class ViewModelBase : PropertyChangedNotifyBase, IDisposable
+    public class ViewModelBase : PropertyChangedNotifyBase, IDisposable
     {
         protected Dispatcher Dispatcher { get; private set; }
 

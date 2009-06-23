@@ -7,15 +7,33 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Tobi.Infrastructure.Commanding;
-using Tobi.Infrastructure.Onyx.Reflection;
 
 namespace Tobi.Infrastructure.UI
 {
     /// <summary>
     /// Interaction logic for PopupModalWindow.xaml
     /// </summary>
-    public partial class PopupModalWindow : INotifyPropertyChanged, IInputBindingManager
+    public partial class PopupModalWindow : IInputBindingManager, INotifyPropertyChangedEx
     {
+        #region INotifyPropertyChangedEx
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        {
+            //m_ClassInstancePropertyHost.PropertyChanged.Invoke(m_ClassInstancePropertyHost, e);
+
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        #endregion INotifyPropertyChangedEx
+        
+
         public RichDelegateCommand<object> CommandDetailsExpand { get; private set; }
         public RichDelegateCommand<object> CommandDetailsCollapse { get; private set; }
 
@@ -27,8 +45,11 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
-        public PopupModalWindow()
+        private PopupModalWindow()
         {
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
+
             InitializeComponent();
 
             CommandDetailsExpand = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsExpand,
@@ -71,7 +92,7 @@ namespace Tobi.Infrastructure.UI
                         Height -= DetailsHeight;
                     }
 
-                    OnPropertyChanged(() => IsDetailsExpanded);
+                    m_PropertyChangeHandler.OnPropertyChanged(() => IsDetailsExpanded);
                 }
             }
             get { return m_IsDetailsExpanded; }
@@ -79,16 +100,23 @@ namespace Tobi.Infrastructure.UI
 
         public double DetailsHeight { get; set; }
 
-        [NotifyDependsOn("IsDetailsExpanded")]
-        public bool CanDetailsExpand
+        public bool HasDetails
         {
-            get { return DetailsPlaceHolder.Content != null && !IsDetailsExpanded; }
+            get { return DetailsPlaceHolder.Content != null; }
         }
 
         [NotifyDependsOn("IsDetailsExpanded")]
+        [NotifyDependsOn("HasDetails")]
+        public bool CanDetailsExpand
+        {
+            get { return HasDetails && !IsDetailsExpanded; }
+        }
+
+        [NotifyDependsOn("IsDetailsExpanded")]
+        [NotifyDependsOn("HasDetails")]
         public bool CanDetailsCollapse
         {
-            get { return DetailsPlaceHolder.Content != null && IsDetailsExpanded; }
+            get { return HasDetails && IsDetailsExpanded; }
         }
 
         public PopupModalWindow(Window window, string title,
@@ -130,6 +158,7 @@ namespace Tobi.Infrastructure.UI
         }
 
         private bool m_ButtonTriggersClose = false;
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
         public bool AllowEscapeAndCloseButton
         {
@@ -363,57 +392,29 @@ namespace Tobi.Infrastructure.UI
 
         private void OnPropertyChangedButtonsSet()
         {
-            OnPropertyChanged(() => IsButtonActive_Close);
-            OnPropertyChanged(() => IsButtonActive_Apply);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Close);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Apply);
 
-            OnPropertyChanged(() => IsButtonActive_Ok);
-            OnPropertyChanged(() => IsButtonActive_Cancel);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Ok);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Cancel);
 
-            OnPropertyChanged(() => IsButtonActive_Yes);
-            OnPropertyChanged(() => IsButtonActive_No);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Yes);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_No);
 
-            OnPropertyChanged(() => IsButtonDefault_Close);
-            OnPropertyChanged(() => IsButtonDefault_Apply);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Close);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Apply);
 
-            OnPropertyChanged(() => IsButtonDefault_Ok);
-            OnPropertyChanged(() => IsButtonDefault_Cancel);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Ok);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Cancel);
 
-            OnPropertyChanged(() => IsButtonDefault_Yes);
-            OnPropertyChanged(() => IsButtonDefault_No);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Yes);
+            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_No);
         }
 
         public new void Show()
         {
             ShowDialog();
         }
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            //PropertyChanged.Invoke(this, e);
-
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected void OnPropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
-        {
-            OnPropertyChanged(Reflect.GetProperty(expression).Name);
-        }
-
-        #endregion INotifyPropertyChanged
         
 #region ButtonClick
 
