@@ -10,7 +10,7 @@ namespace Tobi.Infrastructure.Commanding
     public class ActiveAware : IActiveAware
     {
         private readonly object LOCK = new object();
-        private bool _isActive;
+        private bool m_IsActive = true;
         private EventHandler m_IsActiveChanged;
 
         #region IActiveAware members
@@ -42,12 +42,12 @@ namespace Tobi.Infrastructure.Commanding
         /// <value><see langword="true" /> if the object is active; otherwise <see langword="false" />.</value>
         public bool IsActive
         {
-            get { return _isActive; }
+            get { return m_IsActive; }
             set
             {
-                if (_isActive != value)
+                if (m_IsActive != value)
                 {
-                    _isActive = value;
+                    m_IsActive = value;
                     OnIsActiveChanged();
                 }
             }
@@ -113,6 +113,15 @@ namespace Tobi.Infrastructure.Commanding
 
         #endregion
 
+        protected override void OnIsActiveChanged()
+        {
+            base.OnIsActiveChanged();
+            if (true || IsAutomaticRequeryDisabled) // we enforce the Requery, we don't want to rely on the AutomaticRequery in the case of IActiveAware
+            {
+                RaiseCanExecuteChanged();
+            }
+        }
+
         #region Public Methods
 
         /// <summary>
@@ -120,6 +129,11 @@ namespace Tobi.Infrastructure.Commanding
         /// </summary>
         public bool CanExecute()
         {
+            if (!IsActive)
+            {
+                return false;
+            }
+
             if (_canExecuteMethod != null)
             {
                 return _canExecuteMethod();
@@ -132,7 +146,7 @@ namespace Tobi.Infrastructure.Commanding
         /// </summary>
         public void Execute()
         {
-            if (_executeMethod != null)
+            if (CanExecute() && _executeMethod != null)
             {
                 _executeMethod();
             }
@@ -277,6 +291,15 @@ namespace Tobi.Infrastructure.Commanding
 
         #endregion
 
+        protected override void OnIsActiveChanged()
+        {
+            base.OnIsActiveChanged();
+            if (true || IsAutomaticRequeryDisabled) // we enforce the Requery, we don't want to rely on the AutomaticRequery in the case of IActiveAware
+            {
+                RaiseCanExecuteChanged();
+            }
+        }
+
         #region Public Methods
 
         /// <summary>
@@ -284,6 +307,11 @@ namespace Tobi.Infrastructure.Commanding
         /// </summary>
         public bool CanExecute(T parameter)
         {
+            if (!IsActive)
+            {
+                return false;
+            }
+
             if (_canExecuteMethod != null)
             {
                 return _canExecuteMethod(parameter);
@@ -296,7 +324,7 @@ namespace Tobi.Infrastructure.Commanding
         /// </summary>
         public void Execute(T parameter)
         {
-            if (_executeMethod != null)
+            if (CanExecute(parameter) && _executeMethod != null)
             {
                 _executeMethod(parameter);
             }

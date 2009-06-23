@@ -59,7 +59,7 @@
           RichCommandTwo="{Binding CommandDetailsExpand}"
                 RichCommandActive="{Binding IsDetailsExpanded, Mode=OneWay}"
           DockPanel.Dock="Left"
-          Visibility="{Binding Mode=OneWay, Path=CanDetailsExpand, Converter={StaticResource booleanToVisibilityConverter}}"/>
+          Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={StaticResource booleanToVisibilityConverter}}"/>
         
         <StackPanel
                   Orientation="Horizontal"
