@@ -153,23 +153,47 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
 
-            if (node == null || CurrentTreeNode == null
-                || CurrentSubTreeNode == node
-                || !IsAudioLoadedWithSubTreeNodes
-                || !node.IsDescendantOf(CurrentTreeNode))
+            if (node == null || CurrentTreeNode == null)
+            {
+                return;
+            }
+            if (CurrentSubTreeNode == node)
+            {
+                return;
+            }
+            if (!IsAudioLoadedWithSubTreeNodes)
+            {
+                return;
+            }
+            if (!node.IsDescendantOf(CurrentTreeNode))
             {
                 return;
             }
 
+            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            {
+                m_Player.Stop();
+            }
+
+            CurrentSubTreeNode = node;
+
             long sumData = 0;
+            long sumDataPrev = 0;
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
+                sumDataPrev = sumData;
                 if (node == marker.m_TreeNode)
                 {
                     LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(sumData);
+                    sumData += marker.m_LocalStreamDataLength;
                     break;
                 }
-                sumData += (marker.m_LocalStreamDataLength + 1);
+                sumData += marker.m_LocalStreamDataLength + (sumData == 0 ? 1 : 0);
+            }
+
+            if (View != null)
+            {
+                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
             }
         }
 
@@ -178,6 +202,11 @@ namespace Tobi.Modules.AudioPane
             Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
 
             if (node == null)
+            {
+                return;
+            }
+
+            if (CurrentTreeNode == node)
             {
                 return;
             }

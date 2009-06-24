@@ -363,8 +363,15 @@ namespace Tobi.Modules.DocumentPane
 
         private void OnSubTreeNodeSelected(TreeNode node)
         {
-            if (node == null || CurrentTreeNode == null
-                || !node.IsDescendantOf(CurrentTreeNode))
+            if (node == null || CurrentTreeNode == null)
+            {
+                return;
+            }
+            if (CurrentSubTreeNode == node)
+            {
+                return;
+            }
+            if (!node.IsDescendantOf(CurrentTreeNode))
             {
                 return;
             }
@@ -376,6 +383,10 @@ namespace Tobi.Modules.DocumentPane
         private void OnTreeNodeSelected(TreeNode node)
         {
             if (node == null)
+            {
+                return;
+            }
+            if (CurrentTreeNode == node)
             {
                 return;
             }
