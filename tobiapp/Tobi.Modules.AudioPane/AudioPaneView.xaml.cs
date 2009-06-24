@@ -269,20 +269,51 @@ namespace Tobi.Modules.AudioPane
             if (!m_ControlKeyWasDownAtLastMouseMove)
             {
                 Point p = e.GetPosition(WaveFormCanvas);
-                selectionFinished(p.X);
+                if (m_MouseClicks == 2)
+                {
+                    ViewModel.ClearSelection();
+                    ViewModel.SelectChunk(p.X * BytesPerPixel);
+                }
+                else if (m_MouseClicks == 3)
+                {
+                    ViewModel.ClearSelection();
+                    ViewModel.SelectAll();
+                }
+                else
+                {
+                    selectionFinished(p.X);
+                }
             }
+
             m_ControlKeyWasDownAtLastMouseMove = false;
         }
 
+        private uint m_MouseClicks = 0;
+
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Point p = e.GetPosition(WaveFormCanvas);
+
             ViewModel.AudioPlayer_Stop();
+
+            if (e.ClickCount == 2)
+            {
+                m_MouseClicks = 2;
+                return;
+            }
+            else if (e.ClickCount == 3)
+            {
+                m_MouseClicks = 3;
+                return;
+            }
+            else
+            {
+                m_MouseClicks = 1;
+            }
 
             m_ControlKeyWasDownAtLastMouseMove = m_ControlKeyWasDownAtLastMouseMove || isControlKeyDown();
 
             WaveFormCanvas.Cursor = m_ControlKeyWasDownAtLastMouseMove ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor;
-
-            Point p = e.GetPosition(WaveFormCanvas);
 
             if (m_ControlKeyWasDownAtLastMouseMove)
             {
