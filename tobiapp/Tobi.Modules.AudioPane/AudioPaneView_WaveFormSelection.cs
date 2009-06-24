@@ -120,11 +120,6 @@ namespace Tobi.Modules.AudioPane
                 double bytes = x * BytesPerPixel;
                 ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytes);
 
-                if (ViewModel.IsAutoPlay)
-                {
-                    ViewModel.AudioPlayer_Play();
-                }
-
                 return;
             }
 
@@ -151,7 +146,13 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 double bytesFrom = m_TimeSelectionLeftX * BytesPerPixel;
-                ViewModel.LastPlayHeadTime = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytesFrom);
+
+                double time = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(bytesFrom);
+
+                ViewModel.IsAutoPlay = false;
+                ViewModel.LastPlayHeadTime = time;
+                ViewModel.IsAutoPlay = true;
+
                 double bytesTo = right * BytesPerPixel;
 
                 ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);

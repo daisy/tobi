@@ -187,9 +187,10 @@ namespace Tobi.Modules.AudioPane
                 sumDataPrev = sumData;
                 if (CurrentSubTreeNode == marker.m_TreeNode)
                 {
-                    LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(sumData);
                     sumData += marker.m_LocalStreamDataLength;
 
+                    LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(sumDataPrev);
+                    
                     if (View != null)
                     {
                         View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
@@ -583,7 +584,10 @@ namespace Tobi.Modules.AudioPane
 
             UpdatePeakMeter();
 
+            bool oldVal = IsAutoPlay;
+            IsAutoPlay = false;
             AudioPlayer_UpdateWaveFormPlayHead();
+            IsAutoPlay = oldVal;
         }
 
         private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
