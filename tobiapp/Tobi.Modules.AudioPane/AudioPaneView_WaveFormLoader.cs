@@ -89,7 +89,9 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
+                ViewModel.IsWaveFormLoading = true;
                 loadWaveForm(false, width, height, wasPlaying, play);
+                ViewModel.IsWaveFormLoading = false;
             }
         }
 
@@ -626,7 +628,16 @@ namespace Tobi.Modules.AudioPane
                 // ensure the stream is closed before we resume the player
                 ViewModel.AudioPlayer_ClosePlayStream();
 
-                ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
+                if (inBackgroundThread)
+                {
+                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                        (Action)(() => ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
+                }
+                else
+                {
+                    ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
+                }
             }
         }
 

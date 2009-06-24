@@ -145,6 +145,7 @@ namespace Tobi.Modules.AudioPane
             BytesPerPixel = ViewModel.DataLength / width;
 
             ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+            ViewModel.RefreshWaveFormChunkMarkers();
 
             if (ViewModel.PcmFormat == null)
             {
