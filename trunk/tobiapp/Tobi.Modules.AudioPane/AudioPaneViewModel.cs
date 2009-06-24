@@ -54,6 +54,16 @@ namespace Tobi.Modules.AudioPane
             View = view;
         }
 
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.StartsWith("Can"))
+            {
+                Logger.Log("@@ AudioPaneViewModel.OnViewModelPropertyChanged: [" + e.PropertyName + "]", Category.Debug, Priority.High);
+
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
         protected void Initialize()
         {
             initializeCommands();
@@ -63,22 +73,14 @@ namespace Tobi.Modules.AudioPane
 
             initializeAudioStuff();
 
+            resetAllInternalValues();
+
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
-        }
-
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName.StartsWith("Can"))
-            {
-                Logger.Log("@@ AudioPaneViewModel.OnViewModelPropertyChanged: [" + e.PropertyName + "]", Category.Debug, Priority.High);
-
-                CommandManager.InvalidateRequerySuggested();
-            }
         }
 
         private void setRecordingDirectory(string path)
@@ -107,7 +109,6 @@ namespace Tobi.Modules.AudioPane
             m_Player.SetDevice(GetWindowsFormsHookControl(), @"fakename");
             m_Player.StateChanged += OnPlayerStateChanged;
             m_Player.EndOfAudioAsset += OnEndOfAudioAsset;
-            LastPlayHeadTime = 0;
 
             m_Recorder = new AudioRecorder();
             m_Recorder.SetDevice(@"fakename");
@@ -184,18 +185,18 @@ namespace Tobi.Modules.AudioPane
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
                 sumDataPrev = sumData;
-                if (node == marker.m_TreeNode)
+                if (CurrentSubTreeNode == marker.m_TreeNode)
                 {
                     LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(sumData);
                     sumData += marker.m_LocalStreamDataLength;
+
+                    if (View != null)
+                    {
+                        View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                    }
                     break;
                 }
-                sumData += marker.m_LocalStreamDataLength + (sumData == 0 ? 1 : 0);
-            }
-
-            if (View != null)
-            {
-                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                sumData += (marker.m_LocalStreamDataLength + 1);
             }
         }
 
@@ -231,9 +232,7 @@ namespace Tobi.Modules.AudioPane
             resetAllInternalValues();
 
             CurrentTreeNode = node;
-            CurrentSubTreeNode = node;
-
-            LastPlayHeadTime = 0;
+            CurrentSubTreeNode = null;
 
             if (View != null)
             {
@@ -261,7 +260,7 @@ namespace Tobi.Modules.AudioPane
                         StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
                         if (sma != null)
                         {
-                            CurrentSubTreeNode = CurrentTreeNode;
+                            TreeNode theCurrentSubTreeNode = CurrentTreeNode;
                             CurrentTreeNode = ancerstor;
 
                             //m_SkipTreeNodeSelectedEvent = true;
@@ -271,8 +270,8 @@ namespace Tobi.Modules.AudioPane
                             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentTreeNode);
 
                             Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
-                            
-                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
+
+                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
 
                             m_PlayStream = sma.GetValueOrDefault().m_Stream;
                             PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
@@ -307,6 +306,11 @@ namespace Tobi.Modules.AudioPane
             {
                 resetAllInternalValues();
                 return;
+            }
+
+            if (PlayStreamMarkers != null && PlayStreamMarkers.Count == 1)
+            {
+                CurrentSubTreeNode = CurrentTreeNode;
             }
 
             loadAndPlay();
