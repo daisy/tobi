@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -139,10 +140,15 @@ namespace Tobi.Modules.AudioPane
             const int tolerance = 5;
             try
             {
-                if (!string.IsNullOrEmpty(ViewModel.FilePath))
+                var audioStream = ViewModel.AudioPlayer_GetPlayStream();
+
+                audioStream.Position = 0;
+                audioStream.Seek(0, SeekOrigin.Begin);
+
+                /*if (!string.IsNullOrEmpty(ViewModel.FilePath))
                 {
                     ViewModel.AudioPlayer_ResetPlayStreamPosition();
-                }
+                }*/
                 double dBMinReached = double.PositiveInfinity;
                 double dBMaxReached = double.NegativeInfinity;
                 double decibelDrawDelta = (ViewModel.IsUseDecibelsNoAverage ? 0 : 2);
@@ -197,7 +203,7 @@ namespace Tobi.Modules.AudioPane
                 double sumProgress = 0;
 
                 int read;
-                while ((read = ViewModel.AudioPlayer_GetPlayStream().Read(bytes, 0, bytes.Length)) > 0)
+                while ((read = audioStream.Read(bytes, 0, bytes.Length)) > 0)
                 {
                     // converts Int 8 unsigned to Int 16 signed
                     Buffer.BlockCopy(bytes, 0, samples, 0, Math.Min(read, samples.Length));
@@ -625,9 +631,6 @@ namespace Tobi.Modules.AudioPane
 
                 ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
 
-                // ensure the stream is closed before we resume the player
-                ViewModel.AudioPlayer_ClosePlayStream();
-
                 if (inBackgroundThread)
                 {
                     //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
@@ -940,7 +943,7 @@ namespace Tobi.Modules.AudioPane
                 geoDraw2_envelope.Freeze();
             }
         }
-        
+
         // ReSharper restore InconsistentNaming
     }
 }

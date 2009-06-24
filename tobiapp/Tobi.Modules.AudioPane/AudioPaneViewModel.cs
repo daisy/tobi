@@ -97,11 +97,13 @@ namespace Tobi.Modules.AudioPane
             setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
         }
 
+        private const bool AudioPlaybackStreamKeepAlive = true;
+
         private void initializeAudioStuff()
         {
             Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
 
-            m_Player = new AudioPlayer();
+            m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
             m_Player.SetDevice(GetWindowsFormsHookControl(), @"fakename");
             m_Player.StateChanged += OnPlayerStateChanged;
             m_Player.EndOfAudioAsset += OnEndOfAudioAsset;
@@ -147,7 +149,7 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        private bool m_SkipTreeNodeSelectedEvent = false;
+        //private bool m_SkipTreeNodeSelectedEvent = false;
 
         private void OnSubTreeNodeSelected(TreeNode node)
         {
@@ -211,21 +213,25 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            CurrentTreeNode = node;
-            CurrentSubTreeNode = node;
-
-            if (m_SkipTreeNodeSelectedEvent)
+            /*if (m_SkipTreeNodeSelectedEvent)
             {
                 m_SkipTreeNodeSelectedEvent = false;
                 return;
-            }
+            }*/
 
             if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
             {
                 m_Player.Stop();
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                }
             }
 
             resetAllInternalValues();
+
+            CurrentTreeNode = node;
+            CurrentSubTreeNode = node;
 
             LastPlayHeadTime = 0;
 
@@ -258,7 +264,7 @@ namespace Tobi.Modules.AudioPane
                             CurrentSubTreeNode = CurrentTreeNode;
                             CurrentTreeNode = ancerstor;
 
-                            m_SkipTreeNodeSelectedEvent = true;
+                            //m_SkipTreeNodeSelectedEvent = true;
 
                             Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
                                 
@@ -279,23 +285,29 @@ namespace Tobi.Modules.AudioPane
                     }
                     if (m_PlayStream == null)
                     {
+                        resetAllInternalValues();
                         return null;
                     }
+
+                    m_PlayStream.Position = 0;
+                    m_PlayStream.Seek(0, SeekOrigin.Begin);
+
                     DataLength = m_PlayStream.Length;
+                    m_EndOffsetOfPlayStream = DataLength;
+
+                    PcmFormat = CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
+
+                    FilePath = null;
                 }
+
                 return m_PlayStream;
             };
 
             if (m_CurrentAudioStreamProvider() == null)
             {
                 resetAllInternalValues();
-
                 return;
             }
-
-            m_EndOffsetOfPlayStream = DataLength;
-
-            FilePath = null;
 
             loadAndPlay();
         }
