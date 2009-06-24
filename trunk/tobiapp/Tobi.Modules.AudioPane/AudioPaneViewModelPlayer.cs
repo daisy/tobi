@@ -64,6 +64,59 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+
+        public void ClearSelection()
+        {
+            SelectionBegin = -1.0;
+            SelectionEnd = -1.0;
+            if (View != null)
+            {
+                View.ClearSelection();
+            }
+        }
+
+        public void SelectAll()
+        {
+            SelectionBegin = 0;
+            SelectionEnd = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+            if (View != null)
+            {
+                View.ExpandSelection();
+            }
+        }
+
+        public void SelectChunk(double byteOffset)
+        {
+            if (PlayStreamMarkers == null || PlayStreamMarkers.Count == 1)
+            {
+                SelectAll();
+                return;
+            }
+
+            //long byteOffset = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(time));
+
+            long sumData = 0;
+            long sumDataPrev = 0;
+            foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+            {
+                sumData += marker.m_LocalStreamDataLength;
+                if (byteOffset < sumData)
+                {
+                    //subTreeNode = marker.m_TreeNode;
+
+                    SelectionBegin = AudioPlayer_ConvertBytesToMilliseconds(sumDataPrev);
+                    SelectionEnd = AudioPlayer_ConvertBytesToMilliseconds(sumData);
+
+                    if (View != null)
+                    {
+                        View.SetSelection(SelectionBegin, SelectionEnd);
+                    }
+                    break;
+                }
+                sumDataPrev = sumData;
+            }
+        }
+
         [NotifyDependsOn("SelectionBegin")]
         [NotifyDependsOn("SelectionEnd")]
         public bool IsSelectionSet

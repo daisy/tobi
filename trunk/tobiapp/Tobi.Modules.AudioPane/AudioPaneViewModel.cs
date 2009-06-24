@@ -94,6 +94,16 @@ namespace Tobi.Modules.AudioPane
 
         private void OnProjectLoaded(Project project)
         {
+            resetAllInternalValues();
+
+            CurrentTreeNode = null;
+            CurrentSubTreeNode = null;
+
+            if (View != null)
+            {
+                View.ResetAll();
+            }
+
             //var shell = Container.Resolve<IShellPresenter>();
             //shell.DocumentProject
             setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
@@ -383,26 +393,6 @@ namespace Tobi.Modules.AudioPane
             if (View != null)
             {
                 View.ZoomSelection();
-            }
-        }
-
-        public void ClearSelection()
-        {
-            SelectionBegin = -1.0;
-            SelectionEnd = -1.0;
-            if (View != null)
-            {
-                View.ClearSelection();
-            }
-        }
-
-        public void SelectAll()
-        {
-            SelectionBegin = 0;
-            SelectionEnd = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
-            if (View != null)
-            {
-                View.ExpandSelection();
             }
         }
 
