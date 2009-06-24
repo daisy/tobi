@@ -629,8 +629,6 @@ namespace Tobi.Modules.AudioPane
             {
                 ShowHideWaveFormLoadingMessage(false);
 
-                ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
-
                 if (inBackgroundThread)
                 {
                     //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));

@@ -214,7 +214,29 @@ namespace Tobi.Modules.AudioPane
             }
             set
             {
+                if (m_LastPlayHeadTime == value)
+                {
+                    return;
+                }
+
                 m_LastPlayHeadTime = value;
+
+                if (m_LastPlayHeadTime < 0)
+                {
+                    Debug.Fail(String.Format("m_LastPlayHeadTime < 0 ?? {0}", m_LastPlayHeadTime));
+                    m_LastPlayHeadTime = 0;
+                }
+
+                if (PcmFormat != null && DataLength > 0)
+                {
+                    double time = PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble;
+                    if (m_LastPlayHeadTime > time)
+                    {
+                        Debug.Fail(String.Format("m_LastPlayHeadTime > DataLength ?? {0}", m_LastPlayHeadTime));
+                        m_LastPlayHeadTime = time;
+                    }
+                }
+
                 OnPropertyChanged(() => LastPlayHeadTime);
 
                 if (View != null)
@@ -237,9 +259,14 @@ namespace Tobi.Modules.AudioPane
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                 {
                     sumData += marker.m_LocalStreamDataLength;
-                    if (byteOffset <= sumData)
+                    if (byteOffset < sumData)
                     {
                         subTreeNode = marker.m_TreeNode;
+
+                        if (View != null)
+                        {
+                            View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                        }
                         break;
                     }
                     sumDataPrev = sumData;
@@ -251,11 +278,6 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 CurrentSubTreeNode = subTreeNode;
-
-                if (View != null)
-                {
-                    View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
-                }
 
                 if (CurrentSubTreeNode != CurrentTreeNode)
                 {
@@ -341,8 +363,6 @@ namespace Tobi.Modules.AudioPane
             PeakOverloadCountCh1 = 0;
             PeakOverloadCountCh2 = 0;
 
-            LastPlayHeadTime = 0;
-
             //StartWaveFormLoadTimer(0, IsAutoPlay);
 
             if (View != null)
@@ -414,11 +434,27 @@ namespace Tobi.Modules.AudioPane
             }
 
             double time = LastPlayHeadTime;
-            if (m_Player.State == AudioPlayerState.Playing)
+            if (m_Player.State == AudioPlayerState.Playing
+                || m_Player.State == AudioPlayerState.Paused)
             {
                 time = m_Player.CurrentTimePosition;
             }
-            LastPlayHeadTime = time;
+            else if (m_Player.State == AudioPlayerState.Stopped && time < 0)
+            {
+                time = 0;
+            }
+            
+            if (time == LastPlayHeadTime)
+            {
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormPlayHead();
+                }
+            }
+            else
+            {
+                LastPlayHeadTime = time;
+            }
         }
 
         private bool m_IsWaveFormLoading;
@@ -594,6 +630,10 @@ namespace Tobi.Modules.AudioPane
                 m_Player.Play(m_CurrentAudioStreamProvider,
                               dur.TimeDeltaAsMillisecondDouble,
                               new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth));
+            }
+            else
+            {
+                AudioPlayer_UpdateWaveFormPlayHead();
             }
         }
 
@@ -1024,15 +1064,15 @@ namespace Tobi.Modules.AudioPane
 
             PlayStreamMarkers = null;
             PcmFormat = null;
-            DataLength = 0;
+            DataLength = -1;
 
             ClearSelection();
 
-            m_EndOffsetOfPlayStream = 0;
+            m_EndOffsetOfPlayStream = -1;
             FilePath = null;
             //m_StreamRiffHeaderEndPos = 0;
             m_PlayStream = null;
-            m_LastPlayHeadTime = 0;
+            m_LastPlayHeadTime = -1;
 
             IsWaveFormLoading = false;
             //WaveFormProgress.IsIndeterminate = false;
@@ -1067,8 +1107,6 @@ namespace Tobi.Modules.AudioPane
             CurrentSubTreeNode = null;
 
             FilePath = path;
-
-            LastPlayHeadTime = 0;
 
             if (View != null)
             {
