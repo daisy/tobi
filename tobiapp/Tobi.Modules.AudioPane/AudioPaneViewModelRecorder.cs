@@ -2,6 +2,7 @@
 using System.IO;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
+using Tobi.Infrastructure;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 
@@ -115,9 +116,9 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_StartMonitor", Category.Debug, Priority.Medium);
 
-            var shell = Container.Resolve<IShellPresenter>();
+            var session = Container.Resolve<IUrakawaSession>();
 
-            if (shell.DocumentProject == null)
+            if (session.DocumentProject == null)
             {
                 setRecordingDirectory(Directory.GetCurrentDirectory());
                 PcmFormat = new PCMFormatInfo();
@@ -126,7 +127,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (PcmFormat == null)
                 {
-                    PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                    PcmFormat = session.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
                 }
             }
 
@@ -157,9 +158,10 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_Start", Category.Debug, Priority.Medium);
 
-            var shell = Container.Resolve<IShellPresenter>();
+            
+            var session = Container.Resolve<IUrakawaSession>();
 
-            if (shell.DocumentProject == null)
+            if (session.DocumentProject == null)
             {
                 setRecordingDirectory(Directory.GetCurrentDirectory());
                 PcmFormat = new PCMFormatInfo();
@@ -168,7 +170,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (PcmFormat == null)
                 {
-                    PcmFormat = shell.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                    PcmFormat = session.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
                 }
             }
 
@@ -179,15 +181,15 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_Stop", Category.Debug, Priority.Medium);
 
-            var shell = Container.Resolve<IShellPresenter>();
+            var session = Container.Resolve<IUrakawaSession>();
 
-            if (shell.DocumentProject != null)
+            if (session.DocumentProject != null)
             {
                 var mediaData =
-                    (WavAudioMediaData)shell.DocumentProject.GetPresentation(0).MediaDataFactory.CreateAudioMediaData();
+                    (WavAudioMediaData)session.DocumentProject.GetPresentation(0).MediaDataFactory.CreateAudioMediaData();
 
                 ManagedAudioMedia managedMedia =
-                    shell.DocumentProject.GetPresentation(0).MediaFactory.CreateManagedAudioMedia();
+                    session.DocumentProject.GetPresentation(0).MediaFactory.CreateManagedAudioMedia();
                 managedMedia.MediaData = mediaData;
             }
 

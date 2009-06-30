@@ -15,18 +15,10 @@ namespace Tobi
         ///</summary>
         IShellView View { get; }
 
-        ///<summary>
-        /// Requests application exit
-        ///</summary>
         RichDelegateCommand<object> ExitCommand { get; }
         RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; }
         RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }
         RichDelegateCommand<object> ManageShortcutsCommand { get; }
-        RichDelegateCommand<object> SaveCommand { get; }
-        RichDelegateCommand<object> SaveAsCommand { get; }
-
-        RichDelegateCommand<object> NewCommand { get; }
-        RichDelegateCommand<object> OpenCommand { get; }
 
         RichDelegateCommand<object> UndoCommand { get; }
         RichDelegateCommand<object> RedoCommand { get; }
@@ -52,9 +44,6 @@ namespace Tobi
         /// </summary>
         /// <param name="command"></param>
         void RegisterRichCommand(RichDelegateCommand<object> command);
-        
-        string DocumentFilePath { get; }
-        Project DocumentProject { get; }
 
         // TODO: The methods below are only called by the view,
         // we should perharps inject the Presenter into the View instead.

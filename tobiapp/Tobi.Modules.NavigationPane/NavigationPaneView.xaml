@@ -184,6 +184,12 @@
   Title="Pages" DockableStyle="DockableToBorders" -->
   <TabItem Header="Pages">
 
+    <!--  ListView.Resources>
+    < Style x:Key="CustomHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+    < Setter Property="Visibility" Value="Collapsed" />
+    < /Style>
+    < /ListView.Resources -->
+    
     <ListBox x:Name="ListView" ItemsSource="{Binding Pages}"
               SelectionMode="Single"
              SelectionChanged="OnPageSelected"

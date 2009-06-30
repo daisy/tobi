@@ -75,6 +75,7 @@
     <Compile Include="Commanding\RichDelegateCommand.cs" />
     <Compile Include="DataBindingDebugConverter.cs" />
     <Compile Include="HelpProvider.cs" />
+    <Compile Include="IUrakawaSession.cs" />
     <Compile Include="Onyx\Reflection\Reflect.cs" />
     <Compile Include="Onyx\Reflection\ReflectOn.cs" />
     <Compile Include="PageFoundByFlowDocumentParserEvent.cs" />

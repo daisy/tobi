@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
+using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Modules.MetadataPane;
 
@@ -56,6 +57,15 @@ namespace Tobi.Modules.ToolBars
             {
                 CommandShowMetadataPane = metadata.CommandShowMetadataPane;
             }
+            
+            var session = Container.Resolve<IUrakawaSession>();
+            if (session != null)
+            {
+                SaveCommand = session.SaveCommand;
+                SaveAsCommand = session.SaveAsCommand;
+                OpenCommand = session.OpenCommand;
+                NewCommand = session.NewCommand;
+            }
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
             if (shellPresenter != null)
@@ -64,14 +74,9 @@ namespace Tobi.Modules.ToolBars
                 MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
                 ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
 
-                SaveCommand = shellPresenter.SaveCommand;
-                SaveAsCommand = shellPresenter.SaveAsCommand;
-
                 UndoCommand = shellPresenter.UndoCommand;
                 RedoCommand = shellPresenter.RedoCommand;
 
-                OpenCommand = shellPresenter.OpenCommand;
-                NewCommand = shellPresenter.NewCommand;
 
                 CopyCommand = shellPresenter.CopyCommand;
                 CutCommand = shellPresenter.CutCommand;

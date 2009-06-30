@@ -174,6 +174,7 @@ c.Execute();
 
             ShutdownMode = ShutdownMode.OnMainWindowClose;
 
+            //to use on individual forms: this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             FrameworkElement.LanguageProperty.OverrideMetadata(
                   typeof(FrameworkElement),
                   new FrameworkPropertyMetadata(

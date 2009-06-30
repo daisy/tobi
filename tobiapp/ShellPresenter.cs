@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,28 +9,14 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Microsoft.Win32;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
-using urakawa;
 
 namespace Tobi
 {
     public class ShellPresenter : IShellPresenter
     {
-        public Project DocumentProject
-        {
-            get;
-            set;
-        }
-
-        public string DocumentFilePath
-        {
-            get;
-            set;
-        }
-
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool m_Exiting;
 
@@ -41,12 +26,6 @@ namespace Tobi
         public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
 
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
-
-        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
-        public RichDelegateCommand<object> SaveCommand { get; private set; }
-
-        public RichDelegateCommand<object> NewCommand { get; private set; }
-        public RichDelegateCommand<object> OpenCommand { get; private set; }
 
         public RichDelegateCommand<object> UndoCommand { get; private set; }
         public RichDelegateCommand<object> RedoCommand { get; private set; }
@@ -91,13 +70,14 @@ namespace Tobi
             App.LOGGER = Logger;
 
             initCommands();
-
         }
+
 
         private void initCommands()
         {
             Logger.Log("ShellPresenter.initCommands", Category.Debug, Priority.Medium);
 
+            //
             ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       UserInterfaceStrings.Menu_Exit_KEYS,
@@ -129,44 +109,6 @@ namespace Tobi
                                                                       (VisualBrush)Application.Current.FindResource("preferences-desktop-keyboard-shortcuts"),
                                                             obj => manageShortcuts(), obj => true);
             RegisterRichCommand(ManageShortcutsCommand);
-            //
-            SaveAsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.SaveAs,
-                UserInterfaceStrings.SaveAs_,
-                UserInterfaceStrings.SaveAs_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-save"),
-                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
-
-            RegisterRichCommand(SaveAsCommand);
-            //
-            SaveCommand = new RichDelegateCommand<object>(
-                UserInterfaceStrings.Save,
-                UserInterfaceStrings.Save_,
-                UserInterfaceStrings.Save_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-floppy"),
-                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :(",
-                    new NotImplementedException("Just trying nested expections",
-                        new NotImplementedException("The last inner exception ! :)")));
-                }, obj => true);
-
-            RegisterRichCommand(SaveCommand);
-            //
-            NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.New,
-                UserInterfaceStrings.New_,
-                UserInterfaceStrings.New_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-new"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
-
-            RegisterRichCommand(NewCommand);
-            //
-            OpenCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Open,
-                UserInterfaceStrings.Open_,
-                UserInterfaceStrings.Open_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-open"),
-                obj => OpenFile(), obj => true);
-
-            RegisterRichCommand(OpenCommand);
             //
             UndoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
@@ -249,36 +191,6 @@ namespace Tobi
 
             RegisterRichCommand(NavPreviousCommand);
             //
-        }
-
-        public void OpenFile()
-        {
-            var dlg = new OpenFileDialog();
-            dlg.FileName = "dtbook"; // Default file name
-            dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub";
-            bool? result = dlg.ShowDialog();
-            if (result == false)
-            {
-                return;
-            }
-            DocumentFilePath = dlg.FileName;
-            if (Path.GetExtension(DocumentFilePath) == ".xuk")
-            {
-                DocumentProject = new Project();
-
-                Uri uri = new Uri(DocumentFilePath, UriKind.Absolute);
-                DocumentProject.OpenXuk(uri);
-            }
-            else
-            {
-                var converter = new XukImport.DaisyToXuk(DocumentFilePath);
-                DocumentProject = converter.Project;
-            }
-
-            Logger.Log("-- PublishEvent [ProjectLoadedEvent] ShellPresenter.OpenFile", Category.Debug, Priority.Medium);
-
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
         }
 
         private void manageShortcuts()

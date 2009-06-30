@@ -46,7 +46,7 @@ namespace Tobi.Infrastructure
         public const string No = "_No";
 
         public const string Apply = "_Apply";
-        public const string Close = "_Close";
+        public const string CloseDialog = "_Close";
 
 
         public const string ShowMetadata = "_Edit metadata";
@@ -114,9 +114,13 @@ namespace Tobi.Infrastructure
         public const string New_ = "New document";
         public static KeyGesture New_KEYS = new KeyGesture(Key.N, ModifierKeys.Control);
 
-        public const string Open = "_Open";
-        public const string Open_ = "Open document";
+        public const string Open = "_Open / import";
+        public const string Open_ = "Open or import a document";
         public static KeyGesture Open_KEYS = new KeyGesture(Key.O, ModifierKeys.Control);
+
+        public const string Close = "_Close";
+        public const string Close_ = "Close document";
+        public static KeyGesture Close_KEYS = new KeyGesture(Key.W, ModifierKeys.Control);
 
         public const string Undo = "_Undo";
         public const string Undo_ = "Undo last action";

@@ -128,6 +128,10 @@
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
+      <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>
+      <Name>Tobi.Modules.MetadataPane</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
