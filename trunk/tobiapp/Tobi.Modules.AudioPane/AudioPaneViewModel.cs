@@ -78,6 +78,7 @@ namespace Tobi.Modules.AudioPane
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
@@ -90,6 +91,12 @@ namespace Tobi.Modules.AudioPane
             {
                 Directory.CreateDirectory(m_Recorder.AssetsDirectory);
             }
+        }
+
+
+        private void OnProjectUnLoaded(Project obj)
+        {
+            OnProjectLoaded(null);
         }
 
         private void OnProjectLoaded(Project project)
@@ -106,7 +113,10 @@ namespace Tobi.Modules.AudioPane
 
             //var shell = Container.Resolve<IShellPresenter>();
             //shell.DocumentProject
-            setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
+            if (project != null)
+            {
+                setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
+            }
         }
 
         private const bool AudioPlaybackStreamKeepAlive = true;

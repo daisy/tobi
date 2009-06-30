@@ -1,6 +1,9 @@
 ﻿using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
+using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
+using Tobi.Modules.MetadataPane;
 
 namespace Tobi.Modules.MenuBar
 {
@@ -13,6 +16,38 @@ namespace Tobi.Modules.MenuBar
         protected ILoggerFacade Logger { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
 
+
+        public RichDelegateCommand<object> ExitCommand { get; private set; }
+
+        public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
+        public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
+
+        public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
+
+        public RichDelegateCommand<object> UndoCommand { get; private set; }
+        public RichDelegateCommand<object> RedoCommand { get; private set; }
+
+        public RichDelegateCommand<object> CopyCommand { get; private set; }
+        public RichDelegateCommand<object> CutCommand { get; private set; }
+        public RichDelegateCommand<object> PasteCommand { get; private set; }
+
+        public RichDelegateCommand<object> HelpCommand { get; private set; }
+        public RichDelegateCommand<object> PreferencesCommand { get; private set; }
+        public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+
+        public RichDelegateCommand<object> NavNextCommand { get; private set; }
+        public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
+
+        public RichDelegateCommand<object> SaveCommand { get; private set; }
+        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
+
+        public RichDelegateCommand<object> NewCommand { get; private set; }
+        public RichDelegateCommand<object> OpenCommand { get; private set; }
+        public RichDelegateCommand<object> CloseCommand { get; private set; }
+
+        public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
+
+
         ///<summary>
         /// Dependency-injected constructor
         ///</summary>
@@ -24,8 +59,46 @@ namespace Tobi.Modules.MenuBar
 
             Logger.Log("MenuBarView.ctor", Category.Debug, Priority.Medium);
 
+            var session = Container.Resolve<IUrakawaSession>();
+            if (session != null)
+            {
+                SaveCommand = session.SaveCommand;
+                SaveAsCommand = session.SaveAsCommand;
+                OpenCommand = session.OpenCommand;
+                NewCommand = session.NewCommand;
+                CloseCommand = session.CloseCommand;
+            }
+
+            var metadata = Container.Resolve<MetadataPaneViewModel>();
+            if (metadata != null)
+            {
+                CommandShowMetadataPane = metadata.CommandShowMetadataPane;
+            }
+
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            DataContext = shellPresenter;
+            if (shellPresenter != null)
+            {
+                ExitCommand = shellPresenter.ExitCommand;
+
+                MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
+                MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
+                ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
+
+                UndoCommand = shellPresenter.UndoCommand;
+                RedoCommand = shellPresenter.RedoCommand;
+
+
+                CopyCommand = shellPresenter.CopyCommand;
+                CutCommand = shellPresenter.CutCommand;
+                PasteCommand = shellPresenter.PasteCommand;
+
+                HelpCommand = shellPresenter.HelpCommand;
+                PreferencesCommand = shellPresenter.PreferencesCommand;
+                WebHomeCommand = shellPresenter.WebHomeCommand;
+
+                NavNextCommand = shellPresenter.NavNextCommand;
+                NavPreviousCommand = shellPresenter.NavPreviousCommand;
+            }
 
             InitializeComponent();
         }

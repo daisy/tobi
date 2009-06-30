@@ -103,7 +103,9 @@ namespace Tobi.Modules.DocumentPane
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
         }
 
         /*
@@ -265,6 +267,11 @@ namespace Tobi.Modules.DocumentPane
         private Dictionary<string, TextElement> m_idLinkTargets;
 
 
+        private void OnProjectUnLoaded(Project obj)
+        {
+            OnProjectLoaded(null);
+        }
+
         private void OnProjectLoaded(Project project)
         {
             CurrentTreeNode = null;
@@ -281,6 +288,12 @@ namespace Tobi.Modules.DocumentPane
 
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
+
+            if (project == null)
+            {
+                FlowDocReader.Document = new FlowDocument();
+                return;
+            }
 
             createFlowDocumentFromXuk(project);
 

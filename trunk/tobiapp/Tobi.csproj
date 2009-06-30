@@ -154,14 +154,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
-      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
-      <Name>UrakawaSDK.core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\XukImport\DaisyToXuk\DaisyToXuk.csproj">
-      <Project>{FB4B9F00-DAE4-46C4-B789-7A693198FA61}</Project>
-      <Name>DaisyToXuk</Name>
-    </ProjectReference>
     <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
       <Name>Lib.Composite.Presentation</Name>
@@ -193,6 +185,10 @@
     <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Modules.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
       <Name>Tobi.Modules.ToolBars</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Urakawa\Tobi.Modules.Urakawa.csproj">
+      <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
+      <Name>Tobi.Modules.Urakawa</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

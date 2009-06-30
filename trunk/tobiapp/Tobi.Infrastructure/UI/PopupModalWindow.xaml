@@ -116,7 +116,7 @@
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Close}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Close}"
                 Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Close, Converter={StaticResource booleanToVisibilityConverter}}"
-                Content="{x:Static Infrastructure:UserInterfaceStrings.Close}"/>
+                Content="{x:Static Infrastructure:UserInterfaceStrings.CloseDialog}"/>
 
         <Rectangle Width="10"/>
       

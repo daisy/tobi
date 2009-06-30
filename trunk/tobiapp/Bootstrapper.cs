@@ -13,6 +13,7 @@ using Tobi.Modules.MetadataPane;
 using Tobi.Modules.NavigationPane;
 using Tobi.Modules.MenuBar;
 using Tobi.Modules.ToolBars;
+using Tobi.Modules.Urakawa;
 
 namespace Tobi
 {
@@ -60,22 +61,22 @@ namespace Tobi
             return shellView as DependencyObject;
         }
 
-        /*
-    protected override void InitializeModules()
-    {
-        base.InitializeModules();
-
-        var moduleCatalog = Container.Resolve<IModuleCatalog>();
-        foreach (var module in moduleCatalog.Modules)
+        protected override void InitializeModules()
         {
-            if (module.ModuleName == "MyModuleName")
+            base.InitializeModules();
+
+            /*
+            var name = typeof (UrakawaModule).Name;
+            var moduleCatalog = Container.Resolve<IModuleCatalog>();
+            foreach (var module in moduleCatalog.Modules)
             {
-                var moduleManager = Container.Resolve<IModuleManager>();
-                moduleManager.LoadModule(module.ModuleName);
-            }
+                if (module.ModuleName == name)
+                {
+                    var moduleManager = Container.Resolve<IModuleManager>();
+                    moduleManager.LoadModule(module.ModuleName);
+                }
+            }*/
         }
-    }
-         */
 
         /// <summary>
         /// Tobi loads its main Modules statically
@@ -85,12 +86,14 @@ namespace Tobi
             //return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
 
             return new ModuleCatalog()
-                .AddModule(typeof(MenuBarModule))
+                .AddModule(typeof(UrakawaModule))
+                .AddModule(typeof(MenuBarModule), "UrakawaModule")
                 .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))
-                .AddModule(typeof(ToolBarsModule), "MetadataPaneModule"); // TODO: remove this dependency, currently necessary to retrieve the local Command and inject it into a button
+                .AddModule(typeof(ToolBarsModule), new string[]{"MetadataPaneModule", "UrakawaModule"}
+        ); // TODO: remove this dependency, currently necessary to retrieve the local Command and inject it into a button}
 
             //.AddModule(typeof (StatusBarModule));
             //.AddModule(typeof(UserInterfaceZoomModule))

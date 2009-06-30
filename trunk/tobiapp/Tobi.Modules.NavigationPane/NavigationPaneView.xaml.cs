@@ -54,9 +54,18 @@ namespace Tobi.Modules.NavigationPane
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
+        private void OnProjectUnLoaded(Project obj)
+        {
+            OnProjectLoaded(null);
+        }
+
         private void OnProjectLoaded(Project project)
         {
-            m_HeadingsNavigator = new HeadingsNavigator(project);
+            m_HeadingsNavigator = null;
+            if (project != null)
+            {
+                m_HeadingsNavigator = new HeadingsNavigator(project);
+            }
             TreeView.DataContext = HeadingsNavigator;
             Pages.Clear();
         }
@@ -102,7 +111,10 @@ namespace Tobi.Modules.NavigationPane
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+            
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+
             EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Subscribe(OnPageFoundByFlowDocumentParser, ThreadOption.UIThread);
         }
 
