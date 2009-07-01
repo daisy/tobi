@@ -73,7 +73,8 @@
       SelectionMode="Extended"
       ScrollViewer.HorizontalScrollBarVisibility="Visible"
       ScrollViewer.VerticalScrollBarVisibility="Visible"
-      AlternationCount="2">
+      AlternationCount="2"
+      SelectionChanged="list_SelectionChanged">
 
         <UI:SortableListView.Resources>
             <!-- <local:ContentTriggerConverter x:Key="contentTriggerConverter"/> -->
@@ -86,46 +87,59 @@
             <!-- for the name field -->
             <DataTemplate x:Key="RequiredName">
                 <Grid>
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
-                    <ComboBox 
-                        ItemsSource="{Binding RelativeSource={RelativeSource
-FindAncestor, AncestorType={x:Type
-local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}" 
-                          Style="{StaticResource NameEditStyle}"
-                          SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding Name}"
-                        Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type GridViewRowPresenter}}}"/>
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}" x:Name="textBox"/>
+                    <ComboBox                        
+                        ItemsSource="{Binding 
+                                      RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type local:MetadataPaneView}}, 
+                                      Path=AvailableMetadata}"
+                        Style="{StaticResource NameEditStyle}"
+                        SelectionChanged="ComboBox_SelectionChanged"
+                        SelectedValue="{Binding RelativeSource={RelativeSource 
+                                        FindAncestor, AncestorType={x:Type 
+                                        local:MetadataPaneView}}, 
+                                        Path=SelectedMetadata.Name}"
+                     />
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="RecommendedName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox 
-                        ItemsSource="{Binding RelativeSource={RelativeSource
-FindAncestor, AncestorType={x:Type
-local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
-                          Style="{StaticResource NameEditStyle}"
-                          SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding Name}"
-                        Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type GridViewRowPresenter}}}"/>
+                    <ComboBox                        
+                        ItemsSource="{Binding 
+                                      RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type local:MetadataPaneView}}, 
+                                      Path=AvailableMetadata}"
+                        Style="{StaticResource NameEditStyle}"
+                        SelectionChanged="ComboBox_SelectionChanged"
+                        SelectedValue="{Binding RelativeSource={RelativeSource 
+                                        FindAncestor, AncestorType={x:Type 
+                                        local:MetadataPaneView}}, 
+                                        Path=SelectedMetadata.Name}"
+                     />
                 </Grid>
             </DataTemplate>
             <DataTemplate x:Key="OptionalName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox 
-                        ItemsSource="{Binding RelativeSource={RelativeSource
-FindAncestor, AncestorType={x:Type
-local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
-                          Style="{StaticResource NameEditStyle}"
-                          SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding Name}"
-                         Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type GridViewRowPresenter}}}"/>
+                    <ComboBox                        
+                        ItemsSource="{Binding 
+                                      RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type local:MetadataPaneView}}, 
+                                      Path=AvailableMetadata}"
+                        Style="{StaticResource NameEditStyle}"
+                        SelectionChanged="ComboBox_SelectionChanged"
+                        SelectedValue="{Binding RelativeSource={RelativeSource 
+                                        FindAncestor, AncestorType={x:Type 
+                                        local:MetadataPaneView}}, 
+                                        Path=SelectedMetadata.Name}"
+                     />
                     
                 </Grid>
             </DataTemplate>
 
             <!-- for the content field-->
+            <!--
             <DataTemplate x:Key="ReadOnlyContent">
                 <StackPanel>
                     <TextBlock Text="{Binding Content}"/>
@@ -145,13 +159,7 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                                     <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty" ValidatesOnTargetUpdated="True" />
                                 </Binding.ValidationRules>
                             </Binding>
-                                <!-- <MultiBinding Converter="{StaticResource contentTriggerConverter}" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
-                                <Binding Path="Content"/>
-                                <Binding Path="Name"/>
-                                <MultiBinding.ValidationRules>
-                                    <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty"/>
-                                </MultiBinding.ValidationRules>
-                            </MultiBinding>-->
+                              
                             </TextBox.Text>
                     </TextBox>
 
@@ -196,6 +204,45 @@ local:MetadataPaneView}}, Path=DataContext.AvailableMetadata}"
                 </StackPanel>
 
             </DataTemplate>
+            -->
+            
+            <!-- attempt at a generic content template with single-function validation -->
+            <!-- 
+            <DataTemplate x:Key="ContentTemplate">
+                <StackPanel>
+                    
+                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
+                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <local:MetadataContentValidationRule ValidatesOnTargetUpdated="True"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
+
+                    <ContentPresenter
+                        Content="{Binding ElementName=textBox,
+                        Path=(Validation.Errors).CurrentItem}">
+                    </ContentPresenter>
+                </StackPanel>
+
+            </DataTemplate>-->
+            
+            <DataTemplate x:Key="ContentTemplate">
+                <StackPanel>
+                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}">
+                        <Binding Path="Content" 
+                                 UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
+                            
+                        </Binding>
+                    </TextBox>
+
+                    <ContentPresenter
+                        Content="{Binding ElementName=textBox,
+                        Path=(Validation.Errors).CurrentItem}">
+                    </ContentPresenter>
+                </StackPanel>
+            </DataTemplate>
+            
         </UI:SortableListView.Resources>
 
         <UI:SortableListView.View>

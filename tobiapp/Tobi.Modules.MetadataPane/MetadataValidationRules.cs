@@ -4,20 +4,40 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Globalization;
+using urakawa.metadata.daisy;
 
 namespace Tobi.Modules.MetadataPane
 {
-    public abstract class BaseValidationRule : ValidationRule
+    /*public class MetadataContentValidationRule : ValidationRule
     {
         public string ErrorMessage { get; set; }
-    }
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            //an unreliable hack to find which metadata object owns the content
+            
+            MetadataValidation validation = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            if (validation.ValidateItem(metadata) == false)
+            {
+                if (validation.Report.Count > 0)
+                {
+                    ErrorMessage = validation.Report.First().Description;
+                    return new ValidationResult(false, ErrorMessage);
+                }
+            }
+            else
+            {
+                return new ValidationResult(true, null);
+            }
 
+        }
+    }*/
+    /*
     //this simply checks that the value is a non-empty string
     public class RequiredStringValidationRule : BaseValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
        {
-            if (((string)value).Length > 0)
+            if ()
                 return new ValidationResult(true, null);
             else
                 return new ValidationResult(false, ErrorMessage);
@@ -112,5 +132,5 @@ namespace Tobi.Modules.MetadataPane
             return new ValidationResult(true, null);
         }
     }
-
+    */
 }

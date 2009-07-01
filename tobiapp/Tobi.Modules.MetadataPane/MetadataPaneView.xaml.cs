@@ -8,6 +8,7 @@ using urakawa.metadata;
 using System.Collections.Generic;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -111,7 +112,7 @@ namespace Tobi.Modules.MetadataPane
             }
 
             int count = 0;
-            //TODO: should we clear the selection first?
+            list.SelectedItems.Clear();
             foreach (object obj in list.Items)
             {
                 NotifyingMetadataItem metadata = (NotifyingMetadataItem) obj;
@@ -133,6 +134,7 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
+        
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //after the data templates get refreshed, this function gets triggered again
@@ -140,24 +142,8 @@ namespace Tobi.Modules.MetadataPane
             NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
             string name = (string) e.AddedItems[0];
             if (metadata != null) metadata.Name = name;
-            ViewModel.RefreshDataTemplateSelectors();
-        
+            //ViewModel.RefreshDataTemplateSelectors();
             
-            
-            //TODO: force a source update (as in the LostFocus event) here for
-            //the corresponding text box.  but how to find it? 
-            //idea from MS not working; rowPresenter is always null
-            //http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/fbd03126-ab8e-45fa-8b3b-f2baae35af87/
-            GridViewRowPresenter rowPresenter = ((ComboBox) sender).Tag as GridViewRowPresenter;
-            if (rowPresenter != null)
-            {
-                TextBox textBox = GetFrameworkElementByName<TextBox>(rowPresenter, "textBox");
-                if (textBox != null)
-                {
-                    BindingExpression be = textBox.GetBindingExpression(TextBox.TextProperty);
-                    if (be != null) be.UpdateSource();
-                }
-            }
         }
 
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
@@ -170,33 +156,58 @@ namespace Tobi.Modules.MetadataPane
             ViewModel.RefreshDataTemplateSelectors();
         }
 
-        private void textBox_LostFocus(object sender, RoutedEventArgs e)
+        private void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            BindingExpression be = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            if (be != null) be.UpdateSource();
-        }
-
-        //from 
-        //http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/fbd03126-ab8e-45fa-8b3b-f2baae35af87/
-        public T GetFrameworkElementByName<T>(FrameworkElement referenceElement, String name) where T : FrameworkElement
-        {
-            FrameworkElement child = null;
-            for (Int32 i = 0; i < VisualTreeHelper.GetChildrenCount(referenceElement); i++)
+            if (SelectedMetadata != list.SelectedItem)
             {
-                child = VisualTreeHelper.GetChild(referenceElement, i) as FrameworkElement;
-                if (child != null && child.Name == name && child.GetType() == typeof(T))
-                {
-                    break;
-                }
-
-                else if (child != null)
-                {
-                    child = GetFrameworkElementByName<T>(child, name);
-                }
+                SelectedMetadata = list.SelectedItem;
             }
-            return child as T;
         }
-        
+
+        public object SelectedMetadata
+        {
+            get
+            {
+                return (object)GetValue(SelectedMetadataProperty);
+            }
+            set
+            {
+                SetValue(SelectedMetadataProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty SelectedMetadataProperty =
+        DependencyProperty.Register("SelectedMetadata", typeof(object), typeof(MetadataPaneView),
+                new UIPropertyMetadata(null));
+
+        /// <summary>
+        /// based on the existing metadata, return a list of metadata fields available
+        /// for addition
+        /// </summary>
+        public ObservableCollection<string> AvailableMetadata
+        {
+            get
+            {
+                ObservableCollection<string> availableMetadata = ViewModel.GetAvailableMetadata();
+
+                //the available metadata list might not have our selection in it
+                //if the selection is meant not to be duplicated
+                //we need users to be able to have the current Name as an option
+                if (SelectedMetadata != null)
+                {
+                    NotifyingMetadataItem selection = (NotifyingMetadataItem) SelectedMetadata;
+                    if (selection.Name != "")
+                    {
+                        if (availableMetadata.Contains(selection.Name) == false)
+                            availableMetadata.Insert(0, selection.Name);
+                    }   
+                }
+                return availableMetadata;
+
+                /* ObservableCollection<string> availableMetadata = ViewModel.GetAvailableMetadata();
+                return availableMetadata;*/
+            }
+        }
     }
 
     public class BoolToVisibilityConverter : System.Windows.Data.IValueConverter
@@ -216,23 +227,5 @@ namespace Tobi.Modules.MetadataPane
             throw new NotImplementedException();
         }
     }
-    
-    /*public class ContentTriggerConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return values[0];
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            object[] values= new object[2];
-            values[0] = value;
-            return values;
-        }
-
-    }*/
-
-    
         
 }
