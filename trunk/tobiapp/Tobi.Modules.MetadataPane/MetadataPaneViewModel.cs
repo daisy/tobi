@@ -11,11 +11,14 @@ using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
 using urakawa;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.events.presentation;
 using urakawa.events.metadata;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
+
+
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -186,6 +189,8 @@ namespace Tobi.Modules.MetadataPane
                 return m_Metadatas;
             }
         }
+
+
         public void CreateFakeData()
         {
             List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
@@ -211,52 +216,43 @@ namespace Tobi.Modules.MetadataPane
             Project.GetPresentation(0).AddMetadata(metadata);
         }
 
-        /// <summary>
-        /// based on the existing metadata, return a list of metadata fields available
-        /// for addition
-        /// </summary>
-        public List<string> AvailableMetadata
-        {
-            get
-            {
-                return GetAvailableMetadata();
-            }
-        }
-        private List<string> GetAvailableMetadata()
+       
+
+        public ObservableCollection<string> GetAvailableMetadata()
         {
             List<Metadata> metadatas = Project.GetPresentation(0).ListOfMetadata;
-            List<string> list = new List<string>();
-            foreach (SupportedMetadataItem metadataItem in SupportedMetadataList.MetadataList)
+            List<MetadataDefinition> availableMetadata = 
+                MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataList);
+
+            ObservableCollection<string> list = new ObservableCollection<string>();
+            
+            foreach (MetadataDefinition metadata in availableMetadata)
             {
-                //is this already in our project metadata list, and can it be repeated?
-                Metadata alreadyExists = metadatas.Find(s => s.Name == metadataItem.Name);
-                if (alreadyExists == null)
-                    list.Add(metadataItem.Name);
-                else if (alreadyExists != null && metadataItem.IsRepeatable)
-                    list.Add(metadataItem.Name);
+                list.Add(metadata.Name);
             }
             return list;    
+           
         }
 
         public void ValidateMetadata()
         {
-            List<string> missing = new List<string>();
+            List<string> errors = new List<string>();
             List<Metadata> metadatas = Project.GetPresentation(0).ListOfMetadata;
-             foreach (SupportedMetadataItem metadataItem in SupportedMetadataList.MetadataList)
-             {
-                 Metadata exists = metadatas.Find(s => s.Name == metadataItem.Name);
-                 if (metadataItem.Occurence == MetadataOccurence.Required && 
-                     metadataItem.IsReadOnly == false &&
-                     exists == null)
-                 {
-                     missing.Add(metadataItem.Name);
-                 }
-             }
 
-            if (missing.Count > 0)
+            MetadataValidation validation = new 
+                MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            
+            if (validation.Validate(metadatas) == false)
             {
-                string temp = string.Join(", ", missing.ToArray());
-                StatusText = string.Format("Missing: {0}", temp);
+                foreach (MetadataValidationReportItem item in validation.Report)
+                {
+                    errors.Add(item.Description);
+                }
+            }
+
+            if (errors.Count > 0)
+            {
+                StatusText = string.Join(", ", errors.ToArray());
             }
             else
             {
@@ -293,14 +289,14 @@ namespace Tobi.Modules.MetadataPane
             }
         }
     }
-    
+
     public class ContentTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate OptionalStringTemplate { get; set; }
+        /*public DataTemplate OptionalStringTemplate { get; set; }
         public DataTemplate OptionalDateTemplate { get; set; }
         public DataTemplate RequiredStringTemplate { get; set; }
         public DataTemplate RequiredDateTemplate { get; set; }
-        public DataTemplate ReadOnlyTemplate { get; set; }
+        public DataTemplate ReadOnlyTemplate { get; set; }*/
         public DataTemplate DefaultTemplate { get; set; }
 
         private MetadataPaneView m_View;
@@ -308,18 +304,19 @@ namespace Tobi.Modules.MetadataPane
         {
             if (view == null) return;
             m_View = view;
-            
-            OptionalStringTemplate = (DataTemplate)m_View.list.Resources["OptionalStringContent"];
+
+            /*OptionalStringTemplate = (DataTemplate)m_View.list.Resources["OptionalStringContent"];
             OptionalDateTemplate = (DataTemplate)m_View.list.Resources["OptionalDateContent"];
             RequiredStringTemplate = (DataTemplate)m_View.list.Resources["RequiredStringContent"];
             RequiredDateTemplate = (DataTemplate)m_View.list.Resources["RequiredDateContent"];
             ReadOnlyTemplate = (DataTemplate)m_View.list.Resources["ReadOnlyContent"];
-            DefaultTemplate = OptionalStringTemplate;
+            DefaultTemplate = OptionalStringTemplate;*/
+            DefaultTemplate = (DataTemplate)m_View.list.Resources["ContentTemplate"];
         }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
+            /*NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
 
             List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
                 Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
@@ -358,6 +355,8 @@ namespace Tobi.Modules.MetadataPane
             {
                 return DefaultTemplate;
             }
+        }*/
+            return DefaultTemplate;
         }
     }
 
@@ -382,26 +381,22 @@ namespace Tobi.Modules.MetadataPane
         {
 
             NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
-
-            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
-                    Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
-
-            int index = list.FindIndex(0, s => s.Name == metadata.Name);
+            int index = SupportedMetadata_Z39862005.MetadataList.FindIndex(0, s => s.Name == metadata.Name);
 
             if (index != -1)
             {
-                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
+                MetadataDefinition definition = SupportedMetadata_Z39862005.MetadataList[index];
 
-                if (metaitem.Occurence == MetadataOccurence.Required)
+                if (definition.Occurrence == MetadataOccurrence.Required)
                     return RequiredTemplate;
-                else if (metaitem.Occurence == MetadataOccurence.Recommended)
+                else if (definition.Occurrence == MetadataOccurrence.Recommended)
                     return RecommendedTemplate;
             }
             return OptionalTemplate;
         }
     }
     
-    public class NotifyingMetadataItem : PropertyChangedNotifyBase
+    public class NotifyingMetadataItem : PropertyChangedNotifyBase, IDataErrorInfo
     {
         private Metadata m_Metadata;
         public Metadata UrakawaMetadata
@@ -421,7 +416,6 @@ namespace Tobi.Modules.MetadataPane
         {
             RemoveEvents();
         }
-
         public string Content
         {
             get
@@ -478,6 +472,34 @@ namespace Tobi.Modules.MetadataPane
 
         
 
+    
+        #region IDataErrorInfo Members
+
+        public string  Error
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public string  this[string columnName]
+        {
+            get
+            {
+                string result = null;
+                if (columnName == "Content")
+                {
+                    MetadataValidation validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+                    if (validator.ValidateItem(UrakawaMetadata) == false)
+                    {
+                        if (validator.Report.Count > 0)
+                            result = validator.Report[0].Description;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        #endregion
     }
 
     
