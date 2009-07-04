@@ -123,7 +123,17 @@ namespace Tobi.Modules.MetadataPane
                 }
             }
             if (count == 0)
+            {
                 ViewModel.StatusText = "Not found";
+            }
+            else if (count == 1)
+            {
+                ViewModel.StatusText = "1 match found";
+            }
+            else
+            {
+                ViewModel.StatusText = string.Format("{0} matches found", count.ToString());
+            }
         }
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
@@ -142,6 +152,7 @@ namespace Tobi.Modules.MetadataPane
             NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
             string name = (string) e.AddedItems[0];
             if (metadata != null) metadata.Name = name;
+            //revalidate
             //ViewModel.RefreshDataTemplateSelectors();
             
         }
@@ -161,6 +172,8 @@ namespace Tobi.Modules.MetadataPane
             if (SelectedMetadata != list.SelectedItem)
             {
                 SelectedMetadata = list.SelectedItem;
+                ObservableCollection<string> l = AvailableMetadata;
+            
             }
         }
 
@@ -203,11 +216,14 @@ namespace Tobi.Modules.MetadataPane
                     }   
                 }
                 return availableMetadata;
-
-                /* ObservableCollection<string> availableMetadata = ViewModel.GetAvailableMetadata();
-                return availableMetadata;*/
             }
         }
+
+        private void ComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            ((ComboBox) sender).ItemsSource = AvailableMetadata;
+        }
+
     }
 
     public class BoolToVisibilityConverter : System.Windows.Data.IValueConverter

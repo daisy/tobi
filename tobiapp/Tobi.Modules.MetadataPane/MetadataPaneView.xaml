@@ -8,6 +8,7 @@
     LastChildFill="True" Loaded="DockPanel_Loaded">
 
     <DockPanel.Resources>
+        
         <local:BoolToVisibilityConverter x:Key="boolToVis" />
 
         <Style TargetType="{x:Type Button}">
@@ -40,28 +41,42 @@
                     Converter={StaticResource boolToVis},
                     ConverterParameter=True}" />
         </Style>
+
+        <Style TargetType="ListViewItem">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="LightBlue"/>
+            </Style.Resources>
+        </Style>
+        
     </DockPanel.Resources>
 
     <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical">
 
         <StackPanel Orientation="Horizontal">
-            <TextBox Width="200" x:Name="LookupField"></TextBox>
-            <Button Click="Lookup_Button_Click">Lookup</Button>
+            <Button Width="100" Click="Add_Metadata_Button_Click">Add</Button>
+            <Button Width="100" Click="Remove_Metadata_Button_Click">Remove</Button>
+            <Button Width="100" Click="Validate_Metadata_Click">Validate</Button>
+
         </StackPanel>
 
-        <Button Click="Add_Metadata_Button_Click">Add</Button>
-        <Button Click="Remove_Metadata_Button_Click">Remove</Button>
+        <StackPanel Orientation="Horizontal">
+            <TextBox Width="200" x:Name="LookupField"></TextBox>
+            <Button  HorizontalAlignment="Right" Width="100" Click="Lookup_Button_Click">Lookup</Button>
+        </StackPanel>
 
-        <Button Click="Fake_Button_Click">Fake data</Button>
-        <Button Click="Data_Model_Report_Click">Data model metadata</Button>
-        <Button Click="Validate_Metadata_Click">Validate</Button>
         <StatusBar>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Status: "/>
                 <TextBlock Text="{Binding StatusText}"/>
             </StackPanel>
         </StatusBar>
-
+        
+        <StackPanel Background="LightCoral">
+            <TextBlock>Testing only:</TextBlock>
+            <Button Click="Fake_Button_Click">Generate fake data</Button>
+            <Button Click="Data_Model_Report_Click">View data model metadata</Button>
+        </StackPanel>
     </StackPanel>
 
 
@@ -77,8 +92,6 @@
       SelectionChanged="list_SelectionChanged">
 
         <UI:SortableListView.Resources>
-            <!-- <local:ContentTriggerConverter x:Key="contentTriggerConverter"/> -->
-            
             <!-- errors -->
             <DataTemplate DataType="{x:Type ValidationError}">
                 <TextBlock Text="{Binding Path=ErrorContent}" Foreground="Red"/>
@@ -88,30 +101,14 @@
             <DataTemplate x:Key="RequiredName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}" x:Name="textBox"/>
-                    <ComboBox                        
+                    <ComboBox
                         ItemsSource="{Binding 
                                       RelativeSource={RelativeSource FindAncestor, 
                                             AncestorType={x:Type local:MetadataPaneView}}, 
                                       Path=AvailableMetadata}"
                         Style="{StaticResource NameEditStyle}"
                         SelectionChanged="ComboBox_SelectionChanged"
-                        SelectedValue="{Binding RelativeSource={RelativeSource 
-                                        FindAncestor, AncestorType={x:Type 
-                                        local:MetadataPaneView}}, 
-                                        Path=SelectedMetadata.Name}"
-                     />
-                </Grid>
-            </DataTemplate>
-            <DataTemplate x:Key="RecommendedName">
-                <Grid>
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox                        
-                        ItemsSource="{Binding 
-                                      RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type local:MetadataPaneView}}, 
-                                      Path=AvailableMetadata}"
-                        Style="{StaticResource NameEditStyle}"
-                        SelectionChanged="ComboBox_SelectionChanged"
+                        DropDownOpened="ComboBox_DropDownOpened"
                         SelectedValue="{Binding RelativeSource={RelativeSource 
                                         FindAncestor, AncestorType={x:Type 
                                         local:MetadataPaneView}}, 
@@ -122,117 +119,27 @@
             <DataTemplate x:Key="OptionalName">
                 <Grid>
                     <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox                        
+                    <ComboBox
                         ItemsSource="{Binding 
                                       RelativeSource={RelativeSource FindAncestor, 
                                             AncestorType={x:Type local:MetadataPaneView}}, 
                                       Path=AvailableMetadata}"
                         Style="{StaticResource NameEditStyle}"
                         SelectionChanged="ComboBox_SelectionChanged"
+                        DropDownOpened="ComboBox_DropDownOpened"
                         SelectedValue="{Binding RelativeSource={RelativeSource 
                                         FindAncestor, AncestorType={x:Type 
                                         local:MetadataPaneView}}, 
                                         Path=SelectedMetadata.Name}"
                      />
-                    
                 </Grid>
             </DataTemplate>
-
-            <!-- for the content field-->
-            <!--
-            <DataTemplate x:Key="ReadOnlyContent">
-                <StackPanel>
-                    <TextBlock Text="{Binding Content}"/>
-                </StackPanel>
-            </DataTemplate>
-
-            <DataTemplate x:Key="OptionalStringContent">
-                <TextBox Text="{Binding Content}"/>
-            </DataTemplate>
-
-            <DataTemplate x:Key="RequiredStringContent">
-                <StackPanel>
-                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
-                        <TextBox.Text>
-                            <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
-                                <Binding.ValidationRules>
-                                    <local:RequiredStringValidationRule ErrorMessage="Field cannot be empty" ValidatesOnTargetUpdated="True" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                              
-                            </TextBox.Text>
-                    </TextBox>
-
-                    <ContentPresenter
-                        Content="{Binding ElementName=textBox,
-                        Path=(Validation.Errors).CurrentItem}">
-                    </ContentPresenter>
-                </StackPanel>
-            </DataTemplate>
-
-            <DataTemplate x:Key="OptionalDateContent">
-                <StackPanel>
-                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
-                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD" ValidatesOnTargetUpdated="True"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox>
-
-                    <ContentPresenter
-                        Content="{Binding ElementName=textBox,
-                        Path=(Validation.Errors).CurrentItem}">
-                    </ContentPresenter>
-                </StackPanel>
-            </DataTemplate>
-
-            <DataTemplate x:Key="RequiredDateContent">
-                <StackPanel>
-                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
-                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <local:RequiredDateValidationRule ErrorMessage="Please format data as YYYY-MM-DD" ValidatesOnTargetUpdated="True"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox>
-
-                    <ContentPresenter
-                        Content="{Binding ElementName=textBox,
-                        Path=(Validation.Errors).CurrentItem}">
-                    </ContentPresenter>
-                </StackPanel>
-
-            </DataTemplate>
-            -->
-            
-            <!-- attempt at a generic content template with single-function validation -->
-            <!-- 
-            <DataTemplate x:Key="ContentTemplate">
-                <StackPanel>
-                    
-                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}" LostFocus="textBox_LostFocus">
-                        <Binding Path="Content" UpdateSourceTrigger="Explicit"  ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <local:MetadataContentValidationRule ValidatesOnTargetUpdated="True"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox>
-
-                    <ContentPresenter
-                        Content="{Binding ElementName=textBox,
-                        Path=(Validation.Errors).CurrentItem}">
-                    </ContentPresenter>
-                </StackPanel>
-
-            </DataTemplate>-->
             
             <DataTemplate x:Key="ContentTemplate">
                 <StackPanel>
                     <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}">
                         <Binding Path="Content" 
                                  UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
-                            
                         </Binding>
                     </TextBox>
 
@@ -265,9 +172,12 @@
                         UI:SortableListView.SortPropertyName="Name"
                         CellTemplateSelector="{Binding NameTemplateSelectorProperty}"/>
 
+                <!--<GridViewColumn Header="Content"
+                        UI:SortableListView.SortPropertyName="Content"
+                        CellTemplateSelector="{Binding ContentTemplateSelectorProperty}"/>-->
                 <GridViewColumn Header="Content"
                         UI:SortableListView.SortPropertyName="Content"
-                        CellTemplateSelector="{Binding ContentTemplateSelectorProperty}"/>
+                        CellTemplate="{StaticResource ContentTemplate}"/>
             </GridView>
         </UI:SortableListView.View>
 

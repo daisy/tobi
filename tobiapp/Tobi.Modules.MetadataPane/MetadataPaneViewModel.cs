@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -13,10 +16,6 @@ using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.events.presentation;
-using urakawa.events.metadata;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Controls;
 
 
 
@@ -147,7 +146,7 @@ namespace Tobi.Modules.MetadataPane
 
         public void RefreshDataTemplateSelectors()
         {
-            ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
+            //ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
             NameTemplateSelectorProperty = new NameTemplateSelector((MetadataPaneView)View);
         }
         private string m_StatusText;
@@ -230,10 +229,24 @@ namespace Tobi.Modules.MetadataPane
             {
                 list.Add(metadata.Name);
             }
-            return list;    
-           
+            return list;
+
         }
 
+        #region validation
+
+        /// <summary>
+        /// validate a single item
+        /// </summary>
+        /// <param name="metadata"></param>
+        public void ValidateMetadata(NotifyingMetadataItem metadata)
+        {
+            MetadataValidation validation = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            validation.ValidateItem(metadata.UrakawaMetadata);
+        }
+        /// <summary>
+        /// validate all metadata
+        /// </summary>
         public void ValidateMetadata()
         {
             List<string> errors = new List<string>();
@@ -252,7 +265,7 @@ namespace Tobi.Modules.MetadataPane
 
             if (errors.Count > 0)
             {
-                StatusText = string.Join(", ", errors.ToArray());
+                StatusText = string.Join("\n", errors.ToArray());
             }
             else
             {
@@ -260,6 +273,7 @@ namespace Tobi.Modules.MetadataPane
             }
                 
         }
+#endregion validation
 
         private NameTemplateSelector m_NameTemplateSelector = null;
         public NameTemplateSelector NameTemplateSelectorProperty
@@ -290,250 +304,7 @@ namespace Tobi.Modules.MetadataPane
         }
     }
 
-    public class ContentTemplateSelector : DataTemplateSelector
-    {
-        /*public DataTemplate OptionalStringTemplate { get; set; }
-        public DataTemplate OptionalDateTemplate { get; set; }
-        public DataTemplate RequiredStringTemplate { get; set; }
-        public DataTemplate RequiredDateTemplate { get; set; }
-        public DataTemplate ReadOnlyTemplate { get; set; }*/
-        public DataTemplate DefaultTemplate { get; set; }
-
-        private MetadataPaneView m_View;
-        public ContentTemplateSelector(MetadataPaneView view)
-        {
-            if (view == null) return;
-            m_View = view;
-
-            /*OptionalStringTemplate = (DataTemplate)m_View.list.Resources["OptionalStringContent"];
-            OptionalDateTemplate = (DataTemplate)m_View.list.Resources["OptionalDateContent"];
-            RequiredStringTemplate = (DataTemplate)m_View.list.Resources["RequiredStringContent"];
-            RequiredDateTemplate = (DataTemplate)m_View.list.Resources["RequiredDateContent"];
-            ReadOnlyTemplate = (DataTemplate)m_View.list.Resources["ReadOnlyContent"];
-            DefaultTemplate = OptionalStringTemplate;*/
-            DefaultTemplate = (DataTemplate)m_View.list.Resources["ContentTemplate"];
-        }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-            /*NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
-
-            List<Tobi.Modules.MetadataPane.SupportedMetadataItem> list =
-                Tobi.Modules.MetadataPane.SupportedMetadataList.MetadataList;
-            int index = list.FindIndex(0, s => s.Name == metadata.Name);
-            if (index != -1)
-            {
-                Tobi.Modules.MetadataPane.SupportedMetadataItem metaitem = list[index];
-                //TODO: this assumes that when a field is readonly, we will just display it as a default (short) string
-                //this is probably an ok assumption for now, but we'll want to change it later.
-                if (metaitem.IsReadOnly)
-                    return ReadOnlyTemplate;
-
-                if (metaitem.FieldType == SupportedMetadataFieldType.Date)
-                {
-                    if (metaitem.Occurence == MetadataOccurence.Required)
-                        return RequiredDateTemplate;
-                    else
-                        return OptionalDateTemplate;
-                }
-
-                else if (metaitem.FieldType == SupportedMetadataFieldType.ShortString ||
-                    metaitem.FieldType == SupportedMetadataFieldType.LongString)
-                {
-                    if (metaitem.Occurence == MetadataOccurence.Required)
-                        return RequiredStringTemplate;
-                    else
-                        return OptionalStringTemplate;
-                }
-
-                else
-                {
-                    return DefaultTemplate;
-                }
-            }
-            else
-            {
-                return DefaultTemplate;
-            }
-        }*/
-            return DefaultTemplate;
-        }
-    }
-
-    public class NameTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate OptionalTemplate { get; set; }
-        public DataTemplate RecommendedTemplate { get; set; }
-        public DataTemplate RequiredTemplate { get; set; }
-
-        private MetadataPaneView m_View;
-        public NameTemplateSelector(MetadataPaneView view)
-        {
-            if (view == null) return;
-
-            m_View = view;
-            OptionalTemplate = (DataTemplate)m_View.list.Resources["OptionalName"];
-            RecommendedTemplate = (DataTemplate)m_View.list.Resources["RecommendedName"];
-            RequiredTemplate = (DataTemplate)m_View.list.Resources["RequiredName"];
-        }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-
-            NotifyingMetadataItem metadata = (NotifyingMetadataItem)item;
-            int index = SupportedMetadata_Z39862005.MetadataList.FindIndex(0, s => s.Name == metadata.Name);
-
-            if (index != -1)
-            {
-                MetadataDefinition definition = SupportedMetadata_Z39862005.MetadataList[index];
-
-                if (definition.Occurrence == MetadataOccurrence.Required)
-                    return RequiredTemplate;
-                else if (definition.Occurrence == MetadataOccurrence.Recommended)
-                    return RecommendedTemplate;
-            }
-            return OptionalTemplate;
-        }
-    }
-    
-    public class NotifyingMetadataItem : PropertyChangedNotifyBase, IDataErrorInfo
-    {
-        private Metadata m_Metadata;
-        public Metadata UrakawaMetadata
-        {
-            get
-            {
-                return m_Metadata;
-            }
-        }
-        public NotifyingMetadataItem(Metadata metadata)
-        {
-            m_Metadata = metadata;
-            m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
-            m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
-        }
-        ~NotifyingMetadataItem()
-        {
-            RemoveEvents();
-        }
-        public string Content
-        {
-            get
-            {
-                return m_Metadata.Content;
-            }
-            set
-            {
-                if (m_Metadata.Content == value) return;
-                
-                //we have to protect the Urakawa SDK from null metadata values ... 
-                if (value != null)
-                {
-                    m_Metadata.Content = value;
-                    OnPropertyChanged(() => Content);
-                }
-                
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return m_Metadata.Name;
-            }
-            set
-            {
-                if (m_Metadata.Name == value) return;
-                //we have to protect the Urakawa SDK from null metadata values ... 
-                if (value != null)
-                {
-                    m_Metadata.Name = value;
-                    OnPropertyChanged(() => Name);
-                }
-            }
-        }
-
-        void OnContentChanged(object sender, ContentChangedEventArgs e)
-        {
-           OnPropertyChanged(() => Content);
-        }
-
-        void OnNameChanged(object sender, NameChangedEventArgs e)
-        {
-            OnPropertyChanged(() => Name);
-        }
-
-        internal void RemoveEvents()
-        {
-            m_Metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-            m_Metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
-        }
-
         
-
     
-        #region IDataErrorInfo Members
-
-        public string  Error
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public string  this[string columnName]
-        {
-            get
-            {
-                string result = null;
-                if (columnName == "Content")
-                {
-                    MetadataValidation validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
-                    if (validator.ValidateItem(UrakawaMetadata) == false)
-                    {
-                        if (validator.Report.Count > 0)
-                            result = validator.Report[0].Description;
-                    }
-                }
-
-                return result;
-            }
-        }
-
-        #endregion
-    }
-
-    
-    public class ObservableMetadataCollection : ObservableCollection<NotifyingMetadataItem>
-    {
-        public ObservableMetadataCollection(List<Metadata> metadatas)
-        {
-            foreach (Metadata metadata in metadatas)
-            {
-                this.Add(new NotifyingMetadataItem(metadata));
-            }
-        }
-        #region sdk-events
-        public void OnMetadataDeleted(object sender, MetadataDeletedEventArgs eventArgs)
-        {
-            foreach (NotifyingMetadataItem metadata in this)
-            {
-                if (metadata.Content == eventArgs.DeletedMetadata.Content &&
-                    metadata.Name == eventArgs.DeletedMetadata.Name)
-                {
-                    this.Remove(metadata);
-                    metadata.RemoveEvents();                
-                    break;
-                }
-            }
-        }
-
-        public void OnMetadataAdded(object sender, MetadataAddedEventArgs eventArgs)
-        {
-            this.Add(new NotifyingMetadataItem(eventArgs.AddedMetadata));
-        }
-        #endregion sdk-events
-
-    }
-
     
 }
