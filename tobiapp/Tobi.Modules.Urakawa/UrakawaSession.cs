@@ -64,6 +64,8 @@ namespace Tobi.Modules.Urakawa
             RegionManager = regionManager;
             EventAggregator = eventAggregator;
 
+            IsDirty = false;
+
             initCommands();
         }
 
@@ -76,7 +78,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.SaveAs_KEYS,
                 (VisualBrush)Application.Current.FindResource("document-save"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj => saveAs(),
+                obj => IsProjectLoaded);
 
             shellPresenter.RegisterRichCommand(SaveAsCommand);
             //
@@ -86,12 +89,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Save_KEYS,
                 (VisualBrush)Application.Current.FindResource("media-floppy"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                obj =>
-                {
-                    throw new NotImplementedException("Functionality not implemented, sorry :(",
-                        new NotImplementedException("Just trying nested expections",
-                        new NotImplementedException("The last inner exception ! :)")));
-                }, obj => true);
+                obj => save()
+                , obj => IsProjectLoadedAndDirty || IsProjectLoadedAndNotDirty); //todo: just for testing save even when not dirty
 
             shellPresenter.RegisterRichCommand(SaveCommand);
             //
@@ -99,7 +98,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.New_,
                 UserInterfaceStrings.New_KEYS,
                 (VisualBrush)Application.Current.FindResource("document-new"),
-                obj => openDefaultTemplate(), obj => true);
+                obj => openDefaultTemplate(),
+                obj => !IsProjectLoaded);
 
             shellPresenter.RegisterRichCommand(NewCommand);
             //
@@ -107,7 +107,7 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Open_,
                 UserInterfaceStrings.Open_KEYS,
                 (VisualBrush)Application.Current.FindResource("document-open"),
-                obj => openFile(), obj => true);
+                obj => openFile(), obj => !IsProjectLoaded);
 
             shellPresenter.RegisterRichCommand(OpenCommand);
             //
@@ -122,9 +122,22 @@ namespace Tobi.Modules.Urakawa
 
         public bool IsDirty
         {
+            get; set;
+        }
+
+        private bool IsProjectLoadedAndDirty
+        {
             get
             {
-                return false;
+                return IsProjectLoaded && IsDirty;
+            }
+        }
+
+        private bool IsProjectLoadedAndNotDirty
+        {
+            get
+            {
+                return IsProjectLoaded && !IsDirty;
             }
         }
 
@@ -140,14 +153,192 @@ namespace Tobi.Modules.Urakawa
         {
             Logger.Log("-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.closeProject", Category.Debug, Priority.Medium);
 
+            //todo check IsDirty and ask for confirmation. See ShellPresenter.askUserConfirmExit()
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var window = shellPresenter.View as Window;
+
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(DocumentProject);
 
             DocumentFilePath = null;
             DocumentProject = null;
         }
 
+
+        private BackgroundWorker m_SaveXukActionWorker;
+        private bool m_SaveXukActionCancelFlag;
+        private int m_SaveXukActionCurrentPercentage;
+
+        private void OnSaveXukAction_cancelled(object sender, CancelledEventArgs e)
+        {
+            IsDirty = true;
+
+            m_SaveXukActionWorker.CancelAsync();
+        }
+
+        private void OnSaveXukAction_finished(object sender, FinishedEventArgs e)
+        {
+            //DoClose();
+        }
+
+        private void OnSaveXukAction_progress(object sender, ProgressEventArgs e)
+        {
+            double val = e.Current;
+            double max = e.Total;
+            var percent = (int)((val / max) * 100);
+
+            if (percent != m_SaveXukActionCurrentPercentage)
+            {
+                m_SaveXukActionCurrentPercentage = percent;
+                m_SaveXukActionWorker.ReportProgress(m_SaveXukActionCurrentPercentage);
+            }
+
+            if (m_SaveXukActionCancelFlag)
+            {
+                e.Cancel();
+            }
+        }
+
+        private void save()
+        {
+            if (DocumentProject == null)
+            {
+                return;
+            }
+
+            Logger.Log(String.Format("UrakawaSession.save() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
+
+            m_SaveXukActionCancelFlag = false;
+            m_SaveXukActionCurrentPercentage = 0;
+
+            var uri = new Uri(DocumentFilePath, UriKind.Absolute);
+            //DocumentProject.OpenXuk(uri);
+
+            var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
+            {
+                ShortDescription = "Saving XUK file...",
+                LongDescription = "Serializing the document object model from the Urakawa SDK as XML content into a XUK file..."
+            };
+
+            action.Progress += OnSaveXukAction_progress;
+            action.Finished += OnSaveXukAction_finished;
+            action.Cancelled += OnSaveXukAction_cancelled;
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var window = shellPresenter.View as Window;
+
+            var progressBar = new ProgressBar
+            {
+                IsIndeterminate = true,
+                Height = 18,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Minimum = 0,
+                Maximum = 100,
+                Value = 0
+            };
+
+            var label = new TextBlock
+            {
+                Text = action.ShortDescription,
+                Margin = new Thickness(0, 0, 0, 8),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Focusable = false
+            };
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            panel.Children.Add(label);
+            panel.Children.Add(progressBar);
+
+            var details = new TextBox
+            {
+                Text = action.LongDescription,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                TextWrapping = TextWrapping.Wrap,
+                IsReadOnly = true,
+                Background = SystemColors.ControlLightLightBrush,
+                BorderBrush = SystemColors.ControlDarkDarkBrush,
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                SnapsToDevicePixels = true
+            };
+
+            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.RunningTask),
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.Cancel,
+                                                   PopupModalWindow.DialogButton.Cancel,
+                                                   false, 500, 150, details, 80);
+
+            m_SaveXukActionWorker = new BackgroundWorker
+            {
+                WorkerSupportsCancellation = true,
+                WorkerReportsProgress = true
+            };
+
+            m_SaveXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+            {
+                var dummy = (string)args.Argument;
+
+                if (m_SaveXukActionWorker.CancellationPending)
+                {
+                    args.Cancel = true;
+                    return;
+                }
+
+                action.Execute();
+
+                args.Result = "dummy result";
+            };
+
+            m_SaveXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+            {
+                progressBar.Value = args.ProgressPercentage;
+            };
+
+            m_SaveXukActionWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+            {
+                if (args.Cancelled)
+                {
+                    IsDirty = true;
+                }
+
+                windowPopup.ForceClose();
+
+                var result = (string)args.Result;
+
+                m_SaveXukActionWorker = null;
+            };
+
+            SystemSounds.Asterisk.Play();
+
+            m_SaveXukActionWorker.RunWorkerAsync("dummy arg");
+            windowPopup.Show();
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+            {
+                m_SaveXukActionCancelFlag = true;
+            }
+        }
+
+        private void saveAs()
+        {
+            throw new NotImplementedException("Functionality not implemented, sorry :(",
+                    new NotImplementedException("Just trying nested expections",
+                    new NotImplementedException("The last inner exception ! :)")));
+        }
+
         private void openDefaultTemplate()
         {
+            //closeProject();
+
             string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
         }
@@ -170,7 +361,7 @@ namespace Tobi.Modules.Urakawa
 
         private BackgroundWorker m_OpenXukActionWorker;
         private bool m_OpenXukActionCancelFlag;
-        private int m_CurrentPercentage;
+        private int m_OpenXukActionCurrentPercentage;
 
         private void action_cancelled(object sender, CancelledEventArgs e)
         {
@@ -191,10 +382,10 @@ namespace Tobi.Modules.Urakawa
             double max = e.Total;
             var percent = (int) ((val/max)*100);
 
-            if (percent != m_CurrentPercentage)
+            if (percent != m_OpenXukActionCurrentPercentage)
             {
-                m_CurrentPercentage = percent;
-                m_OpenXukActionWorker.ReportProgress(m_CurrentPercentage);
+                m_OpenXukActionCurrentPercentage = percent;
+                m_OpenXukActionWorker.ReportProgress(m_OpenXukActionCurrentPercentage);
             }
 
             if (m_OpenXukActionCancelFlag)
@@ -213,7 +404,7 @@ namespace Tobi.Modules.Urakawa
                 Logger.Log(String.Format("UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
                 m_OpenXukActionCancelFlag = false;
-                m_CurrentPercentage = 0;
+                m_OpenXukActionCurrentPercentage = 0;
 
                 DocumentProject = new Project();
 
@@ -223,7 +414,7 @@ namespace Tobi.Modules.Urakawa
                 var action = new OpenXukAction(DocumentProject, uri)
                 {
                     ShortDescription = "Opening XUK file...",
-                    LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model..."
+                    LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK..."
                 };
 
                 action.Progress += action_progress;
