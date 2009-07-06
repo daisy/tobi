@@ -1,7 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Media;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -10,7 +14,10 @@ using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
+using Tobi.Infrastructure.UI;
 using urakawa;
+using urakawa.events.progress;
+using urakawa.xuk;
 
 namespace Tobi.Modules.Urakawa
 {
@@ -134,6 +141,9 @@ namespace Tobi.Modules.Urakawa
             Logger.Log("-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.closeProject", Category.Debug, Priority.Medium);
 
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(DocumentProject);
+
+            DocumentFilePath = null;
+            DocumentProject = null;
         }
 
         private void openDefaultTemplate()
@@ -144,10 +154,12 @@ namespace Tobi.Modules.Urakawa
 
         private void openFile()
         {
-            var dlg = new OpenFileDialog();
-            dlg.FileName = "dtbook"; // Default file name
-            dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub";
+            var dlg = new OpenFileDialog
+                          {
+                              FileName = "dtbook",
+                              DefaultExt = ".xml",
+                              Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub"
+                          };
             bool? result = dlg.ShowDialog();
             if (result == false)
             {
@@ -156,15 +168,172 @@ namespace Tobi.Modules.Urakawa
             openFile(dlg.FileName);
         }
 
+        private BackgroundWorker m_OpenXukActionWorker;
+        private bool m_OpenXukActionCancelFlag;
+        private int m_CurrentPercentage;
+
+        private void action_cancelled(object sender, CancelledEventArgs e)
+        {
+            DocumentFilePath = null;
+            DocumentProject = null;
+
+            m_OpenXukActionWorker.CancelAsync();
+        }
+
+        private void action_finished(object sender, FinishedEventArgs e)
+        {
+            //DoClose();
+        }
+
+        private void action_progress(object sender, ProgressEventArgs e)
+        {
+            double val = e.Current;
+            double max = e.Total;
+            var percent = (int) ((val/max)*100);
+
+            if (percent != m_CurrentPercentage)
+            {
+                m_CurrentPercentage = percent;
+                m_OpenXukActionWorker.ReportProgress(m_CurrentPercentage);
+            }
+
+            if (m_OpenXukActionCancelFlag)
+            {
+                e.Cancel();
+            }
+        }
+
         private void openFile(string filename)
         {
+            closeProject();
+
             DocumentFilePath = filename;
             if (Path.GetExtension(DocumentFilePath) == ".xuk")
             {
+                Logger.Log(String.Format("UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
+
+                m_OpenXukActionCancelFlag = false;
+                m_CurrentPercentage = 0;
+
                 DocumentProject = new Project();
 
-                Uri uri = new Uri(DocumentFilePath, UriKind.Absolute);
-                DocumentProject.OpenXuk(uri);
+                var uri = new Uri(DocumentFilePath, UriKind.Absolute);
+                //DocumentProject.OpenXuk(uri);
+
+                var action = new OpenXukAction(DocumentProject, uri)
+                {
+                    ShortDescription = "Opening XUK file...",
+                    LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model..."
+                };
+
+                action.Progress += action_progress;
+                action.Finished += action_finished;
+                action.Cancelled += action_cancelled;
+
+                var shellPresenter = Container.Resolve<IShellPresenter>();
+                var window = shellPresenter.View as Window;
+
+                var progressBar = new ProgressBar
+                                      {
+                                          IsIndeterminate = false,
+                                          Height = 18,
+                                          HorizontalAlignment = HorizontalAlignment.Stretch,
+                                          Minimum = 0,
+                                          Maximum = 100,
+                                          Value = 0
+                                      };
+
+                var label = new TextBlock
+                {
+                    Text = action.ShortDescription,
+                    Margin = new Thickness(0, 0, 0, 8),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Focusable = false
+                };
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Vertical,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+
+                panel.Children.Add(label);
+                panel.Children.Add(progressBar);
+
+                var details = new TextBox
+                {
+                    Text = action.LongDescription,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    TextWrapping = TextWrapping.Wrap,
+                    IsReadOnly = true,
+                    Background = SystemColors.ControlLightLightBrush,
+                    BorderBrush = SystemColors.ControlDarkDarkBrush,
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(6),
+                    SnapsToDevicePixels = true
+                };
+
+                var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+                                                       UserInterfaceStrings.EscapeMnemonic(
+                                                           UserInterfaceStrings.RunningTask),
+                                                       panel,
+                                                       PopupModalWindow.DialogButtonsSet.Cancel,
+                                                       PopupModalWindow.DialogButton.Cancel,
+                                                       false, 500, 150, details, 80);
+
+                m_OpenXukActionWorker = new BackgroundWorker
+                                 {
+                                     WorkerSupportsCancellation = true,
+                                     WorkerReportsProgress = true
+                                 };
+
+                m_OpenXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+                {
+                    var dummy = (string)args.Argument;
+
+                    if (m_OpenXukActionWorker.CancellationPending)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+
+                    action.Execute();
+
+                    args.Result = "dummy result";
+                };
+
+                m_OpenXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+                {
+                    progressBar.Value = args.ProgressPercentage;
+                };
+
+                m_OpenXukActionWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+                {
+                    if (args.Cancelled)
+                    {
+                        DocumentFilePath = null;
+                        DocumentProject = null;
+                    }
+
+                    windowPopup.ForceClose();
+
+                    var result = (string)args.Result;
+
+                    m_OpenXukActionWorker = null;
+                };
+
+                SystemSounds.Asterisk.Play();
+
+                m_OpenXukActionWorker.RunWorkerAsync("dummy arg");
+                windowPopup.Show();
+
+                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+                {
+                    m_OpenXukActionCancelFlag = true;
+                    return;
+                }
             }
             else
             {
