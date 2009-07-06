@@ -186,7 +186,10 @@ namespace Tobi.Infrastructure.UI
         {
             ContentPlaceHolder.Content = null;
 
-            if (m_ButtonTriggersClose) return;
+            if (m_ButtonTriggersClose)
+            {
+                return;
+            }
 
             if (!AllowEscapeAndCloseButton)
             {
@@ -269,6 +272,7 @@ namespace Tobi.Infrastructure.UI
         {
             Ok,
             OkCancel,
+            Cancel,
             OkApplyClose,
             YesNo,
             YesNoCancel,
@@ -325,7 +329,8 @@ namespace Tobi.Infrastructure.UI
         {
             get
             {
-                return DialogButtons == DialogButtonsSet.Close;
+                return DialogButtons == DialogButtonsSet.Close
+                    || DialogButtons == DialogButtonsSet.OkApplyClose;
             }
         }
         public bool IsButtonActive_Apply
@@ -348,7 +353,7 @@ namespace Tobi.Infrastructure.UI
         {
             get
             {
-                return DialogButtons == DialogButtonsSet.OkApplyClose
+                return DialogButtons == DialogButtonsSet.Cancel
                        || DialogButtons == DialogButtonsSet.OkCancel
                        || DialogButtons == DialogButtonsSet.YesNoCancel;
             }
@@ -416,7 +421,14 @@ namespace Tobi.Infrastructure.UI
             ShowDialog();
         }
         
-#region ButtonClick
+        public void ForceClose()
+        {
+            AllowEscapeAndCloseButton = true;
+            m_ButtonTriggersClose = false;
+            Close();
+        }
+
+        #region ButtonClick
 
         private void OnOkButtonClick(object sender, RoutedEventArgs e)
         {

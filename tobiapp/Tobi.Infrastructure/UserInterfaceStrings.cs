@@ -48,9 +48,10 @@ namespace Tobi.Infrastructure
         public const string Apply = "_Apply";
         public const string CloseDialog = "_Close";
 
+        public const string RunningTask = "Running task...";
 
         public const string ShowMetadata = "_Edit metadata";
-        public const string ShowMetadata_ = "Opens the metadata viewer/editor";
+        public const string ShowMetadata_ = "Metadata viewer/editor";
         public static KeyGesture ShowMetadata_KEYS = new KeyGesture(Key.E, ModifierKeys.Control);
 
         public const string Audio_BeginSelection = "_Begin selection";
