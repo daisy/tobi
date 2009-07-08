@@ -1,8 +1,1 @@
-HERE !
-
-testing 
-#2 Testing email notification (seems broken today)
-testing ACLs
-Testing commit from new SVN client (command line) on new MacIntel machine.
-hi from steve
-test daniel from windows
+Testing the new email notification format (should include a Trac URL pointing to the changeset, for fast and easy visualization of the SVN checkin)
