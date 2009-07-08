@@ -1,1 +1,4 @@
-Testing the new email notification format (should include a Trac URL pointing to the changeset, for fast and easy visualization of the SVN checkin)
+
+Again:
+Testing the new email notification format
+(should include a Trac URL pointing to the changeset, for fast and easy visualization of the SVN checkin).
