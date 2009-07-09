@@ -273,29 +273,27 @@ namespace Tobi.Modules.AudioPane
                     if (sm == null)
                     {
                         TreeNode ancerstor = CurrentTreeNode.GetFirstAncestorWithManagedAudio();
-                        if (ancerstor == null)
+                        if (ancerstor != null)
                         {
-                            return null;
-                        }
+                            StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
+                            if (sma != null)
+                            {
+                                TreeNode theCurrentSubTreeNode = CurrentTreeNode;
+                                CurrentTreeNode = ancerstor;
 
-                        StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
-                        if (sma != null)
-                        {
-                            TreeNode theCurrentSubTreeNode = CurrentTreeNode;
-                            CurrentTreeNode = ancerstor;
+                                //m_SkipTreeNodeSelectedEvent = true;
 
-                            //m_SkipTreeNodeSelectedEvent = true;
+                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
 
-                            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
-                                
-                            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentTreeNode);
+                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentTreeNode);
 
-                            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+                                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
 
-                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
+                                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
 
-                            m_PlayStream = sma.GetValueOrDefault().m_Stream;
-                            PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
+                                m_PlayStream = sma.GetValueOrDefault().m_Stream;
+                                PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
+                            }
                         }
                     }
                     else
@@ -303,6 +301,7 @@ namespace Tobi.Modules.AudioPane
                         m_PlayStream = sm.GetValueOrDefault().m_Stream;
                         PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
                     }
+
                     if (m_PlayStream == null)
                     {
                         resetAllInternalValues();
@@ -318,6 +317,11 @@ namespace Tobi.Modules.AudioPane
                     PcmFormat = CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
 
                     FilePath = null;
+
+                    if (PlayStreamMarkers.Count == 1)
+                    {
+                        CurrentSubTreeNode = CurrentTreeNode;
+                    }
                 }
 
                 return m_PlayStream;
@@ -327,11 +331,6 @@ namespace Tobi.Modules.AudioPane
             {
                 resetAllInternalValues();
                 return;
-            }
-
-            if (PlayStreamMarkers != null && PlayStreamMarkers.Count == 1)
-            {
-                CurrentSubTreeNode = CurrentTreeNode;
             }
 
             loadAndPlay();
