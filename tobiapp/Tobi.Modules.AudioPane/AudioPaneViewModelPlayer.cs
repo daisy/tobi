@@ -31,10 +31,14 @@ namespace Tobi.Modules.AudioPane
         public void BeginSelection()
         {
             m_SelectionBeginTmp = LastPlayHeadTime;
+
+            playAudioCueTock();
         }
 
         public void EndSelection()
         {
+            playAudioCueTockTock();
+
             if (m_SelectionBeginTmp < 0)
             {
                 return;
@@ -73,6 +77,7 @@ namespace Tobi.Modules.AudioPane
             {
                 View.ClearSelection();
             }
+            playAudioCueTock();
         }
 
         public void SelectAll()
@@ -83,6 +88,29 @@ namespace Tobi.Modules.AudioPane
             {
                 View.ExpandSelection();
             }
+            playAudioCueTockTock();
+        }
+
+        private void playAudioCue(string audioClipPath)
+        {
+            if (File.Exists(audioClipPath))
+            {
+                new SoundPlayer(audioClipPath).Play();
+            }
+        }
+
+        private void playAudioCueTock()
+        {
+            string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                               "tock.wav");
+            playAudioCue(audioClipPath);
+        }
+
+        private void playAudioCueTockTock()
+        {
+            string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                               "tocktock.wav");
+            playAudioCue(audioClipPath);
         }
 
         public void SelectChunk(double byteOffset)
@@ -564,11 +592,6 @@ namespace Tobi.Modules.AudioPane
 
         private void StartWaveFormLoadTimer(double delay, bool play)
         {
-            if (PcmFormat == null)
-            {
-                return;
-            }
-
             if (IsWaveFormLoading)
             {
                 return;
@@ -629,7 +652,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
 
-            if (!(PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null)))
+            if (!(!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null))
             {
                 return;
             }
@@ -652,6 +675,7 @@ namespace Tobi.Modules.AudioPane
 
             if (DataLength == 0)
             {
+                Debug.Fail("This should never happen !!");
                 return; //weird bug
             }
 
@@ -677,6 +701,13 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying, bool play)
         {
+            playAudioCueTockTock();
+            
+            if (View != null && IsSelectionSet)
+            {
+                View.SetSelection(SelectionBegin, SelectionEnd);
+            }
+
             // ensure the stream is closed before we resume the player
             //m_PlayStream.Close();
             //m_PlayStream = null;
@@ -1318,7 +1349,7 @@ namespace Tobi.Modules.AudioPane
                 if (!AudioPlaybackStreamKeepAlive && m_Player.State == AudioPlayerState.Stopped)
                 {
                     // stream has been closed already on AudioPlayer side, we're just making sure to reset our cached pointer value.
-                    m_PlayStream = null;
+                    ensurePlaybackStreamIsDead();
                 }
 
                 if (View != null)

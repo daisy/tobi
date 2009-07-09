@@ -91,7 +91,14 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording;
+            var session = Container.Resolve<IUrakawaSession>();
+
+                return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                    && (
+                    (session.DocumentProject != null && CurrentTreeNode != null)
+                    ||
+                    (session.DocumentProject == null)
+                    );
             }
         }
 
