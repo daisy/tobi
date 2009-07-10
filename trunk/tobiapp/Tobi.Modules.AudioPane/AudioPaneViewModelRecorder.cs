@@ -5,6 +5,7 @@ using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
 using urakawa.core;
+using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
@@ -170,7 +171,7 @@ namespace Tobi.Modules.AudioPane
 
             var presenter = Container.Resolve<IShellPresenter>();
             presenter.PlayAudioCueTock();
-            
+
             var session = Container.Resolve<IUrakawaSession>();
 
             if (session.DocumentProject == null)
@@ -235,33 +236,86 @@ namespace Tobi.Modules.AudioPane
                 ManagedAudioMedia managedAudioMedia = CurrentSubTreeNode.GetManagedAudioMedia();
                 if (managedAudioMedia == null)
                 {
-                    ChannelsProperty chProp = CurrentSubTreeNode.GetOrCreateChannelsProperty();
-
-                    ManagedAudioMedia managedAudioMediaNew = session.DocumentProject.GetPresentation(0).MediaFactory.CreateManagedAudioMedia();
-
-                    var mediaData =
-                        (WavAudioMediaData)session.DocumentProject.GetPresentation(0).MediaDataFactory.CreateAudioMediaData();
-
-                    managedAudioMediaNew.MediaData = mediaData;
-
-                    //mediaData.AppendAudioDataFromRiffWave(m_Recorder.RecordedFilePath);
-                    mediaData.AppendAudioData(recordingStream, new TimeDelta(recordingDuration));
-                    recordingStream.Close();
-
-                    //TODO: use a undoable comand !
-                    chProp.SetMedia(audioChannel, managedAudioMediaNew);
-
-                    if (AudioPlaybackStreamKeepAlive)
+                    SequenceMedia seqAudioMedia = CurrentSubTreeNode.GetAudioSequenceMedia();
+                    bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
+                    if (isSeqValid)
                     {
-                        ensurePlaybackStreamIsDead();
+                        foreach (Media media in seqAudioMedia.ListOfItems)
+                        {
+                            if (!(media is ManagedAudioMedia))
+                            {
+                                isSeqValid = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (isSeqValid)
+                    {
+                        var byteOffset = (long)AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime);
+
+                        double timeOffset = 0;
+                        long sumData = 0;
+                        long sumDataPrev = 0;
+                        foreach (Media media in seqAudioMedia.ListOfItems)
+                        {
+                            var manangedMediaSeqItem = (ManagedAudioMedia) media;
+                            AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
+                            sumData += audioData.GetPCMLength();
+                            if (byteOffset < sumData)
+                            {
+                                timeOffset = AudioPlayer_ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
+
+                                if (AudioPlaybackStreamKeepAlive)
+                                {
+                                    ensurePlaybackStreamIsDead();
+                                }
+
+                                if (manangedMediaSeqItem.AudioMediaData == null)
+                                {
+                                    Debug.Fail("This should never happen !!!");
+                                    recordingStream.Close();
+                                    return;
+                                }
+
+                                manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
+                                recordingStream.Close();
+                                break;
+                            }
+                            sumDataPrev = sumData;
+                        }
+                    }
+                    else
+                    {
+                        ChannelsProperty chProp = CurrentSubTreeNode.GetOrCreateChannelsProperty();
+
+                        ManagedAudioMedia managedAudioMediaNew =
+                            session.DocumentProject.GetPresentation(0).MediaFactory.CreateManagedAudioMedia();
+
+                        var mediaData =
+                            (WavAudioMediaData)
+                            session.DocumentProject.GetPresentation(0).MediaDataFactory.CreateAudioMediaData();
+
+                        managedAudioMediaNew.MediaData = mediaData;
+
+                        //mediaData.AppendAudioDataFromRiffWave(m_Recorder.RecordedFilePath);
+                        mediaData.AppendAudioData(recordingStream, new TimeDelta(recordingDuration));
+                        recordingStream.Close();
+
+                        //TODO: use a undoable comand !
+                        chProp.SetMedia(audioChannel, managedAudioMediaNew);
+
+                        if (AudioPlaybackStreamKeepAlive)
+                        {
+                            ensurePlaybackStreamIsDead();
+                        }
                     }
                 }
                 else
                 {
                     double timeOffset = LastPlayHeadTime;
-                    if(CurrentSubTreeNode != CurrentTreeNode)
+                    if (CurrentSubTreeNode != CurrentTreeNode)
                     {
-                        long byteOffset = (long) AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime);
+                        var byteOffset = (long)AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                         long sumData = 0;
                         long sumDataPrev = 0;
