@@ -62,6 +62,7 @@ namespace Tobi.Infrastructure
         public const string Audio_EndSelection_ = "End audio waveform selection";
         public static KeyGesture Audio_EndSelection_KEYS = new KeyGesture(Key.OemCloseBrackets, ModifierKeys.Control);
 
+
         public const string TreeExpandAll = "E_xpand all";
         public const string TreeExpandAll_ = "Expand all children in the tree";
 
@@ -174,11 +175,11 @@ namespace Tobi.Infrastructure
 
         public const string UI_IncreaseMagnification = "_Increase magnification";
         public const string UI_IncreaseMagnification_ = "Increase the UI magnification level";
-        public static KeyGesture UI_IncreaseMagnification_KEYS = new KeyGesture(Key.Up, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+        public static KeyGesture UI_IncreaseMagnification_KEYS = new KeyGesture(Key.Y, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
         public const string UI_DecreaseMagnification = "_Decrease magnification";
         public const string UI_DecreaseMagnification_ = "Decrease the UI magnification level";
-        public static KeyGesture UI_DecreaseMagnification_KEYS = new KeyGesture(Key.Down, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+        public static KeyGesture UI_DecreaseMagnification_KEYS = new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
         public const string ManageShortcuts = "_Keyboard shortcuts";
         public const string ManageShortcuts_ = "View keyboard shortcuts";
@@ -187,39 +188,49 @@ namespace Tobi.Infrastructure
 
         public const string Event_SwitchPrevious = "_Previous phrase";
         public const string Event_SwitchPrevious_ = "Select the previous phrase";
-        public static KeyGesture Event_SwitchPrevious_KEYS = new KeyGesture(Key.Down, ModifierKeys.Control);
+        public static KeyGesture Event_SwitchPrevious_KEYS = new KeyGesture(Key.J, ModifierKeys.Control);
 
         public const string Event_SwitchNext = "_Next phrase";
         public const string Event_SwitchNext_ = "Select the next phrase";
-        public static KeyGesture Event_SwitchNext_KEYS = new KeyGesture(Key.Up, ModifierKeys.Control);
+        public static KeyGesture Event_SwitchNext_KEYS = new KeyGesture(Key.I, ModifierKeys.Control);
 
         public const string Audio_GotoBegin = "_Rewind to begin";
         public const string Audio_GotoBegin_ = "Rewind to the begining of the audio stream";
-        public static KeyGesture Audio_GotoBegin_KEYS = new KeyGesture(Key.Left,
-                                                                        ModifierKeys.Control | ModifierKeys.Shift |
-                                                                        ModifierKeys.Alt);
+        public static KeyGesture Audio_GotoBegin_KEYS = new KeyGesture(Key.K,
+                                                                        ModifierKeys.Control
+                                                                        | ModifierKeys.Shift
+                                                                        | ModifierKeys.Alt);
 
         public const string Audio_GotoEnd = "_Fast Forward to end";
         public const string Audio_GotoEnd_ = "Fast Forward to the end of the audio stream";
-        public static KeyGesture Audio_GotoEnd_KEYS = new KeyGesture(Key.Right,
+        public static KeyGesture Audio_GotoEnd_KEYS = new KeyGesture(Key.L,
                                                                        ModifierKeys.Control | ModifierKeys.Shift |
                                                                        ModifierKeys.Alt);
 
+
+        public const string Audio_SelectPreviousChunk = "Select previous phrase";
+        public const string Audio_SelectPreviousChunk_ = "Select the entire audio phrase preceding the current one";
+        public static KeyGesture Audio_SelectPreviousChunk_KEYS = new KeyGesture(Key.OemOpenBrackets, ModifierKeys.Control | ModifierKeys.Shift);
+
+        public const string Audio_SelectNextChunk = "Select next phrase";
+        public const string Audio_SelectNextChunk_ = "Select the entire audio phrase following the current one";
+        public static KeyGesture Audio_SelectNextChunk_KEYS = new KeyGesture(Key.OemCloseBrackets, ModifierKeys.Control | ModifierKeys.Shift);
+
         public const string Audio_StepBack = "_Back one phrase";
         public const string Audio_StepBack_ = "Step back one phrase";
-        public static KeyGesture Audio_StepBack_KEYS = new KeyGesture(Key.Left, ModifierKeys.Control | ModifierKeys.Shift);
+        public static KeyGesture Audio_StepBack_KEYS = new KeyGesture(Key.K, ModifierKeys.Control | ModifierKeys.Shift);
 
         public const string Audio_StepForward = "_Forward one phrase";
         public const string Audio_StepForward_ = "Step forward one phrase";
-        public static KeyGesture Audio_StepForward_KEYS = new KeyGesture(Key.Right, ModifierKeys.Control | ModifierKeys.Shift);
+        public static KeyGesture Audio_StepForward_KEYS = new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift);
 
         public const string Audio_FastForward = "_Fast-forward";
         public const string Audio_FastForward_ = "Fast-forward by a pre-defined time increment";
-        public static KeyGesture Audio_FastForward_KEYS = new KeyGesture(Key.Right, ModifierKeys.Control);
+        public static KeyGesture Audio_FastForward_KEYS = new KeyGesture(Key.L, ModifierKeys.Control);
 
         public const string Audio_Rewind = "_Rewind";
         public const string Audio_Rewind_ = "Rewind by a pre-defined time increment";
-        public static KeyGesture Audio_Rewind_KEYS = new KeyGesture(Key.Left, ModifierKeys.Control);
+        public static KeyGesture Audio_Rewind_KEYS = new KeyGesture(Key.K, ModifierKeys.Control);
 
         public const string Audio_ClearSelection = "_Clear selection";
         public const string Audio_ClearSelection_ = "Clear the current audio selection";
@@ -269,6 +280,14 @@ namespace Tobi.Infrastructure
         public const string Audio_Play = "Pla_y";
         public const string Audio_Play_ = "Start playback";
         public static KeyGesture Audio_Play_KEYS = new KeyGesture(Key.P, ModifierKeys.Control);
+
+        public const string Audio_PlayPreviewLeft = "Preview _before";
+        public const string Audio_PlayPreviewLeft_ = "Preview the audio just before the current cursor position";
+        public static KeyGesture Audio_PlayPreviewLeft_KEYS = new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift);
+
+        public const string Audio_PlayPreviewRight = "Preview _after";
+        public const string Audio_PlayPreviewRight_ = "Preview the audio right after the current cursor position";
+        public static KeyGesture Audio_PlayPreviewRight_KEYS = new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
         public const string Audio_Pause = "_Pause";
         public const string Audio_Pause_ = "Pause playback";

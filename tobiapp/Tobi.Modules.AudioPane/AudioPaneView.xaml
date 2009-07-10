@@ -715,12 +715,20 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <infraUI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
             IsChecked="{Binding IsAutoPlay, Mode=OneWay}"/>
 
+
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandPlayPreviewLeft}"
+                                 />
+
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandPause}"
       RichCommandTwo="{Binding CommandPlay}"
       InputBindingManager="{Binding InputBindingManager}"
             RichCommandActive="{Binding IsPlaying, Mode=OneWay}"/>
 
+
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandPlayPreviewRight}"
+                                 />
+    
     <infraUI:TwoStateButtonRichCommand
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
@@ -755,15 +763,21 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <Separator/>
 
-    <infraUI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}"
-                                 />
-
-    <infraUI:ButtonRichCommand RichCommand="{Binding CommandEndSelection}"
-                                 />
-
     <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
                                  />
 
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectPreviousChunk}"
+                                 />
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandSelectNextChunk}"
+                                 />
+    
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}"
+                               Visibility="Collapsed"
+                                 />
+    <infraUI:ButtonRichCommand RichCommand="{Binding CommandEndSelection}"
+                               Visibility="Collapsed"
+                                 />
+    
     <infraUI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
                                  />
 

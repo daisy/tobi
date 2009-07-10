@@ -317,8 +317,6 @@ namespace Tobi.Modules.Urakawa
                 m_SaveXukActionWorker = null;
             };
 
-            SystemSounds.Asterisk.Play();
-
             m_SaveXukActionWorker.RunWorkerAsync("dummy arg");
             windowPopup.Show();
 
@@ -514,8 +512,6 @@ namespace Tobi.Modules.Urakawa
 
                     m_OpenXukActionWorker = null;
                 };
-
-                SystemSounds.Asterisk.Play();
 
                 m_OpenXukActionWorker.RunWorkerAsync("dummy arg");
                 windowPopup.Show();

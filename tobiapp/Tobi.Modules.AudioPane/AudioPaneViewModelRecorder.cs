@@ -85,6 +85,9 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.TimeMessageShow();
                 }
+
+                var presenter = Container.Resolve<IShellPresenter>();
+                presenter.PlayAudioCueTock();
             }
         }
 
@@ -168,9 +171,6 @@ namespace Tobi.Modules.AudioPane
         public void AudioRecorder_Start()
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_Start", Category.Debug, Priority.Medium);
-
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTock();
 
             var session = Container.Resolve<IUrakawaSession>();
 
