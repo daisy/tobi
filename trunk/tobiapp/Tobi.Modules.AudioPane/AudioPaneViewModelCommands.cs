@@ -27,6 +27,8 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandRefresh { get; private set; }
         public RichDelegateCommand<object> CommandAutoPlay { get; private set; }
         public RichDelegateCommand<object> CommandPlay { get; private set; }
+        public RichDelegateCommand<object> CommandPlayPreviewLeft { get; private set; }
+        public RichDelegateCommand<object> CommandPlayPreviewRight { get; private set; }
         public RichDelegateCommand<object> CommandPause { get; private set; }
         public RichDelegateCommand<object> CommandStartRecord { get; private set; }
         public RichDelegateCommand<object> CommandStopRecord { get; private set; }
@@ -34,6 +36,9 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandStopMonitor { get; private set; }
         public RichDelegateCommand<object> CommandBeginSelection { get; private set; }
         public RichDelegateCommand<object> CommandEndSelection { get; private set; }
+        public RichDelegateCommand<object> CommandSelectNextChunk { get; private set; }
+        public RichDelegateCommand<object> CommandSelectPreviousChunk { get; private set; }
+        
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
@@ -180,7 +185,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
+                return CanStepBack;
             }
         }
 
@@ -338,6 +343,23 @@ namespace Tobi.Modules.AudioPane
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
             //
             //
+            CommandPlayPreviewLeft = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_PlayPreviewLeft,
+                UserInterfaceStrings.Audio_PlayPreviewLeft_,
+                UserInterfaceStrings.Audio_PlayPreviewLeft_KEYS,
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
+                obj => AudioPlayer_PlayPreview(true), obj => CanPlay);
+
+            shellPresenter.RegisterRichCommand(CommandPlayPreviewLeft);
+            //
+            CommandPlayPreviewRight = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_PlayPreviewRight,
+                UserInterfaceStrings.Audio_PlayPreviewRight_,
+                UserInterfaceStrings.Audio_PlayPreviewRight_KEYS,
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
+                obj => AudioPlayer_PlayPreview(false), obj => CanPlay);
+
+            shellPresenter.RegisterRichCommand(CommandPlayPreviewRight);
+            //
+            //
             CommandPlay = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_Play,
                 UserInterfaceStrings.Audio_Play_,
                 UserInterfaceStrings.Audio_Play_KEYS,
@@ -385,11 +407,31 @@ namespace Tobi.Modules.AudioPane
                 obj => AudioRecorder_StopMonitor(), obj => CanStopMonitor);
 
             shellPresenter.RegisterRichCommand(CommandStopMonitor);
+
+            //
+            CommandSelectPreviousChunk = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_SelectPreviousChunk,
+                UserInterfaceStrings.Audio_SelectPreviousChunk_,
+                UserInterfaceStrings.Audio_SelectPreviousChunk_KEYS,
+                (VisualBrush)Application.Current.FindResource("go-previous"),
+                obj => AudioPlayer_SelectPreviousChunk(), obj => CanStepBack);
+
+            shellPresenter.RegisterRichCommand(CommandSelectPreviousChunk);
+            //
+            CommandSelectNextChunk = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_SelectNextChunk,
+                UserInterfaceStrings.Audio_SelectNextChunk_,
+                UserInterfaceStrings.Audio_SelectNextChunk_KEYS,
+                (VisualBrush)Application.Current.FindResource("go-next"),
+                obj => AudioPlayer_SelectNextChunk(), obj => CanStepForward);
+
+            shellPresenter.RegisterRichCommand(CommandSelectNextChunk);
+            //
             //
             CommandEndSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_EndSelection,
                 UserInterfaceStrings.Audio_EndSelection_,
                 UserInterfaceStrings.Audio_EndSelection_KEYS,
-                (VisualBrush)Application.Current.FindResource("format-indent-more"),
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
                 obj => EndSelection(), obj => CanEndSelection);
 
             shellPresenter.RegisterRichCommand(CommandEndSelection);
@@ -397,7 +439,7 @@ namespace Tobi.Modules.AudioPane
             CommandBeginSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_BeginSelection,
                 UserInterfaceStrings.Audio_BeginSelection_,
                 UserInterfaceStrings.Audio_BeginSelection_KEYS,
-                (VisualBrush)Application.Current.FindResource("format-indent-less"),
+                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
                 obj => BeginSelection(), obj => CanBeginSelection);
 
             shellPresenter.RegisterRichCommand(CommandBeginSelection);
