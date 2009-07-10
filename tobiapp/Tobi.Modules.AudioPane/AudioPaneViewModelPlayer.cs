@@ -32,12 +32,14 @@ namespace Tobi.Modules.AudioPane
         {
             m_SelectionBeginTmp = LastPlayHeadTime;
 
-            playAudioCueTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTock();
         }
 
         public void EndSelection()
         {
-            playAudioCueTockTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTockTock();
 
             if (m_SelectionBeginTmp < 0)
             {
@@ -77,7 +79,8 @@ namespace Tobi.Modules.AudioPane
             {
                 View.ClearSelection();
             }
-            playAudioCueTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTock();
         }
 
         public void SelectAll()
@@ -88,29 +91,8 @@ namespace Tobi.Modules.AudioPane
             {
                 View.ExpandSelection();
             }
-            playAudioCueTockTock();
-        }
-
-        private void playAudioCue(string audioClipPath)
-        {
-            if (File.Exists(audioClipPath))
-            {
-                new SoundPlayer(audioClipPath).Play();
-            }
-        }
-
-        private void playAudioCueTock()
-        {
-            string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                               "tock.wav");
-            playAudioCue(audioClipPath);
-        }
-
-        private void playAudioCueTockTock()
-        {
-            string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                               "tocktock.wav");
-            playAudioCue(audioClipPath);
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTockTock();
         }
 
         public void SelectChunk(double byteOffset)
@@ -701,7 +683,8 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying, bool play)
         {
-            playAudioCueTockTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTockTock();
             
             if (View != null && IsSelectionSet)
             {
