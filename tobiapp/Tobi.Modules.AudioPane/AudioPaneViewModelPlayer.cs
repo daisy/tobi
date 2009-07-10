@@ -79,8 +79,6 @@ namespace Tobi.Modules.AudioPane
             {
                 View.ClearSelection();
             }
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTock();
         }
 
         public void SelectAll()
@@ -447,11 +445,6 @@ namespace Tobi.Modules.AudioPane
 
             //StartWaveFormLoadTimer(0, IsAutoPlay);
 
-            if (View != null)
-            {
-                View.ShowHideWaveFormLoadingMessage(true);
-            }
-
             m_ForcePlayAfterWaveFormLoaded = IsAutoPlay;
             AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
         }
@@ -622,11 +615,6 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            if (View != null)
-            {
-                View.ShowHideWaveFormLoadingMessage(true);
-            }
-
             AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
         }
 
@@ -636,6 +624,10 @@ namespace Tobi.Modules.AudioPane
 
             if (!(!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null))
             {
+                if (View != null)
+                {
+                    View.ShowHideWaveFormLoadingMessage(false);
+                }
                 return;
             }
 
@@ -651,9 +643,18 @@ namespace Tobi.Modules.AudioPane
 
             if (m_CurrentAudioStreamProvider() == null)
             {
+                if (View != null)
+                {
+                    View.ShowHideWaveFormLoadingMessage(false);
+                }
                 return;
             }
             // else: the stream is now open
+
+            if (View != null)
+            {
+                View.ShowHideWaveFormLoadingMessage(true);
+            }
 
             if (DataLength == 0)
             {
@@ -683,9 +684,6 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying, bool play)
         {
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTockTock();
-            
             if (View != null && IsSelectionSet)
             {
                 View.SetSelection(SelectionBegin, SelectionEnd);
