@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +19,26 @@ namespace Tobi
 {
     public class ShellPresenter : IShellPresenter
     {
+        private void playAudioCue(string audioClipName)
+        {
+            string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                               audioClipName);
+            if (File.Exists(audioClipPath))
+            {
+                new SoundPlayer(audioClipPath).Play();
+            }
+        }
+
+        public void PlayAudioCueTock()
+        {
+            playAudioCue("tock.wav");
+        }
+
+        public void PlayAudioCueTockTock()
+        {
+            playAudioCue("tocktock.wav");
+        }
+
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool m_Exiting;
 

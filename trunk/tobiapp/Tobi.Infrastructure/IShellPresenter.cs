@@ -15,6 +15,9 @@ namespace Tobi
         ///</summary>
         IShellView View { get; }
 
+        void PlayAudioCueTock();
+        void PlayAudioCueTockTock();
+
         RichDelegateCommand<object> ExitCommand { get; }
         RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; }
         RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }

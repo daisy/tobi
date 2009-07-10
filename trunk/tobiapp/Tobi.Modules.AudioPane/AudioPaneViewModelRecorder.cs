@@ -137,7 +137,8 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StartListening(new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth));
 
-            playAudioCueTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTock();
         }
 
         public void AudioRecorder_StopMonitor()
@@ -146,7 +147,8 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StopRecording();
 
-            playAudioCueTockTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTockTock();
         }
 
         public void AudioRecorder_StartStop()
@@ -166,7 +168,8 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioRecorder_Start", Category.Debug, Priority.Medium);
 
-            playAudioCueTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTock();
             
             var session = Container.Resolve<IUrakawaSession>();
 
@@ -197,7 +200,8 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StopRecording();
 
-            playAudioCueTockTock();
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTockTock();
 
             if (string.IsNullOrEmpty(m_Recorder.RecordedFilePath) || !File.Exists(m_Recorder.RecordedFilePath))
             {
