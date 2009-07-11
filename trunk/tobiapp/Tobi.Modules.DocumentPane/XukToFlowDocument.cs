@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -112,14 +113,27 @@ namespace Tobi.Modules.DocumentPane
             cell.Foreground = Brushes.Navy;
         }
 
+        private string trimInnerSpaces(string str)
+        {
+            string[] whiteSpaces = new string[]
+                                    {
+                                       " ", ""+'\t', "\r\n"
+                                    };
+            string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
+
+            return String.Join(" ", strSplit);
+        }
+
         private string trimSpecial(string str)
         {
             string strTrimmed = str.Trim();
-            if (strTrimmed.Length == str.Length)
+            //string strTrimmed_ = trimInnerSpaces(strTrimmed);
+            string strTrimmed_ = Regex.Replace(strTrimmed, @"\s+", " ");
+            if (strTrimmed_.Length == strTrimmed.Length && strTrimmed.Length == str.Length)
             {
                 return str;
             }
-            return " " + strTrimmed + " "; // quick and dirty hack: need to normalize spaces at XML parsing stage.
+            return " " + strTrimmed_ + " "; //TODO quick and dirty hack: need to normalize spaces at XML parsing stage.
         }
 
         private void formatListHeader(Paragraph data)
@@ -1241,7 +1255,7 @@ namespace Tobi.Modules.DocumentPane
                     case "h1":
                     case "hd":
                         {
-                            if (qname.LocalName == "hd" || parent is List)
+                            if (qname.LocalName == "hd" && parent is List)
                             {
                                 return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
                             }
