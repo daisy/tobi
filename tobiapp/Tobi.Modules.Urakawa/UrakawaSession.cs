@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Media;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -525,6 +523,8 @@ namespace Tobi.Modules.Urakawa
             else
             {
                 var converter = new XukImport.DaisyToXuk(DocumentFilePath);
+
+                DocumentFilePath = converter.XukPath;
                 DocumentProject = converter.Project;
             }
 
