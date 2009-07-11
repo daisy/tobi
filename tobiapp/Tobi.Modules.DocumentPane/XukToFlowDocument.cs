@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -111,29 +110,6 @@ namespace Tobi.Modules.DocumentPane
             cell.BorderThickness = new Thickness(2);
             cell.Background = Brushes.LightYellow;
             cell.Foreground = Brushes.Navy;
-        }
-
-        private string trimInnerSpaces(string str)
-        {
-            string[] whiteSpaces = new string[]
-                                    {
-                                       " ", ""+'\t', "\r\n"
-                                    };
-            string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
-
-            return String.Join(" ", strSplit);
-        }
-
-        private string trimSpecial(string str)
-        {
-            string strTrimmed = str.Trim();
-            //string strTrimmed_ = trimInnerSpaces(strTrimmed);
-            string strTrimmed_ = Regex.Replace(strTrimmed, @"\s+", " ");
-            if (strTrimmed_.Length == strTrimmed.Length && strTrimmed.Length == str.Length)
-            {
-                return str;
-            }
-            return " " + strTrimmed_ + " "; //TODO quick and dirty hack: need to normalize spaces at XML parsing stage.
         }
 
         private void formatListHeader(Paragraph data)
@@ -388,7 +364,7 @@ namespace Tobi.Modules.DocumentPane
                     }
                     else
                     {
-                        data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
+                        data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
                     }
 
                     return parent;
@@ -425,7 +401,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                 }
 
                 addBlock(parent, data);
@@ -452,7 +428,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                     addInline(parent, data);
                 }
 
@@ -479,7 +455,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                     addInline(parent, data);
                 }
 
@@ -506,7 +482,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                     addInline(parent, data);
                 }
 
@@ -583,7 +559,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    Paragraph para = new Paragraph(new Run(trimSpecial(textMedia.Text)));
+                    Paragraph para = new Paragraph(new Run(textMedia.Text));
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
@@ -645,7 +621,7 @@ namespace Tobi.Modules.DocumentPane
 
                         TableRow data = new TableRow();
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
-                        Paragraph para = new Paragraph(new Run(trimSpecial(textMedia.Text)));
+                        Paragraph para = new Paragraph(new Run(textMedia.Text));
                         TableCell cell = new TableCell(para);
 
                         if (qname.LocalName == "caption")
@@ -791,7 +767,7 @@ namespace Tobi.Modules.DocumentPane
                 {
                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                     {
-                        data.Inlines.Add(new Run(trimSpecial(attr.Value)));
+                        data.Inlines.Add(new Run(attr.Value));
                         addInline(parent, data);
                     }
                     else
@@ -802,7 +778,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                     addInline(parent, data);
                 }
 
@@ -848,7 +824,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                     addInline(parent, data);
                 }
 
@@ -881,7 +857,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(trimSpecial(textMedia.Text)));
+                    data.Inlines.Add(new Run(textMedia.Text));
                     addInline(parent, data);
                 }
 
@@ -913,7 +889,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
                 }
 
                 addInline(parent, data);
@@ -945,7 +921,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
                 }
 
                 addInline(parent, data);
@@ -977,7 +953,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(trimSpecial(textMedia.Text))));
+                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
                 }
 
                 addBlock(parent, data);
@@ -1093,8 +1069,8 @@ namespace Tobi.Modules.DocumentPane
 
             if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
             {
-                image.ToolTip = trimSpecial(altAttr.Value);
-                Paragraph paraAlt = new Paragraph(new Run("ALT: " + trimSpecial(altAttr.Value)));
+                image.ToolTip = altAttr.Value;
+                Paragraph paraAlt = new Paragraph(new Run("ALT: " + altAttr.Value));
                 paraAlt.BorderBrush = Brushes.CadetBlue;
                 paraAlt.BorderThickness = new Thickness(1.0);
                 paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
@@ -1147,7 +1123,7 @@ namespace Tobi.Modules.DocumentPane
                     return parent;
                 }
 
-                Run data = new Run(trimSpecial(textMedia.Text));
+                Run data = new Run(textMedia.Text);
                 setTag(data, node);
                 addInline(parent, data);
 
