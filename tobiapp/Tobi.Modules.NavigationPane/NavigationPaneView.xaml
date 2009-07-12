@@ -110,6 +110,9 @@
                     Width="Auto">
 
         <TreeView x:Name="TreeView"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Standard"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
                   DataContext="{Binding HeadingsNavigator}"
                   ItemsSource="{Binding Roots}"
                   SelectedItemChanged="OnHeadingSelected">
@@ -190,7 +193,11 @@
     < /Style>
     < /ListView.Resources -->
     
-    <ListBox x:Name="ListView" ItemsSource="{Binding Pages}"
+    <ListBox x:Name="ListView"
+             VirtualizingStackPanel.IsVirtualizing="True"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+             ItemsSource="{Binding Pages}"
               SelectionMode="Single"
              SelectionChanged="OnPageSelected"
              DisplayMemberPath="Name">
