@@ -11,6 +11,8 @@ using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 using urakawa;
 using urakawa.core;
+using urakawa.events;
+using urakawa.events.undo;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -94,8 +96,9 @@ namespace Tobi.Modules.AudioPane
         }
 
 
-        private void OnProjectUnLoaded(Project obj)
+        private void OnProjectUnLoaded(Project project)
         {
+            project.GetPresentation(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
             OnProjectLoaded(null);
         }
 
@@ -115,8 +118,37 @@ namespace Tobi.Modules.AudioPane
             //shell.DocumentProject
             if (project != null)
             {
+                project.GetPresentation(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
                 setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
             }
+        }
+
+        private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
+        {
+            Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+
+            bool refresh = e is TransactionStartedEventArgs || e is TransactionEndedEventArgs ||
+                           e is TransactionCancelledEventArgs || e is DoneEventArgs || e is UnDoneEventArgs ||
+                           e is ReDoneEventArgs;
+            if (!refresh)
+            {
+                return;
+            }
+
+            var presenter = Container.Resolve<IShellPresenter>();
+            presenter.PlayAudioCueTockTock();
+
+            if (View != null)
+            {
+                View.ResetAll();
+            }
+
+            if (AudioPlaybackStreamKeepAlive)
+            {
+                ensurePlaybackStreamIsDead();
+            }
+
+            ReloadWaveForm();
         }
 
         private const bool AudioPlaybackStreamKeepAlive = true;
@@ -210,7 +242,7 @@ namespace Tobi.Modules.AudioPane
                     sumData += marker.m_LocalStreamDataLength;
 
                     LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(sumDataPrev);
-                    
+
                     if (View != null)
                     {
                         View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);

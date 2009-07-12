@@ -290,7 +290,8 @@ namespace Tobi.Modules.AudioPane
 
                 if (PcmFormat != null && DataLength > 0)
                 {
-                    double time = PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble;
+                    double time = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+                    //double time = PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble;
                     if (m_LastPlayHeadTime > time)
                     {
                         Debug.Fail(String.Format("m_LastPlayHeadTime > DataLength ?? {0}", m_LastPlayHeadTime));
@@ -710,7 +711,11 @@ namespace Tobi.Modules.AudioPane
 
             if (play)
             {
-                TimeDelta dur = PcmFormat.GetDuration(DataLength);
+                //TimeDelta dur = PcmFormat.GetDuration(DataLength);
+
+                double duration = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+                TimeDelta dur = new TimeDelta(duration);
+
                 m_Player.Play(m_CurrentAudioStreamProvider,
                               dur.TimeDeltaAsMillisecondDouble,
                               new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth));
@@ -788,8 +793,10 @@ namespace Tobi.Modules.AudioPane
 
                     m_EndOffsetOfPlayStream = DataLength;
 
+                    double duration = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+
                     m_Player.Play(m_CurrentAudioStreamProvider,
-                                  PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble,
+                                  duration,
                                   new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth),
                                   AudioPlayer_ConvertBytesToMilliseconds(bytesStart)
                         );
@@ -814,8 +821,10 @@ namespace Tobi.Modules.AudioPane
                 }
                 // else: the stream is now open
 
+                double duration = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+
                 m_Player.Play(m_CurrentAudioStreamProvider,
-                              PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble,
+                              duration,
                               new AudioLibPCMFormat(PcmFormat.NumberOfChannels, PcmFormat.SampleRate, PcmFormat.BitDepth),
                               AudioPlayer_ConvertBytesToMilliseconds(bytesStart),
                               AudioPlayer_ConvertBytesToMilliseconds(bytesEnd)
@@ -931,9 +940,12 @@ namespace Tobi.Modules.AudioPane
                 endPosition = CalculationFunctions.ConvertTimeToByte(to, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                 endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
             }
+            double time = AudioPlayer_ConvertBytesToMilliseconds(m_EndOffsetOfPlayStream);
+            TimeDelta timeD = new TimeDelta(time);
+            //TimeDelta timeD = pcmInfo.GetDuration(DataLength);
             if (startPosition >= 0 &&
                 (endPosition == 0 || startPosition < endPosition) &&
-                endPosition <= pcmInfo.GetDataLength(pcmInfo.GetDuration(DataLength)))
+                endPosition <= pcmInfo.GetDataLength(timeD))
             {
                 return true;
             }
@@ -1334,7 +1346,8 @@ namespace Tobi.Modules.AudioPane
                 //double time = m_PcmFormat.GetDuration(m_DataLength).TimeDeltaAsMillisecondDouble;
                 //long bytes = (long) m_Player.CurrentTimePosition;
 
-                double time = PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
+                double time = AudioPlayer_ConvertBytesToMilliseconds(m_EndOffsetOfPlayStream);
+                //double time = PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
 
                 bool oldVal = IsAutoPlay;
                 IsAutoPlay = false;

@@ -36,6 +36,10 @@ namespace Tobi.Modules.Urakawa
         public RichDelegateCommand<object> OpenCommand { get; private set; }
         public RichDelegateCommand<object> CloseCommand { get; private set; }
 
+        public RichDelegateCommand<object> UndoCommand { get; private set; }
+        public RichDelegateCommand<object> RedoCommand { get; private set; }
+
+
         public Project DocumentProject
         {
             get;
@@ -71,6 +75,26 @@ namespace Tobi.Modules.Urakawa
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
+            //
+            UndoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Undo,
+                UserInterfaceStrings.Undo_,
+                UserInterfaceStrings.Undo_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-undo"),
+                obj => DocumentProject.GetPresentation(0).UndoRedoManager.Undo(),
+                obj => DocumentProject != null && DocumentProject.GetPresentation(0).UndoRedoManager.CanUndo);
+
+            shellPresenter.RegisterRichCommand(UndoCommand);
+            //
+            RedoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Redo,
+                UserInterfaceStrings.Redo_,
+                UserInterfaceStrings.Redo_KEYS,
+                (VisualBrush)Application.Current.FindResource("edit-redo"),
+                obj => DocumentProject.GetPresentation(0).UndoRedoManager.Redo(),
+                obj => DocumentProject != null && DocumentProject.GetPresentation(0).UndoRedoManager.CanRedo);
+
+            shellPresenter.RegisterRichCommand(RedoCommand);
+            //
+            //
             SaveAsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.SaveAs,
                 UserInterfaceStrings.SaveAs_,
                 UserInterfaceStrings.SaveAs_KEYS,
@@ -149,12 +173,16 @@ namespace Tobi.Modules.Urakawa
 
         private void closeProject()
         {
+            if (DocumentProject == null)
+            {
+                return;
+            }
+
             Logger.Log("-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.closeProject", Category.Debug, Priority.Medium);
 
             //todo check IsDirty and ask for confirmation. See ShellPresenter.askUserConfirmExit()
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            var window = shellPresenter.View as Window;
 
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(DocumentProject);
 

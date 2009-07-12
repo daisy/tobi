@@ -4,14 +4,11 @@ using System.IO;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Infrastructure;
-using urakawa.command;
-using urakawa.commands;
 using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
-using urakawa.property.channel;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -202,8 +199,9 @@ namespace Tobi.Modules.AudioPane
             Stream recordingStream = File.Open(m_Recorder.RecordedFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             PCMDataInfo pcmFormat = PCMDataInfo.ParseRiffWaveHeader(recordingStream);
             long dataLength = recordingStream.Length - recordingStream.Position;
-            double recordingDuration = pcmFormat.GetDuration(dataLength).TimeDeltaAsMillisecondDouble;
-
+            
+            //double recordingDuration = pcmFormat.GetDuration(dataLength).TimeDeltaAsMillisecondDouble;
+            double recordingDuration = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
 
             ManagedAudioMedia managedAudioMediaNew =
                 CurrentSubTreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
@@ -376,7 +374,7 @@ namespace Tobi.Modules.AudioPane
                 SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
                 SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble;
 
-                ReloadWaveForm();
+                //ReloadWaveForm(); UndoRedoManager.Changed callback will take care of that.
             }
             else
             {

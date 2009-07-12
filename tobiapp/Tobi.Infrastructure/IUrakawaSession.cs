@@ -14,5 +14,8 @@ namespace Tobi.Infrastructure
         RichDelegateCommand<object> NewCommand { get; }
         RichDelegateCommand<object> OpenCommand { get; }
         RichDelegateCommand<object> CloseCommand { get; }
+
+        RichDelegateCommand<object> UndoCommand { get; }
+        RichDelegateCommand<object> RedoCommand { get; }
     }
 }

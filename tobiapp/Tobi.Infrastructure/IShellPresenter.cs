@@ -23,9 +23,6 @@ namespace Tobi
         RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }
         RichDelegateCommand<object> ManageShortcutsCommand { get; }
 
-        RichDelegateCommand<object> UndoCommand { get; }
-        RichDelegateCommand<object> RedoCommand { get; }
-
         RichDelegateCommand<object> CopyCommand { get; }
         RichDelegateCommand<object> CutCommand { get; }
         RichDelegateCommand<object> PasteCommand { get; }

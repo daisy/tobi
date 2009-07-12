@@ -65,6 +65,9 @@ namespace Tobi.Modules.ToolBars
                 SaveAsCommand = session.SaveAsCommand;
                 OpenCommand = session.OpenCommand;
                 NewCommand = session.NewCommand;
+
+                UndoCommand = session.UndoCommand;
+                RedoCommand = session.RedoCommand;
             }
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
@@ -73,9 +76,6 @@ namespace Tobi.Modules.ToolBars
                 MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
                 MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
                 ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
-
-                UndoCommand = shellPresenter.UndoCommand;
-                RedoCommand = shellPresenter.RedoCommand;
 
 
                 CopyCommand = shellPresenter.CopyCommand;
