@@ -486,7 +486,8 @@ namespace Tobi.Modules.AudioPane
             {
                 return 0;
             }
-            return 1000.0 * bytes / ((double)PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0);
+            return PcmFormat.GetDuration((long)bytes).TimeDeltaAsMillisecondDouble;
+            //return 1000.0 * bytes / ((double)PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0);
         }
 
         public double AudioPlayer_ConvertMillisecondsToBytes(double ms)
@@ -495,7 +496,8 @@ namespace Tobi.Modules.AudioPane
             {
                 return 0;
             }
-            return (ms * PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0) / 1000.0;
+            return PcmFormat.GetDataLength(new TimeDelta(ms));
+            //return (ms * PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0) / 1000.0;
         }
 
         public void AudioPlayer_UpdateWaveFormPlayHead()
@@ -940,7 +942,7 @@ namespace Tobi.Modules.AudioPane
                 endPosition = CalculationFunctions.ConvertTimeToByte(to, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                 endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
             }
-            double time = AudioPlayer_ConvertBytesToMilliseconds(m_EndOffsetOfPlayStream);
+            double time = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
             TimeDelta timeD = new TimeDelta(time);
             //TimeDelta timeD = pcmInfo.GetDuration(DataLength);
             if (startPosition >= 0 &&
