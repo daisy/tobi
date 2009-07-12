@@ -67,6 +67,10 @@ namespace Tobi.Modules.MenuBar
                 OpenCommand = session.OpenCommand;
                 NewCommand = session.NewCommand;
                 CloseCommand = session.CloseCommand;
+
+                UndoCommand = session.UndoCommand;
+                RedoCommand = session.RedoCommand;
+
             }
 
             var metadata = Container.Resolve<MetadataPaneViewModel>();
@@ -83,10 +87,6 @@ namespace Tobi.Modules.MenuBar
                 MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
                 MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
                 ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
-
-                UndoCommand = shellPresenter.UndoCommand;
-                RedoCommand = shellPresenter.RedoCommand;
-
 
                 CopyCommand = shellPresenter.CopyCommand;
                 CutCommand = shellPresenter.CutCommand;

@@ -49,9 +49,6 @@ namespace Tobi
 
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
 
-        public RichDelegateCommand<object> UndoCommand { get; private set; }
-        public RichDelegateCommand<object> RedoCommand { get; private set; }
-
         public RichDelegateCommand<object> CopyCommand { get; private set; }
         public RichDelegateCommand<object> CutCommand { get; private set; }
         public RichDelegateCommand<object> PasteCommand { get; private set; }
@@ -131,22 +128,6 @@ namespace Tobi
                                                                       (VisualBrush)Application.Current.FindResource("preferences-desktop-keyboard-shortcuts"),
                                                             obj => manageShortcuts(), obj => true);
             RegisterRichCommand(ManageShortcutsCommand);
-            //
-            UndoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Undo,
-                UserInterfaceStrings.Undo_,
-                UserInterfaceStrings.Undo_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-undo"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
-
-            RegisterRichCommand(UndoCommand);
-            //
-            RedoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Redo,
-                UserInterfaceStrings.Redo_,
-                UserInterfaceStrings.Redo_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-redo"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
-
-            RegisterRichCommand(RedoCommand);
             //
             CutCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Cut,
                 UserInterfaceStrings.Cut_,
