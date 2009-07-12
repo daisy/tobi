@@ -110,6 +110,8 @@
                     Width="Auto">
 
         <TreeView x:Name="TreeView"
+                  
+           ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
              VirtualizingStackPanel.VirtualizationMode="Standard"
              ScrollViewer.IsDeferredScrollingEnabled="False"
@@ -194,6 +196,8 @@
     < /ListView.Resources -->
     
     <ListBox x:Name="ListView"
+             
+           ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="True"
              VirtualizingStackPanel.VirtualizationMode="Recycling"
              ScrollViewer.IsDeferredScrollingEnabled="False"

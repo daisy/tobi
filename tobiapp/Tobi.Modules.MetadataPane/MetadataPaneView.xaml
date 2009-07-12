@@ -82,9 +82,10 @@
 
   <UI:SortableListView
       
+           ScrollViewer.CanContentScroll="True"
+           ScrollViewer.IsDeferredScrollingEnabled="False"
            VirtualizingStackPanel.IsVirtualizing="False"
            VirtualizingStackPanel.VirtualizationMode="Standard"
-           ScrollViewer.IsDeferredScrollingEnabled="False"
            
       HorizontalAlignment="Stretch"
       VerticalAlignment="Stretch"
