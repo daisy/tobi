@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
     
+           ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
              VirtualizingStackPanel.VirtualizationMode="Recycling"
              ScrollViewer.IsDeferredScrollingEnabled="False"
