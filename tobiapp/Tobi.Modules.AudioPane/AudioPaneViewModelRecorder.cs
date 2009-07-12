@@ -201,7 +201,7 @@ namespace Tobi.Modules.AudioPane
             long dataLength = recordingStream.Length - recordingStream.Position;
             
             //double recordingDuration = pcmFormat.GetDuration(dataLength).TimeDeltaAsMillisecondDouble;
-            double recordingDuration = AudioPlayer_ConvertBytesToMilliseconds(DataLength);
+            double recordingDuration = AudioPlayer_ConvertBytesToMilliseconds(dataLength);
 
             ManagedAudioMedia managedAudioMediaNew =
                 CurrentSubTreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();

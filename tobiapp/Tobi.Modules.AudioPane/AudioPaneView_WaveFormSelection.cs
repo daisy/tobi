@@ -166,8 +166,16 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeSelectionRect.Width = m_SelectionBackup_Width;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
 
-            ViewModel.SelectionBegin = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
-            ViewModel.SelectionEnd = ViewModel.AudioPlayer_ConvertBytesToMilliseconds((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
+            if (m_TimeSelectionLeftX < 0)
+            {
+                ViewModel.SelectionBegin = -1;
+                ViewModel.SelectionEnd = -1;
+            }
+            else
+            {
+                ViewModel.SelectionBegin = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(m_TimeSelectionLeftX * BytesPerPixel);
+                ViewModel.SelectionEnd = ViewModel.AudioPlayer_ConvertBytesToMilliseconds((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel);
+            }
         }
 
         private void backupSelection()
