@@ -80,7 +80,12 @@
     </StackPanel>
 
 
-    <UI:SortableListView
+  <UI:SortableListView
+      
+           VirtualizingStackPanel.IsVirtualizing="False"
+           VirtualizingStackPanel.VirtualizationMode="Standard"
+           ScrollViewer.IsDeferredScrollingEnabled="False"
+           
       HorizontalAlignment="Stretch"
       VerticalAlignment="Stretch"
       x:Name="list"

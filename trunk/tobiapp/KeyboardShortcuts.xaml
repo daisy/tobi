@@ -3,6 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+    
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
 x:Name="list"
@@ -12,7 +17,7 @@ x:Name="list"
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
 AlternationCount="2"
-    VirtualizingStackPanel.IsVirtualizing="False"
+    
             >
 
   <ListView.Resources>
