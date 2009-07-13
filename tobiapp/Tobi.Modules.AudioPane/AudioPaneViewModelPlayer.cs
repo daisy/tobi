@@ -951,6 +951,8 @@ namespace Tobi.Modules.AudioPane
             {
                 return true;
             }
+
+            Debug.Fail("Oops, this should have never happened !");
             return false;
         }
 
@@ -1075,7 +1077,7 @@ namespace Tobi.Modules.AudioPane
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
                 long end = (begin + marker.m_LocalStreamDataLength);
-                if (bytes >= begin && bytes <= end)
+                if (bytes >= begin && bytes < end)
                 {
                     if (prev == -1)
                     {
@@ -1104,7 +1106,7 @@ namespace Tobi.Modules.AudioPane
                     break;
                 }
                 prev = begin;
-                begin += (marker.m_LocalStreamDataLength + 1);
+                begin += marker.m_LocalStreamDataLength;
             }
         }
 
@@ -1142,12 +1144,12 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 long end = (begin + marker.m_LocalStreamDataLength);
-                if (bytes >= begin && bytes <= end)
+                if (bytes >= begin && bytes < end)
                 {
                     found = true;
                 }
 
-                begin += (marker.m_LocalStreamDataLength + 1);
+                begin += marker.m_LocalStreamDataLength;
             }
 
             if (!found)
