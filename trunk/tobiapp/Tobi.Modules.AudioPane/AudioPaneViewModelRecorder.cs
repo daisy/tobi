@@ -300,7 +300,7 @@ namespace Tobi.Modules.AudioPane
                                     return;
                                 }
 
-                                var command = CurrentSubTreeNode.Presentation.CommandFactory.CreateManagedAudioMediaInsertDataCommand(
+                                var command = CurrentSubTreeNode.Presentation.CommandFactory.CreateManagedAudioMediaInsertDataCommand(CurrentSubTreeNode,
                                                             manangedMediaSeqItem, recordingManagedAudioMedia, new Time(timeOffset));
                                 CurrentSubTreeNode.Presentation.UndoRedoManager.Execute(command);
 
@@ -363,7 +363,7 @@ namespace Tobi.Modules.AudioPane
                         return;
                     }
 
-                    var command = CurrentSubTreeNode.Presentation.CommandFactory.CreateManagedAudioMediaInsertDataCommand(
+                    var command = CurrentSubTreeNode.Presentation.CommandFactory.CreateManagedAudioMediaInsertDataCommand(CurrentSubTreeNode,
                                                 managedAudioMedia, recordingManagedAudioMedia, new Time(timeOffset));
                     CurrentSubTreeNode.Presentation.UndoRedoManager.Execute(command);
 
