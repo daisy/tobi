@@ -249,7 +249,7 @@ namespace Tobi.Modules.AudioPane
                     }
                     break;
                 }
-                sumData += (marker.m_LocalStreamDataLength + 1);
+                sumData += marker.m_LocalStreamDataLength;
             }
         }
 
