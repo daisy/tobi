@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using AudioLib;
@@ -10,6 +11,7 @@ using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Infrastructure;
 using urakawa;
+using urakawa.commands;
 using urakawa.core;
 using urakawa.events;
 using urakawa.events.undo;
@@ -127,13 +129,19 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
-            bool refresh = e is TransactionStartedEventArgs || e is TransactionEndedEventArgs ||
-                           e is TransactionCancelledEventArgs || e is DoneEventArgs || e is UnDoneEventArgs ||
-                           e is ReDoneEventArgs;
+            bool refresh = e is TransactionStartedEventArgs
+                           || e is TransactionEndedEventArgs
+                           || e is TransactionCancelledEventArgs
+                           || e is DoneEventArgs
+                           || e is UnDoneEventArgs
+                           || e is ReDoneEventArgs;
             if (!refresh)
             {
+                Debug.Fail("This should never happen !!");
                 return;
             }
+
+            var eventt = (UndoRedoManagerEventArgs)e;
 
             var presenter = Container.Resolve<IShellPresenter>();
             presenter.PlayAudioCueTockTock();
@@ -143,12 +151,93 @@ namespace Tobi.Modules.AudioPane
                 View.ResetAll();
             }
 
+            if (eventt.Command is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)eventt.Command;
+                TreeNode treeNode = command.TreeNode;
+                if (treeNode != null && !isTreeNodeShownInAudioWaveForm(treeNode))
+                {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                }
+                else
+                {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
+                    ReloadWaveForm();
+                }
+
+                if (e is DoneEventArgs || e is ReDoneEventArgs)
+                {
+                    SelectionBegin = command.TimeInsert.TimeAsMillisecondFloat;
+                    SelectionEnd = SelectionBegin + command.ManagedAudioMediaSource.Duration.TimeDeltaAsMillisecondDouble;
+
+                    LastPlayHeadTime = SelectionBegin;
+                }
+                else if (e is UnDoneEventArgs)
+                {
+                    SelectionBegin = -1;
+                    SelectionEnd = SelectionBegin;
+                    LastPlayHeadTime = command.TimeInsert.TimeAsMillisecondFloat;
+                }
+
+                return;
+            }
+            else if (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)eventt.Command;
+                TreeNode treeNode = command.TreeNode;
+                if (treeNode != null && !isTreeNodeShownInAudioWaveForm(treeNode))
+                {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                }
+                else
+                {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
+                    ReloadWaveForm();
+                }
+
+                SelectionBegin = -1;
+                SelectionEnd = SelectionBegin;
+                LastPlayHeadTime = 0;
+
+                return;
+            }
+
             if (AudioPlaybackStreamKeepAlive)
             {
                 ensurePlaybackStreamIsDead();
             }
-
             ReloadWaveForm();
+        }
+
+        private bool isTreeNodeShownInAudioWaveForm(TreeNode treeNode)
+        {
+            if (CurrentTreeNode == treeNode || CurrentSubTreeNode == treeNode) return true;
+            if (PlayStreamMarkers == null) return false;
+            foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+            {
+                if (marker.m_TreeNode == treeNode) return true;
+            }
+            return false;
         }
 
         private const bool AudioPlaybackStreamKeepAlive = true;
