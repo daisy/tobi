@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -59,8 +57,6 @@ namespace Tobi.Modules.MetadataPane
         {
             Logger.Log("MetadataPaneViewModel.Initialize", Category.Debug, Priority.Medium);
 
-            m_Project = null;
-
             initializeCommands();
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
@@ -71,18 +67,6 @@ namespace Tobi.Modules.MetadataPane
             RefreshDataTemplateSelectors();
        }
 
-        private Project m_Project;
-        public Project Project
-        {
-            get { return m_Project; }
-            set
-            {
-                if (m_Project == value) return;
-                m_Project = value;
-                OnPropertyChanged(() => Project);
-            }
-        }
-
         private void OnProjectUnLoaded(Project obj)
         {
             OnProjectLoaded(null);
@@ -92,9 +76,11 @@ namespace Tobi.Modules.MetadataPane
         {
             Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
                 Category.Debug, Priority.Medium);
-            Project = project;
-            ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
-            NameTemplateSelectorProperty = new NameTemplateSelector((MetadataPaneView)View);
+
+            ContentTemplateSelectorProperty = (project == null ? null : new ContentTemplateSelector((MetadataPaneView)View));
+            NameTemplateSelectorProperty = (project == null ? null : new NameTemplateSelector((MetadataPaneView)View));
+
+            OnPropertyChanged(() => Metadatas);
         }
 
         
@@ -136,10 +122,13 @@ namespace Tobi.Modules.MetadataPane
             windowPopup.Show();
         }
 
-        [NotifyDependsOn("Project")]
         private bool canShowMetadata
         {
-            get { return Project != null && Project.NumberOfPresentations > 0; }
+            get
+            {
+                var session = Container.Resolve<IUrakawaSession>();
+                return session.DocumentProject != null && session.DocumentProject.NumberOfPresentations > 0;
+            }
         }
 
         #endregion Commands
@@ -165,12 +154,13 @@ namespace Tobi.Modules.MetadataPane
 
         private ObservableMetadataCollection m_Metadatas;
         
-        [NotifyDependsOn("Project")]
         public ObservableMetadataCollection Metadatas 
         {
             get
             {
-                if (Project == null || Project.NumberOfPresentations <= 0)
+                var session = Container.Resolve<IUrakawaSession>();
+
+                if (session.DocumentProject == null || session.DocumentProject.NumberOfPresentations <= 0)
                 {
                     m_Metadatas = null;
                 }
@@ -178,11 +168,9 @@ namespace Tobi.Modules.MetadataPane
                 {
                     if (m_Metadatas == null)
                     {
-                        m_Metadatas = new ObservableMetadataCollection(Project.GetPresentation(0).ListOfMetadata);
-                        Project.GetPresentation(0).MetadataAdded += new System.EventHandler<MetadataAddedEventArgs>
-                            (m_Metadatas.OnMetadataAdded);
-                        Project.GetPresentation(0).MetadataDeleted += new System.EventHandler<MetadataDeletedEventArgs>
-                            (m_Metadatas.OnMetadataDeleted);
+                        m_Metadatas = new ObservableMetadataCollection(session.DocumentProject.GetPresentation(0).ListOfMetadata);
+                        session.DocumentProject.GetPresentation(0).MetadataAdded += m_Metadatas.OnMetadataAdded;
+                        session.DocumentProject.GetPresentation(0).MetadataDeleted += m_Metadatas.OnMetadataDeleted;
                     }
                 }
                 return m_Metadatas;
@@ -192,7 +180,9 @@ namespace Tobi.Modules.MetadataPane
 
         public void CreateFakeData()
         {
-            List<Metadata> list = Project.GetPresentation(0).ListOfMetadata;
+            var session = Container.Resolve<IUrakawaSession>();
+
+            List<Metadata> list = session.DocumentProject.GetPresentation(0).ListOfMetadata;
             Metadata metadata = list.Find(s => s.Name == "dc:Title");
             if (metadata != null)
             {
@@ -203,27 +193,36 @@ namespace Tobi.Modules.MetadataPane
 
         public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
+            var session = Container.Resolve<IUrakawaSession>();
+
             //TODO: warn against or prevent removing required metadata
-            Project.GetPresentation(0).DeleteMetadata(metadata.UrakawaMetadata);
+            session.DocumentProject.GetPresentation(0).DeleteMetadata(metadata.UrakawaMetadata);
         }
 
         public void AddEmptyMetadata()
         {
-            Metadata metadata = new Metadata();
-            metadata.Name = "";
-            metadata.Content = "";
-            Project.GetPresentation(0).AddMetadata(metadata);
+            Metadata metadata = new Metadata {Name = "", Content = ""};
+
+            var session = Container.Resolve<IUrakawaSession>();
+            session.DocumentProject.GetPresentation(0).AddMetadata(metadata);
         }
 
        
 
         public ObservableCollection<string> GetAvailableMetadata()
         {
-            List<Metadata> metadatas = Project.GetPresentation(0).ListOfMetadata;
+            ObservableCollection<string> list = new ObservableCollection<string>();
+
+            var session = Container.Resolve<IUrakawaSession>();
+            if (session.DocumentProject == null)
+            {
+                return list;
+            }
+
+            List<Metadata> metadatas = session.DocumentProject.GetPresentation(0).ListOfMetadata;
             List<MetadataDefinition> availableMetadata = 
                 MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataList);
 
-            ObservableCollection<string> list = new ObservableCollection<string>();
             
             foreach (MetadataDefinition metadata in availableMetadata)
             {
@@ -250,7 +249,10 @@ namespace Tobi.Modules.MetadataPane
         public void ValidateMetadata()
         {
             List<string> errors = new List<string>();
-            List<Metadata> metadatas = Project.GetPresentation(0).ListOfMetadata;
+
+            var session = Container.Resolve<IUrakawaSession>();
+
+            List<Metadata> metadatas = session.DocumentProject.GetPresentation(0).ListOfMetadata;
 
             MetadataValidation validation = new 
                 MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
@@ -301,6 +303,19 @@ namespace Tobi.Modules.MetadataPane
                 m_ContentTemplateSelector = value;
                 OnPropertyChanged(() => ContentTemplateSelectorProperty);
             }
+        }
+
+        public string GetDebugStringForMetaData()
+        {
+            string data = "";
+
+            var session = Container.Resolve<IUrakawaSession>();
+
+            foreach (Metadata m in session.DocumentProject.GetPresentation(0).ListOfMetadata)
+            {
+                data += string.Format("{0} = {1}\n", m.Name, m.Content);
+            }
+            return data;
         }
     }
 

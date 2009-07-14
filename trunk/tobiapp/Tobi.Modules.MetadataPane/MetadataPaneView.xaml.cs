@@ -96,12 +96,7 @@ namespace Tobi.Modules.MetadataPane
         }
         private void Data_Model_Report_Click(object sender, RoutedEventArgs e)
         {
-            string data = "";
-            foreach (Metadata m in ViewModel.Project.GetPresentation(0).ListOfMetadata)
-            {
-                data += string.Format("{0} = {1}\n", m.Name, m.Content);
-            }
-            MessageBox.Show(data);
+            MessageBox.Show(ViewModel.GetDebugStringForMetaData());
         }
         private void Lookup_Button_Click(object sender, RoutedEventArgs e)
         {

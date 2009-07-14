@@ -556,8 +556,6 @@ namespace Tobi.Modules.Urakawa
                 DocumentProject = converter.Project;
             }
 
-            DocumentProject.GetPresentation(0).WarmUpAllFactories();
-
             Logger.Log("-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);

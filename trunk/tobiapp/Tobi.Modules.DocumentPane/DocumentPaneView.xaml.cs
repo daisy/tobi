@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
+using System.Media;
 using System.Windows;
-using System.Windows.Annotations;
-using System.Windows.Annotations.Storage;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -164,6 +162,7 @@ namespace Tobi.Modules.DocumentPane
                                Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    return;
                 }
             }
             else
@@ -175,6 +174,7 @@ namespace Tobi.Modules.DocumentPane
                                Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                    return;
                 }
                 else
                 {
@@ -185,9 +185,12 @@ namespace Tobi.Modules.DocumentPane
                                    Category.Debug, Priority.Medium);
 
                         EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                        return;
                     }
                 }
             }
+
+            SystemSounds.Beep.Play();
         }
 
         [NotifyDependsOn("CurrentTreeNode")]
@@ -215,6 +218,7 @@ namespace Tobi.Modules.DocumentPane
                                Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    return;
                 }
             }
             else
@@ -226,6 +230,7 @@ namespace Tobi.Modules.DocumentPane
                                Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                    return;
                 }
                 else
                 {
@@ -236,9 +241,12 @@ namespace Tobi.Modules.DocumentPane
                                    Category.Debug, Priority.Medium);
 
                         EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                        return;
                     }
                 }
             }
+
+            SystemSounds.Beep.Play();
         }
 
         [NotifyDependsOn("CurrentTreeNode")]
