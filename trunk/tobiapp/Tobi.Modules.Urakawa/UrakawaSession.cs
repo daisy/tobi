@@ -430,12 +430,12 @@ namespace Tobi.Modules.Urakawa
                 m_OpenXukActionCancelFlag = false;
                 m_OpenXukActionCurrentPercentage = 0;
 
-                DocumentProject = new Project();
+                var project = new Project();
 
                 var uri = new Uri(DocumentFilePath, UriKind.Absolute);
                 //DocumentProject.OpenXuk(uri);
 
-                var action = new OpenXukAction(DocumentProject, uri)
+                var action = new OpenXukAction(project, uri)
                 {
                     ShortDescription = "Opening XUK file...",
                     LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK..."
@@ -531,6 +531,10 @@ namespace Tobi.Modules.Urakawa
                         DocumentFilePath = null;
                         DocumentProject = null;
                     }
+                    else
+                    {
+                        DocumentProject = project;
+                    }
 
                     windowPopup.ForceClose();
 
@@ -556,9 +560,13 @@ namespace Tobi.Modules.Urakawa
                 DocumentProject = converter.Project;
             }
 
-            Logger.Log("-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
+            if (DocumentProject != null)
+            {
+                Logger.Log("-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug,
+                           Priority.Medium);
 
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+            }
         }
     }
 }
