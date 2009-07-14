@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows.Input;
 using AudioLib;
 using AudioLib.Events.VuMeter;
@@ -15,6 +16,8 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.events;
 using urakawa.events.undo;
+using urakawa.media;
+using urakawa.media.data.audio;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -154,79 +157,176 @@ namespace Tobi.Modules.AudioPane
             if (eventt.Command is ManagedAudioMediaInsertDataCommand)
             {
                 var command = (ManagedAudioMediaInsertDataCommand)eventt.Command;
-                TreeNode treeNode = command.TreeNode;
-                if (treeNode != null && !isTreeNodeShownInAudioWaveForm(treeNode))
-                {
-                    if (AudioPlaybackStreamKeepAlive)
-                    {
-                        ensurePlaybackStreamIsDead();
-                    }
 
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-                }
-                else
-                {
-                    if (AudioPlaybackStreamKeepAlive)
-                    {
-                        ensurePlaybackStreamIsDead();
-                    }
-
-                    ReloadWaveForm();
-                }
-
-                if (e is DoneEventArgs || e is ReDoneEventArgs)
-                {
-                    SelectionBegin = command.TimeInsert.TimeAsMillisecondFloat;
-                    SelectionEnd = SelectionBegin + command.ManagedAudioMediaSource.Duration.TimeDeltaAsMillisecondDouble;
-
-                    LastPlayHeadTime = SelectionBegin;
-                }
-                else if (e is UnDoneEventArgs)
-                {
-                    SelectionBegin = -1;
-                    SelectionEnd = SelectionBegin;
-                    LastPlayHeadTime = command.TimeInsert.TimeAsMillisecondFloat;
-                }
-
+                UndoRedoManagerChanged(command, eventt);
                 return;
             }
             else if (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
             {
                 var command = (TreeNodeSetManagedAudioMediaCommand)eventt.Command;
-                TreeNode treeNode = command.TreeNode;
-                if (treeNode != null && !isTreeNodeShownInAudioWaveForm(treeNode))
-                {
-                    if (AudioPlaybackStreamKeepAlive)
-                    {
-                        ensurePlaybackStreamIsDead();
-                    }
 
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-                }
-                else
-                {
-                    if (AudioPlaybackStreamKeepAlive)
-                    {
-                        ensurePlaybackStreamIsDead();
-                    }
-
-                    ReloadWaveForm();
-                }
-
-                SelectionBegin = -1;
-                SelectionEnd = SelectionBegin;
-                LastPlayHeadTime = 0;
-
+                UndoRedoManagerChanged(command);
                 return;
             }
+            // TODO: TreeNode delete command, etc. (make sure CurrentTreeNode / CurrentSubTreeNode is up to date)
 
             if (AudioPlaybackStreamKeepAlive)
             {
                 ensurePlaybackStreamIsDead();
             }
             ReloadWaveForm();
+        }
+
+        struct StateToRestore
+        {
+            public double SelectionBegin;
+            public double SelectionEnd;
+            public double LastPlayHeadTime;
+        }
+        private StateToRestore? m_StateToRestore = null;
+
+        private void UndoRedoManagerChanged(TreeNodeSetManagedAudioMediaCommand command)
+        {
+            TreeNode treeNode = command.TreeNode;
+
+            if (treeNode == null)
+            {
+                return;
+            }
+
+            if (AudioPlaybackStreamKeepAlive)
+            {
+                ensurePlaybackStreamIsDead();
+                m_CurrentAudioStreamProvider();
+            }
+
+            double timeOffset = getTimeOffset(treeNode, command.ManagedAudioMedia);
+
+            m_StateToRestore = new StateToRestore
+                                 {
+                                     SelectionBegin = -1,
+                                     SelectionEnd = -1,
+                                     LastPlayHeadTime = timeOffset
+                                 };
+
+            bool isTreeNodeInAudioWaveForm = isTreeNodeShownInAudioWaveForm(treeNode);
+
+            if (!isTreeNodeInAudioWaveForm)
+            {
+                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            }
+            else
+            {
+                ReloadWaveForm();
+            }
+        }
+
+        private void UndoRedoManagerChanged(ManagedAudioMediaInsertDataCommand command, UndoRedoManagerEventArgs e)
+        {
+            TreeNode treeNode = command.TreeNode;
+
+            if (treeNode == null)
+            {
+                return;
+            }
+
+            if (AudioPlaybackStreamKeepAlive)
+            {
+                ensurePlaybackStreamIsDead();
+                m_CurrentAudioStreamProvider();
+            }
+
+            double timeOffset = getTimeOffset(treeNode, command.ManagedAudioMediaTarget);
+
+            if (e is DoneEventArgs || e is ReDoneEventArgs)
+            {
+                double begin = command.TimeInsert.TimeAsMillisecondFloat + timeOffset;
+                m_StateToRestore = new StateToRestore
+                                       {
+                                           SelectionBegin = begin,
+                                           SelectionEnd = begin + command.ManagedAudioMediaSource.Duration.TimeDeltaAsMillisecondDouble,
+                                           LastPlayHeadTime = begin
+                                       };
+            }
+            else if (e is UnDoneEventArgs)
+            {
+                m_StateToRestore = new StateToRestore
+                {
+                    SelectionBegin = -1,
+                    SelectionEnd = -1,
+                    LastPlayHeadTime = command.TimeInsert.TimeAsMillisecondFloat + timeOffset
+                };
+            }
+
+            bool isTreeNodeInAudioWaveForm = isTreeNodeShownInAudioWaveForm(treeNode);
+
+            if (!isTreeNodeInAudioWaveForm)
+            {
+                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            }
+            else
+            {
+                ReloadWaveForm();
+            }
+        }
+
+        private double getTimeOffset(TreeNode treeNode, ManagedAudioMedia managedMedia)
+        {
+            if (!isTreeNodeShownInAudioWaveForm(treeNode))
+            {
+                return 0;
+            }
+
+            double timeOffset = 0;
+
+            if (CurrentTreeNode != treeNode && PlayStreamMarkers != null)
+            {
+                foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+                {
+                    if (marker.m_TreeNode == treeNode) break;
+
+                    timeOffset += AudioPlayer_ConvertBytesToMilliseconds(marker.m_LocalStreamDataLength);
+                }
+            }
+
+            if (managedMedia == null)
+            {
+                return timeOffset;
+            }
+
+            ManagedAudioMedia managedAudioMedia = treeNode.GetManagedAudioMedia();
+            if (managedAudioMedia == null)
+            {
+                SequenceMedia seqAudioMedia = treeNode.GetAudioSequenceMedia();
+                bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
+                if (isSeqValid)
+                {
+                    foreach (Media media in seqAudioMedia.ListOfItems)
+                    {
+                        if (!(media is ManagedAudioMedia))
+                        {
+                            isSeqValid = false;
+                            break;
+                        }
+                    }
+                }
+                if (isSeqValid)
+                {
+                    foreach (Media media in seqAudioMedia.ListOfItems)
+                    {
+                        var manMedia = (ManagedAudioMedia)media;
+                        if (media == managedMedia)
+                        {
+                            break;
+                        }
+                        timeOffset += manMedia.Duration.TimeDeltaAsMillisecondDouble;
+                    }
+                }
+            }
+
+            return timeOffset;
         }
 
         private bool isTreeNodeShownInAudioWaveForm(TreeNode treeNode)

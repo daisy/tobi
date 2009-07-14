@@ -227,8 +227,8 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StopRecording();
 
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTockTock();
+            //var presenter = Container.Resolve<IShellPresenter>();
+            //presenter.PlayAudioCueTockTock();
 
             if (View != null)
             {
@@ -316,11 +316,6 @@ namespace Tobi.Modules.AudioPane
                         var command = CurrentSubTreeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(
                                                     CurrentSubTreeNode, recordingManagedAudioMedia);
                         CurrentSubTreeNode.Presentation.UndoRedoManager.Execute(command);
-
-                        if (AudioPlaybackStreamKeepAlive)
-                        {
-                            ensurePlaybackStreamIsDead();
-                        }
                     }
                 }
                 else
@@ -332,10 +327,14 @@ namespace Tobi.Modules.AudioPane
 
                         long sumData = 0;
                         long sumDataPrev = 0;
+                        int index = -1;
                         foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                         {
+                            index++;
+
                             sumData += marker.m_LocalStreamDataLength;
-                            if (byteOffset < sumData)
+                            if (byteOffset < sumData
+                                    || index == (PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
                             {
                                 if (CurrentSubTreeNode != marker.m_TreeNode)
                                 {
@@ -371,8 +370,8 @@ namespace Tobi.Modules.AudioPane
                     //recordingStream.Close();
                 }
 
-                SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
-                SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble;
+                //SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
+                //SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble;
 
                 //ReloadWaveForm(); UndoRedoManager.Changed callback will take care of that.
             }
