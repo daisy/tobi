@@ -1009,7 +1009,7 @@ namespace Tobi.Modules.AudioPane
             if (newTime < 0)
             {
                 newTime = 0;
-                SystemSounds.Exclamation.Play();
+                SystemSounds.Beep.Play();
             }
 
             if (IsAutoPlay)
@@ -1032,7 +1032,7 @@ namespace Tobi.Modules.AudioPane
             if (newTime > max)
             {
                 newTime = max;
-                SystemSounds.Exclamation.Play();
+                SystemSounds.Beep.Play();
             }
 
             if (IsAutoPlay)
@@ -1090,7 +1090,7 @@ namespace Tobi.Modules.AudioPane
                         }
 
                         LastPlayHeadTime = AudioPlayer_ConvertBytesToMilliseconds(begin);
-                        SystemSounds.Exclamation.Play();
+                        SystemSounds.Beep.Play();
                         break;
                     }
 
@@ -1159,7 +1159,7 @@ namespace Tobi.Modules.AudioPane
 #endif
             }
 
-            SystemSounds.Exclamation.Play();
+            SystemSounds.Beep.Play();
         }
 
         public void AudioPlayer_GotoEnd()
@@ -1172,7 +1172,7 @@ namespace Tobi.Modules.AudioPane
 
             if (LastPlayHeadTime == end)
             {
-                SystemSounds.Exclamation.Play();
+                SystemSounds.Beep.Play();
             }
             else
             {
@@ -1196,7 +1196,7 @@ namespace Tobi.Modules.AudioPane
 
             if (LastPlayHeadTime == 0)
             {
-                SystemSounds.Exclamation.Play();
+                SystemSounds.Beep.Play();
             }
             else
             {
