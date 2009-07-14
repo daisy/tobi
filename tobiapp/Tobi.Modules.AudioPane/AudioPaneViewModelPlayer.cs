@@ -105,10 +105,13 @@ namespace Tobi.Modules.AudioPane
 
             long sumData = 0;
             long sumDataPrev = 0;
+            int index = -1;
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
+                index++;
                 sumData += marker.m_LocalStreamDataLength;
-                if (byteOffset < sumData)
+                if (byteOffset < sumData
+                    || index == (PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
                 {
                     //subTreeNode = marker.m_TreeNode;
 
@@ -319,10 +322,13 @@ namespace Tobi.Modules.AudioPane
 
                 long sumData = 0;
                 long sumDataPrev = 0;
+                int index = -1;
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                 {
+                    index++;
                     sumData += marker.m_LocalStreamDataLength;
-                    if (byteOffset < sumData)
+                    if (byteOffset < sumData
+                    || index == (PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
                     {
                         subTreeNode = marker.m_TreeNode;
 
@@ -463,10 +469,13 @@ namespace Tobi.Modules.AudioPane
 
             long sumData = 0;
             long sumDataPrev = 0;
+            int index = -1;
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
+                index++;
                 sumData += marker.m_LocalStreamDataLength;
-                if (byteOffset <= sumData)
+                if (byteOffset < sumData
+                    || index == (PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
                 {
                     //subTreeNode = marker.m_TreeNode;
                     break;
@@ -687,6 +696,15 @@ namespace Tobi.Modules.AudioPane
 
         public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying, bool play)
         {
+            if (m_StateToRestore != null)
+            {
+                SelectionBegin = m_StateToRestore.GetValueOrDefault().SelectionBegin;
+                SelectionEnd = m_StateToRestore.GetValueOrDefault().SelectionEnd;
+                LastPlayHeadTime = m_StateToRestore.GetValueOrDefault().LastPlayHeadTime;
+
+                m_StateToRestore = null;
+            }
+
             if (View != null && IsSelectionSet)
             {
                 View.SetSelection(SelectionBegin, SelectionEnd);
@@ -833,7 +851,7 @@ namespace Tobi.Modules.AudioPane
                     );
             }
 
-            AudioPlayer_UpdateWaveFormPlayHead();
+            //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
 
         public void AudioPlayer_PlayPreview(bool left)
@@ -1074,10 +1092,15 @@ namespace Tobi.Modules.AudioPane
 
             var bytes = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(LastPlayHeadTime));
 
+            int index = -1;
+
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
+                index++;
+
                 long end = (begin + marker.m_LocalStreamDataLength);
-                if (bytes >= begin && bytes < end)
+                if (bytes >= begin && bytes < end
+                    || index == (PlayStreamMarkers.Count - 1) && bytes >= end)
                 {
                     if (prev == -1)
                     {
@@ -1127,8 +1150,11 @@ namespace Tobi.Modules.AudioPane
 
             bool found = false;
 
+            int index = -1;
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
+                index++;
+
                 if (found)
                 {
                     if (IsAutoPlay)
@@ -1144,7 +1170,8 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 long end = (begin + marker.m_LocalStreamDataLength);
-                if (bytes >= begin && bytes < end)
+                if (bytes >= begin && bytes < end
+                    || index == (PlayStreamMarkers.Count - 1) && bytes >= end)
                 {
                     found = true;
                 }
