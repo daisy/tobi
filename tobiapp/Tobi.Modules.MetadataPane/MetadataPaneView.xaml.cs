@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
+using urakawa.metadata.daisy;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -147,9 +148,12 @@ namespace Tobi.Modules.MetadataPane
             NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
             string name = (string) e.AddedItems[0];
             if (metadata != null) metadata.Name = name;
-            //revalidate
-            //ViewModel.RefreshDataTemplateSelectors();
-            
+            MetadataDefinition definition = SupportedMetadata_Z39862005.MetadataList.Find
+                    (s => s.Name == ((NotifyingMetadataItem)SelectedMetadata).Name);
+            if (definition != null)
+                SelectedMetadataDescription = definition.Description;
+            else
+                SelectedMetadataDescription = "";
         }
 
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
@@ -167,8 +171,16 @@ namespace Tobi.Modules.MetadataPane
             if (SelectedMetadata != list.SelectedItem)
             {
                 SelectedMetadata = list.SelectedItem;
-                ObservableCollection<string> l = AvailableMetadata;
-            
+                if (SelectedMetadata != null)
+                {
+                    ObservableCollection<string> l = AvailableMetadata;
+                    MetadataDefinition definition = SupportedMetadata_Z39862005.MetadataList.Find
+                        (s => s.Name == ((NotifyingMetadataItem) SelectedMetadata).Name);
+                    if (definition != null)
+                        SelectedMetadataDescription = definition.Description;
+                    else
+                        SelectedMetadataDescription = "";
+                }
             }
         }
 
@@ -186,6 +198,22 @@ namespace Tobi.Modules.MetadataPane
 
         public static readonly DependencyProperty SelectedMetadataProperty =
         DependencyProperty.Register("SelectedMetadata", typeof(object), typeof(MetadataPaneView),
+                new UIPropertyMetadata(null));
+
+        public string SelectedMetadataDescription
+        {
+            get
+            {
+                return (string)GetValue(SelectedMetadataDescriptionProperty);
+            }
+            set
+            {
+                SetValue(SelectedMetadataDescriptionProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty SelectedMetadataDescriptionProperty =
+        DependencyProperty.Register("SelectedMetadataDescription", typeof(string), typeof(MetadataPaneView),
                 new UIPropertyMetadata(null));
 
         /// <summary>

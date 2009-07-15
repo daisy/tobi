@@ -64,7 +64,8 @@ namespace Tobi.Modules.MetadataPane
 
             StatusText = "everything is wonderful";
 
-            RefreshDataTemplateSelectors();
+            //this call doesn't seem necessary here
+            //RefreshDataTemplateSelectors();
        }
 
         private void OnProjectUnLoaded(Project obj)
@@ -132,18 +133,20 @@ namespace Tobi.Modules.MetadataPane
         }
 
         #endregion Commands
-
+        
         public void RefreshDataTemplateSelectors()
         {
             //ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
             NameTemplateSelectorProperty = new NameTemplateSelector((MetadataPaneView)View);
         }
+
         private string m_StatusText;
         public string StatusText
         {
             get
             {
-                return m_StatusText;
+                return ((MetadataPaneView) View).SelectedMetadataDescription;
+                //return m_StatusText;
             }
             set
             {
@@ -261,7 +264,18 @@ namespace Tobi.Modules.MetadataPane
             {
                 foreach (MetadataValidationReportItem item in validation.Report)
                 {
-                    errors.Add(item.Description);
+
+                    string error_desc;
+                    if (item.Metadata != null)
+                    {
+                        error_desc = string.Format("{0}:\n\t{1}={2}",
+                                                   item.Description, item.Metadata.Name, item.Metadata.Content);
+                    }
+                    else
+                    {
+                        error_desc = item.Description;
+                    }   
+                    errors.Add(error_desc);
                 }
             }
 

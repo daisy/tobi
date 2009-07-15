@@ -12,7 +12,9 @@
         <local:BoolToVisibilityConverter x:Key="boolToVis" />
 
         <Style TargetType="{x:Type Button}">
-            <Setter Property="Width" Value="100"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
 
         <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}">
@@ -51,33 +53,61 @@
         
     </DockPanel.Resources>
 
-    <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical">
-
+    <Grid DockPanel.Dock="Bottom">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
         <StackPanel Orientation="Horizontal">
-            <Button Width="100" Click="Add_Metadata_Button_Click">Add</Button>
-            <Button Width="100" Click="Remove_Metadata_Button_Click">Remove</Button>
-            <Button Width="100" Click="Validate_Metadata_Click">Validate</Button>
-
+            <Button Click="Add_Metadata_Button_Click" 
+                Grid.Column="0" 
+                Grid.Row="0">
+                Add
+            </Button>
+            <Button Click="Remove_Metadata_Button_Click" 
+                Grid.Column="1" 
+                Grid.Row="0" >
+                Remove
+            </Button>
         </StackPanel>
+        <Button Click="Validate_Metadata_Click" 
+                Grid.Column="2" 
+                Grid.Row="0">
+            Validate
+        </Button>
 
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="200" x:Name="LookupField"></TextBox>
-            <Button  HorizontalAlignment="Right" Width="100" Click="Lookup_Button_Click">Lookup</Button>
-        </StackPanel>
+        <TextBox x:Name="LookupField" 
+                 Grid.Row="1" 
+                 Grid.Column="0" 
+                 Grid.ColumnSpan="2" 
+                 Height="20"/>
+        <Button  Click="Lookup_Button_Click" 
+                 Grid.Column="2" 
+                 Grid.Row="1">
+            Lookup
+        </Button>
 
-        <StatusBar>
+        <StatusBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Status: "/>
-                <TextBlock Text="{Binding StatusText}"/>
+                <TextBlock Text="{Binding StatusText}" HorizontalAlignment="Left"/>
             </StackPanel>
         </StatusBar>
-        
-        <StackPanel Background="LightCoral">
+    </Grid>
+    
+    
+    <!--<StackPanel Background="LightCoral">
             <TextBlock>Testing only:</TextBlock>
             <Button Click="Fake_Button_Click">Generate fake data</Button>
             <Button Click="Data_Model_Report_Click">View data model metadata</Button>
         </StackPanel>
-    </StackPanel>
+    </StackPanel>-->
 
 
   <UI:SortableListView
@@ -106,7 +136,7 @@
             <!-- for the name field -->
             <DataTemplate x:Key="RequiredName">
                 <Grid>
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}" x:Name="textBox"/>
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
                     <ComboBox
                         ItemsSource="{Binding 
                                       RelativeSource={RelativeSource FindAncestor, 
@@ -176,6 +206,7 @@
                 </GridViewColumn>
                 <GridViewColumn Header="Name"
                         UI:SortableListView.SortPropertyName="Name"
+                        x:Name="gridviewcolumn"
                         CellTemplateSelector="{Binding NameTemplateSelectorProperty}"/>
 
                 <!--<GridViewColumn Header="Content"
