@@ -69,7 +69,7 @@ namespace Tobi.Infrastructure.Commanding
                                    KeyGesture keyGesture,
                                    VisualBrush icon,
                                    Action<T> executeMethod,
-                                   Func<T, bool> canExecuteMethod)
+                                   Predicate<T> canExecuteMethod)
             : base(executeMethod, canExecuteMethod, false)
         {
             init(shortDescription, longDescription, keyGesture, icon);
