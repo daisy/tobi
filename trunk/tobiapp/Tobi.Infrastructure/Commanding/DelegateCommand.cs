@@ -274,7 +274,7 @@ namespace Tobi.Infrastructure.Commanding
         /// <summary>
         ///     Constructor
         /// </summary>
-        public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
+        public DelegateCommand(Action<T> executeMethod, Predicate<T> canExecuteMethod)
             : this(executeMethod, canExecuteMethod, false)
         {
         }
@@ -282,7 +282,7 @@ namespace Tobi.Infrastructure.Commanding
         /// <summary>
         ///     Constructor
         /// </summary>
-        public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
+        public DelegateCommand(Action<T> executeMethod, Predicate<T> canExecuteMethod, bool isAutomaticRequeryDisabled)
         {
             _executeMethod = executeMethod;
             _canExecuteMethod = canExecuteMethod;
@@ -433,7 +433,7 @@ namespace Tobi.Infrastructure.Commanding
         #region Data
 
         private readonly Action<T> _executeMethod = null;
-        private readonly Func<T, bool> _canExecuteMethod = null;
+        private readonly Predicate<T> _canExecuteMethod = null;
         private bool _isAutomaticRequeryDisabled = false;
         private List<WeakReference> _canExecuteChangedHandlers;
 
