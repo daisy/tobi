@@ -68,7 +68,6 @@
     <Compile Include="MetadataPaneViewModel.cs" />
     <Compile Include="MetadataTemplateSelectors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SupportedMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">

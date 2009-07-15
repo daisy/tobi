@@ -9,7 +9,7 @@ using urakawa.metadata.daisy;
 using System;
 
 namespace Tobi.Modules.MetadataPane
-{
+{   
     public class NotifyingMetadataItem : PropertyChangedNotifyBase, IDataErrorInfo
     {
         private Metadata m_Metadata;
@@ -19,6 +19,13 @@ namespace Tobi.Modules.MetadataPane
             {
                 return m_Metadata;
             }
+        }
+        //copy constructor
+        public NotifyingMetadataItem(NotifyingMetadataItem notifyingMetadataItem)
+        {
+            m_Metadata = notifyingMetadataItem.UrakawaMetadata;
+            m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
+            m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
         }
         public NotifyingMetadataItem(Metadata metadata)
         {
@@ -63,11 +70,12 @@ namespace Tobi.Modules.MetadataPane
                 if (value != null)
                 {
                     m_Metadata.Name = value;
-                    OnPropertyChanged(() => Name);
                     //we need the content to appear "changed" as well
                     //because changing the name changes the context under which the
                     //content is evaluated
                     OnPropertyChanged(() => Content);
+                    OnPropertyChanged(() => Name);
+                    
                 }
             }
         }
@@ -91,9 +99,6 @@ namespace Tobi.Modules.MetadataPane
             m_Metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
             m_Metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
         }
-
-
-
 
         #region IDataErrorInfo Members
 
