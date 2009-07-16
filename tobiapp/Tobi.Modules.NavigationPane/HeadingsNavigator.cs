@@ -45,7 +45,7 @@ namespace Tobi.Modules.NavigationPane
                 if (m_roots == null)
                 {
                     m_roots = new ObservableCollection<HeadingTreeNodeWrapper>();
-                    TreeNode presentationRootNode = m_Project.GetPresentation(0).RootNode;
+                    TreeNode presentationRootNode = m_Project.Presentations.Get(0).RootNode;
                     int n = GetChildCount(presentationRootNode);
                     for (int index = 0; index < n; index++)
                     {
@@ -246,15 +246,15 @@ namespace Tobi.Modules.NavigationPane
                 return;
             }
 
-            if (m_TreeNode.ChildCount > 0)
+            if (m_TreeNode.Children.Count > 0)
             {
-                TreeNode nd = m_TreeNode.GetChild(0);
+                TreeNode nd = m_TreeNode.Children.Get(0);
                 if (nd != null)
                 {
                     QualifiedName qname = nd.GetXmlElementQName();
-                    if (qname != null && qname.LocalName == "pagenum" && m_TreeNode.ChildCount > 1)
+                    if (qname != null && qname.LocalName == "pagenum" && m_TreeNode.Children.Count > 1)
                     {
-                        nd = m_TreeNode.GetChild(1);
+                        nd = m_TreeNode.Children.Get(1);
                         if (nd != null)
                         {
                             qname = nd.GetXmlElementQName();

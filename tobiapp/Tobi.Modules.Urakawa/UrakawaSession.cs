@@ -80,8 +80,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-undo"),
-                obj => DocumentProject.GetPresentation(0).UndoRedoManager.Undo(),
-                obj => DocumentProject != null && DocumentProject.GetPresentation(0).UndoRedoManager.CanUndo);
+                obj => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
+                obj => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
 
             shellPresenter.RegisterRichCommand(UndoCommand);
             //
@@ -89,8 +89,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
                 (VisualBrush)Application.Current.FindResource("edit-redo"),
-                obj => DocumentProject.GetPresentation(0).UndoRedoManager.Redo(),
-                obj => DocumentProject != null && DocumentProject.GetPresentation(0).UndoRedoManager.CanRedo);
+                obj => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
+                obj => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
 
             shellPresenter.RegisterRichCommand(RedoCommand);
             //

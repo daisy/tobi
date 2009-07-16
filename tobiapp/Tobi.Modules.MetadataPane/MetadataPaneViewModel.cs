@@ -128,7 +128,7 @@ namespace Tobi.Modules.MetadataPane
             get
             {
                 var session = Container.Resolve<IUrakawaSession>();
-                return session.DocumentProject != null && session.DocumentProject.NumberOfPresentations > 0;
+                return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
             }
         }
 
@@ -163,7 +163,7 @@ namespace Tobi.Modules.MetadataPane
             {
                 var session = Container.Resolve<IUrakawaSession>();
 
-                if (session.DocumentProject == null || session.DocumentProject.NumberOfPresentations <= 0)
+                if (session.DocumentProject == null || session.DocumentProject.Presentations.Count <= 0)
                 {
                     m_Metadatas = null;
                 }
@@ -171,9 +171,9 @@ namespace Tobi.Modules.MetadataPane
                 {
                     if (m_Metadatas == null)
                     {
-                        m_Metadatas = new ObservableMetadataCollection(session.DocumentProject.GetPresentation(0).ListOfMetadata);
-                        session.DocumentProject.GetPresentation(0).MetadataAdded += m_Metadatas.OnMetadataAdded;
-                        session.DocumentProject.GetPresentation(0).MetadataDeleted += m_Metadatas.OnMetadataDeleted;
+                        m_Metadatas = new ObservableMetadataCollection(session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy);
+                        session.DocumentProject.Presentations.Get(0).Metadatas.ObjectAdded += m_Metadatas.OnMetadataAdded;
+                        session.DocumentProject.Presentations.Get(0).Metadatas.ObjectRemoved += m_Metadatas.OnMetadataDeleted;
                     }
                 }
                 return m_Metadatas;
@@ -185,7 +185,7 @@ namespace Tobi.Modules.MetadataPane
         {
             var session = Container.Resolve<IUrakawaSession>();
 
-            List<Metadata> list = session.DocumentProject.GetPresentation(0).ListOfMetadata;
+            List<Metadata> list = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
             Metadata metadata = list.Find(s => s.Name == "dc:Title");
             if (metadata != null)
             {
@@ -199,7 +199,7 @@ namespace Tobi.Modules.MetadataPane
             var session = Container.Resolve<IUrakawaSession>();
 
             //TODO: warn against or prevent removing required metadata
-            session.DocumentProject.GetPresentation(0).DeleteMetadata(metadata.UrakawaMetadata);
+            session.DocumentProject.Presentations.Get(0).Metadatas.Remove(metadata.UrakawaMetadata);
         }
 
         public void AddEmptyMetadata()
@@ -207,7 +207,8 @@ namespace Tobi.Modules.MetadataPane
             Metadata metadata = new Metadata {Name = "", Content = ""};
 
             var session = Container.Resolve<IUrakawaSession>();
-            session.DocumentProject.GetPresentation(0).AddMetadata(metadata);
+            ObjectListProvider<Metadata> list = session.DocumentProject.Presentations.Get(0).Metadatas;
+            list.Insert(list.Count, metadata);
         }
 
        
@@ -222,7 +223,7 @@ namespace Tobi.Modules.MetadataPane
                 return list;
             }
 
-            List<Metadata> metadatas = session.DocumentProject.GetPresentation(0).ListOfMetadata;
+            List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
             List<MetadataDefinition> availableMetadata = 
                 MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataList);
 
@@ -255,7 +256,7 @@ namespace Tobi.Modules.MetadataPane
 
             var session = Container.Resolve<IUrakawaSession>();
 
-            List<Metadata> metadatas = session.DocumentProject.GetPresentation(0).ListOfMetadata;
+            List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
 
             MetadataValidation validation = new 
                 MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
@@ -325,7 +326,7 @@ namespace Tobi.Modules.MetadataPane
 
             var session = Container.Resolve<IUrakawaSession>();
 
-            foreach (Metadata m in session.DocumentProject.GetPresentation(0).ListOfMetadata)
+            foreach (Metadata m in session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy)
             {
                 data += string.Format("{0} = {1}\n", m.Name, m.Content);
             }

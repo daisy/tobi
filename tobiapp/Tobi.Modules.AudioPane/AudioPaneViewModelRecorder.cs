@@ -134,7 +134,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (PcmFormat == null)
                 {
-                    PcmFormat = session.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                    PcmFormat = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                 }
             }
 
@@ -187,7 +187,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (PcmFormat == null)
                 {
-                    PcmFormat = session.DocumentProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat;
+                    PcmFormat = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                 }
             }
 
@@ -263,7 +263,7 @@ namespace Tobi.Modules.AudioPane
                     bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
                     if (isSeqValid)
                     {
-                        foreach (Media media in seqAudioMedia.ListOfItems)
+                        foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
                         {
                             if (!(media is ManagedAudioMedia))
                             {
@@ -279,7 +279,7 @@ namespace Tobi.Modules.AudioPane
                         double timeOffset = 0;
                         long sumData = 0;
                         long sumDataPrev = 0;
-                        foreach (Media media in seqAudioMedia.ListOfItems)
+                        foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
                         {
                             var manangedMediaSeqItem = (ManagedAudioMedia) media;
                             AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;

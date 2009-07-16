@@ -461,7 +461,7 @@ namespace Tobi.Modules.DocumentPane
 
         private void createFlowDocumentFromXuk(Project project)
         {
-            TreeNode root = project.GetPresentation(0).RootNode;
+            TreeNode root = project.Presentations.Get(0).RootNode;
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
             if (nodeBook == null)
             {
