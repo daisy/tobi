@@ -268,7 +268,7 @@ namespace Tobi.Modules.DocumentPane
 
             SequenceMedia seqMedia = node.GetAudioSequenceMedia();
             if (seqMedia != null && !seqMedia.AllowMultipleTypes
-                && seqMedia.Count > 0 && seqMedia.GetItem(0) is ManagedAudioMedia)
+                && seqMedia.ChildMedias.Count > 0 && seqMedia.ChildMedias.Get(0) is ManagedAudioMedia)
             {
                 data.Foreground = Brushes.Black;
                 //data.Background = Brushes.LightGoldenrodYellow;
@@ -356,7 +356,7 @@ namespace Tobi.Modules.DocumentPane
                     data.ColumnSpan = int.Parse(attr.Value);
                 }
 
-                if (node.ChildCount == 0)
+                if (node.Children.Count == 0)
                 {
                     if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                     {
@@ -369,7 +369,7 @@ namespace Tobi.Modules.DocumentPane
 
                     return parent;
                 }
-                //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+                //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
                 else
                 {
                     Section section = new Section();
@@ -393,7 +393,7 @@ namespace Tobi.Modules.DocumentPane
                 initializer(data);
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -407,7 +407,7 @@ namespace Tobi.Modules.DocumentPane
                 addBlock(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addBlock(parent, data);
@@ -420,7 +420,7 @@ namespace Tobi.Modules.DocumentPane
             Underline data = new Underline();
             setTag(data, node);
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -434,7 +434,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -447,7 +447,7 @@ namespace Tobi.Modules.DocumentPane
             Bold data = new Bold();
             setTag(data, node);
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -461,7 +461,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -474,7 +474,7 @@ namespace Tobi.Modules.DocumentPane
             Italic data = new Italic();
             setTag(data, node);
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -488,7 +488,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -501,12 +501,12 @@ namespace Tobi.Modules.DocumentPane
             List data = new List();
             setTag(data, node);
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 //ignore empty list
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addBlock(parent, data);
@@ -529,12 +529,12 @@ namespace Tobi.Modules.DocumentPane
             m_currentROWGROUP = -1;
             m_firstTR = false;
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 //ignore empty table
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addBlock(parent, data);
@@ -551,7 +551,7 @@ namespace Tobi.Modules.DocumentPane
             ListItem data = new ListItem();
             setTag(data, node);
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -578,7 +578,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 ((List)parent).ListItems.Add(data);
@@ -605,7 +605,7 @@ namespace Tobi.Modules.DocumentPane
 
         private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (parent is Table)
                 {
@@ -653,7 +653,7 @@ namespace Tobi.Modules.DocumentPane
                     throw new Exception("table row not in Table ??");
                 }
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 if (parent is Table)
@@ -761,7 +761,7 @@ namespace Tobi.Modules.DocumentPane
                 data.ToolTip = data.NavigateUri.ToString();
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -784,7 +784,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -815,7 +815,7 @@ namespace Tobi.Modules.DocumentPane
                 //ignore: no link
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -830,7 +830,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -848,7 +848,7 @@ namespace Tobi.Modules.DocumentPane
                 initializer(data);
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -863,7 +863,7 @@ namespace Tobi.Modules.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -881,7 +881,7 @@ namespace Tobi.Modules.DocumentPane
                 initializer(data);
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -895,7 +895,7 @@ namespace Tobi.Modules.DocumentPane
                 addInline(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -913,7 +913,7 @@ namespace Tobi.Modules.DocumentPane
                 initializer(data);
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -927,7 +927,7 @@ namespace Tobi.Modules.DocumentPane
                 addInline(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addInline(parent, data);
@@ -945,7 +945,7 @@ namespace Tobi.Modules.DocumentPane
                 initializer(data);
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
@@ -959,7 +959,7 @@ namespace Tobi.Modules.DocumentPane
                 addBlock(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.ChildCount != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
             else
             {
                 addBlock(parent, data);
@@ -969,7 +969,7 @@ namespace Tobi.Modules.DocumentPane
 
         private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
-            if (node.ChildCount != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
+            if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
             {
                 throw new Exception("Node has children or text exists when processing image ??");
             }
@@ -1117,7 +1117,7 @@ namespace Tobi.Modules.DocumentPane
         {
             if (qname == null)
             {
-                //assumption based on the caller: node.ChildCount == 0 && textMedia != null
+                //assumption based on the caller: node.Children.Count == 0 && textMedia != null
                 if (textMedia.Text.Length == 0)
                 {
                     return parent;
@@ -1133,7 +1133,7 @@ namespace Tobi.Modules.DocumentPane
             if (qname.NamespaceUri.Length == 0
                 || qname.NamespaceUri == m_TreeNode.Presentation.PropertyFactory.DefaultXmlNamespaceUri)
             {
-                // node.ChildCount ?
+                // node.Children.Count ?
                 // String.IsNullOrEmpty(textMedia.Text) ?
 
                 switch (qname.LocalName)
@@ -1510,7 +1510,7 @@ namespace Tobi.Modules.DocumentPane
                 int debug = 1;
             }
 
-            if (node.ChildCount == 0)
+            if (node.Children.Count == 0)
             {
                 if (qname == null)
                 {
@@ -1564,9 +1564,9 @@ namespace Tobi.Modules.DocumentPane
                     }
                 }
 
-                for (int i = 0; i < node.ChildCount; i++)
+                for (int i = 0; i < node.Children.Count; i++)
                 {
-                    walkBookTreeAndGenerateFlowDocument(node.GetChild(i), parentNext);
+                    walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }
 
                 if (qname.LocalName == "table")

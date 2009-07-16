@@ -103,7 +103,7 @@ namespace Tobi.Modules.AudioPane
 
         private void OnProjectUnLoaded(Project project)
         {
-            project.GetPresentation(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
             OnProjectLoaded(null);
         }
 
@@ -123,8 +123,8 @@ namespace Tobi.Modules.AudioPane
             //shell.DocumentProject
             if (project != null)
             {
-                project.GetPresentation(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
-                setRecordingDirectory(project.GetPresentation(0).DataProviderManager.DataFileDirectoryFullPath);
+                project.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
+                setRecordingDirectory(project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath);
             }
         }
 
@@ -303,7 +303,7 @@ namespace Tobi.Modules.AudioPane
                 bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
                 if (isSeqValid)
                 {
-                    foreach (Media media in seqAudioMedia.ListOfItems)
+                    foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
                     {
                         if (!(media is ManagedAudioMedia))
                         {
@@ -314,7 +314,7 @@ namespace Tobi.Modules.AudioPane
                 }
                 if (isSeqValid)
                 {
-                    foreach (Media media in seqAudioMedia.ListOfItems)
+                    foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
                     {
                         var manMedia = (ManagedAudioMedia)media;
                         if (media == managedMedia)

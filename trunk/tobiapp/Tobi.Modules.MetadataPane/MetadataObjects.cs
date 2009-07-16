@@ -2,6 +2,7 @@ using Tobi.Infrastructure;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using urakawa;
 using urakawa.metadata;
 using urakawa.events.metadata;
 using urakawa.events.presentation;
@@ -140,12 +141,12 @@ namespace Tobi.Modules.MetadataPane
             }
         }
         #region sdk-events
-        public void OnMetadataDeleted(object sender, MetadataDeletedEventArgs eventArgs)
+        public void OnMetadataDeleted(object sender, ObjectRemovedEventArgs<Metadata> ev)
         {
             foreach (NotifyingMetadataItem metadata in this)
             {
-                if (metadata.Content == eventArgs.DeletedMetadata.Content &&
-                    metadata.Name == eventArgs.DeletedMetadata.Name)
+                if (metadata.Content == ev.m_RemovedObject.Content &&
+                    metadata.Name == ev.m_RemovedObject.Name)
                 {
                     this.Remove(metadata);
                     metadata.RemoveEvents();
@@ -154,9 +155,9 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
-        public void OnMetadataAdded(object sender, MetadataAddedEventArgs eventArgs)
+        public void OnMetadataAdded(object sender, ObjectAddedEventArgs<Metadata> ev)
         {
-            this.Add(new NotifyingMetadataItem(eventArgs.AddedMetadata));
+            this.Add(new NotifyingMetadataItem(ev.m_AddedObject));
         }
         #endregion sdk-events
 

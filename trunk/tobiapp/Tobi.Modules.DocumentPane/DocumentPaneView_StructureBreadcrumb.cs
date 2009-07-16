@@ -50,7 +50,7 @@ namespace Tobi.Modules.DocumentPane
                 var seqMedia = n.GetAudioSequenceMedia();
                 bool withMedia = n.GetManagedAudioMedia() != null
                     || (seqMedia != null && !seqMedia.AllowMultipleTypes
-                        && seqMedia.Count > 0 && seqMedia.GetItem(0) is ManagedAudioMedia);
+                        && seqMedia.ChildMedias.Count > 0 && seqMedia.ChildMedias.Get(0) is ManagedAudioMedia);
 
                 var butt = new Button
                 {
@@ -131,7 +131,7 @@ namespace Tobi.Modules.DocumentPane
             var listOfNodes = new ListView();
             listOfNodes.SelectionChanged += OnListOfNodesSelectionChanged;
 
-            foreach (TreeNode child in node.ListOfChildren)
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
             {
                 listOfNodes.Items.Add(new TreeNodeWrapper()
                 {
