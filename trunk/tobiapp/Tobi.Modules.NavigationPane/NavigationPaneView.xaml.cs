@@ -93,7 +93,7 @@ namespace Tobi.Modules.NavigationPane
             CommandExpandAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
                 null,
-                (VisualBrush)Application.Current.FindResource("list-add"),
+                shellPresenter.LoadTangoIcon("list-add"),
                 obj => OnExpandAll(null, null), obj => true);
 
             shellPresenter.RegisterRichCommand(CommandExpandAll);
@@ -101,7 +101,7 @@ namespace Tobi.Modules.NavigationPane
             CommandCollapseAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeCollapseAll,
                 UserInterfaceStrings.TreeCollapseAll_,
                 null,
-                (VisualBrush)Application.Current.FindResource("list-remove"),
+                shellPresenter.LoadTangoIcon("list-remove"),
                 obj => OnCollapseAll(null, null), obj => true);
 
             shellPresenter.RegisterRichCommand(CommandCollapseAll);

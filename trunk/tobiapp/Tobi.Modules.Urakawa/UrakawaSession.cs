@@ -79,7 +79,7 @@ namespace Tobi.Modules.Urakawa
             UndoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-undo"),
+                shellPresenter.LoadTangoIcon("edit-undo"),
                 obj => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
                 obj => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
 
@@ -88,7 +88,7 @@ namespace Tobi.Modules.Urakawa
             RedoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Redo,
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-redo"),
+                shellPresenter.LoadTangoIcon("edit-redo"),
                 obj => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
                 obj => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
 
@@ -98,7 +98,7 @@ namespace Tobi.Modules.Urakawa
             SaveAsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.SaveAs,
                 UserInterfaceStrings.SaveAs_,
                 UserInterfaceStrings.SaveAs_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-save"),
+                shellPresenter.LoadTangoIcon("document-save"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 obj => saveAs(),
                 obj => IsProjectLoaded);
@@ -109,7 +109,7 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Save,
                 UserInterfaceStrings.Save_,
                 UserInterfaceStrings.Save_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-floppy"),
+                shellPresenter.LoadTangoIcon("media-floppy"),
                 //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
                 obj => save()
                 , obj => IsProjectLoadedAndDirty || IsProjectLoadedAndNotDirty); //todo: just for testing save even when not dirty
@@ -119,7 +119,7 @@ namespace Tobi.Modules.Urakawa
             NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.New,
                 UserInterfaceStrings.New_,
                 UserInterfaceStrings.New_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-new"),
+                shellPresenter.LoadTangoIcon("document-new"),
                 obj => openDefaultTemplate(),
                 obj => !IsProjectLoaded);
 
@@ -128,7 +128,7 @@ namespace Tobi.Modules.Urakawa
             OpenCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Open,
                 UserInterfaceStrings.Open_,
                 UserInterfaceStrings.Open_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-open"),
+                shellPresenter.LoadTangoIcon("document-open"),
                 obj => openFile(), obj => !IsProjectLoaded);
 
             shellPresenter.RegisterRichCommand(OpenCommand);
@@ -136,7 +136,7 @@ namespace Tobi.Modules.Urakawa
             CloseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Close,
                 UserInterfaceStrings.Close_,
                 UserInterfaceStrings.Close_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-jump"),
+                shellPresenter.LoadTangoIcon("go-jump"),
                 obj => closeProject(), obj => IsProjectLoaded);
 
             shellPresenter.RegisterRichCommand(CloseCommand);
@@ -295,7 +295,7 @@ namespace Tobi.Modules.Urakawa
                 SnapsToDevicePixels = true
             };
 
-            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+            var windowPopup = new PopupModalWindow(shellPresenter,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.RunningTask),
                                                    panel,
@@ -446,7 +446,6 @@ namespace Tobi.Modules.Urakawa
                 action.Cancelled += action_cancelled;
 
                 var shellPresenter = Container.Resolve<IShellPresenter>();
-                var window = shellPresenter.View as Window;
 
                 var progressBar = new ProgressBar
                                       {
@@ -490,7 +489,7 @@ namespace Tobi.Modules.Urakawa
                     SnapsToDevicePixels = true
                 };
 
-                var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+                var windowPopup = new PopupModalWindow(shellPresenter,
                                                        UserInterfaceStrings.EscapeMnemonic(
                                                            UserInterfaceStrings.RunningTask),
                                                        panel,

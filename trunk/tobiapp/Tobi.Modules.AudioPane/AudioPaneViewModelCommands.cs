@@ -239,7 +239,7 @@ namespace Tobi.Modules.AudioPane
             CommandOpenFile = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,
                 UserInterfaceStrings.Audio_OpenFile_KEYS,
-                (VisualBrush)Application.Current.FindResource("document-open"),
+                shellPresenter.LoadTangoIcon("document-open"),
                 obj => OpenFile(obj as String), obj => CanOpenFile);
 
             shellPresenter.RegisterRichCommand(CommandOpenFile);
@@ -247,7 +247,7 @@ namespace Tobi.Modules.AudioPane
             CommandGotoBegining = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
                 UserInterfaceStrings.Audio_GotoBegin_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-first"),
+                shellPresenter.LoadTangoIcon("go-first"),
                 obj => AudioPlayer_GotoBegining(), obj => CanGotoBegining);
 
             shellPresenter.RegisterRichCommand(CommandGotoBegining);
@@ -255,7 +255,7 @@ namespace Tobi.Modules.AudioPane
             CommandGotoEnd = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_GotoEnd,
                 UserInterfaceStrings.Audio_GotoEnd_,
                 UserInterfaceStrings.Audio_GotoEnd_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-last"),
+                shellPresenter.LoadTangoIcon("go-last"),
                 obj => AudioPlayer_GotoEnd(), obj => CanGotoEnd);
 
             shellPresenter.RegisterRichCommand(CommandGotoEnd);
@@ -263,7 +263,7 @@ namespace Tobi.Modules.AudioPane
             CommandStepBack = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StepBack,
                  UserInterfaceStrings.Audio_StepBack_,
                  UserInterfaceStrings.Audio_StepBack_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-skip-backward"),
+                shellPresenter.LoadTangoIcon("media-skip-backward"),
                 obj => AudioPlayer_StepBack(), obj => CanStepBack);
 
             shellPresenter.RegisterRichCommand(CommandStepBack);
@@ -271,7 +271,7 @@ namespace Tobi.Modules.AudioPane
             CommandStepForward = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StepForward,
                 UserInterfaceStrings.Audio_StepForward_,
                 UserInterfaceStrings.Audio_StepForward_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-skip-forward"),
+                shellPresenter.LoadTangoIcon("media-skip-forward"),
                 obj => AudioPlayer_StepForward(), obj => CanStepForward);
 
             shellPresenter.RegisterRichCommand(CommandStepForward);
@@ -279,7 +279,7 @@ namespace Tobi.Modules.AudioPane
             CommandFastForward = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_FastForward,
                 UserInterfaceStrings.Audio_FastForward_,
                 UserInterfaceStrings.Audio_FastForward_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-seek-forward"),
+                shellPresenter.LoadTangoIcon("media-seek-forward"),
                 obj => AudioPlayer_FastForward(), obj => CanFastForward);
 
             shellPresenter.RegisterRichCommand(CommandFastForward);
@@ -287,7 +287,7 @@ namespace Tobi.Modules.AudioPane
             CommandRewind = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_Rewind,
                 UserInterfaceStrings.Audio_Rewind_,
                 UserInterfaceStrings.Audio_Rewind_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-seek-backward"),
+                shellPresenter.LoadTangoIcon("media-seek-backward"),
                 obj => AudioPlayer_Rewind(), obj => CanRewind);
 
             shellPresenter.RegisterRichCommand(CommandRewind);
@@ -295,7 +295,7 @@ namespace Tobi.Modules.AudioPane
             CommandSelectAll = new RichDelegateCommand<object>(UserInterfaceStrings.SelectAll,
                 UserInterfaceStrings.SelectAll_,
                 UserInterfaceStrings.SelectAll_KEYS,
-                (VisualBrush)Application.Current.FindResource("view-fullscreen"),
+                shellPresenter.LoadTangoIcon("view-fullscreen"),
                 obj => SelectAll(), obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandSelectAll);
@@ -303,7 +303,7 @@ namespace Tobi.Modules.AudioPane
             CommandClearSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_ClearSelection,
                 UserInterfaceStrings.Audio_ClearSelection_,
                 UserInterfaceStrings.Audio_ClearSelection_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-clear"),
+                shellPresenter.LoadTangoIcon("edit-clear"),
                 obj => ClearSelection(), obj => !IsWaveFormLoading && IsSelectionSet);
 
             shellPresenter.RegisterRichCommand(CommandClearSelection);
@@ -312,7 +312,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_ZoomSelection_,
                 UserInterfaceStrings.Audio_ZoomSelection_KEYS,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
-                //(VisualBrush)Application.Current.FindResource("system-search"),
+                //shellPresenter.LoadTangoIcon("system-search"),
                 obj => ZoomSelection(), obj => !IsWaveFormLoading && IsSelectionSet);
 
             shellPresenter.RegisterRichCommand(CommandZoomSelection);
@@ -320,7 +320,7 @@ namespace Tobi.Modules.AudioPane
             CommandZoomFitFull = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_FitFull,
                 UserInterfaceStrings.Audio_FitFull_,
                 UserInterfaceStrings.Audio_FitFull_KEYS,
-                (VisualBrush)Application.Current.FindResource("utilities-system-monitor"),
+                shellPresenter.LoadTangoIcon("utilities-system-monitor"),
                 obj => ZoomFitFull(), obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandZoomFitFull);
@@ -329,7 +329,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_Reload_,
                 null,
                 RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
-                //(VisualBrush)Application.Current.FindResource("view-refresh"),
+                //shellPresenter.LoadTangoIcon("view-refresh"),
                 obj => ReloadWaveForm(), obj => !IsWaveFormLoading && IsAudioLoaded);
 
             shellPresenter.RegisterRichCommand(CommandRefresh);
@@ -337,7 +337,7 @@ namespace Tobi.Modules.AudioPane
             CommandAutoPlay = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_AutoPlay,
                 UserInterfaceStrings.Audio_AutoPlay_,
                 UserInterfaceStrings.Audio_AutoPlay_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-jump"),
+                shellPresenter.LoadTangoIcon("go-jump"),
                 obj => IsAutoPlay = !IsAutoPlay, obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
@@ -363,7 +363,7 @@ namespace Tobi.Modules.AudioPane
             CommandPlay = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_Play,
                 UserInterfaceStrings.Audio_Play_,
                 UserInterfaceStrings.Audio_Play_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-playback-start"),
+                shellPresenter.LoadTangoIcon("media-playback-start"),
                 obj => AudioPlayer_PlayPause(), obj => CanPlay);
 
             shellPresenter.RegisterRichCommand(CommandPlay);
@@ -371,7 +371,7 @@ namespace Tobi.Modules.AudioPane
             CommandPause = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_Pause,
                 UserInterfaceStrings.Audio_Pause_,
                 UserInterfaceStrings.Audio_Pause_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-playback-pause"),
+                shellPresenter.LoadTangoIcon("media-playback-pause"),
                 obj => AudioPlayer_Pause(), obj => CanPause);
 
             shellPresenter.RegisterRichCommand(CommandPause);
@@ -379,7 +379,7 @@ namespace Tobi.Modules.AudioPane
             CommandStartRecord = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StartRecord,
                 UserInterfaceStrings.Audio_StartRecord_,
                 UserInterfaceStrings.Audio_StartRecord_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-record"),
+                shellPresenter.LoadTangoIcon("media-record"),
                 obj => AudioRecorder_StartStop(), obj => CanRecord);
 
             shellPresenter.RegisterRichCommand(CommandStartRecord);
@@ -387,7 +387,7 @@ namespace Tobi.Modules.AudioPane
             CommandStopRecord = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StopRecord,
                 UserInterfaceStrings.Audio_StopRecord_,
                 UserInterfaceStrings.Audio_StopRecord_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-playback-stop"),
+                shellPresenter.LoadTangoIcon("media-playback-stop"),
                 obj => AudioRecorder_Stop(), obj => CanStopRecord);
 
             shellPresenter.RegisterRichCommand(CommandStopRecord);
@@ -395,7 +395,7 @@ namespace Tobi.Modules.AudioPane
             CommandStartMonitor = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StartMonitor,
                 UserInterfaceStrings.Audio_StartMonitor_,
                 UserInterfaceStrings.Audio_StartMonitor_KEYS,
-                (VisualBrush)Application.Current.FindResource("audio-volume-high"),
+                shellPresenter.LoadTangoIcon("audio-volume-high"),
                 obj => AudioRecorder_StartStopMonitor(), obj => CanMonitor);
 
             shellPresenter.RegisterRichCommand(CommandStartMonitor);
@@ -403,7 +403,7 @@ namespace Tobi.Modules.AudioPane
             CommandStopMonitor = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StopMonitor,
                 UserInterfaceStrings.Audio_StopMonitor_,
                 UserInterfaceStrings.Audio_StopMonitor_KEYS,
-                (VisualBrush)Application.Current.FindResource("media-playback-stop"),
+                shellPresenter.LoadTangoIcon("media-playback-stop"),
                 obj => AudioRecorder_StopMonitor(), obj => CanStopMonitor);
 
             shellPresenter.RegisterRichCommand(CommandStopMonitor);
@@ -413,7 +413,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_SelectPreviousChunk,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-previous"),
+                shellPresenter.LoadTangoIcon("go-previous"),
                 obj => AudioPlayer_SelectPreviousChunk(), obj => CanStepBack);
 
             shellPresenter.RegisterRichCommand(CommandSelectPreviousChunk);
@@ -422,7 +422,7 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_SelectNextChunk,
                 UserInterfaceStrings.Audio_SelectNextChunk_,
                 UserInterfaceStrings.Audio_SelectNextChunk_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-next"),
+                shellPresenter.LoadTangoIcon("go-next"),
                 obj => AudioPlayer_SelectNextChunk(), obj => CanStepForward);
 
             shellPresenter.RegisterRichCommand(CommandSelectNextChunk);

@@ -4,7 +4,6 @@ using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Tobi.Infrastructure.Commanding;
 
@@ -45,8 +44,10 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
-        private PopupModalWindow()
+        private PopupModalWindow(IShellPresenter presenter)
         {
+            ShellPresenter = presenter;
+
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
@@ -55,7 +56,7 @@ namespace Tobi.Infrastructure.UI
             CommandDetailsExpand = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsExpand,
                 UserInterfaceStrings.DetailsExpand_,
                 UserInterfaceStrings.DetailsExpand_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-down"),
+                ShellPresenter.LoadTangoIcon("go-down"),
                 obj => IsDetailsExpanded = true,
                 obj => CanDetailsExpand);
 
@@ -64,7 +65,7 @@ namespace Tobi.Infrastructure.UI
             CommandDetailsCollapse = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsCollapse,
                 UserInterfaceStrings.DetailsCollapse_,
                 UserInterfaceStrings.DetailsCollapse_KEYS,
-                (VisualBrush)Application.Current.FindResource("go-up"),
+                ShellPresenter.LoadTangoIcon("go-up"),
                 obj => IsDetailsExpanded = false,
                 obj => CanDetailsCollapse);
 
@@ -119,14 +120,19 @@ namespace Tobi.Infrastructure.UI
             get { return HasDetails && IsDetailsExpanded; }
         }
 
-        public PopupModalWindow(Window window, string title,
+        public PopupModalWindow(IShellPresenter presenter, string title,
             object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
             double width, double height,
             object details, double detailsHeight)
-            : this()
+            : this(presenter)
         {
-            Owner = window;
+            if (presenter == null)
+            {
+                Owner = Application.Current.MainWindow;
+            }
+            else { Owner = presenter.View.Window; }
+            
             //DataContext = Owner;
 
             var zoom = (Double)Application.Current.Resources["MagnificationLevel"];
@@ -148,7 +154,7 @@ namespace Tobi.Infrastructure.UI
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
         }
 
-        public PopupModalWindow(Window window, string title, object content,
+        public PopupModalWindow(IShellPresenter window, string title, object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
             : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null, 0)
         {
@@ -156,6 +162,7 @@ namespace Tobi.Infrastructure.UI
 
         private bool m_ButtonTriggersClose = false;
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
+        private readonly IShellPresenter ShellPresenter;
 
         public bool AllowEscapeAndCloseButton
         {

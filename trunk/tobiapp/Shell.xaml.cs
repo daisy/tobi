@@ -102,6 +102,11 @@ namespace Tobi
             Show();
         }
 
+        public Window Window
+        {
+            get { return this; }
+        }
+
         private bool m_SplitterDrag = false;
 
         public bool SplitterDrag
@@ -195,44 +200,3 @@ namespace Tobi
         }
     }
 }
-
-
-/*
- * 
-        public void DecreaseZoom(double? step)
-        {
-            var zoomer =m_DiContainer.Resolve<IUserInterfaceZoomPresenter>();
-            double value = ScaleTransform.ScaleX - (step == null ? (zoomer != null ? zoomer.ZoomStep : 0.5) : (double)step);
-            if (zoomer!=null)
-            {
-                if (value < zoomer.MinimumZoom) value = zoomer.MinimumZoom;
-            }
-
-            ScaleTransform.ScaleX = value;
-        }
-
-        public void IncreaseZoom(double? step)
-        {
-            var zoomer = m_DiContainer.Resolve<IUserInterfaceZoomPresenter>();
-            double value = ScaleTransform.ScaleX + (step == null ? (zoomer != null ? zoomer.ZoomStep : 0.5) : (double)step);
-            if (zoomer != null)
-            {
-                if (value > zoomer.MaximumZoom) value = zoomer.MaximumZoom;
-            }
-
-            ScaleTransform.ScaleX = value;
-        }
-
-        public Binding GetZoomBinding()
-        {
-            return new Binding
-            {
-                Source = ScaleTransform,
-                Path = new PropertyPath("ScaleX"),
-                Mode = BindingMode.TwoWay
-            };
-        }
- * 
- * 
- * 
- */

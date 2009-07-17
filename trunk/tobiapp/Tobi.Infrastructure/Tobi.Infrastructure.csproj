@@ -1057,10 +1057,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="tango-icons\ViewerSvgUI.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="tango-icons\weather-clear-night.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

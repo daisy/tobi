@@ -419,7 +419,7 @@ c.Execute();
             panel.Children.Add(scroll2);
              * */
 
-            var windowPopup = new PopupModalWindow(Current.MainWindow,
+            var windowPopup = new PopupModalWindow(null,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Unexpected),
                                                    panel,

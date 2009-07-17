@@ -83,7 +83,7 @@ namespace Tobi.Modules.DocumentPane
             CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
                 UserInterfaceStrings.Event_SwitchPrevious_KEYS,
-                (VisualBrush)Application.Current.FindResource("format-indent-less"),
+                shellPresenter.LoadTangoIcon("format-indent-less"),
                 obj => SwitchPhrasePrevious(), obj => CanSwitchPhrasePrevious);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
@@ -91,7 +91,7 @@ namespace Tobi.Modules.DocumentPane
             CommandSwitchPhraseNext = new RichDelegateCommand<object>(UserInterfaceStrings.Event_SwitchNext,
                 UserInterfaceStrings.Event_SwitchNext_,
                 UserInterfaceStrings.Event_SwitchNext_KEYS,
-                (VisualBrush)Application.Current.FindResource("format-indent-more"),
+                shellPresenter.LoadTangoIcon("format-indent-more"),
                 obj => SwitchPhraseNext(), obj => CanSwitchPhraseNext);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
