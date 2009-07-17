@@ -126,8 +126,8 @@ namespace Microsoft.Practices.Composite.UnityExtensions
             ExceptionExtensions.RegisterFrameworkExceptionType(
                 typeof(Microsoft.Practices.Unity.ResolutionFailedException));
 
-            ExceptionExtensions.RegisterFrameworkExceptionType(
-                typeof(Microsoft.Practices.ObjectBuilder2.BuildFailedException));
+            //Gone in Unity 2
+            //ExceptionExtensions.RegisterFrameworkExceptionType(typeof(Microsoft.Practices.ObjectBuilder2.BuildFailedException));
         }
 
         /// <summary>
