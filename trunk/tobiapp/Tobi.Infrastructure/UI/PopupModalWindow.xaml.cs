@@ -127,26 +127,17 @@ namespace Tobi.Infrastructure.UI
             : this()
         {
             Owner = window;
-            DataContext = Owner;
+            //DataContext = Owner;
 
-            var shellView = Owner as IShellView;
-            if (shellView != null)
-            {
-                Width = Math.Min(SystemParameters.WorkArea.Width, shellView.MagnificationLevel * width);
-                Height = Math.Min(SystemParameters.WorkArea.Height, shellView.MagnificationLevel * height);
+            var zoom = (Double)Application.Current.Resources["MagnificationLevel"];
 
-                DetailsHeight = shellView.MagnificationLevel * detailsHeight;
+            Width = Math.Min(SystemParameters.WorkArea.Width, zoom * width);
+            Height = Math.Min(SystemParameters.WorkArea.Height, zoom * height);
 
-                CommandDetailsCollapse.IconDrawScale = shellView.MagnificationLevel;
-                CommandDetailsExpand.IconDrawScale = shellView.MagnificationLevel;
-            }
-            else
-            {
-                Width = Math.Min(SystemParameters.WorkArea.Width, width);
-                Height = Math.Min(SystemParameters.WorkArea.Height, height);
+            DetailsHeight = zoom * detailsHeight;
 
-                DetailsHeight = detailsHeight;
-            }
+            CommandDetailsCollapse.IconDrawScale = zoom;
+            CommandDetailsExpand.IconDrawScale = zoom;
 
             Title = title;
             Icon = null;

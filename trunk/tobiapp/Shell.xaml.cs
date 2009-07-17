@@ -102,11 +102,6 @@ namespace Tobi
             Show();
         }
 
-        public Window Window
-        {
-            get { return this; }
-        }
-
         private bool m_SplitterDrag = false;
 
         public bool SplitterDrag

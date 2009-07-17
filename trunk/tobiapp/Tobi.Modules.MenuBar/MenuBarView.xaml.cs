@@ -47,7 +47,6 @@ namespace Tobi.Modules.MenuBar
 
         public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
 
-
         ///<summary>
         /// Dependency-injected constructor
         ///</summary>

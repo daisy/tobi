@@ -22,20 +22,18 @@ namespace Tobi.Modules.MetadataPane
     /// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
-    public class MetadataPaneViewModel : ViewModelBase
+    public class MetadataPaneViewModel : ViewModelShellBase
     {
         #region Construction
 
-        protected IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
         
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public MetadataPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+        public MetadataPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger) : base(container)
         {
-            Container = container;
             EventAggregator = eventAggregator;
             Logger = logger;
             m_Metadatas = null;

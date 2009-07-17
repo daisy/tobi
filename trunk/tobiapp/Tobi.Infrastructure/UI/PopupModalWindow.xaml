@@ -10,24 +10,14 @@
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Loaded="OnWindowLoaded"
         Closing="OnWindowClosing"
-        
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         >
-  <!-- 
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
   
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
   </Window.Resources>
   
-    <DockPanel LastChildFill="True">
-
-      <DockPanel.LayoutTransform>
-        <!-- WARNING: DataModel must be Shell (see constructor) -->
-        <ScaleTransform
-              ScaleX="{Binding MagnificationLevel, Mode=OneWay}"
-                        ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
-      </DockPanel.LayoutTransform>
-
+    <DockPanel Style="{StaticResource ScaleTransformed}"  LastChildFill="True">
 
       <DockPanel
         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,

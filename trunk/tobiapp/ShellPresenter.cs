@@ -339,7 +339,7 @@ namespace Tobi
                                                                        UserInterfaceStrings.UI_IncreaseMagnification_,
                                                                       UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
-                                                            obj => MagnifyUi(0.15), obj => true);
+                                                            obj => View.MagnificationLevel += 0.15, obj => true);
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
 
@@ -347,7 +347,7 @@ namespace Tobi
                                                                       UserInterfaceStrings.UI_DecreaseMagnification_,
                                                                       UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
-                                                            obj => MagnifyUi(-0.15), obj => true);
+                                                            obj => View.MagnificationLevel -= 0.15, obj => true);
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
 
@@ -478,11 +478,6 @@ namespace Tobi
 
         }
 
-        private void MagnifyUi(double value)
-        {
-            View.MagnificationLevel += value;
-        }
-
         private void exit()
         {
             Logger.Log("ShellPresenter.exit", Category.Debug, Priority.Medium);
@@ -545,6 +540,9 @@ namespace Tobi
                 (VisualBrush)Application.Current.FindResource("help-browser"),
                 null, obj => true);
 
+            //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
+            fakeCommand.IconDrawScale = View.MagnificationLevel;
+
             var panel = new StackPanel
                             {
                                 Orientation = Orientation.Horizontal,
@@ -577,7 +575,6 @@ namespace Tobi
                                                    PopupModalWindow.DialogButton.No,
                                                    true, 300, 160, details, 40);
 
-            fakeCommand.IconDrawScale = View.MagnificationLevel;
 
             windowPopup.Show();
 
@@ -664,6 +661,8 @@ namespace Tobi
             {
                 command.IconDrawScale = value;
             }
+
+            Application.Current.Resources["MagnificationLevel"] = value;
         }
 
         public void RegisterRichCommand(RichDelegateCommand<object> command)

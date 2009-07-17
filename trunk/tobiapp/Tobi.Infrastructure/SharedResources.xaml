@@ -349,6 +349,98 @@
 
   <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
 
+
+  
+  <System:Double x:Key="MagnificationLevel">1.0</System:Double>
+
+  <Style x:Key="ScaleTransformed">
+
+    <Setter Property="FrameworkElement.LayoutTransform">
+      <Setter.Value>
+        <ScaleTransform ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"
+                        ScaleX="{DynamicResource MagnificationLevel}">
+        </ScaleTransform>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  
+  <Style  TargetType="{x:Type ContextMenu}"
+          BasedOn="{StaticResource ScaleTransformed}">
+
+    <!-- Setter Property="ContextMenu.OverridesDefaultStyle" Value="False"/ -->
+
+  </Style>
+
+  <Style  TargetType="{x:Type ToolTip}"
+    BasedOn="{StaticResource ScaleTransformed}">
+
+    <!-- Setter Property="ContextMenu.OverridesDefaultStyle" Value="False"/ -->
+
+  </Style>
+
+
+  <!-- ScaleTransform.ScaleX>
+                <Binding RelativeSource="{x:Static RelativeSource.TemplatedParent}"
+                         Mode="OneWay"
+                         Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel"/>
+              </ScaleTransform.ScaleX>
+              
+              <ScaleTransform.ScaleX>
+                <Binding RelativeSource="{x:Static RelativeSource.Self}"
+                         Mode="OneWay"
+                         Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel"/>
+              </ScaleTransform.ScaleX>
+
+          <ScaleTransform.ScaleX>
+            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ToolTip}}"
+                     Mode="OneWay"
+                     Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel"/>
+          </ScaleTransform.ScaleX -->
+  <!--
+        
+        
+        Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type ToolTip}">
+              <Border Name="Border"
+                      
+                Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}"
+                BorderBrush="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}"
+                BorderThickness="1.7"
+                Width="{Binding Path=Width,
+				            RelativeSource={RelativeSource TemplatedParent}}"
+                Height="{TemplateBinding Height}"
+                      >
+                <Border.LayoutTransform>
+                  <ScaleTransform ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}">
+                    <ScaleTransform.ScaleX>
+                      <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ToolTip}, AncestorLevel=1}"
+                               Mode="OneWay"
+                               Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel">
+                      
+                    </Binding>
+                      </ScaleTransform.ScaleX>
+                  
+                  </ScaleTransform>
+                </Border.LayoutTransform>
+
+                <ContentPresenter
+                  Margin="4"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top" />
+              </Border>
+              < ControlTemplate.Triggers>
+                <Trigger Property="HasDropShadow" Value="true">
+                  <Setter TargetName="Border" Property="CornerRadius" Value="4"/>
+                  <Setter TargetName="Border" Property="SnapsToDevicePixels" Value="true"/>
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter -->
+
+
+
   <Style x:Key="ToolBarButtonBaseStyle" TargetType="{x:Type ButtonBase}">
 
     <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
