@@ -332,7 +332,7 @@ namespace Tobi.Modules.AudioPane
                     {
                         subTreeNode = marker.m_TreeNode;
 
-                        if (View != null)
+                        if (View != null && subTreeNode != CurrentSubTreeNode)
                         {
                             View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
                         }
@@ -433,7 +433,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return PcmFormat != null && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null)
+                return PcmFormat != null && DataLength >= 0 && (!String.IsNullOrEmpty(FilePath) || CurrentTreeNode != null)
                     && (View == null || View.BytesPerPixel != 0);
             }
         }
@@ -470,6 +470,7 @@ namespace Tobi.Modules.AudioPane
             long sumData = 0;
             long sumDataPrev = 0;
             int index = -1;
+            TreeNode subTreeNode = null;
             foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
             {
                 index++;
@@ -477,13 +478,13 @@ namespace Tobi.Modules.AudioPane
                 if (byteOffset < sumData
                     || index == (PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
                 {
-                    //subTreeNode = marker.m_TreeNode;
+                    subTreeNode = marker.m_TreeNode;
                     break;
                 }
                 sumDataPrev = sumData;
             }
 
-            if (View != null)
+            if (View != null) // && subTreeNode != CurrentSubTreeNode
             {
                 View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
             }

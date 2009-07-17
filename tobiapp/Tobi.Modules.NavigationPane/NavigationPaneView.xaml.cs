@@ -23,7 +23,6 @@ namespace Tobi.Modules.NavigationPane
     {
         //private Dictionary<string, TextElement> m_idPageMarkers;
 
-
         private ObservableCollection<Page> m_Pages = new ObservableCollection<Page>();
         private HeadingsNavigator m_HeadingsNavigator;
 

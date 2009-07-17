@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows.Input;
 using AudioLib;
 using AudioLib.Events.VuMeter;
@@ -24,20 +23,18 @@ namespace Tobi.Modules.AudioPane
     /// <summary>
     /// ViewModel for the AudioPane
     /// </summary>
-    public partial class AudioPaneViewModel : ViewModelBase
+    public partial class AudioPaneViewModel : ViewModelShellBase
     {
         #region Construction
 
-        public IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public AudioPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+        public AudioPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger) : base(container)
         {
-            Container = container;
             EventAggregator = eventAggregator;
             Logger = logger;
 
@@ -696,6 +693,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
+                //if (!IsAudioLoaded)
                 if (PcmFormat == null)
                 {
                     return "";

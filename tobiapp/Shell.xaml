@@ -39,22 +39,27 @@
  -->
 
   <Window.Resources>
+
     <ResourceDictionary>
+
       <LinearGradientBrush x:Key="brushLinearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0"/>
         <GradientStop Color="{x:Static infra:Colors.Color1}" Offset="0.992"/>
         <GradientStop Color="{x:Static infra:Colors.Color2}" Offset="0.085"/>
       </LinearGradientBrush>
+      
     </ResourceDictionary>
+    
   </Window.Resources>
 
   
-  <DockPanel LastChildFill="True">
-    <DockPanel.LayoutTransform>
+  <DockPanel Style="{StaticResource ScaleTransformed}" LastChildFill="True">
+
+    <!-- DockPanel.LayoutTransform>
       <ScaleTransform
             ScaleX="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                       ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
-    </DockPanel.LayoutTransform>
+    </DockPanel.LayoutTransform -->
     
     <Slider DockPanel.Dock="Left" x:Name="ZoomSlider"
             Visibility="Collapsed"

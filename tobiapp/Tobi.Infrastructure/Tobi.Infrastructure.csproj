@@ -156,6 +156,7 @@
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ObservableWrappedCollection.cs" />
+    <Compile Include="ViewModelShellBase.cs" />
     <Compile Include="WeakReferenceCollection.cs" />
   </ItemGroup>
   <ItemGroup>
