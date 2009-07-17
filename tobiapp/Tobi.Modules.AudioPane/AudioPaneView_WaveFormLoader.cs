@@ -44,6 +44,15 @@ namespace Tobi.Modules.AudioPane
                 height = WaveFormCanvas.Height;
             }
 
+            double zoom = 1;
+            var shell = ViewModel.Container.Resolve<IShellView>();
+            if (shell != null)
+            {
+                zoom = shell.MagnificationLevel;
+            }
+            width *= zoom;
+            height *= zoom;
+
             BytesPerPixel = ViewModel.DataLength / width;
 
             int byteDepth = ViewModel.PcmFormat.BitDepth / 8; //bytes per sample (data for one channel only)
