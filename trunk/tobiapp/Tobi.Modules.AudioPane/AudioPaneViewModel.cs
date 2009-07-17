@@ -28,7 +28,7 @@ namespace Tobi.Modules.AudioPane
     {
         #region Construction
 
-        protected IUnityContainer Container { get; private set; }
+        public IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
