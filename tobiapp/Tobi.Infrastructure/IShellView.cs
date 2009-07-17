@@ -1,4 +1,6 @@
-﻿namespace Tobi
+﻿using System.Windows;
+
+namespace Tobi
 {
     public interface IShellView
     {
@@ -7,7 +9,7 @@
         ///</summary>
         void ShowView();
 
-        //Window Window { get; }
+        Window Window { get; }
 
         bool SplitterDrag { get; }
 

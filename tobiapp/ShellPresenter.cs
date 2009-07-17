@@ -96,7 +96,6 @@ namespace Tobi
         {
             var resourceKeys = new[]
             {
-              "ViewerSvgUI",
 "accessories-calculator",
 "accessories-character-map",
 "accessories-text-editor",
@@ -317,8 +316,7 @@ namespace Tobi
                 var command = new RichDelegateCommand<object>(resourceKey,
                                                               resourceKey,
                                                               null,
-                                                              (VisualBrush)
-                                                              Application.Current.FindResource(resourceKey),
+                                                              LoadTangoIcon(resourceKey),
                                                               null, obj => true);
                 m_listOfIconRichCommands.Add(command);
             }
@@ -329,8 +327,9 @@ namespace Tobi
             ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       UserInterfaceStrings.Menu_Exit_KEYS,
-                                                                      RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
-                //(VisualBrush)Application.Current.FindResource("document-save"),
+                                                                      LoadTangoIcon("system-log-out"),
+                                                                      //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
+                //LoadTangoIcon("document-save"),
                                                             ExitCommand_Executed, obj => true);
             RegisterRichCommand(ExitCommand);
             //
@@ -338,6 +337,7 @@ namespace Tobi
             MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_IncreaseMagnification,
                                                                        UserInterfaceStrings.UI_IncreaseMagnification_,
                                                                       UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
+                                                                      //LoadTangoIcon("mail-forward"),
                                                                       RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
                                                             obj => View.MagnificationLevel += 0.15, obj => true);
             RegisterRichCommand(MagnifyUiIncreaseCommand);
@@ -354,14 +354,14 @@ namespace Tobi
             ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.ManageShortcuts,
                                                                       UserInterfaceStrings.ManageShortcuts_,
                                                                       UserInterfaceStrings.ManageShortcuts_KEYS,
-                                                                      (VisualBrush)Application.Current.FindResource("preferences-desktop-keyboard-shortcuts"),
+                                                                      LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
                                                             obj => manageShortcuts(), obj => true);
             RegisterRichCommand(ManageShortcutsCommand);
             //
             CutCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Cut,
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-cut"),
+                LoadTangoIcon("edit-cut"),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(CutCommand);
@@ -369,7 +369,7 @@ namespace Tobi
             CopyCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Copy,
                 UserInterfaceStrings.Copy_,
                 UserInterfaceStrings.Copy_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-copy"),
+                LoadTangoIcon("edit-copy"),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(CopyCommand);
@@ -377,7 +377,7 @@ namespace Tobi
             PasteCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Paste,
                 UserInterfaceStrings.Paste_,
                 UserInterfaceStrings.Paste_KEYS,
-                (VisualBrush)Application.Current.FindResource("edit-paste"),
+                LoadTangoIcon("edit-paste"),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(PasteCommand);
@@ -385,7 +385,7 @@ namespace Tobi
             HelpCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Help,
                 UserInterfaceStrings.Help_,
                 UserInterfaceStrings.Help_KEYS,
-                (VisualBrush)Application.Current.FindResource("help-browser"),
+                LoadTangoIcon("help-browser"),
                 obj =>
                     {
                         throw new NotImplementedException("Functionality not implemented, sorry :(",
@@ -398,7 +398,7 @@ namespace Tobi
             PreferencesCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Preferences,
                 UserInterfaceStrings.Preferences_,
                 UserInterfaceStrings.Preferences_KEYS,
-                (VisualBrush)Application.Current.FindResource("preferences-system"),
+                LoadTangoIcon("preferences-system"),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(PreferencesCommand);
@@ -406,8 +406,8 @@ namespace Tobi
             WebHomeCommand = new RichDelegateCommand<object>(UserInterfaceStrings.WebHome,
                 UserInterfaceStrings.WebHome_,
                 UserInterfaceStrings.WebHome_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
-                //(VisualBrush)Application.Current.FindResource("go-home"),
+                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
+                LoadTangoIcon("go-home"),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(WebHomeCommand);
@@ -434,9 +434,7 @@ namespace Tobi
         {
             Logger.Log("ShellPresenter.manageShortcuts", Category.Debug, Priority.Medium);
 
-            var window = View as Window;
-
-            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+            var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.ManageShortcuts),
                                                    new KeyboardShortcuts(this),
@@ -523,8 +521,6 @@ namespace Tobi
                 App.handleException(ex);
             }*/
 
-            var window = View as Window;
-
             var label = new TextBlock
                             {
                                 Text = UserInterfaceStrings.ExitConfirm,
@@ -537,7 +533,7 @@ namespace Tobi
             var fakeCommand = new RichDelegateCommand<object>(null,
                 null,
                 null,
-                (VisualBrush)Application.Current.FindResource("help-browser"),
+                LoadTangoIcon("help-browser"),
                 null, obj => true);
 
             //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
@@ -567,7 +563,7 @@ namespace Tobi
                 SnapsToDevicePixels = true
             };
 
-            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+            var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Exit),
                                                    panel,
@@ -584,36 +580,6 @@ namespace Tobi
             }
 
             return false;
-
-
-            if (window != null)
-            {
-                /*MessageBoxResult result = MessageBox.Show(window, "Confirm quit ?", "Tobi asks:",
-                                                          MessageBoxButton.OKCancel);
-                if (result != MessageBoxResult.OK)
-                {
-                    return false;
-                }*/
-
-                /*
-                TaskDialogResult result = TaskDialog.Show(window, "Exit Tobi ?",
-                    "Are you sure you want to exit Tobi ?",
-                    "Press OK to exit, CANCEL to return to the application.",
-                    "You can use the ESCAPE, ENTER or 'C' shortcut keys to cancel,\nor the 'O' shortcut key to confirm.",
-                    "Please note that any unsaved work will be lost.",
-                TaskDialogButton.OkCancel,
-                TaskDialogResult.Cancel,
-                TaskDialogIcon.Question,
-                TaskDialogIcon.Warning,
-                Brushes.White,
-                Brushes.Navy);
-
-                if (result != TaskDialogResult.Ok)
-                {
-                    return false;
-                }*/
-            }
-            return true;
         }
 
         private void ExitCommand_Executed(object parameter)
@@ -663,6 +629,21 @@ namespace Tobi
             }
 
             Application.Current.Resources["MagnificationLevel"] = value;
+        }
+
+        public VisualBrush LoadTangoIcon(string resourceKey)
+        {
+            Object obj = Application.Current.TryFindResource(resourceKey);
+            if (obj == null)
+            {
+                Object comp = Application.LoadComponent(
+                    new Uri("Tobi.Infrastructure;component/tango-icons/" + resourceKey + ".xaml",
+                            UriKind.Relative));
+                Application.Current.Resources.MergedDictionaries.Add(
+                    comp as ResourceDictionary);
+            }
+            return (VisualBrush)
+                Application.Current.FindResource(resourceKey);
         }
 
         public void RegisterRichCommand(RichDelegateCommand<object> command)

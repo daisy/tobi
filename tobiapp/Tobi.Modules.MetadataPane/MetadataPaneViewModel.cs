@@ -98,7 +98,7 @@ namespace Tobi.Modules.MetadataPane
             CommandShowMetadataPane = new RichDelegateCommand<object>(UserInterfaceStrings.ShowMetadata,
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
-                (VisualBrush)Application.Current.FindResource("accessories-text-editor"),
+                shellPresenter.LoadTangoIcon("accessories-text-editor"),
                 obj => showMetadata(), obj => canShowMetadata);
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
@@ -109,9 +109,8 @@ namespace Tobi.Modules.MetadataPane
             Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            var window = shellPresenter.View as Window;
 
-            var windowPopup = new PopupModalWindow(window ?? Application.Current.MainWindow,
+            var windowPopup = new PopupModalWindow(shellPresenter,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.ShowMetadata),
                                                    View,

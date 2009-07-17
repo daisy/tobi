@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.Windows.Media;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
 using urakawa;
@@ -44,6 +45,8 @@ namespace Tobi
         /// </summary>
         /// <param name="command"></param>
         void RegisterRichCommand(RichDelegateCommand<object> command);
+
+        VisualBrush LoadTangoIcon(string resourceKey);
 
         // TODO: The methods below are only called by the view,
         // we should perharps inject the Presenter into the View instead.
