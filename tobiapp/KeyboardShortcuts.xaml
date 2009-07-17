@@ -1,8 +1,14 @@
-﻿<UI:SortableListView
+﻿<TabControl
     x:Class="Tobi.KeyboardShortcuts"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
     xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
+  TabStripPlacement="Top">
+
+  <TabItem Header="Shortcuts">
+
+    <UI:SortableListView
     
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
@@ -45,11 +51,11 @@ AlternationCount="2"
           <DataTemplate>
 
             <ContentControl Focusable="False"
-                              Width="{Binding Path=IconWidth_Medium}"
+                              Width="{Binding Path=IconWidth_Large}"
                             
-                                Height="{Binding Path=IconHeight_Medium}"
+                                Height="{Binding Path=IconHeight_Large}"
                                                      
-                    Content="{Binding Path=DataContext.IconMedium,
+                    Content="{Binding Path=DataContext.IconLarge,
                     RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                      
                     ToolTip="{StaticResource imageIconTooltip}"
@@ -89,3 +95,89 @@ AlternationCount="2"
 
   </ListView.ItemContainerStyle>
 </UI:SortableListView>
+
+  </TabItem>
+
+  <TabItem Header="Icons Debug">
+
+    <UI:SortableListView
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="True"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+x:Name="listIcons"
+    ItemsSource="{Binding IconRichCommands, Mode=OneWay}"
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+AlternationCount="2"
+    
+            >
+
+      <ListView.Resources>
+
+        <ToolTip x:Key="imageKeyTooltip"
+           DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+          <TextBlock
+                            Text="{Binding Path=DataContext.LongDescription}"
+                            />
+
+        </ToolTip>
+
+      </ListView.Resources>
+
+      <ListView.View>
+        <GridView AllowsColumnReorder="true">
+          <GridViewColumn Header="Icon">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+
+                <ContentControl Focusable="False"
+                                  Width="{Binding Path=IconWidth_XLarge}"
+                            
+                                    Height="{Binding Path=IconHeight_XLarge}"
+                                                     
+                        Content="{Binding Path=DataContext.IconXLarge,
+                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
+                                                     
+                        ToolTip="{StaticResource imageKeyTooltip}"
+                                Margin="2, 4, 2, 4">
+                </ContentControl>
+              </DataTemplate>
+
+            </GridViewColumn.CellTemplate>
+
+          </GridViewColumn>
+
+          <GridViewColumn Header="Resource Key"
+                          UI:SortableListView.SortPropertyName="ShortDescription"
+             DisplayMemberBinding="{Binding ShortDescription}"  />
+
+        </GridView>
+      </ListView.View>
+      <ListView.ItemContainerStyle>
+
+        <Style TargetType="{x:Type ListViewItem}">
+          <Style.Triggers>
+            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+              <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            </Trigger>
+            <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+          </Trigger -->
+          </Style.Triggers>
+        </Style>
+
+      </ListView.ItemContainerStyle>
+    </UI:SortableListView>
+    
+
+  </TabItem>
+  </TabControl>

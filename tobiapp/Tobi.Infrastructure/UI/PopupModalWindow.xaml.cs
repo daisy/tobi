@@ -134,18 +134,24 @@ namespace Tobi.Infrastructure.UI
             {
                 Width = Math.Min(SystemParameters.WorkArea.Width, shellView.MagnificationLevel * width);
                 Height = Math.Min(SystemParameters.WorkArea.Height, shellView.MagnificationLevel * height);
+
+                DetailsHeight = shellView.MagnificationLevel * detailsHeight;
+
+                CommandDetailsCollapse.IconDrawScale = shellView.MagnificationLevel;
+                CommandDetailsExpand.IconDrawScale = shellView.MagnificationLevel;
             }
             else
             {
                 Width = Math.Min(SystemParameters.WorkArea.Width, width);
                 Height = Math.Min(SystemParameters.WorkArea.Height, height);
+
+                DetailsHeight = detailsHeight;
             }
 
             Title = title;
             Icon = null;
             ContentPlaceHolder.Content = content;
             DetailsPlaceHolder.Content = details;
-            DetailsHeight = detailsHeight;
             DialogButtons = buttons;
             DefaultDialogButton = button;
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
@@ -184,10 +190,9 @@ namespace Tobi.Infrastructure.UI
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
-            ContentPlaceHolder.Content = null;
-
             if (m_ButtonTriggersClose)
             {
+                ContentPlaceHolder.Content = null;
                 return;
             }
 
@@ -197,6 +202,8 @@ namespace Tobi.Infrastructure.UI
                 e.Cancel = true;
                 return;
             }
+
+            ContentPlaceHolder.Content = null;
 
             ClickedDialogButton = DialogButton.ESC;
         }

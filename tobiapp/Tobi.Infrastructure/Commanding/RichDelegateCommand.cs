@@ -354,6 +354,12 @@ namespace Tobi.Infrastructure.Commanding
                     m_IconWidth_Large = Sizes.IconWidth_Large * m_IconDrawScale;
                     OnPropertyChanged("IconWidth_Large");
 
+                    m_IconHeight_XLarge = Sizes.IconHeight_XLarge * m_IconDrawScale;
+                    OnPropertyChanged("IconHeight_XLarge");
+
+                    m_IconWidth_XLarge = Sizes.IconWidth_XLarge * m_IconDrawScale;
+                    OnPropertyChanged("IconWidth_XLarge");
+
                     /*
                     bool canExec = ((ICommand)this).CanExecute(null);
                     
@@ -471,7 +477,7 @@ namespace Tobi.Infrastructure.Commanding
         {
             Image image = new AutoGreyableImage
                               {
-                                  Stretch = Stretch.Fill,
+                                  Stretch = Stretch.Uniform,
                                   SnapsToDevicePixels = true,
                                   Width = (size == 0 ? Sizes.IconWidth_Small : (size == 1 ? Sizes.IconWidth_Medium : (size == 2 ? Sizes.IconWidth_Large : Sizes.IconWidth_XLarge))),
                                   Height = (size == 0 ? Sizes.IconHeight_Small : (size == 1 ? Sizes.IconHeight_Medium : (size == 2 ? Sizes.IconHeight_Large : Sizes.IconHeight_XLarge)))

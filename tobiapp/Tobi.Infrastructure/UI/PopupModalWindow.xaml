@@ -32,7 +32,8 @@
       <DockPanel
         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                   AncestorType={x:Type Window}}, Path=.}"
-        LastChildFill="True" DockPanel.Dock="Bottom"
+        LastChildFill="True"
+        DockPanel.Dock="Bottom"
                  Margin="8, 0, 8, 8"
         >
 
@@ -135,6 +136,7 @@
         </Grid.RowDefinitions -->
 
         <ContentControl x:Name="ContentPlaceHolder"
+                        SnapsToDevicePixels="True"
                       Margin="8, 8, 8, 0"
                          DockPanel.Dock="Top"
                       Grid.Row="0"
@@ -144,6 +146,7 @@
                       Focusable="False"/>
 
         <ContentControl x:Name="DetailsPlaceHolder"
+                        SnapsToDevicePixels="True"
                     Margin="8, 8, 8, 0"
                       Grid.Row="1"
                       Grid.Column="0"
