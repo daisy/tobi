@@ -94,6 +94,235 @@ namespace Tobi
 
         private void initCommands()
         {
+            var resourceKeys = new[]
+            {
+              "ViewerSvgUI",
+"accessories-calculator",
+"accessories-character-map",
+"accessories-text-editor",
+"address-book-new",
+"application-certificate",
+"application-x-executable",
+"applications-accessories",
+"applications-development",
+"applications-games",
+"applications-graphics",
+"applications-internet",
+"applications-multimedia",
+"applications-office",
+"applications-other",
+"applications-system",
+"appointment-new",
+"audio-card",
+"audio-input-microphone",
+"audio-volume-high",
+"audio-volume-low",
+"audio-volume-medium",
+"audio-volume-muted",
+"audio-x-generic",
+"battery-caution",
+"battery",
+"bookmark-new",
+"camera-photo",
+"camera-video",
+"computer",
+"contact-new",
+"dialog-error",
+"dialog-information",
+"dialog-warning",
+"document-new",
+"document-open",
+"document-print-preview",
+"document-print",
+"document-properties",
+"document-save-as",
+"document-save",
+"drive-harddisk",
+"drive-optical",
+"drive-removable-media",
+"edit-clear",
+"edit-copy",
+"edit-cut",
+"edit-delete",
+"edit-find-replace",
+"edit-find",
+"edit-paste",
+"edit-redo",
+"edit-select-all",
+"edit-undo",
+"emblem-favorite",
+"emblem-important",
+"emblem-photos",
+"emblem-readonly",
+"emblem-symbolic-link",
+"emblem-system",
+"emblem-unreadable",
+"face-angel",
+"face-crying",
+"face-devilish",
+"face-glasses",
+"face-grin",
+"face-kiss",
+"face-monkey",
+"face-plain",
+"face-sad",
+"face-smile-big",
+"face-smile",
+"face-surprise",
+"face-wink",
+"folder-drag-accept",
+"folder-new",
+"folder-open",
+"folder-remote",
+"folder-saved-search",
+"folder-visiting",
+"folder",
+"font-x-generic",
+"format-indent-less",
+"format-indent-more",
+"format-justify-center",
+"format-justify-fill",
+"format-justify-left",
+"format-justify-right",
+"format-text-bold",
+"format-text-italic",
+"format-text-strikethrough",
+"format-text-underline",
+"go-bottom",
+"go-down",
+"go-first",
+"go-home",
+"go-jump",
+"go-last",
+"go-next",
+"go-previous",
+"go-top",
+"go-up",
+"help-browser",
+"image-loading",
+"image-missing",
+"image-x-generic",
+"input-gaming",
+"input-keyboard",
+"input-mouse",
+"internet-group-chat",
+"internet-mail",
+"internet-news-reader",
+"internet-web-browser",
+"list-add",
+"list-remove",
+"mail-attachment",
+"mail-forward",
+"mail-mark-junk",
+"mail-message-new",
+"mail-reply-all",
+"mail-reply-sender",
+"mail-send-receive",
+"media-eject",
+"media-flash",
+"media-floppy",
+"media-optical",
+"media-playback-pause",
+"media-playback-start",
+"media-playback-stop",
+"media-record",
+"media-seek-backward",
+"media-seek-forward",
+"media-skip-backward",
+"media-skip-forward",
+"multimedia-player",
+"network-error",
+"network-idle",
+"network-offline",
+"network-receive",
+"network-server",
+"network-transmit-receive",
+"network-transmit",
+"network-wired",
+"network-wireless-encrypted",
+"network-wireless",
+"network-workgroup",
+"office-calendar",
+"package-x-generic",
+"preferences-desktop-accessibility",
+"preferences-desktop-assistive-technology",
+"preferences-desktop-font",
+"preferences-desktop-keyboard-shortcuts",
+"preferences-desktop-locale",
+"preferences-desktop-multimedia",
+"preferences-desktop-peripherals",
+"preferences-desktop-remote-desktop",
+"preferences-desktop-screensaver",
+"preferences-desktop-theme",
+"preferences-desktop-wallpaper",
+"preferences-desktop",
+"preferences-system-network-proxy",
+"preferences-system-session",
+"preferences-system-windows",
+"preferences-system",
+"printer-error",
+"printer",
+"process-stop",
+"software-update-available",
+"software-update-urgent",
+"start-here",
+"system-file-manager",
+"system-installer",
+"system-lock-screen",
+"system-log-out",
+"system-search",
+"system-shutdown",
+"system-software-update",
+"system-users",
+"tab-new",
+"text-html",
+"text-x-generic-template",
+"text-x-generic",
+"text-x-script",
+"user-desktop",
+"user-home",
+"user-trash-full",
+"user-trash",
+"utilities-system-monitor",
+"utilities-terminal",
+"video-display",
+"video-x-generic",
+"view-fullscreen",
+"view-refresh",
+"weather-clear-night",
+"weather-clear",
+"weather-few-clouds-night",
+"weather-few-clouds",
+"weather-overcast",
+"weather-severe-alert",
+"weather-showers-scattered",
+"weather-showers",
+"weather-snow",
+"weather-storm",
+"window-new",
+"x-office-address-book",
+"x-office-calendar",
+"x-office-document-template",
+"x-office-document",
+"x-office-drawing-template",
+"x-office-drawing",
+"x-office-presentation-template",
+"x-office-presentation",
+"x-office-spreadsheet-template",
+"x-office-spreadsheet"
+            };
+
+            foreach (string resourceKey in resourceKeys)
+            {
+                var command = new RichDelegateCommand<object>(resourceKey,
+                                                              resourceKey,
+                                                              null,
+                                                              (VisualBrush)
+                                                              Application.Current.FindResource(resourceKey),
+                                                              null, obj => true);
+                m_listOfIconRichCommands.Add(command);
+            }
+
             Logger.Log("ShellPresenter.initCommands", Category.Debug, Priority.Medium);
 
             //
@@ -157,7 +386,12 @@ namespace Tobi
                 UserInterfaceStrings.Help_,
                 UserInterfaceStrings.Help_KEYS,
                 (VisualBrush)Application.Current.FindResource("help-browser"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj =>
+                    {
+                        throw new NotImplementedException("Functionality not implemented, sorry :(",
+                            new ArgumentOutOfRangeException("First Inner exception",
+                                new FileNotFoundException("Third inner exception !")));
+                    }, obj => true);
 
             RegisterRichCommand(HelpCommand);
             //
@@ -404,6 +638,15 @@ namespace Tobi
             }
         }
 
+        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands =
+            new List<RichDelegateCommand<object>>();
+        public List<RichDelegateCommand<object>> IconRichCommands
+        {
+            get
+            {
+                return m_listOfIconRichCommands;
+            }
+        }
         public void SetZoomValue(double value)
         {
             /*if (EventAggregator == null)
@@ -414,6 +657,10 @@ namespace Tobi
              */
 
             foreach (var command in m_listOfRegisteredRichCommands)
+            {
+                command.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands)
             {
                 command.IconDrawScale = value;
             }
@@ -433,11 +680,11 @@ namespace Tobi
 
         public bool AddInputBinding(InputBinding inputBinding)
         {
-            Logger.Log("ShellPresenter.AddInputBinding", Category.Debug, Priority.Medium);
-
             var window = View as Window;
             if (window != null && inputBinding != null)
             {
+                //Logger.Log("ShellPresenter.AddInputBinding", Category.Debug, Priority.Medium);
+
                 logInputBinding(inputBinding);
                 window.InputBindings.Add(inputBinding);
                 return true;

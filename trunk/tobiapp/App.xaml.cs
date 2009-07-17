@@ -258,6 +258,7 @@ c.Execute();
             {
                 LOGGER.Log(ex.Message, Category.Exception, Priority.High);
             }
+
             if (ex.StackTrace != null)
             {
                 LOGGER.Log(ex.StackTrace, Category.Exception, Priority.High);
@@ -278,54 +279,103 @@ c.Execute();
 
             var margin = new Thickness(0, 0, 0, 8);
 
-            //var panel = new DockPanel { LastChildFill = true };
-            var panel = new StackPanel { Orientation = Orientation.Vertical };
+            var panel = new DockPanel { LastChildFill = true };
+            //var panel = new StackPanel { Orientation = Orientation.Vertical };
 
-            var labelSummary = new TextBox
+
+
+            var labelMsg = new TextBox
             {
-                Text = ex.Message,
+                AcceptsReturn = true,
+                FontWeight = FontWeights.ExtraBlack,
+                Text = UserInterfaceStrings.UnhandledException,
                 Margin = margin,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 TextWrapping = TextWrapping.Wrap,
                 IsReadOnly = true,
-                Background = SystemColors.ControlLightLightBrush,
-                BorderBrush = SystemColors.ControlDarkBrush,
+                BorderBrush = Brushes.Red,
                 BorderThickness = new Thickness(1),
                 SnapsToDevicePixels = true,
                 Padding = new Thickness(5)
             };
-            //labelSummary.SetValue(DockPanel.DockProperty, Dock.Top);
-            panel.Children.Add(labelSummary);
-
-            var labelMsg = new TextBox
-                            {
-                                FontWeight = FontWeights.ExtraBlack,
-                                Text = UserInterfaceStrings.UnhandledException,
-                                Margin = margin,
-                                HorizontalAlignment = HorizontalAlignment.Stretch,
-                                VerticalAlignment = VerticalAlignment.Top,
-                                TextWrapping = TextWrapping.Wrap,
-                                IsReadOnly = true,
-                                BorderBrush = Brushes.Red,
-                                BorderThickness = new Thickness(1),
-                                SnapsToDevicePixels = true,
-                                Padding = new Thickness(5)
-                            };
-            //labelMsg.SetValue(DockPanel.DockProperty, Dock.Top);
+            labelMsg.SetValue(DockPanel.DockProperty, Dock.Top);
             panel.Children.Add(labelMsg);
 
 
+            var exMessage = ex.Message;
+            Exception exinnerd = ex;
+            while (exinnerd.InnerException != null)
+            {
+                if (!String.IsNullOrEmpty(exinnerd.InnerException.Message))
+                {
+                    exMessage += Environment.NewLine;
+                    exMessage += "======";
+                    exMessage += Environment.NewLine;
+                    exMessage += exinnerd.InnerException.Message;
+                }
+
+                exinnerd = exinnerd.InnerException;
+            }
+
+            var labelSummary = new TextBox
+            {
+                AcceptsReturn = true,
+                Text = exMessage,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                TextWrapping = TextWrapping.Wrap,
+                IsReadOnly = true,
+                Background = SystemColors.ControlLightLightBrush,
+                BorderBrush = null,
+                BorderThickness = new Thickness(0),
+                SnapsToDevicePixels = true,
+                Padding = new Thickness(5)
+            };
+
+            var scroll = new ScrollViewer
+            {
+                Content = labelSummary,
+                Margin = margin,
+                BorderBrush = SystemColors.ControlDarkBrush,
+                BorderThickness = new Thickness(1),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            //scroll.SetValue(DockPanel.DockProperty, Dock.Top);
+
+            panel.Children.Add(scroll);
+
+            // DETAILS:
+
+            var exStackTrace = ex.StackTrace;
+            Exception exinner = ex;
+            while (exinner.InnerException != null)
+            {
+                if (!String.IsNullOrEmpty(exinner.InnerException.StackTrace))
+                {
+                    exStackTrace += Environment.NewLine;
+                    exStackTrace += "=========================";
+                    exStackTrace += Environment.NewLine;
+                    exStackTrace += "-------------------------";
+                    exStackTrace += Environment.NewLine;
+                    exStackTrace += exinner.InnerException.StackTrace;
+                }
+
+                exinner = exinner.InnerException;
+            }
+
             var stackTrace = new TextBox
-                                 {
-                                     Text = ex.StackTrace,
+            {
+                AcceptsReturn = true,
+                                     Text = exStackTrace,
                                      HorizontalAlignment = HorizontalAlignment.Stretch,
                                      VerticalAlignment = VerticalAlignment.Stretch,
                                      TextWrapping = TextWrapping.Wrap,
                                      IsReadOnly = true,
-                                     Background = SystemColors.ControlLightLightBrush,
-                                     BorderBrush = SystemColors.ControlDarkDarkBrush,
-                                     BorderThickness = new Thickness(1),
+                Background = SystemColors.ControlLightLightBrush,
+                BorderBrush = null,
+                BorderThickness = new Thickness(0),
                                      SnapsToDevicePixels = true,
                                      Padding = new Thickness(5)
                                  };
@@ -334,6 +384,8 @@ c.Execute();
                              {
                                  Content = stackTrace,
                                  Margin = margin,
+                                 BorderBrush = SystemColors.ControlDarkDarkBrush,
+                                 BorderThickness = new Thickness(1),
                                  HorizontalAlignment = HorizontalAlignment.Stretch,
                                  VerticalAlignment = VerticalAlignment.Stretch
                              };
@@ -373,7 +425,8 @@ c.Execute();
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 500, 200, details, 100);
+                                                   false, 500, 200,
+                                                   details, 130);
 
             SystemSounds.Exclamation.Play();
             windowPopup.Show();
