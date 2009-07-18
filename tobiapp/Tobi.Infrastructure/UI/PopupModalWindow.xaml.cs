@@ -2,13 +2,14 @@
 using System.ComponentModel;
 using System.Media;
 using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Tobi.Infrastructure.Commanding;
-using Application=System.Windows.Application;
-using Button=System.Windows.Controls.Button;
-using KeyEventArgs=System.Windows.Input.KeyEventArgs;
+using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Tobi.Infrastructure.UI
 {
@@ -126,7 +127,7 @@ namespace Tobi.Infrastructure.UI
         {
             ensureVisible(true);
 
-            ShowDialog();
+            ShellPresenter.DimBackgroundWhile(() => ShowDialog());
         }
 
         public void ShowFloating()

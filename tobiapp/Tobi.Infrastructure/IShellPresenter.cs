@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using System.Windows.Media;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
@@ -11,14 +12,6 @@ namespace Tobi
     ///</summary>
     public interface IShellPresenter : IInputBindingManager
     {
-        ///<summary>
-        /// The View associated with this Presenter
-        ///</summary>
-        IShellView View { get; }
-
-        void PlayAudioCueTock();
-        void PlayAudioCueTockTock();
-
         RichDelegateCommand<object> ExitCommand { get; }
         RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; }
         RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }
@@ -35,22 +28,21 @@ namespace Tobi
         RichDelegateCommand<object> NavNextCommand { get; }
         RichDelegateCommand<object> NavPreviousCommand { get; }
 
-        ///<summary>
-        /// Adds a <see cref="KeyBinding"/> to the Shell window
-        ///</summary>
-        //bool AddInputBinding(InputBinding inputBinding);
+        IShellView View { get; }
 
-        /// <summary>
-        /// registers a command and adds the corresponding input binding to the main window
-        /// </summary>
-        /// <param name="command"></param>
+        void PlayAudioCueTock();
+        void PlayAudioCueTockTock();
+
         void RegisterRichCommand(RichDelegateCommand<object> command);
 
         VisualBrush LoadTangoIcon(string resourceKey);
+
+        void DimBackgroundWhile(Action action);
 
         // TODO: The methods below are only called by the view,
         // we should perharps inject the Presenter into the View instead.
         bool OnShellWindowClosing();
         void OnMagnificationLevelChanged(double value);
+
     }
 }

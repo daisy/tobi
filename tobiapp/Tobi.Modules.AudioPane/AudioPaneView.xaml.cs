@@ -368,7 +368,13 @@ namespace Tobi.Modules.AudioPane
                 DefaultExt = ".wav",
                 Filter = "WAV files (.wav)|*.wav;*.aiff"
             };
-            bool? result = dlg.ShowDialog();
+
+            var shellPresenter = ViewModel.Container.Resolve<IShellPresenter>();
+
+            bool? result = false;
+
+            shellPresenter.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
             if (result == false)
             {
                 return null;
