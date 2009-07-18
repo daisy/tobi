@@ -2,10 +2,13 @@
 using System.ComponentModel;
 using System.Media;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Tobi.Infrastructure.Commanding;
+using Application=System.Windows.Application;
+using Button=System.Windows.Controls.Button;
+using KeyEventArgs=System.Windows.Input.KeyEventArgs;
 
 namespace Tobi.Infrastructure.UI
 {
@@ -141,8 +144,8 @@ namespace Tobi.Infrastructure.UI
             double finalLeft = Math.Max(0, Owner.Left + (Owner.Width - Width) / 2);
             double finalTop = Math.Max(0, Owner.Top + (Owner.Height - Height) / 2);
 
-            double availableWidth = SystemParameters.WorkArea.Width;
-            double availableHeight = SystemParameters.WorkArea.Height;
+            double availableWidth = SystemParameters.WorkArea.Width; //Screen.PrimaryScreen.Bounds.Width
+            double availableHeight = SystemParameters.WorkArea.Height; //Screen.PrimaryScreen.Bounds.Height
 
             double finalWidth = Math.Min(availableWidth, Width);
             double finalHeight = Math.Min(availableHeight, Height);

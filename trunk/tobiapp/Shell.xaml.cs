@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
+using Microsoft.Win32;
 
 namespace Tobi
 {
@@ -40,6 +42,8 @@ namespace Tobi
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            SystemEvents.DisplaySettingsChanged+=OnSystemEventsDisplaySettingsChanged;
+
             try
             {
                 Uri iconUri = new Uri("pack://application:,,,/" + GetType().Assembly.GetName().Name
@@ -67,6 +71,11 @@ namespace Tobi
                             BitmapCreateOptions.None, BitmapCacheOption.Default);
             Icon = ibd.Frames[0];
             */
+        }
+
+        private void OnSystemEventsDisplaySettingsChanged(object sender, EventArgs e)
+        {
+            // update DPI-dependent stuff
         }
 
         public String WindowTitle
