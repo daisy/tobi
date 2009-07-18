@@ -15,9 +15,9 @@ namespace Tobi.Infrastructure.UI
     public partial class PopupModalWindow : IInputBindingManager, INotifyPropertyChangedEx
     {
         #region INotifyPropertyChangedEx
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         public void RaisePropertyChanged(PropertyChangedEventArgs e)
         {
             //m_ClassInstancePropertyHost.PropertyChanged.Invoke(m_ClassInstancePropertyHost, e);
@@ -31,7 +31,7 @@ namespace Tobi.Infrastructure.UI
         }
 
         #endregion INotifyPropertyChangedEx
-        
+
 
         public RichDelegateCommand<object> CommandDetailsExpand { get; private set; }
         public RichDelegateCommand<object> CommandDetailsCollapse { get; private set; }
@@ -120,6 +120,75 @@ namespace Tobi.Infrastructure.UI
             get { return HasDetails && IsDetailsExpanded; }
         }
 
+        public void ShowModal()
+        {
+            ensureVisible();
+
+            ShowDialog();
+        }
+
+        public void ShowFloating()
+        {
+            ensureVisible();
+
+            Show();
+        }
+
+        private void ensureVisible()
+        {
+            // For some reason, WindowStartupLocation.CenterOwner doesn't work in non-modal display mode.
+            WindowStartupLocation = WindowStartupLocation.Manual;
+
+            double finalLeft = Math.Max(0, Owner.Left + (Owner.Width - Width) / 2);
+            double finalTop = Math.Max(0, Owner.Top + (Owner.Height - Height) / 2);
+
+            double availableWidth = SystemParameters.WorkArea.Width;
+            double availableHeight = SystemParameters.WorkArea.Height;
+
+            double finalWidth = Math.Min(availableWidth, Width);
+            double finalHeight = Math.Min(availableHeight, Height);
+
+            double right = finalLeft + finalWidth;
+            if (right > availableWidth)
+            {
+                double extraWidth = right - availableWidth;
+                finalLeft -= extraWidth;
+                if (finalLeft < 0)
+                {
+                    finalWidth -= (-finalLeft);
+                    finalLeft = 0;
+                }
+            }
+
+            double bottom = finalTop + finalHeight;
+            if (bottom > availableHeight)
+            {
+                double extraHeight = bottom - availableHeight;
+                finalTop -= extraHeight;
+                if (finalTop < 0)
+                {
+                    finalHeight -= (-finalTop);
+                    finalTop = 0;
+                }
+            }
+            bottom = finalTop + (finalHeight + DetailsHeight);
+            if (bottom > availableHeight)
+            {
+                double extraHeight = bottom - availableHeight;
+                finalTop -= extraHeight;
+                if (finalTop < 0)
+                {
+                    finalHeight -= (-finalTop);
+                    finalTop = 0;
+                }
+            }
+
+            Left = finalLeft;
+            Top = finalTop;
+            Width = finalWidth;
+            Height = finalHeight;
+        }
+
         public PopupModalWindow(IShellPresenter presenter, string title,
             object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
@@ -132,13 +201,13 @@ namespace Tobi.Infrastructure.UI
                 Owner = Application.Current.MainWindow;
             }
             else { Owner = presenter.View.Window; }
-            
+
             //DataContext = Owner;
 
             var zoom = (Double)Application.Current.Resources["MagnificationLevel"];
 
-            Width = Math.Min(SystemParameters.WorkArea.Width, zoom * width);
-            Height = Math.Min(SystemParameters.WorkArea.Height, zoom * height);
+            Width = zoom * width;
+            Height = zoom * height;
 
             DetailsHeight = zoom * detailsHeight;
 
@@ -166,7 +235,8 @@ namespace Tobi.Infrastructure.UI
 
         public bool AllowEscapeAndCloseButton
         {
-            get; private set;
+            get;
+            private set;
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -283,8 +353,8 @@ namespace Tobi.Infrastructure.UI
             YesNoCancel,
             Close,
         }
-            
-#region ButtonDefault
+
+        #region ButtonDefault
         public bool IsButtonDefault_Close
         {
             get
@@ -328,8 +398,8 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
-#endregion ButtonDefault
-#region ButtonActive
+        #endregion ButtonDefault
+        #region ButtonActive
         public bool IsButtonActive_Close
         {
             get
@@ -380,7 +450,7 @@ namespace Tobi.Infrastructure.UI
             }
         }
 
-#endregion ButtonActive
+        #endregion ButtonActive
 
         public DialogButton ClickedDialogButton
         {
@@ -421,11 +491,6 @@ namespace Tobi.Infrastructure.UI
             m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_No);
         }
 
-        public new void Show()
-        {
-            ShowDialog();
-        }
-        
         public void ForceClose()
         {
             AllowEscapeAndCloseButton = true;
@@ -469,7 +534,7 @@ namespace Tobi.Infrastructure.UI
         {
             ClickedDialogButton = DialogButton.Apply;
         }
-#endregion ButtonClick
+        #endregion ButtonClick
 
         public bool AddInputBinding(InputBinding inputBinding)
         {

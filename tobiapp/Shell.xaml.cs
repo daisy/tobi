@@ -138,25 +138,11 @@ namespace Tobi
             get { return (double)GetValue(MagnificationLevelProperty); }
             set
             {
-                double actualValue = value;
-                if (actualValue > ZoomSlider.Maximum)
-                {
-                    actualValue = ZoomSlider.Maximum;
-                }
-                if (actualValue < ZoomSlider.Minimum)
-                {
-                    actualValue = ZoomSlider.Minimum;
-                }
-                SetValue(MagnificationLevelProperty, actualValue);
+                // The value will be coerced after this call !
+                SetValue(MagnificationLevelProperty, value);
             }
         }
 
-        private static void OnMagnificationLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var shell = d as Shell;
-            if (shell == null) return;
-            shell.NotifyMagnificationLevel();
-        }
 
         private static object OnMagnificationLevelCoerce(DependencyObject d, object basevalue)
         {
@@ -172,7 +158,17 @@ namespace Tobi
             {
                 value = shell.ZoomSlider.Minimum;
             }
+
+            Application.Current.Resources["MagnificationLevel"] = value;
+
             return value;
+        }
+
+        private static void OnMagnificationLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var shell = d as Shell;
+            if (shell == null) return;
+            shell.NotifyMagnificationLevel();
         }
 
         private void NotifyMagnificationLevel()
@@ -185,7 +181,7 @@ namespace Tobi
             var shellPresenter = Container.Resolve<IShellPresenter>();
             if (shellPresenter != null)
             {
-                shellPresenter.SetZoomValue(MagnificationLevel);
+                shellPresenter.OnMagnificationLevelChanged(MagnificationLevel);
             }
             /*
             foreach(InputBinding ib in InputBindings)

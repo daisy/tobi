@@ -51,6 +51,6 @@ namespace Tobi
         // TODO: The methods below are only called by the view,
         // we should perharps inject the Presenter into the View instead.
         bool OnShellWindowClosing();
-        void SetZoomValue(double value);
+        void OnMagnificationLevelChanged(double value);
     }
 }
