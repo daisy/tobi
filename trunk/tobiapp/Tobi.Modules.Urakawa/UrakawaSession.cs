@@ -344,7 +344,7 @@ namespace Tobi.Modules.Urakawa
             };
 
             m_SaveXukActionWorker.RunWorkerAsync("dummy arg");
-            windowPopup.Show();
+            windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
             {
@@ -543,7 +543,7 @@ namespace Tobi.Modules.Urakawa
                 };
 
                 m_OpenXukActionWorker.RunWorkerAsync("dummy arg");
-                windowPopup.Show();
+                windowPopup.ShowModal();
 
                 if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
                 {

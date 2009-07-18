@@ -429,7 +429,7 @@ c.Execute();
                                                    details, 130);
 
             SystemSounds.Exclamation.Play();
-            windowPopup.Show();
+            windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
                 && doExit)

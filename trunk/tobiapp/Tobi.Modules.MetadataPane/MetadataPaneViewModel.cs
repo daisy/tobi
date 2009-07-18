@@ -117,7 +117,7 @@ namespace Tobi.Modules.MetadataPane
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 500);
-            windowPopup.Show();
+            windowPopup.ShowModal();
         }
 
         private bool canShowMetadata
