@@ -84,12 +84,11 @@ namespace Tobi.Infrastructure.UI
                     m_IsDetailsExpanded = value;
                     if (m_IsDetailsExpanded)
                     {
-                        //Top -= 50;
+                        ensureVisible(false);
                         Height += DetailsHeight;
                     }
                     else
                     {
-                        //Top += 50;
                         Height -= DetailsHeight;
                     }
 
@@ -122,19 +121,19 @@ namespace Tobi.Infrastructure.UI
 
         public void ShowModal()
         {
-            ensureVisible();
+            ensureVisible(true);
 
             ShowDialog();
         }
 
         public void ShowFloating()
         {
-            ensureVisible();
+            ensureVisible(true);
 
             Show();
         }
 
-        private void ensureVisible()
+        private void ensureVisible(bool authorizeHorizontalAdjust)
         {
             // For some reason, WindowStartupLocation.CenterOwner doesn't work in non-modal display mode.
             WindowStartupLocation = WindowStartupLocation.Manual;
@@ -182,10 +181,12 @@ namespace Tobi.Infrastructure.UI
                     finalTop = 0;
                 }
             }
-
-            Left = finalLeft;
+            if (authorizeHorizontalAdjust)
+            {
+                Left = finalLeft;
+                Width = finalWidth;
+            }
             Top = finalTop;
-            Width = finalWidth;
             Height = finalHeight;
         }
 
