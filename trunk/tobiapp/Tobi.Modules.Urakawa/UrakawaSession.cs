@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
@@ -13,6 +12,7 @@ using Microsoft.Win32;
 using Tobi.Infrastructure;
 using Tobi.Infrastructure.Commanding;
 using Tobi.Infrastructure.UI;
+using Tobi.Infrastructure.UI.FileDialog;
 using urakawa;
 using urakawa.events.progress;
 using urakawa.xuk;
@@ -99,7 +99,7 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.SaveAs_,
                 UserInterfaceStrings.SaveAs_KEYS,
                 shellPresenter.LoadTangoIcon("document-save"),
-                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 obj => saveAs(),
                 obj => IsProjectLoaded);
 
@@ -110,7 +110,7 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Save_,
                 UserInterfaceStrings.Save_KEYS,
                 shellPresenter.LoadTangoIcon("media-floppy"),
-                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
                 obj => save()
                 , obj => IsProjectLoadedAndDirty || IsProjectLoadedAndNotDirty); //todo: just for testing save even when not dirty
 
@@ -144,7 +144,8 @@ namespace Tobi.Modules.Urakawa
 
         public bool IsDirty
         {
-            get; set;
+            get;
+            set;
         }
 
         private bool IsProjectLoadedAndDirty
@@ -334,9 +335,12 @@ namespace Tobi.Modules.Urakawa
                 if (args.Cancelled)
                 {
                     IsDirty = true;
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
                 }
-
-                windowPopup.ForceClose();
+                else
+                {
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                }
 
                 var result = (string)args.Result;
 
@@ -354,9 +358,37 @@ namespace Tobi.Modules.Urakawa
 
         private void saveAs()
         {
-            throw new NotImplementedException("Functionality not implemented, sorry :(",
-                    new NotImplementedException("Just trying nested expections",
-                    new NotImplementedException("The last inner exception ! :)")));
+            Logger.Log("UrakawaSession.saveAs", Category.Debug, Priority.Medium);
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var window = shellPresenter.View as Window;
+            
+            var panel = new FileBrowserPanel();
+
+            var windowPopup = new PopupModalWindow(shellPresenter,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.SaveAs),
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 500, 300);
+
+            var viewModel = new ExplorerWindowViewModel(() => windowPopup.ForceClose(PopupModalWindow.DialogButton.Ok));
+            panel.DataContext = viewModel;
+
+            windowPopup.ShowModal();
+
+            if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
+            {
+                return;
+            }
+
+            if ((ObjectType)viewModel.DirViewVM.CurrentItem.DirType == ObjectType.File)
+            {
+                string str = viewModel.DirViewVM.CurrentItem.Path;
+            }
+
+            //SAVE AS
         }
 
         private void openDefaultTemplate()
@@ -410,7 +442,7 @@ namespace Tobi.Modules.Urakawa
         {
             double val = e.Current;
             double max = e.Total;
-            var percent = (int) ((val/max)*100);
+            var percent = (int)((val / max) * 100);
 
             if (percent != m_OpenXukActionCurrentPercentage)
             {
@@ -535,13 +567,14 @@ namespace Tobi.Modules.Urakawa
                     {
                         DocumentFilePath = null;
                         DocumentProject = null;
+                        windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
                     }
                     else
                     {
                         DocumentProject = project;
+                        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
                     }
 
-                    windowPopup.ForceClose();
 
                     var result = (string)args.Result;
 

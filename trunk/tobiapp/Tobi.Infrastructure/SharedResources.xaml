@@ -319,8 +319,25 @@
 				   Data            = "M 0,0 L 6,3 L 0,6 L 0,0"/>
 
   <Style TargetType="{x:Type GridSplitter}">
-
+    
     <Style.Triggers>
+
+      <Trigger Property="HorizontalAlignment" Value="Stretch">
+        <Setter Property="Height">
+          <Setter.Value>
+            <System:Double>4.5</System:Double>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      
+      <Trigger Property="VerticalAlignment" Value="Stretch">
+        <Setter Property="Width">
+          <Setter.Value>
+            <System:Double>4.5</System:Double>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      
       <EventTrigger RoutedEvent="Control.MouseEnter">
         <BeginStoryboard>
 
@@ -549,6 +566,5 @@
   <Style TargetType="{x:Type infraUI:TwoStateButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
 
-  <System:Double x:Key="grid-splitter-thickness">4.5</System:Double>
 
 </ResourceDictionary>

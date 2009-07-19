@@ -34,11 +34,11 @@ AlternationCount="2"
                
                >
       <ContentControl
-                        Width="{Binding Path=DataContext.IconWidth_XLarge}"
+                        Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
                             
-                          Height="{Binding Path=DataContext.IconHeight_XLarge}"
+                          Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
                             
-              Content="{Binding Path=DataContext.IconXLarge}"/>
+              Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
 
     </ToolTip>
 
@@ -49,14 +49,17 @@ AlternationCount="2"
       <GridViewColumn Header="Icon">
         <GridViewColumn.CellTemplate>
           <DataTemplate>
-
+<!-- 
+                    Content="{Binding Path=DataContext.IconProvider.IconLarge,
+                    RelativeSource={RelativeSource FindAncestor,
+                    AncestorType={x:Type ListViewItem}}}" -->
             <ContentControl Focusable="False"
-                              Width="{Binding Path=IconWidth_Large}"
+                              Width="{Binding Path=IconProvider.IconWidth_Large}"
                             
-                                Height="{Binding Path=IconHeight_Large}"
+                                Height="{Binding Path=IconProvider.IconHeight_Large}"
+                            
+                                Content="{Binding Path=IconProvider.IconLarge}"
                                                      
-                    Content="{Binding Path=DataContext.IconLarge,
-                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                      
                     ToolTip="{StaticResource imageIconTooltip}"
                             Margin="2, 4, 2, 4">
@@ -138,14 +141,16 @@ AlternationCount="2"
           <GridViewColumn Header="Icon">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-
+<!-- Content="{Binding Path=DataContext.IconProvider.IconXLarge,
+                    RelativeSource={RelativeSource FindAncestor,
+                    AncestorType={x:Type ListViewItem}}}" -->
                 <ContentControl Focusable="False"
-                                  Width="{Binding Path=IconWidth_XLarge}"
+                                  Width="{Binding Path=IconProvider.IconWidth_XLarge}"
                             
-                                    Height="{Binding Path=IconHeight_XLarge}"
+                                    Height="{Binding Path=IconProvider.IconHeight_XLarge}"
+                                    Content="{Binding Path=IconProvider.IconXLarge}"
                                                      
-                        Content="{Binding Path=DataContext.IconXLarge,
-                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
+                        
                                                      
                         ToolTip="{StaticResource imageKeyTooltip}"
                                 Margin="2, 4, 2, 4">

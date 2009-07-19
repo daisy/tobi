@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using Tobi.Infrastructure.Commanding;
 
@@ -64,20 +65,48 @@ namespace Tobi.Infrastructure.UI
 
             button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
 
-            Image image = command.IconMedium;
-            image.Margin = new Thickness(2, 2, 2, 2);
 
             if (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription))
             {
-                button.Content = image;
+                //button.Content = image;
+                command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
+
+                var binding = new Binding
+                                  {
+                                      Mode = BindingMode.OneWay,
+                                      Source = command.IconProvider,
+                                      Path = new PropertyPath("IconMedium")
+                                  };
+
+                var expr = button.SetBinding(Button.ContentProperty, binding);
             }
             else
             {
+                command.IconProvider.InvalidateIconsCache();
+
+                button.Content = null;
+
+                //Image image = command.IconProvider.IconMedium;
+                command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
+
                 var panel = new StackPanel
                                 {
                                     Orientation = Orientation.Horizontal
                                 };
-                panel.Children.Add(image);
+
+                var imageHost = new ContentControl();
+
+                var binding = new Binding
+                {
+                    Mode = BindingMode.OneWay,
+                    Source = command.IconProvider,
+                    Path = new PropertyPath("IconMedium")
+                };
+
+                var expr = imageHost.SetBinding(ContentControl.ContentProperty, binding);
+
+                panel.Children.Add(imageHost);
+
                 var tb = new Label
                              {
                                  VerticalAlignment = VerticalAlignment.Center,
@@ -91,7 +120,6 @@ namespace Tobi.Infrastructure.UI
                 button.Content = panel;
             }
         }
-
 
         public RichDelegateCommand<object> RichCommand
         {

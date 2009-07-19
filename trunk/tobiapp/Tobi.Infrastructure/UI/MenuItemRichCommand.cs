@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Tobi.Infrastructure.Commanding;
 
 namespace Tobi.Infrastructure.UI
@@ -30,10 +31,23 @@ namespace Tobi.Infrastructure.UI
             menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " " + command.KeyGestureText + " " : "");
             menuItem.InputGestureText = command.KeyGestureText;
 
-            Image image = command.IconSmall;
-            image.Margin = new Thickness(0, 2, 0, 2);
-            image.VerticalAlignment = VerticalAlignment.Center;
-            menuItem.Icon = image;
+            //Image image = command.IconProvider.IconSmall;
+            //image.Margin = new Thickness(0, 2, 0, 2);
+            //image.VerticalAlignment = VerticalAlignment.Center;
+
+
+            command.IconProvider.IconMargin_Small = new Thickness(0, 2, 0, 2);
+            
+            //menuItem.Icon = image;
+
+            var binding = new Binding
+            {
+                Mode = BindingMode.OneWay,
+                Source = command.IconProvider,
+                Path = new PropertyPath("IconSmall")
+            };
+
+            var expr = menuItem.SetBinding(MenuItem.IconProperty, binding);
         }
 
         public RichDelegateCommand<object> RichCommand

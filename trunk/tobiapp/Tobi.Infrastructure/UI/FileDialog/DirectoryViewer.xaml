@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="Tobi.Infrastructure.UI.FileDialog.DirectoryViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <UserControl.Resources>
+    <Style x:Key="selectedDirStyle">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+          <Setter Property="StackPanel.Background" Value="Gray" ></Setter>
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ListBoxItem">
+      <Style.Resources>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+      </Style.Resources>
+    </Style>
+
+    <!-- Style for folder/file name text block -->
+    <Style x:Key="NormalTextBlockStyle">
+      <!--<Setter Property="TextBlock.Width" Value="120"></Setter>-->
+      <Setter Property="TextBlock.TextWrapping" Value="NoWrap"></Setter>
+      <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"></Setter>
+      <Setter Property="TextBlock.VerticalAlignment" Value="Center"></Setter>
+    </Style>
+
+    <!-- Style for folder/file type and size text block -->
+    <Style x:Key="FadedTextBlockStyle" BasedOn="{StaticResource NormalTextBlockStyle}">
+      <Setter Property="TextBlock.Foreground" Value="DimGray"></Setter>
+    </Style>
+
+    <!-- Data template for displaying a directory or a file -->
+    <DataTemplate x:Key="DirViewTemplate">
+      <Label HorizontalAlignment="Left"
+             Background="Transparent"
+             DataContext="{Binding}"
+             IsTabStop="True" BorderThickness="1" >
+        <Label.Content>
+          <DockPanel>
+            <Image DockPanel.Dock="Left" VerticalAlignment="Center"
+                   x:Name="img"
+                   Margin="5"
+                   Width="50" Height="50" />
+            <StackPanel DockPanel.Dock="Left"
+                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                        x:Name="ObjInfoPanel">
+              <TextBlock x:Name="ObjName"
+                         FontWeight="Bold"
+                         Text="{Binding Name}"
+                         Style="{StaticResource NormalTextBlockStyle}"/>
+              <TextBlock x:Name="ObjType"
+                         Style="{StaticResource FadedTextBlockStyle}"/>
+              <TextBlock x:Name="ObjSize"
+                         HorizontalAlignment="Left"
+                         Style="{StaticResource FadedTextBlockStyle}"/>
+            </StackPanel>
+          </DockPanel>
+        </Label.Content>
+        <Label.ToolTip>
+          <ToolTip Name="FileInfo" Placement="Mouse">
+            <TextBlock Text="{Binding Name}"/>
+          </ToolTip>
+        </Label.ToolTip>
+      </Label>
+
+      <DataTemplate.Triggers>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="0">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/computer.xaml"></Setter>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="1">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/drive-harddisk.xaml"></Setter>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="2">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/folder.xaml"></Setter>
+          <Setter Property="Text" TargetName="ObjType" Value="File Folder"></Setter>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="3">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/text-x-generic-template.xaml"></Setter>
+          <Setter Property="Text" TargetName="ObjType" Value="{Binding Ext}"></Setter>
+          <Setter Property="Visibility" TargetName="ObjSize" Value="Visible"></Setter>
+          <Setter Property="Text" TargetName="ObjSize" Value="{Binding Size}"></Setter>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+          <Setter Property="Background" TargetName="ObjInfoPanel" Value="Gray" ></Setter>
+          <!--<Setter Property="Foreground" TargetName="ObjName" Value="Gray" ></Setter>-->
+          <Setter Property="Foreground" TargetName="ObjType" Value="Black" ></Setter>
+          <Setter Property="Foreground" TargetName="ObjSize" Value="Black" ></Setter>
+        </DataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+
+    <ListBox x:Name="dirList"
+             ItemsSource="{Binding Path=CurrentItems}"
+             ItemTemplate="{StaticResource DirViewTemplate}" BorderThickness="0"
+             HorizontalContentAlignment="Left" VerticalContentAlignment="Top"
+             Grid.Column="0" Grid.Row="0"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+             SelectedItem="{Binding Path=DirViewVM.CurrentItem,Mode=OneWayToSource}"
+             MouseDoubleClick="dirList_MouseDoubleClick"
+             KeyDown="dirList_KeyDown">
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel Orientation="Horizontal" ItemWidth="220"></WrapPanel>
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+    </ListBox>
+  </Grid>
+</UserControl>

@@ -104,6 +104,21 @@
     </Compile>
     <Compile Include="UI\DockSplitter.cs" />
     <Compile Include="UI\DynamicItemsControlRegionAdapter.cs" />
+    <Compile Include="UI\FileDialog\DirectoryViewer.xaml.cs">
+      <DependentUpon>DirectoryViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FileDialog\DirectoryViewerViewModel.cs" />
+    <Compile Include="UI\FileDialog\DirInfo.cs" />
+    <Compile Include="UI\FileDialog\ExplorerWindowViewModel.cs" />
+    <Compile Include="UI\FileDialog\FileBrowserPanel.xaml.cs">
+      <DependentUpon>FileBrowserPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FileDialog\FileExplorerViewModel.cs" />
+    <Compile Include="UI\FileDialog\FileSysemInformationConverter.cs" />
+    <Compile Include="UI\FileDialog\FileSystemExplorerService.cs" />
+    <Compile Include="UI\FileDialog\FileSystemTree.xaml.cs">
+      <DependentUpon>FileSystemTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FlowDocumentFindReplace.cs" />
     <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
     <Compile Include="UI\GreyableImage.cs" />
@@ -129,6 +144,7 @@
     <Compile Include="UI\PopupModalWindow.xaml.cs">
       <DependentUpon>PopupModalWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ScalableGreyableImageProvider.cs" />
     <Compile Include="UI\ToolBarTrayRegionAdapter.cs" />
     <Compile Include="UI\VisualExtensions.cs" />
     <Compile Include="UI\WatermarkTextBox.cs" />
@@ -1152,6 +1168,18 @@
     <Page Include="UI\ComboColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\FileDialog\DirectoryViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\FileDialog\FileBrowserPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\FileDialog\FileSystemTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\LoadingUserControl.xaml">
       <SubType>Designer</SubType>
