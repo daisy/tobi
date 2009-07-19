@@ -31,6 +31,9 @@ namespace Tobi.Infrastructure
             return str.Replace("_", "");
         }
 
+        public const string FileSystem_MyComputer = "Computer drives";
+        
+
         public const string ComboLabel_Playback = "Playback: ";
         public const string ComboLabel_Recording = "Recording: ";
 

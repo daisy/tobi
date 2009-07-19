@@ -11,8 +11,6 @@ namespace Tobi.Infrastructure.UI.FileDialog
     /// </summary>
     public class FileSystemExplorerService
     {
-        public static readonly string MY_COMPUTER = "My Conputer";
-
         /// <summary>
         /// Gets the list of files in the directory Name passed
         /// </summary>

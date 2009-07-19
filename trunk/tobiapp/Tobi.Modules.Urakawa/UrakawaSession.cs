@@ -373,7 +373,26 @@ namespace Tobi.Modules.Urakawa
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 300);
 
-            var viewModel = new ExplorerWindowViewModel(() => windowPopup.ForceClose(PopupModalWindow.DialogButton.Ok));
+
+            var iconComputer = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("computer"))
+                                   {
+                                       IconDrawScale = shellPresenter.View.MagnificationLevel
+                                   };
+            var iconDrive = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("drive-harddisk"))
+                                {
+                                    IconDrawScale = shellPresenter.View.MagnificationLevel
+                                };
+            var iconFolder = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("folder"))
+                                 {
+                                     IconDrawScale = shellPresenter.View.MagnificationLevel
+                                 };
+            var iconFile = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("text-x-generic-template"))
+                               {
+                                   IconDrawScale = shellPresenter.View.MagnificationLevel
+                               };
+
+            var viewModel = new ExplorerWindowViewModel(() => windowPopup.ForceClose(PopupModalWindow.DialogButton.Ok),
+                iconComputer, iconDrive, iconFolder, iconFile);
             panel.DataContext = viewModel;
 
             windowPopup.ShowModal();
@@ -383,7 +402,8 @@ namespace Tobi.Modules.Urakawa
                 return;
             }
 
-            if ((ObjectType)viewModel.DirViewVM.CurrentItem.DirType == ObjectType.File)
+            if (viewModel.DirViewVM.CurrentItem != null
+                && (ObjectType)viewModel.DirViewVM.CurrentItem.DirType == ObjectType.File)
             {
                 string str = viewModel.DirViewVM.CurrentItem.Path;
             }

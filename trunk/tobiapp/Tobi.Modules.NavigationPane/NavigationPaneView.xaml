@@ -107,10 +107,13 @@
                 Grid.Row="2" Grid.Column="0"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Visible"
-                    Width="Auto">
+                    Width="Auto"
+    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
         <TreeView x:Name="TreeView"
                   
+    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+           BorderThickness="0"
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
              VirtualizingStackPanel.VirtualizationMode="Standard"
@@ -196,6 +199,8 @@
     < /ListView.Resources -->
     
     <ListBox x:Name="ListView"
+             
+           BorderThickness="0"
              
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="True"

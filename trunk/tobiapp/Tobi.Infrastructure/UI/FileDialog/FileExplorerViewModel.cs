@@ -49,8 +49,8 @@ namespace Tobi.Infrastructure.UI.FileDialog
 
             //create a node for "my computer"
             // this will be the root for the file system tree
-            DirInfo rootNode = new DirInfo(FileSystemExplorerService.MY_COMPUTER);
-            rootNode.Path = FileSystemExplorerService.MY_COMPUTER;
+            DirInfo rootNode = new DirInfo(UserInterfaceStrings.FileSystem_MyComputer);
+            rootNode.Path = UserInterfaceStrings.FileSystem_MyComputer;
             _evm.CurrentDirectory = rootNode; //make root node as the current directory
 
             SystemDirectorySource = new List<DirInfo> { rootNode };
@@ -67,7 +67,7 @@ namespace Tobi.Infrastructure.UI.FileDialog
             //expand the current selected node in tree 
             //if this is an ancestor of the directory we want to navigate or "My Computer" current node 
             if (CurrentTreeItem != null && (curDir.Path.Contains(CurrentTreeItem.Path)
-                        || CurrentTreeItem.Path == FileSystemExplorerService.MY_COMPUTER))
+                        || CurrentTreeItem.Path == UserInterfaceStrings.FileSystem_MyComputer))
             {
                 // expand the current node
                 // If the current node is already expanded then first collapse it n then expand it

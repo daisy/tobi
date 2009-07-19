@@ -50,6 +50,8 @@ namespace Tobi.Infrastructure.UI
         {
             ShellPresenter = presenter;
 
+            ClickedDialogButton = DialogButton.ESC;
+
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
@@ -128,8 +130,10 @@ namespace Tobi.Infrastructure.UI
             ShellPresenter.DimBackgroundWhile(() => ShowDialog());
         }
 
-        public void ShowFloating()
+        public void ShowFloating(Action whenDoneAction)
         {
+            m_whenDoneAction = whenDoneAction;
+
             ensureVisible(true);
 
             Show();
@@ -235,6 +239,7 @@ namespace Tobi.Infrastructure.UI
         private bool m_ButtonTriggersClose = false;
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
         private readonly IShellPresenter ShellPresenter;
+        private Action m_whenDoneAction;
 
         public bool AllowEscapeAndCloseButton
         {
@@ -276,7 +281,10 @@ namespace Tobi.Infrastructure.UI
 
             ContentPlaceHolder.Content = null;
 
-            ClickedDialogButton = DialogButton.ESC;
+            if (m_whenDoneAction != null)
+            {
+                m_whenDoneAction.Invoke();
+            }
         }
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)

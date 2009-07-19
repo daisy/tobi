@@ -63,7 +63,8 @@ namespace Tobi.Infrastructure.UI
         {
             button.Command = command;
 
-            button.ToolTip = command.LongDescription + (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
+            button.ToolTip = command.LongDescription +
+                             (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
 
 
             if (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription))
@@ -82,43 +83,71 @@ namespace Tobi.Infrastructure.UI
             }
             else
             {
-                command.IconProvider.InvalidateIconsCache();
-
-                button.Content = null;
-
-                //Image image = command.IconProvider.IconMedium;
-                command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
-
-                var panel = new StackPanel
-                                {
-                                    Orientation = Orientation.Horizontal
-                                };
-
-                var imageHost = new ContentControl();
-
-                var binding = new Binding
+                if (button.Tag is ImageAndTextPlaceholder)
                 {
-                    Mode = BindingMode.OneWay,
-                    Source = command.IconProvider,
-                    Path = new PropertyPath("IconMedium")
-                };
+                    var binding = new Binding
+                                      {
+                                          Mode = BindingMode.OneWay,
+                                          Source = command.IconProvider,
+                                          Path = new PropertyPath("IconMedium")
+                                      };
 
-                var expr = imageHost.SetBinding(ContentControl.ContentProperty, binding);
+                    var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
+                    ((ImageAndTextPlaceholder) button.Tag).m_TextHost.Content = command.ShortDescription;
+                    button.ToolTip = command.LongDescription;
+                }
+                else
+                {
+                    button.Content = null;
 
-                panel.Children.Add(imageHost);
+                    //Image image = command.IconProvider.IconMedium;
+                    command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
 
-                var tb = new Label
-                             {
-                                 VerticalAlignment = VerticalAlignment.Center,
-                                 Content = command.ShortDescription,
-                                 //Margin = new Thickness(8, 0, 0, 0)
-                             };
+                    var panel = new StackPanel
+                                    {
+                                        Orientation = Orientation.Horizontal
+                                    };
 
-                //tb.Content = new Run(UserInterfaceStrings.EscapeMnemonic(command.ShortDescription));
+                    var imageHost = new ContentControl();
 
-                panel.Children.Add(tb);
-                button.Content = panel;
+                    var binding = new Binding
+                                      {
+                                          Mode = BindingMode.OneWay,
+                                          Source = command.IconProvider,
+                                          Path = new PropertyPath("IconMedium")
+                                      };
+
+                    var bindingExpressionBase = imageHost.SetBinding(ContentControl.ContentProperty, binding);
+
+                    panel.Children.Add(imageHost);
+
+                    var tb = new Label
+                                 {
+                                     VerticalAlignment = VerticalAlignment.Center,
+                                     Content = command.ShortDescription,
+                                     //Margin = new Thickness(8, 0, 0, 0)
+                                 };
+
+                    //tb.Content = new Run(UserInterfaceStrings.EscapeMnemonic(command.ShortDescription));
+
+                    panel.Children.Add(tb);
+                    button.Content = panel;
+
+                    button.ToolTip = command.LongDescription;
+
+                    button.Tag = new ImageAndTextPlaceholder
+                                     {
+                                         m_ImageHost = imageHost,
+                                         m_TextHost = tb
+                                     };
+                }
             }
+        }
+
+        private struct ImageAndTextPlaceholder
+        {
+            public ContentControl m_ImageHost;
+            public Label m_TextHost;
         }
 
         public RichDelegateCommand<object> RichCommand
