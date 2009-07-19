@@ -19,7 +19,6 @@
                  Focusable="False"
                 HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
 
-  <ScrollViewer Grid.Column="2" Grid.Row="0">
-    <FileDialog:DirectoryViewer/>
-  </ScrollViewer>
+    <FileDialog:DirectoryViewer Grid.Column="2" Grid.Row="0"/>
+  
 </Grid>

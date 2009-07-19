@@ -460,6 +460,34 @@
         </Setter -->
 
 
+  <Style TargetType="{x:Type ListItem}">
+
+    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>
+
+  <Style TargetType="{x:Type MenuItem}">
+
+    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>
+
+
+  <Style TargetType="{x:Type ButtonBase}">
+
+    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>
+
 
   <Style x:Key="ToolBarButtonBaseStyle" TargetType="{x:Type ButtonBase}">
 
@@ -467,14 +495,7 @@
     <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
     <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
     <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
-
-<!--
-    ToolTipService.HasDropShadow="False"
-    ToolTipService.BetweenShowDelay="100"
-    ToolTipService.InitialShowDelay="100"
-    ToolTipService.ShowOnDisabled="True"
-    -->
-
+    
     <Setter Property="RepeatButton.Delay" Value="0"/>
     <Setter Property="RepeatButton.Interval" Value="100"/>
 

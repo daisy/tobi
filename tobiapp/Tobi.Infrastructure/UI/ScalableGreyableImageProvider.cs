@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -89,7 +88,7 @@ namespace Tobi.Infrastructure.UI
                          : (size == 1
                                 ? IconMargin_Medium
                                 : (size == 2 ? IconMargin_Large : IconMargin_XLarge))),
-                Stretch = Stretch.Uniform,
+                Stretch = Stretch.UniformToFill,
                 SnapsToDevicePixels = true,
                 Width =
                     (size == 0
@@ -106,7 +105,7 @@ namespace Tobi.Infrastructure.UI
             };
 
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
-            image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
+            image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
 
             updateSource(image);
 

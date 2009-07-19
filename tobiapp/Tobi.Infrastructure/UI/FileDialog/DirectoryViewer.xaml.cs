@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Tobi.Infrastructure.UI.FileDialog
@@ -7,7 +6,7 @@ namespace Tobi.Infrastructure.UI.FileDialog
     /// <summary>
     /// Interaction logic for DirectoryViewer.xaml
     /// </summary>
-    public partial class DirectoryViewer : UserControl
+    public partial class DirectoryViewer
     {
         #region // Private members
         private ExplorerWindowViewModel _viewModel;
@@ -32,10 +31,11 @@ namespace Tobi.Infrastructure.UI.FileDialog
             _viewModel.DirViewVM.OpenCurrentObject();
         }
 
-        private void dirList_KeyDown(object sender, KeyEventArgs e)
+        private void dirList_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
+                e.Handled = true;
                 _viewModel.DirViewVM.OpenCurrentObject();
             }
         }

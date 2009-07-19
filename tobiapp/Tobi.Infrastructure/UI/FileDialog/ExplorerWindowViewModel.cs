@@ -17,9 +17,21 @@ namespace Tobi.Infrastructure.UI.FileDialog
 
         #endregion
 
+        public ScalableGreyableImageProvider IconComputer { get; private set; }
+        public ScalableGreyableImageProvider IconDrive { get; private set; }
+        public ScalableGreyableImageProvider IconFolder { get; private set; }
+        public ScalableGreyableImageProvider IconFile { get; private set; }
+
+
         #region // .ctor
-        public ExplorerWindowViewModel(Action activateFileAction)
+        public ExplorerWindowViewModel(Action activateFileAction,
+            ScalableGreyableImageProvider iconComputer, ScalableGreyableImageProvider iconDrive, ScalableGreyableImageProvider iconFolder, ScalableGreyableImageProvider iconFile)
         {
+            IconComputer = iconComputer;
+            IconDrive = iconDrive;
+            IconFolder = iconFolder;
+            IconFile = iconFile;
+
             FileTreeVM = new FileExplorerViewModel(this);
             DirViewVM = new DirectoryViewerViewModel(this, activateFileAction);
         }
@@ -98,7 +110,7 @@ namespace Tobi.Infrastructure.UI.FileDialog
             IList<DirInfo> childFileList = new List<DirInfo>();
 
             //If current directory is "My computer" then get the all logical drives in the system
-            if (CurrentDirectory.Name.Equals(FileSystemExplorerService.MY_COMPUTER))
+            if (CurrentDirectory.Name.Equals(UserInterfaceStrings.FileSystem_MyComputer))
             {
                 childDirList = (from rd in FileSystemExplorerService.GetRootDirectories()
                                 select new DirInfo(rd)).ToList();

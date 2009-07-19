@@ -481,9 +481,8 @@ namespace Tobi
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 600);
-            windowPopup.ShowFloating();
 
-            //m_listOfIconRichCommands.Clear();
+            windowPopup.ShowFloating(() => m_listOfIconRichCommands.Clear());
 
             /*
             var windowPopup = new Window()

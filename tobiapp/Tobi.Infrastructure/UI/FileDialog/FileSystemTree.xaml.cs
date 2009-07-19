@@ -6,7 +6,7 @@ namespace Tobi.Infrastructure.UI.FileDialog
     /// <summary>
     /// Interaction logic for FileSystemTree.xaml
     /// </summary>
-    public partial class FileSystemTree : UserControl
+    public partial class FileSystemTree
     {
         #region // Private Variables
         private ExplorerWindowViewModel myViewModel;
