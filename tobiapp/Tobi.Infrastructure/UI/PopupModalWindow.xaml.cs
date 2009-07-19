@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.Media;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Tobi.Infrastructure.Commanding;
 using Application = System.Windows.Application;
@@ -216,8 +214,8 @@ namespace Tobi.Infrastructure.UI
 
             DetailsHeight = zoom * detailsHeight;
 
-            CommandDetailsCollapse.IconDrawScale = zoom;
-            CommandDetailsExpand.IconDrawScale = zoom;
+            CommandDetailsCollapse.IconProvider.IconDrawScale = zoom;
+            CommandDetailsExpand.IconProvider.IconDrawScale = zoom;
 
             Title = title;
             Icon = null;
@@ -496,8 +494,9 @@ namespace Tobi.Infrastructure.UI
             m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_No);
         }
 
-        public void ForceClose()
+        public void ForceClose(DialogButton buttonResult)
         {
+            ClickedDialogButton = buttonResult;
             AllowEscapeAndCloseButton = true;
             m_ButtonTriggersClose = false;
             Close();

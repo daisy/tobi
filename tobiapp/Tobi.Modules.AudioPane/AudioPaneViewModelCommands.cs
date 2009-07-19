@@ -311,7 +311,7 @@ namespace Tobi.Modules.AudioPane
             CommandZoomSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_ZoomSelection,
                 UserInterfaceStrings.Audio_ZoomSelection_,
                 UserInterfaceStrings.Audio_ZoomSelection_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
                 //shellPresenter.LoadTangoIcon("system-search"),
                 obj => ZoomSelection(), obj => !IsWaveFormLoading && IsSelectionSet);
 
@@ -328,7 +328,7 @@ namespace Tobi.Modules.AudioPane
             CommandRefresh = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_Reload,
                 UserInterfaceStrings.Audio_Reload_,
                 null,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //shellPresenter.LoadTangoIcon("view-refresh"),
                 obj => ReloadWaveForm(), obj => !IsWaveFormLoading && IsAudioLoaded);
 
@@ -346,7 +346,7 @@ namespace Tobi.Modules.AudioPane
             CommandPlayPreviewLeft = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_PlayPreviewLeft,
                 UserInterfaceStrings.Audio_PlayPreviewLeft_,
                 UserInterfaceStrings.Audio_PlayPreviewLeft_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
                 obj => AudioPlayer_PlayPreview(true), obj => CanPlay);
 
             shellPresenter.RegisterRichCommand(CommandPlayPreviewLeft);
@@ -354,7 +354,7 @@ namespace Tobi.Modules.AudioPane
             CommandPlayPreviewRight = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_PlayPreviewRight,
                 UserInterfaceStrings.Audio_PlayPreviewRight_,
                 UserInterfaceStrings.Audio_PlayPreviewRight_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
                 obj => AudioPlayer_PlayPreview(false), obj => CanPlay);
 
             shellPresenter.RegisterRichCommand(CommandPlayPreviewRight);
@@ -431,7 +431,7 @@ namespace Tobi.Modules.AudioPane
             CommandEndSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_EndSelection,
                 UserInterfaceStrings.Audio_EndSelection_,
                 UserInterfaceStrings.Audio_EndSelection_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
                 obj => EndSelection(), obj => CanEndSelection);
 
             shellPresenter.RegisterRichCommand(CommandEndSelection);
@@ -439,7 +439,7 @@ namespace Tobi.Modules.AudioPane
             CommandBeginSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_BeginSelection,
                 UserInterfaceStrings.Audio_BeginSelection_,
                 UserInterfaceStrings.Audio_BeginSelection_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
                 obj => BeginSelection(), obj => CanBeginSelection);
 
             shellPresenter.RegisterRichCommand(CommandBeginSelection);

@@ -146,7 +146,7 @@
       </Grid.RowDefinitions>
 
       <GridSplitter Focusable="False" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
-                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="{StaticResource grid-splitter-thickness}">
+                    HorizontalAlignment="Center" VerticalAlignment="Stretch">
 
         <!-- GridSplitter.Triggers>
           <EventTrigger RoutedEvent="Control.MouseEnter">
@@ -179,7 +179,7 @@
       <GridSplitter  Focusable="False" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
                     Thumb.DragCompleted="OnSplitterDragCompleted"
                     Thumb.DragStarted="OnSplitterDragStarted"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{StaticResource grid-splitter-thickness}">
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center">
 
         <!-- GridSplitter.Triggers>
 

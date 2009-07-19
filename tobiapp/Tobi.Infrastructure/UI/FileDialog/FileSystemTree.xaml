@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="Tobi.Infrastructure.UI.FileDialog.FileSystemTree"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:FileDialog="clr-namespace:Tobi.Infrastructure.UI.FileDialog">
+
+  <UserControl.Resources>
+    <FileDialog:FileSysemInformationConverter x:Key="fileSysemInformationConverter"/>
+
+    <HierarchicalDataTemplate DataType="{x:Type FileDialog:DirInfo}"
+                              ItemsSource="{Binding Converter={StaticResource fileSysemInformationConverter}}">
+      <StackPanel Orientation="Horizontal">
+        <Image Width="20" Height="20" Stretch="Fill" x:Name="img" />
+        <TextBlock Text="{Binding Name}" Margin="5,0,0,0" />
+      </StackPanel>
+      <HierarchicalDataTemplate.Triggers>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="0">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/computer.xaml"></Setter>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="1">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/drive-harddisk.xaml"></Setter>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Path=DirType}" Value="2">
+          <Setter Property="Image.Source" TargetName="img" Value="/tango-icons/folder.xaml"></Setter>
+        </DataTrigger>
+      </HierarchicalDataTemplate.Triggers>
+    </HierarchicalDataTemplate>
+
+    <Style TargetType="TreeViewItem">
+      <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+      <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+      <EventSetter Event="Expanded" Handler="TreeView_Expanded"></EventSetter>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid Background="Beige" DataContext="{Binding }" Width="300">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+      <ColumnDefinition Width="30"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="30"></RowDefinition>
+      <RowDefinition Height="*"></RowDefinition>
+      <RowDefinition Height="1"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Label Content="Folders" Grid.Column="0" VerticalContentAlignment="Center" FontSize="12" HorizontalContentAlignment="Stretch" FontWeight="Bold"></Label>
+    <Button Content="X" Cursor="Hand" Grid.Column="1" Focusable="False" FontFamily="Courier" FontSize="9" FontWeight="Bold" Margin="0,1,0,0" Padding="0"
+            VerticalContentAlignment="Bottom" Width="16" Height="16" HorizontalContentAlignment="Right" Command="{Binding Path=ShowTreeCommand}"/>
+
+    <ScrollViewer Margin="0,0,5,0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Auto">
+      <TreeView x:Name="DirectoryTree"
+                ItemsSource="{Binding Path=FileTreeVM.SystemDirectorySource}"
+                SelectedItemChanged="DirectoryTree_SelectedItemChanged"
+                BorderThickness="0" />
+    </ScrollViewer>
+  </Grid>
+</UserControl>

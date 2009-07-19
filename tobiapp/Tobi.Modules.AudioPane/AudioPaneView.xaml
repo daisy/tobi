@@ -318,8 +318,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Grid.Column="1" Grid.Row="0"
      Focusable="False"
     x:Name="splitterPeakMeter"
-     HorizontalAlignment="Center" VerticalAlignment="Stretch"
-                Width="{StaticResource grid-splitter-thickness}">
+     HorizontalAlignment="Center" VerticalAlignment="Stretch">
 
     <!-- GridSplitter.Triggers -->
 

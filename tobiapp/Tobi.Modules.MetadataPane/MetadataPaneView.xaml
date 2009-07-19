@@ -7,13 +7,6 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     LastChildFill="True" Loaded="DockPanel_Loaded">
 
-  <DockPanel.LayoutTransform>
-    <!-- WARNING: DataModel must be Shell (see constructor) -->
-    <ScaleTransform
-          ScaleX="{Binding MagnificationLevel, Mode=OneWay}"
-                    ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"/>
-  </DockPanel.LayoutTransform>
-  
     <DockPanel.Resources>
         
         <local:BoolToVisibilityConverter x:Key="boolToVis" />

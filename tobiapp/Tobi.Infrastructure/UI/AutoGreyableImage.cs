@@ -13,16 +13,16 @@ namespace Tobi.Infrastructure.UI
     /// </summary>
     public class AutoGreyableImage : Image
     {
-        public MultiBinding SourceBindingColor
+        public BindingBase SourceBindingColor
         {
             get;
-            private set;
+            set;
         }
 
-        protected MultiBinding SourceBindingGrey
+        public BindingBase SourceBindingGrey
         {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
@@ -32,7 +32,8 @@ namespace Tobi.Infrastructure.UI
         {
             // Override the metadata of the IsEnabled property.
             IsEnabledProperty.OverrideMetadata(typeof(AutoGreyableImage),
-                   new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnAutoGreyScaleImageIsEnabledPropertyChanged)));
+                   new FrameworkPropertyMetadata(true,
+                       new PropertyChangedCallback(OnAutoGreyScaleImageIsEnabledPropertyChanged)));
         }
 
         /// <summary>
@@ -57,19 +58,22 @@ namespace Tobi.Infrastructure.UI
                 }
                 else
                 {
-                    // Get the source bitmap
                     BitmapSource bitmapImage = null;
-
-                    if (autoGreyScaleImg.Source is BitmapSource)
+                    
+                    if (autoGreyScaleImg.Source is FormatConvertedBitmap)
+                    {
+                        // Already grey !
+                        return;
+                    }
+                    else if (autoGreyScaleImg.Source is BitmapSource)
                     {
                         bitmapImage = (BitmapSource)autoGreyScaleImg.Source;
                     }
-                    else
+                    else // trying string 
                     {
                         bitmapImage = new BitmapImage(new Uri(autoGreyScaleImg.Source.ToString()));
                     }
 
-                    // Convert it to Gray
                     autoGreyScaleImg.Source = new FormatConvertedBitmap(bitmapImage,
                                                     PixelFormats.Gray32Float, null, 0);
                 }
@@ -86,19 +90,20 @@ namespace Tobi.Infrastructure.UI
                 }
                 else
                 {
-                    // Set the Source property to the original value.
-                    autoGreyScaleImg.Source = ((FormatConvertedBitmap) autoGreyScaleImg.Source).Source;
+                    if (autoGreyScaleImg.Source is FormatConvertedBitmap)
+                    {
+                        autoGreyScaleImg.Source = ((FormatConvertedBitmap)autoGreyScaleImg.Source).Source;
+                    }
+                    else if (autoGreyScaleImg.Source is BitmapSource)
+                    {
+                        // Should be full color already.
+                        return;
+                    }
                 }
 
                 // Reset the Opcity Mask
                 autoGreyScaleImg.OpacityMask = null;
             }
-        }
-
-        public void SetColorAndGreySourceBindings(MultiBinding bindingColor, MultiBinding bindingGrey)
-        {
-            SourceBindingColor = bindingColor;
-            SourceBindingGrey = bindingGrey;
         }
     }
 }

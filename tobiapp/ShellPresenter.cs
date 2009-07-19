@@ -132,7 +132,7 @@ namespace Tobi
                                                                       UserInterfaceStrings.Menu_Exit_,
                                                                       UserInterfaceStrings.Menu_Exit_KEYS,
                                                                       LoadTangoIcon("system-log-out"),
-                                                                      //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
+                                                                      //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
                 //LoadTangoIcon("document-save"),
                                                             ExitCommand_Executed, obj => true);
             RegisterRichCommand(ExitCommand);
@@ -142,7 +142,7 @@ namespace Tobi
                                                                        UserInterfaceStrings.UI_IncreaseMagnification_,
                                                                       UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                                                                       //LoadTangoIcon("mail-forward"),
-                                                                      RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
+                                                                      ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
                                                             obj => View.MagnificationLevel += 0.15, obj => true);
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
@@ -150,7 +150,7 @@ namespace Tobi
             MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_DecreaseMagnification,
                                                                       UserInterfaceStrings.UI_DecreaseMagnification_,
                                                                       UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
-                                                                      RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
+                                                                      ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
                                                             obj => View.MagnificationLevel -= 0.15, obj => true);
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
@@ -210,7 +210,7 @@ namespace Tobi
             WebHomeCommand = new RichDelegateCommand<object>(UserInterfaceStrings.WebHome,
                 UserInterfaceStrings.WebHome_,
                 UserInterfaceStrings.WebHome_KEYS,
-                //RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
                 LoadTangoIcon("go-home"),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
@@ -219,7 +219,7 @@ namespace Tobi
             NavNextCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavNext,
                 UserInterfaceStrings.NavNext_,
                 UserInterfaceStrings.NavNext_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(NavNextCommand);
@@ -227,7 +227,7 @@ namespace Tobi
             NavPreviousCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavPrevious,
                 UserInterfaceStrings.NavPrevious_,
                 UserInterfaceStrings.NavPrevious_KEYS,
-                RichDelegateCommand<object>.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
                 obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
             RegisterRichCommand(NavPreviousCommand);
@@ -458,16 +458,19 @@ namespace Tobi
 "x-office-spreadsheet"
             };
 
-            foreach (string resourceKey in resourceKeys)
+            if (m_listOfIconRichCommands.Count == 0)
             {
-                var command = new RichDelegateCommand<object>(resourceKey,
-                                                              resourceKey,
-                                                              null,
-                                                              LoadTangoIcon(resourceKey),
-                                                              null, obj => true);
-                m_listOfIconRichCommands.Add(command);
+                foreach (string resourceKey in resourceKeys)
+                {
+                    var command = new RichDelegateCommand<object>(resourceKey,
+                                                                  resourceKey,
+                                                                  null,
+                                                                  LoadTangoIcon(resourceKey),
+                                                                  null, obj => true);
+                    m_listOfIconRichCommands.Add(command);
 
-                command.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                    command.IconProvider.IconDrawScale = (double) Application.Current.Resources["MagnificationLevel"];
+                }
             }
 
 
@@ -569,14 +572,9 @@ namespace Tobi
                                 Focusable = false,
                             };
 
-            var fakeCommand = new RichDelegateCommand<object>(null,
-                null,
-                null,
-                LoadTangoIcon("help-browser"),
-                null, obj => true);
-
+            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser"))
+                                   {IconDrawScale = View.MagnificationLevel};
             //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
-            fakeCommand.IconDrawScale = View.MagnificationLevel;
 
             var panel = new StackPanel
                             {
@@ -584,7 +582,7 @@ namespace Tobi
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Stretch,
                             };
-            panel.Children.Add(fakeCommand.IconLarge);
+            panel.Children.Add(iconProvider.IconLarge);
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
@@ -660,11 +658,11 @@ namespace Tobi
 
             foreach (var command in m_listOfRegisteredRichCommands)
             {
-                command.IconDrawScale = value;
+                command.IconProvider.IconDrawScale = value;
             }
             foreach (var command in m_listOfIconRichCommands)
             {
-                command.IconDrawScale = value;
+                command.IconProvider.IconDrawScale = value;
             }
         }
 
