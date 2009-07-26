@@ -11,5 +11,6 @@ namespace Tobi.Common
         public const string NavigationPane = "NavigationPane";
         public const string DocumentPane = "DocumentPane";
         public const string AudioPane = "AudioPane";
+        public const string NavigationPanel = "NavigationPanel";
     }
 }
