@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using Tobi.Infrastructure.Commanding;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
 using urakawa;
 using urakawa.core;
 using urakawa.navigation;
@@ -103,32 +101,8 @@ namespace Tobi.Modules.NavigationPane
             return null;
         }
     }
-    public class HeadingTreeNodeWrapper : INotifyPropertyChanged
+    public class HeadingTreeNodeWrapper : PropertyChangedNotifyBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                try
-                {
-                    handler(this, e);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    //swallow (some strange framework-raised first-chance exception)
-                }
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
         private TreeNode m_TreeNode;
         private HeadingTreeNodeWrapper m_parent;
         private TreeNode m_TreeNodeHeading;
@@ -169,7 +143,7 @@ namespace Tobi.Modules.NavigationPane
                     m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
                 }
 
-                OnPropertyChanged("Children");
+                OnPropertyChanged(() => Children);
             }
         }
         public bool HasChildren
@@ -208,7 +182,7 @@ namespace Tobi.Modules.NavigationPane
                         m_children = null;
                     }
 
-                    OnPropertyChanged("IsExpanded");
+                    OnPropertyChanged(() => IsExpanded);
                 }
             }
         }

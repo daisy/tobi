@@ -44,10 +44,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tobi.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
-    </Reference>
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -106,6 +102,10 @@
     <ProjectReference Include="..\ExternalLibs\CAL\Unity\Lib.Unity.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
+      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
+      <Name>Tobi.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

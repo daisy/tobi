@@ -3,17 +3,39 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
+using Tobi.Common;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using Tobi.Modules.MetadataPane;
+
 
 namespace Tobi.Modules.ToolBars
 {
     /// <summary>
     /// Interaction logic for ToolBarsView.xaml
     /// </summary>
-    public partial class ToolBarsView : INotifyPropertyChanged
+    public partial class ToolBarsView : INotifyPropertyChangedEx
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        public ToolBarsView()
+        {
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
+        }
+
         public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
         public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
@@ -37,6 +59,7 @@ namespace Tobi.Modules.ToolBars
         public RichDelegateCommand<object> NavNextCommand { get; private set; }
         public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
 
+        public RichDelegateCommand<object> CommandFocus { get; private set; }
 
         public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
 
@@ -57,7 +80,7 @@ namespace Tobi.Modules.ToolBars
             {
                 CommandShowMetadataPane = metadata.CommandShowMetadataPane;
             }
-            
+
             var session = Container.Resolve<IUrakawaSession>();
             if (session != null)
             {
@@ -89,33 +112,21 @@ namespace Tobi.Modules.ToolBars
                 NavNextCommand = shellPresenter.NavNextCommand;
                 NavPreviousCommand = shellPresenter.NavPreviousCommand;
             }
+            //
+            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Toolbar_Focus,
+                null,
+                UserInterfaceStrings.Toolbar_Focus_KEYS,
+                null,
+                obj => BringIntoFocus(), obj => true);
+
+            if (shellPresenter != null)
+            {
+                shellPresenter.RegisterRichCommand(CommandFocus);
+            }
+            //
 
             InitializeComponent();
         }
-
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            //PropertyChanged.Invoke(this, e);
-
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion INotifyPropertyChanged
 
         // ReSharper disable RedundantDefaultFieldInitializer
         private readonly List<Double> m_IconHeights = new List<double>
@@ -130,7 +141,7 @@ namespace Tobi.Modules.ToolBars
                 return m_IconHeights;
             }
         }
-        
+
         public List<Double> IconWidths
         {
             get
@@ -150,7 +161,7 @@ namespace Tobi.Modules.ToolBars
             {
                 if (m_IconHeight == value) return;
                 m_IconHeight = value;
-                OnPropertyChanged("IconHeight");
+                m_PropertyChangeHandler.OnPropertyChanged(() => IconHeight);
             }
         }
 
@@ -165,8 +176,13 @@ namespace Tobi.Modules.ToolBars
             {
                 if (m_IconWidth == value) return;
                 m_IconWidth = value;
-                OnPropertyChanged("IconWidth");
+                m_PropertyChangeHandler.OnPropertyChanged(() => IconWidth);
             }
+        }
+
+        public void BringIntoFocus()
+        {
+            FocusHelper.Focus(this, FocusStart);
         }
     }
 }

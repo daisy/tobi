@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
-using Tobi.Infrastructure.UI;
+using Tobi.Common;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
-using urakawa.events.presentation;
-
 
 
 namespace Tobi.Modules.MetadataPane
@@ -22,7 +18,7 @@ namespace Tobi.Modules.MetadataPane
     /// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
-    public class MetadataPaneViewModel : ViewModelShellBase
+    public class MetadataPaneViewModel : ViewModelBase
     {
         #region Construction
 

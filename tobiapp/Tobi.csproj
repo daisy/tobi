@@ -162,6 +162,10 @@
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Common\Tobi.Common.csproj">
+      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
+      <Name>Tobi.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Modules.AudioPane</Name>
@@ -169,6 +173,10 @@
     <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Modules.DocumentPane.csproj">
       <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
       <Name>Tobi.Modules.DocumentPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.FileDialog\Tobi.Modules.FileDialog.csproj">
+      <Project>{576DF227-5F83-4A41-AA5D-255D102DF5F6}</Project>
+      <Name>Tobi.Modules.FileDialog</Name>
     </ProjectReference>
     <ProjectReference Include="Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
       <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>

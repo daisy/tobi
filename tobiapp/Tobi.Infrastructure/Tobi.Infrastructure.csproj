@@ -57,140 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolToOppositeBoolConverter.cs" />
-    <Compile Include="Colors.cs" />
-    <Compile Include="Commanding\AttachedTrigger\CommandParameter.cs" />
-    <Compile Include="Commanding\AttachedTrigger\CommandSource.cs" />
-    <Compile Include="Commanding\AttachedTrigger\CommandTrigger.cs" />
-    <Compile Include="Commanding\AttachedTrigger\CommandTriggerGroup.cs" />
-    <Compile Include="Commanding\AttachedTrigger\EventCommandTrigger.cs" />
-    <Compile Include="Commanding\AttachedTrigger\ICommandTrigger.cs" />
-    <Compile Include="Commanding\AttachedTrigger\PropertyCommandTrigger.cs" />
-    <Compile Include="Commanding\CommandExtension.cs" />
-    <Compile Include="Commanding\DelegateCommand.cs" />
-    <Compile Include="Commanding\RichDelegateCommand.cs" />
-    <Compile Include="DataBindingDebugConverter.cs" />
-    <Compile Include="HelpProvider.cs" />
-    <Compile Include="IUrakawaSession.cs" />
-    <Compile Include="Onyx\Reflection\Reflect.cs" />
-    <Compile Include="Onyx\Reflection\ReflectOn.cs" />
-    <Compile Include="PageFoundByFlowDocumentParserEvent.cs" />
-    <Compile Include="ProjectLoadedEvent.cs" />
-    <Compile Include="EnumExtensions.cs" />
-    <Compile Include="EnumListExtension.cs" />
-    <Compile Include="FirstFocusedElementExtension.cs" />
-    <Compile Include="IHeaderInfoProvider.cs" />
-    <Compile Include="IndependentModule.cs" />
-    <Compile Include="IShellPresenter.cs" />
-    <Compile Include="IShellView.cs" />
-    <Compile Include="IToggableView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyChangedNotifyBase.cs" />
-    <Compile Include="RegionNames.cs" />
-    <Compile Include="SampleSingleton.cs" />
-    <Compile Include="Sizes.cs" />
-    <Compile Include="SortableObservableCollection.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="StringXamlConverter.cs" />
-    <Compile Include="TreeNodeSelectedEvent.cs" />
-    <Compile Include="TreeViewHelper.cs" />
-    <Compile Include="TriggerTracing.cs" />
-    <Compile Include="UI\AutoGreyableImage.cs" />
-    <Compile Include="UI\BindableRun.cs" />
-    <Compile Include="UI\BindableRunTextMedia.cs" />
-    <Compile Include="UI\CollapsibleGridSplitter.cs" />
-    <Compile Include="UI\ComboColorPicker.xaml.cs">
-      <DependentUpon>ComboColorPicker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\DockSplitter.cs" />
-    <Compile Include="UI\DynamicItemsControlRegionAdapter.cs" />
-    <Compile Include="UI\FileDialog\DirectoryViewer.xaml.cs">
-      <DependentUpon>DirectoryViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\FileDialog\DirectoryViewerViewModel.cs" />
-    <Compile Include="UI\FileDialog\DirInfo.cs" />
-    <Compile Include="UI\FileDialog\ExplorerWindowViewModel.cs" />
-    <Compile Include="UI\FileDialog\FileBrowserPanel.xaml.cs">
-      <DependentUpon>FileBrowserPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\FileDialog\FileExplorerViewModel.cs" />
-    <Compile Include="UI\FileDialog\FileSysemInformationConverter.cs" />
-    <Compile Include="UI\FileDialog\FileSystemExplorerService.cs" />
-    <Compile Include="UI\FileDialog\FileSystemTree.xaml.cs">
-      <DependentUpon>FileSystemTree.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\FlowDocumentFindReplace.cs" />
-    <Compile Include="UI\FlowDocumentReaderExtensions.cs" />
-    <Compile Include="UI\GreyableImage.cs" />
-    <Compile Include="UI\HuddledPartial\DpiHelper.cs" />
-    <Compile Include="UI\HuddledPartial\GlobalCommands.cs" />
-    <Compile Include="UI\HuddledPartial\HotkeyManager.cs" />
-    <Compile Include="UI\HuddledPartial\HotkeysBehavior.cs" />
-    <Compile Include="UI\HuddledPartial\NativeBehavior.cs" />
-    <Compile Include="UI\HuddledPartial\NativeBehaviors.cs" />
-    <Compile Include="UI\HuddledPartial\NativeMethodsKeyboard.cs" />
-    <Compile Include="UI\HuddledPartial\NativeMethodsWindow.cs" />
-    <Compile Include="UI\HuddledPartial\SnapToBehavior.cs" />
-    <Compile Include="UI\InstalledFonts.cs" />
-    <Compile Include="UI\KeyDownCommandBinding.cs" />
-    <Compile Include="UI\LazyKeepAliveTabControl.cs" />
-    <Compile Include="UI\ListBoxExtensions.cs" />
-    <Compile Include="UI\ListViewCustomComparer.cs" />
-    <Compile Include="UI\ListViewExtensions.cs" />
-    <Compile Include="UI\LoadingUserControl.xaml.cs">
-      <DependentUpon>LoadingUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\OpaqueToolTip.cs" />
-    <Compile Include="UI\PopupModalWindow.xaml.cs">
-      <DependentUpon>PopupModalWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ScalableGreyableImageProvider.cs" />
-    <Compile Include="UI\ToolBarTrayRegionAdapter.cs" />
-    <Compile Include="UI\VisualExtensions.cs" />
-    <Compile Include="UI\WatermarkTextBox.cs" />
-    <Compile Include="UI\WpfTreeHelper.cs" />
-    <Compile Include="UI\MenuItemRichCommand.cs" />
-    <Compile Include="UI\MenuShortcutManager.cs" />
-    <Compile Include="UI\Placeholder.cs" />
-    <Compile Include="UI\RegionManagerCustomExtensions.cs" />
-    <Compile Include="UI\RenderTargetBitmapImageSourceConverter.cs" />
-    <Compile Include="UI\ButtonRichCommand.cs" />
-    <Compile Include="UI\RunExtensions.cs" />
-    <Compile Include="UI\SmallColorPicker.xaml.cs">
-      <DependentUpon>SmallColorPicker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SortableListView.cs" />
-    <Compile Include="UI\TextMediaTextBox.cs" />
-    <Compile Include="UI\UiClipboardImageHelper.cs" />
-    <Compile Include="UI\UserInterfaceScaledEvent.cs" />
-    <Compile Include="UI\WrapPanelLastChildFill.cs" />
-    <Compile Include="UI\XamlToPngConverter.cs" />
-    <Compile Include="UserInterfaceStrings.cs" />
-    <Compile Include="ViewModelBase.cs" />
-    <Compile Include="ObservableWrappedCollection.cs" />
-    <Compile Include="ViewModelShellBase.cs" />
-    <Compile Include="WeakReferenceCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
-      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
-      <Name>UrakawaSDK.core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
-      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
-      <Name>Lib.Composite.Presentation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
-      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
-      <Name>Lib.Composite.UnityExtensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
-      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
-      <Name>Lib.Composite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\CAL\Unity\Lib.Unity.csproj">
-      <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
-      <Name>Lib.Unity</Name>
+    <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
+      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
+      <Name>Tobi.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -301,7 +173,1047 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SharedResources.xaml">
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_computer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_document-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_folder-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_folder-drag-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_folder-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_folder-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_folder-remote.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_folder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_gnome-fs-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_gnome-fs-desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_gnome-fs-trash-full.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-bottom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-down.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-first.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-home.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-last.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-next.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-previous.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-top.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_go-up.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_list-add.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_list-remove.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_network-workgroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_preferences-system.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_system-search.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_user-desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_user-home-folder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_user-home.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_user-trash-full.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_user-trash.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_video-display.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_view-refresh.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_x-directory-drag-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_x-directory-normal-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_x-directory-normal-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_x-directory-normal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Foxtrot\Foxtrot_x-directory-remote.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_accessories-archiver.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_application-certificate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_applications-internet.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_audio-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_bookmark-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_computer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_document-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_drive-harddisk.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_drive-removable-media.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_evolution.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_folder-drag-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_folder-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_folder-remote.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_folder-saved-search.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_folder-visiting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_folder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_go-down.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_go-next.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_go-previous.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_go-up.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_image-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_internet-mail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_internet-web-browser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_media-cdrom-audio.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_media-cdrom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_media-cdrw.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_media-dvd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_media-dvdrw.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_music-player.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_package-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_process-stop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-html.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-authors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-changelog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-copying.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-install.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-readme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-script.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_text-x-source.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_user-desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_user-home.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_user-trash-full.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_user-trash.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_utilities-terminal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_view-refresh.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_x-office-document.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Gion\Gion_x-office-spreadsheet.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_accessories-archiver.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_accessories-character-map.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_accessories-text-editor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_address-book-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_application-certificate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_application-x-executable.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-accessories.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-development.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-games.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-graphics.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-internet.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-multimedia.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-office.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-other.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_applications-system.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_appointment-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_audio-volume-high.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_audio-volume-low.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_audio-volume-medium.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_audio-volume-muted.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_audio-volume-zero.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_audio-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_battery-caution.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_battery.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_bookmark-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_computer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_contact-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-cancel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-close.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-error.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-information.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-ok.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-password.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-question.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_dialog-warning.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-print-preview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-print.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-properties.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-save-as.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_document-save.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_drive-cdrom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_drive-harddisk.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_drive-removable-media.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-clear.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-copy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-cut.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-delete.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-find-replace.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-find.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-paste.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-redo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-select-all.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_edit-undo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-important.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-pictures.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-readonly.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-symbolic-link.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-system.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-unreadable.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_emblem-web.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_empty.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_epiphany-bookmarks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_evolution.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder-drag-accept.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder-open.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder-remote.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder-saved-search.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder-visiting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_folder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_font-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-indent-less.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-indent-more.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-justify-center.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-justify-fill.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-justify-left.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-justify-right.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-text-bold.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-text-italic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_format-text-underline.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_gaim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_gimp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-bottom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-down.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-first.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-home.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-jump.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-last.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-next.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-previous.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-top.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_go-up.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_graphics-image-editor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_graphics-image-viewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_graphics-svg-editor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_help-about.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_help-browser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_image-loading.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_image-missing.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_image-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_input-keyboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_input-mouse.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_internet-ftp-client.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_internet-group-chat.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_internet-mail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_internet-web-browser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_list-add.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_list-remove.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_mail-forward.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_mail-message-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_mail-reply-all.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_mail-reply-sender.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_mail-send-receive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_media-cdrom-audio.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_media-cdrom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_media-cdrw.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_media-dvd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_media-dvdrw.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_media-floppy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_misc-cd-image.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_multimedia-volume-control.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-error.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-idle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-offline.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-receive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-server.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-transmit-receive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-transmit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_network-workgroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_package-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-accessibility.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-assistive-technology.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-font.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-peripherals.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-remote-desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-screensaver.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop-wallpaper.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-system-network-proxy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-system-session.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-system-windows.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-system.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_preferences-user-information.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_printer-error.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_printer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_process-stop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_sound-juicer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_start-here.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-file-manager.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-installer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-lock-screen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-log-out.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-search.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-shutdown.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-software-update.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_system-users.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_text-html.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_text-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_text-x-script.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_text-x-source.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_user-desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_user-home.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_user-trash-full.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_user-trash.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_utilities-system-monitor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_utilities-terminal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_video-display.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_video-x-generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_view-refresh.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_window-new.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_x-office-address-book.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_x-office-document.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="gnome-extra-icons\Neu\Neu_x-office-spreadsheet.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="IconResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1162,38 +2074,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="tango-icons\x-office-spreadsheet.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ComboColorPicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\FileDialog\DirectoryViewer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\FileDialog\FileBrowserPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\FileDialog\FileSystemTree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\LoadingUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\PopupModalWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\SmallColorPicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

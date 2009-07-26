@@ -7,15 +7,16 @@
     /// </summary>
     public interface IAudioPaneView
     {
-// ReSharper disable InconsistentNaming
+        // ReSharper disable InconsistentNaming
         void ResetAll();
         void RefreshUI_LoadWaveForm(bool wasPlaying, bool play);
         void RefreshUI_PeakMeter();
         void RefreshUI_PeakMeterBlackout(bool black);
         void RefreshUI_WaveFormPlayHead();
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
-// ReSharper restore InconsistentNaming
+        // ReSharper restore InconsistentNaming
 
+        void BringIntoFocus();
         void TimeMessageHide();
         void TimeMessageRefresh();
         void TimeMessageShow();
@@ -27,8 +28,9 @@
         void StartWaveFormTimer();
         void StopPeakMeterTimer();
         void StartPeakMeterTimer();
+        bool IsSelectionSet { get; }
         void ClearSelection();
-        void ExpandSelection();
+        void SelectAll();
         void ZoomSelection();
         void ZoomFitFull();
         void InitGraphicalCommandBindings();

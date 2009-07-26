@@ -1,6 +1,6 @@
 ﻿using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
+using Tobi.Common;
 
 namespace Tobi.Modules.Urakawa
 {

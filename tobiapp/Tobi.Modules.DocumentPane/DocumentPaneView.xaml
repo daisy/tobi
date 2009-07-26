@@ -1,10 +1,7 @@
 ﻿<DockPanel x:Class="Tobi.Modules.DocumentPane.DocumentPaneView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
-    xmlns:local="clr-namespace:Tobi.Modules.DocumentPane"
-    xmlns:infraUI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
-    xmlns:Annotations="clr-namespace:System.Windows.Annotations;assembly=PresentationFramework"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
            Focusable="False"
            LastChildFill="True" 
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
@@ -48,11 +45,13 @@
              >
     <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
     
-  <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhrasePrevious}"
+  <UI:ButtonRichCommand x:Name="FocusStart"
+                        RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />
 
 
-  <infraUI:ButtonRichCommand RichCommand="{Binding CommandSwitchPhraseNext}"
+  <UI:ButtonRichCommand
+    RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
   </WrapPanel>

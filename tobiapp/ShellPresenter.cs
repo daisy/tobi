@@ -12,9 +12,9 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
-using Tobi.Infrastructure.UI;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using Application = System.Windows.Application;
 
 namespace Tobi
@@ -457,6 +457,279 @@ namespace Tobi
 "x-office-spreadsheet-template",
 "x-office-spreadsheet"
             };
+            
+            var resourceKeys2 = new[]
+            {"Neu_accessories-archiver",
+"Neu_accessories-character-map",
+"Neu_accessories-text-editor",
+"Neu_address-book-new",
+"Neu_application-certificate",
+"Neu_application-x-executable",
+"Neu_applications-accessories",
+"Neu_applications-development",
+"Neu_applications-games",
+"Neu_applications-graphics",
+"Neu_applications-internet",
+"Neu_applications-multimedia",
+"Neu_applications-office",
+"Neu_applications-other",
+"Neu_applications-system",
+"Neu_appointment-new",
+"Neu_audio-volume-high",
+"Neu_audio-volume-low",
+"Neu_audio-volume-medium",
+"Neu_audio-volume-muted",
+"Neu_audio-volume-zero",
+"Neu_audio-x-generic",
+"Neu_battery-caution",
+"Neu_battery",
+"Neu_bookmark-new",
+"Neu_computer",
+"Neu_contact-new",
+"Neu_dialog-cancel",
+"Neu_dialog-close",
+"Neu_dialog-error",
+"Neu_dialog-information",
+"Neu_dialog-ok",
+"Neu_dialog-password",
+"Neu_dialog-question",
+"Neu_dialog-warning",
+"Neu_document-new",
+"Neu_document-open",
+"Neu_document-print-preview",
+"Neu_document-print",
+"Neu_document-properties",
+"Neu_document-save-as",
+"Neu_document-save",
+"Neu_drive-cdrom",
+"Neu_drive-harddisk",
+"Neu_drive-removable-media",
+"Neu_edit-clear",
+"Neu_edit-copy",
+"Neu_edit-cut",
+"Neu_edit-delete",
+"Neu_edit-find-replace",
+"Neu_edit-find",
+"Neu_edit-paste",
+"Neu_edit-redo",
+"Neu_edit-select-all",
+"Neu_edit-undo",
+"Neu_emblem-important",
+"Neu_emblem-pictures",
+"Neu_emblem-readonly",
+"Neu_emblem-symbolic-link",
+"Neu_emblem-system",
+"Neu_emblem-unreadable",
+"Neu_emblem-web",
+"Neu_empty",
+"Neu_epiphany-bookmarks",
+"Neu_evolution",
+"Neu_folder-drag-accept",
+"Neu_folder-new",
+"Neu_folder-open",
+"Neu_folder-remote",
+"Neu_folder-saved-search",
+"Neu_folder-visiting",
+"Neu_folder",
+"Neu_font-x-generic",
+"Neu_format-indent-less",
+"Neu_format-indent-more",
+"Neu_format-justify-center",
+"Neu_format-justify-fill",
+"Neu_format-justify-left",
+"Neu_format-justify-right",
+"Neu_format-text-bold",
+"Neu_format-text-italic",
+"Neu_format-text-underline",
+"Neu_gaim",
+"Neu_gimp",
+"Neu_go-bottom",
+"Neu_go-down",
+"Neu_go-first",
+"Neu_go-home",
+"Neu_go-jump",
+"Neu_go-last",
+"Neu_go-next",
+"Neu_go-previous",
+"Neu_go-top",
+"Neu_go-up",
+"Neu_graphics-image-editor",
+"Neu_graphics-image-viewer",
+"Neu_graphics-svg-editor",
+"Neu_help-about",
+"Neu_help-browser",
+"Neu_image-loading",
+"Neu_image-missing",
+"Neu_image-x-generic",
+"Neu_input-keyboard",
+"Neu_input-mouse",
+"Neu_internet-ftp-client",
+"Neu_internet-group-chat",
+"Neu_internet-mail",
+"Neu_internet-web-browser",
+"Neu_list-add",
+"Neu_list-remove",
+"Neu_mail-forward",
+"Neu_mail-message-new",
+"Neu_mail-reply-all",
+"Neu_mail-reply-sender",
+"Neu_mail-send-receive",
+"Neu_media-cdrom-audio",
+"Neu_media-cdrom",
+"Neu_media-cdrw",
+"Neu_media-dvd",
+"Neu_media-dvdrw",
+"Neu_media-floppy",
+"Neu_misc-cd-image",
+"Neu_multimedia-volume-control",
+"Neu_network-error",
+"Neu_network-idle",
+"Neu_network-offline",
+"Neu_network-receive",
+"Neu_network-server",
+"Neu_network-transmit-receive",
+"Neu_network-transmit",
+"Neu_network-workgroup",
+"Neu_package-x-generic",
+"Neu_preferences-desktop-accessibility",
+"Neu_preferences-desktop-assistive-technology",
+"Neu_preferences-desktop-font",
+"Neu_preferences-desktop-peripherals",
+"Neu_preferences-desktop-remote-desktop",
+"Neu_preferences-desktop-screensaver",
+"Neu_preferences-desktop-wallpaper",
+"Neu_preferences-desktop",
+"Neu_preferences-system-network-proxy",
+"Neu_preferences-system-session",
+"Neu_preferences-system-windows",
+"Neu_preferences-system",
+"Neu_preferences-user-information",
+"Neu_printer-error",
+"Neu_printer",
+"Neu_process-stop",
+"Neu_sound-juicer",
+"Neu_start-here",
+"Neu_system-file-manager",
+"Neu_system-installer",
+"Neu_system-lock-screen",
+"Neu_system-log-out",
+"Neu_system-search",
+"Neu_system-shutdown",
+"Neu_system-software-update",
+"Neu_system-users",
+"Neu_text-html",
+"Neu_text-x-generic",
+"Neu_text-x-script",
+"Neu_text-x-source",
+"Neu_user-desktop",
+"Neu_user-home",
+"Neu_user-trash-full",
+"Neu_user-trash",
+"Neu_utilities-system-monitor",
+"Neu_utilities-terminal",
+"Neu_video-display",
+"Neu_video-x-generic",
+"Neu_view-refresh",
+"Neu_window-new",
+"Neu_x-office-address-book",
+"Neu_x-office-document",
+"Neu_x-office-spreadsheet"
+            };
+            
+
+            var resourceKeys3 = new[]
+            {
+                "Gion_accessories-archiver",
+"Gion_application-certificate",
+"Gion_applications-internet",
+"Gion_audio-x-generic",
+"Gion_bookmark-new",
+"Gion_computer",
+"Gion_document-open",
+"Gion_drive-harddisk",
+"Gion_drive-removable-media",
+"Gion_evolution",
+"Gion_folder-drag-accept",
+"Gion_folder-open",
+"Gion_folder-remote",
+"Gion_folder-saved-search",
+"Gion_folder-visiting",
+"Gion_folder",
+"Gion_go-down",
+"Gion_go-next",
+"Gion_go-previous",
+"Gion_go-up",
+"Gion_image-x-generic",
+"Gion_internet-mail",
+"Gion_internet-web-browser",
+"Gion_media-cdrom-audio",
+"Gion_media-cdrom",
+"Gion_media-cdrw",
+"Gion_media-dvd",
+"Gion_media-dvdrw",
+"Gion_music-player",
+"Gion_package-x-generic",
+"Gion_process-stop",
+"Gion_text-html",
+"Gion_text-x-authors",
+"Gion_text-x-changelog",
+"Gion_text-x-copying",
+"Gion_text-x-generic",
+"Gion_text-x-install",
+"Gion_text-x-readme",
+"Gion_text-x-script",
+"Gion_text-x-source",
+"Gion_user-desktop",
+"Gion_user-home",
+"Gion_user-trash-full",
+"Gion_user-trash",
+"Gion_utilities-terminal",
+"Gion_view-refresh",
+"Gion_x-office-document",
+"Gion_x-office-spreadsheet"
+            };
+
+            
+            var resourceKeys4 = new[]
+            {
+                "Foxtrot_computer",
+"Foxtrot_document-open",
+"Foxtrot_folder-accept",
+"Foxtrot_folder-drag-accept",
+"Foxtrot_folder-new",
+"Foxtrot_folder-open",
+"Foxtrot_folder-remote",
+"Foxtrot_folder",
+"Foxtrot_gnome-fs-accept",
+"Foxtrot_gnome-fs-desktop",
+"Foxtrot_gnome-fs-trash-full",
+"Foxtrot_go-bottom",
+"Foxtrot_go-down",
+"Foxtrot_go-first",
+"Foxtrot_go-home",
+"Foxtrot_go-last",
+"Foxtrot_go-next",
+"Foxtrot_go-previous",
+"Foxtrot_go-top",
+"Foxtrot_go-up",
+"Foxtrot_list-add",
+"Foxtrot_list-remove",
+"Foxtrot_network-workgroup",
+"Foxtrot_preferences-system",
+"Foxtrot_system-search",
+"Foxtrot_user-desktop",
+"Foxtrot_user-home-folder",
+"Foxtrot_user-home",
+"Foxtrot_user-trash-full",
+"Foxtrot_user-trash",
+"Foxtrot_video-display",
+"Foxtrot_view-refresh",
+"Foxtrot_x-directory-drag-accept",
+"Foxtrot_x-directory-normal-accept",
+"Foxtrot_x-directory-normal-open",
+"Foxtrot_x-directory-normal",
+"Foxtrot_x-directory-remote"
+            };
 
             if (m_listOfIconRichCommands.Count == 0)
             {
@@ -469,9 +742,57 @@ namespace Tobi
                                                                   null, obj => true);
                     m_listOfIconRichCommands.Add(command);
 
-                    command.IconProvider.IconDrawScale = (double) Application.Current.Resources["MagnificationLevel"];
+                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
                 }
             }
+
+            if (m_listOfIconRichCommands2.Count == 0)
+            {
+                foreach (string resourceKey2 in resourceKeys2)
+                {
+                    var command = new RichDelegateCommand<object>(resourceKey2,
+                                                                  resourceKey2,
+                                                                  null,
+                                                                  LoadGnomeNeuIcon(resourceKey2),
+                                                                  null, obj => true);
+                    m_listOfIconRichCommands2.Add(command);
+
+                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                }
+            }
+
+
+
+            if (m_listOfIconRichCommands3.Count == 0)
+            {
+                foreach (string resourceKey3 in resourceKeys3)
+                {
+                    var command = new RichDelegateCommand<object>(resourceKey3,
+                                                                  resourceKey3,
+                                                                  null,
+                                                                  LoadGnomeGionIcon(resourceKey3),
+                                                                  null, obj => true);
+                    m_listOfIconRichCommands3.Add(command);
+
+                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                }
+            }
+
+            if (m_listOfIconRichCommands4.Count == 0)
+            {
+                foreach (string resourceKey4 in resourceKeys4)
+                {
+                    var command = new RichDelegateCommand<object>(resourceKey4,
+                                                                  resourceKey4,
+                                                                  null,
+                                                                  LoadGnomeFoxtrotIcon(resourceKey4),
+                                                                  null, obj => true);
+                    m_listOfIconRichCommands4.Add(command);
+
+                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                }
+            }
+
 
 
             var windowPopup = new PopupModalWindow(this,
@@ -482,7 +803,11 @@ namespace Tobi
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 600);
 
-            windowPopup.ShowFloating(() => m_listOfIconRichCommands.Clear());
+            windowPopup.ShowFloating(() =>
+                                         {
+                                             m_listOfIconRichCommands.Clear();
+                                             m_listOfIconRichCommands2.Clear();
+                                         });
 
             /*
             var windowPopup = new Window()
@@ -646,6 +971,35 @@ namespace Tobi
                 return m_listOfIconRichCommands;
             }
         }
+
+        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands2 =
+            new List<RichDelegateCommand<object>>();
+        public List<RichDelegateCommand<object>> IconRichCommands2
+        {
+            get
+            {
+                return m_listOfIconRichCommands2;
+            }
+        }
+        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands3 =
+            new List<RichDelegateCommand<object>>();
+        public List<RichDelegateCommand<object>> IconRichCommands3
+        {
+            get
+            {
+                return m_listOfIconRichCommands3;
+            }
+        }
+        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands4 =
+            new List<RichDelegateCommand<object>>();
+        public List<RichDelegateCommand<object>> IconRichCommands4
+        {
+            get
+            {
+                return m_listOfIconRichCommands4;
+            }
+        }
+
         public void OnMagnificationLevelChanged(double value)
         {
             /*if (EventAggregator == null)
@@ -660,6 +1014,18 @@ namespace Tobi
                 command.IconProvider.IconDrawScale = value;
             }
             foreach (var command in m_listOfIconRichCommands)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands2)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands3)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands4)
             {
                 command.IconProvider.IconDrawScale = value;
             }
@@ -683,19 +1049,39 @@ namespace Tobi
             }
         }
 
-        public VisualBrush LoadTangoIcon(string resourceKey)
+        public VisualBrush LoadIcon(string path, string resourceKey)
         {
             Object obj = Application.Current.TryFindResource(resourceKey);
             if (obj == null)
             {
                 Object comp = Application.LoadComponent(
-                    new Uri("Tobi.Infrastructure;component/tango-icons/" + resourceKey + ".xaml",
+                    new Uri(path + resourceKey + ".xaml",
                             UriKind.Relative));
                 Application.Current.Resources.MergedDictionaries.Add(
                     comp as ResourceDictionary);
             }
             return (VisualBrush)
                 Application.Current.FindResource(resourceKey);
+        }
+
+        public VisualBrush LoadTangoIcon(string resourceKey)
+        {
+            return LoadIcon("Tobi.Infrastructure;component/tango-icons/", resourceKey);
+        }
+
+        public VisualBrush LoadGnomeNeuIcon(string resourceKey)
+        {
+            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Neu/", resourceKey);
+        }
+
+        public VisualBrush LoadGnomeGionIcon(string resourceKey)
+        {
+            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Gion/", resourceKey);
+        }
+
+        public VisualBrush LoadGnomeFoxtrotIcon(string resourceKey)
+        {
+            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Foxtrot/", resourceKey);
         }
 
         public void RegisterRichCommand(RichDelegateCommand<object> command)

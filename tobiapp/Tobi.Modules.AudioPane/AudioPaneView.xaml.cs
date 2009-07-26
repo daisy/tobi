@@ -9,6 +9,9 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
+using Tobi.Common;
+using Tobi.Common.UI;
+using urakawa.media.data.audio;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -132,12 +135,19 @@ namespace Tobi.Modules.AudioPane
                 WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
             }
 
-            BytesPerPixel = ViewModel.DataLength / width;
+            if (ViewModel.State.Audio.HasContent)
+            {
+                BytesPerPixel = ViewModel.State.Audio.DataLength/width;
+            }
+            else
+            {
+                BytesPerPixel = -1;
+            }
 
             ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
             ViewModel.RefreshWaveFormChunkMarkers();
 
-            if (ViewModel.PcmFormat == null)
+            if (!ViewModel.State.Audio.HasContent)
             {
                 return;
             }
@@ -261,8 +271,16 @@ namespace Tobi.Modules.AudioPane
                 Point p = e.GetPosition(WaveFormCanvas);
                 if (m_MouseClicks == 2)
                 {
-                    ViewModel.ClearSelection();
-                    ViewModel.SelectChunk(p.X * BytesPerPixel);
+                    if (!ViewModel.State.Audio.HasContent || ViewModel.State.CurrentTreeNode == null)
+                    {
+                        ViewModel.ClearSelection();
+                        ViewModel.SelectAll();
+                    }
+                    else
+                    {
+                        ViewModel.ClearSelection();
+                        ViewModel.SelectChunk(p.X*BytesPerPixel);
+                    }
                 }
                 else if (m_MouseClicks == 3)
                 {
@@ -563,9 +581,14 @@ namespace Tobi.Modules.AudioPane
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
                 return;
             }
+            PCMFormatInfo pcmInfo = null;
+            if (ViewModel.State.Audio.PcmFormat == null)
+            {
+                pcmInfo = ViewModel.m_RecordingPcmFormat;
+            }
 
             double barWidth = PeakMeterCanvas.ActualWidth;
-            if (ViewModel.PcmFormat.NumberOfChannels > 1)
+            if (pcmInfo.NumberOfChannels > 1)
             {
                 barWidth = barWidth / 2;
             }
@@ -594,7 +617,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             StreamGeometry geometry2 = null;
-            if (ViewModel.PcmFormat.NumberOfChannels > 1)
+            if (pcmInfo.NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -627,7 +650,7 @@ namespace Tobi.Modules.AudioPane
             {
                 PeakMeterPathCh1.InvalidateVisual();
             }
-            if (ViewModel.PcmFormat.NumberOfChannels > 1)
+            if (pcmInfo.NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -807,7 +830,7 @@ namespace Tobi.Modules.AudioPane
                 double interval = 60;
                 // ReSharper restore RedundantAssignment
 
-                interval = ViewModel.AudioPlayer_ConvertBytesToMilliseconds(BytesPerPixel);
+                interval = ViewModel.State.Audio.ConvertBytesToMilliseconds(BytesPerPixel);
 
                 if (interval < 60.0)
                 {
@@ -917,7 +940,7 @@ namespace Tobi.Modules.AudioPane
         /// </summary>
         private void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
         {
-            if (ViewModel.PcmFormat == null)
+            if (!ViewModel.State.Audio.HasContent)
             {
                 if (m_TimeSelectionLeftX >= 0)
                 {
@@ -933,7 +956,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = (long)Math.Round(ViewModel.AudioPlayer_ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime));
+            long bytes = (long)Math.Round(ViewModel.State.Audio.ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime));
 
             double pixels = bytes / BytesPerPixel;
 
@@ -1090,15 +1113,10 @@ namespace Tobi.Modules.AudioPane
             //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
             // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
         }
-
-        // TODO: this is not wired to anything yet
-        public void FocusOnRoot()
+        
+        public void BringIntoFocus()
         {
-            /*
-            ui.Focus();
-            FocusManager.SetFocusedElement(this, ui);
-            Keyboard.Focus(ui);
-             * */
+            FocusHelper.Focus(this, FocusStart);
         }
     }
 }

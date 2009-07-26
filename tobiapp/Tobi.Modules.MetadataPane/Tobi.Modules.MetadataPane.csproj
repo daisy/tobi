@@ -78,9 +78,9 @@
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tobi.Infrastructure\Tobi.Infrastructure.csproj">
-      <Project>{698E4C51-9506-4CC5-94E2-31F5FD90532E}</Project>
-      <Name>Tobi.Infrastructure</Name>
+    <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
+      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
+      <Name>Tobi.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

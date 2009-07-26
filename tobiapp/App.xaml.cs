@@ -12,8 +12,8 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Test;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.UI;
+using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi
 {

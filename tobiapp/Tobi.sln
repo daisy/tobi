@@ -75,6 +75,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.Urakawa", "Tob
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Unity", "ExternalLibs\CAL\Unity\Lib.Unity.csproj", "{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Common", "Tobi.Common\Tobi.Common.csproj", "{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.FileDialog", "Tobi.Modules.FileDialog\Tobi.Modules.FileDialog.csproj", "{576DF227-5F83-4A41-AA5D-255D102DF5F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +255,22 @@ Global
 		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.test|Any CPU.Build.0 = Release|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}.test|Any CPU.Build.0 = Release|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{576DF227-5F83-4A41-AA5D-255D102DF5F6}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

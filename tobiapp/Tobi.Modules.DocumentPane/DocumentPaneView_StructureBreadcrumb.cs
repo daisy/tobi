@@ -6,8 +6,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Microsoft.Practices.Composite.Logging;
-using Tobi.Infrastructure;
 using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.xuk;

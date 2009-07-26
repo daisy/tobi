@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Tobi.Infrastructure;
+using Tobi.Common;
 using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.audio;
