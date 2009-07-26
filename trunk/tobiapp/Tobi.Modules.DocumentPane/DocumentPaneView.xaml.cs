@@ -10,8 +10,10 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
+using Tobi.Common;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 using urakawa.xuk;
@@ -38,28 +40,30 @@ namespace Tobi.Modules.DocumentPane
     /// <summary>
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
-    public partial class DocumentPaneView : INotifyPropertyChanged
+    public partial class DocumentPaneView // : INotifyPropertyChangedEx
     {
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        //{
+        //    var handler = PropertyChanged;
+
+        //    if (handler != null)
+        //    {
+        //        handler(this, e);
+        //    }
+        //}
+
+        //private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        //public NavigationPaneView()
+        //{
+        //    m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+        //    m_PropertyChangeHandler.InitializeDependentProperties(this);
+        //}
+
         public RichDelegateCommand<object> CommandSwitchPhrasePrevious { get; private set; }
         public RichDelegateCommand<object> CommandSwitchPhraseNext { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
+        public RichDelegateCommand<object> CommandFocus { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
 
@@ -95,6 +99,14 @@ namespace Tobi.Modules.DocumentPane
                 obj => SwitchPhraseNext(), obj => CanSwitchPhraseNext);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
+            //
+            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Document_Focus,
+                null,
+                UserInterfaceStrings.Document_Focus_KEYS,
+                null,
+                obj => BringIntoFocus(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandFocus);
             //
 
             InitializeComponent();
@@ -854,6 +866,11 @@ namespace Tobi.Modules.DocumentPane
 
             m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
             m_lastHighlighted.Foreground = Brushes.Black;
+        }
+
+        public void BringIntoFocus()
+        {
+            FocusHelper.Focus(this, FocusStart);
         }
     }
 }

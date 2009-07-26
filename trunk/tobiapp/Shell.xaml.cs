@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
+using Tobi.Common;
 
 namespace Tobi
 {

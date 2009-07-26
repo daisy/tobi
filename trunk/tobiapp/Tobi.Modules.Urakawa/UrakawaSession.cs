@@ -9,10 +9,9 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
-using Tobi.Infrastructure.UI;
-using Tobi.Infrastructure.UI.FileDialog;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.events.progress;
 using urakawa.xuk;
@@ -61,8 +60,8 @@ namespace Tobi.Modules.Urakawa
                             IRegionManager regionManager,
                             IEventAggregator eventAggregator)
         {
-            Logger = logger;
             Container = container;
+            Logger = logger;
             RegionManager = regionManager;
             EventAggregator = eventAggregator;
 
@@ -360,55 +359,9 @@ namespace Tobi.Modules.Urakawa
         {
             Logger.Log("UrakawaSession.saveAs", Category.Debug, Priority.Medium);
 
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            var window = shellPresenter.View as Window;
-            
-            var panel = new FileBrowserPanel();
+            var fileDialog = Container.Resolve<IFileDialogService>();
 
-            var windowPopup = new PopupModalWindow(shellPresenter,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.SaveAs),
-                                                   panel,
-                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                   PopupModalWindow.DialogButton.Ok,
-                                                   true, 500, 300);
-
-
-            var iconComputer = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("computer"))
-                                   {
-                                       IconDrawScale = shellPresenter.View.MagnificationLevel
-                                   };
-            var iconDrive = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("drive-harddisk"))
-                                {
-                                    IconDrawScale = shellPresenter.View.MagnificationLevel
-                                };
-            var iconFolder = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("folder"))
-                                 {
-                                     IconDrawScale = shellPresenter.View.MagnificationLevel
-                                 };
-            var iconFile = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("text-x-generic-template"))
-                               {
-                                   IconDrawScale = shellPresenter.View.MagnificationLevel
-                               };
-
-            var viewModel = new ExplorerWindowViewModel(() => windowPopup.ForceClose(PopupModalWindow.DialogButton.Ok),
-                iconComputer, iconDrive, iconFolder, iconFile);
-            panel.DataContext = viewModel;
-
-            windowPopup.ShowModal();
-
-            if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
-            {
-                return;
-            }
-
-            if (viewModel.DirViewVM.CurrentItem != null
-                && (ObjectType)viewModel.DirViewVM.CurrentItem.DirType == ObjectType.File)
-            {
-                string str = viewModel.DirViewVM.CurrentItem.Path;
-            }
-
-            //SAVE AS
+            string destPath = fileDialog.SaveAs();
         }
 
         private void openDefaultTemplate()

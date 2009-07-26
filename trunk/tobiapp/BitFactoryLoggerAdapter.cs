@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 using BitFactory.Logging;
 using Microsoft.Practices.Composite.Logging;
-using Tobi.Infrastructure;
+using Tobi.Common;
 
 namespace Tobi
 {

@@ -1,16 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
+using Tobi.Common;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 
@@ -19,8 +21,27 @@ namespace Tobi.Modules.NavigationPane
     /// <summary>
     /// Interaction logic for NavigationPaneView.xaml
     /// </summary>
-    public partial class NavigationPaneView : INotifyPropertyChanged
+    public partial class NavigationPaneView // : INotifyPropertyChangedEx
     {
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        //{
+        //    var handler = PropertyChanged;
+
+        //    if (handler != null)
+        //    {
+        //        handler(this, e);
+        //    }
+        //}
+
+        //private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        //public NavigationPaneView()
+        //{
+        //    m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+        //    m_PropertyChangeHandler.InitializeDependentProperties(this);
+        //}
+
         //private Dictionary<string, TextElement> m_idPageMarkers;
 
         private ObservableCollection<Page> m_Pages = new ObservableCollection<Page>();
@@ -35,24 +56,6 @@ namespace Tobi.Modules.NavigationPane
         private bool m_ignoreHeadingSelected = false;
         private bool m_ignorePageSelected = false;
         
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
         private void OnProjectUnLoaded(Project obj)
         {
             OnProjectLoaded(null);
@@ -76,6 +79,7 @@ namespace Tobi.Modules.NavigationPane
 
         public static RichDelegateCommand<object> CommandExpandAll { get; private set; }
         public static RichDelegateCommand<object> CommandCollapseAll { get; private set; }
+        public RichDelegateCommand<object> CommandFocus { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -105,6 +109,15 @@ namespace Tobi.Modules.NavigationPane
                 obj => OnCollapseAll(null, null), obj => true);
 
             shellPresenter.RegisterRichCommand(CommandCollapseAll);
+            //
+            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Navigation_Focus,
+                null,
+                UserInterfaceStrings.Navigation_Focus_KEYS,
+                null,
+                obj => BringIntoFocus(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandFocus);
+            //
 
             InitializeComponent();
 
@@ -322,6 +335,10 @@ namespace Tobi.Modules.NavigationPane
                 m_HeadingsNavigator.CollapseAll();
             }
         }
-    }
 
+        public void BringIntoFocus()
+        {
+            FocusHelper.Focus(this, FocusStart);
+        }
+    }
 }

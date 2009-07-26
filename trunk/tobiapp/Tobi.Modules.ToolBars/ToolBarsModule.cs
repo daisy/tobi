@@ -1,7 +1,7 @@
-﻿using Tobi.Infrastructure;
-using Microsoft.Practices.Composite.Modularity;
+﻿using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
+using Tobi.Common;
 
 namespace Tobi.Modules.ToolBars
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
 using Tobi.Modules.MetadataPane;
 
 namespace Tobi.Modules.MenuBar

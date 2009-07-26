@@ -2,19 +2,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
-        
-    xmlns:infra="clr-namespace:Tobi.Infrastructure;assembly=Tobi.Infrastructure"
-    xmlns:local="clr-namespace:Tobi"
-    xmlns:UI="clr-namespace:Tobi.Infrastructure.UI;assembly=Tobi.Infrastructure"
-    xmlns:huddled="clr-namespace:Huddled.Wpf;assembly=Tobi.Infrastructure" 
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" 
 
         ResizeMode="CanResizeWithGrip"
         
     Title="{Binding WindowTitle}"
     Closing="OnClosing"
     Topmost="False"
-    Width="{x:Static infra:Sizes.DefaultWindowWidth}"
-    Height="{x:Static infra:Sizes.DefaultWindowHeight}"
+    Width="{x:Static Common:Sizes.DefaultWindowWidth}"
+    Height="{x:Static Common:Sizes.DefaultWindowHeight}"
     WindowStartupLocation="CenterScreen"
     Loaded="OnWindowLoaded"
         x:Name="MainWindow"
@@ -38,7 +34,7 @@
    KeyboardNavigation.TabNavigation="Continue"
  -->
 
-  <Window.Resources>
+  <!-- Window.Resources>
 
     <ResourceDictionary>
 
@@ -50,7 +46,7 @@
       
     </ResourceDictionary>
     
-  </Window.Resources>
+  </Window.Resources -->
 
   
   <DockPanel Style="{StaticResource ScaleTransformed}" LastChildFill="True">
@@ -68,20 +64,18 @@
                 Width="Auto" Height="Auto"
                 VerticalAlignment="Stretch"
         Minimum="0.5" Maximum="7"
-        Orientation="Vertical" Background="{StaticResource brushLinearGradient}"/>
-
-    <!-- ContentControl DockPanel.Dock="Left" cal:RegionManager.RegionName="{x:Static infra:RegionNames.UserInterfaceZoom}"/ -->
+        Orientation="Vertical"/>
 
 
     <ContentControl Focusable="False" DockPanel.Dock="Top"
                     
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.MenuBar}"/>
+                    cal:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar}"/>
 
     <ContentControl Focusable="False" DockPanel.Dock="Top"
                     
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                    cal:RegionManager.RegionName="{x:Static infra:RegionNames.ToolBars}"/>
+                    cal:RegionManager.RegionName="{x:Static Common:RegionNames.ToolBars}"/>
 
     <!-- ContentControl Focusable="False" DockPanel.Dock="Bottom"
                     cal:RegionManager.RegionName="{x:Static infra:RegionNames.StatusBar}"/ -->
@@ -214,19 +208,19 @@
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Focusable="False"
                       Grid.Column="0" Grid.Row="0" 
-                      cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPane}"/>
+                      cal:RegionManager.RegionName="{x:Static Common:RegionNames.NavigationPane}"/>
 
       <ContentControl 
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Focusable="False"
                       Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"
-                      cal:RegionManager.RegionName="{x:Static infra:RegionNames.AudioPane}"/>
+                      cal:RegionManager.RegionName="{x:Static Common:RegionNames.AudioPane}"/>
 
       <ContentControl 
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Focusable="False"
                       Grid.Column="2" Grid.Row="0"
-                      cal:RegionManager.RegionName="{x:Static infra:RegionNames.DocumentPane}"/>
+                      cal:RegionManager.RegionName="{x:Static Common:RegionNames.DocumentPane}"/>
     </Grid>
 
   </DockPanel>

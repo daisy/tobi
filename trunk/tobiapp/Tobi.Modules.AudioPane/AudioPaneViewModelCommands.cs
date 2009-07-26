@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
-using Tobi.Infrastructure;
-using Tobi.Infrastructure.Commanding;
-using Tobi.Infrastructure.UI;
-
+using Tobi.Common;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -13,6 +13,7 @@ namespace Tobi.Modules.AudioPane
     {
         #region Commands
 
+        public RichDelegateCommand<object> CommandFocus { get; private set; }
         public RichDelegateCommand<object> CommandOpenFile { get; private set; }
         public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
         public RichDelegateCommand<object> CommandGotoEnd { get; private set; }
@@ -100,7 +101,7 @@ namespace Tobi.Modules.AudioPane
 
                 return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
                     && (
-                    (session.DocumentProject != null && CurrentTreeNode != null)
+                    (session.DocumentProject != null && State.CurrentTreeNode != null)
                     ||
                     (session.DocumentProject == null)
                     );
@@ -166,13 +167,12 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsAudioLoadedWithSubTreeNodes")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
-        [NotifyDependsOn("PlayStreamMarkers")]
         [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanStepBack
         {
             get
             {
-                return !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring && PlayStreamMarkers != null && PlayStreamMarkers.Count > 0;
+                return !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring;
             }
         }
 
@@ -235,6 +235,21 @@ namespace Tobi.Modules.AudioPane
             Logger.Log("AudioPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
+
+            CommandFocus = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_Focus,
+                null,
+                UserInterfaceStrings.Audio_Focus_KEYS,
+                null,
+                obj => {
+                    if (View != null)
+                    {
+                    View.BringIntoFocus();
+                    }
+                }, obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandFocus);
+            //
             //
             CommandOpenFile = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,
