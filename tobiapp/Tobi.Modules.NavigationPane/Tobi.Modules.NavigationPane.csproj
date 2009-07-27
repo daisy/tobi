@@ -51,15 +51,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HeadingPanelView.xaml.cs">
+      <DependentUpon>HeadingPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HeadingPaneModule.cs" />
+    <Compile Include="HeadingPaneViewModel.cs" />
+    <Compile Include="HeadingPaneViewModelCommands.cs" />
     <Compile Include="HeadingsNavigator.cs" />
+    <Compile Include="IHeadingPaneView.cs" />
+    <Compile Include="IPagePaneView.cs" />
+    <Compile Include="NavigationPane.xaml.cs">
+      <DependentUpon>NavigationPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Page.cs" />
+    <Compile Include="PagePanelView.xaml.cs">
+      <DependentUpon>PagePanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PagePaneModule.cs" />
+    <Compile Include="PagesPaneViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NavigationPaneModule.cs" />
-    <Compile Include="NavigationPaneView.xaml.cs">
-      <DependentUpon>NavigationPaneView.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="NavigationPaneView.xaml">
+    <Page Include="HeadingPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagePanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

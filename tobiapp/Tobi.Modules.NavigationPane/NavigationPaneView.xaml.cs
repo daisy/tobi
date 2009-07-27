@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Unity;
-using Tobi.Common;
-using Tobi.Common.MVVM;
-using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
+using Tobi.Infrastructure;
+using Tobi.Infrastructure.Commanding;
 using urakawa;
 using urakawa.core;
 
@@ -21,28 +19,11 @@ namespace Tobi.Modules.NavigationPane
     /// <summary>
     /// Interaction logic for NavigationPaneView.xaml
     /// </summary>
-    public partial class NavigationPaneView // : INotifyPropertyChangedEx
+    public partial class NavigationPaneView : INotifyPropertyChanged
     {
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //public void RaisePropertyChanged(PropertyChangedEventArgs e)
-        //{
-        //    var handler = PropertyChanged;
-
-        //    if (handler != null)
-        //    {
-        //        handler(this, e);
-        //    }
-        //}
-
-        //private PropertyChangedNotifyBase m_PropertyChangeHandler;
-
-        //public NavigationPaneView()
-        //{
-        //    m_PropertyChangeHandler = new PropertyChangedNotifyBase();
-        //    m_PropertyChangeHandler.InitializeDependentProperties(this);
-        //}
-
         //private Dictionary<string, TextElement> m_idPageMarkers;
+
+        //private HeadingNavigation m_Headings;
 
         private ObservableCollection<Page> m_Pages = new ObservableCollection<Page>();
         private HeadingsNavigator m_HeadingsNavigator;
@@ -56,18 +37,27 @@ namespace Tobi.Modules.NavigationPane
         private bool m_ignoreHeadingSelected = false;
         private bool m_ignorePageSelected = false;
         
-        private void OnProjectUnLoaded(Project obj)
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            OnProjectLoaded(null);
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnProjectLoaded(Project project)
         {
-            m_HeadingsNavigator = null;
-            if (project != null)
-            {
-                m_HeadingsNavigator = new HeadingsNavigator(project);
-            }
+            m_HeadingsNavigator = new HeadingsNavigator(project);
             TreeView.DataContext = HeadingsNavigator;
             Pages.Clear();
         }
@@ -79,7 +69,6 @@ namespace Tobi.Modules.NavigationPane
 
         public static RichDelegateCommand<object> CommandExpandAll { get; private set; }
         public static RichDelegateCommand<object> CommandCollapseAll { get; private set; }
-        public RichDelegateCommand<object> CommandFocus { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -92,12 +81,14 @@ namespace Tobi.Modules.NavigationPane
 
             DataContext = this;
 
+            //m_Headings = new HeadingNavigation(Container, EventAggregator, Logger);
+            //m_Headings.RegisterCommands();
             var shellPresenter = Container.Resolve<IShellPresenter>();
             //
             CommandExpandAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
                 null,
-                shellPresenter.LoadTangoIcon("list-add"),
+                (VisualBrush)Application.Current.FindResource("list-add"),
                 obj => OnExpandAll(null, null), obj => true);
 
             shellPresenter.RegisterRichCommand(CommandExpandAll);
@@ -105,28 +96,16 @@ namespace Tobi.Modules.NavigationPane
             CommandCollapseAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeCollapseAll,
                 UserInterfaceStrings.TreeCollapseAll_,
                 null,
-                shellPresenter.LoadTangoIcon("list-remove"),
+                (VisualBrush)Application.Current.FindResource("list-remove"),
                 obj => OnCollapseAll(null, null), obj => true);
 
             shellPresenter.RegisterRichCommand(CommandCollapseAll);
-            //
-            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Navigation_Focus,
-                null,
-                UserInterfaceStrings.Navigation_Focus_KEYS,
-                null,
-                obj => BringIntoFocus(), obj => true);
-
-            shellPresenter.RegisterRichCommand(CommandFocus);
-            //
 
             InitializeComponent();
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
-            
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-
             EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Subscribe(OnPageFoundByFlowDocumentParser, ThreadOption.UIThread);
         }
 
@@ -335,10 +314,6 @@ namespace Tobi.Modules.NavigationPane
                 m_HeadingsNavigator.CollapseAll();
             }
         }
-
-        public void BringIntoFocus()
-        {
-            FocusHelper.Focus(this, FocusStart);
-        }
     }
+
 }

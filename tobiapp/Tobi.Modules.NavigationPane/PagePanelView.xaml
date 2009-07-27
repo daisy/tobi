@@ -1,0 +1,51 @@
+﻿<!--
+ <UserControl x:Class="Tobi.Modules.NavigationPane.PagePanelView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="300" Width="300">
+    <Grid>
+            
+    </Grid>
+</UserControl>
+-->
+ <ListBox xmlns:NavigationPane="clr-namespace:Tobi.Modules.NavigationPane" xmlns:Data="clr-namespace:System.Windows.Data;assembly=PresentationFramework" 
+     x:Class="Tobi.Modules.NavigationPane.PagePanelView"
+    x:Name="ListView" 
+     ItemsSource="{Binding Pages}"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:infra="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+                xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
+                xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
+                xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+
+            SelectionMode="Single"
+             SelectionChanged="onPageSelected"
+             DisplayMemberPath="Name">
+
+    <!-- ListBox.ItemTemplate>
+        <DataTemplate>
+          <Label Content="{Binding Name}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate -->
+
+    <ListBox.ItemContainerStyle>
+        <Style TargetType="{x:Type ListBoxItem}">
+
+            <!-- Setter Property="FontSize" Value="15" / -->
+            <Setter Property="FontWeight" Value="Normal" />
+
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </ListBox.ItemContainerStyle>
+    <!-- ListView.View>
+        <GridView>
+          <GridViewColumn Header="Page number/name"
+             DisplayMemberBinding="{Binding Name}" />
+        </GridView>
+      </ListView.View -->
+</ListBox>
