@@ -1,7 +1,9 @@
-﻿using Microsoft.Practices.Composite.Modularity;
+﻿using System.Windows.Controls;
+using Tobi.Infrastructure;
+using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Tobi.Common;
+using Tobi.Modules.DocumentPane;
 
 namespace Tobi.Modules.NavigationPane
 {
@@ -12,7 +14,8 @@ namespace Tobi.Modules.NavigationPane
     /// [ModuleDependency("DocumentPaneModule")] ALREADY CONFIGURED IN THE MODULE CATALOG
     public class NavigationPaneModule : IModule
     {
-        private readonly IUnityContainer m_Container;
+        private readonly IUnityContainer _container;
+        //private object _view;
 
         ///<summary>
         /// Dependency Injection constructor
@@ -20,7 +23,7 @@ namespace Tobi.Modules.NavigationPane
         ///<param name="container">The DI container</param>
         public NavigationPaneModule(IUnityContainer container)
         {
-            m_Container = container;
+            _container = container;
         }
 
         ///<summary>
@@ -29,17 +32,19 @@ namespace Tobi.Modules.NavigationPane
         ///</summary>
         public void Initialize()
         {
-            m_Container.RegisterType<NavigationPaneView>(new ContainerControlledLifetimeManager());
+            //_container.RegisterType<NavigationPaneView>(new ContainerControlledLifetimeManager());
+            _container.RegisterType<NavigationPane>(new ContainerControlledLifetimeManager());
 
-            var regionManager = m_Container.Resolve<IRegionManager>();
+            var regionManager = _container.Resolve<IRegionManager>();
 
             //regionManager.RegisterViewWithRegion(RegionNames.NavigationPane, typeof(NavigationPaneView));
 
-            var view = m_Container.Resolve<NavigationPaneView>();
-
+            //var view = _container.Resolve<NavigationPaneView>();
+            var view = _container.Resolve<NavigationPane>();
             IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPane];
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }
+
     }
 }

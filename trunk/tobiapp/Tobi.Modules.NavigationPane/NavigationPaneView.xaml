@@ -1,6 +1,7 @@
 ﻿<!-- ad:DockablePane -->
 <UI:LazyKeepAliveTabControl
   x:Class="Tobi.Modules.NavigationPane.NavigationPaneView"
+  x:Name="NavTabs2"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"

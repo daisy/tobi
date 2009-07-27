@@ -212,8 +212,8 @@ namespace Tobi.Modules.NavigationPane
             m_isExpanded = false;
             m_TreeNodeHeading = null;
 
-            CommandExpandAll = NavigationPaneView.CommandExpandAll;
-            CommandCollapseAll = NavigationPaneView.CommandCollapseAll;
+            CommandExpandAll = HeadingPaneViewModel.CommandExpandAll;
+            CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
 
             if (m_TreeNode == null)
             {
