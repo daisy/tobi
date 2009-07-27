@@ -90,6 +90,8 @@ namespace Tobi
                 .AddModule(typeof(UrakawaModule))
                 .AddModule(typeof(MenuBarModule), "UrakawaModule")
                 .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
+                .AddModule(typeof(HeadingPaneModule), "NavigationPaneModule")
+                .AddModule(typeof(PagePaneModule), "NavigationPaneModule")
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))
