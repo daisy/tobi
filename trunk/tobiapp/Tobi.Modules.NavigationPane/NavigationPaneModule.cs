@@ -1,9 +1,7 @@
-﻿using System.Windows.Controls;
-using Tobi.Infrastructure;
-using Microsoft.Practices.Composite.Modularity;
+﻿using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
-using Tobi.Modules.DocumentPane;
+using Tobi.Common;
 
 namespace Tobi.Modules.NavigationPane
 {

@@ -44,8 +44,8 @@ namespace Tobi.Modules.AudioPane
 
             public double ConvertBytesToMilliseconds(double bytes)
             {
-                PCMFormatInfo pcm = null;
-                if (PcmFormat == null)
+                PCMFormatInfo pcm = PcmFormat;
+                if (pcm == null)
                 {
                     pcm = m_viewModel.m_RecordingPcmFormat;
                 }
@@ -55,8 +55,8 @@ namespace Tobi.Modules.AudioPane
 
             public double ConvertMillisecondsToBytes(double ms)
             {
-                PCMFormatInfo pcm = null;
-                if (PcmFormat == null)
+                PCMFormatInfo pcm = PcmFormat;
+                if (pcm == null)
                 {
                     pcm = m_viewModel.m_RecordingPcmFormat;
                 }
@@ -968,20 +968,21 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("LastPlayHeadTime")]
         [NotifyDependsOn("RecorderCurrentDuration")]
+        [NotifyDependsOn("IsAudioLoaded")]
         public String TimeStringCurrent
         {
             get
             {
-                if (!IsAudioLoaded)
-                {
-                    return "";
-                }
                 if (IsRecording || IsMonitoring)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
                 }
 
+                if (!IsAudioLoaded)
+                {
+                    return "";
+                }
                 if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTimePosition);
@@ -1039,8 +1040,7 @@ namespace Tobi.Modules.AudioPane
 
         public void UpdatePeakMeter()
         {
-            if (!State.Audio.HasContent
-                || m_Player.State != AudioPlayerState.Playing
+            if (m_Player.State != AudioPlayerState.Playing
                 && (m_Recorder.State != AudioRecorderState.Recording && m_Recorder.State != AudioRecorderState.Monitoring))
             {
                 if (View != null)
@@ -1050,8 +1050,8 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
             PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
-            PCMFormatInfo pcm = null;
-            if (State.Audio.PcmFormat == null)
+            PCMFormatInfo pcm = State.Audio.PcmFormat;
+            if (pcm == null)
             {
                 pcm = m_RecordingPcmFormat;
             }
@@ -1107,12 +1107,12 @@ namespace Tobi.Modules.AudioPane
             if (e.PeakValues != null && e.PeakValues.Length > 0)
             {
                 m_PeakMeterValues[0] = e.PeakValues[0];
-                PCMFormatInfo pcmInfo = null;
-                if (State.Audio.PcmFormat == null)
+                PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
+                if (pcmInfo == null)
                 {
                     pcmInfo = m_RecordingPcmFormat;
                 }
-                if (State.Audio.HasContent && pcmInfo.NumberOfChannels > 1)
+                if (pcmInfo.NumberOfChannels > 1)
                 {
                     m_PeakMeterValues[1] = e.PeakValues[1];
                 }

@@ -581,8 +581,8 @@ namespace Tobi.Modules.AudioPane
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
                 return;
             }
-            PCMFormatInfo pcmInfo = null;
-            if (ViewModel.State.Audio.PcmFormat == null)
+            PCMFormatInfo pcmInfo = ViewModel.State.Audio.PcmFormat;
+            if (pcmInfo == null)
             {
                 pcmInfo = ViewModel.m_RecordingPcmFormat;
             }
