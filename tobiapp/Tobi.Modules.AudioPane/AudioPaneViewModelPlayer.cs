@@ -387,7 +387,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return State.Audio.HasContent && (View == null || View.BytesPerPixel != 0);
+                return State.Audio.HasContent && (View == null || View.BytesPerPixel > 0);
             }
         }
 
@@ -863,8 +863,8 @@ namespace Tobi.Modules.AudioPane
             double from = State.Audio.ConvertBytesToMilliseconds(begin);
             double to = State.Audio.ConvertBytesToMilliseconds(end);
 
-            PCMFormatInfo pcmInfo = null;
-            if (State.Audio.PcmFormat == null)
+            PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
+            if (pcmInfo == null)
             {
                 pcmInfo = m_RecordingPcmFormat;
             }
@@ -1246,8 +1246,8 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                PCMFormatInfo pcmInfo = null;
-                if (State.Audio.PcmFormat == null)
+                PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
+                if (pcmInfo == null)
                 {
                     pcmInfo = m_RecordingPcmFormat;
                 }
