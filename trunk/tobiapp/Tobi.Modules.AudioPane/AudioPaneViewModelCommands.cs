@@ -13,6 +13,8 @@ namespace Tobi.Modules.AudioPane
     {
         #region Commands
 
+        public RichDelegateCommand<object> CommandShowOptionsDialog { get; private set; }
+
         public RichDelegateCommand<object> CommandFocus { get; private set; }
         public RichDelegateCommand<object> CommandOpenFile { get; private set; }
         public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
@@ -250,6 +252,14 @@ namespace Tobi.Modules.AudioPane
 
             shellPresenter.RegisterRichCommand(CommandFocus);
             //
+            CommandShowOptionsDialog = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_ShowOptions,
+                null,
+                UserInterfaceStrings.Audio_ShowOptions_KEYS,
+                null,
+                obj => AudioPlayer_ShowOptions(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandShowOptionsDialog);
             //
             CommandOpenFile = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,

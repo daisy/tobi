@@ -1,16 +1,16 @@
 ﻿namespace Tobi
 {
     /// <summary>
-    /// Interaction logic for KeyboardShortcuts.xaml
+    /// Interaction logic for IconsPreviewDebug.xaml
     /// </summary>
-    public partial class KeyboardShortcuts
+    public partial class IconsPreviewDebug
     {
         private ShellPresenter ShellPresenter
         {
             get; set;
         }
 
-        public KeyboardShortcuts(ShellPresenter shellPresenter)
+        public IconsPreviewDebug(ShellPresenter shellPresenter)
         {
             ShellPresenter = shellPresenter;
             DataContext = ShellPresenter;

@@ -201,6 +201,9 @@ namespace Tobi.Common
         public const string ManageShortcuts_ = "View keyboard shortcuts";
         public static KeyGesture ManageShortcuts_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control);
 
+        public const string IconsDebug = "Icons preview (debug view)";
+        public static KeyGesture IconsDebug_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control | ModifierKeys.Shift);
+
 
         public const string Event_SwitchPrevious = "_Previous phrase";
         public const string Event_SwitchPrevious_ = "Select the previous phrase";
@@ -308,6 +311,9 @@ namespace Tobi.Common
         public const string Audio_Pause = "_Pause";
         public const string Audio_Pause_ = "Pause playback";
         public static KeyGesture Audio_Pause_KEYS = Audio_Play_KEYS;
+
+        public const string Audio_ShowOptions = "Show audio options";
+        public static KeyGesture Audio_ShowOptions_KEYS = new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
     }
 }

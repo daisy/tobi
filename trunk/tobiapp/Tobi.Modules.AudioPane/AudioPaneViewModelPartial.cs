@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
+using Tobi.Common;
+using Tobi.Common.UI;
 using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Modules.AudioPane
@@ -10,6 +13,25 @@ namespace Tobi.Modules.AudioPane
     /// </summary>
     public partial class AudioPaneViewModel
     {
+
+        private void AudioPlayer_ShowOptions()
+        {
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var window = shellPresenter.View as Window;
+
+            var pane = new AudioOptions();
+            pane.DataContext = this;
+
+            var windowPopup = new PopupModalWindow(shellPresenter,
+                                                   UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_ShowOptions),
+                                                   pane,
+                                                   PopupModalWindow.DialogButtonsSet.Close,
+                                                   PopupModalWindow.DialogButton.Close,
+                                                   true, 400, 500);
+
+            windowPopup.Show();
+        }
+
         #region WaveForm configuration
 
         // ReSharper disable RedundantDefaultFieldInitializer
@@ -294,7 +316,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private Color m_ColorTimeSelection = Colors.Aqua;
+        private Color m_ColorTimeSelection = Colors.DeepSkyBlue;
         public Color ColorTimeSelection
         {
             get
@@ -362,7 +384,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private Color m_ColorMarkers = Colors.BlueViolet;
+        private Color m_ColorMarkers = Colors.SteelBlue;
         public Color ColorMarkers
         {
             get
@@ -405,7 +427,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private Color m_ColorEnvelopeFill = Colors.ForestGreen;
+        private Color m_ColorEnvelopeFill = Colors.LimeGreen;
         public Color ColorEnvelopeFill
         {
             get
@@ -427,7 +449,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private Color m_ColorEnvelopeOutline = Colors.LawnGreen;
+        private Color m_ColorEnvelopeOutline = Colors.Chartreuse;
         public Color ColorEnvelopeOutline
         {
             get

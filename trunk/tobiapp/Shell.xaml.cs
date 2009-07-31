@@ -1,12 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 
 namespace Tobi
 {
@@ -15,11 +17,25 @@ namespace Tobi
     /// </summary>
     public partial class Shell : IShellView
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         protected IUnityContainer Container { get; private set; }
 
         protected IEventAggregator EventAggregator { get; private set; }
 
         private bool m_InConstructor = false;
+
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
 
         ///<summary>
         /// 
@@ -28,6 +44,9 @@ namespace Tobi
         {
             Container = container;
             EventAggregator = eventAggregator;
+
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
 
             m_InConstructor = true;
 
@@ -43,7 +62,7 @@ namespace Tobi
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
-            SystemEvents.DisplaySettingsChanged+=OnSystemEventsDisplaySettingsChanged;
+            SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
 
             try
             {
@@ -62,6 +81,13 @@ namespace Tobi
             {
                 app.SplashScreen.Close(TimeSpan.FromSeconds(0.5));
             }
+
+            var session = Container.Resolve<IUrakawaSession>();
+            session.OnChanged(() => session.DocumentFilePath,
+                () => m_PropertyChangeHandler.OnPropertyChanged(() => WindowTitle));
+            session.OnChanged(() => session.IsDirty,
+                () => m_PropertyChangeHandler.OnPropertyChanged(() => WindowTitle));
+
 
             //Activate();
 
@@ -83,11 +109,20 @@ namespace Tobi
         {
             get
             {
-                return "Tobi [unreleased development version] (" + DateTime.Now + ")";
+                IUrakawaSession session;
+                try
+                {
+                    session = Container.Resolve<IUrakawaSession>();
+                }
+                catch (ResolutionFailedException)
+                {
+                    return "Tobi - Initializing...";
+                }
+                return "Tobi " + (session.IsDirty ? "* " : "") + "[" + (session.DocumentProject == null ? "no document" : session.DocumentFilePath) + "]";
             }
         }
 
-        protected void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        protected void OnClosing(object sender, CancelEventArgs e)
         {
             /*
             e.Cancel = true;

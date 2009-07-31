@@ -1,0 +1,84 @@
+﻿<ScrollViewer x:Class="Tobi.Modules.AudioPane.AudioOptions"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:infraUI="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
+
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch">
+      <StackPanel Orientation="Vertical">
+        <CheckBox IsChecked="{Binding IsUseDecibels, Mode=TwoWay}" Margin="2">Decibel logarithmic scale</CheckBox>
+        <CheckBox IsChecked="{Binding IsUseDecibelsNoAverage, Mode=TwoWay}" IsEnabled="{Binding IsUseDecibels}" Margin="2">Use min/max instead of average</CheckBox>
+        <CheckBox IsChecked="{Binding IsUseDecibelsAdjust, Mode=TwoWay}" IsEnabled="{Binding IsUseDecibels}" Margin="2">Auto adjust dB scale</CheckBox>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Decibel resolutions: </TextBlock>
+          <ComboBox ItemsSource="{Binding DecibelResolutions, Mode=OneWay}" SelectedItem="{Binding DecibelResolution, Mode=TwoWay}"  IsEnabled="{Binding IsUseDecibels}" Margin="2"/>
+        </StackPanel>
+        <CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform framed</CheckBox>
+        <CheckBox IsChecked="{Binding IsWaveFillVisible, Mode=TwoWay}" Margin="2">Waveform Bars</CheckBox>
+        <CheckBox IsChecked="{Binding IsEnvelopeVisible, Mode=TwoWay}" Margin="2">Envelope</CheckBox>
+        <CheckBox IsChecked="{Binding IsEnvelopeFilled, Mode=TwoWay}" IsEnabled="{Binding IsEnvelopeVisible}" Margin="2">Envelope Fill</CheckBox>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Waveform increment: </TextBlock>
+          <ComboBox ItemsSource="{Binding WaveStepXs, Mode=OneWay}" SelectedItem="{Binding WaveStepX, Mode=TwoWay}" Margin="2"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Waveform background: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorWaveBackground, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Waveform bars: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorWaveBars, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Waveform envelope: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorEnvelopeOutline, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Waveform envelope fill: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorEnvelopeFill, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Waveform markers: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorMarkers, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Playhead: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorPlayhead, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Playhead triangle: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorPlayheadFill, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>Time selection: </TextBlock>
+          <infraUI:ComboColorPicker
+                                    SelectedColor="{Binding ColorTimeSelection, Mode=TwoWay}"
+                                    Margin="2"
+                                    HorizontalAlignment="Left"/>
+        </StackPanel>
+      </StackPanel>
+    </ScrollViewer>

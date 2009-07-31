@@ -11,10 +11,15 @@ namespace Tobi.Common.MVVM
         void RaisePropertyChanged(PropertyChangedEventArgs e);
     }
 
+    public interface IPropertyChangedNotifyBase : INotifyPropertyChangedEx
+    {
+        void OnChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression, Action action);
+    }
+
     /// <summary>
     /// Base implementation of INotifyPropertyChanged with automatic dependent property notification
     /// </summary>
-    public class PropertyChangedNotifyBase : INotifyPropertyChangedEx
+    public class PropertyChangedNotifyBase : IPropertyChangedNotifyBase
     {
         private INotifyPropertyChangedEx m_ClassInstancePropertyHost;
 
@@ -159,5 +164,16 @@ namespace Tobi.Common.MVVM
         }
 
         #endregion INotifyPropertyChanged
+
+        public void OnChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression, Action action)
+        {
+            PropertyChanged += ((sender, e) =>
+                                    {
+                                        if (e.PropertyName == Reflect.GetProperty(expression).Name)
+                                        {
+                                            action.Invoke();
+                                        }
+                                    });
+        }
     }
 }

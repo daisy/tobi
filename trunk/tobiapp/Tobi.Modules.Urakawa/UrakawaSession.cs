@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -10,9 +11,11 @@ using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.events;
 using urakawa.events.progress;
 using urakawa.xuk;
 
@@ -20,7 +23,7 @@ namespace Tobi.Modules.Urakawa
 {
     ///<summary>
     ///</summary>
-    public class UrakawaSession : IUrakawaSession
+    public class UrakawaSession : PropertyChangedNotifyBase, IUrakawaSession
     {
         protected ILoggerFacade Logger { get; private set; }
         protected IRegionManager RegionManager { get; private set; }
@@ -38,17 +41,70 @@ namespace Tobi.Modules.Urakawa
         public RichDelegateCommand<object> UndoCommand { get; private set; }
         public RichDelegateCommand<object> RedoCommand { get; private set; }
 
-
+        private Project m_DocumentProject;
         public Project DocumentProject
         {
-            get;
-            set;
+            get { return m_DocumentProject; }
+            set
+            {
+                if (m_DocumentProject == value)
+                {
+                    return;
+                }
+                if (m_DocumentProject != null)
+                {
+                    m_DocumentProject.Changed -= OnDocumentProjectChanged;
+                    //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
+                }
+                m_DocumentProject = value;
+                if (m_DocumentProject != null)
+                {
+                    m_DocumentProject.Changed += OnDocumentProjectChanged;
+                    //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
+                }
+                OnPropertyChanged(() => DocumentProject);
+            }
         }
 
+        //private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
+        //{
+        //    IsDirty = m_DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo;
+        //}
+
+        private void OnDocumentProjectChanged(object sender, DataModelChangedEventArgs e)
+        {
+            IsDirty = true;
+        }
+
+        private string m_DocumentFilePath;
+        [NotifyDependsOn("DocumentProject")]
         public string DocumentFilePath
         {
-            get;
-            set;
+            get { return m_DocumentFilePath; }
+            set
+            {
+                if (m_DocumentFilePath == value)
+                {
+                    return;
+                }
+                m_DocumentFilePath = value;
+                OnPropertyChanged(() => DocumentFilePath);
+            }
+        }
+
+        private bool m_IsDirty;
+        public bool IsDirty
+        {
+            get { return m_IsDirty; }
+            set
+            {
+                if (m_IsDirty == value)
+                {
+                    return;
+                }
+                m_IsDirty = value;
+                OnPropertyChanged(() => IsDirty);
+            }
         }
 
         ///<summary>
@@ -141,12 +197,9 @@ namespace Tobi.Modules.Urakawa
             shellPresenter.RegisterRichCommand(CloseCommand);
         }
 
-        public bool IsDirty
-        {
-            get;
-            set;
-        }
 
+        [NotifyDependsOn("IsProjectLoaded")]
+        [NotifyDependsOn("IsDirty")]
         private bool IsProjectLoadedAndDirty
         {
             get
@@ -155,6 +208,9 @@ namespace Tobi.Modules.Urakawa
             }
         }
 
+
+        [NotifyDependsOn("IsProjectLoaded")]
+        [NotifyDependsOn("IsDirty")]
         private bool IsProjectLoadedAndNotDirty
         {
             get
@@ -163,6 +219,8 @@ namespace Tobi.Modules.Urakawa
             }
         }
 
+
+        [NotifyDependsOn("DocumentProject")]
         private bool IsProjectLoaded
         {
             get
@@ -197,6 +255,11 @@ namespace Tobi.Modules.Urakawa
 
         private void OnSaveXukAction_cancelled(object sender, CancelledEventArgs e)
         {
+            if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
+            {
+                File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
+            }
+
             IsDirty = true;
 
             m_SaveXukActionWorker.CancelAsync();
@@ -204,7 +267,21 @@ namespace Tobi.Modules.Urakawa
 
         private void OnSaveXukAction_finished(object sender, FinishedEventArgs e)
         {
-            //DoClose();
+            if (DocumentFilePath == m_SaveAsDocumentFilePath)
+            {
+                File.Delete(DocumentFilePath);
+                File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+
+                //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+                //File.Delete(DocumentFilePath + SAVING_EXT);
+            }
+            else
+            {
+                File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
+                DocumentFilePath = m_SaveAsDocumentFilePath;
+            }
+
+            IsDirty = false;
         }
 
         private void OnSaveXukAction_progress(object sender, ProgressEventArgs e)
@@ -225,19 +302,34 @@ namespace Tobi.Modules.Urakawa
             }
         }
 
+        private const string SAVING_EXT = ".SAVING";
+
         private void save()
         {
             if (DocumentProject == null)
             {
                 return;
             }
+            saveAs(DocumentFilePath);
+        }
 
-            Logger.Log(String.Format("UrakawaSession.save() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
+        private string m_SaveAsDocumentFilePath;
+
+        private bool saveAs(string filePath)
+        {
+            if (DocumentProject == null)
+            {
+                return false;
+            }
+
+            m_SaveAsDocumentFilePath = filePath;
+
+            Logger.Log(String.Format("UrakawaSession.saveas() [{0}]", m_SaveAsDocumentFilePath), Category.Debug, Priority.Medium);
 
             m_SaveXukActionCancelFlag = false;
             m_SaveXukActionCurrentPercentage = 0;
 
-            var uri = new Uri(DocumentFilePath, UriKind.Absolute);
+            var uri = new Uri(m_SaveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
             //DocumentProject.OpenXuk(uri);
 
             var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
@@ -352,16 +444,50 @@ namespace Tobi.Modules.Urakawa
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
             {
                 m_SaveXukActionCancelFlag = true;
+                return false;
             }
+            return true;
         }
 
-        private void saveAs()
+        private string saveAs()
         {
+            if (DocumentProject == null)
+            {
+                return null;
+            }
+
             Logger.Log("UrakawaSession.saveAs", Category.Debug, Priority.Medium);
 
-            var fileDialog = Container.Resolve<IFileDialogService>();
+            var dlg = new SaveFileDialog
+            {
+                FileName = "daisy_book",
+                DefaultExt = ".xuk",
+                Filter = "XUK (*.xuk)|*.xuk"
+            };
 
-            string destPath = fileDialog.SaveAs();
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+
+            bool? result = false;
+
+            shellPresenter.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+            if (result == false)
+            {
+                return null;
+            }
+
+            //TODO : compare DocumentFilePath and dlg.FileName to determine how to copy the Data folder.
+            //TODO: check RootUri in the resulting XUK
+
+            if (saveAs(dlg.FileName))
+            {
+                return dlg.FileName;
+            }
+
+            return null;
+
+            //var fileDialog = Container.Resolve<IFileDialogService>();
+            //return fileDialog.SaveAs();
         }
 
         private void openDefaultTemplate()

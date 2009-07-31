@@ -1,8 +1,9 @@
 ﻿using System.Windows;
+using Tobi.Common.MVVM;
 
 namespace Tobi.Common
 {
-    public interface IShellView
+    public interface IShellView : INotifyPropertyChangedEx
     {
         ///<summary>
         /// Shows the Shell window

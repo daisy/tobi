@@ -11,6 +11,8 @@
  <ListBox xmlns:NavigationPane="clr-namespace:Tobi.Modules.NavigationPane" xmlns:Data="clr-namespace:System.Windows.Data;assembly=PresentationFramework" 
      x:Class="Tobi.Modules.NavigationPane.PagePanelView"
     x:Name="ListView" 
+          DataContext="{Binding Path=ViewModel,
+           RelativeSource={x:Static RelativeSource.Self}}"
      ItemsSource="{Binding Pages}"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

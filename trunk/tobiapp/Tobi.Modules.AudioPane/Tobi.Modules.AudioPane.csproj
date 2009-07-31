@@ -55,6 +55,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioOptions.xaml.cs">
+      <DependentUpon>AudioOptions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AudioPaneViewModel.cs" />
     <Compile Include="AudioPaneViewModelCommands.cs" />
     <Compile Include="AudioPaneViewModelPartial.cs" />
@@ -73,6 +76,10 @@
     <Compile Include="WaveFormTimeTicksAdorner.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AudioOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AudioPaneView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
