@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Documents;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -20,14 +16,15 @@ namespace Tobi.Modules.NavigationPane
         private ObservableCollection<Page> m_Pages = new ObservableCollection<Page>();
         #region Construction
 
-//        protected IUnityContainer Container { get; private set; }
+        //        protected IUnityContainer Container { get; private set; }
         public IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public PagesPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger): base(container)
+        public PagesPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+            : base(container)
         {
             //Container = container;
             EventAggregator = eventAggregator;

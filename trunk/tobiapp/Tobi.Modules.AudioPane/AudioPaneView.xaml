@@ -12,7 +12,10 @@
     xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
              Loaded="OnPaneLoaded"
-  Focusable="False"
+  
+  AutomationProperties.HelpText="The document audio pane (editable waveform display)"
+  Focusable="True"
+  x:Name="FocusStart"
   
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
   >
@@ -627,7 +630,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Focusable="false">
 
     <UI:ButtonRichCommand
-      x:Name="FocusStart"
       RichCommand="{Binding CommandOpenFile}"/>
 
     <Separator/>

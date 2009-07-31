@@ -7,11 +7,14 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
            Orientation="Horizontal"
+           
+  AutomationProperties.HelpText="The application's toolbar (button shortcuts)"
+  Focusable="True"
+  x:Name="FocusStart"
            >
 
 
       <UI:ButtonRichCommand
-        x:Name="FocusStart"
         RichCommand="{Binding NewCommand}"/>
       
       <UI:ButtonRichCommand RichCommand="{Binding OpenCommand}"/>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Documents;
+﻿using System.Windows.Documents;
 using System.Text;
 
 namespace Tobi.Modules.NavigationPane
@@ -71,5 +68,4 @@ namespace Tobi.Modules.NavigationPane
             return str.ToString();
         }
     }
-
 }

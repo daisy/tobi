@@ -10,6 +10,8 @@ namespace Tobi.Common
         string DocumentFilePath { get; }
         bool IsDirty { get; }
 
+        bool Close();
+
         RichDelegateCommand<object> SaveCommand { get; }
         RichDelegateCommand<object> SaveAsCommand { get; }
 

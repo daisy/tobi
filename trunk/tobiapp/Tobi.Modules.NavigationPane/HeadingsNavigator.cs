@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa;

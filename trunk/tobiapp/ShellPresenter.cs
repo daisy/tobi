@@ -884,6 +884,7 @@ namespace Tobi
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
                                 Focusable = false,
+                                TextWrapping = TextWrapping.Wrap
                             };
 
             var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser"))
@@ -900,33 +901,28 @@ namespace Tobi
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
-            var details = new TextBox
-            {
-                Text = "Any unsaved changes in your document will be lost !",
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                TextWrapping = TextWrapping.Wrap,
-                IsReadOnly = true,
-                Background = SystemColors.ControlLightLightBrush,
-                BorderBrush = SystemColors.ControlDarkDarkBrush,
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(6),
-                SnapsToDevicePixels = true
-            };
-
             var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Exit),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 160, details, 40);
-
+                                                   true, 300, 160);
 
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
             {
+                var session = Container.Resolve<IUrakawaSession>();
+
+                if (session.DocumentProject != null && session.IsDirty)
+                {
+                    if (!session.Close())
+                    {
+                        return false;
+                    }
+                }
+
                 return true;
             }
 
