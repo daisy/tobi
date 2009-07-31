@@ -80,7 +80,8 @@ namespace Tobi
         public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
 
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
-
+        public RichDelegateCommand<object> DisplayPreviewIconsDebugCommand { get; private set; }
+        
         public RichDelegateCommand<object> CopyCommand { get; private set; }
         public RichDelegateCommand<object> CutCommand { get; private set; }
         public RichDelegateCommand<object> PasteCommand { get; private set; }
@@ -154,7 +155,13 @@ namespace Tobi
                                                             obj => View.MagnificationLevel -= 0.15, obj => true);
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
-
+            DisplayPreviewIconsDebugCommand = new RichDelegateCommand<object>(UserInterfaceStrings.IconsDebug,
+                                                                      null,
+                                                                      UserInterfaceStrings.IconsDebug_KEYS,
+                                                                      null,
+                                                            obj => displayIconsPreviewDebug(), obj => true);
+            RegisterRichCommand(DisplayPreviewIconsDebugCommand);
+            //
             ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.ManageShortcuts,
                                                                       UserInterfaceStrings.ManageShortcuts_,
                                                                       UserInterfaceStrings.ManageShortcuts_KEYS,
@@ -234,10 +241,9 @@ namespace Tobi
             //
         }
 
-        private void manageShortcuts()
+        private void displayIconsPreviewDebug()
         {
-            Logger.Log("ShellPresenter.manageShortcuts", Category.Debug, Priority.Medium);
-
+            Logger.Log("ShellPresenter.displayIconsPreviewDebug", Category.Debug, Priority.Medium);
 
             var resourceKeys = new[]
             {
@@ -457,7 +463,7 @@ namespace Tobi
 "x-office-spreadsheet-template",
 "x-office-spreadsheet"
             };
-            
+
             var resourceKeys2 = new[]
             {"Neu_accessories-archiver",
 "Neu_accessories-character-map",
@@ -635,7 +641,7 @@ namespace Tobi
 "Neu_x-office-document",
 "Neu_x-office-spreadsheet"
             };
-            
+
 
             var resourceKeys3 = new[]
             {
@@ -689,7 +695,7 @@ namespace Tobi
 "Gion_x-office-spreadsheet"
             };
 
-            
+
             var resourceKeys4 = new[]
             {
                 "Foxtrot_computer",
@@ -796,6 +802,26 @@ namespace Tobi
 
 
             var windowPopup = new PopupModalWindow(this,
+                                                   UserInterfaceStrings.IconsDebug,
+                                                   new IconsPreviewDebug(this),
+                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 500, 600);
+
+            windowPopup.ShowFloating(() =>
+            {
+                m_listOfIconRichCommands.Clear();
+                m_listOfIconRichCommands2.Clear();
+                m_listOfIconRichCommands3.Clear();
+                m_listOfIconRichCommands4.Clear();
+            });
+        }
+
+        private void manageShortcuts()
+        {
+            Logger.Log("ShellPresenter.manageShortcuts", Category.Debug, Priority.Medium);
+
+            var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.ManageShortcuts),
                                                    new KeyboardShortcuts(this),
@@ -803,43 +829,7 @@ namespace Tobi
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 500, 600);
 
-            windowPopup.ShowFloating(() =>
-                                         {
-                                             m_listOfIconRichCommands.Clear();
-                                             m_listOfIconRichCommands2.Clear();
-                                         });
-
-            /*
-            var windowPopup = new Window()
-            {
-                Owner = (window ?? Application.Current.MainWindow),
-                ShowInTaskbar = false,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Title = UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.ManageShortcuts),
-                Height = 600,
-                Width = 500,
-                Content = new KeyboardShortcuts(this)
-            };
-            windowPopup.ShowDialog();
-             * */
-
-            /*
-        if (window != null)
-        {
-            var dialog = new TaskDialog();
-            dialog.MaxWidth = 600;
-            dialog.MaxHeight = 500;
-            dialog.TopMost = InteropWindowZOrder.TopMost;
-            dialog.TaskDialogWindow.Title = UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.ManageShortcuts);
-            dialog.TaskDialogButton = TaskDialogButton.Custom;
-            dialog.Button1Text = "_Ok";
-            dialog.DefaultResult = TaskDialogResult.Button1;
-            dialog.IsButton1Cancel = true;
-            dialog.Content = new KeyboardShortcuts(this);
-            dialog.ShowModal();
-                
-        } * */
-
+            windowPopup.ShowFloating(null);
         }
 
         private void exit()

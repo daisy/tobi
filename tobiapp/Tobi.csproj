@@ -91,6 +91,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="IconsPreviewDebug.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="KeyboardShortcuts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,6 +120,9 @@
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="DirectoryInfoConverter.cs" />
     <Compile Include="FileInfoConverter.cs" />
+    <Compile Include="IconsPreviewDebug.xaml.cs">
+      <DependentUpon>IconsPreviewDebug.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KeyboardShortcuts.xaml.cs">
       <DependentUpon>KeyboardShortcuts.xaml</DependentUpon>
     </Compile>
@@ -146,6 +153,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
     <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
       <Name>Lib.Composite.Presentation</Name>

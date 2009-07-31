@@ -28,7 +28,8 @@
                 xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
                 xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
                 xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-                  DataContext="{Binding HeadingsNavigator}"
+                  DataContext="{Binding Path=ViewModel.HeadingsNavigator,
+           RelativeSource={x:Static RelativeSource.Self}}"
                   ItemsSource="{Binding Roots}"
                   SelectedItemChanged="onHeadingSelected">
     <TreeView.ItemContainerStyle>

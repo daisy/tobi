@@ -47,6 +47,7 @@ namespace Tobi
 
             Container.RegisterType<IShellView, Shell>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IShellPresenter, ShellPresenter>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IUrakawaSession, UrakawaSession>(new ContainerControlledLifetimeManager());
             base.ConfigureContainer();
         }
 
@@ -65,17 +66,16 @@ namespace Tobi
         {
             base.InitializeModules();
 
-            /*
-            var name = typeof (UrakawaModule).Name;
-            var moduleCatalog = Container.Resolve<IModuleCatalog>();
-            foreach (var module in moduleCatalog.Modules)
-            {
-                if (module.ModuleName == name)
-                {
-                    var moduleManager = Container.Resolve<IModuleManager>();
-                    moduleManager.LoadModule(module.ModuleName);
-                }
-            }*/
+            //var name = typeof (UrakawaModule).Name;
+            //var moduleCatalog = Container.Resolve<IModuleCatalog>();
+            //foreach (var module in moduleCatalog.Modules)
+            //{
+            //    if (module.ModuleName == name)
+            //    {
+            //        var moduleManager = Container.Resolve<IModuleManager>();
+            //        moduleManager.LoadModule(module.ModuleName);
+            //    }
+            //}
         }
 
         /// <summary>
@@ -87,16 +87,18 @@ namespace Tobi
 
             return new ModuleCatalog()
                 .AddModule(typeof(FileDialogModule))
-                .AddModule(typeof(UrakawaModule))
-                .AddModule(typeof(MenuBarModule), "UrakawaModule")
+                //.AddModule(typeof(UrakawaModule))
+                //.AddModule(typeof(MenuBarModule), "UrakawaModule")
+                //.AddModule(typeof(ToolBarsModule), new string[]{"MetadataPaneModule", "UrakawaModule"})
+                .AddModule(typeof(MenuBarModule))
+                .AddModule(typeof(ToolBarsModule), "MetadataPaneModule")
                 .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
                 .AddModule(typeof(HeadingPaneModule), "NavigationPaneModule")
                 .AddModule(typeof(PagePaneModule), "NavigationPaneModule")
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))
-                .AddModule(typeof(ToolBarsModule), new string[]{"MetadataPaneModule", "UrakawaModule"}
-        ); // TODO: remove this dependency, currently necessary to retrieve the local Command and inject it into a button}
+                ;
 
             //.AddModule(typeof (StatusBarModule));
         }
