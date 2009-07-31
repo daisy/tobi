@@ -25,7 +25,7 @@ namespace Tobi.Modules.NavigationPane
         }
 
         ///<summary>
-        /// Registers the <see cref="NavigationPaneView"/> in the DI container as a singleton
+        /// Registers the <see cref="NavigationPane"/> in the DI container as a singleton
         /// and injects it inside the '<c>NavigationPane</c>' region.
         ///</summary>
         public void Initialize()
@@ -43,6 +43,5 @@ namespace Tobi.Modules.NavigationPane
             targetRegion.Add(view);
             targetRegion.Activate(view);
         }
-
     }
 }

@@ -9,19 +9,20 @@ using urakawa.core;
 
 namespace Tobi.Modules.NavigationPane
 {
-    public partial class HeadingPaneViewModel:ViewModelBase
+    public partial class HeadingPaneViewModel : ViewModelBase
     {
         private HeadingsNavigator _headingsNavigator;
         #region Construction
 
-//        protected IUnityContainer Container { get; private set; }
+        //        protected IUnityContainer Container { get; private set; }
         public IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public HeadingPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger) : base(container)
+        public HeadingPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+            : base(container)
         {
             //Container = container;
             EventAggregator = eventAggregator;
@@ -52,7 +53,6 @@ namespace Tobi.Modules.NavigationPane
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(onProjectUnLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, ThreadOption.UIThread);
-
         }
         public HeadingsNavigator HeadingsNavigator
         {

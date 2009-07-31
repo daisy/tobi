@@ -1,30 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Microsoft.Practices.Unity;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 
 namespace Tobi.Modules.NavigationPane
 {
     /// <summary>
     /// Interaction logic for NavigationPane.xaml
     /// </summary>
-    public partial class NavigationPane : INotifyPropertyChanged
+    public partial class NavigationPane // : INotifyPropertyChanged
     {
-        public NavigationPane()
+        public RichDelegateCommand<object> CommandFocus { get; private set; }
+
+        public NavigationPane(IUnityContainer container)
         {
             InitializeComponent();
+
+            var shellPresenter = container.Resolve<IShellPresenter>();
+
+            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Navigation_Focus,
+                                    null,
+                                    UserInterfaceStrings.Navigation_Focus_KEYS,
+                                    null,
+                                    obj => BringIntoFocus(), obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandFocus);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public void BringIntoFocus()
+        {
+            FocusHelper.Focus(this, NavTabs);
+        }
+        //public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -16,24 +16,12 @@ namespace Tobi.Modules.NavigationPane
             Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
             var shellPresenter = Container.Resolve<IShellPresenter>();
             //
-            //CommandExpandAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeExpandAll,
-            //    UserInterfaceStrings.TreeExpandAll_,
-            //    null,
-            //    (VisualBrush)Application.Current.FindResource("list-add"),
-            //    obj => OnExpandAll(null, null), obj => true);
             CommandExpandAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
                 null,
                 shellPresenter.LoadTangoIcon("list-add"),
                 obj => OnExpandAll(null, null), obj => true);
-
-            shellPresenter.RegisterRichCommand(CommandExpandAll);
             //
-            //CommandCollapseAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeCollapseAll,
-            //    UserInterfaceStrings.TreeCollapseAll_,
-            //    null,
-            //    (VisualBrush)Application.Current.FindResource("list-remove"),
-            //    obj => OnCollapseAll(null, null), obj => true);
             CommandCollapseAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeCollapseAll,
                 UserInterfaceStrings.TreeCollapseAll_,
                 null,

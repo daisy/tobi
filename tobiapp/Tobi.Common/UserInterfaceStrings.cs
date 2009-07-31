@@ -87,8 +87,15 @@ namespace Tobi.Common
 
         public const string Menu_File = "_File";
 
+        public const string Overwrite = "_Overwrite";
+        public const string OverwriteConfirm = "You are about to overwrite this file.\nAre you sure ?";
+
         public const string Exit = "E_xit";
         public const string ExitConfirm = "Are you sure you want to exit Tobi ?";
+
+        public const string UnsavedChanges = "_Unsaved changes";
+        public const string UnsavedChangesConfirm = "There are unsaved document changes.\nWould you like to save now ?";
+        public const string UnsavedChangesDetails = "If you close the document without saving,\nany changes will be lost !";
 
         public const string Menu_Exit = "_Quit";
         public const string Menu_Exit_ = "Exit the application";
