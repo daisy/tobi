@@ -4,50 +4,44 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Tobi.Modules.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     LastChildFill="True" Loaded="DockPanel_Loaded">
 
+
     <DockPanel.Resources>
-        
-        <local:BoolToVisibilityConverter x:Key="boolToVis" />
 
         <Style TargetType="{x:Type Button}">
             <Setter Property="Width" Value="50"/>
             <Setter Property="Margin" Value="10"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
+        
+        <!--Basic Row Validation Error Template-->
+        <ControlTemplate x:Key="BasicRowValidationErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <Border BorderBrush="Red" BorderThickness="2">
 
-        <Style x:Key="metadataErrorStyle" TargetType="{x:Type TextBox}">
-            <Setter Property="BorderBrush" Value="Red"/>
-        </Style>
+                    <StackPanel Orientation="Vertical">
+                        <AdornedElementPlaceholder Name="adornerPlaceholder"/>
+                        <TextBlock Text="{Binding RelativeSource={x:Static RelativeSource.Self},
+                                                  Path=(Validation.Errors)[0].ErrorContent}"/>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
 
-        <Style x:Key="metadataReadOnlyStyle" TargetType="{x:Type Control}">
-            <Setter Property="Background" Value="Gray"/>
-        </Style>
-
-        <Style TargetType="{x:Type TextBlock}" x:Key="NameStyle" >
-            <Setter Property="Visibility" 
-                    Value="{Binding Path=IsSelected,
-                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},
-                    Converter={StaticResource boolToVis},
-                    ConverterParameter=False}" />
-        </Style>
-        <Style TargetType="{x:Type TextBlock}" x:Key="RequiredNameStyle" 
-               BasedOn="{StaticResource NameStyle}">
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
-        <Style TargetType="{x:Type FrameworkElement}" x:Key="NameEditStyle">
-            <Setter Property="Visibility" 
-                    Value="{Binding Path=IsSelected,
-                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},
-                    Converter={StaticResource boolToVis},
-                    ConverterParameter=True}" />
-        </Style>
-
-        <Style TargetType="ListViewItem">
-            <Style.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="LightBlue"/>
-            </Style.Resources>
+        <!--Default Row Style-->
+        <Style x:Key="defaultRowStyle" TargetType="{x:Type toolkit:DataGridRow}">
+            <Setter Property="MaxHeight" Value="150" />
+            <Setter Property="Validation.ErrorTemplate" Value="{StaticResource BasicRowValidationErrorTemplate}" />
+            <Style.Triggers>
+                <Trigger Property="IsEditing" Value="true">
+                    <Setter Property="Background" Value="Blue"/> 
+                    <Setter Property="BorderBrush" Value="Blue"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+                
+            </Style.Triggers>
         </Style>
         
     </DockPanel.Resources>
@@ -62,8 +56,9 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <StackPanel Orientation="Horizontal">
             <Button Click="Add_Metadata_Button_Click" 
                 Grid.Column="0" 
@@ -93,14 +88,17 @@
             Lookup
         </Button>
 
-        <StatusBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding StatusText}" HorizontalAlignment="Left"/>
-            </StackPanel>
+        <ListBox ItemsSource="{Binding ValidationErrors}"
+                 Grid.Row="2" 
+                 Grid.Column="0" 
+                 Grid.ColumnSpan="3" MinHeight="100"/>
+        
+        <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left">
+            <TextBlock Text="{Binding StatusText}" HorizontalAlignment="Left"/>
         </StatusBar>
     </Grid>
-    
-    
+
+
     <!--<StackPanel Background="LightCoral">
             <TextBlock>Testing only:</TextBlock>
             <Button Click="Fake_Button_Click">Generate fake data</Button>
@@ -108,126 +106,57 @@
         </StackPanel>
     </StackPanel>-->
 
-
-  <UI:SortableListView
-      
-           ScrollViewer.CanContentScroll="True"
-           ScrollViewer.IsDeferredScrollingEnabled="False"
-           VirtualizingStackPanel.IsVirtualizing="False"
-           VirtualizingStackPanel.VirtualizationMode="Standard"
-           
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Stretch"
-      x:Name="list"
-      ItemsSource="{Binding Metadatas, Mode=OneWay}"
-      SelectionMode="Extended"
-      ScrollViewer.HorizontalScrollBarVisibility="Visible"
-      ScrollViewer.VerticalScrollBarVisibility="Visible"
-      AlternationCount="2"
-      SelectionChanged="list_SelectionChanged">
-
-        <UI:SortableListView.Resources>
-            <!-- errors -->
-            <DataTemplate DataType="{x:Type ValidationError}">
-                <TextBlock Text="{Binding Path=ErrorContent}" Foreground="Red"/>
-            </DataTemplate>
-
-            <!-- for the name field -->
-            <DataTemplate x:Key="RequiredName">
-                <Grid>
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource RequiredNameStyle}"/>
-                    <ComboBox
-                        ItemsSource="{Binding 
-                                      RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type local:MetadataPaneView}}, 
-                                      Path=AvailableMetadata}"
-                        Style="{StaticResource NameEditStyle}"
-                        SelectionChanged="ComboBox_SelectionChanged"
-                        DropDownOpened="ComboBox_DropDownOpened"
-                        SelectedValue="{Binding RelativeSource={RelativeSource 
-                                        FindAncestor, AncestorType={x:Type 
-                                        local:MetadataPaneView}}, 
-                                        Path=SelectedMetadata.Name}"
-                     />
-                </Grid>
-            </DataTemplate>
-            <DataTemplate x:Key="OptionalName">
-                <Grid>
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
-                    <ComboBox
-                        ItemsSource="{Binding 
-                                      RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type local:MetadataPaneView}}, 
-                                      Path=AvailableMetadata}"
-                        Style="{StaticResource NameEditStyle}"
-                        SelectionChanged="ComboBox_SelectionChanged"
-                        DropDownOpened="ComboBox_DropDownOpened"
-                        SelectedValue="{Binding RelativeSource={RelativeSource 
-                                        FindAncestor, AncestorType={x:Type 
-                                        local:MetadataPaneView}}, 
-                                        Path=SelectedMetadata.Name}"
-                     />
-                </Grid>
-            </DataTemplate>
+    <toolkit:DataGrid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ItemsSource="{Binding Metadatas, Mode=OneWay}"
+        AutoGenerateColumns="False"
+        SelectionMode="Extended"
+        SelectionUnit="CellOrRowHeader"
+        RowStyle="{StaticResource defaultRowStyle}">
+        
+        <toolkit:DataGrid.RowValidationRules>
+            <local:MetadataValidationRule/>
+        </toolkit:DataGrid.RowValidationRules>
+        
+        <toolkit:DataGrid.Columns>
             
-            <DataTemplate x:Key="ContentTemplate">
-                <StackPanel>
-                    <TextBox x:Name="textBox" Validation.ErrorTemplate="{x:Null}">
-                        <Binding Path="Content" 
-                                 UpdateSourceTrigger="LostFocus"  ValidatesOnDataErrors="True">
-                        </Binding>
-                    </TextBox>
-
-                    <ContentPresenter
-                        Content="{Binding ElementName=textBox,
-                        Path=(Validation.Errors).CurrentItem}">
-                    </ContentPresenter>
-                </StackPanel>
-            </DataTemplate>
+            <toolkit:DataGridTemplateColumn Header="Name" Width="SizeToCells"
+                                            IsReadOnly="False">
+                <toolkit:DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </toolkit:DataGridTemplateColumn.CellTemplate>
+                
+                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                    <DataTemplate>
+                        <TextBox Text="{Binding Path=Name, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DataTemplate>
+                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
             
-        </UI:SortableListView.Resources>
+            </toolkit:DataGridTemplateColumn>
+            
+            <toolkit:DataGridTemplateColumn Header="Content" Width="SizeToCells"  
+                                               IsReadOnly="False">
+                <toolkit:DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock x:Name="textBlock" Text="{Binding Content}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </toolkit:DataGridTemplateColumn.CellTemplate>
+                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                    <DataTemplate>
+                            <TextBox x:Name="textBox" Text="{Binding Path=Content, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DataTemplate>
+                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
+            </toolkit:DataGridTemplateColumn>
+        </toolkit:DataGrid.Columns>
 
-        <UI:SortableListView.View>
-            <GridView AllowsColumnReorder="false">
-                <GridViewColumn>
-                    <GridViewColumn.HeaderTemplate>
-                        <DataTemplate>
-                            <CheckBox Checked="AllSelectionChanged" Unchecked="AllSelectionChanged"/>
-                        </DataTemplate>
-                    </GridViewColumn.HeaderTemplate>
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding
-                        RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},
-                        Path=IsSelected, Mode=TwoWay}"/>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-                <GridViewColumn Header="Name"
-                        UI:SortableListView.SortPropertyName="Name"
-                        x:Name="gridviewcolumn"
-                        CellTemplateSelector="{Binding NameTemplateSelectorProperty}"/>
+    </toolkit:DataGrid>
 
-                <!--<GridViewColumn Header="Content"
-                        UI:SortableListView.SortPropertyName="Content"
-                        CellTemplateSelector="{Binding ContentTemplateSelectorProperty}"/>-->
-                <GridViewColumn Header="Content"
-                        UI:SortableListView.SortPropertyName="Content"
-                        CellTemplate="{StaticResource ContentTemplate}"/>
-            </GridView>
-        </UI:SortableListView.View>
-
-        <UI:SortableListView.ItemContainerStyle>
-
-            <Style TargetType="{x:Type ListViewItem}">
-                <Style.Triggers>
-                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-        </UI:SortableListView.ItemContainerStyle>
-    </UI:SortableListView>
 </DockPanel>
 

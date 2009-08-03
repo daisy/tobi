@@ -18,7 +18,7 @@ namespace Tobi.Modules.MetadataPane
         {
             if (view == null) return;
             m_View = view;
-            DefaultTemplate = (DataTemplate)m_View.list.Resources["ContentTemplate"];
+            //DefaultTemplate = (DataTemplate)m_View.list.Resources["ContentTemplate"];
         }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
@@ -39,9 +39,9 @@ namespace Tobi.Modules.MetadataPane
             if (view == null) return;
 
             m_View = view;
-            OptionalTemplate = (DataTemplate)m_View.list.Resources["OptionalName"];
-            RecommendedTemplate = (DataTemplate)m_View.list.Resources["OptionalName"];
-            RequiredTemplate = (DataTemplate)m_View.list.Resources["RequiredName"];
+            //OptionalTemplate = (DataTemplate)m_View.list.Resources["OptionalName"];
+            //RecommendedTemplate = (DataTemplate)m_View.list.Resources["OptionalName"];
+            //RequiredTemplate = (DataTemplate)m_View.list.Resources["RequiredName"];
         }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)

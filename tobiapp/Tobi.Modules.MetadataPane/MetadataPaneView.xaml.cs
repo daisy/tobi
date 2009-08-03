@@ -36,54 +36,10 @@ namespace Tobi.Modules.MetadataPane
             DataContext = ViewModel;
 
             InitializeComponent();
-
-            list.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(OnHeaderResize), true);
         }
 
         #endregion Construction
 
-        private double m_CheckBoxColumnWidth = -1.0;
-
-        private void OnHeaderResize(object sender, DragDeltaEventArgs e)
-        {
-            var thumb = e.OriginalSource as Thumb;
-            if (thumb == null) return;
-            
-            var header = thumb.TemplatedParent as GridViewColumnHeader;
-            if (header == null) return;
-            
-            var view = list.View as GridView;
-            if (view == null) return;
-
-            // If user tries to resize checkbox column, reset the width to fixed
-            if (view.Columns[0] == header.Column)
-            {
-                if (m_CheckBoxColumnWidth == -1.0)
-                {
-                    m_CheckBoxColumnWidth = header.Column.ActualWidth;
-                }
-                header.Column.Width = m_CheckBoxColumnWidth;
-                e.Handled = true;
-            }
-        }
-
-        private void AllSelectionChanged(object sender, RoutedEventArgs e)
-        {
-            var chkBox = sender as CheckBox;
-            if (chkBox != null)
-            {
-                bool check = chkBox.IsChecked.Value;
-
-                if (check)
-                {
-                    list.SelectAll();
-                }
-                else
-                {
-                    list.UnselectAll();
-                }
-            }
-        }
 
         private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
@@ -101,7 +57,7 @@ namespace Tobi.Modules.MetadataPane
         }
         private void Lookup_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (LookupField.Text == "")
+            /*if (LookupField.Text == "")
             {
                 ViewModel.StatusText = "Not found";
                 return;
@@ -129,31 +85,16 @@ namespace Tobi.Modules.MetadataPane
             else
             {
                 ViewModel.StatusText = string.Format("{0} matches found", count.ToString());
-            }
+            }*/
         }
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
-        {
+        {/*
             while (list.SelectedItems.Count > 0)
             {   
                 NotifyingMetadataItem metadata = (NotifyingMetadataItem)list.SelectedItem;
                 ViewModel.RemoveMetadata(metadata);
             }
-        }
-
-        
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //after the data templates get refreshed, this function gets triggered again
-            if (e.AddedItems.Count == 0) return;
-            NotifyingMetadataItem metadata = (NotifyingMetadataItem) list.SelectedItem;
-            string name = (string) e.AddedItems[0];
-            if (metadata != null) metadata.Name = name;
-            MetadataDefinition definition = SupportedMetadata_Z39862005.MetadataList.Find
-                    (s => s.Name == ((NotifyingMetadataItem)SelectedMetadata).Name);
-            if (definition != null)
-                SelectedMetadataDescription = definition.Description;
-            else
-                SelectedMetadataDescription = "";
+          * */
         }
 
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
@@ -163,26 +104,9 @@ namespace Tobi.Modules.MetadataPane
 
         private void DockPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.RefreshDataTemplateSelectors();
+            //ViewModel.RefreshDataTemplateSelectors();
         }
 
-        private void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (SelectedMetadata != list.SelectedItem)
-            {
-                SelectedMetadata = list.SelectedItem;
-                if (SelectedMetadata != null)
-                {
-                    ObservableCollection<string> l = AvailableMetadata;
-                    MetadataDefinition definition = SupportedMetadata_Z39862005.MetadataList.Find
-                        (s => s.Name == ((NotifyingMetadataItem) SelectedMetadata).Name);
-                    if (definition != null)
-                        SelectedMetadataDescription = definition.Description;
-                    else
-                        SelectedMetadataDescription = "";
-                }
-            }
-        }
 
         public object SelectedMetadata
         {
@@ -231,12 +155,12 @@ namespace Tobi.Modules.MetadataPane
                 //we need users to be able to have the current Name as an option
                 if (SelectedMetadata != null)
                 {
-                    NotifyingMetadataItem selection = (NotifyingMetadataItem) SelectedMetadata;
+                    NotifyingMetadataItem selection = (NotifyingMetadataItem)SelectedMetadata;
                     if (selection.Name != "")
                     {
                         if (availableMetadata.Contains(selection.Name) == false)
                             availableMetadata.Insert(0, selection.Name);
-                    }   
+                    }
                 }
                 return availableMetadata;
             }
@@ -244,27 +168,10 @@ namespace Tobi.Modules.MetadataPane
 
         private void ComboBox_DropDownOpened(object sender, EventArgs e)
         {
-            ((ComboBox) sender).ItemsSource = AvailableMetadata;
+            ((ComboBox)sender).ItemsSource = AvailableMetadata;
         }
+
+
 
     }
-
-    public class BoolToVisibilityConverter : System.Windows.Data.IValueConverter
-    {
-        public object Convert(object value, Type targetType,
-          object parameter, System.Globalization.CultureInfo culture)
-        {
-            bool param = bool.Parse(parameter as string);
-            bool val = (bool)value;
-
-            return val == param ? Visibility.Visible : Visibility.Hidden;
-        }
-
-        public object ConvertBack(object value, Type targetType,
-          object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-        
 }

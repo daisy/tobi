@@ -10,7 +10,7 @@ using System;
 
 namespace Tobi.Modules.MetadataPane
 {   
-    public class NotifyingMetadataItem : PropertyChangedNotifyBase, IDataErrorInfo
+    public class NotifyingMetadataItem : PropertyChangedNotifyBase
     {
         private Metadata m_Metadata;
         public Metadata UrakawaMetadata
@@ -70,10 +70,6 @@ namespace Tobi.Modules.MetadataPane
                 if (value != null)
                 {
                     m_Metadata.Name = value;
-                    //we need the content to appear "changed" as well
-                    //because changing the name changes the context under which the
-                    //content is evaluated
-                    OnPropertyChanged(() => Content);
                     OnPropertyChanged(() => Name);
                     
                 }
@@ -88,10 +84,6 @@ namespace Tobi.Modules.MetadataPane
         void OnNameChanged(object sender, NameChangedEventArgs e)
         {
             OnPropertyChanged(() => Name);
-            //we need the content to appear "changed" as well
-            //because changing the name changes the context under which the
-            //content is evaluated
-            OnPropertyChanged(() => Content);
         }
 
         internal void RemoveEvents()
@@ -99,34 +91,6 @@ namespace Tobi.Modules.MetadataPane
             m_Metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
             m_Metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
         }
-
-        #region IDataErrorInfo Members
-
-        public string Error
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                string result = null;
-                if (columnName == "Content" || columnName == "Name")
-                {
-                    MetadataValidation validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
-                    if (validator.ValidateItem(UrakawaMetadata) == false)
-                    {
-                        if (validator.Report.Count > 0)
-                            result = validator.Report[0].Description;
-                    }
-                }
-
-                return result;
-            }
-        }
-
-        #endregion
     }
 
 
