@@ -49,7 +49,7 @@
       <Separator/>
 
       <UI:ButtonRichCommand RichCommand="{Binding HelpCommand}"/>
-      <UI:ButtonRichCommand RichCommand="{Binding WebHomeCommand}"/>
+  <!-- UI:ButtonRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
 
 
     <!-- StackPanel Orientation="Horizontal">

@@ -629,11 +629,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
     Focusable="false">
 
-    <UI:ButtonRichCommand
-      RichCommand="{Binding CommandOpenFile}"/>
-
-    <Separator/>
-
     <UI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
             IsChecked="{Binding IsAutoPlay, Mode=OneWay}"/>
 
@@ -651,18 +646,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandPlayPreviewRight}"
                                  />
     
-    <UI:TwoStateButtonRichCommand
-      RichCommandOne="{Binding CommandStopMonitor}"
-      RichCommandTwo="{Binding CommandStartMonitor}"
-      InputBindingManager="{Binding InputBindingManager}"
-            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
-
-    <UI:TwoStateButtonRichCommand
-      RichCommandOne="{Binding CommandStopRecord}"
-      RichCommandTwo="{Binding CommandStartRecord}"
-      InputBindingManager="{Binding InputBindingManager}"
-            RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
-
     <Separator/>
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
@@ -703,6 +686,30 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
                                  />
 
+    <Separator/>
+
+    <UI:TwoStateButtonRichCommand
+      RichCommandOne="{Binding CommandStopMonitor}"
+      RichCommandTwo="{Binding CommandStartMonitor}"
+      InputBindingManager="{Binding InputBindingManager}"
+            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
+
+    <UI:ButtonRichCommand
+      RichCommand="{Binding CommandOpenFile}"/>
+
+    <Separator/>
+
+    <UI:TwoStateButtonRichCommand
+      RichCommandOne="{Binding CommandStopRecord}"
+      RichCommandTwo="{Binding CommandStartRecord}"
+      InputBindingManager="{Binding InputBindingManager}"
+            RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
+
+    <UI:ButtonRichCommand
+      RichCommand="{Binding CommandInsertFile}"/>
+    
+    <UI:ButtonRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"
+                                 />
 
     <Separator/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"

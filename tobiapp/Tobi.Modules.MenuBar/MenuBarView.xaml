@@ -75,7 +75,7 @@
 
     <!-- Help Menu -->
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Help}">
-      <UI:MenuItemRichCommand RichCommand="{Binding WebHomeCommand}"/>
+      <!-- UI:MenuItemRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
       <UI:MenuItemRichCommand RichCommand="{Binding HelpCommand}"/>
       <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_About}"/>
     </MenuItem>

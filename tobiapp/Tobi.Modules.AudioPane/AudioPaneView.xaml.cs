@@ -584,7 +584,7 @@ namespace Tobi.Modules.AudioPane
             PCMFormatInfo pcmInfo = ViewModel.State.Audio.PcmFormat;
             if (pcmInfo == null)
             {
-                pcmInfo = ViewModel.m_RecordingPcmFormat;
+                pcmInfo = ViewModel.m_PcmFormatOfAudioToInsert;
             }
 
             double barWidth = PeakMeterCanvas.ActualWidth;
