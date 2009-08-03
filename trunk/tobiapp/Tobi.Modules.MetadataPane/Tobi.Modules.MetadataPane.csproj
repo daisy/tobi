@@ -78,6 +78,10 @@
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\WPFToolkit\Lib.WPFToolkit.csproj">
+      <Project>{9606A078-7135-4CE7-879E-39FCF527F1A3}</Project>
+      <Name>Lib.WPFToolkit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>

@@ -11,7 +11,8 @@ using Tobi.Common.UI;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
-
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -24,7 +25,8 @@ namespace Tobi.Modules.MetadataPane
 
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-        
+        private MetadataValidation m_Validator;
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -34,8 +36,14 @@ namespace Tobi.Modules.MetadataPane
             Logger = logger;
             m_Metadatas = null;
             Initialize();
+            m_Validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            m_ValidationErrors = new ObservableCollection<string>();
+            m_Validator.ValidationErrorEvent += new MetadataValidation.ValidationError(OnValidationError);
         }
-
+        ~MetadataPaneViewModel()
+        {
+            m_Validator.ValidationErrorEvent -= new MetadataValidation.ValidationError(OnValidationError);
+        }
         #endregion Construction
 
         #region Initialization
@@ -57,9 +65,6 @@ namespace Tobi.Modules.MetadataPane
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
             StatusText = "everything is wonderful";
-
-            //this call doesn't seem necessary here
-            //RefreshDataTemplateSelectors();
        }
 
         private void OnProjectUnLoaded(Project obj)
@@ -71,9 +76,6 @@ namespace Tobi.Modules.MetadataPane
         {
             Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
                 Category.Debug, Priority.Medium);
-
-            ContentTemplateSelectorProperty = (project == null ? null : new ContentTemplateSelector((MetadataPaneView)View));
-            NameTemplateSelectorProperty = (project == null ? null : new NameTemplateSelector((MetadataPaneView)View));
 
             OnPropertyChanged(() => Metadatas);
         }
@@ -127,19 +129,18 @@ namespace Tobi.Modules.MetadataPane
 
         #endregion Commands
         
-        public void RefreshDataTemplateSelectors()
-        {
-            //ContentTemplateSelectorProperty = new ContentTemplateSelector((MetadataPaneView)View);
-            NameTemplateSelectorProperty = new NameTemplateSelector((MetadataPaneView)View);
-        }
-
+      
         private string m_StatusText;
         public string StatusText
         {
             get
             {
-                return ((MetadataPaneView) View).SelectedMetadataDescription;
-                //return m_StatusText;
+                if (ValidationErrors.Count > 0)
+                    return "Invalid metadata";
+                else if (((MetadataPaneView)View).SelectedMetadata != null)
+                    return ((MetadataPaneView)View).SelectedMetadataDescription;
+                else
+                    return "Ready";
             }
             set
             {
@@ -147,7 +148,16 @@ namespace Tobi.Modules.MetadataPane
                 OnPropertyChanged(() => StatusText);
             }
         }
-
+        
+        
+        private ObservableCollection<string> m_ValidationErrors;
+        public ObservableCollection<string> ValidationErrors
+        {
+            get
+            {
+                return m_ValidationErrors;
+            }
+        }
         private ObservableMetadataCollection m_Metadatas;
         
         public ObservableMetadataCollection Metadatas 
@@ -237,81 +247,32 @@ namespace Tobi.Modules.MetadataPane
         /// <param name="metadata"></param>
         public void ValidateMetadata(NotifyingMetadataItem metadata)
         {
-            MetadataValidation validation = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
-            validation.ValidateItem(metadata.UrakawaMetadata);
+            m_Validator.ValidateItem(metadata.UrakawaMetadata);
         }
+
         /// <summary>
         /// validate all metadata
         /// </summary>
         public void ValidateMetadata()
         {
-            List<string> errors = new List<string>();
-
+            m_ValidationErrors.Clear();
             var session = Container.Resolve<IUrakawaSession>();
 
             List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
 
-            MetadataValidation validation = new 
-                MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
-            
-            if (validation.Validate(metadatas) == false)
-            {
-                foreach (MetadataValidationReportItem item in validation.Report)
-                {
-
-                    string error_desc;
-                    if (item.Metadata != null)
-                    {
-                        error_desc = string.Format("{0}:\n\t{1}={2}",
-                                                   item.Description, item.Metadata.Name, item.Metadata.Content);
-                    }
-                    else
-                    {
-                        error_desc = item.Description;
-                    }   
-                    errors.Add(error_desc);
-                }
-            }
-
-            if (errors.Count > 0)
-            {
-                StatusText = string.Join("\n", errors.ToArray());
-            }
+            m_Validator.Validate(metadatas);
+        }
+        public void OnValidationError(MetadataValidationReportItem item)
+        {
+            string errorDescription = null;
+            if (item.Metadata != null)
+                errorDescription = string.Format("{0}: {1}", item.Metadata.Name, item.Description);
             else
-            {
-                StatusText = "your metadata is great";
-            }
-                
+                errorDescription = string.Format("{0}", item.Description);
+            m_ValidationErrors.Add(errorDescription);
+            OnPropertyChanged(() => ValidationErrors);
         }
 #endregion validation
-
-        private NameTemplateSelector m_NameTemplateSelector = null;
-        public NameTemplateSelector NameTemplateSelectorProperty
-        {
-            get
-            {
-                return m_NameTemplateSelector;
-            }
-            private set
-            {
-                m_NameTemplateSelector = value;
-                OnPropertyChanged(() => NameTemplateSelectorProperty);
-            }
-        }
-
-        private ContentTemplateSelector m_ContentTemplateSelector = null;
-        public ContentTemplateSelector ContentTemplateSelectorProperty
-        {
-            get
-            {
-                return m_ContentTemplateSelector;
-            }
-            private set
-            {
-                m_ContentTemplateSelector = value;
-                OnPropertyChanged(() => ContentTemplateSelectorProperty);
-            }
-        }
 
         public string GetDebugStringForMetaData()
         {
@@ -326,6 +287,33 @@ namespace Tobi.Modules.MetadataPane
             return data;
         }
     }
+
+    public class MetadataValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
+        {
+            BindingGroup bindingGroup = (BindingGroup)value;
+            NotifyingMetadataItem metadata = bindingGroup.Items[0] as NotifyingMetadataItem;
+            MetadataValidation validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            bool result = validator.ValidateItem(metadata.UrakawaMetadata);
+
+            if (result)
+            {
+                return ValidationResult.ValidResult;
+            }
+            else
+            {
+                MetadataValidationReportItem item = null;
+                if (validator.Report.Count > 0)
+                {
+                    item = validator.Report[validator.Report.Count - 1];
+                }
+                return new ValidationResult(false, item.Description);
+            }
+                
+        }
+    }
+
 
         
     
