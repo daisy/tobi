@@ -33,10 +33,10 @@ namespace Tobi.Modules.MenuBar
 
         public RichDelegateCommand<object> HelpCommand { get; private set; }
         public RichDelegateCommand<object> PreferencesCommand { get; private set; }
-        public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+        //public RichDelegateCommand<object> WebHomeCommand { get; private set; }
 
-        public RichDelegateCommand<object> NavNextCommand { get; private set; }
-        public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
+        //public RichDelegateCommand<object> NavNextCommand { get; private set; }
+        //public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
 
         public RichDelegateCommand<object> SaveCommand { get; private set; }
         public RichDelegateCommand<object> SaveAsCommand { get; private set; }
@@ -93,10 +93,10 @@ namespace Tobi.Modules.MenuBar
 
                 HelpCommand = shellPresenter.HelpCommand;
                 PreferencesCommand = shellPresenter.PreferencesCommand;
-                WebHomeCommand = shellPresenter.WebHomeCommand;
+                //WebHomeCommand = shellPresenter.WebHomeCommand;
 
-                NavNextCommand = shellPresenter.NavNextCommand;
-                NavPreviousCommand = shellPresenter.NavPreviousCommand;
+                //NavNextCommand = shellPresenter.NavNextCommand;
+                //NavPreviousCommand = shellPresenter.NavPreviousCommand;
             }
 
             InitializeComponent();

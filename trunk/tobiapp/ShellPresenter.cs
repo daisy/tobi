@@ -88,10 +88,10 @@ namespace Tobi
 
         public RichDelegateCommand<object> HelpCommand { get; private set; }
         public RichDelegateCommand<object> PreferencesCommand { get; private set; }
-        public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+        //public RichDelegateCommand<object> WebHomeCommand { get; private set; }
 
-        public RichDelegateCommand<object> NavNextCommand { get; private set; }
-        public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
+        //public RichDelegateCommand<object> NavNextCommand { get; private set; }
+        //public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
 
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
@@ -214,30 +214,30 @@ namespace Tobi
 
             RegisterRichCommand(PreferencesCommand);
             //
-            WebHomeCommand = new RichDelegateCommand<object>(UserInterfaceStrings.WebHome,
-                UserInterfaceStrings.WebHome_,
-                UserInterfaceStrings.WebHome_KEYS,
-                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
-                LoadTangoIcon("go-home"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+            //WebHomeCommand = new RichDelegateCommand<object>(UserInterfaceStrings.WebHome,
+            //    UserInterfaceStrings.WebHome_,
+            //    UserInterfaceStrings.WebHome_KEYS,
+            //    //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
+            //    LoadTangoIcon("go-home"),
+            //    obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
-            RegisterRichCommand(WebHomeCommand);
-            //
-            NavNextCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavNext,
-                UserInterfaceStrings.NavNext_,
-                UserInterfaceStrings.NavNext_KEYS,
-                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+            //RegisterRichCommand(WebHomeCommand);
+            ////
+            //NavNextCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavNext,
+            //    UserInterfaceStrings.NavNext_,
+            //    UserInterfaceStrings.NavNext_KEYS,
+            //    ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
+            //    obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
-            RegisterRichCommand(NavNextCommand);
-            //
-            NavPreviousCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavPrevious,
-                UserInterfaceStrings.NavPrevious_,
-                UserInterfaceStrings.NavPrevious_KEYS,
-                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+            //RegisterRichCommand(NavNextCommand);
+            ////
+            //NavPreviousCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavPrevious,
+            //    UserInterfaceStrings.NavPrevious_,
+            //    UserInterfaceStrings.NavPrevious_KEYS,
+            //    ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
+            //    obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
 
-            RegisterRichCommand(NavPreviousCommand);
+            //RegisterRichCommand(NavPreviousCommand);
             //
         }
 

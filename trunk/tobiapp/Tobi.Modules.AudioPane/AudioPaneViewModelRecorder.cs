@@ -128,7 +128,7 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        public PCMFormatInfo m_RecordingPcmFormat;
+        public PCMFormatInfo m_PcmFormatOfAudioToInsert;
 
         public void AudioRecorder_StartMonitor()
         {
@@ -139,15 +139,16 @@ namespace Tobi.Modules.AudioPane
             if (session.DocumentProject == null)
             {
                 setRecordingDirectory(Directory.GetCurrentDirectory());
-                m_RecordingPcmFormat = new PCMFormatInfo();
+
+                m_PcmFormatOfAudioToInsert = IsAudioLoaded ? State.Audio.PcmFormat : new PCMFormatInfo();
             }
             else
             {
                 Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                m_RecordingPcmFormat = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                m_PcmFormatOfAudioToInsert = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
             }
 
-            m_Recorder.StartListening(new AudioLibPCMFormat(m_RecordingPcmFormat.NumberOfChannels, m_RecordingPcmFormat.SampleRate, m_RecordingPcmFormat.BitDepth));
+            m_Recorder.StartListening(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
 
             var presenter = Container.Resolve<IShellPresenter>();
             presenter.PlayAudioCueTock();
@@ -159,7 +160,7 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StopRecording();
 
-            m_RecordingPcmFormat = null;
+            m_PcmFormatOfAudioToInsert = null;
 
             var presenter = Container.Resolve<IShellPresenter>();
             presenter.PlayAudioCueTockTock();
@@ -187,7 +188,7 @@ namespace Tobi.Modules.AudioPane
             if (session.DocumentProject == null)
             {
                 setRecordingDirectory(Directory.GetCurrentDirectory());
-                m_RecordingPcmFormat = new PCMFormatInfo();
+                m_PcmFormatOfAudioToInsert = new PCMFormatInfo();
             }
             else
             {
@@ -196,39 +197,10 @@ namespace Tobi.Modules.AudioPane
                     return;
                 }
                 Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                m_RecordingPcmFormat = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                m_PcmFormatOfAudioToInsert = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
             }
 
-            m_Recorder.StartRecording(new AudioLibPCMFormat(m_RecordingPcmFormat.NumberOfChannels, m_RecordingPcmFormat.SampleRate, m_RecordingPcmFormat.BitDepth));
-        }
-
-        private ManagedAudioMedia makeManagedAudioMediaFromRecording()
-        {
-            TreeNode nodeRecord = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
-
-            Stream recordingStream = File.Open(m_Recorder.RecordedFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            PCMDataInfo pcmFormat = PCMDataInfo.ParseRiffWaveHeader(recordingStream);
-            long dataLength = recordingStream.Length - recordingStream.Position;
-            
-            //double recordingDuration = pcmFormat.GetDuration(dataLength).TimeDeltaAsMillisecondDouble;
-            double recordingDuration = State.Audio.ConvertBytesToMilliseconds(dataLength);
-
-            ManagedAudioMedia managedAudioMediaNew =
-                nodeRecord.Presentation.MediaFactory.CreateManagedAudioMedia();
-
-            var mediaData =
-                (WavAudioMediaData)
-                nodeRecord.Presentation.MediaDataFactory.CreateAudioMediaData();
-
-            managedAudioMediaNew.MediaData = mediaData;
-
-            //mediaData.AppendAudioDataFromRiffWave(m_Recorder.RecordedFilePath);
-            mediaData.AppendAudioData(recordingStream, new TimeDelta(recordingDuration));
-            recordingStream.Close();
-
-            File.Delete(m_Recorder.RecordedFilePath);
-
-            return managedAudioMediaNew;
+            m_Recorder.StartRecording(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
         }
 
         public void AudioRecorder_Stop()
@@ -237,175 +209,8 @@ namespace Tobi.Modules.AudioPane
 
             m_Recorder.StopRecording();
 
-            //var presenter = Container.Resolve<IShellPresenter>();
-            //presenter.PlayAudioCueTockTock();
-
-            if (View != null)
-            {
-                View.ResetAll();
-            }
-
-            if (string.IsNullOrEmpty(m_Recorder.RecordedFilePath) || !File.Exists(m_Recorder.RecordedFilePath))
-            {
-                m_RecordingPcmFormat = null;
-                return;
-            }
-
-            var session = Container.Resolve<IUrakawaSession>();
-
-            if (session.DocumentProject != null)
-            {
-                if (State.CurrentTreeNode == null)
-                {
-                    m_RecordingPcmFormat = null;
-                    return;
-                }
-
-                TreeNode nodeRecord = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
-
-                ManagedAudioMedia recordingManagedAudioMedia = makeManagedAudioMediaFromRecording();
-
-                ManagedAudioMedia managedAudioMedia = nodeRecord.GetManagedAudioMedia();
-                if (managedAudioMedia == null)
-                {
-                    SequenceMedia seqAudioMedia = nodeRecord.GetAudioSequenceMedia();
-                    bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
-                    if (isSeqValid)
-                    {
-                        foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                        {
-                            if (!(media is ManagedAudioMedia))
-                            {
-                                isSeqValid = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (isSeqValid)
-                    {
-                        var byteOffset = (long)State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-
-                        double timeOffset = 0;
-                        long sumData = 0;
-                        long sumDataPrev = 0;
-                        foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                        {
-                            var manangedMediaSeqItem = (ManagedAudioMedia) media;
-                            AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                            sumData += audioData.GetPCMLength();
-                            if (byteOffset < sumData)
-                            {
-                                timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
-
-                                if (AudioPlaybackStreamKeepAlive)
-                                {
-                                    ensurePlaybackStreamIsDead();
-                                }
-
-                                if (manangedMediaSeqItem.AudioMediaData == null)
-                                {
-                                    Debug.Fail("This should never happen !!!");
-                                    //recordingStream.Close();
-                                    m_RecordingPcmFormat = null;
-                                    return;
-                                }
-
-                                var command = nodeRecord.Presentation.CommandFactory.
-                                    CreateManagedAudioMediaInsertDataCommand(
-                                    nodeRecord, manangedMediaSeqItem, recordingManagedAudioMedia,
-                                    new Time(timeOffset));
-
-                                nodeRecord.Presentation.UndoRedoManager.Execute(command);
-
-                                //manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
-                                //recordingStream.Close();
-                                break;
-                            }
-                            sumDataPrev = sumData;
-                        }
-                    }
-                    else
-                    {
-                        var command = nodeRecord.Presentation.CommandFactory.
-                            CreateTreeNodeSetManagedAudioMediaCommand(
-                            nodeRecord, recordingManagedAudioMedia);
-
-                        nodeRecord.Presentation.UndoRedoManager.Execute(command);
-                    }
-                }
-                else
-                {
-                    double timeOffset = LastPlayHeadTime;
-                    if (State.CurrentSubTreeNode != null)
-                    {
-                        var byteOffset = (long)State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-
-                        long sumData = 0;
-                        long sumDataPrev = 0;
-                        int index = -1;
-                        foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-                        {
-                            index++;
-
-                            sumData += marker.m_LocalStreamDataLength;
-                            if (byteOffset < sumData
-                                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
-                            {
-                                if (State.CurrentSubTreeNode != marker.m_TreeNode)
-                                {
-                                    Debug.Fail("This should never happen !!!");
-                                    //recordingStream.Close();
-                                    m_RecordingPcmFormat = null;
-                                    return;
-                                }
-
-                                timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
-                                break;
-                            }
-                            sumDataPrev = sumData;
-                        }
-                    }
-
-                    if (AudioPlaybackStreamKeepAlive)
-                    {
-                        ensurePlaybackStreamIsDead();
-                    }
-
-                    if (managedAudioMedia.AudioMediaData == null)
-                    {
-                        Debug.Fail("This should never happen !!!");
-                        //recordingStream.Close();
-                        m_RecordingPcmFormat = null;
-                        return;
-                    }
-
-                    var command = nodeRecord.Presentation.CommandFactory.
-                        CreateManagedAudioMediaInsertDataCommand(
-                        nodeRecord, managedAudioMedia, recordingManagedAudioMedia,
-                        new Time(timeOffset));
-
-                    nodeRecord.Presentation.UndoRedoManager.Execute(command);
-
-                    //managedAudioMedia.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
-                    //recordingStream.Close();
-                }
-
-                //SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
-                //SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble;
-
-                //ReloadWaveForm(); UndoRedoManager.Changed callback will take care of that.
-            }
-            else
-            {
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                }
-
-                OpenFile(m_Recorder.RecordedFilePath);
-            }
-
-            m_RecordingPcmFormat = null;
+            // m_PcmFormatOfAudioToInsert is set  in _Start().
+            openFile(m_Recorder.RecordedFilePath, true);
         }
 
         #endregion Audio Recorder

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
@@ -17,6 +18,7 @@ namespace Tobi.Modules.AudioPane
 
         public RichDelegateCommand<object> CommandFocus { get; private set; }
         public RichDelegateCommand<object> CommandOpenFile { get; private set; }
+        public RichDelegateCommand<object> CommandInsertFile { get; private set; }
         public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
         public RichDelegateCommand<object> CommandGotoEnd { get; private set; }
         public RichDelegateCommand<object> CommandStepBack { get; private set; }
@@ -41,7 +43,8 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandEndSelection { get; private set; }
         public RichDelegateCommand<object> CommandSelectNextChunk { get; private set; }
         public RichDelegateCommand<object> CommandSelectPreviousChunk { get; private set; }
-        
+        public RichDelegateCommand<object> CommandDeleteAudioSelection { get; private set; }
+
 
         [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("IsRecording")]
@@ -95,11 +98,26 @@ namespace Tobi.Modules.AudioPane
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsPlaying")]
         [NotifyDependsOn("IsWaveFormLoading")]
+        public bool CanInsertFile
+        {
+            get
+            {
+                var session = Container.Resolve<IUrakawaSession>();
+
+                return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                    && session.DocumentProject != null && State.CurrentTreeNode != null;
+            }
+        }
+
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanRecord
         {
             get
             {
-            var session = Container.Resolve<IUrakawaSession>();
+                var session = Container.Resolve<IUrakawaSession>();
 
                 return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
                     && (
@@ -222,6 +240,22 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("IsWaveFormLoading")]
+        public bool CanDelete
+        {
+            get
+            {
+                var session = Container.Resolve<IUrakawaSession>();
+
+                return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                    &&
+                    session.DocumentProject != null && State.CurrentTreeNode != null;
+            }
+        }
+
         public IInputBindingManager InputBindingManager
         {
             get
@@ -238,15 +272,26 @@ namespace Tobi.Modules.AudioPane
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
+            CommandDeleteAudioSelection = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_Delete,
+                UserInterfaceStrings.Audio_Delete_,
+                UserInterfaceStrings.Audio_Delete_KEYS,
+                shellPresenter.LoadGnomeNeuIcon("Neu_dialog-cancel"),
+                obj => DeleteAudioSelection()
+                , obj => CanDelete);
+
+            shellPresenter.RegisterRichCommand(CommandDeleteAudioSelection);
+            //
             CommandFocus = new RichDelegateCommand<object>(
                 UserInterfaceStrings.Audio_Focus,
                 null,
                 UserInterfaceStrings.Audio_Focus_KEYS,
                 null,
-                obj => {
+                obj =>
+                {
                     if (View != null)
                     {
-                    View.BringIntoFocus();
+                        View.BringIntoFocus();
                     }
                 }, obj => true);
 
@@ -265,9 +310,26 @@ namespace Tobi.Modules.AudioPane
                 UserInterfaceStrings.Audio_OpenFile_,
                 UserInterfaceStrings.Audio_OpenFile_KEYS,
                 shellPresenter.LoadTangoIcon("document-open"),
-                obj => OpenFile(obj as String), obj => CanOpenFile);
+                obj =>
+                {
+                    m_PcmFormatOfAudioToInsert = null;
+                    openFile(obj as String, false);
+                }, obj => CanOpenFile);
 
             shellPresenter.RegisterRichCommand(CommandOpenFile);
+            //
+            CommandInsertFile = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_InsertFile,
+                UserInterfaceStrings.Audio_InsertFile_,
+                UserInterfaceStrings.Audio_InsertFile_KEYS,
+                shellPresenter.LoadGnomeNeuIcon("Neu_go-jump"),
+                obj =>
+                {
+                    m_PcmFormatOfAudioToInsert = null;
+                    openFile(obj as String, true);
+                }, obj => CanInsertFile);
+
+            shellPresenter.RegisterRichCommand(CommandInsertFile);
             //
             CommandGotoBegining = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
@@ -362,7 +424,7 @@ namespace Tobi.Modules.AudioPane
             CommandAutoPlay = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_AutoPlay,
                 UserInterfaceStrings.Audio_AutoPlay_,
                 UserInterfaceStrings.Audio_AutoPlay_KEYS,
-                shellPresenter.LoadTangoIcon("go-jump"),
+                shellPresenter.LoadGnomeNeuIcon("Neu_go-last"),
                 obj => IsAutoPlay = !IsAutoPlay, obj => !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
@@ -420,7 +482,7 @@ namespace Tobi.Modules.AudioPane
             CommandStartMonitor = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_StartMonitor,
                 UserInterfaceStrings.Audio_StartMonitor_,
                 UserInterfaceStrings.Audio_StartMonitor_KEYS,
-                shellPresenter.LoadTangoIcon("audio-volume-high"),
+                shellPresenter.LoadGnomeNeuIcon("Neu_audio-x-generic"),
                 obj => AudioRecorder_StartStopMonitor(), obj => CanMonitor);
 
             shellPresenter.RegisterRichCommand(CommandStartMonitor);

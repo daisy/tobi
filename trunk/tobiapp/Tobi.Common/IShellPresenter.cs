@@ -20,10 +20,10 @@ namespace Tobi.Common
 
         RichDelegateCommand<object> HelpCommand { get; }
         RichDelegateCommand<object> PreferencesCommand { get; }
-        RichDelegateCommand<object> WebHomeCommand { get; }
+        //RichDelegateCommand<object> WebHomeCommand { get; }
 
-        RichDelegateCommand<object> NavNextCommand { get; }
-        RichDelegateCommand<object> NavPreviousCommand { get; }
+        //RichDelegateCommand<object> NavNextCommand { get; }
+        //RichDelegateCommand<object> NavPreviousCommand { get; }
 
         IShellView View { get; }
 
@@ -33,6 +33,9 @@ namespace Tobi.Common
         void RegisterRichCommand(RichDelegateCommand<object> command);
 
         VisualBrush LoadTangoIcon(string resourceKey);
+        VisualBrush LoadGnomeNeuIcon(string resourceKey);
+        VisualBrush LoadGnomeGionIcon(string resourceKey);
+        VisualBrush LoadGnomeFoxtrotIcon(string resourceKey);
 
         void DimBackgroundWhile(Action action);
 

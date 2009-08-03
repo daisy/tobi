@@ -866,7 +866,7 @@ namespace Tobi.Modules.AudioPane
             PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
             if (pcmInfo == null)
             {
-                pcmInfo = m_RecordingPcmFormat;
+                pcmInfo = m_PcmFormatOfAudioToInsert;
             }
 
             long startPosition = 0;
@@ -1249,7 +1249,7 @@ namespace Tobi.Modules.AudioPane
                 PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
                 if (pcmInfo == null)
                 {
-                    pcmInfo = m_RecordingPcmFormat;
+                    pcmInfo = m_PcmFormatOfAudioToInsert;
                 }
                 return (pcmInfo != null ? pcmInfo.ToString() : "");
             }

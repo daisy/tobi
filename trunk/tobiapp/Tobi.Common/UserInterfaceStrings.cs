@@ -78,6 +78,10 @@ namespace Tobi.Common
         public const string Audio_EndSelection_ = "End audio waveform selection";
         public static KeyGesture Audio_EndSelection_KEYS = new KeyGesture(Key.OemCloseBrackets, ModifierKeys.Control);
 
+        public const string Audio_Delete = "_Delete audio selection";
+        public const string Audio_Delete_ = "Delete the audio in the waveform selection";
+        public static KeyGesture Audio_Delete_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control);
+
 
         public const string TreeExpandAll = "E_xpand all";
         public const string TreeExpandAll_ = "Expand all children in the tree";
@@ -120,8 +124,16 @@ namespace Tobi.Common
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";
 
-        public const string Audio_OpenFile = "_Open audio";
-        public const string Audio_OpenFile_ = "Open a local WAV file";
+        public const string Audio_InsertFile = "_Insert audio file";
+        public const string Audio_InsertFile_ = "Inserts a local WAV file (PCM 16 bits)";
+        public static KeyGesture Audio_InsertFile_KEYS = new KeyGesture(Key.O,
+                                                                      ModifierKeys.Control |
+                                                                      ModifierKeys.Alt |
+                                                                      ModifierKeys.Shift);
+
+
+        public const string Audio_OpenFile = "_Open audio file";
+        public const string Audio_OpenFile_ = "Open a local WAV file (PCM 16 bits)";
         public static KeyGesture Audio_OpenFile_KEYS = new KeyGesture(Key.O,
                                                                       ModifierKeys.Control |
                                                                       ModifierKeys.Shift);
@@ -176,9 +188,9 @@ namespace Tobi.Common
         public const string Preferences_ = "Application configuration";
         public static KeyGesture Preferences_KEYS = new KeyGesture(Key.F2, ModifierKeys.None);
 
-        public const string WebHome = "Tobi-_web";
-        public const string WebHome_ = "Open the Tobi homepage";
-        public static KeyGesture WebHome_KEYS = new KeyGesture(Key.F1, ModifierKeys.Control);
+        //public const string WebHome = "Tobi-_web";
+        //public const string WebHome_ = "Open the Tobi homepage";
+        //public static KeyGesture WebHome_KEYS = new KeyGesture(Key.F1, ModifierKeys.Control);
 
         public const string NavNext = "_Next";
         public const string NavNext_ = "Navigate to the next item";
@@ -206,10 +218,10 @@ namespace Tobi.Common
 
         public const string ManageShortcuts = "_Keyboard shortcuts";
         public const string ManageShortcuts_ = "View keyboard shortcuts";
-        public static KeyGesture ManageShortcuts_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control);
+        public static KeyGesture ManageShortcuts_KEYS = new KeyGesture(Key.F4, ModifierKeys.Control);
 
         public const string IconsDebug = "Icons preview (debug view)";
-        public static KeyGesture IconsDebug_KEYS = new KeyGesture(Key.Back, ModifierKeys.Control | ModifierKeys.Shift);
+        public static KeyGesture IconsDebug_KEYS = new KeyGesture(Key.F4, ModifierKeys.Control | ModifierKeys.Shift);
 
 
         public const string Event_SwitchPrevious = "_Previous phrase";
