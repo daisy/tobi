@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
+using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.events.progress;
 using urakawa.xuk;
@@ -15,6 +16,86 @@ namespace Tobi.Modules.Urakawa
 {
     public partial class UrakawaSession
     {
+        private void initCommands_Save()
+        {
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            //
+            SaveAsCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.SaveAs,
+                UserInterfaceStrings.SaveAs_,
+                UserInterfaceStrings.SaveAs_KEYS,
+                shellPresenter.LoadTangoIcon("document-save"),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
+                obj =>
+                {
+                    if (DocumentProject == null)
+                    {
+                        return;
+                    }
+
+                    Logger.Log("UrakawaSession.saveAs", Category.Debug, Priority.Medium);
+
+                    var dlg = new SaveFileDialog
+                    {
+                        FileName = "tobi_doc",
+                        DefaultExt = ".xuk",
+                        Filter = "XUK (*.xuk)|*.xuk"
+                    };
+
+                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
+
+                    bool? result = false;
+
+                    shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+                    if (result == false)
+                    {
+                        return;
+                    }
+
+                    if (File.Exists(dlg.FileName))
+                    {
+                        if (!askUserConfirmOverwrite())
+                        {
+                            return;
+                        }
+                    }
+
+                    if (saveAs(dlg.FileName))
+                    {
+                        Debug.Assert(!IsDirty);
+
+                        DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
+                        DocumentProject.Presentations.Get(0).RootUri = new Uri(Path.GetDirectoryName(dlg.FileName) + Path.DirectorySeparatorChar, UriKind.Absolute);
+                        DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(false);
+
+                        IsDirty = false;
+                        CloseCommand.Execute(null);
+
+                        openFile(dlg.FileName);
+                    }
+
+                    return;
+
+                    //var fileDialog = Container.Resolve<IFileDialogService>();
+                    //return fileDialog.SaveAs();
+                },
+                obj => DocumentProject != null);
+
+            shellPresenter.RegisterRichCommand(SaveAsCommand);
+            //
+            SaveCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Save,
+                UserInterfaceStrings.Save_,
+                UserInterfaceStrings.Save_KEYS,
+                shellPresenter.LoadTangoIcon("media-floppy"),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
+                obj => save(),
+                obj => DocumentProject != null);
+
+            shellPresenter.RegisterRichCommand(SaveCommand);
+        }
+
         private BackgroundWorker m_SaveXukActionWorker;
         private bool m_SaveXukActionCancelFlag;
         private int m_SaveXukActionCurrentPercentage;
@@ -217,62 +298,6 @@ namespace Tobi.Modules.Urakawa
                 return false;
             }
             return true;
-        }
-
-        private string saveAs()
-        {
-            if (DocumentProject == null)
-            {
-                return null;
-            }
-
-            Logger.Log("UrakawaSession.saveAs", Category.Debug, Priority.Medium);
-
-            var dlg = new SaveFileDialog
-            {
-                FileName = "tobi_doc",
-                DefaultExt = ".xuk",
-                Filter = "XUK (*.xuk)|*.xuk"
-            };
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-
-            bool? result = false;
-
-            shellPresenter.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
-
-            if (result == false)
-            {
-                return null;
-            }
-
-            if (File.Exists(dlg.FileName))
-            {
-                if (!askUserConfirmOverwrite())
-                {
-                    return null;
-                }
-            }
-
-            if (saveAs(dlg.FileName))
-            {
-                Debug.Assert(!IsDirty);
-
-                DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
-                DocumentProject.Presentations.Get(0).RootUri = new Uri(Path.GetDirectoryName(dlg.FileName) + Path.DirectorySeparatorChar, UriKind.Absolute);
-                DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(false);
-
-                IsDirty = false;
-                Close();
-
-                openFile(dlg.FileName);
-                return dlg.FileName;
-            }
-
-            return null;
-
-            //var fileDialog = Container.Resolve<IFileDialogService>();
-            //return fileDialog.SaveAs();
         }
 
         private bool askUserConfirmOverwrite()

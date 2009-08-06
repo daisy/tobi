@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
@@ -15,7 +14,6 @@ using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
-using urakawa.media.data.utilities;
 using urakawa.media.timing;
 
 namespace Tobi.Modules.AudioPane
@@ -392,22 +390,6 @@ namespace Tobi.Modules.AudioPane
         #endregion Private Class Attributes
 
         #region Public Properties
-
-        public void ZoomFitFull()
-        {
-            if (View != null)
-            {
-                View.ZoomFitFull();
-            }
-        }
-
-        public void ZoomSelection()
-        {
-            if (View != null)
-            {
-                View.ZoomSelection();
-            }
-        }
 
         public bool ResizeDrag
         {
@@ -869,15 +851,5 @@ namespace Tobi.Modules.AudioPane
                 AudioPlayer_LoadAndPlayFromFile(filePath);
             }
         }
-
-        private void DeleteAudioSelection()
-        {
-            if (!CanDelete)
-            {
-                Debugger.Break();
-                return;
-            }
-        }
-
     }
 }

@@ -93,38 +93,33 @@ namespace Tobi.Modules.MetadataPane
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
             
-            CommandShowMetadataPane = new RichDelegateCommand<object>(UserInterfaceStrings.ShowMetadata,
+            CommandShowMetadataPane = new RichDelegateCommand<object>(
+                UserInterfaceStrings.ShowMetadata,
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
                 shellPresenter.LoadTangoIcon("accessories-text-editor"),
-                obj => showMetadata(), obj => canShowMetadata);
+                obj =>
+                {
+                    Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
+
+                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
+
+                    var windowPopup = new PopupModalWindow(shellPresenter_,
+                                                           UserInterfaceStrings.EscapeMnemonic(
+                                                               UserInterfaceStrings.ShowMetadata),
+                                                           View,
+                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           true, 500, 500);
+                    windowPopup.ShowModal();
+                },
+                obj =>
+                {
+                    var session = Container.Resolve<IUrakawaSession>();
+                    return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
+                });
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
-        }
-
-        private void showMetadata()
-        {
-            Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-
-            var windowPopup = new PopupModalWindow(shellPresenter,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.ShowMetadata),
-                                                   View,
-                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                   PopupModalWindow.DialogButton.Ok,
-                                                   true, 500, 500);
-            windowPopup.ShowModal();
-        }
-
-        private bool canShowMetadata
-        {
-            get
-            {
-                var session = Container.Resolve<IUrakawaSession>();
-                return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
-            }
         }
 
         #endregion Commands

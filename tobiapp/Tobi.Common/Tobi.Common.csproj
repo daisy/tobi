@@ -154,6 +154,7 @@
     <Compile Include="_UnusedCode\NativeBehaviors.cs" />
     <Compile Include="_UnusedCode\NativeMethodsKeyboard.cs" />
     <Compile Include="_UnusedCode\NativeMethodsWindow.cs" />
+    <Compile Include="_UnusedCode\ObjectExtensions.cs" />
     <Compile Include="_UnusedCode\ObservableWrappedCollection.cs" />
     <Compile Include="_UnusedCode\OpaqueToolTip.cs" />
     <Compile Include="_UnusedCode\Placeholder.cs" />

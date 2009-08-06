@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Practices.Composite.Logging;
+using Tobi.Common;
 using Tobi.Common.MVVM;
 using urakawa.core;
 using urakawa.media.data.audio;
@@ -68,14 +69,17 @@ namespace Tobi.Modules.AudioPane
                         m_PlayStream.Position = 0;
                         m_PlayStream.Seek(0, SeekOrigin.Begin);
 
+                        var session = m_viewModel.Container.Resolve<IUrakawaSession>();
+
                         if (m_viewModel.State.CurrentTreeNode != null)
                         {
                             Debug.Assert(m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.EnforceSinglePCMFormat);
-                            PcmFormat =
-                                m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
-
-                            DataLength = m_PlayStream.Length;
-                            EndOffsetOfPlayStream = DataLength;
+                            PcmFormat = m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                        }
+                        else if (session != null && session.DocumentProject != null)
+                        {
+                            Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                            PcmFormat = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                         }
                         else
                         {
@@ -85,11 +89,11 @@ namespace Tobi.Modules.AudioPane
 
                             m_PlayStream = new SubStream(m_PlayStream, m_PlayStream.Position, dataLength);
 
-                            DataLength = m_PlayStream.Length;
-                            EndOffsetOfPlayStream = DataLength;
-
-                            Debug.Assert(dataLength == DataLength);
+                            Debug.Assert(dataLength == m_PlayStream.Length);
                         }
+
+                        DataLength = m_PlayStream.Length;
+                        EndOffsetOfPlayStream = DataLength;
                     }
                     m_notifier.OnPropertyChanged(() => PlayStream);
                 }
@@ -112,6 +116,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             // The PCM format of the stream of audio data.
+            // Can have a valid value even when the stream is null (e.g. when recording or inserting an external audio file)
             private PCMFormatInfo m_PcmFormat;
             public PCMFormatInfo PcmFormat
             {

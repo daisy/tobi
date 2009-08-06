@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
+using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.events.progress;
@@ -16,36 +17,56 @@ namespace Tobi.Modules.Urakawa
 {
     public partial class UrakawaSession
     {
-
-        private void openDefaultTemplate()
+        private void initCommands_Open()
         {
-            //close();
-
-            string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
-        }
-
-        private bool openFile()
-        {
-            var dlg = new OpenFileDialog
-            {
-                FileName = "dtbook",
-                DefaultExt = ".xml",
-                Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub"
-            };
-
             var shellPresenter = Container.Resolve<IShellPresenter>();
+            //
+            NewCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.New,
+                UserInterfaceStrings.New_,
+                UserInterfaceStrings.New_KEYS,
+                shellPresenter.LoadTangoIcon("document-new"),
+                obj =>
+                {
+                    string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
+                },
+                obj => true);
 
-            bool? result = false;
+            shellPresenter.RegisterRichCommand(NewCommand);
+            //
+            OpenCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Open,
+                UserInterfaceStrings.Open_,
+                UserInterfaceStrings.Open_KEYS,
+                shellPresenter.LoadTangoIcon("document-open"),
+                obj =>
+                {
+                    var dlg = new OpenFileDialog
+                    {
+                        FileName = "dtbook",
+                        DefaultExt = ".xml",
+                        Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub"
+                    };
 
-            shellPresenter.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
 
-            if (result == false)
-            {
-                return false;
-            }
-            return openFile(dlg.FileName);
+                    bool? result = false;
+
+                    shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+                    if (result == false)
+                    {
+                        return;
+                    }
+                    
+                    openFile(dlg.FileName);
+                },
+                obj => true);
+
+            shellPresenter.RegisterRichCommand(OpenCommand);
         }
+
 
         private BackgroundWorker m_OpenXukActionWorker;
         private bool m_OpenXukActionCancelFlag;

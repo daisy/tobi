@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -121,10 +123,14 @@ namespace Tobi.Modules.Urakawa
 
         private void initCommands()
         {
+            initCommands_Open();
+            initCommands_Save();
+
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
             //
-            UndoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Undo,
+            UndoCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
                 shellPresenter.LoadTangoIcon("edit-undo"),
@@ -133,7 +139,8 @@ namespace Tobi.Modules.Urakawa
 
             shellPresenter.RegisterRichCommand(UndoCommand);
             //
-            RedoCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Redo,
+            RedoCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Redo,
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
                 shellPresenter.LoadTangoIcon("edit-redo"),
@@ -142,50 +149,13 @@ namespace Tobi.Modules.Urakawa
 
             shellPresenter.RegisterRichCommand(RedoCommand);
             //
-            //
-            SaveAsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.SaveAs,
-                UserInterfaceStrings.SaveAs_,
-                UserInterfaceStrings.SaveAs_KEYS,
-                shellPresenter.LoadTangoIcon("document-save"),
-                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                obj => saveAs(),
-                obj => DocumentProject != null);
-
-            shellPresenter.RegisterRichCommand(SaveAsCommand);
-            //
-            SaveCommand = new RichDelegateCommand<object>(
-                UserInterfaceStrings.Save,
-                UserInterfaceStrings.Save_,
-                UserInterfaceStrings.Save_KEYS,
-                shellPresenter.LoadTangoIcon("media-floppy"),
-                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                obj => save()
-                , obj => DocumentProject != null);
-
-            shellPresenter.RegisterRichCommand(SaveCommand);
-            //
-            NewCommand = new RichDelegateCommand<object>(UserInterfaceStrings.New,
-                UserInterfaceStrings.New_,
-                UserInterfaceStrings.New_KEYS,
-                shellPresenter.LoadTangoIcon("document-new"),
-                obj => openDefaultTemplate(),
-                obj => true);
-
-            shellPresenter.RegisterRichCommand(NewCommand);
-            //
-            OpenCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Open,
-                UserInterfaceStrings.Open_,
-                UserInterfaceStrings.Open_KEYS,
-                shellPresenter.LoadTangoIcon("document-open"),
-                obj => openFile(), obj => true);
-
-            shellPresenter.RegisterRichCommand(OpenCommand);
-            //
-            CloseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Close,
+            CloseCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Close,
                 UserInterfaceStrings.Close_,
                 UserInterfaceStrings.Close_KEYS,
                 shellPresenter.LoadTangoIcon("go-jump"),
-                obj => Close(), obj => DocumentProject != null);
+                obj => Close(),
+                obj => DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(CloseCommand);
         }

@@ -84,27 +84,113 @@ namespace Tobi.Modules.DocumentPane
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(UserInterfaceStrings.Event_SwitchPrevious,
+            CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
                 UserInterfaceStrings.Event_SwitchPrevious_KEYS,
                 shellPresenter.LoadTangoIcon("format-indent-less"),
-                obj => SwitchPhrasePrevious(), obj => CanSwitchPhrasePrevious);
+                obj =>
+                {
+                    if (CurrentTreeNode == CurrentSubTreeNode)
+                    {
+                        TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
+                        if (nextNode != null)
+                        {
+                            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                                       Category.Debug, Priority.Medium);
+
+                            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(CurrentTreeNode);
+                        if (nextNode != null)
+                        {
+                            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                                       Category.Debug, Priority.Medium);
+
+                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                            return;
+                        }
+                        else
+                        {
+                            nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
+                            if (nextNode != null)
+                            {
+                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                                           Category.Debug, Priority.Medium);
+
+                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                                return;
+                            }
+                        }
+                    }
+
+                    SystemSounds.Beep.Play();
+                },
+                obj => CurrentTreeNode != null);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
-            CommandSwitchPhraseNext = new RichDelegateCommand<object>(UserInterfaceStrings.Event_SwitchNext,
+            CommandSwitchPhraseNext = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Event_SwitchNext,
                 UserInterfaceStrings.Event_SwitchNext_,
                 UserInterfaceStrings.Event_SwitchNext_KEYS,
                 shellPresenter.LoadTangoIcon("format-indent-more"),
-                obj => SwitchPhraseNext(), obj => CanSwitchPhraseNext);
+                obj =>
+                {
+                    if (CurrentTreeNode == CurrentSubTreeNode)
+                    {
+                        TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithText();
+                        if (nextNode != null)
+                        {
+                            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                                       Category.Debug, Priority.Medium);
+
+                            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(CurrentTreeNode);
+                        if (nextNode != null)
+                        {
+                            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                                       Category.Debug, Priority.Medium);
+
+                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                            return;
+                        }
+                        else
+                        {
+                            nextNode = CurrentTreeNode.GetNextSiblingWithText();
+                            if (nextNode != null)
+                            {
+                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                                           Category.Debug, Priority.Medium);
+
+                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                                return;
+                            }
+                        }
+                    }
+
+                    SystemSounds.Beep.Play();
+                },
+                obj => CurrentTreeNode != null);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
             //
-            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Document_Focus,
+            CommandFocus = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Document_Focus,
                 null,
                 UserInterfaceStrings.Document_Focus_KEYS,
                 null,
-                obj => BringIntoFocus(), obj => true);
+                obj =>  FocusHelper.Focus(this, FocusStart),
+                obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
             //
@@ -158,118 +244,8 @@ namespace Tobi.Modules.DocumentPane
             }
         }*/
 
-        private void SwitchPhrasePrevious()
-        {
-            if (CurrentTreeNode == null)
-            {
-                return;
-            }
 
-            if (CurrentTreeNode == CurrentSubTreeNode)
-            {
-                TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
-                if (nextNode != null)
-                {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
-                               Category.Debug, Priority.Medium);
-
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                    return;
-                }
-            }
-            else
-            {
-                TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(CurrentTreeNode);
-                if (nextNode != null)
-                {
-                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
-                               Category.Debug, Priority.Medium);
-
-                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
-                    return;
-                }
-                else
-                {
-                    nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
-                    if (nextNode != null)
-                    {
-                        Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
-                                   Category.Debug, Priority.Medium);
-
-                        EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                        return;
-                    }
-                }
-            }
-
-            SystemSounds.Beep.Play();
-        }
-
-        [NotifyDependsOn("CurrentTreeNode")]
-        public bool CanSwitchPhrasePrevious
-        {
-            get
-            {
-                return CurrentTreeNode != null;
-            }
-        }
-
-        private void SwitchPhraseNext()
-        {
-            if (CurrentTreeNode == null)
-            {
-                return;
-            }
-
-            if (CurrentTreeNode == CurrentSubTreeNode)
-            {
-                TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithText();
-                if (nextNode != null)
-                {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
-                               Category.Debug, Priority.Medium);
-
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                    return;
-                }
-            }
-            else
-            {
-                TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(CurrentTreeNode);
-                if (nextNode != null)
-                {
-                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
-                               Category.Debug, Priority.Medium);
-
-                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
-                    return;
-                }
-                else
-                {
-                    nextNode = CurrentTreeNode.GetNextSiblingWithText();
-                    if (nextNode != null)
-                    {
-                        Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
-                                   Category.Debug, Priority.Medium);
-
-                        EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                        return;
-                    }
-                }
-            }
-
-            SystemSounds.Beep.Play();
-        }
-
-        [NotifyDependsOn("CurrentTreeNode")]
-        public bool CanSwitchPhraseNext
-        {
-            get
-            {
-                return CurrentTreeNode != null;
-            }
-        }
-
+        
         private FlowDocument m_FlowDoc;
 
 
@@ -866,11 +842,6 @@ namespace Tobi.Modules.DocumentPane
 
             m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
             m_lastHighlighted.Foreground = Brushes.Black;
-        }
-
-        public void BringIntoFocus()
-        {
-            FocusHelper.Focus(this, FocusStart);
         }
     }
 }
