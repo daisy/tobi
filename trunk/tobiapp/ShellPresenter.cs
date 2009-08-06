@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Media;
@@ -81,7 +82,7 @@ namespace Tobi
 
         public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
         public RichDelegateCommand<object> DisplayPreviewIconsDebugCommand { get; private set; }
-        
+
         public RichDelegateCommand<object> CopyCommand { get; private set; }
         public RichDelegateCommand<object> CutCommand { get; private set; }
         public RichDelegateCommand<object> PasteCommand { get; private set; }
@@ -129,88 +130,133 @@ namespace Tobi
             Logger.Log("ShellPresenter.initCommands", Category.Debug, Priority.Medium);
 
             //
-            ExitCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Menu_Exit,
-                                                                      UserInterfaceStrings.Menu_Exit_,
-                                                                      UserInterfaceStrings.Menu_Exit_KEYS,
-                                                                      LoadTangoIcon("system-log-out"),
-                                                                      //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
+            ExitCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Menu_Exit,
+                UserInterfaceStrings.Menu_Exit_,
+                UserInterfaceStrings.Menu_Exit_KEYS,
+                LoadTangoIcon("system-log-out"),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
                 //LoadTangoIcon("document-save"),
-                                                            ExitCommand_Executed, obj => true);
+                obj =>
+                {
+                    Logger.Log("ShellPresenter.ExitCommand", Category.Debug, Priority.Medium);
+
+                    if (askUserConfirmExit())
+                    {
+                        exit();
+                    }
+                },
+                obj => true);
+
             RegisterRichCommand(ExitCommand);
             //
 
-            MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_IncreaseMagnification,
-                                                                       UserInterfaceStrings.UI_IncreaseMagnification_,
-                                                                      UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
-                                                                      //LoadTangoIcon("mail-forward"),
-                                                                      ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
-                                                            obj => View.MagnificationLevel += 0.15, obj => true);
+            MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.UI_IncreaseMagnification,
+                UserInterfaceStrings.UI_IncreaseMagnification_,
+                UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
+                //LoadTangoIcon("mail-forward"),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
+                obj =>
+                {
+                    Logger.Log("ShellPresenter.MagnifyUiIncreaseCommand", Category.Debug, Priority.Medium);
+
+                    View.MagnificationLevel += 0.15;
+                },
+                obj => true);
+
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
 
-            MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(UserInterfaceStrings.UI_DecreaseMagnification,
-                                                                      UserInterfaceStrings.UI_DecreaseMagnification_,
-                                                                      UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
-                                                                      ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
-                                                            obj => View.MagnificationLevel -= 0.15, obj => true);
+            MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.UI_DecreaseMagnification,
+                UserInterfaceStrings.UI_DecreaseMagnification_,
+                UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
+                obj =>
+                    {
+                        Logger.Log("ShellPresenter.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
+
+                        View.MagnificationLevel -= 0.15;
+                    },
+                obj => true);
+
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
-            DisplayPreviewIconsDebugCommand = new RichDelegateCommand<object>(UserInterfaceStrings.IconsDebug,
-                                                                      null,
-                                                                      UserInterfaceStrings.IconsDebug_KEYS,
-                                                                      null,
-                                                            obj => displayIconsPreviewDebug(), obj => true);
+            DisplayPreviewIconsDebugCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.IconsDebug,
+                null,
+                UserInterfaceStrings.IconsDebug_KEYS,
+                null,
+                obj => DisplayPreviewIconsDebugCommand_Executed(),
+                obj => true);
+
             RegisterRichCommand(DisplayPreviewIconsDebugCommand);
             //
-            ManageShortcutsCommand = new RichDelegateCommand<object>(UserInterfaceStrings.ManageShortcuts,
-                                                                      UserInterfaceStrings.ManageShortcuts_,
-                                                                      UserInterfaceStrings.ManageShortcuts_KEYS,
-                                                                      LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
-                                                            obj => manageShortcuts(), obj => true);
+            ManageShortcutsCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.ManageShortcuts,
+                UserInterfaceStrings.ManageShortcuts_,
+                UserInterfaceStrings.ManageShortcuts_KEYS,
+                LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
+                obj => ManageShortcutsCommand_Executed(),
+                obj => true);
+
             RegisterRichCommand(ManageShortcutsCommand);
             //
-            CutCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Cut,
+            CutCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Cut,
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
                 LoadTangoIcon("edit-cut"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj => Debug.Fail("Functionality not implemented yet."),
+                obj => true);
 
             RegisterRichCommand(CutCommand);
             //
-            CopyCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Copy,
+            CopyCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Copy,
                 UserInterfaceStrings.Copy_,
                 UserInterfaceStrings.Copy_KEYS,
                 LoadTangoIcon("edit-copy"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj => Debug.Fail("Functionality not implemented yet."),
+                obj => true);
 
             RegisterRichCommand(CopyCommand);
             //
-            PasteCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Paste,
+            PasteCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Paste,
                 UserInterfaceStrings.Paste_,
                 UserInterfaceStrings.Paste_KEYS,
                 LoadTangoIcon("edit-paste"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj => Debug.Fail("Functionality not implemented yet."),
+                obj => true);
 
             RegisterRichCommand(PasteCommand);
             //
-            HelpCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Help,
+            HelpCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Help,
                 UserInterfaceStrings.Help_,
                 UserInterfaceStrings.Help_KEYS,
                 LoadTangoIcon("help-browser"),
                 obj =>
-                    {
-                        throw new NotImplementedException("Functionality not implemented, sorry :(",
-                            new ArgumentOutOfRangeException("First Inner exception",
-                                new FileNotFoundException("Third inner exception !")));
-                    }, obj => true);
+                {
+                    Logger.Log("ShellPresenter.HelpCommand", Category.Debug, Priority.Medium);
+
+                    throw new NotImplementedException("Functionality not implemented, sorry :(",
+                        new ArgumentOutOfRangeException("First Inner exception",
+                            new FileNotFoundException("Third inner exception !")));
+                },
+                 obj => true);
 
             RegisterRichCommand(HelpCommand);
             //
-            PreferencesCommand = new RichDelegateCommand<object>(UserInterfaceStrings.Preferences,
+            PreferencesCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Preferences,
                 UserInterfaceStrings.Preferences_,
                 UserInterfaceStrings.Preferences_KEYS,
                 LoadTangoIcon("preferences-system"),
-                obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+                obj => Debug.Fail("Functionality not implemented yet."),
+                obj => true);
 
             RegisterRichCommand(PreferencesCommand);
             //
@@ -241,9 +287,9 @@ namespace Tobi
             //
         }
 
-        private void displayIconsPreviewDebug()
+        private void DisplayPreviewIconsDebugCommand_Executed()
         {
-            Logger.Log("ShellPresenter.displayIconsPreviewDebug", Category.Debug, Priority.Medium);
+            Logger.Log("ShellPresenter.DisplayPreviewIconsDebugCommand_Executed", Category.Debug, Priority.Medium);
 
             var resourceKeys = new[]
             {
@@ -817,9 +863,9 @@ namespace Tobi
             });
         }
 
-        private void manageShortcuts()
+        private void ManageShortcutsCommand_Executed()
         {
-            Logger.Log("ShellPresenter.manageShortcuts", Category.Debug, Priority.Medium);
+            Logger.Log("ShellPresenter.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
 
             var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
@@ -887,8 +933,7 @@ namespace Tobi
                                 TextWrapping = TextWrapping.Wrap
                             };
 
-            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser"))
-                                   {IconDrawScale = View.MagnificationLevel};
+            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser")) { IconDrawScale = View.MagnificationLevel };
             //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
             var panel = new StackPanel
@@ -927,14 +972,6 @@ namespace Tobi
             }
 
             return false;
-        }
-
-        private void ExitCommand_Executed(object parameter)
-        {
-            if (askUserConfirmExit())
-            {
-                exit();
-            }
         }
 
         private readonly List<RichDelegateCommand<object>> m_listOfRegisteredRichCommands =

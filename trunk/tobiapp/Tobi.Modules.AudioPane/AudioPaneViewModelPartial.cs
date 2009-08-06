@@ -13,25 +13,6 @@ namespace Tobi.Modules.AudioPane
     /// </summary>
     public partial class AudioPaneViewModel
     {
-
-        private void AudioPlayer_ShowOptions()
-        {
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            var window = shellPresenter.View as Window;
-
-            var pane = new AudioOptions();
-            pane.DataContext = this;
-
-            var windowPopup = new PopupModalWindow(shellPresenter,
-                                                   UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_ShowOptions),
-                                                   pane,
-                                                   PopupModalWindow.DialogButtonsSet.Close,
-                                                   PopupModalWindow.DialogButton.Close,
-                                                   true, 400, 500);
-
-            windowPopup.Show();
-        }
-
         #region WaveForm configuration
 
         // ReSharper disable RedundantDefaultFieldInitializer
@@ -92,7 +73,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => DecibelResolution);
             }
@@ -128,7 +109,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => WaveStepX);
             }
@@ -148,7 +129,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsUseDecibelsAdjust);
             }
@@ -170,7 +151,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsUseDecibels);
             }
@@ -192,7 +173,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsUseDecibelsNoAverage);
             }
@@ -230,7 +211,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsBackgroundVisible);
             }
@@ -270,7 +251,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsWaveFillVisible);
             }
@@ -290,7 +271,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsEnvelopeVisible);
             }
@@ -310,7 +291,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => IsEnvelopeFilled);
             }
@@ -378,7 +359,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => ColorWaveBackground);
             }
@@ -400,7 +381,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => ColorMarkers);
             }
@@ -421,7 +402,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => ColorWaveBars);
             }
@@ -442,8 +423,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.ResetWaveFormEmpty();
-
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => ColorEnvelopeFill);
             }
@@ -464,7 +444,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    ReloadWaveForm();
+                    CommandRefresh.Execute(null);
                 }
                 OnPropertyChanged(() => ColorEnvelopeOutline);
             }

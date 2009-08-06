@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Media;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using AudioLib;
 using AudioLib.Events.Player;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.media.data.audio;
-using urakawa.media.data.utilities;
 using urakawa.media.timing;
 using System.Diagnostics;
 
@@ -21,6 +24,401 @@ namespace Tobi.Modules.AudioPane
     {
         #region Audio Player
 
+
+        private void initializeCommands_Player()
+        {
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+            CommandAutoPlay = new RichDelegateCommand<object>(
+               UserInterfaceStrings.Audio_AutoPlay,
+               UserInterfaceStrings.Audio_AutoPlay_,
+               UserInterfaceStrings.Audio_AutoPlay_KEYS,
+               shellPresenter.LoadGnomeNeuIcon("Neu_go-last"),
+               obj =>
+               {
+                   Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
+
+                   IsAutoPlay = !IsAutoPlay;
+               },
+               obj => !IsWaveFormLoading);
+
+            shellPresenter.RegisterRichCommand(CommandAutoPlay);
+            //
+            //
+            CommandPause = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_Pause,
+                UserInterfaceStrings.Audio_Pause_,
+                UserInterfaceStrings.Audio_Pause_KEYS,
+                shellPresenter.LoadTangoIcon("media-playback-pause"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+                },
+                obj => !IsWaveFormLoading && IsAudioLoaded && IsPlaying);
+
+            shellPresenter.RegisterRichCommand(CommandPause);
+            //
+            CommandPlay = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_Play,
+                UserInterfaceStrings.Audio_Play_,
+                UserInterfaceStrings.Audio_Play_KEYS,
+                shellPresenter.LoadTangoIcon("media-playback-start"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    if (!IsSelectionSet)
+                    {
+                        if (LastPlayHeadTime >=
+                                State.Audio.ConvertBytesToMilliseconds(
+                                                    State.Audio.DataLength))
+                        {
+                            //LastPlayHeadTime = 0; infinite loop !
+                            AudioPlayer_PlayFrom(0);
+                        }
+                        else
+                        {
+                            double byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                            AudioPlayer_PlayFrom(byteLastPlayHeadTime);
+                        }
+                    }
+                    else
+                    {
+                        double byteSelectionLeft = Math.Round(State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionBegin));
+                        double byteSelectionRight = Math.Round(State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionEnd));
+
+                        double byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                        byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
+
+                        if (byteLastPlayHeadTime >= byteSelectionLeft
+                                && byteLastPlayHeadTime < byteSelectionRight)
+                        {
+                            if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
+                            {
+                                AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
+                            }
+                        }
+                        else
+                        {
+                            if (verifyBeginEndPlayerValues(byteSelectionLeft, byteSelectionRight))
+                            {
+                                AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
+                            }
+                        }
+                    }
+                },
+                obj => !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording);
+
+            shellPresenter.RegisterRichCommand(CommandPlay);
+            //
+            CommandPlayPreviewLeft = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_PlayPreviewLeft,
+                UserInterfaceStrings.Audio_PlayPreviewLeft_,
+                UserInterfaceStrings.Audio_PlayPreviewLeft_KEYS,
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
+                obj =>
+                {
+                    bool left = (obj == null ? true : false);
+
+                    Logger.Log(
+                        String.Format("AudioPaneViewModel.CommandPlayPreview ({0})",
+                                      (left ? "before" : "after")), Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    double from = 0;
+                    double to = 0;
+                    if (left)
+                    {
+                        from = Math.Max(0, LastPlayHeadTime - m_TimePreviewPlay);
+                        to = LastPlayHeadTime;
+                    }
+                    else
+                    {
+                        from = LastPlayHeadTime;
+                        to = Math.Min(State.Audio.DataLength, LastPlayHeadTime + m_TimePreviewPlay);
+                    }
+
+                    double byteLeft = Math.Round(State.Audio.ConvertMillisecondsToBytes(from));
+                    double byteRight = Math.Round(State.Audio.ConvertMillisecondsToBytes(to));
+
+                    if (verifyBeginEndPlayerValues(byteLeft, byteRight))
+                    {
+                        AudioPlayer_PlayFromTo(byteLeft, byteRight);
+
+                        State.Audio.EndOffsetOfPlayStream = (long)(left ? byteRight : byteLeft);
+                    }
+                },
+                obj => CommandPlay.CanExecute(null));
+
+            shellPresenter.RegisterRichCommand(CommandPlayPreviewLeft);
+            //
+            CommandPlayPreviewRight = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_PlayPreviewRight,
+                UserInterfaceStrings.Audio_PlayPreviewRight_,
+                UserInterfaceStrings.Audio_PlayPreviewRight_KEYS,
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
+                obj => CommandPlayPreviewLeft.Execute(new Boolean()),
+                obj => CommandPlay.CanExecute(null));
+
+            shellPresenter.RegisterRichCommand(CommandPlayPreviewRight);
+            //
+            CommandGotoBegining = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_GotoBegin,
+                UserInterfaceStrings.Audio_GotoBegin_,
+                UserInterfaceStrings.Audio_GotoBegin_KEYS,
+                shellPresenter.LoadTangoIcon("go-first"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandGotoBegining", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    if (LastPlayHeadTime == 0)
+                    {
+                        SystemSounds.Beep.Play();
+                    }
+                    else
+                    {
+                        if (IsAutoPlay)
+                        {
+                            if (View != null)
+                            {
+                                View.ClearSelection();
+                            }
+                        }
+
+                        LastPlayHeadTime = 0;
+                    }
+                },
+                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+
+            shellPresenter.RegisterRichCommand(CommandGotoBegining);
+            //
+            CommandGotoEnd = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_GotoEnd,
+                UserInterfaceStrings.Audio_GotoEnd_,
+                UserInterfaceStrings.Audio_GotoEnd_KEYS,
+                shellPresenter.LoadTangoIcon("go-last"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandGotoEnd", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    double end = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
+
+                    if (LastPlayHeadTime == end)
+                    {
+                        SystemSounds.Beep.Play();
+                    }
+                    else
+                    {
+                        if (IsAutoPlay)
+                        {
+                            if (View != null)
+                            {
+                                View.ClearSelection();
+                            }
+                        }
+
+                        LastPlayHeadTime = end;
+                    }
+                },
+                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+
+            shellPresenter.RegisterRichCommand(CommandGotoEnd);
+            //
+            CommandStepBack = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_StepBack,
+                 UserInterfaceStrings.Audio_StepBack_,
+                 UserInterfaceStrings.Audio_StepBack_KEYS,
+                shellPresenter.LoadTangoIcon("media-skip-backward"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandStepBack", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    long prev = -1;
+                    long begin = 0;
+
+                    var bytes = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
+
+                    int index = -1;
+
+                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+                    {
+                        index++;
+
+                        long end = (begin + marker.m_LocalStreamDataLength);
+                        if (bytes >= begin && bytes < end
+                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytes >= end)
+                        {
+                            if (prev == -1)
+                            {
+                                if (IsAutoPlay)
+                                {
+                                    if (View != null)
+                                    {
+                                        View.ClearSelection();
+                                    }
+                                }
+
+                                LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(begin);
+                                SystemSounds.Beep.Play();
+                                break;
+                            }
+
+                            if (IsAutoPlay)
+                            {
+                                if (View != null)
+                                {
+                                    View.ClearSelection();
+                                }
+                            }
+
+                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(prev);
+                            break;
+                        }
+                        prev = begin;
+                        begin += marker.m_LocalStreamDataLength;
+                    }
+                },
+                obj => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
+
+            shellPresenter.RegisterRichCommand(CommandStepBack);
+            //
+            CommandStepForward = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_StepForward,
+                UserInterfaceStrings.Audio_StepForward_,
+                UserInterfaceStrings.Audio_StepForward_KEYS,
+                shellPresenter.LoadTangoIcon("media-skip-forward"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandStepForward", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    long begin = 0;
+
+                    var bytes = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
+
+                    bool found = false;
+
+                    int index = -1;
+                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+                    {
+                        index++;
+
+                        if (found)
+                        {
+                            if (IsAutoPlay)
+                            {
+                                if (View != null)
+                                {
+                                    View.ClearSelection();
+                                }
+                            }
+
+                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(begin);
+                            return;
+                        }
+
+                        long end = (begin + marker.m_LocalStreamDataLength);
+                        if (bytes >= begin && bytes < end
+                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytes >= end)
+                        {
+                            found = true;
+                        }
+
+                        begin += marker.m_LocalStreamDataLength;
+                    }
+
+                    if (!found)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+
+                    SystemSounds.Beep.Play();
+                },
+                obj => CommandStepBack.CanExecute(null));
+
+            shellPresenter.RegisterRichCommand(CommandStepForward);
+            //
+            CommandFastForward = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_FastForward,
+                UserInterfaceStrings.Audio_FastForward_,
+                UserInterfaceStrings.Audio_FastForward_KEYS,
+                shellPresenter.LoadTangoIcon("media-seek-forward"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandFastForward", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
+                    double max = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
+                    if (newTime > max)
+                    {
+                        newTime = max;
+                        SystemSounds.Beep.Play();
+                    }
+
+                    if (IsAutoPlay)
+                    {
+                        if (View != null)
+                        {
+                            View.ClearSelection();
+                        }
+                    }
+
+                    LastPlayHeadTime = newTime;
+                },
+                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+
+            shellPresenter.RegisterRichCommand(CommandFastForward);
+            //
+            CommandRewind = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_Rewind,
+                UserInterfaceStrings.Audio_Rewind_,
+                UserInterfaceStrings.Audio_Rewind_KEYS,
+                shellPresenter.LoadTangoIcon("media-seek-backward"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandRewind", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
+
+                    double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
+                    if (newTime < 0)
+                    {
+                        newTime = 0;
+                        SystemSounds.Beep.Play();
+                    }
+
+                    if (IsAutoPlay)
+                    {
+                        if (View != null)
+                        {
+                            View.ClearSelection();
+                        }
+                    }
+
+                    LastPlayHeadTime = newTime;
+                },
+                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+
+            shellPresenter.RegisterRichCommand(CommandRewind);
+            //
+        }
+
+
         //private long m_StreamRiffHeaderEndPos;
 
         private AudioPlayer m_Player;
@@ -29,138 +427,6 @@ namespace Tobi.Modules.AudioPane
         // not including the PCM format RIFF header.
         // The function also calculates the initial StateData
         private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
-
-        private double m_SelectionBeginTmp = -1;
-
-        public void BeginSelection()
-        {
-            m_SelectionBeginTmp = LastPlayHeadTime;
-
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTock();
-        }
-
-        public void EndSelection()
-        {
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTockTock();
-
-            if (m_SelectionBeginTmp < 0)
-            {
-                return;
-            }
-            double begin = m_SelectionBeginTmp;
-            double end = LastPlayHeadTime;
-
-            if (begin == end)
-            {
-                ClearSelection();
-                return;
-            }
-
-            if (begin > end)
-            {
-                double tmp = begin;
-                begin = end;
-                end = tmp;
-            }
-
-            State.Selection.SetSelection(begin, end);
-
-            if (IsAutoPlay)
-            {
-                if (!State.Audio.HasContent)
-                {
-                    return;
-                }
-
-                IsAutoPlay = false;
-                LastPlayHeadTime = begin;
-                IsAutoPlay = true;
-
-                double bytesFrom = State.Audio.ConvertMillisecondsToBytes(begin);
-                double bytesTo = State.Audio.ConvertMillisecondsToBytes(end);
-
-                AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
-            }
-        }
-
-        public void ClearSelection()
-        {
-            State.Selection.ClearSelection();
-        }
-
-        public void SelectAll()
-        {
-            if (!State.Audio.HasContent)
-            {
-                if (View != null)
-                {
-                    View.SelectAll();
-                }
-                return;
-            }
-
-            State.Selection.SetSelection(0, State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
-            
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTockTock();
-        }
-
-        public void SelectChunk(double byteOffset)
-        {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
-            {
-                return;
-            }
-
-            //if (PlayStreamMarkers == null || PlayStreamMarkers.Count == 1)
-            //{
-            //    SelectAll();
-            //    return;
-            //}
-
-            //long byteOffset = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(time));
-
-            long sumData = 0;
-            long sumDataPrev = 0;
-            int index = -1;
-            foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-            {
-                index++;
-                sumData += marker.m_LocalStreamDataLength;
-                if (byteOffset < sumData
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
-                {
-                    //subTreeNode = marker.m_TreeNode;
-
-                    State.Selection.SetSelection(
-                        State.Audio.ConvertBytesToMilliseconds(sumDataPrev),
-                        State.Audio.ConvertBytesToMilliseconds(sumData));
-
-                    break;
-                }
-                sumDataPrev = sumData;
-            }
-        }
-
-        [NotifyDependsOn("SelectionBegin")]
-        [NotifyDependsOn("SelectionEnd")]
-        public bool IsSelectionSet
-        {
-            get
-            {
-                if (State.Audio.HasContent)
-                {
-                    return State.Selection.IsSelectionSet;
-                }
-                if (View != null)
-                {
-                    return View.IsSelectionSet;
-                }
-                return false;
-            }
-        }
 
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
@@ -326,10 +592,9 @@ namespace Tobi.Modules.AudioPane
                 && (m_Player.State == AudioPlayerState.Paused
                 || m_Player.State == AudioPlayerState.Stopped))
             {
-                Logger.Log("AudioPaneViewModel.checkAndDoAutoPlay",
-                           Category.Debug, Priority.Medium);
+                Logger.Log("AudioPaneViewModel.checkAndDoAutoPlay", Category.Debug, Priority.Medium);
 
-                AudioPlayer_Play();
+                CommandPlay.Execute(null);
             }
         }
 
@@ -359,26 +624,16 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-
-        [NotifyDependsOn("IsAudioLoadedWithTreeNode")]
+        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("CurrentTreeNode")]
         [NotifyDependsOn("PlayStream")]
         public bool IsAudioLoadedWithSubTreeNodes
         {
             get
             {
-                return (IsAudioLoadedWithTreeNode
+                return (IsAudioLoaded
+                    && State.CurrentTreeNode != null
                     && State.Audio.PlayStreamMarkers.Count > 1);
-            }
-        }
-
-
-        [NotifyDependsOn("IsAudioLoaded")]
-        [NotifyDependsOn("CurrentTreeNode")]
-        public bool IsAudioLoadedWithTreeNode
-        {
-            get
-            {
-                return (IsAudioLoaded && State.CurrentTreeNode != null);
             }
         }
 
@@ -498,10 +753,6 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        public void ReloadWaveForm()
-        {
-            StartWaveFormLoadTimer(500, IsAutoPlay);
-        }
 
         private DispatcherTimer m_WaveFormLoadTimer;
 
@@ -771,93 +1022,6 @@ namespace Tobi.Modules.AudioPane
             //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
 
-        public void AudioPlayer_PlayPreview(bool left)
-        {
-            if (!State.Audio.HasContent)
-            {
-                return;
-            }
-
-            AudioPlayer_Stop();
-
-            Logger.Log(String.Format("AudioPaneViewModel.AudioPlayer_PlayPreview ({0})", (left ? "before" : "after")), Category.Debug, Priority.Medium);
-
-            double from = 0;
-            double to = 0;
-            if (left)
-            {
-                from = Math.Max(0, LastPlayHeadTime - m_TimePreviewPlay);
-                to = LastPlayHeadTime;
-            }
-            else
-            {
-                from = LastPlayHeadTime;
-                to = Math.Min(State.Audio.DataLength, LastPlayHeadTime + m_TimePreviewPlay);
-            }
-
-            double byteLeft = Math.Round(State.Audio.ConvertMillisecondsToBytes(from));
-            double byteRight = Math.Round(State.Audio.ConvertMillisecondsToBytes(to));
-
-            if (verifyBeginEndPlayerValues(byteLeft, byteRight))
-            {
-                AudioPlayer_PlayFromTo(byteLeft, byteRight);
-
-                State.Audio.EndOffsetOfPlayStream = (long)(left ? byteRight : byteLeft);
-            }
-        }
-
-        public void AudioPlayer_Play()
-        {
-            if (!State.Audio.HasContent)
-            {
-                return;
-            }
-
-            AudioPlayer_Stop();
-
-            Logger.Log("AudioPaneViewModel.AudioPlayer_Play", Category.Debug, Priority.Medium);
-
-            if (!IsSelectionSet)
-            {
-                if (LastPlayHeadTime >=
-                        State.Audio.ConvertBytesToMilliseconds(
-                                            State.Audio.DataLength))
-                {
-                    //LastPlayHeadTime = 0; infinite loop !
-                    AudioPlayer_PlayFrom(0);
-                }
-                else
-                {
-                    double byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-                    AudioPlayer_PlayFrom(byteLastPlayHeadTime);
-                }
-            }
-            else
-            {
-                double byteSelectionLeft = Math.Round(State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionBegin));
-                double byteSelectionRight = Math.Round(State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionEnd));
-
-                double byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-                byteLastPlayHeadTime = Math.Round(byteLastPlayHeadTime);
-
-                if (byteLastPlayHeadTime >= byteSelectionLeft
-                        && byteLastPlayHeadTime < byteSelectionRight)
-                {
-                    if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
-                    {
-                        AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
-                    }
-                }
-                else
-                {
-                    if (verifyBeginEndPlayerValues(byteSelectionLeft, byteSelectionRight))
-                    {
-                        AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
-                    }
-                }
-            }
-        }
-
         private bool verifyBeginEndPlayerValues(double begin, double end)
         {
             double from = State.Audio.ConvertBytesToMilliseconds(begin);
@@ -895,29 +1059,6 @@ namespace Tobi.Modules.AudioPane
             return false;
         }
 
-        private void AudioPlayer_PlayPause()
-        {
-            if (IsPlaying)
-            {
-                AudioPlayer_Pause();
-            }
-            else
-            {
-                AudioPlayer_Play();
-            }
-        }
-
-        private void AudioPlayer_Pause()
-        {
-            if (!State.Audio.HasContent)
-            {
-                return;
-            }
-
-            AudioPlayer_Stop();
-            //ViewModel.AudioPlayer_TogglePlayPause();
-        }
-
         /// <summary>
         /// If player exists and is ready but is not stopped, then stops.
         /// </summary>
@@ -938,237 +1079,6 @@ namespace Tobi.Modules.AudioPane
 
         private double m_TimeStepForwardRewind = 500; // 500ms
         private double m_TimePreviewPlay = 1500; // 1.5s
-
-        public void AudioPlayer_Rewind()
-        {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_Rewind", Category.Debug, Priority.Medium);
-
-            AudioPlayer_Stop();
-            double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
-            if (newTime < 0)
-            {
-                newTime = 0;
-                SystemSounds.Beep.Play();
-            }
-
-            if (IsAutoPlay)
-            {
-                if (View != null)
-                {
-                    View.ClearSelection();
-                }
-            }
-
-            LastPlayHeadTime = newTime;
-        }
-        public void AudioPlayer_FastForward()
-        {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_FastForward", Category.Debug, Priority.Medium);
-
-            AudioPlayer_Stop();
-            double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
-            double max = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-            if (newTime > max)
-            {
-                newTime = max;
-                SystemSounds.Beep.Play();
-            }
-
-            if (IsAutoPlay)
-            {
-                if (View != null)
-                {
-                    View.ClearSelection();
-                }
-            }
-
-            LastPlayHeadTime = newTime;
-        }
-
-        public void AudioPlayer_SelectPreviousChunk()
-        {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
-            {
-                return;
-            }
-
-            AudioPlayer_StepBack();
-            SelectChunk(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
-        }
-
-        public void AudioPlayer_SelectNextChunk()
-        {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
-            {
-                return;
-            }
-
-            AudioPlayer_StepForward();
-            SelectChunk(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
-        }
-
-        public void AudioPlayer_StepBack()
-        {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
-            {
-                return;
-            }
-
-            Logger.Log("AudioPaneViewModel.AudioPlayer_StepBack", Category.Debug, Priority.Medium);
-
-            AudioPlayer_Stop();
-
-            long prev = -1;
-            long begin = 0;
-
-            var bytes = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
-
-            int index = -1;
-
-            foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-            {
-                index++;
-
-                long end = (begin + marker.m_LocalStreamDataLength);
-                if (bytes >= begin && bytes < end
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytes >= end)
-                {
-                    if (prev == -1)
-                    {
-                        if (IsAutoPlay)
-                        {
-                            if (View != null)
-                            {
-                                View.ClearSelection();
-                            }
-                        }
-
-                        LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(begin);
-                        SystemSounds.Beep.Play();
-                        break;
-                    }
-
-                    if (IsAutoPlay)
-                    {
-                        if (View != null)
-                        {
-                            View.ClearSelection();
-                        }
-                    }
-
-                    LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(prev);
-                    break;
-                }
-                prev = begin;
-                begin += marker.m_LocalStreamDataLength;
-            }
-        }
-
-        public void AudioPlayer_StepForward()
-        {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
-            {
-                return;
-            }
-
-            Logger.Log("AudioPaneViewModel.AudioPlayer_StepForward", Category.Debug, Priority.Medium);
-
-            AudioPlayer_Stop();
-
-            long begin = 0;
-
-            var bytes = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
-
-            bool found = false;
-
-            int index = -1;
-            foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-            {
-                index++;
-
-                if (found)
-                {
-                    if (IsAutoPlay)
-                    {
-                        if (View != null)
-                        {
-                            View.ClearSelection();
-                        }
-                    }
-
-                    LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(begin);
-                    return;
-                }
-
-                long end = (begin + marker.m_LocalStreamDataLength);
-                if (bytes >= begin && bytes < end
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytes >= end)
-                {
-                    found = true;
-                }
-
-                begin += marker.m_LocalStreamDataLength;
-            }
-
-            if (!found)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-            }
-
-            SystemSounds.Beep.Play();
-        }
-
-        public void AudioPlayer_GotoEnd()
-        {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_GotoEnd", Category.Debug, Priority.Medium);
-
-            AudioPlayer_Stop();
-
-            double end = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-
-            if (LastPlayHeadTime == end)
-            {
-                SystemSounds.Beep.Play();
-            }
-            else
-            {
-                if (IsAutoPlay)
-                {
-                    if (View != null)
-                    {
-                        View.ClearSelection();
-                    }
-                }
-
-                LastPlayHeadTime = end;
-            }
-        }
-
-        public void AudioPlayer_GotoBegining()
-        {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_GotoBegining", Category.Debug, Priority.Medium);
-
-            AudioPlayer_Stop();
-
-            if (LastPlayHeadTime == 0)
-            {
-                SystemSounds.Beep.Play();
-            }
-            else
-            {
-                if (IsAutoPlay)
-                {
-                    if (View != null)
-                    {
-                        View.ClearSelection();
-                    }
-                }
-
-                LastPlayHeadTime = 0;
-            }
-        }
 
         private void ensurePlaybackStreamIsDead()
         {

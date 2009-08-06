@@ -16,30 +16,23 @@ namespace Tobi.Modules.NavigationPane
             Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
             var shellPresenter = Container.Resolve<IShellPresenter>();
             //
-            CommandExpandAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeExpandAll,
+            CommandExpandAll = new RichDelegateCommand<object>(
+                UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
                 null,
                 shellPresenter.LoadTangoIcon("list-add"),
-                obj => OnExpandAll(null, null), obj => true);
+                obj => _headingsNavigator.ExpandAll(),
+                obj => _headingsNavigator != null);
             //
-            CommandCollapseAll = new RichDelegateCommand<object>(UserInterfaceStrings.TreeCollapseAll,
+            CommandCollapseAll = new RichDelegateCommand<object>(
+                UserInterfaceStrings.TreeCollapseAll,
                 UserInterfaceStrings.TreeCollapseAll_,
                 null,
                 shellPresenter.LoadTangoIcon("list-remove"),
-                obj => OnCollapseAll(null, null), obj => true);
+                obj => _headingsNavigator.CollapseAll(),
+                obj => _headingsNavigator != null);
 
             shellPresenter.RegisterRichCommand(CommandCollapseAll);
-        }
-        private void OnExpandAll(object sender, RoutedEventArgs e)
-        {
-            if (_headingsNavigator == null) return;
-            _headingsNavigator.ExpandAll();
-        }
-
-        private void OnCollapseAll(object sender, RoutedEventArgs e)
-        {
-            if (_headingsNavigator == null) return;
-            _headingsNavigator.CollapseAll();
         }
     }
 }

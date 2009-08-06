@@ -43,7 +43,7 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                ReloadWaveForm();
+                CommandRefresh.Execute(null);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                ReloadWaveForm();
+                CommandRefresh.Execute(null);
             }
         }
 
@@ -143,7 +143,7 @@ namespace Tobi.Modules.AudioPane
             {
                 ensurePlaybackStreamIsDead();
             }
-            ReloadWaveForm();
+            CommandRefresh.Execute(null);
         }
     }
 }

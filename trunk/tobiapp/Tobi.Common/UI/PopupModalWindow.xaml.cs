@@ -41,6 +41,29 @@ namespace Tobi.Common.UI
             }
         }
 
+        private void initCommands()
+        {
+            CommandDetailsExpand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.DetailsExpand,
+                UserInterfaceStrings.DetailsExpand_,
+                UserInterfaceStrings.DetailsExpand_KEYS,
+                (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-down")),
+                obj => IsDetailsExpanded = true,
+                obj => HasDetails && !IsDetailsExpanded);
+
+            AddInputBinding(CommandDetailsExpand.KeyBinding);
+            //
+            CommandDetailsCollapse = new RichDelegateCommand<object>(
+                UserInterfaceStrings.DetailsCollapse,
+                UserInterfaceStrings.DetailsCollapse_,
+                UserInterfaceStrings.DetailsCollapse_KEYS,
+                (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-up")),
+                obj => IsDetailsExpanded = false,
+                obj => HasDetails && IsDetailsExpanded);
+
+            AddInputBinding(CommandDetailsCollapse.KeyBinding);
+        }
+
         private PopupModalWindow(IShellPresenter presenter)
         {
             ShellPresenter = presenter;
@@ -52,23 +75,7 @@ namespace Tobi.Common.UI
 
             InitializeComponent();
 
-            CommandDetailsExpand = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsExpand,
-                UserInterfaceStrings.DetailsExpand_,
-                UserInterfaceStrings.DetailsExpand_KEYS,
-                (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-down")),
-                obj => IsDetailsExpanded = true,
-                obj => CanDetailsExpand);
-
-            AddInputBinding(CommandDetailsExpand.KeyBinding);
-
-            CommandDetailsCollapse = new RichDelegateCommand<object>(UserInterfaceStrings.DetailsCollapse,
-                UserInterfaceStrings.DetailsCollapse_,
-                UserInterfaceStrings.DetailsCollapse_KEYS,
-                (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-up")),
-                obj => IsDetailsExpanded = false,
-                obj => CanDetailsCollapse);
-
-            AddInputBinding(CommandDetailsCollapse.KeyBinding);
+            initCommands();
 
             m_IsDetailsExpanded = false;
         }
@@ -102,20 +109,6 @@ namespace Tobi.Common.UI
         public bool HasDetails
         {
             get { return DetailsPlaceHolder.Content != null; }
-        }
-
-        [NotifyDependsOn("IsDetailsExpanded")]
-        [NotifyDependsOn("HasDetails")]
-        public bool CanDetailsExpand
-        {
-            get { return HasDetails && !IsDetailsExpanded; }
-        }
-
-        [NotifyDependsOn("IsDetailsExpanded")]
-        [NotifyDependsOn("HasDetails")]
-        public bool CanDetailsCollapse
-        {
-            get { return HasDetails && IsDetailsExpanded; }
         }
 
         public void ShowModal()

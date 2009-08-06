@@ -113,11 +113,13 @@ namespace Tobi.Modules.ToolBars
                 //NavPreviousCommand = shellPresenter.NavPreviousCommand;
             }
             //
-            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Toolbar_Focus,
+            CommandFocus = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Toolbar_Focus,
                 null,
                 UserInterfaceStrings.Toolbar_Focus_KEYS,
                 null,
-                obj => BringIntoFocus(), obj => true);
+                obj => FocusHelper.Focus(this, FocusStart),
+                obj => true);
 
             if (shellPresenter != null)
             {
@@ -178,11 +180,6 @@ namespace Tobi.Modules.ToolBars
                 m_IconWidth = value;
                 m_PropertyChangeHandler.OnPropertyChanged(() => IconWidth);
             }
-        }
-
-        public void BringIntoFocus()
-        {
-            FocusHelper.Focus(this, FocusStart);
         }
     }
 }

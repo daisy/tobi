@@ -18,19 +18,17 @@ namespace Tobi.Modules.NavigationPane
 
             var shellPresenter = container.Resolve<IShellPresenter>();
 
-            CommandFocus = new RichDelegateCommand<object>(UserInterfaceStrings.Navigation_Focus,
+            CommandFocus = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Navigation_Focus,
                                     null,
                                     UserInterfaceStrings.Navigation_Focus_KEYS,
                                     null,
-                                    obj => BringIntoFocus(), obj => true);
+                                    obj => FocusHelper.Focus(this, NavTabs),
+                                    obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
         }
 
-        public void BringIntoFocus()
-        {
-            FocusHelper.Focus(this, NavTabs);
-        }
         //public event PropertyChangedEventHandler PropertyChanged;
     }
 }
