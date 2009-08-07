@@ -13,6 +13,7 @@ using urakawa.metadata;
 using urakawa.metadata.daisy;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -37,7 +38,7 @@ namespace Tobi.Modules.MetadataPane
             m_Metadatas = null;
             Initialize();
             m_Validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
-            m_ValidationErrors = new ObservableCollection<string>();
+            ValidationErrors = new ObservableCollection<string>();
             m_Validator.ValidationErrorEvent += new MetadataValidation.ValidationError(OnValidationError);
         }
         ~MetadataPaneViewModel()
@@ -64,7 +65,6 @@ namespace Tobi.Modules.MetadataPane
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
 
-            StatusText = "everything is wonderful";
        }
 
         private void OnProjectUnLoaded(Project obj)
@@ -125,36 +125,9 @@ namespace Tobi.Modules.MetadataPane
         #endregion Commands
         
       
-        private string m_StatusText;
-        public string StatusText
-        {
-            get
-            {
-                if (ValidationErrors.Count > 0)
-                    return "Invalid metadata";
-                else if (((MetadataPaneView)View).SelectedMetadata != null)
-                    return ((MetadataPaneView)View).SelectedMetadataDescription;
-                else
-                    return "Ready";
-            }
-            set
-            {
-                m_StatusText = value;
-                OnPropertyChanged(() => StatusText);
-            }
-        }
-        
-        
-        private ObservableCollection<string> m_ValidationErrors;
-        public ObservableCollection<string> ValidationErrors
-        {
-            get
-            {
-                return m_ValidationErrors;
-            }
-        }
-        private ObservableMetadataCollection m_Metadatas;
-        
+        public ObservableCollection<string> ValidationErrors {get; set;}
+
+        private ObservableMetadataCollection m_Metadatas;   
         public ObservableMetadataCollection Metadatas 
         {
             get
@@ -209,30 +182,6 @@ namespace Tobi.Modules.MetadataPane
             list.Insert(list.Count, metadata);
         }
 
-       
-
-        public ObservableCollection<string> GetAvailableMetadata()
-        {
-            ObservableCollection<string> list = new ObservableCollection<string>();
-
-            var session = Container.Resolve<IUrakawaSession>();
-            if (session.DocumentProject == null)
-            {
-                return list;
-            }
-
-            List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-            List<MetadataDefinition> availableMetadata = 
-                MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataList);
-
-            
-            foreach (MetadataDefinition metadata in availableMetadata)
-            {
-                list.Add(metadata.Name);
-            }
-            return list;
-
-        }
 
         #region validation
 
@@ -250,7 +199,7 @@ namespace Tobi.Modules.MetadataPane
         /// </summary>
         public void ValidateMetadata()
         {
-            m_ValidationErrors.Clear();
+            ValidationErrors.Clear();
             var session = Container.Resolve<IUrakawaSession>();
 
             List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
@@ -264,7 +213,7 @@ namespace Tobi.Modules.MetadataPane
                 errorDescription = string.Format("{0}: {1}", item.Metadata.Name, item.Description);
             else
                 errorDescription = string.Format("{0}", item.Description);
-            m_ValidationErrors.Add(errorDescription);
+            ValidationErrors.Add(errorDescription);
             OnPropertyChanged(() => ValidationErrors);
         }
 #endregion validation
@@ -281,14 +230,91 @@ namespace Tobi.Modules.MetadataPane
             }
             return data;
         }
+
+        private NotifyingMetadataItem m_SelectedMetadata;
+        public NotifyingMetadataItem SelectedMetadata
+        {
+            get
+            {
+                return m_SelectedMetadata;
+            }
+            set
+            {
+                m_SelectedMetadata = value;
+                
+                if (value != null)
+                {
+                    MetadataDefinition definition =
+                        SupportedMetadata_Z39862005.MetadataList.Find(s => s.Name == m_SelectedMetadata.Name);
+                    if (definition != null)
+                        SelectedMetadataDescription = definition.Description;
+                    else
+                        SelectedMetadataDescription = "";
+                }
+            }
+        }
+        public string SelectedMetadataDescription
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// based on the existing metadata, return a list of metadata fields available
+        /// for addition
+        /// </summary>
+        public ObservableCollection<string> AvailableMetadata
+        {
+            get
+            {
+                ObservableCollection<string> list = new ObservableCollection<string>();
+
+                var session = Container.Resolve<IUrakawaSession>();
+                if (session.DocumentProject == null)
+                {
+                    return list;
+                }
+
+                List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
+                List<MetadataDefinition> availableMetadata =
+                    MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataList);
+
+
+                foreach (MetadataDefinition metadata in availableMetadata)
+                {
+                    list.Add(metadata.Name);
+                }
+                
+                //the available metadata list might not have our selection in it
+                //if the selection is meant not to be duplicated
+                //we need users to be able to have the current Name as an option
+                if (SelectedMetadata != null)
+                {
+                    NotifyingMetadataItem selection = (NotifyingMetadataItem)SelectedMetadata;
+                    if (selection.Name != "")
+                    {
+                        if (list.Contains(selection.Name) == false)
+                            list.Insert(0, selection.Name);
+                    }
+                }
+                return list;
+            }
+        }
+        
     }
 
     public class MetadataValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
         {
-            BindingGroup bindingGroup = (BindingGroup)value;
-            NotifyingMetadataItem metadata = bindingGroup.Items[0] as NotifyingMetadataItem;
+            BindingGroup bindingGroup = (BindingGroup) value;
+            //sometimes the binding group is empty
+            if (bindingGroup.Items.Count == 0)
+            {
+                return ValidationResult.ValidResult;
+            }
+
+        NotifyingMetadataItem metadata = bindingGroup.Items[0] as NotifyingMetadataItem;
             MetadataValidation validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
             bool result = validator.ValidateItem(metadata.UrakawaMetadata);
 

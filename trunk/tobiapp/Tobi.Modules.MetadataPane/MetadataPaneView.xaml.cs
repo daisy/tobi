@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using urakawa.metadata.daisy;
-
+using Microsoft.Windows.Controls;
 namespace Tobi.Modules.MetadataPane
 {
     /// <summary>
@@ -55,46 +55,89 @@ namespace Tobi.Modules.MetadataPane
         {
             MessageBox.Show(ViewModel.GetDebugStringForMetaData());
         }
-        private void Lookup_Button_Click(object sender, RoutedEventArgs e)
+        
+        private bool findNext()
         {
-            /*if (LookupField.Text == "")
+            /*
+            DataGridCellInfo selectedCell = null;
+            bool startingFromSelection = false;
+            if (MetadataGrid.SelectedCells.Count > 0)
             {
-                ViewModel.StatusText = "Not found";
-                return;
+                selectedCell = MetadataGrid.SelectedCells[0];
+                startingFromSelection = true;
             }
+            MetadataGrid.SelectedCells.Clear();
 
-            int count = 0;
-            list.SelectedItems.Clear();
-            foreach (object obj in list.Items)
+            if (selection != null)
             {
-                NotifyingMetadataItem metadata = (NotifyingMetadataItem) obj;
-                if (metadata.Name.ToLower().Contains(LookupField.Text.ToLower()))
+                while (enumerator.Current != selection)
                 {
-                    count++;
-                    list.SelectedItems.Add(obj);
+                    if (!enumerator.MoveNext())
+                    {
+                        //go to the beginning of the collection
+                        enumerator.Reset();
+                        enumerator.MoveNext();
+                        startingFromSelection = false;
+                        break;
+                    }
                 }
-            }
-            if (count == 0)
-            {
-                ViewModel.StatusText = "Not found";
-            }
-            else if (count == 1)
-            {
-                ViewModel.StatusText = "1 match found";
             }
             else
             {
-                ViewModel.StatusText = string.Format("{0} matches found", count.ToString());
-            }*/
+                //go to the beginning of the collection
+                enumerator.Reset();
+                enumerator.MoveNext();
+                startingFromSelection = false;
+            }
+            if (startingFromSelection)
+            {
+                if (!enumerator.MoveNext())
+                {
+                    enumerator.Reset();
+                    enumerator.MoveNext();
+                }
+            }
+
+            bool found = false;
+            do
+            {
+                if (enumerator.Current.Name.ToLower().Contains(LookupField.Text.ToLower()))
+                {
+                    found = true;
+                    ViewModel.SelectedMetadata = enumerator.Current;
+                    break;
+                }
+            } while (enumerator.MoveNext());
+
+            //restore the selection
+            if (!found) ViewModel.SelectedMetadata = selection;
+            return found;
+            */
+            return false;
+        }
+        private bool findPrevious()
+        {
+            return false;
+        }
+        private void Lookup_Button_Click(object sender, RoutedEventArgs e)
+        {
+            /*
+            if (LookupField.Text == "")
+            {
+                MessageBox.Show(string.Format("Please enter all or part of a metadata field name."));
+                return;
+            }
+            
+            if (findNext() == false)
+            {
+                MessageBox.Show(string.Format("{0} not found", LookupField.Text));
+            }
+             * */
         }
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
-        {/*
-            while (list.SelectedItems.Count > 0)
-            {   
-                NotifyingMetadataItem metadata = (NotifyingMetadataItem)list.SelectedItem;
-                ViewModel.RemoveMetadata(metadata);
-            }
-          * */
+        {
+            NotifyingMetadataItem selected = ViewModel.SelectedMetadata;
+            ViewModel.RemoveMetadata(selected);
         }
 
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
@@ -104,71 +147,43 @@ namespace Tobi.Modules.MetadataPane
 
         private void DockPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            //ViewModel.RefreshDataTemplateSelectors();
+            
+        }
+       
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                if (e.AddedItems[0] is NotifyingMetadataItem)
+                    ViewModel.SelectedMetadata = (NotifyingMetadataItem) e.AddedItems[0];
+            }
+            else
+            {
+                ViewModel.SelectedMetadata = null;
+            }
+           
         }
 
-
-        public object SelectedMetadata
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            get
-            {
-                return (object)GetValue(SelectedMetadataProperty);
-            }
-            set
-            {
-                SetValue(SelectedMetadataProperty, value);
-            }
+            if (e.AddedItems.Count > 0)
+                ViewModel.SelectedMetadata.Name = (string)e.AddedItems[0];
         }
 
-        public static readonly DependencyProperty SelectedMetadataProperty =
-        DependencyProperty.Register("SelectedMetadata", typeof(object), typeof(MetadataPaneView),
-                new UIPropertyMetadata(null));
-
-        public string SelectedMetadataDescription
+        private void DockPanel_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            get
+            /*
+            //search for the next occurrence of the lookup text
+            if (e.Key == System.Windows.Input.Key.F3)
             {
-                return (string)GetValue(SelectedMetadataDescriptionProperty);
-            }
-            set
-            {
-                SetValue(SelectedMetadataDescriptionProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty SelectedMetadataDescriptionProperty =
-        DependencyProperty.Register("SelectedMetadataDescription", typeof(string), typeof(MetadataPaneView),
-                new UIPropertyMetadata(null));
-
-        /// <summary>
-        /// based on the existing metadata, return a list of metadata fields available
-        /// for addition
-        /// </summary>
-        public ObservableCollection<string> AvailableMetadata
-        {
-            get
-            {
-                ObservableCollection<string> availableMetadata = ViewModel.GetAvailableMetadata();
-
-                //the available metadata list might not have our selection in it
-                //if the selection is meant not to be duplicated
-                //we need users to be able to have the current Name as an option
-                if (SelectedMetadata != null)
+                if (LookupField.Text == "")
                 {
-                    NotifyingMetadataItem selection = (NotifyingMetadataItem)SelectedMetadata;
-                    if (selection.Name != "")
-                    {
-                        if (availableMetadata.Contains(selection.Name) == false)
-                            availableMetadata.Insert(0, selection.Name);
-                    }
+                    MessageBox.Show(string.Format("Please enter all or part of a metadata field name."));
+                    return;
                 }
-                return availableMetadata;
-            }
-        }
-
-        private void ComboBox_DropDownOpened(object sender, EventArgs e)
-        {
-            ((ComboBox)sender).ItemsSource = AvailableMetadata;
+                if (findNext() == false)
+                    MessageBox.Show("No more occurrences found");
+            }*/
         }
 
 
