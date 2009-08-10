@@ -95,7 +95,7 @@ namespace Tobi.Modules.AudioPane
                         DataLength = m_PlayStream.Length;
                         EndOffsetOfPlayStream = DataLength;
                     }
-                    m_notifier.OnPropertyChanged(() => PlayStream);
+                    m_notifier.RaisePropertyChanged(() => PlayStream);
                 }
             }
 
@@ -111,7 +111,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_DataLength == value) return;
                     m_DataLength = value;
-                    m_notifier.OnPropertyChanged(() => DataLength);
+                    m_notifier.RaisePropertyChanged(() => DataLength);
                 }
             }
 
@@ -128,7 +128,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_PcmFormat == value) return;
                     m_PcmFormat = value;
-                    m_notifier.OnPropertyChanged(() => PcmFormat);
+                    m_notifier.RaisePropertyChanged(() => PcmFormat);
                 }
             }
 
@@ -145,7 +145,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_EndOffsetOfPlayStream == value) return;
                     m_EndOffsetOfPlayStream = value;
-                    m_notifier.OnPropertyChanged(() => EndOffsetOfPlayStream);
+                    m_notifier.RaisePropertyChanged(() => EndOffsetOfPlayStream);
                 }
             }
 
@@ -166,7 +166,7 @@ namespace Tobi.Modules.AudioPane
                         m_PlayStreamMarkers.Clear();
                     }
                     m_PlayStreamMarkers = value;
-                    m_notifier.OnPropertyChanged(() => PlayStreamMarkers);
+                    m_notifier.RaisePropertyChanged(() => PlayStreamMarkers);
                 }
             }
 
@@ -233,7 +233,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_SelectionBegin == value) return;
                     m_SelectionBegin = value;
-                    m_notifier.OnPropertyChanged(() => SelectionBegin);
+                    m_notifier.RaisePropertyChanged(() => SelectionBegin);
                 }
             }
 
@@ -248,7 +248,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_SelectionEnd == value) return;
                     m_SelectionEnd = value;
-                    m_notifier.OnPropertyChanged(() => SelectionEnd);
+                    m_notifier.RaisePropertyChanged(() => SelectionEnd);
                 }
             }
 
@@ -309,7 +309,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_CurrentTreeNode == value) return;
                     m_CurrentTreeNode = value;
-                    m_notifier.OnPropertyChanged(() => CurrentTreeNode);
+                    m_notifier.RaisePropertyChanged(() => CurrentTreeNode);
 
                     CurrentSubTreeNode = null;
 
@@ -330,7 +330,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_CurrentSubTreeNode == value) return;
                     m_CurrentSubTreeNode = value;
-                    m_notifier.OnPropertyChanged(() => CurrentSubTreeNode);
+                    m_notifier.RaisePropertyChanged(() => CurrentSubTreeNode);
                 }
             }
 
@@ -349,7 +349,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (m_WavFilePath == value) return;
                     m_WavFilePath = value;
-                    m_notifier.OnPropertyChanged(() => FilePath);
+                    m_notifier.RaisePropertyChanged(() => FilePath);
 
                     CurrentTreeNode = null;
                 }

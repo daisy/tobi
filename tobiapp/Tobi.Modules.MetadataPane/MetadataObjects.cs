@@ -51,7 +51,7 @@ namespace Tobi.Modules.MetadataPane
                 if (value != null)
                 {
                     m_Metadata.Content = value;
-                    OnPropertyChanged(() => Content);
+                    RaisePropertyChanged(() => Content);
                 }
 
             }
@@ -70,7 +70,7 @@ namespace Tobi.Modules.MetadataPane
                 if (value != null)
                 {
                     m_Metadata.Name = value;
-                    OnPropertyChanged(() => Name);
+                    RaisePropertyChanged(() => Name);
                     
                 }
             }
@@ -78,12 +78,12 @@ namespace Tobi.Modules.MetadataPane
 
         void OnContentChanged(object sender, ContentChangedEventArgs e)
         {
-            OnPropertyChanged(() => Content);
+            RaisePropertyChanged(() => Content);
         }
 
         void OnNameChanged(object sender, NameChangedEventArgs e)
         {
-            OnPropertyChanged(() => Name);
+            RaisePropertyChanged(() => Name);
         }
 
         internal void RemoveEvents()

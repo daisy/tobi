@@ -351,7 +351,7 @@ namespace Tobi.Modules.DocumentPane
             {
                 if (m_CurrentTreeNode == value) return;
                 m_CurrentTreeNode = value;
-                //OnPropertyChanged(() => CurrentTreeNode);
+                //RaisePropertyChanged(() => CurrentTreeNode);
             }
         }
 
@@ -366,7 +366,7 @@ namespace Tobi.Modules.DocumentPane
             {
                 if (m_CurrentSubTreeNode == value) return;
                 m_CurrentSubTreeNode = value;
-                //OnPropertyChanged(() => CurrentSubTreeNode);
+                //RaisePropertyChanged(() => CurrentSubTreeNode);
             }
         }
 

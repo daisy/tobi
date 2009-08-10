@@ -51,7 +51,7 @@ namespace Tobi.Modules.FileDialog
             {
                 _currentDirectory = value;
                 RefreshCurrentItems();
-                OnPropertyChanged(() => CurrentDirectory);
+                RaisePropertyChanged(() => CurrentDirectory);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Tobi.Modules.FileDialog
             set
             {
                 _fileTreeVM = value;
-                OnPropertyChanged(() => FileTreeVM);
+                RaisePropertyChanged(() => FileTreeVM);
             }
         }
         /// <summary>
@@ -76,7 +76,7 @@ namespace Tobi.Modules.FileDialog
             set
             {
                 _dirViewerVM = value;
-                OnPropertyChanged(() => DirViewVM);
+                RaisePropertyChanged(() => DirViewVM);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Tobi.Modules.FileDialog
             set
             {
                 _currentItems = value;
-                OnPropertyChanged(() => CurrentItems);
+                RaisePropertyChanged(() => CurrentItems);
             }
         }
         #endregion

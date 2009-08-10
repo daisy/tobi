@@ -77,7 +77,7 @@ namespace Tobi.Modules.MetadataPane
             Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
                 Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Metadatas);
         }
 
         
@@ -214,7 +214,7 @@ namespace Tobi.Modules.MetadataPane
             else
                 errorDescription = string.Format("{0}", item.Description);
             ValidationErrors.Add(errorDescription);
-            OnPropertyChanged(() => ValidationErrors);
+            RaisePropertyChanged(() => ValidationErrors);
         }
 #endregion validation
 

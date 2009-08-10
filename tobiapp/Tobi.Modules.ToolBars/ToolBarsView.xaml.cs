@@ -18,7 +18,7 @@ namespace Tobi.Modules.ToolBars
     public partial class ToolBarsView : INotifyPropertyChangedEx
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {
             var handler = PropertyChanged;
 
@@ -163,7 +163,7 @@ namespace Tobi.Modules.ToolBars
             {
                 if (m_IconHeight == value) return;
                 m_IconHeight = value;
-                m_PropertyChangeHandler.OnPropertyChanged(() => IconHeight);
+                m_PropertyChangeHandler.RaisePropertyChanged(() => IconHeight);
             }
         }
 
@@ -178,7 +178,7 @@ namespace Tobi.Modules.ToolBars
             {
                 if (m_IconWidth == value) return;
                 m_IconWidth = value;
-                m_PropertyChangeHandler.OnPropertyChanged(() => IconWidth);
+                m_PropertyChangeHandler.RaisePropertyChanged(() => IconWidth);
             }
         }
     }

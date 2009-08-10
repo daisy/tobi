@@ -22,7 +22,7 @@ namespace Tobi.Modules.FileDialog
             set
             {
                 _sysDirSource = value;
-                OnPropertyChanged(() => SystemDirectorySource);
+                RaisePropertyChanged(() => SystemDirectorySource);
             }
         }
 

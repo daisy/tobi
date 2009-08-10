@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
@@ -18,7 +17,7 @@ namespace Tobi
     public partial class Shell : IShellView
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {
             var handler = PropertyChanged;
 
@@ -80,13 +79,14 @@ namespace Tobi
             if (app != null)
             {
                 app.SplashScreen.Close(TimeSpan.FromSeconds(0.5));
+                //app.Dispatcher.BeginInvoke((Action)(() => app.SplashScreen.Close(TimeSpan.Zero)), DispatcherPriority.Loaded);
             }
 
             var session = Container.Resolve<IUrakawaSession>();
-            session.OnChanged(() => session.DocumentFilePath,
-                () => m_PropertyChangeHandler.OnPropertyChanged(() => WindowTitle));
-            session.OnChanged(() => session.IsDirty,
-                () => m_PropertyChangeHandler.OnPropertyChanged(() => WindowTitle));
+            session.BindPropertyChangedToAction(() => session.DocumentFilePath,
+                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
+            session.BindPropertyChangedToAction(() => session.IsDirty,
+                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
 
 
             //Activate();
