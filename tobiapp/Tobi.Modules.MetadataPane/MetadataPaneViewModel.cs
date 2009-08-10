@@ -26,8 +26,8 @@ namespace Tobi.Modules.MetadataPane
 
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-        private MetadataValidation m_Validator;
-
+        private MetadataValidator m_Validator;
+        
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -37,14 +37,10 @@ namespace Tobi.Modules.MetadataPane
             Logger = logger;
             m_Metadatas = null;
             Initialize();
-            m_Validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            m_Validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
             ValidationErrors = new ObservableCollection<string>();
-            m_Validator.ValidationErrorEvent += new MetadataValidation.ValidationError(OnValidationError);
         }
-        ~MetadataPaneViewModel()
-        {
-            m_Validator.ValidationErrorEvent -= new MetadataValidation.ValidationError(OnValidationError);
-        }
+        
         #endregion Construction
 
         #region Initialization
@@ -142,7 +138,9 @@ namespace Tobi.Modules.MetadataPane
                 {
                     if (m_Metadatas == null)
                     {
-                        m_Metadatas = new ObservableMetadataCollection(session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy);
+                        m_Metadatas = new ObservableMetadataCollection
+                            (session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy,
+                            SupportedMetadata_Z39862005.MetadataList);
                         session.DocumentProject.Presentations.Get(0).Metadatas.ObjectAdded += m_Metadatas.OnMetadataAdded;
                         session.DocumentProject.Presentations.Get(0).Metadatas.ObjectRemoved += m_Metadatas.OnMetadataDeleted;
                     }
@@ -191,7 +189,19 @@ namespace Tobi.Modules.MetadataPane
         /// <param name="metadata"></param>
         public void ValidateMetadata(NotifyingMetadataItem metadata)
         {
-            m_Validator.ValidateItem(metadata.UrakawaMetadata);
+            if (m_Validator.ValidateItem(metadata.UrakawaMetadata) == false)
+            {
+                if (m_Validator.Errors.Count > 0)
+                {
+                    //get the last-recorded error
+                    MetadataValidationError metadataError = m_Validator.Errors[m_Validator.Errors.Count - 1];
+                    string errorDescription = null;
+                    errorDescription = string.Format
+                            ("{0}: {1}", metadataError.Definition.Name, metadataError.Description);
+                    ValidationErrors.Add(errorDescription);
+                    RaisePropertyChanged(() => ValidationErrors);
+                }
+            }
         }
 
         /// <summary>
@@ -203,25 +213,23 @@ namespace Tobi.Modules.MetadataPane
             var session = Container.Resolve<IUrakawaSession>();
 
             List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-
             m_Validator.Validate(metadatas);
+
+            foreach (MetadataValidationError metadataError in m_Validator.Errors)
+            {
+                string errorDescription = null;
+                errorDescription = string.Format
+                        ("{0}: {1}", metadataError.Definition.Name, metadataError.Description);
+                ValidationErrors.Add(errorDescription);
+                RaisePropertyChanged(() => ValidationErrors);
+            }
         }
-        public void OnValidationError(MetadataValidationReportItem item)
-        {
-            string errorDescription = null;
-            if (item.Metadata != null)
-                errorDescription = string.Format("{0}: {1}", item.Metadata.Name, item.Description);
-            else
-                errorDescription = string.Format("{0}", item.Description);
-            ValidationErrors.Add(errorDescription);
-            RaisePropertyChanged(() => ValidationErrors);
-        }
+
 #endregion validation
 
         public string GetDebugStringForMetaData()
         {
             string data = "";
-
             var session = Container.Resolve<IUrakawaSession>();
 
             foreach (Metadata m in session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy)
@@ -231,34 +239,7 @@ namespace Tobi.Modules.MetadataPane
             return data;
         }
 
-        private NotifyingMetadataItem m_SelectedMetadata;
-        public NotifyingMetadataItem SelectedMetadata
-        {
-            get
-            {
-                return m_SelectedMetadata;
-            }
-            set
-            {
-                m_SelectedMetadata = value;
-                
-                if (value != null)
-                {
-                    MetadataDefinition definition =
-                        SupportedMetadata_Z39862005.MetadataList.Find(s => s.Name == m_SelectedMetadata.Name);
-                    if (definition != null)
-                        SelectedMetadataDescription = definition.Description;
-                    else
-                        SelectedMetadataDescription = "";
-                }
-            }
-        }
-        public string SelectedMetadataDescription
-        {
-            get;
-            private set;
-        }
-
+        public NotifyingMetadataItem SelectedMetadata { get; set;}
         /// <summary>
         /// based on the existing metadata, return a list of metadata fields available
         /// for addition
@@ -305,8 +286,10 @@ namespace Tobi.Modules.MetadataPane
 
     public class MetadataValidationRule : ValidationRule
     {
+        
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
         {
+            MetadataValidator validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
             BindingGroup bindingGroup = (BindingGroup) value;
             //sometimes the binding group is empty
             if (bindingGroup.Items.Count == 0)
@@ -314,8 +297,7 @@ namespace Tobi.Modules.MetadataPane
                 return ValidationResult.ValidResult;
             }
 
-        NotifyingMetadataItem metadata = bindingGroup.Items[0] as NotifyingMetadataItem;
-            MetadataValidation validator = new MetadataValidation(SupportedMetadata_Z39862005.MetadataList);
+            NotifyingMetadataItem metadata = bindingGroup.Items[0] as NotifyingMetadataItem;
             bool result = validator.ValidateItem(metadata.UrakawaMetadata);
 
             if (result)
@@ -324,19 +306,15 @@ namespace Tobi.Modules.MetadataPane
             }
             else
             {
-                MetadataValidationReportItem item = null;
-                if (validator.Report.Count > 0)
+                MetadataValidationError item = null;
+                if (validator.Errors.Count > 0)
                 {
-                    item = validator.Report[validator.Report.Count - 1];
+                    item = validator.Errors[validator.Errors.Count - 1];
                 }
                 return new ValidationResult(false, item.Description);
             }
                 
         }
     }
-
-
-        
-    
     
 }

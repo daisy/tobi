@@ -13,6 +13,16 @@ namespace Tobi.Modules.MetadataPane
     public class NotifyingMetadataItem : PropertyChangedNotifyBase
     {
         private Metadata m_Metadata;
+        public ObservableMetadataCollection ParentCollection { get; private set; }
+
+        public MetadataDefinition Definition
+        {
+            get
+            {
+                return ParentCollection.Definitions.Find(s => s.Name == this.Name);
+            }
+        }
+        
         public Metadata UrakawaMetadata
         {
             get
@@ -24,12 +34,14 @@ namespace Tobi.Modules.MetadataPane
         public NotifyingMetadataItem(NotifyingMetadataItem notifyingMetadataItem)
         {
             m_Metadata = notifyingMetadataItem.UrakawaMetadata;
+            ParentCollection = notifyingMetadataItem.ParentCollection;
             m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
             m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
         }
-        public NotifyingMetadataItem(Metadata metadata)
+        public NotifyingMetadataItem(Metadata metadata, ObservableMetadataCollection parentCollection)
         {
             m_Metadata = metadata;
+            ParentCollection = parentCollection;
             m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
             m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
         }
@@ -71,6 +83,7 @@ namespace Tobi.Modules.MetadataPane
                 {
                     m_Metadata.Name = value;
                     RaisePropertyChanged(() => Name);
+                    RaisePropertyChanged(() => Definition);
                     
                 }
             }
@@ -84,6 +97,7 @@ namespace Tobi.Modules.MetadataPane
         void OnNameChanged(object sender, NameChangedEventArgs e)
         {
             RaisePropertyChanged(() => Name);
+            RaisePropertyChanged(() => Definition);
         }
 
         internal void RemoveEvents()
@@ -96,13 +110,23 @@ namespace Tobi.Modules.MetadataPane
 
     public class ObservableMetadataCollection : ObservableCollection<NotifyingMetadataItem>
     {
-        public ObservableMetadataCollection(List<Metadata> metadatas)
-        {
-            foreach (Metadata metadata in metadatas)
+        private List<MetadataDefinition> m_Definitions;
+        public List<MetadataDefinition> Definitions 
+        { 
+            get
             {
-                this.Add(new NotifyingMetadataItem(metadata));
+                return m_Definitions;
             }
         }
+        public ObservableMetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
+        {
+            m_Definitions = definitions;
+            foreach (Metadata metadata in metadatas)
+            {
+                _addItem(metadata);
+            }
+        }
+
         #region sdk-events
         public void OnMetadataDeleted(object sender, ObjectRemovedEventArgs<Metadata> ev)
         {
@@ -120,9 +144,17 @@ namespace Tobi.Modules.MetadataPane
 
         public void OnMetadataAdded(object sender, ObjectAddedEventArgs<Metadata> ev)
         {
-            this.Add(new NotifyingMetadataItem(ev.m_AddedObject));
+            _addItem(ev.m_AddedObject);
         }
         #endregion sdk-events
 
+        /// <summary>
+        /// all new item additions end up here
+        /// </summary>
+        /// <param name="metadata"></param>
+        private void _addItem(Metadata metadata)
+        {
+            this.Add(new NotifyingMetadataItem(metadata, this));       
+        }
     }
 }

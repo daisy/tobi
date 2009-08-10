@@ -124,7 +124,10 @@
         RowStyle="{StaticResource defaultRowStyle}"
         RowDetailsVisibilityMode="VisibleWhenSelected"
         SelectionChanged="DataGrid_SelectionChanged"
-        AlternationCount="2">
+        AlternationCount="2"
+        ScrollViewer.CanContentScroll="True"
+        ScrollViewer.VerticalScrollBarVisibility="Auto">
+        
         
         <toolkit:DataGrid.RowValidationRules>
             <local:MetadataValidationRule/>
@@ -135,7 +138,8 @@
                 <TextBlock Text="{Binding
                                     RelativeSource={RelativeSource FindAncestor,  
  	                                                AncestorType={x:Type local:MetadataPaneView}},  
- 	                                Path=DataContext.SelectedMetadataDescription}"/>
+ 	                                Path=DataContext.SelectedMetadata.Definition.Description}"
+                                    Background="LightYellow"/>
             </DataTemplate>
         </toolkit:DataGrid.RowDetailsTemplate>
         
@@ -154,8 +158,11 @@
                         <ComboBox ItemsSource="{Binding
                                                     RelativeSource={RelativeSource FindAncestor,  
  	                                                AncestorType={x:Type local:MetadataPaneView}},  
- 	                                            Path=DataContext.AvailableMetadata}"
-                                   SelectedValue="Name"
+ 	                                                Path=DataContext.AvailableMetadata}"
+                                  SelectedValue="{Binding 
+                                                    RelativeSource={RelativeSource FindAncestor, 
+                                                    AncestorType={x:Type local:MetadataPaneView}}, 
+                                                    Path=DataContext.SelectedMetadata.Name}" 
                                    SelectionChanged="ComboBox_SelectionChanged"
                                   />
                     </DataTemplate>
