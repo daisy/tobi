@@ -52,7 +52,7 @@ namespace Tobi.Common.UI
                         updateSource(m_IconXLarge);
                     }
 
-                    OnPropertyChanged(() => IconDrawScale);
+                    RaisePropertyChanged(() => IconDrawScale);
                 }
             }
         }
@@ -208,7 +208,7 @@ namespace Tobi.Common.UI
                 if (m_IconVisualBrush != value)
                 {
                     m_IconVisualBrush = value;
-                    OnPropertyChanged(() => IconVisualBrush);
+                    RaisePropertyChanged(() => IconVisualBrush);
                 }
             }
         }

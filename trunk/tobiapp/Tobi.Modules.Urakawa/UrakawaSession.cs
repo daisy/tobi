@@ -57,7 +57,7 @@ namespace Tobi.Modules.Urakawa
                     m_DocumentProject.Changed += OnDocumentProjectChanged;
                     //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
                 }
-                OnPropertyChanged(() => DocumentProject);
+                RaisePropertyChanged(() => DocumentProject);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Tobi.Modules.Urakawa
                     return;
                 }
                 m_DocumentFilePath = value;
-                OnPropertyChanged(() => DocumentFilePath);
+                RaisePropertyChanged(() => DocumentFilePath);
             }
         }
 
@@ -98,7 +98,7 @@ namespace Tobi.Modules.Urakawa
                     return;
                 }
                 m_IsDirty = value;
-                OnPropertyChanged(() => IsDirty);
+                RaisePropertyChanged(() => IsDirty);
             }
         }
 

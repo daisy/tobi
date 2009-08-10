@@ -141,7 +141,7 @@ namespace Tobi.Modules.NavigationPane
                     m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
                 }
 
-                OnPropertyChanged(() => Children);
+                RaisePropertyChanged(() => Children);
             }
         }
         public bool HasChildren
@@ -180,7 +180,7 @@ namespace Tobi.Modules.NavigationPane
                         m_children = null;
                     }
 
-                    OnPropertyChanged(() => IsExpanded);
+                    RaisePropertyChanged(() => IsExpanded);
                 }
             }
         }

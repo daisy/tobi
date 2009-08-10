@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Media;
 using System.Windows;
@@ -482,110 +483,6 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private double m_LastPlayHeadTime;
-        public double LastPlayHeadTime
-        {
-            get
-            {
-                return m_LastPlayHeadTime;
-            }
-            set
-            {
-                if (m_LastPlayHeadTime == value)
-                {
-                    return;
-                }
-
-                m_LastPlayHeadTime = value;
-
-                if (m_LastPlayHeadTime < 0)
-                {
-                    Debug.Fail(String.Format("m_LastPlayHeadTime < 0 ?? {0}", m_LastPlayHeadTime));
-                    m_LastPlayHeadTime = 0;
-                }
-
-                if (State.Audio.HasContent)
-                {
-                    double time = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-                    //double time = PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble;
-                    if (m_LastPlayHeadTime > time)
-                    {
-                        Debug.Fail(String.Format("m_LastPlayHeadTime > DataLength ?? {0}", m_LastPlayHeadTime));
-                        m_LastPlayHeadTime = time;
-                    }
-                }
-
-                OnPropertyChanged(() => LastPlayHeadTime);
-
-                if (View != null)
-                {
-                    View.RefreshUI_WaveFormPlayHead();
-                }
-
-                if (!State.Audio.HasContent)
-                {
-                    return;
-                }
-
-                if (State.CurrentTreeNode == null)
-                {
-                    checkAndDoAutoPlay();
-                    return;
-                }
-
-                TreeNode subTreeNode = null;
-
-                //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
-                long byteOffset = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(m_LastPlayHeadTime));
-
-                long sumData = 0;
-                long sumDataPrev = 0;
-                int index = -1;
-                foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-                {
-                    index++;
-                    sumData += marker.m_LocalStreamDataLength;
-                    if (byteOffset < sumData
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
-                    {
-                        subTreeNode = marker.m_TreeNode;
-
-                        if (View != null && subTreeNode != State.CurrentSubTreeNode)
-                        {
-                            View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
-                        }
-                        break;
-                    }
-                    sumDataPrev = sumData;
-                }
-
-                if (subTreeNode == null || subTreeNode == State.CurrentSubTreeNode)
-                {
-                    checkAndDoAutoPlay();
-                    return;
-                }
-
-                State.CurrentSubTreeNode = subTreeNode;
-
-                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead",
-                               Category.Debug, Priority.Medium);
-
-                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
-
-                //if (State.CurrentSubTreeNode != State.CurrentTreeNode)
-                //{
-                //    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead",
-                //               Category.Debug, Priority.Medium);
-
-                //    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
-                //}
-                //else
-                //{
-                //    checkAndDoAutoPlay();
-                //}
-            }
-        }
-
         private void checkAndDoAutoPlay()
         {
             if (IsAutoPlay
@@ -612,7 +509,7 @@ namespace Tobi.Modules.AudioPane
                 if (m_IsAutoPlay == value) return;
                 m_IsAutoPlay = value;
 
-                OnPropertyChanged(() => IsAutoPlay);
+                RaisePropertyChanged(() => IsAutoPlay);
             }
         }
 
@@ -745,7 +642,7 @@ namespace Tobi.Modules.AudioPane
                 if (value != m_IsWaveFormLoading)
                 {
                     m_IsWaveFormLoading = value;
-                    OnPropertyChanged(() => IsWaveFormLoading);
+                    RaisePropertyChanged(() => IsWaveFormLoading);
 
                     // Manually forcing the commands to refresh their "canExecute" state
                     CommandManager.InvalidateRequerySuggested();
@@ -1183,7 +1080,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => IsPlaying);
+            RaisePropertyChanged(() => IsPlaying);
 
             if (State.Audio.HasContent)
             {
@@ -1221,7 +1118,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnPlayerStateChanged", Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => IsPlaying);
+            RaisePropertyChanged(() => IsPlaying);
 
             if (e.OldState == AudioPlayerState.Playing
                 && (m_Player.State == AudioPlayerState.Paused

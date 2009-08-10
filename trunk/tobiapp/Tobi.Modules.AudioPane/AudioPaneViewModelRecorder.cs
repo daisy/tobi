@@ -180,8 +180,8 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OnRecorderStateChanged", Category.Debug, Priority.Medium);
 
-            OnPropertyChanged(() => IsRecording);
-            OnPropertyChanged(() => IsMonitoring);
+            RaisePropertyChanged(() => IsRecording);
+            RaisePropertyChanged(() => IsMonitoring);
 
             if ((e.OldState == AudioRecorderState.Recording || e.OldState == AudioRecorderState.Monitoring)
                 && m_Recorder.State == AudioRecorderState.Stopped)

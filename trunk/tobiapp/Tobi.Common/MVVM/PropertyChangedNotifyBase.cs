@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using Tobi.Common.Onyx.Reflection;
 
 namespace Tobi.Common.MVVM
 {
     public interface INotifyPropertyChangedEx : INotifyPropertyChanged
     {
-        void RaisePropertyChanged(PropertyChangedEventArgs e);
+        void DispatchPropertyChangedEvent(PropertyChangedEventArgs e);
     }
 
     public interface IPropertyChangedNotifyBase : INotifyPropertyChangedEx
     {
-        void OnChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression, Action action);
+        void BindPropertyChangedToAction<T>(System.Linq.Expressions.Expression<Func<T>> expression, Action action);
     }
 
     /// <summary>
@@ -49,7 +50,7 @@ namespace Tobi.Common.MVVM
             //m_DependentPropertyList.Clear();
             m_DependentPropsCache.Flush();
 
-            foreach (var property in obj.GetType().GetProperties())
+            foreach (var property in m_ClassInstancePropertyHost.GetType().GetProperties())
             {
                 var attributeArray = (NotifyDependsOnAttribute[])
                     property.GetCustomAttributes(typeof(NotifyDependsOnAttribute), false);
@@ -57,8 +58,49 @@ namespace Tobi.Common.MVVM
                 foreach (var attribute in attributeArray)
                 {
                     //m_DependentPropertyList.Add(new KeyValuePair<string, string>(attribute.DependsOn, property.Name));
+#if DEBUG
                     VerifyPropertyName(attribute.DependsOn);
+#endif
                     m_DependentPropsCache.Add(attribute.DependsOn, property.Name);
+                }
+
+                var attributeArrayFast = (NotifyDependsOnFastAttribute[])
+                    property.GetCustomAttributes(typeof(NotifyDependsOnFastAttribute), false);
+
+                foreach (var attribute in attributeArrayFast)
+                {
+                    FieldInfo fi = m_ClassInstancePropertyHost.GetType().GetField(attribute.DependencyPropertyArgs, BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Static);
+                    if (fi == null || fi.FieldType != typeof(PropertyChangedEventArgs))
+                    {
+                        Debug.Fail("Not a backing field for PropertyChangedEventArgs ?");
+                        continue;
+                    }
+                    var dependencyPropertyArgs = fi.GetValue(null) as PropertyChangedEventArgs;
+                    if (dependencyPropertyArgs == null)
+                    {
+                        Debug.Fail("Backing field for PropertyChangedEventArgs does not have a value ?");
+                        continue;
+                    }
+
+                    fi = m_ClassInstancePropertyHost.GetType().GetField(attribute.DependentPropertyArgs, BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Static);
+                    if (fi == null || fi.FieldType != typeof(PropertyChangedEventArgs))
+                    {
+                        Debug.Fail("Not a backing field for PropertyChangedEventArgs ?");
+                        continue;
+                    }
+                    var dependentPropertyArgs = fi.GetValue(null) as PropertyChangedEventArgs;
+                    if (dependentPropertyArgs == null)
+                    {
+                        Debug.Fail("Backing field for PropertyChangedEventArgs does not have a value ?");
+                        continue;
+                    }
+
+                    //m_DependentPropertyList.Add(new KeyValuePair<string, string>(attribute.DependsOn, property.Name));
+#if DEBUG
+                    VerifyPropertyName(dependencyPropertyArgs.PropertyName);
+                    VerifyPropertyName(dependentPropertyArgs.PropertyName);
+#endif
+                    m_DependentPropsCache.Add(dependencyPropertyArgs, dependentPropertyArgs);
                 }
             }
         }
@@ -104,7 +146,7 @@ namespace Tobi.Common.MVVM
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {
             //m_ClassInstancePropertyHost.PropertyChanged.Invoke(m_ClassInstancePropertyHost, e);
 
@@ -116,11 +158,8 @@ namespace Tobi.Common.MVVM
             }
         }
 
-        private void RaisePropertyChanged(string propertyName)
+        public void RaisePropertyChanged(string propertyName)
         {
-#if DEBUG
-            VerifyPropertyName(propertyName);
-#endif
             /*
             if (m_cachePropertyChangedEventArgs == null)
             {
@@ -138,9 +177,13 @@ namespace Tobi.Common.MVVM
                 m_cachePropertyChangedEventArgs.Add(propertyName, argz);
             }*/
 
+#if DEBUG
+            VerifyPropertyName(propertyName);
+#endif
+
             PropertyChangedEventArgs argz = m_EventArgsCache.Handle(propertyName);
-            
-            m_ClassInstancePropertyHost.RaisePropertyChanged(argz);
+
+            m_ClassInstancePropertyHost.DispatchPropertyChangedEvent(argz);
 
             /*
             if (DependentPropertyList.Count <= 0) return;
@@ -155,17 +198,29 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-            m_DependentPropsCache.Handle(propertyName, RaisePropertyChanged);
+            m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
         }
 
-        public void OnPropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
+        public void RaisePropertyChanged(PropertyChangedEventArgs argz)
+        {
+            m_ClassInstancePropertyHost.DispatchPropertyChangedEvent(argz);
+
+            if (m_DependentPropsCache.IsEmpty)
+            {
+                return;
+            }
+
+            m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
+        }
+
+        public void RaisePropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
             RaisePropertyChanged(Reflect.GetProperty(expression).Name);
         }
 
         #endregion INotifyPropertyChanged
 
-        public void OnChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression, Action action)
+        public void BindPropertyChangedToAction<T>(System.Linq.Expressions.Expression<Func<T>> expression, Action action)
         {
             PropertyChanged += ((sender, e) =>
                                     {

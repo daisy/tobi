@@ -18,7 +18,7 @@ namespace Tobi.Common.UI
     public partial class PopupModalWindow : IInputBindingManager, INotifyPropertyChangedEx
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void RaisePropertyChanged(PropertyChangedEventArgs e)
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {
             var handler = PropertyChanged;
 
@@ -98,7 +98,7 @@ namespace Tobi.Common.UI
                         Height -= DetailsHeight;
                     }
 
-                    m_PropertyChangeHandler.OnPropertyChanged(() => IsDetailsExpanded);
+                    m_PropertyChangeHandler.RaisePropertyChanged(() => IsDetailsExpanded);
                 }
             }
             get { return m_IsDetailsExpanded; }
@@ -470,23 +470,23 @@ namespace Tobi.Common.UI
 
         private void OnPropertyChangedButtonsSet()
         {
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Close);
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Apply);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonActive_Close);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonActive_Apply);
 
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Ok);
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Cancel);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonActive_Ok);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonActive_Cancel);
 
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_Yes);
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonActive_No);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonActive_Yes);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonActive_No);
 
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Close);
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Apply);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonDefault_Close);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonDefault_Apply);
 
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Ok);
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Cancel);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonDefault_Ok);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonDefault_Cancel);
 
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_Yes);
-            m_PropertyChangeHandler.OnPropertyChanged(() => IsButtonDefault_No);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonDefault_Yes);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsButtonDefault_No);
         }
 
         public void ForceClose(DialogButton buttonResult)

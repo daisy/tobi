@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
@@ -419,6 +420,8 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
+        private static readonly PropertyChangedEventArgs m_RecorderCurrentDurationArgs
+            = new PropertyChangedEventArgs("RecorderCurrentDuration");
         public double RecorderCurrentDuration
         {
             get
@@ -427,15 +430,14 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        // TODO: LastPlayHeadTime and RecorderCurrentDuration(triggered from OnUpdateVuMeter)
-        // refresh many times per seconds, which floods the data binding infrastructure with INotifiedPropertyChanged events.
-        // We might need to optimize this part in the near future, to avoid performance issues.
+        private static readonly PropertyChangedEventArgs m_TimeStringCurrentArgs
+            = new PropertyChangedEventArgs("TimeStringCurrent");
         [NotifyDependsOn("IsPlaying")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsRecording")]
-        [NotifyDependsOn("LastPlayHeadTime")]
-        [NotifyDependsOn("RecorderCurrentDuration")]
         [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOnFast("m_LastPlayHeadTimeArgs", "m_TimeStringCurrentArgs")]
+        [NotifyDependsOnFast("m_RecorderCurrentDurationArgs", "m_TimeStringCurrentArgs")]
         public String TimeStringCurrent
         {
             get
@@ -450,6 +452,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     return "";
                 }
+
                 if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTimePosition);
@@ -463,6 +466,113 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 return "";
+            }
+        }
+
+        private static readonly PropertyChangedEventArgs m_LastPlayHeadTimeArgs
+            = new PropertyChangedEventArgs("LastPlayHeadTime");
+        private double m_LastPlayHeadTime;
+        public double LastPlayHeadTime
+        {
+            get
+            {
+                return m_LastPlayHeadTime;
+            }
+            set
+            {
+                if (m_LastPlayHeadTime == value)
+                {
+                    return;
+                }
+
+                m_LastPlayHeadTime = value;
+
+                if (m_LastPlayHeadTime < 0)
+                {
+                    Debug.Fail(String.Format("m_LastPlayHeadTime < 0 ?? {0}", m_LastPlayHeadTime));
+                    m_LastPlayHeadTime = 0;
+                }
+
+                if (State.Audio.HasContent)
+                {
+                    double time = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
+                    //double time = PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble;
+                    if (m_LastPlayHeadTime > time)
+                    {
+                        Debug.Fail(String.Format("m_LastPlayHeadTime > DataLength ?? {0}", m_LastPlayHeadTime));
+                        m_LastPlayHeadTime = time;
+                    }
+                }
+
+                RaisePropertyChanged(m_LastPlayHeadTimeArgs);
+                //RaisePropertyChanged(() => LastPlayHeadTime);
+
+                if (View != null)
+                {
+                    View.RefreshUI_WaveFormPlayHead();
+                }
+
+                if (!State.Audio.HasContent)
+                {
+                    return;
+                }
+
+                if (State.CurrentTreeNode == null)
+                {
+                    checkAndDoAutoPlay();
+                    return;
+                }
+
+                TreeNode subTreeNode = null;
+
+                //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
+                long byteOffset = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(m_LastPlayHeadTime));
+
+                long sumData = 0;
+                long sumDataPrev = 0;
+                int index = -1;
+                foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+                {
+                    index++;
+                    sumData += marker.m_LocalStreamDataLength;
+                    if (byteOffset < sumData
+                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
+                    {
+                        subTreeNode = marker.m_TreeNode;
+
+                        if (View != null && subTreeNode != State.CurrentSubTreeNode)
+                        {
+                            View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                        }
+                        break;
+                    }
+                    sumDataPrev = sumData;
+                }
+
+                if (subTreeNode == null || subTreeNode == State.CurrentSubTreeNode)
+                {
+                    checkAndDoAutoPlay();
+                    return;
+                }
+
+                State.CurrentSubTreeNode = subTreeNode;
+
+                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead",
+                               Category.Debug, Priority.Medium);
+
+                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
+
+                //if (State.CurrentSubTreeNode != State.CurrentTreeNode)
+                //{
+                //    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead",
+                //               Category.Debug, Priority.Medium);
+
+                //    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
+                //}
+                //else
+                //{
+                //    checkAndDoAutoPlay();
+                //}
             }
         }
 
@@ -487,7 +597,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (PeakMeterBarDataCh1.PeakOverloadCount == value) return;
                 PeakMeterBarDataCh1.PeakOverloadCount = value;
-                OnPropertyChanged(() => PeakOverloadCountCh1);
+                RaisePropertyChanged(() => PeakOverloadCountCh1);
             }
         }
 
@@ -501,7 +611,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (PeakMeterBarDataCh2.PeakOverloadCount == value) return;
                 PeakMeterBarDataCh2.PeakOverloadCount = value;
-                OnPropertyChanged(() => PeakOverloadCountCh2);
+                RaisePropertyChanged(() => PeakOverloadCountCh2);
             }
         }
 
@@ -567,8 +677,8 @@ namespace Tobi.Modules.AudioPane
                     View.TimeMessageRefresh();
                 }
 
-                // TODO: generates too many events per seconds in the data binding pipeline ?
-                OnPropertyChanged(() => RecorderCurrentDuration);
+                RaisePropertyChanged(m_RecorderCurrentDurationArgs);
+                //RaisePropertyChanged(() => RecorderCurrentDuration);
             }
 
             if (e.PeakValues != null && e.PeakValues.Length > 0)

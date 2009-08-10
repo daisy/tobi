@@ -30,6 +30,20 @@ namespace Tobi.Common.MVVM
         }*/
     }
 
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+    public class NotifyDependsOnFastAttribute : Attribute
+    {
+        public string DependencyPropertyArgs { get; set; }
+        public string DependentPropertyArgs { get; set; }
+
+        public NotifyDependsOnFastAttribute(string dependency, string dependent)
+        {
+            DependencyPropertyArgs = dependency;
+            DependentPropertyArgs = dependent;
+        }
+    }
+
     public class DependentPropsCache
     {
         private CacheItem m_First;
@@ -42,8 +56,32 @@ namespace Tobi.Common.MVVM
 
         protected struct CacheData
         {
-            public string dependency;
-            public string dependent;
+            public string dependencyPropertyName;
+            public PropertyChangedEventArgs dependencyPropertyChangeEventArgs;
+
+            public string dependentPropertyName;
+            public PropertyChangedEventArgs dependentPropertyChangeEventArgs;
+        }
+
+        public void Handle(PropertyChangedEventArgs dependency, Action<PropertyChangedEventArgs> action)
+        {
+            if (IsEmpty)
+            {
+                return;
+            }
+
+            CacheItem current = m_First;
+            do
+            {
+                if (current.data.dependencyPropertyChangeEventArgs != null)
+                {
+                    if (current.data.dependencyPropertyChangeEventArgs == dependency)
+                    {
+                        action(current.data.dependentPropertyChangeEventArgs);
+                    }
+                }
+                current = current.nextItem;
+            } while (current != null);
         }
 
         public void Handle(string dependency, Action<string> action)
@@ -56,9 +94,12 @@ namespace Tobi.Common.MVVM
             CacheItem current = m_First;
             do
             {
-                if (current.data.dependency == dependency)
+                if (current.data.dependencyPropertyName != null)
                 {
-                    action(current.data.dependent);
+                    if (current.data.dependencyPropertyName == dependency)
+                    {
+                        action(current.data.dependentPropertyName);
+                    }
                 }
                 current = current.nextItem;
             } while (current != null);
@@ -77,18 +118,8 @@ namespace Tobi.Common.MVVM
             m_First = null;
         }
 
-        public void Add(string dependency, string dependent)
+        private void add(CacheItem item)
         {
-            var item = new CacheItem()
-            {
-                data = new CacheData()
-                {
-                    dependency = dependency,
-                    dependent = dependent
-                },
-                nextItem = null
-            };
-
             if (m_First == null)
             {
                 m_First = item;
@@ -101,6 +132,36 @@ namespace Tobi.Common.MVVM
                 last = last.nextItem;
             }
             last.nextItem = item;
+        }
+
+        public void Add(string dependency, string dependent)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    dependencyPropertyName = dependency,
+                    dependentPropertyName = dependent
+                },
+                nextItem = null
+            };
+
+            add(item);
+        }
+
+        public void Add(PropertyChangedEventArgs dependency, PropertyChangedEventArgs dependent)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    dependencyPropertyChangeEventArgs = dependency,
+                    dependentPropertyChangeEventArgs = dependent
+                },
+                nextItem = null
+            };
+
+            add(item);
         }
     }
 
