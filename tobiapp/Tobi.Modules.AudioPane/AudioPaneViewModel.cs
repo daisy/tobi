@@ -95,11 +95,12 @@ namespace Tobi.Modules.AudioPane
             m_Recorder = new AudioRecorder();
             m_Recorder.SetDevice(@"fakename");
             m_Recorder.StateChanged += OnRecorderStateChanged;
-            //m_Recorder.UpdateVuMeterFromRecorder += OnUpdateVuMeterFromRecorder;
+            //m_Recorder.UpdateVuMeter += OnUpdateVuMeterFromRecorder;
 
             m_VuMeter = new VuMeter(m_Player, m_Recorder);
             m_VuMeter.UpdatePeakMeter += OnUpdateVuMeter;
-            m_VuMeter.ResetEvent += OnResetVuMeter;
+            m_Player.ResetVuMeter += OnPlayerResetVuMeter;
+            m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
             m_VuMeter.PeakOverload += OnPeakOverload;
 
             PeakMeterBarDataCh1 = new PeakMeterBarData();
@@ -647,9 +648,9 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        private void OnResetVuMeter(object sender, ResetEventArgs e)
+        private void resetVuMeter()
         {
-            Logger.Log("AudioPaneViewModel.OnResetVuMeter", Category.Debug, Priority.Medium);
+            Logger.Log("AudioPaneViewModel.resetVuMeter", Category.Debug, Priority.Medium);
 
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             //PeakMeterBarDataCh1.ForceFullFallback();

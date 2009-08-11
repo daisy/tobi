@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Media;
 using System.Windows;
@@ -693,8 +692,12 @@ namespace Tobi.Modules.AudioPane
                 }
                 else if (m_WaveFormLoadTimer.IsEnabled)
                 {
+                    Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+
                     m_WaveFormLoadTimer.Stop();
                 }
+
+                Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
 
                 m_WaveFormLoadTimer.Start();
             }
@@ -702,6 +705,8 @@ namespace Tobi.Modules.AudioPane
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
+            Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+
             m_WaveFormLoadTimer.Stop();
 
             if (IsWaveFormLoading)
@@ -1153,6 +1158,11 @@ namespace Tobi.Modules.AudioPane
                     View.StartPeakMeterTimer();
                 }
             }
+        }
+
+        private void OnPlayerResetVuMeter(object sender, UpdateVuMeterEventArgs e)
+        {
+            resetVuMeter();
         }
 
         #endregion Event / Callbacks

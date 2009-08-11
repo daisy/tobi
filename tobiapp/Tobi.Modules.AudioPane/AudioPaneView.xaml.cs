@@ -813,6 +813,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_PlaybackTimer != null && m_PlaybackTimer.IsEnabled)
             {
+                ViewModel.Logger.Log("m_PlaybackTimer.Stop()", Category.Debug, Priority.Medium);
+
                 m_PlaybackTimer.Stop();
             }
             m_PlaybackTimer = null;
@@ -842,6 +844,8 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
+            ViewModel.Logger.Log("m_PlaybackTimer.Start()", Category.Debug, Priority.Medium);
+
             m_PlaybackTimer.Start();
         }
 
@@ -856,6 +860,8 @@ namespace Tobi.Modules.AudioPane
         {
             if (m_PeakMeterTimer != null && m_PeakMeterTimer.IsEnabled)
             {
+                ViewModel.Logger.Log("m_PeakMeterTimer.Stop()", Category.Debug, Priority.Medium);
+
                 m_PeakMeterTimer.Stop();
             }
             m_PeakMeterTimer = null;
@@ -873,6 +879,8 @@ namespace Tobi.Modules.AudioPane
             {
                 return;
             }
+
+            ViewModel.Logger.Log("m_PeakMeterTimer.Start()", Category.Debug, Priority.Medium);
 
             m_PeakMeterTimer.Start();
         }
