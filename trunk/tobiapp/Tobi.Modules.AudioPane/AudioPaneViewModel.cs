@@ -646,8 +646,6 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        #region Event / Callbacks
-
         private void resetVuMeter()
         {
             Logger.Log("AudioPaneViewModel.resetVuMeter", Category.Debug, Priority.Medium);
@@ -668,6 +666,8 @@ namespace Tobi.Modules.AudioPane
             AudioPlayer_UpdateWaveFormPlayHead();
             IsAutoPlay = oldVal;
         }
+
+        #region Event / Callbacks
 
         private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
         {
@@ -694,6 +694,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     m_PeakMeterValues[1] = e.PeakValues[1];
                 }
+                UpdatePeakMeter();
             }
         }
 

@@ -568,6 +568,7 @@ namespace Tobi.Modules.AudioPane
             WaveFormTimeRangePath.InvalidateVisual();
         }
 
+        private Point m_PointPeakMeter = new Point(0, 0);
         /// <summary>
         /// Refreshes the PeakMeterCanvas
         /// (ensures invoke on UI Dispatcher thread)
@@ -607,10 +608,21 @@ namespace Tobi.Modules.AudioPane
             {
                 double pixels = ViewModel.PeakMeterBarDataCh1.DbToPixels(availableHeight);
 
-                sgc.BeginFigure(new Point(0, 0), true, true);
-                sgc.LineTo(new Point(barWidth, 0), false, false);
-                sgc.LineTo(new Point(barWidth, availableHeight - pixels), false, false);
-                sgc.LineTo(new Point(0, availableHeight - pixels), false, false);
+                m_PointPeakMeter.X = 0;
+                m_PointPeakMeter.Y = 0;
+                sgc.BeginFigure(m_PointPeakMeter, true, true);
+
+                m_PointPeakMeter.X = barWidth;
+                m_PointPeakMeter.Y = 0;
+                sgc.LineTo(m_PointPeakMeter, false, false);
+
+                m_PointPeakMeter.X = barWidth;
+                m_PointPeakMeter.Y = availableHeight - pixels;
+                sgc.LineTo(m_PointPeakMeter, false, false);
+
+                m_PointPeakMeter.X = 0;
+                m_PointPeakMeter.Y = availableHeight - pixels;
+                sgc.LineTo(m_PointPeakMeter, false, false);
 
                 sgc.Close();
             }
@@ -631,11 +643,25 @@ namespace Tobi.Modules.AudioPane
                 {
                     double pixels = ViewModel.PeakMeterBarDataCh2.DbToPixels(availableHeight);
 
-                    sgc.BeginFigure(new Point(barWidth, 0), true, true);
-                    sgc.LineTo(new Point(barWidth + barWidth, 0), false, false);
-                    sgc.LineTo(new Point(barWidth + barWidth, availableHeight - pixels), false, false);
-                    sgc.LineTo(new Point(barWidth, availableHeight - pixels), false, false);
-                    sgc.LineTo(new Point(barWidth, availableHeight - 1), false, false);
+                    m_PointPeakMeter.X = barWidth;
+                    m_PointPeakMeter.Y = 0;
+                    sgc.BeginFigure(m_PointPeakMeter, true, true);
+
+                    m_PointPeakMeter.X = barWidth + barWidth;
+                    m_PointPeakMeter.Y = 0;
+                    sgc.LineTo(m_PointPeakMeter, false, false);
+
+                    m_PointPeakMeter.X = barWidth + barWidth;
+                    m_PointPeakMeter.Y = availableHeight - pixels;
+                    sgc.LineTo(m_PointPeakMeter, false, false);
+
+                    m_PointPeakMeter.X = barWidth;
+                    m_PointPeakMeter.Y = availableHeight - pixels;
+                    sgc.LineTo(m_PointPeakMeter, false, false);
+
+                    m_PointPeakMeter.X = barWidth;
+                    m_PointPeakMeter.Y = availableHeight - 1;
+                    sgc.LineTo(m_PointPeakMeter, false, false);
 
                     sgc.Close();
                 }
@@ -662,7 +688,6 @@ namespace Tobi.Modules.AudioPane
             }
 
             //PeakMeterCanvas.InvalidateVisual();
-
         }
 
         /// <summary>
@@ -854,41 +879,41 @@ namespace Tobi.Modules.AudioPane
             ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
         }
 
-        private DispatcherTimer m_PeakMeterTimer;
+        //private DispatcherTimer m_PeakMeterTimer;
 
-        public void StopPeakMeterTimer()
-        {
-            if (m_PeakMeterTimer != null && m_PeakMeterTimer.IsEnabled)
-            {
-                ViewModel.Logger.Log("m_PeakMeterTimer.Stop()", Category.Debug, Priority.Medium);
+        //public void StopPeakMeterTimer()
+        //{
+        //    if (m_PeakMeterTimer != null && m_PeakMeterTimer.IsEnabled)
+        //    {
+        //        ViewModel.Logger.Log("m_PeakMeterTimer.Stop()", Category.Debug, Priority.Medium);
 
-                m_PeakMeterTimer.Stop();
-            }
-            m_PeakMeterTimer = null;
-        }
+        //        m_PeakMeterTimer.Stop();
+        //    }
+        //    m_PeakMeterTimer = null;
+        //}
 
-        public void StartPeakMeterTimer()
-        {
-            if (m_PeakMeterTimer == null)
-            {
-                m_PeakMeterTimer = new DispatcherTimer(DispatcherPriority.Input);
-                m_PeakMeterTimer.Tick += OnPeakMeterTimerTick;
-                m_PeakMeterTimer.Interval = TimeSpan.FromMilliseconds(60);
-            }
-            else if (m_PeakMeterTimer.IsEnabled)
-            {
-                return;
-            }
+        //public void StartPeakMeterTimer()
+        //{
+        //    if (m_PeakMeterTimer == null)
+        //    {
+        //        m_PeakMeterTimer = new DispatcherTimer(DispatcherPriority.Input);
+        //        m_PeakMeterTimer.Tick += OnPeakMeterTimerTick;
+        //        m_PeakMeterTimer.Interval = TimeSpan.FromMilliseconds(60);
+        //    }
+        //    else if (m_PeakMeterTimer.IsEnabled)
+        //    {
+        //        return;
+        //    }
 
-            ViewModel.Logger.Log("m_PeakMeterTimer.Start()", Category.Debug, Priority.Medium);
+        //    ViewModel.Logger.Log("m_PeakMeterTimer.Start()", Category.Debug, Priority.Medium);
 
-            m_PeakMeterTimer.Start();
-        }
+        //    m_PeakMeterTimer.Start();
+        //}
 
-        private void OnPeakMeterTimerTick(object sender, EventArgs e)
-        {
-            ViewModel.UpdatePeakMeter();
-        }
+        //private void OnPeakMeterTimerTick(object sender, EventArgs e)
+        //{
+        //    ViewModel.UpdatePeakMeter();
+        //}
 
         #endregion DispatcherTimers
 

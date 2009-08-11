@@ -189,10 +189,10 @@ namespace Tobi.Modules.AudioPane
                 && m_Recorder.State == AudioRecorderState.Stopped)
             {
                 UpdatePeakMeter();
-                if (View != null)
-                {
-                    View.StopPeakMeterTimer();
-                }
+                //if (View != null)
+                //{
+                //    View.StopPeakMeterTimer();
+                //}
 
                 if (View != null)
                 {
@@ -207,10 +207,10 @@ namespace Tobi.Modules.AudioPane
                     PeakOverloadCountCh2 = 0;
                 }
                 UpdatePeakMeter();
-                if (View != null)
-                {
-                    View.StartPeakMeterTimer();
-                }
+                //if (View != null)
+                //{
+                //    View.StartPeakMeterTimer();
+                //}
 
                 if (View != null)
                 {

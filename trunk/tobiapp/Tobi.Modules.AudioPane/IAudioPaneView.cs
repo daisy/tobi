@@ -26,8 +26,8 @@
         double BytesPerPixel { get; set; }
         void StopWaveFormTimer();
         void StartWaveFormTimer();
-        void StopPeakMeterTimer();
-        void StartPeakMeterTimer();
+        //void StopPeakMeterTimer();
+        //void StartPeakMeterTimer();
         bool IsSelectionSet { get; }
         void ClearSelection();
         void SelectAll();
