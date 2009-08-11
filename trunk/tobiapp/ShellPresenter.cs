@@ -1124,8 +1124,6 @@ namespace Tobi
             var window = View as Window;
             if (window != null && inputBinding != null)
             {
-                //Logger.Log("ShellPresenter.AddInputBinding", Category.Debug, Priority.Medium);
-
                 logInputBinding(inputBinding);
                 window.InputBindings.Add(inputBinding);
                 return true;
@@ -1136,8 +1134,6 @@ namespace Tobi
 
         public void RemoveInputBinding(InputBinding inputBinding)
         {
-            Logger.Log("ShellPresenter.RemoveInputBinding", Category.Debug, Priority.Medium);
-
             var window = View as Window;
             if (window != null && inputBinding != null)
             {

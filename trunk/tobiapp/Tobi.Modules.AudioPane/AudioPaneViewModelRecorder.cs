@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
+using AudioLib.Events.Recorder;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
@@ -238,6 +240,11 @@ namespace Tobi.Modules.AudioPane
 
         public PCMFormatInfo m_PcmFormatOfAudioToInsert;
 
+
+        private void OnRecorderResetVuMeter(object sender, UpdateVuMeterEventArgs e)
+        {
+            resetVuMeter();
+        }
 
         #endregion Audio Recorder
     }

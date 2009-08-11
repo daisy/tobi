@@ -215,7 +215,11 @@ namespace Tobi.Common.MVVM
 
         public void RaisePropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
-            RaisePropertyChanged(Reflect.GetProperty(expression).Name);
+            string name = Reflect.GetProperty(expression).Name;
+#if DEBUG
+            Console.WriteLine("^^^^ PropertyChanged: " + name);
+#endif
+            RaisePropertyChanged(name);
         }
 
         #endregion INotifyPropertyChanged
