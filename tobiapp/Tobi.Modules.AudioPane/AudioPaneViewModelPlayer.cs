@@ -1140,7 +1140,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.StopWaveFormTimer();
-                    View.StopPeakMeterTimer();
+                    //View.StopPeakMeterTimer();
                 }
             }
 
@@ -1155,7 +1155,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.StartWaveFormTimer();
-                    View.StartPeakMeterTimer();
+                    //View.StartPeakMeterTimer();
                 }
             }
         }
