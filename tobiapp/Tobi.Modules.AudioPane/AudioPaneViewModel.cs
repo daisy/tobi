@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
-using AudioLib.Events.VuMeter;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -89,20 +88,21 @@ namespace Tobi.Modules.AudioPane
 
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
             m_Player.SetDevice(GetWindowsFormsHookControl(), @"fakename");
-            m_Player.StateChanged += OnPlayerStateChanged;
-            m_Player.EndOfAudioAsset += OnEndOfAudioAsset;
+            m_Player.StateChanged += OnStateChanged_Player;
+            m_Player.AudioPlaybackFinished += OnAudioPlaybackFinished;
+            
+            //m_Player.ResetVuMeter += OnPlayerResetVuMeter;
 
             m_Recorder = new AudioRecorder();
             m_Recorder.SetDevice(@"fakename");
-            m_Recorder.StateChanged += OnRecorderStateChanged;
-            //m_Recorder.UpdateVuMeter += OnUpdateVuMeterFromRecorder;
+            m_Recorder.StateChanged += OnStateChanged_Recorder;
+            
+            //m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
 
             m_VuMeter = new VuMeter(m_Player, m_Recorder);
-            m_VuMeter.UpdatePeakMeter += OnUpdateVuMeter;
-            m_Player.ResetVuMeter += OnPlayerResetVuMeter;
-            m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
-            m_VuMeter.PeakOverload += OnPeakOverload;
-
+            m_VuMeter.PeakMeterUpdated += OnPeakMeterUpdated;
+            m_VuMeter.PeakMeterOverloaded += OnPeakMeterOverloaded;
+            
             PeakMeterBarDataCh1 = new PeakMeterBarData();
             PeakMeterBarDataCh2 = new PeakMeterBarData();
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
@@ -156,7 +156,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
             }
@@ -204,7 +204,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }*/
 
-            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
                 if (AudioPlaybackStreamKeepAlive)
@@ -460,7 +460,7 @@ namespace Tobi.Modules.AudioPane
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
                 }
 
-                if (m_Player.State == AudioPlayerState.Paused || m_Player.State == AudioPlayerState.Stopped)
+                if (m_Player.CurrentState == AudioPlayer.State.Paused || m_Player.CurrentState == AudioPlayer.State.Stopped)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
@@ -618,8 +618,8 @@ namespace Tobi.Modules.AudioPane
 
         public void UpdatePeakMeter()
         {
-            if (m_Player.State != AudioPlayerState.Playing
-                && (m_Recorder.State != AudioRecorderState.Recording && m_Recorder.State != AudioRecorderState.Monitoring))
+            if (m_Player.CurrentState != AudioPlayer.State.Playing
+                && (m_Recorder.CurrentState != AudioRecorder.State.Recording && m_Recorder.CurrentState != AudioRecorder.State.Monitoring))
             {
                 if (View != null)
                 {
@@ -646,9 +646,9 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private void resetVuMeter()
+        private void resetPeakMeter()
         {
-            Logger.Log("AudioPaneViewModel.resetVuMeter", Category.Debug, Priority.Medium);
+            Logger.Log("AudioPaneViewModel.resetPeakMeter", Category.Debug, Priority.Medium);
 
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             //PeakMeterBarDataCh1.ForceFullFallback();
@@ -669,7 +669,7 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        private void OnUpdateVuMeter(object sender, UpdatePeakMeter e)
+        private void OnPeakMeterUpdated(object sender, VuMeter.PeakMeterUpdateEventArgs e)
         {
             if (IsRecording || IsMonitoring)
             {
@@ -682,9 +682,9 @@ namespace Tobi.Modules.AudioPane
                 //RaisePropertyChanged(() => RecorderCurrentDuration);
             }
 
-            if (e.PeakValues != null && e.PeakValues.Length > 0)
+            if (e.PeakDb != null && e.PeakDb.Length > 0)
             {
-                m_PeakMeterValues[0] = e.PeakValues[0];
+                m_PeakMeterValues[0] = e.PeakDb[0];
                 PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
                 if (pcmInfo == null)
                 {
@@ -692,13 +692,13 @@ namespace Tobi.Modules.AudioPane
                 }
                 if (pcmInfo.NumberOfChannels > 1)
                 {
-                    m_PeakMeterValues[1] = e.PeakValues[1];
+                    m_PeakMeterValues[1] = e.PeakDb[1];
                 }
                 UpdatePeakMeter();
             }
         }
 
-        private void OnPeakOverload(object sender, PeakOverloadEventArgs e)
+        private void OnPeakMeterOverloaded(object sender, VuMeter.PeakOverloadEventArgs e)
         {
             if (e != null)
             {
