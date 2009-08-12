@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
-using AudioLib.Events.Recorder;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
-using urakawa.core;
-using urakawa.media;
 using urakawa.media.data.audio;
-using urakawa.media.data.audio.codec;
-using urakawa.media.timing;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -165,28 +159,26 @@ namespace Tobi.Modules.AudioPane
             }
             set
             {
-                if (value != null && m_Recorder.InputDevice != value)
+                if (m_Recorder.CurrentState == AudioRecorder.State.Stopped && value != null && m_Recorder.InputDevice != value)
                 {
-                    if (m_Recorder.State != AudioRecorderState.Stopped)
-                    {
-                        return;
-                    }
                     m_Recorder.InputDevice = value;
                 }
             }
         }
 
         // ReSharper disable MemberCanBeMadeStatic.Local
-        private void OnRecorderStateChanged(object sender, AudioLib.Events.Recorder.StateChangedEventArgs e)
+        private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
         // ReSharper restore MemberCanBeMadeStatic.Local
         {
-            Logger.Log("AudioPaneViewModel.OnRecorderStateChanged", Category.Debug, Priority.Medium);
+            Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
+            
+            resetPeakMeter();
 
             RaisePropertyChanged(() => IsRecording);
             RaisePropertyChanged(() => IsMonitoring);
 
-            if ((e.OldState == AudioRecorderState.Recording || e.OldState == AudioRecorderState.Monitoring)
-                && m_Recorder.State == AudioRecorderState.Stopped)
+            if ((e.OldState == AudioRecorder.State.Recording || e.OldState == AudioRecorder.State.Monitoring)
+                && m_Recorder.CurrentState == AudioRecorder.State.Stopped)
             {
                 UpdatePeakMeter();
                 //if (View != null)
@@ -199,9 +191,9 @@ namespace Tobi.Modules.AudioPane
                     View.TimeMessageHide();
                 }
             }
-            if (m_Recorder.State == AudioRecorderState.Recording || m_Recorder.State == AudioRecorderState.Monitoring)
+            if (m_Recorder.CurrentState == AudioRecorder.State.Recording || m_Recorder.CurrentState == AudioRecorder.State.Monitoring)
             {
-                if (e.OldState == AudioRecorderState.Stopped)
+                if (e.OldState == AudioRecorder.State.Stopped)
                 {
                     PeakOverloadCountCh1 = 0;
                     PeakOverloadCountCh2 = 0;
@@ -226,7 +218,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return m_Recorder.State == AudioRecorderState.Recording;
+                return m_Recorder.CurrentState == AudioRecorder.State.Recording;
             }
         }
 
@@ -234,17 +226,17 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return m_Recorder.State == AudioRecorderState.Monitoring;
+                return m_Recorder.CurrentState == AudioRecorder.State.Monitoring;
             }
         }
 
         public PCMFormatInfo m_PcmFormatOfAudioToInsert;
 
 
-        private void OnRecorderResetVuMeter(object sender, UpdateVuMeterEventArgs e)
-        {
-            resetVuMeter();
-        }
+        //private void OnRecorderResetVuMeter(object sender, UpdateVuMeterEventArgs e)
+        //{
+        //    resetPeakMeter();
+        //}
 
         #endregion Audio Recorder
     }

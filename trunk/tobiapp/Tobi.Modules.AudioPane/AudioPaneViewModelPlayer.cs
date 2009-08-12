@@ -7,7 +7,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AudioLib;
-using AudioLib.Events.Player;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -466,13 +465,14 @@ namespace Tobi.Modules.AudioPane
                 if (value != null && m_Player.OutputDevice != value)
                 {
                     double time = -1;
-                    if (m_Player.State == AudioPlayerState.Playing)
+                    if (m_Player.CurrentState == AudioPlayer.State.Playing)
                     {
                         time = m_Player.CurrentTimePosition;
                         AudioPlayer_Stop();
                     }
 
                     m_Player.SetDevice(GetWindowsFormsHookControl(), value);
+                    //m_Player.OutputDevice = value;
 
                     if (time >= 0 && State.Audio.HasContent)
                     {
@@ -485,8 +485,8 @@ namespace Tobi.Modules.AudioPane
         private void checkAndDoAutoPlay()
         {
             if (IsAutoPlay
-                && (m_Player.State == AudioPlayerState.Paused
-                || m_Player.State == AudioPlayerState.Stopped))
+                && (m_Player.CurrentState == AudioPlayer.State.Paused
+                || m_Player.CurrentState == AudioPlayer.State.Stopped))
             {
                 Logger.Log("AudioPaneViewModel.checkAndDoAutoPlay", Category.Debug, Priority.Medium);
 
@@ -516,7 +516,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return (m_Player.State == AudioPlayerState.Playing);
+                return (m_Player.CurrentState == AudioPlayer.State.Playing);
             }
         }
 
@@ -606,12 +606,12 @@ namespace Tobi.Modules.AudioPane
             }
 
             double time = LastPlayHeadTime;
-            if (m_Player.State == AudioPlayerState.Playing
-                || m_Player.State == AudioPlayerState.Paused)
+            if (m_Player.CurrentState == AudioPlayer.State.Playing
+                || m_Player.CurrentState == AudioPlayer.State.Paused)
             {
                 time = m_Player.CurrentTimePosition;
             }
-            else if (m_Player.State == AudioPlayerState.Stopped && time < 0)
+            else if (m_Player.CurrentState == AudioPlayer.State.Stopped && time < 0)
             {
                 time = 0;
             }
@@ -730,14 +730,11 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            bool wasPlaying = (m_Player.State == AudioPlayerState.Playing);
+            bool wasPlaying = (m_Player.CurrentState == AudioPlayer.State.Playing);
 
-            if (m_Player.State != AudioPlayerState.NotReady)
+            if (wasPlaying)
             {
-                if (wasPlaying)
-                {
-                    m_Player.Pause();
-                }
+                m_Player.Pause();
             }
 
             if (m_CurrentAudioStreamProvider() == null)
@@ -830,11 +827,11 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            if (m_Player.State == AudioPlayerState.Playing)
+            if (m_Player.CurrentState == AudioPlayer.State.Playing)
             {
                 m_Player.Pause();
             }
-            else if (m_Player.State == AudioPlayerState.Paused || m_Player.State == AudioPlayerState.Stopped)
+            else if (m_Player.CurrentState == AudioPlayer.State.Paused || m_Player.CurrentState == AudioPlayer.State.Stopped)
             {
                 m_Player.Resume();
             }
@@ -866,14 +863,14 @@ namespace Tobi.Modules.AudioPane
 
             State.Audio.EndOffsetOfPlayStream = State.Audio.DataLength;
 
-            if (m_Player.State == AudioPlayerState.Paused)
+            if (m_Player.CurrentState == AudioPlayer.State.Paused)
             {
                 m_Player.Stop();
             }
 
             if (bytesEnd < 0)
             {
-                if (m_Player.State == AudioPlayerState.Stopped)
+                if (m_Player.CurrentState == AudioPlayer.State.Stopped)
                 {
                     if (m_CurrentAudioStreamProvider() == null)
                     {
@@ -891,7 +888,7 @@ namespace Tobi.Modules.AudioPane
                                   State.Audio.ConvertBytesToMilliseconds(bytesStart)
                         );
                 }
-                else if (m_Player.State == AudioPlayerState.Playing)
+                else if (m_Player.CurrentState == AudioPlayer.State.Playing)
                 {
                     m_Player.CurrentTimePosition = State.Audio.ConvertBytesToMilliseconds(bytesStart);
                 }
@@ -900,7 +897,7 @@ namespace Tobi.Modules.AudioPane
             {
                 State.Audio.EndOffsetOfPlayStream = (long)bytesEnd;
 
-                if (m_Player.State == AudioPlayerState.Playing)
+                if (m_Player.CurrentState == AudioPlayer.State.Playing)
                 {
                     m_Player.Stop();
                 }
@@ -973,7 +970,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
             }
@@ -992,7 +989,7 @@ namespace Tobi.Modules.AudioPane
         {
             Logger.Log("AudioPaneViewModel.AudioPlayer_LoadAndPlayFromFile", Category.Debug, Priority.Medium);
 
-            if (m_Player.State != AudioPlayerState.NotReady && m_Player.State != AudioPlayerState.Stopped)
+            if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
                 if (AudioPlaybackStreamKeepAlive)
@@ -1081,9 +1078,9 @@ namespace Tobi.Modules.AudioPane
 
         #region Event / Callbacks
 
-        private void OnEndOfAudioAsset(object sender, EndOfAudioAssetEventArgs e)
+        private void OnAudioPlaybackFinished(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
         {
-            Logger.Log("AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
+            Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             RaisePropertyChanged(() => IsPlaying);
 
@@ -1112,26 +1109,28 @@ namespace Tobi.Modules.AudioPane
                 TreeNode nextNode = State.CurrentTreeNode.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)
                 {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnEndOfAudioAsset", Category.Debug, Priority.Medium);
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
                     EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                 }
             }
         }
 
-        private void OnPlayerStateChanged(object sender, StateChangedEventArgs e)
+        private void OnStateChanged_Player(object sender, AudioPlayer.StateChangedEventArgs e)
         {
-            Logger.Log("AudioPaneViewModel.OnPlayerStateChanged", Category.Debug, Priority.Medium);
-
+            Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
+            
+            resetPeakMeter();
+            
             RaisePropertyChanged(() => IsPlaying);
 
-            if (e.OldState == AudioPlayerState.Playing
-                && (m_Player.State == AudioPlayerState.Paused
-                    || m_Player.State == AudioPlayerState.Stopped))
+            if (e.OldState == AudioPlayer.State.Playing
+                && (m_Player.CurrentState == AudioPlayer.State.Paused
+                    || m_Player.CurrentState == AudioPlayer.State.Stopped))
             {
                 UpdatePeakMeter();
 
-                if (!AudioPlaybackStreamKeepAlive && m_Player.State == AudioPlayerState.Stopped)
+                if (!AudioPlaybackStreamKeepAlive && m_Player.CurrentState == AudioPlayer.State.Stopped)
                 {
                     // stream has been closed already on AudioPlayer side, we're just making sure to reset our cached pointer value.
                     ensurePlaybackStreamIsDead();
@@ -1144,9 +1143,9 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
-            if (m_Player.State == AudioPlayerState.Playing)
+            if (m_Player.CurrentState == AudioPlayer.State.Playing)
             {
-                if (e.OldState == AudioPlayerState.Stopped)
+                if (e.OldState == AudioPlayer.State.Stopped)
                 {
                     PeakOverloadCountCh1 = 0;
                     PeakOverloadCountCh2 = 0;
@@ -1160,10 +1159,10 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private void OnPlayerResetVuMeter(object sender, UpdateVuMeterEventArgs e)
-        {
-            resetVuMeter();
-        }
+        //private void OnPlayerResetVuMeter(object sender, UpdateVuMeterEventArgs e)
+        //{
+        //    resetPeakMeter();
+        //}
 
         #endregion Event / Callbacks
 
