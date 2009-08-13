@@ -34,6 +34,7 @@
         void ZoomSelection();
         void ZoomFitFull();
         void InitGraphicalCommandBindings();
-        void SetSelection(double begin, double end);
+        void SetSelectionTime(double begin, double end);
+        void SetSelectionBytes(long begin, long end);
     }
 }

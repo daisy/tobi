@@ -456,7 +456,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (IsPlaying)
                 {
-                    var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTimePosition);
+                    var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTime);
                     return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
                 }
 
@@ -527,7 +527,7 @@ namespace Tobi.Modules.AudioPane
                 TreeNode subTreeNode = null;
 
                 //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
-                long byteOffset = (long)Math.Round(State.Audio.ConvertMillisecondsToBytes(m_LastPlayHeadTime));
+                long byteOffset = State.Audio.ConvertMillisecondsToBytes(m_LastPlayHeadTime);
 
                 long sumData = 0;
                 long sumDataPrev = 0;
@@ -834,7 +834,7 @@ namespace Tobi.Modules.AudioPane
                         }
                         if (isSeqValid)
                         {
-                            var byteOffset = (long)State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                            var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                             double timeOffset = 0;
                             long sumData = 0;
@@ -843,7 +843,7 @@ namespace Tobi.Modules.AudioPane
                             {
                                 var manangedMediaSeqItem = (ManagedAudioMedia)media;
                                 AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                                sumData += audioData.GetPCMLength();
+                                sumData += AudioLibPCMFormat.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble, (int)audioData.PCMFormat.SampleRate, audioData.PCMFormat.BlockAlign);
                                 if (byteOffset < sumData)
                                 {
                                     timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
@@ -889,7 +889,7 @@ namespace Tobi.Modules.AudioPane
                         double timeOffset = LastPlayHeadTime;
                         if (State.CurrentSubTreeNode != null)
                         {
-                            var byteOffset = (long)State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                            var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                             long sumData = 0;
                             long sumDataPrev = 0;

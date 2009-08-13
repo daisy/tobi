@@ -61,7 +61,7 @@ namespace Tobi.Modules.AudioPane
                         m_PcmFormatOfAudioToInsert = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
 
-                    m_Recorder.StartRecording(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
+                    m_Recorder.StartRecording(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, (int)m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
                 },
                 obj =>
                 {
@@ -101,7 +101,7 @@ namespace Tobi.Modules.AudioPane
                         m_PcmFormatOfAudioToInsert = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
 
-                    m_Recorder.StartListening(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
+                    m_Recorder.StartListening(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, (int) m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
 
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTock();

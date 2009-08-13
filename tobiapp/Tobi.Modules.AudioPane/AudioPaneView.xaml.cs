@@ -278,7 +278,7 @@ namespace Tobi.Modules.AudioPane
                     else
                     {
                         ViewModel.CommandClearSelection.Execute(null);
-                        ViewModel.SelectChunk(p.X*BytesPerPixel);
+                        ViewModel.SelectChunk(Convert.ToInt64(p.X*BytesPerPixel));
                     }
                 }
                 else if (m_MouseClicks == 3)
@@ -856,7 +856,7 @@ namespace Tobi.Modules.AudioPane
                 double interval = 60;
                 // ReSharper restore RedundantAssignment
 
-                interval = ViewModel.State.Audio.ConvertBytesToMilliseconds(BytesPerPixel);
+                interval = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
 
                 if (interval < 60.0)
                 {
@@ -988,7 +988,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = (long)Math.Round(ViewModel.State.Audio.ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime));
+            long bytes = ViewModel.State.Audio.ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime);
 
             double pixels = bytes / BytesPerPixel;
 
