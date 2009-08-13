@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
-using urakawa.media.timing;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -28,26 +28,34 @@ namespace Tobi.Modules.AudioPane
                 get { return PlayStream != null; }
             }
 
-            public double ConvertBytesToMilliseconds(double bytes)
+            public double ConvertBytesToMilliseconds(long bytes)
             {
                 PCMFormatInfo pcm = PcmFormat;
                 if (pcm == null)
                 {
                     pcm = m_viewModel.m_PcmFormatOfAudioToInsert;
                 }
-                return pcm.GetDuration((long)bytes).TimeDeltaAsMillisecondDouble;
-                //return 1000.0 * bytes / ((double)PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0);
+                bytes -= bytes % pcm.BlockAlign;
+
+                return AudioLibPCMFormat.ConvertBytesToTime(bytes, (int)pcm.SampleRate, pcm.BlockAlign);
+
+                //return pcm.GetDuration((long)bytes).TimeDeltaAsMillisecondDouble;
             }
 
-            public double ConvertMillisecondsToBytes(double ms)
+            public long ConvertMillisecondsToBytes(double ms)
             {
                 PCMFormatInfo pcm = PcmFormat;
                 if (pcm == null)
                 {
                     pcm = m_viewModel.m_PcmFormatOfAudioToInsert;
                 }
-                return pcm.GetDataLength(new TimeDelta(ms));
-                //return (ms * PcmFormat.SampleRate * PcmFormat.NumberOfChannels * PcmFormat.BitDepth / 8.0) / 1000.0;
+
+                long bytes = AudioLibPCMFormat.ConvertTimeToBytes(ms, (int)pcm.SampleRate, pcm.BlockAlign);
+
+                //double bytes = pcm.GetDataLength(new TimeDelta(ms));
+
+                bytes -= bytes % pcm.BlockAlign;
+                return bytes;
             }
 
 
@@ -191,16 +199,27 @@ namespace Tobi.Modules.AudioPane
                 m_viewModel = vm;
             }
 
-            public void SetSelection(double begin, double end)
+            public void SetSelectionTime(double begin, double end)
             {
                 SelectionBegin = begin;
                 SelectionEnd = end;
 
                 if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
                 {
-                    m_viewModel.View.SetSelection(
+                    m_viewModel.View.SetSelectionTime(
                         m_viewModel.State.Audio.ConvertMillisecondsToBytes(SelectionBegin),
                         m_viewModel.State.Audio.ConvertMillisecondsToBytes(SelectionEnd));
+                }
+            }
+
+            public void SetSelectionBytes(long begin, long end)
+            {
+                SelectionBegin = m_viewModel.State.Audio.ConvertBytesToMilliseconds(begin);
+                SelectionEnd = m_viewModel.State.Audio.ConvertBytesToMilliseconds(end);
+
+                if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
+                {
+                    m_viewModel.View.SetSelectionBytes(begin, end);
                 }
             }
 

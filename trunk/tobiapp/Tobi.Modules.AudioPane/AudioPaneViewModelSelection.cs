@@ -82,7 +82,7 @@ namespace Tobi.Modules.AudioPane
                         end = tmp;
                     }
 
-                    State.Selection.SetSelection(begin, end);
+                    State.Selection.SetSelectionTime(begin, end);
 
                     if (IsAutoPlay)
                     {
@@ -95,8 +95,8 @@ namespace Tobi.Modules.AudioPane
                         LastPlayHeadTime = begin;
                         IsAutoPlay = true;
 
-                        double bytesFrom = State.Audio.ConvertMillisecondsToBytes(begin);
-                        double bytesTo = State.Audio.ConvertMillisecondsToBytes(end);
+                        long bytesFrom = State.Audio.ConvertMillisecondsToBytes(begin);
+                        long bytesTo = State.Audio.ConvertMillisecondsToBytes(end);
 
                         AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                     }
@@ -141,7 +141,7 @@ namespace Tobi.Modules.AudioPane
                         return;
                     }
 
-                    State.Selection.SetSelection(0, State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
+                    State.Selection.SetSelectionBytes(0, State.Audio.DataLength);
 
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTockTock();
@@ -168,7 +168,7 @@ namespace Tobi.Modules.AudioPane
 
         private double m_SelectionBeginTmp = -1;
 
-        public void SelectChunk(double byteOffset)
+        public void SelectChunk(long byteOffset)
         {
             if (State.CurrentTreeNode == null || !State.Audio.HasContent)
             {
@@ -180,8 +180,6 @@ namespace Tobi.Modules.AudioPane
             //    SelectAll();
             //    return;
             //}
-
-            //long byteOffset = (long)Math.Round(AudioPlayer_ConvertMillisecondsToBytes(time));
 
             long sumData = 0;
             long sumDataPrev = 0;
@@ -195,9 +193,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     //subTreeNode = marker.m_TreeNode;
 
-                    State.Selection.SetSelection(
-                        State.Audio.ConvertBytesToMilliseconds(sumDataPrev),
-                        State.Audio.ConvertBytesToMilliseconds(sumData));
+                    State.Selection.SetSelectionBytes(sumDataPrev, sumData);
 
                     break;
                 }

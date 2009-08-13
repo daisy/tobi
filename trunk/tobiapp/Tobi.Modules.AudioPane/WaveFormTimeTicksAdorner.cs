@@ -114,10 +114,8 @@ namespace Tobi.Modules.AudioPane
             {
                 minorTickInterval_pixels = idealTickInterval;
 
-                minorTickInterval_milliseconds =
-                    m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(
-                                            m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels);
-                minorTickInterval_milliseconds = Math.Round(minorTickInterval_milliseconds);
+                minorTickInterval_milliseconds =Math.Round(
+                    m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
 
                 if (minorTickInterval_milliseconds > 0)
                 {
@@ -170,8 +168,7 @@ namespace Tobi.Modules.AudioPane
 
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
-                    double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX);
-                    double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(bytes);
+                    double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX)));
 
                     var formattedText = new FormattedText(
                         FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
@@ -238,8 +235,7 @@ namespace Tobi.Modules.AudioPane
                     widthChunk = pixelsRight - pixelsLeft;
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
                     {
-                        double bytes = m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft);
-                        double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(bytes);
+                        double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
 
                         var formattedTextDuration = new FormattedText(
                                                 FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
@@ -371,8 +367,8 @@ namespace Tobi.Modules.AudioPane
 
             if (m_MousePosX >= 0)
             {
-                double bytes = m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX);
-                double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(bytes);
+                double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX)));
+
                 var formattedText = new FormattedText(
                     FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
                     m_culture,

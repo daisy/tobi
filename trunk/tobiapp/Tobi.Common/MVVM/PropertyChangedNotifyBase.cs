@@ -132,7 +132,7 @@ namespace Tobi.Common.MVVM
 
                 string msg = String.Format("=== Invalid property name: ({0} / {1}) on {2}", propertyName, Reflect.GetField(() => propertyName).Name, m_ClassInstancePropertyHost.GetType().FullName);
                 //Debug.Fail(msg);
-                Debug.WriteLine(msg);
+                Console.WriteLine(msg);
             }
         }
 
