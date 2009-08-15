@@ -13,13 +13,12 @@ namespace Tobi.Modules.MetadataPane
     public class NotifyingMetadataItem : PropertyChangedNotifyBase
     {
         private Metadata m_Metadata;
-        public ObservableMetadataCollection ParentCollection { get; private set; }
-
+       
         public MetadataDefinition Definition
         {
             get
             {
-                return ParentCollection.Definitions.Find(s => s.Name == this.Name);
+                return SupportedMetadata_Z39862005.GetMetadataDefinition(this.Name, true);
             }
         }
         
@@ -31,20 +30,52 @@ namespace Tobi.Modules.MetadataPane
             }
         }
         //copy constructor
-        public NotifyingMetadataItem(NotifyingMetadataItem notifyingMetadataItem)
-        {
-            m_Metadata = notifyingMetadataItem.UrakawaMetadata;
-            ParentCollection = notifyingMetadataItem.ParentCollection;
-            m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
-            m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
+        public NotifyingMetadataItem(NotifyingMetadataItem notifyingMetadataItem):
+            this(notifyingMetadataItem.UrakawaMetadata)
+        {   
         }
-        public NotifyingMetadataItem(Metadata metadata, ObservableMetadataCollection parentCollection)
+        public NotifyingMetadataItem(Metadata metadata)
         {
             m_Metadata = metadata;
-            ParentCollection = parentCollection;
             m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
             m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
+            Validate();
         }
+
+        private bool m_IsValid;
+        public bool IsValid
+        {
+            get
+            {
+                return m_IsValid;
+            } 
+            set
+            {
+                if (m_IsValid != value)
+                {
+                    m_IsValid = value;
+                    RaisePropertyChanged(() => IsValid);
+                }
+            }
+        }
+        public bool Validate()
+        {
+            MetadataValidator validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
+            IsValid = validator.ValidateItem(UrakawaMetadata);
+            if (IsValid == false && validator.Errors.Count > 0)
+            {
+                MetadataValidationError error = validator.Errors[validator.Errors.Count - 1];
+                System.Diagnostics.Debug.Assert(error is MetadataValidationFormatError);
+                ValidationError = (MetadataValidationFormatError) error;
+            }
+            else
+            {
+                ValidationError = null;
+            }
+            return IsValid;    
+        }
+        public MetadataValidationFormatError ValidationError { get; private set; }
+
         ~NotifyingMetadataItem()
         {
             RemoveEvents();
@@ -154,7 +185,7 @@ namespace Tobi.Modules.MetadataPane
         /// <param name="metadata"></param>
         private void _addItem(Metadata metadata)
         {
-            this.Add(new NotifyingMetadataItem(metadata, this));       
+            this.Add(new NotifyingMetadataItem(metadata));       
         }
     }
 }
