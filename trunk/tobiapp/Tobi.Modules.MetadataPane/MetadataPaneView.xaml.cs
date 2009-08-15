@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Controls.Primitives;
 using Microsoft.Practices.Composite.Logging;
 using System.Windows;
@@ -45,95 +46,7 @@ namespace Tobi.Modules.MetadataPane
         {
             ViewModel.AddEmptyMetadata();
         }
-
-        //fake data model interaction to test notification bindings
-        private void Fake_Button_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.CreateFakeData();
-        }
-        private void Data_Model_Report_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(ViewModel.GetDebugStringForMetaData());
-        }
         
-        private bool findNext()
-        {
-            /*
-            DataGridCellInfo selectedCell = null;
-            bool startingFromSelection = false;
-            if (MetadataGrid.SelectedCells.Count > 0)
-            {
-                selectedCell = MetadataGrid.SelectedCells[0];
-                startingFromSelection = true;
-            }
-            MetadataGrid.SelectedCells.Clear();
-
-            if (selection != null)
-            {
-                while (enumerator.Current != selection)
-                {
-                    if (!enumerator.MoveNext())
-                    {
-                        //go to the beginning of the collection
-                        enumerator.Reset();
-                        enumerator.MoveNext();
-                        startingFromSelection = false;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                //go to the beginning of the collection
-                enumerator.Reset();
-                enumerator.MoveNext();
-                startingFromSelection = false;
-            }
-            if (startingFromSelection)
-            {
-                if (!enumerator.MoveNext())
-                {
-                    enumerator.Reset();
-                    enumerator.MoveNext();
-                }
-            }
-
-            bool found = false;
-            do
-            {
-                if (enumerator.Current.Name.ToLower().Contains(LookupField.Text.ToLower()))
-                {
-                    found = true;
-                    ViewModel.SelectedMetadata = enumerator.Current;
-                    break;
-                }
-            } while (enumerator.MoveNext());
-
-            //restore the selection
-            if (!found) ViewModel.SelectedMetadata = selection;
-            return found;
-            */
-            return false;
-        }
-        private bool findPrevious()
-        {
-            return false;
-        }
-        private void Lookup_Button_Click(object sender, RoutedEventArgs e)
-        {
-            /*
-            if (LookupField.Text == "")
-            {
-                MessageBox.Show(string.Format("Please enter all or part of a metadata field name."));
-                return;
-            }
-            
-            if (findNext() == false)
-            {
-                MessageBox.Show(string.Format("{0} not found", LookupField.Text));
-            }
-             * */
-        }
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
             NotifyingMetadataItem selected = ViewModel.SelectedMetadata;
@@ -145,11 +58,7 @@ namespace Tobi.Modules.MetadataPane
             ViewModel.ValidateMetadata();
         }
 
-        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-        }
-       
+        
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
@@ -170,23 +79,85 @@ namespace Tobi.Modules.MetadataPane
                 ViewModel.SelectedMetadata.Name = (string)e.AddedItems[0];
         }
 
-        private void DockPanel_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            /*
-            //search for the next occurrence of the lookup text
-            if (e.Key == System.Windows.Input.Key.F3)
+       
+        private void MetadataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {   
+            if (e.Row != null && e.Row.Item != null)
             {
-                if (LookupField.Text == "")
-                {
-                    MessageBox.Show(string.Format("Please enter all or part of a metadata field name."));
-                    return;
-                }
-                if (findNext() == false)
-                    MessageBox.Show("No more occurrences found");
-            }*/
+                NotifyingMetadataItem item = (NotifyingMetadataItem) e.Row.Item;
+                item.Validate();
+            }
+        }
+    }
+    public class OccurrenceConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            MetadataOccurrence occurrence = (MetadataOccurrence) value;
+            if (occurrence == MetadataOccurrence.Required) return Visibility.Hidden;
+            else return Visibility.Visible;
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
+    public class RemoveReadOnlyErrorsConverter : IValueConverter
+    {
+        //don't include errors about read-only metadata items
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
+            ObservableCollection<MetadataValidationError> sourceList =
+                (ObservableCollection<MetadataValidationError>) value;
+            foreach (MetadataValidationError error in sourceList)
+            {
+                if (error.Definition.IsReadOnly == false)
+                    errors.Add(error);
+            }
+            return errors;
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
+    public class DescriptiveErrorTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+            MetadataValidationError error = (MetadataValidationError) value;
+            string description = null;
+            if (error is MetadataValidationFormatError)
+            {
+                description = string.Format("{0} must be {1}.", 
+                    error.Definition.Name, 
+                    ((MetadataValidationFormatError)error).Hint);    
+            }
+            else if (error is MetadataValidationMissingItemError)
+            {
+                description = string.Format("Missing {0}", error.Definition.Name);
+            }
+            else if (error is MetadataValidationDuplicateItemError)
+            {
+                description = string.Format("Duplicate of {0} not allowed.", error.Definition.Name);
+            }
+            else
+            {
+                description = string.Format("Unspecified error in {0}.", error.Definition.Name);
+            }
+            return description;            
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
     }
 }

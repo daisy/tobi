@@ -5,8 +5,7 @@
     xmlns:local="clr-namespace:Tobi.Modules.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
-    LastChildFill="True" Loaded="DockPanel_Loaded"
-    KeyUp="DockPanel_KeyUp">
+    LastChildFill="True">
 
 
     <DockPanel.Resources>
@@ -16,50 +15,44 @@
             <Setter Property="Margin" Value="10"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
+        
         <Style TargetType="{x:Type Button}" x:Key="DeleteButtonStyle">
-            <Setter Property="Width" Value="10"/>
-            <Setter Property="Height" Value="10"/>
-            <Setter Property="Background" Value="Red"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Background" Value="LightPink"/>
         </Style>
-        <!--Basic Row Validation Error Template-->
-        <ControlTemplate x:Key="BasicRowValidationErrorTemplate">
-            <DockPanel LastChildFill="True">
-                <Border BorderBrush="Red" BorderThickness="2">
-
-                    <StackPanel Orientation="Vertical">
-                        <AdornedElementPlaceholder Name="adornerPlaceholder"/>
-                        <TextBlock Background="Red" Text="{Binding RelativeSource={RelativeSource
-                                 FindAncestor, AncestorType={x:Type toolkit:DataGridRow}},
-                                 Path=(Validation.Errors)[0].ErrorContent}"/>
-                    </StackPanel>
-                </Border>
-            </DockPanel>
-        </ControlTemplate>
-
-        <!--Default Row Style-->
-        <Style x:Key="defaultRowStyle" TargetType="{x:Type toolkit:DataGridRow}">
+        
+        <Style x:Key="DefaultDataGridStyle" TargetType="{x:Type toolkit:DataGrid}">
+            <Setter Property="HorizontalGridLinesBrush" Value="Black"/>
+        </Style> 
+        
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type toolkit:DataGridRow}">
             <Setter Property="MaxHeight" Value="300" />
-            <Setter Property="Validation.ErrorTemplate" Value="{StaticResource BasicRowValidationErrorTemplate}" />
             <Style.Triggers>
                 <Trigger Property="IsEditing" Value="true">
-                    <Setter Property="Background" Value="Pink"/>
+                    <Setter Property="Background" Value="LightBlue"/>
                 </Trigger>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    <Setter Property="Background" 
+                            Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="ErrorTextStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="DarkRed"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
         
+        <local:OccurrenceConverter x:Key="occurrenceConverter"/>
+        <local:RemoveReadOnlyErrorsConverter x:Key="removeReadOnlyErrorsConverter"/>
+        <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
     </DockPanel.Resources>
 
     <Grid DockPanel.Dock="Bottom">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
-            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -72,67 +65,46 @@
             </Button>
         </StackPanel>
         <Button Click="Validate_Metadata_Click" 
-                Grid.Column="2" 
+                Grid.Column="1" 
                 Grid.Row="0">
             Validate
         </Button>
 
-        <!--<TextBox x:Name="LookupField" 
+        <ListBox ItemsSource="{Binding ValidationErrors, 
+                                    Converter={StaticResource removeReadOnlyErrorsConverter}}"
                  Grid.Row="1" 
                  Grid.Column="0" 
-                 Grid.ColumnSpan="2" 
-                 Height="20"/>
-        <Button  Click="Lookup_Button_Click" 
-                 Grid.Column="2" 
-                 Grid.Row="1">
-            Lookup
-        </Button>
-        -->
+                 Grid.ColumnSpan="2" MinHeight="100"
+                 >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=., 
+                        Converter={StaticResource descriptiveErrorTextConverter}}"
+                    />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
-        <Button Click="Fake_Button_Click"
-                Grid.Row="1"
-                Grid.Column="0">
-            Generate fake data</Button>
-        <Button Click="Data_Model_Report_Click"
-                Grid.Row="1"
-                Grid.Column="1">
-            View data model metadata</Button>
-        
-        <ListBox ItemsSource="{Binding ValidationErrors}"
-                 Grid.Row="2" 
-                 Grid.Column="0" 
-                 Grid.ColumnSpan="3" MinHeight="100"/>
-        
-        
-        
+
+
     </Grid>
 
-
-    <!--<StackPanel Background="LightCoral">
-            <TextBlock>Testing only:</TextBlock>
-            
-        </StackPanel>
-    </StackPanel>-->
-
     <toolkit:DataGrid
+        Style="{StaticResource DefaultDataGridStyle}"
         x:Name="MetadataGrid"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         ItemsSource="{Binding Metadatas, Mode=OneWay}"
         AutoGenerateColumns="False"
         SelectionMode="Single"
-        RowStyle="{StaticResource defaultRowStyle}"
+        RowStyle="{StaticResource DefaultRowStyle}"
         RowDetailsVisibilityMode="VisibleWhenSelected"
         SelectionChanged="DataGrid_SelectionChanged"
         AlternationCount="2"
         ScrollViewer.CanContentScroll="True"
-        ScrollViewer.VerticalScrollBarVisibility="Auto">
-        
-        
-        <toolkit:DataGrid.RowValidationRules>
-            <local:MetadataValidationRule/>
-        </toolkit:DataGrid.RowValidationRules>
-        
+        ScrollViewer.VerticalScrollBarVisibility="Auto"
+        RowEditEnding="MetadataGrid_RowEditEnding">
+      
         <toolkit:DataGrid.RowDetailsTemplate>
             <DataTemplate>
                 <TextBlock Text="{Binding
@@ -149,8 +121,9 @@
                                             IsReadOnly="False">
                 <toolkit:DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding Name}"/> 
                     </DataTemplate>
+                    
                 </toolkit:DataGridTemplateColumn.CellTemplate>
                 
                 <toolkit:DataGridTemplateColumn.CellEditingTemplate>
@@ -176,7 +149,19 @@
                     <DataTemplate>
                         <StackPanel>
                             <TextBlock x:Name="textBlock" Text="{Binding Content}"/>
+                            <TextBlock x:Name="errorText"/>
                         </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsValid}" Value="false">
+                                <Setter TargetName="errorText" 
+                                        Property="TextBlock.Text" 
+                                        Value="{Binding ValidationError,
+                                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+                                <Setter TargetName="errorText"
+                                        Property="TextBlock.Style"
+                                        Value="{StaticResource ErrorTextStyle}"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </toolkit:DataGridTemplateColumn.CellTemplate>
                 <toolkit:DataGridTemplateColumn.CellEditingTemplate>
@@ -189,7 +174,13 @@
             <toolkit:DataGridTemplateColumn>
                 <toolkit:DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <Button Content="X" Click="Remove_Metadata_Button_Click" Style="{StaticResource DeleteButtonStyle}"/>
+                        <!-- can only delete non-required metadata -->
+                        <Button 
+                            Visibility="{Binding Definition.Occurrence, 
+                                        Converter={StaticResource occurrenceConverter}}" 
+                            Content="Delete" 
+                            Click="Remove_Metadata_Button_Click" 
+                            Style="{StaticResource DeleteButtonStyle}"/>
                     </DataTemplate>
                 </toolkit:DataGridTemplateColumn.CellTemplate>
             </toolkit:DataGridTemplateColumn>
