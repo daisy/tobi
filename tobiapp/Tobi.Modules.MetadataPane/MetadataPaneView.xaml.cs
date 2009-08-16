@@ -45,6 +45,12 @@ namespace Tobi.Modules.MetadataPane
         private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.AddEmptyMetadata();
+            if (ViewModel.Metadatas.Count > 0)
+            {
+                MetadataGrid.SelectedItem = ViewModel.Metadatas[ViewModel.Metadatas.Count - 1];
+                MetadataGrid.ScrollIntoView(MetadataGrid.SelectedItem);
+                //TODO: put the user in "edit" mode so they see a combo box
+            }
         }
         
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
@@ -53,9 +59,11 @@ namespace Tobi.Modules.MetadataPane
             ViewModel.RemoveMetadata(selected);
         }
 
+        
         private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.ValidateMetadata();
+            
         }
 
         
@@ -76,7 +84,10 @@ namespace Tobi.Modules.MetadataPane
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
+            {
                 ViewModel.SelectedMetadata.Name = (string)e.AddedItems[0];
+                ViewModel.SelectedMetadata.Validate();
+            }
         }
 
        
@@ -88,14 +99,20 @@ namespace Tobi.Modules.MetadataPane
                 item.Validate();
             }
         }
+
+        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ValidateMetadata();
+        }
     }
     public class OccurrenceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            MetadataOccurrence occurrence = (MetadataOccurrence) value;
-            if (occurrence == MetadataOccurrence.Required) return Visibility.Hidden;
-            else return Visibility.Visible;
+            if (value == null) return false;
+            NotifyingMetadataItem item = (NotifyingMetadataItem) value;
+            if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required) return false;
+            else return true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -117,6 +134,7 @@ namespace Tobi.Modules.MetadataPane
                 if (error.Definition.IsReadOnly == false)
                     errors.Add(error);
             }
+
             return errors;
         }
 
@@ -152,6 +170,24 @@ namespace Tobi.Modules.MetadataPane
                 description = string.Format("Unspecified error in {0}.", error.Definition.Name);
             }
             return description;            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
+    public class ValidationStatusTextConverter : IValueConverter
+    {
+        private static string NoErrorsFound = "All metadata is valid.";
+        private static string ErrorsFound = "Please correct the following errors:";
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null || (int)value == 0)
+                return NoErrorsFound;
+            else
+                return ErrorsFound;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

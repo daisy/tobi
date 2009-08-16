@@ -185,7 +185,7 @@ namespace Tobi.Modules.MetadataPane
             list.Insert(list.Count, metadata);
         }
 
-
+        
         /// <summary>
         /// validate all metadata
         /// </summary>
@@ -197,6 +197,7 @@ namespace Tobi.Modules.MetadataPane
             List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
             bool result = m_Validator.Validate(metadatas);
             RaisePropertyChanged(() => ValidationErrors);
+            
             return result;
         }
 
@@ -213,7 +214,22 @@ namespace Tobi.Modules.MetadataPane
             return data;
         }
 
-        public NotifyingMetadataItem SelectedMetadata { get; set;}
+        private NotifyingMetadataItem m_SelectedMetadata;
+        public NotifyingMetadataItem SelectedMetadata 
+        { 
+            get
+            {
+                return m_SelectedMetadata;    
+            }
+            set
+            {
+                if (m_SelectedMetadata != value)
+                {
+                    m_SelectedMetadata = value;
+                    RaisePropertyChanged(() => SelectedMetadata);
+                }
+            }
+        }
         /// <summary>
         /// based on the existing metadata, return a list of metadata fields available
         /// for addition
