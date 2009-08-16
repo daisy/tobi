@@ -74,7 +74,23 @@ namespace Tobi.Modules.MetadataPane
             }
             return IsValid;    
         }
-        public MetadataValidationFormatError ValidationError { get; private set; }
+
+        private MetadataValidationFormatError m_ValidationError;
+        public MetadataValidationFormatError ValidationError 
+        { 
+            get
+            {
+                return m_ValidationError;
+            }
+            private set
+            {
+                if (m_ValidationError != value)
+                {
+                    m_ValidationError = value;
+                    RaisePropertyChanged(() => ValidationError);
+                }
+            }
+        }
 
         ~NotifyingMetadataItem()
         {
