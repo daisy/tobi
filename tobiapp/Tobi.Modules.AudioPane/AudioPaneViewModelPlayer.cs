@@ -22,6 +22,10 @@ namespace Tobi.Modules.AudioPane
     {
         #region Audio Player
 
+        public int AudioPlayer_RefreshInterval
+        {
+            get { return m_Player.RefreshInterval; }
+        }
 
         private void initializeCommands_Player()
         {
@@ -468,7 +472,7 @@ namespace Tobi.Modules.AudioPane
                         AudioPlayer_Stop();
                     }
 
-                    m_Player.SetDevice(GetWindowsFormsHookControl(), value);
+                    m_Player.SetOutputDevice(GetWindowsFormsHookControl(), value);
                     //m_Player.OutputDevice = value;
 
                     if (time >= 0 && State.Audio.HasContent)
@@ -619,6 +623,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.RefreshUI_WaveFormPlayHead();
                 }
+                RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
             }
             else
             {
@@ -1036,16 +1041,13 @@ namespace Tobi.Modules.AudioPane
             loadAndPlay();
         }
 
+        [NotifyDependsOn("PcmFormatAlt")]
         [NotifyDependsOn("PcmFormat")]
         public String PcmFormatString
         {
             get
             {
-                PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
-                if (pcmInfo == null)
-                {
-                    pcmInfo = m_PcmFormatOfAudioToInsert;
-                }
+                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
                 return (pcmInfo != null ? pcmInfo.ToString() : "");
             }
         }

@@ -30,32 +30,16 @@ namespace Tobi.Modules.AudioPane
 
             public double ConvertBytesToMilliseconds(long bytes)
             {
-                PCMFormatInfo pcm = PcmFormat;
-                if (pcm == null)
-                {
-                    pcm = m_viewModel.m_PcmFormatOfAudioToInsert;
-                }
-                bytes -= bytes % pcm.BlockAlign;
+                PCMFormatInfo pcmInfo = GetCurrentPcmFormat();
 
-                return AudioLibPCMFormat.ConvertBytesToTime(bytes, (int)pcm.SampleRate, pcm.BlockAlign);
-
-                //return pcm.GetDuration((long)bytes).TimeDeltaAsMillisecondDouble;
+                return AudioLibPCMFormat.ConvertBytesToTime(bytes, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
             }
 
             public long ConvertMillisecondsToBytes(double ms)
             {
-                PCMFormatInfo pcm = PcmFormat;
-                if (pcm == null)
-                {
-                    pcm = m_viewModel.m_PcmFormatOfAudioToInsert;
-                }
+                PCMFormatInfo pcmInfo = GetCurrentPcmFormat();
 
-                long bytes = AudioLibPCMFormat.ConvertTimeToBytes(ms, (int)pcm.SampleRate, pcm.BlockAlign);
-
-                //double bytes = pcm.GetDataLength(new TimeDelta(ms));
-
-                bytes -= bytes % pcm.BlockAlign;
-                return bytes;
+                return AudioLibPCMFormat.ConvertTimeToBytes(ms, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
             }
 
 
@@ -140,6 +124,28 @@ namespace Tobi.Modules.AudioPane
                 }
             }
 
+            // Used when recording or monitoring (no loaded stream data yet, just the PCM information)
+            private PCMFormatInfo m_PcmFormatAlt;
+            public PCMFormatInfo PcmFormatAlt
+            {
+                get
+                {
+                    return m_PcmFormatAlt;
+                }
+                set
+                {
+                    if (m_PcmFormatAlt == value) return;
+                    m_PcmFormatAlt = value;
+                    m_notifier.RaisePropertyChanged(() => PcmFormatAlt);
+                }
+            }
+
+            public PCMFormatInfo GetCurrentPcmFormat()
+            {
+                return PcmFormat ?? PcmFormatAlt;
+            }
+
+
             // The stream offset in bytes where the audio playback should stop.
             // By default: it is the DataLength, but it can be changed when dealing with selections and preview-playback modes.
             private long m_EndOffsetOfPlayStream;
@@ -206,9 +212,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
                 {
-                    m_viewModel.View.SetSelectionTime(
-                        m_viewModel.State.Audio.ConvertMillisecondsToBytes(SelectionBegin),
-                        m_viewModel.State.Audio.ConvertMillisecondsToBytes(SelectionEnd));
+                    m_viewModel.View.SetSelectionTime(SelectionBegin, SelectionEnd);
                 }
             }
 

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -27,9 +29,6 @@ namespace Tobi.Modules.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
 
                     m_Recorder.StopRecording();
-
-                    // m_PcmFormatOfAudioToInsert is set  in _Start().
-                    openFile(m_Recorder.RecordedFilePath, true);
                 },
                 obj => !IsWaveFormLoading && IsRecording);
 
@@ -48,8 +47,10 @@ namespace Tobi.Modules.AudioPane
 
                     if (session.DocumentProject == null)
                     {
-                        setRecordingDirectory(Directory.GetCurrentDirectory());
-                        m_PcmFormatOfAudioToInsert = new PCMFormatInfo();
+                        State.ResetAll();
+
+                        m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
+                        State.Audio.PcmFormatAlt = new PCMFormatInfo();
                     }
                     else
                     {
@@ -57,11 +58,12 @@ namespace Tobi.Modules.AudioPane
                         {
                             return;
                         }
-                        Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        m_PcmFormatOfAudioToInsert = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
-                    }
 
-                    m_Recorder.StartRecording(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, (int)m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
+                        Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                    }
+                    
+                    m_Recorder.StartRecording(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.NumberOfChannels, (int)State.Audio.PcmFormatAlt.SampleRate, State.Audio.PcmFormatAlt.BitDepth));
                 },
                 obj =>
                 {
@@ -91,17 +93,21 @@ namespace Tobi.Modules.AudioPane
 
                     if (session.DocumentProject == null)
                     {
-                        setRecordingDirectory(Directory.GetCurrentDirectory());
+                        State.ResetAll();
 
-                        m_PcmFormatOfAudioToInsert = IsAudioLoaded ? State.Audio.PcmFormat : new PCMFormatInfo();
+                        m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
+                        State.Audio.PcmFormatAlt = new PCMFormatInfo();
+
+                        //m_PcmFormatOfAudioToInsert = IsAudioLoaded ? State.Audio.PcmFormat : new PCMFormatInfo();
+                        //m_Recorder.InputDevice.Capture.Caps.Format44KhzMono16Bit
                     }
                     else
                     {
                         Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        m_PcmFormatOfAudioToInsert = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
 
-                    m_Recorder.StartListening(new AudioLibPCMFormat(m_PcmFormatOfAudioToInsert.NumberOfChannels, (int) m_PcmFormatOfAudioToInsert.SampleRate, m_PcmFormatOfAudioToInsert.BitDepth));
+                    m_Recorder.StartMonitoring(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.NumberOfChannels, (int)State.Audio.PcmFormatAlt.SampleRate, State.Audio.PcmFormatAlt.BitDepth));
 
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTock();
@@ -121,7 +127,7 @@ namespace Tobi.Modules.AudioPane
 
                     m_Recorder.StopRecording();
 
-                    m_PcmFormatOfAudioToInsert = null;
+                    State.Audio.PcmFormatAlt = null;
 
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTockTock();
@@ -131,15 +137,6 @@ namespace Tobi.Modules.AudioPane
             shellPresenter.RegisterRichCommand(CommandStopMonitor);
 
             //
-        }
-
-        private void setRecordingDirectory(string path)
-        {
-            m_Recorder.AssetsDirectory = path;
-            if (!Directory.Exists(m_Recorder.AssetsDirectory))
-            {
-                Directory.CreateDirectory(m_Recorder.AssetsDirectory);
-            }
         }
 
         private AudioRecorder m_Recorder;
@@ -164,6 +161,18 @@ namespace Tobi.Modules.AudioPane
                     m_Recorder.InputDevice = value;
                 }
             }
+        }
+
+        private void OnAudioRecordingFinished(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => OnAudioRecordingFinished(sender, e)));
+                return;
+            }
+
+            openFile(m_Recorder.RecordedFilePath, true);
         }
 
         // ReSharper disable MemberCanBeMadeStatic.Local
@@ -229,9 +238,6 @@ namespace Tobi.Modules.AudioPane
                 return m_Recorder.CurrentState == AudioRecorder.State.Monitoring;
             }
         }
-
-        public PCMFormatInfo m_PcmFormatOfAudioToInsert;
-
 
         //private void OnRecorderResetVuMeter(object sender, UpdateVuMeterEventArgs e)
         //{
