@@ -566,8 +566,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             PresentationOptions:Freeze="true"
                                StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="Red" Offset="0.0" />
-            <GradientStop Color="Orange" Offset="0.25" />
-            <!-- GradientStop Color="Yellow" Offset="0.40" / -->
+            <GradientStop Color="Orange" Offset="0.15" />
+            <GradientStop Color="Yellow" Offset="0.20" />
             <GradientStop Color="LimeGreen" Offset="0.65" />
             <GradientStop Color="Green" Offset="1.0" />
           </LinearGradientBrush>

@@ -101,6 +101,7 @@ namespace Tobi.Modules.AudioPane
             else
             {
                 ViewModel.IsWaveFormLoading = true;
+
                 loadWaveForm(false, widthMagnified, heightMagnified, wasPlaying, play, realBytesPerPixel);
 
                 ViewModel.IsWaveFormLoading = false;

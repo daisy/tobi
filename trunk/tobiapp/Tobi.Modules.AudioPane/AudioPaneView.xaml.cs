@@ -581,11 +581,7 @@ namespace Tobi.Modules.AudioPane
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
                 return;
             }
-            PCMFormatInfo pcmInfo = ViewModel.State.Audio.PcmFormat;
-            if (pcmInfo == null)
-            {
-                pcmInfo = ViewModel.m_PcmFormatOfAudioToInsert;
-            }
+            PCMFormatInfo pcmInfo = ViewModel.State.Audio.GetCurrentPcmFormat();
 
             double barWidth = PeakMeterCanvas.ActualWidth;
             if (pcmInfo.NumberOfChannels > 1)
@@ -852,15 +848,13 @@ namespace Tobi.Modules.AudioPane
                 m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
                 m_PlaybackTimer.Tick += OnPlaybackTimerTick;
 
-                // ReSharper disable RedundantAssignment
-                double interval = 60;
-                // ReSharper restore RedundantAssignment
+                double interval = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
 
-                interval = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
+                ViewModel.Logger.Log("WaveFormTimer REFRESH interval: " + interval, Category.Debug, Priority.Medium);
 
-                if (interval < 60.0)
+                if (interval < ViewModel.AudioPlayer_RefreshInterval)
                 {
-                    interval = 60;
+                    interval = ViewModel.AudioPlayer_RefreshInterval;
                 }
                 m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
             }

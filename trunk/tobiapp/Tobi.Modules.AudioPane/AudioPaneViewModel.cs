@@ -87,7 +87,7 @@ namespace Tobi.Modules.AudioPane
             Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
 
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
-            m_Player.SetDevice(GetWindowsFormsHookControl(), @"fakename");
+            m_Player.SetOutputDevice(GetWindowsFormsHookControl(), @"fakename");
             m_Player.StateChanged += OnStateChanged_Player;
             m_Player.AudioPlaybackFinished += OnAudioPlaybackFinished;
             
@@ -96,6 +96,7 @@ namespace Tobi.Modules.AudioPane
             m_Recorder = new AudioRecorder();
             m_Recorder.SetDevice(@"fakename");
             m_Recorder.StateChanged += OnStateChanged_Recorder;
+            m_Recorder.AudioRecordingFinished += OnAudioRecordingFinished;
             
             //m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
 
@@ -163,6 +164,16 @@ namespace Tobi.Modules.AudioPane
 
             State.CurrentSubTreeNode = node;
 
+            RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
+        }
+
+        private void RefreshWaveFormChunkMarkersForCurrentSubTreeNode(bool placePlayHead)
+        {
+            if (!State.Audio.HasContent || State.CurrentSubTreeNode == null)
+            {
+                return;
+            }
+
             long sumData = 0;
             long sumDataPrev = 0;
             foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
@@ -172,7 +183,10 @@ namespace Tobi.Modules.AudioPane
                 {
                     sumData += marker.m_LocalStreamDataLength;
 
-                    LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(sumDataPrev);
+                    if (placePlayHead)
+                    {
+                        LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(sumDataPrev);
+                    }
 
                     if (View != null)
                     {
@@ -314,7 +328,7 @@ namespace Tobi.Modules.AudioPane
             if (project != null)
             {
                 project.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
-                setRecordingDirectory(project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath);
+                m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
             }
         }
 
@@ -427,7 +441,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return m_Recorder.TimeOfAsset;
+                return m_Recorder.CurrentDuration;
             }
         }
 
@@ -483,6 +497,7 @@ namespace Tobi.Modules.AudioPane
             {
                 if (m_LastPlayHeadTime == value)
                 {
+                    RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
                     return;
                 }
 
@@ -628,12 +643,9 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
             PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
-            PCMFormatInfo pcm = State.Audio.PcmFormat;
-            if (pcm == null)
-            {
-                pcm = m_PcmFormatOfAudioToInsert;
-            }
-            if (pcm.NumberOfChannels > 1)
+
+            PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
+            if (pcmInfo.NumberOfChannels > 1)
             {
                 PeakMeterBarDataCh2.ValueDb = m_PeakMeterValues[1];
             }
@@ -685,11 +697,9 @@ namespace Tobi.Modules.AudioPane
             if (e.PeakDb != null && e.PeakDb.Length > 0)
             {
                 m_PeakMeterValues[0] = e.PeakDb[0];
-                PCMFormatInfo pcmInfo = State.Audio.PcmFormat;
-                if (pcmInfo == null)
-                {
-                    pcmInfo = m_PcmFormatOfAudioToInsert;
-                }
+
+                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
+
                 if (pcmInfo.NumberOfChannels > 1)
                 {
                     m_PeakMeterValues[1] = e.PeakDb[1];
@@ -776,17 +786,19 @@ namespace Tobi.Modules.AudioPane
 
             if (insert)
             {
-                if (m_PcmFormatOfAudioToInsert == null)
+                if (State.Audio.PcmFormatAlt == null)
                 {
                     Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     try
                     {
-                        m_PcmFormatOfAudioToInsert = PCMDataInfo.ParseRiffWaveHeader(fileStream);
+                        State.Audio.PcmFormatAlt = PCMDataInfo.ParseRiffWaveHeader(fileStream);
                     }
                     finally
                     {
                         fileStream.Close();
                     }
+
+                    RaisePropertyChanged("PcmFormat");
                 }
                 //var presenter = Container.Resolve<IShellPresenter>();
                 //presenter.PlayAudioCueTockTock();
@@ -798,7 +810,7 @@ namespace Tobi.Modules.AudioPane
 
                 if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
                 {
-                    m_PcmFormatOfAudioToInsert = null;
+                    State.Audio.PcmFormatAlt = null;
                     return;
                 }
 
@@ -808,7 +820,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (State.CurrentTreeNode == null)
                     {
-                        m_PcmFormatOfAudioToInsert = null;
+                        State.Audio.PcmFormatAlt = null;
                         return;
                     }
 
@@ -857,7 +869,7 @@ namespace Tobi.Modules.AudioPane
                                     {
                                         Debug.Fail("This should never happen !!!");
                                         //recordingStream.Close();
-                                        m_PcmFormatOfAudioToInsert = null;
+                                        State.Audio.PcmFormatAlt = null;
                                         return;
                                     }
 
@@ -906,7 +918,7 @@ namespace Tobi.Modules.AudioPane
                                     {
                                         Debug.Fail("This should never happen !!!");
                                         //recordingStream.Close();
-                                        m_PcmFormatOfAudioToInsert = null;
+                                        State.Audio.PcmFormatAlt = null;
                                         return;
                                     }
 
@@ -926,7 +938,7 @@ namespace Tobi.Modules.AudioPane
                         {
                             Debug.Fail("This should never happen !!!");
                             //recordingStream.Close();
-                            m_PcmFormatOfAudioToInsert = null;
+                            State.Audio.PcmFormatAlt = null;
                             return;
                         }
 
@@ -956,7 +968,7 @@ namespace Tobi.Modules.AudioPane
                     AudioPlayer_LoadAndPlayFromFile(filePath);
                 }
 
-                m_PcmFormatOfAudioToInsert = null;
+                State.Audio.PcmFormatAlt = null;
             }
             else
             {
