@@ -243,10 +243,12 @@ namespace Tobi.Modules.AudioPane
 
                     AudioPlayer_Stop();
 
-                    long prev = -1;
-                    long begin = 0;
+                    long bytesLeftPrevious = -1;
 
-                    long bytes = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                    long bytesLeft = 0;
+                    long bytesRight = 0;
+
+                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                     int index = -1;
 
@@ -254,11 +256,11 @@ namespace Tobi.Modules.AudioPane
                     {
                         index++;
 
-                        long end = (begin + marker.m_LocalStreamDataLength);
-                        if (bytes >= begin && bytes < end
-                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytes >= end)
+                        bytesRight = (bytesLeft + marker.m_LocalStreamDataLength);
+                        if (bytesPlayHead >= bytesLeft && bytesPlayHead < bytesRight
+                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesPlayHead >= bytesRight)
                         {
-                            if (prev == -1)
+                            if (bytesLeftPrevious == -1)
                             {
                                 if (IsAutoPlay)
                                 {
@@ -268,7 +270,7 @@ namespace Tobi.Modules.AudioPane
                                     }
                                 }
 
-                                LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(begin);
+                                LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
                                 SystemSounds.Beep.Play();
                                 break;
                             }
@@ -281,11 +283,11 @@ namespace Tobi.Modules.AudioPane
                                 }
                             }
 
-                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(prev);
+                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
                             break;
                         }
-                        prev = begin;
-                        begin += marker.m_LocalStreamDataLength;
+                        bytesLeftPrevious = bytesLeft;
+                        bytesLeft += marker.m_LocalStreamDataLength;
                     }
                 },
                 obj => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
@@ -303,9 +305,10 @@ namespace Tobi.Modules.AudioPane
 
                     AudioPlayer_Stop();
 
-                    long begin = 0;
+                    long bytesLeft = 0;
+                    long bytesRight = 0;
 
-                    long bytes = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                     bool found = false;
 
@@ -324,18 +327,18 @@ namespace Tobi.Modules.AudioPane
                                 }
                             }
 
-                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(begin);
+                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
                             return;
                         }
 
-                        long end = (begin + marker.m_LocalStreamDataLength);
-                        if (bytes >= begin && bytes < end
-                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytes >= end)
+                        bytesRight = (bytesLeft + marker.m_LocalStreamDataLength);
+                        if (bytesPlayHead >= bytesLeft && bytesPlayHead < bytesRight
+                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesPlayHead >= bytesRight)
                         {
                             found = true;
                         }
 
-                        begin += marker.m_LocalStreamDataLength;
+                        bytesLeft += marker.m_LocalStreamDataLength;
                     }
 
                     if (!found)
@@ -572,26 +575,26 @@ namespace Tobi.Modules.AudioPane
 
             long byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
-            long sumData = 0;
-            long sumDataPrev = 0;
+            long bytesRight = 0;
+            long bytesLeft = 0;
             int index = -1;
             TreeNode subTreeNode = null;
             foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
             {
                 index++;
-                sumData += marker.m_LocalStreamDataLength;
-                if (byteOffset < sumData
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
+                bytesRight += marker.m_LocalStreamDataLength;
+                if (byteOffset < bytesRight
+                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                 {
                     subTreeNode = marker.m_TreeNode;
                     break;
                 }
-                sumDataPrev = sumData;
+                bytesLeft = bytesRight;
             }
 
             if (View != null) // && subTreeNode != CurrentSubTreeNode
             {
-                View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
             }
         }
 
@@ -763,6 +766,14 @@ namespace Tobi.Modules.AudioPane
                 AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
             }
         }
+
+        struct StateToRestore
+        {
+            public double SelectionBegin;
+            public double SelectionEnd;
+            public double LastPlayHeadTime;
+        }
+        private StateToRestore? m_StateToRestore = null;
 
         public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying, bool play)
         {
