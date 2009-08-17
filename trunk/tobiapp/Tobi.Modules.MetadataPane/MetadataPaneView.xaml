@@ -13,7 +13,7 @@
     <DockPanel.Resources>
 
         <Style TargetType="{x:Type Button}">
-            <Setter Property="Width" Value="50"/>
+            <Setter Property="MinWidth" Value="50"/>
             <Setter Property="Margin" Value="10"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
@@ -48,10 +48,11 @@
             <Setter Property="Margin" Value="0,-5,0,5"/>
         </Style>
         
-        <local:OccurrenceConverter x:Key="occurrenceConverter"/>
+        <local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/>
         <local:RemoveReadOnlyErrorsConverter x:Key="removeReadOnlyErrorsConverter"/>
         <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
         <local:ValidationStatusTextConverter x:Key="validationStatusTextConverter"/>
+        <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
     </DockPanel.Resources>
 
     <Grid DockPanel.Dock="Bottom">
@@ -59,8 +60,10 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
@@ -78,7 +81,7 @@
             IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor,  
  	                                            AncestorType={x:Type local:MetadataPaneView}},  
  	                            Path=DataContext.SelectedMetadata, 
-                                Converter={StaticResource occurrenceConverter}}"
+                                Converter={StaticResource isNotRequiredOccurrenceConverter}}"
             >
             Remove
         </Button>
@@ -115,7 +118,11 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
+        <Button Click="Whats_In_The_Data_Model_Button_Click"
+                Grid.Column="0"
+                Grid.Row="3">
+            What's in the data model?
+        </Button>
 
 
     </Grid>
@@ -139,11 +146,18 @@
       
         <toolkit:DataGrid.RowDetailsTemplate>
             <DataTemplate>
-                <TextBlock Text="{Binding
-                                    RelativeSource={RelativeSource FindAncestor,  
- 	                                                AncestorType={x:Type local:MetadataPaneView}},  
- 	                                Path=DataContext.SelectedMetadata.Definition.Description}"
-                                    Style="{StaticResource RowDetailsStyle}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,  
+ 	                                                        AncestorType={x:Type local:MetadataPaneView}},  
+ 	                                          Path=DataContext.SelectedMetadata.Definition,
+                                              Converter={StaticResource occurrenceDescriptionConverter}}"
+                               FontStyle="Italic"/>
+                    <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,  
+ 	                                                        AncestorType={x:Type local:MetadataPaneView}},  
+ 	                                          Path=DataContext.SelectedMetadata.Definition.Description}"/>
+                    
+                </StackPanel>
+                
             </DataTemplate>
         </toolkit:DataGrid.RowDetailsTemplate>
         

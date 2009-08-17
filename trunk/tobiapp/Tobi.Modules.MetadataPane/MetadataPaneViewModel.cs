@@ -156,7 +156,7 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
-
+        //make sure that changes to the data model are reflected in this module
         public void CreateFakeData()
         {
             var session = Container.Resolve<IUrakawaSession>();
