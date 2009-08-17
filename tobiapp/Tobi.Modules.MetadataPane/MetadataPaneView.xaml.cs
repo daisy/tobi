@@ -104,15 +104,43 @@ namespace Tobi.Modules.MetadataPane
         {
             ViewModel.ValidateMetadata();
         }
+
+        private void Whats_In_The_Data_Model_Button_Click(object sender, RoutedEventArgs e)
+        {
+            string metas = ViewModel.GetDebugStringForMetaData();
+            MessageBox.Show(metas);
+        }
     }
-    public class OccurrenceConverter : IValueConverter
+    
+    public class IsNotRequiredOccurrenceConverter : IValueConverter
     {
+        //return false if required
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return false;
             NotifyingMetadataItem item = (NotifyingMetadataItem) value;
             if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required) return false;
             else return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
+    public class OccurrenceDescriptionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            MetadataDefinition item = (MetadataDefinition)value;
+            if (item.Occurrence == MetadataOccurrence.Required)
+                return "Required. ";
+            else if (item.Occurrence == MetadataOccurrence.Recommended)
+                return "Recommended. ";
+            else
+                return "Optional. ";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
