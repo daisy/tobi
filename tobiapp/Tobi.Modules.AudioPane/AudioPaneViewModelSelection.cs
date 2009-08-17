@@ -181,23 +181,23 @@ namespace Tobi.Modules.AudioPane
             //    return;
             //}
 
-            long sumData = 0;
-            long sumDataPrev = 0;
+            long bytesRight = 0;
+            long bytesLeft = 0;
             int index = -1;
             foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
             {
                 index++;
-                sumData += marker.m_LocalStreamDataLength;
-                if (byteOffset < sumData
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
+                bytesRight += marker.m_LocalStreamDataLength;
+                if (byteOffset < bytesRight
+                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                 {
                     //subTreeNode = marker.m_TreeNode;
 
-                    State.Selection.SetSelectionBytes(sumDataPrev, sumData);
+                    State.Selection.SetSelectionBytes(bytesLeft, bytesRight);
 
                     break;
                 }
-                sumDataPrev = sumData;
+                bytesLeft = bytesRight;
             }
         }
 

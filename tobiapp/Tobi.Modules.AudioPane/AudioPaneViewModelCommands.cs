@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using urakawa.core;
 
 namespace Tobi.Modules.AudioPane
 {
@@ -199,6 +202,89 @@ namespace Tobi.Modules.AudioPane
                 obj =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandDeleteAudioSelection", Category.Debug, Priority.Medium);
+
+                    long byteSelectionLeft = State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionBegin);
+                    long byteSelectionRight = State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionEnd);
+
+                    //long byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+
+                    var listOfTreeNodeAndStreamSelection = new List<TreeNodeAndStreamSelection>();
+
+
+                    long bytesToMatch = byteSelectionLeft;
+                    long bytesRight = 0;
+                    long bytesLeft = 0;
+                    int index = -1;
+                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+                    {
+                        index++;
+                        bytesRight += marker.m_LocalStreamDataLength;
+                        if (bytesToMatch < bytesRight
+                        || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesToMatch >= bytesRight)
+                        {
+                            if (listOfTreeNodeAndStreamSelection.Count == 0)
+                            {
+                                bool rightBoundaryIsAlsoHere = (byteSelectionRight < bytesRight
+                                                                ||
+                                                                index == (State.Audio.PlayStreamMarkers.Count - 1) &&
+                                                                byteSelectionRight >= bytesRight);
+
+                                TreeNodeAndStreamSelection data = new TreeNodeAndStreamSelection()
+                                                                      {
+                                                                          m_TreeNode = marker.m_TreeNode,
+                                                                          m_LocalStreamLeftMark = byteSelectionLeft - bytesLeft,
+                                                                          m_LocalStreamRightMark = (rightBoundaryIsAlsoHere ? byteSelectionRight - bytesLeft : -1)
+                                                                      };
+                                listOfTreeNodeAndStreamSelection.Add(data);
+
+                                if (rightBoundaryIsAlsoHere)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    bytesToMatch = byteSelectionRight;
+                                }
+                            }
+                            else
+                            {
+                                TreeNodeAndStreamSelection data = new TreeNodeAndStreamSelection()
+                                {
+                                    m_TreeNode = marker.m_TreeNode,
+                                    m_LocalStreamLeftMark = -1,
+                                    m_LocalStreamRightMark = byteSelectionRight - bytesLeft
+                                };
+                                listOfTreeNodeAndStreamSelection.Add(data);
+
+                                break;
+                            }
+                        }
+                        else if (listOfTreeNodeAndStreamSelection.Count > 0)
+                        {
+                            TreeNodeAndStreamSelection data = new TreeNodeAndStreamSelection()
+                            {
+                                m_TreeNode = marker.m_TreeNode,
+                                m_LocalStreamLeftMark = -1,
+                                m_LocalStreamRightMark = -1
+                            };
+                            listOfTreeNodeAndStreamSelection.Add(data);
+                        }
+
+                        bytesLeft = bytesRight;
+                    }
+
+                    if (listOfTreeNodeAndStreamSelection.Count == 0)
+                    {
+                        Debug.Fail("This should never happen !");
+                        return;
+                    }
+
+                    var session = Container.Resolve<IUrakawaSession>();
+
+                    //var command = session.DocumentProject.Presentations.Get(0).CommandFactory.
+                    //            CreateTreeNodesDeleteAudioStreamSelectionCommand(listOfTreeNodeAndStreamSelection);
+
+                    //session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
 
                     return; /* TODO: implement ! :) */
                 },

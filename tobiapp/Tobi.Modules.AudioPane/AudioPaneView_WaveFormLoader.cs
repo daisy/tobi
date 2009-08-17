@@ -666,15 +666,15 @@ namespace Tobi.Modules.AudioPane
                 sgcMarkers.BeginFigure(new Point(0.5, 0), false, false);
                 sgcMarkers.LineTo(new Point(0.5, heightMagnified), true, false);
 
-                long sumData = 0;
+                long bytesLeft = 0;
                 foreach (TreeNodeAndStreamDataLength marker in ViewModel.State.Audio.PlayStreamMarkers)
                 {
-                    double pixels = (sumData + marker.m_LocalStreamDataLength) / BytesPerPixel;
+                    double pixels = (bytesLeft + marker.m_LocalStreamDataLength) / BytesPerPixel;
 
                     sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
                     sgcMarkers.LineTo(new Point(pixels, heightMagnified), true, false);
 
-                    sumData += marker.m_LocalStreamDataLength;
+                    bytesLeft += marker.m_LocalStreamDataLength;
                 }
                 sgcMarkers.Close();
             }

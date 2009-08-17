@@ -174,27 +174,27 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            long sumData = 0;
-            long sumDataPrev = 0;
+            long bytesRight = 0;
+            long bytesLeft = 0;
             foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
             {
-                sumDataPrev = sumData;
+                bytesRight += marker.m_LocalStreamDataLength;
+
                 if (State.CurrentSubTreeNode == marker.m_TreeNode)
                 {
-                    sumData += marker.m_LocalStreamDataLength;
-
                     if (placePlayHead)
                     {
-                        LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(sumDataPrev);
+                        LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
                     }
 
                     if (View != null)
                     {
-                        View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                        View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
                     }
                     break;
                 }
-                sumData += marker.m_LocalStreamDataLength;
+
+                bytesLeft = bytesRight;
             }
         }
 
@@ -337,14 +337,6 @@ namespace Tobi.Modules.AudioPane
         #region Private Class Attributes
 
         private const bool AudioPlaybackStreamKeepAlive = true;
-
-        struct StateToRestore
-        {
-            public double SelectionBegin;
-            public double SelectionEnd;
-            public double LastPlayHeadTime;
-        }
-        private StateToRestore? m_StateToRestore = null;
 
         private double getTimeOffset(TreeNode treeNode, ManagedAudioMedia managedMedia)
         {
@@ -544,25 +536,25 @@ namespace Tobi.Modules.AudioPane
                 //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
                 long byteOffset = State.Audio.ConvertMillisecondsToBytes(m_LastPlayHeadTime);
 
-                long sumData = 0;
-                long sumDataPrev = 0;
+                long bytesRight = 0;
+                long bytesLeft = 0;
                 int index = -1;
                 foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
                 {
                     index++;
-                    sumData += marker.m_LocalStreamDataLength;
-                    if (byteOffset < sumData
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
+                    bytesRight += marker.m_LocalStreamDataLength;
+                    if (byteOffset < bytesRight
+                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                     {
                         subTreeNode = marker.m_TreeNode;
 
                         if (View != null && subTreeNode != State.CurrentSubTreeNode)
                         {
-                            View.RefreshUI_WaveFormChunkMarkers(sumDataPrev, sumData);
+                            View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
                         }
                         break;
                     }
-                    sumDataPrev = sumData;
+                    bytesLeft = bytesRight;
                 }
 
                 if (subTreeNode == null || subTreeNode == State.CurrentSubTreeNode)
@@ -903,16 +895,16 @@ namespace Tobi.Modules.AudioPane
                         {
                             var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
-                            long sumData = 0;
-                            long sumDataPrev = 0;
+                            long bytesRight = 0;
+                            long bytesLeft = 0;
                             int index = -1;
                             foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
                             {
                                 index++;
 
-                                sumData += marker.m_LocalStreamDataLength;
-                                if (byteOffset < sumData
-                                        || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= sumData)
+                                bytesRight += marker.m_LocalStreamDataLength;
+                                if (byteOffset < bytesRight
+                                        || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                                 {
                                     if (State.CurrentSubTreeNode != marker.m_TreeNode)
                                     {
@@ -922,10 +914,10 @@ namespace Tobi.Modules.AudioPane
                                         return;
                                     }
 
-                                    timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
+                                    timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - bytesLeft);
                                     break;
                                 }
-                                sumDataPrev = sumData;
+                                bytesLeft = bytesRight;
                             }
                         }
 
