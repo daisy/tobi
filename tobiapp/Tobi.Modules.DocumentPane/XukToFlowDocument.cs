@@ -266,9 +266,8 @@ namespace Tobi.Modules.DocumentPane
                 return;
             }
 
-            SequenceMedia seqMedia = node.GetAudioSequenceMedia();
-            if (seqMedia != null && !seqMedia.AllowMultipleTypes
-                && seqMedia.ChildMedias.Count > 0 && seqMedia.ChildMedias.Get(0) is ManagedAudioMedia)
+            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
+            if (seqManagedAudioMedia != null)
             {
                 data.Foreground = Brushes.Black;
                 //data.Background = Brushes.LightGoldenrodYellow;
@@ -1504,11 +1503,6 @@ namespace Tobi.Modules.DocumentPane
 
             QualifiedName qname = node.GetXmlElementQName();
             AbstractTextMedia textMedia = node.GetTextMedia();
-
-            if (node.GetAudioSequenceMedia() != null)
-            {
-                int debug = 1;
-            }
 
             if (node.Children.Count == 0)
             {

@@ -90,20 +90,20 @@ namespace Tobi.Modules.AudioPane
             m_Player.SetOutputDevice(GetWindowsFormsHookControl(), @"fakename");
             m_Player.StateChanged += OnStateChanged_Player;
             m_Player.AudioPlaybackFinished += OnAudioPlaybackFinished;
-            
+
             //m_Player.ResetVuMeter += OnPlayerResetVuMeter;
 
             m_Recorder = new AudioRecorder();
             m_Recorder.SetDevice(@"fakename");
             m_Recorder.StateChanged += OnStateChanged_Recorder;
             m_Recorder.AudioRecordingFinished += OnAudioRecordingFinished;
-            
+
             //m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
 
             m_VuMeter = new VuMeter(m_Player, m_Recorder);
             m_VuMeter.PeakMeterUpdated += OnPeakMeterUpdated;
             m_VuMeter.PeakMeterOverloaded += OnPeakMeterOverloaded;
-            
+
             PeakMeterBarDataCh1 = new PeakMeterBarData();
             PeakMeterBarDataCh2 = new PeakMeterBarData();
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
@@ -362,33 +362,17 @@ namespace Tobi.Modules.AudioPane
                 return timeOffset;
             }
 
-            ManagedAudioMedia managedAudioMedia = treeNode.GetManagedAudioMedia();
-            if (managedAudioMedia == null)
+            SequenceMedia seqManAudioMedia = treeNode.GetManagedAudioSequenceMedia();
+            if (seqManAudioMedia != null)
             {
-                SequenceMedia seqAudioMedia = treeNode.GetAudioSequenceMedia();
-                bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
-                if (isSeqValid)
+                foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
                 {
-                    foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                    var manMedia = (ManagedAudioMedia)media;
+                    if (media == managedMedia)
                     {
-                        if (!(media is ManagedAudioMedia))
-                        {
-                            isSeqValid = false;
-                            break;
-                        }
+                        break;
                     }
-                }
-                if (isSeqValid)
-                {
-                    foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                    {
-                        var manMedia = (ManagedAudioMedia)media;
-                        if (media == managedMedia)
-                        {
-                            break;
-                        }
-                        timeOffset += manMedia.Duration.TimeDeltaAsMillisecondDouble;
-                    }
+                    timeOffset += manMedia.Duration.TimeDeltaAsMillisecondDouble;
                 }
             }
 
@@ -742,7 +726,7 @@ namespace Tobi.Modules.AudioPane
                     (WavAudioMediaData)
                     nodeRecord.Presentation.MediaDataFactory.CreateAudioMediaData();
 
-                managedAudioMediaNew.MediaData = mediaData;
+                managedAudioMediaNew.AudioMediaData = mediaData;
 
                 //mediaData.AppendAudioDataFromRiffWave(m_Recorder.RecordedFilePath);
                 mediaData.AppendAudioData(recordingStream, new TimeDelta(recordingDuration));
@@ -820,76 +804,19 @@ namespace Tobi.Modules.AudioPane
 
                     ManagedAudioMedia recordingManagedAudioMedia = makeManagedAudioMediaFromFile(filePath);
 
-                    ManagedAudioMedia managedAudioMedia = nodeRecord.GetManagedAudioMedia();
-                    if (managedAudioMedia == null)
+                    Media audioMedia = nodeRecord.GetManagedAudioMediaOrSequenceMedia();
+                    if (audioMedia == null)
                     {
-                        SequenceMedia seqAudioMedia = nodeRecord.GetAudioSequenceMedia();
-                        bool isSeqValid = seqAudioMedia != null && !seqAudioMedia.AllowMultipleTypes;
-                        if (isSeqValid)
-                        {
-                            foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                            {
-                                if (!(media is ManagedAudioMedia))
-                                {
-                                    isSeqValid = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (isSeqValid)
-                        {
-                            var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                        var command = nodeRecord.Presentation.CommandFactory.
+                            CreateTreeNodeSetManagedAudioMediaCommand(
+                            nodeRecord, recordingManagedAudioMedia);
 
-                            double timeOffset = 0;
-                            long sumData = 0;
-                            long sumDataPrev = 0;
-                            foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                            {
-                                var manangedMediaSeqItem = (ManagedAudioMedia)media;
-                                AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                                sumData += AudioLibPCMFormat.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble, (int)audioData.PCMFormat.SampleRate, audioData.PCMFormat.BlockAlign);
-                                if (byteOffset < sumData)
-                                {
-                                    timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
-
-                                    if (AudioPlaybackStreamKeepAlive)
-                                    {
-                                        ensurePlaybackStreamIsDead();
-                                    }
-
-                                    if (manangedMediaSeqItem.AudioMediaData == null)
-                                    {
-                                        Debug.Fail("This should never happen !!!");
-                                        //recordingStream.Close();
-                                        State.Audio.PcmFormatAlt = null;
-                                        return;
-                                    }
-
-                                    var command = nodeRecord.Presentation.CommandFactory.
-                                        CreateManagedAudioMediaInsertDataCommand(
-                                        nodeRecord, manangedMediaSeqItem, recordingManagedAudioMedia,
-                                        new Time(timeOffset));
-
-                                    nodeRecord.Presentation.UndoRedoManager.Execute(command);
-
-                                    //manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
-                                    //recordingStream.Close();
-                                    break;
-                                }
-                                sumDataPrev = sumData;
-                            }
-                        }
-                        else
-                        {
-                            var command = nodeRecord.Presentation.CommandFactory.
-                                CreateTreeNodeSetManagedAudioMediaCommand(
-                                nodeRecord, recordingManagedAudioMedia);
-
-                            nodeRecord.Presentation.UndoRedoManager.Execute(command);
-                        }
+                        nodeRecord.Presentation.UndoRedoManager.Execute(command);
                     }
-                    else
+                    else if (audioMedia is ManagedAudioMedia)
                     {
+                        var managedAudioMedia = (ManagedAudioMedia)audioMedia;
+
                         double timeOffset = LastPlayHeadTime;
                         if (State.CurrentSubTreeNode != null)
                         {
@@ -926,7 +853,7 @@ namespace Tobi.Modules.AudioPane
                             ensurePlaybackStreamIsDead();
                         }
 
-                        if (managedAudioMedia.AudioMediaData == null)
+                        if (!managedAudioMedia.HasActualAudioMediaData)
                         {
                             Debug.Fail("This should never happen !!!");
                             //recordingStream.Close();
@@ -943,6 +870,56 @@ namespace Tobi.Modules.AudioPane
 
                         //managedAudioMedia.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
                         //recordingStream.Close();
+                    }
+                    else if (audioMedia is SequenceMedia)
+                    {
+                        var seqManAudioMedia = (SequenceMedia)audioMedia;
+
+                        var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+
+                        double timeOffset = 0;
+                        long sumData = 0;
+                        long sumDataPrev = 0;
+                        foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                        {
+                            var manangedMediaSeqItem = (ManagedAudioMedia)media;
+                            if (!manangedMediaSeqItem.HasActualAudioMediaData)
+                            {
+                                continue;
+                            }
+
+                            AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
+                            sumData += AudioLibPCMFormat.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble, (int)audioData.PCMFormat.SampleRate, audioData.PCMFormat.BlockAlign);
+                            if (byteOffset < sumData)
+                            {
+                                timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
+
+                                if (AudioPlaybackStreamKeepAlive)
+                                {
+                                    ensurePlaybackStreamIsDead();
+                                }
+
+                                if (!manangedMediaSeqItem.HasActualAudioMediaData)
+                                {
+                                    Debug.Fail("This should never happen !!!");
+                                    //recordingStream.Close();
+                                    State.Audio.PcmFormatAlt = null;
+                                    return;
+                                }
+
+                                var command = nodeRecord.Presentation.CommandFactory.
+                                    CreateManagedAudioMediaInsertDataCommand(
+                                    nodeRecord, manangedMediaSeqItem, recordingManagedAudioMedia,
+                                    new Time(timeOffset));
+
+                                nodeRecord.Presentation.UndoRedoManager.Execute(command);
+
+                                //manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
+                                //recordingStream.Close();
+                                break;
+                            }
+                            sumDataPrev = sumData;
+                        }
                     }
 
                     //SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
