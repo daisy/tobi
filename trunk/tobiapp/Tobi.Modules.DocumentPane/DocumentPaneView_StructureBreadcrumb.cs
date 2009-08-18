@@ -45,10 +45,7 @@ namespace Tobi.Modules.DocumentPane
                 // instead we use the Tag property which contains a reference to a TreeNode, 
                 // so we can use the Click event)
 
-                var seqMedia = n.GetAudioSequenceMedia();
-                bool withMedia = n.GetManagedAudioMedia() != null
-                    || (seqMedia != null && !seqMedia.AllowMultipleTypes
-                        && seqMedia.ChildMedias.Count > 0 && seqMedia.ChildMedias.Get(0) is ManagedAudioMedia);
+                bool withMedia = n.GetManagedAudioMediaOrSequenceMedia() != null;
 
                 var butt = new Button
                 {

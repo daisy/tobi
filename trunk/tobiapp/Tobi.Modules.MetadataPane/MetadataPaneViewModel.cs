@@ -11,9 +11,6 @@ using Tobi.Common.UI;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows;
 
 namespace Tobi.Modules.MetadataPane
 {

@@ -281,12 +281,27 @@ namespace Tobi.Modules.AudioPane
 
                     var session = Container.Resolve<IUrakawaSession>();
 
-                    //var command = session.DocumentProject.Presentations.Get(0).CommandFactory.
-                    //            CreateTreeNodesDeleteAudioStreamSelectionCommand(listOfTreeNodeAndStreamSelection);
+                    if (listOfTreeNodeAndStreamSelection.Count == 1)
+                    {
+                        var command = session.DocumentProject.Presentations.Get(0).CommandFactory.
+                                    CreateTreeNodeAudioStreamDeleteCommand(listOfTreeNodeAndStreamSelection[0]);
 
-                    //session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
+                        session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
+                    }
+                    else
+                    {
+                        session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction("Delete spanning audio portion", "Delete a portion of audio that spans across several treenodes");
 
-                    return; /* TODO: implement ! :) */
+                        foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
+                        {
+                            var command = session.DocumentProject.Presentations.Get(0).CommandFactory.
+                                        CreateTreeNodeAudioStreamDeleteCommand(selection);
+
+                            session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
+                        }
+
+                        session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+                    }
                 },
                 obj =>
                 {
