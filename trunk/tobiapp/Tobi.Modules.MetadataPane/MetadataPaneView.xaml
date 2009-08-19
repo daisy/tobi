@@ -8,18 +8,54 @@
     xmlns:urakawa="clr-namespace:urakawa.metadata.daisy;assembly=urakawa"
     LastChildFill="True"
     Loaded="DockPanel_Loaded">
-
-
+    <!-- ALL RESOURCES -->
     <DockPanel.Resources>
-
+        <!-- CONVERTERS -->
+        <local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/>
+        <local:RemoveReadOnlyErrorsConverter x:Key="removeReadOnlyErrorsConverter"/>
+        <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
+        <local:ValidationStatusTextConverter x:Key="validationStatusTextConverter"/>
+        <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
+        
+        <!-- STYLES-->
         <Style TargetType="{x:Type Button}">
             <Setter Property="MinWidth" Value="50"/>
             <Setter Property="Margin" Value="10"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
-        
-        
 
+        <!-- text block styles-->
+        <Style x:Key="ErrorTextStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="Red"/>
+        </Style>
+        <Style x:Key="RowDetailsStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="0,0,0,3"/>
+            <Setter Property="Background" Value="LightYellow"/>
+        </Style>
+        
+        <Style x:Key="RowDetailsOccurrenceStyle" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource RowDetailsStyle}">
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+        <Style x:Key="NameStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="0,0,0,3"/>
+        </Style>
+        <Style x:Key="RequiredNameStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource NameStyle}">
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <!-- data grid styles -->
+        <Style TargetType="{x:Type toolkit:DataGrid}">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected"/>
+            <Setter Property="AlternationCount" Value="2"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+        </Style>
         <Style TargetType="{x:Type toolkit:DataGridColumnHeader}">
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="MinWidth" Value="0" />
@@ -38,29 +74,103 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type toolkit:DataGridCell}">
-            <Setter Property="Margin" Value="0, 5, 0, 5"/>
+            <Setter Property="Margin" Value="0, 3, 0, 3"/>
         </Style>
-        <Style x:Key="ErrorTextStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="Red"/>
-        </Style>
-        <Style x:Key="RowDetailsStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Background" Value="LightYellow"/>
-            <Setter Property="Margin" Value="0,-5,0,5"/>
-        </Style>
-        
-        <local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/>
-        <local:RemoveReadOnlyErrorsConverter x:Key="removeReadOnlyErrorsConverter"/>
-        <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
-        <local:ValidationStatusTextConverter x:Key="validationStatusTextConverter"/>
-        <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
-    </DockPanel.Resources>
 
+        <!-- DATA TEMPLATES -->
+        <DataTemplate x:Key="ListBoxItemTemplate">
+            <TextBlock Text="{Binding Path=., 
+                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+        </DataTemplate>
+
+        <!-- NAME -->
+        <DataTemplate x:Key="NameTemplate">
+            <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}" x:Name="nameText"/>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Definition, 
+                                       Converter={StaticResource occurrenceDescriptionConverter}}"
+                             Value="Required.  ">
+                    <Setter Property="Style" Value="{StaticResource RequiredNameStyle}" 
+                                TargetName="nameText"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- NAME (editing) -->
+        <DataTemplate x:Key="NameEditingTemplate">
+            <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,  
+ 	                                        AncestorType={x:Type local:MetadataPaneView}},  
+ 	                                        Path=DataContext.AvailableMetadata}"
+                      SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                              AncestorType={x:Type local:MetadataPaneView}}, 
+                                              Path=DataContext.SelectedMetadata.Name}" 
+                      SelectionChanged="ComboBox_SelectionChanged"/>
+        </DataTemplate>
+
+        <!-- CONTENT -->
+        <DataTemplate x:Key="ContentTemplate">
+            <TextBlock x:Name="textBlock" Text="{Binding Content}"/>
+        </DataTemplate>
+
+        <!-- CONTENT (editing) -->
+        <DataTemplate x:Key="ContentEditingTemplate">
+            <TextBox x:Name="textBox" Text="{Binding Path=Content, Mode=TwoWay, 
+                UpdateSourceTrigger=PropertyChanged}"/>
+        </DataTemplate>
+
+        <!-- CONTENT (editing dates) -->
+        <DataTemplate x:Key="DateContentEditingTemplate">
+            <toolkit:DatePickerTextBox Text="{Binding Path=Content, Mode=TwoWay, 
+                UpdateSourceTrigger=PropertyChanged}"/>
+        </DataTemplate>
+
+        <!-- VALIDATION -->
+        <DataTemplate x:Key="ValidationErrorsTemplate">
+            <TextBlock x:Name="errorText"/>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsValid}" Value="false">
+                    <Setter TargetName="errorText" 
+                                        Property="TextBlock.Text" 
+                                        Value="{Binding ValidationError,
+                                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+                    <Setter TargetName="errorText"
+                                        Property="TextBlock.Style"
+                                        Value="{StaticResource ErrorTextStyle}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- ROW DETAILS -->
+        <DataTemplate x:Key="RowDetailsTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,  
+ 	                                                        AncestorType={x:Type local:MetadataPaneView}},  
+ 	                                      Path=DataContext.SelectedMetadata.Definition,
+                                          Converter={StaticResource occurrenceDescriptionConverter}}"
+                           Style="{StaticResource RowDetailsOccurrenceStyle}"/>
+                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,  
+ 	                                                        AncestorType={x:Type local:MetadataPaneView}},  
+ 	                                      Path=DataContext.SelectedMetadata.Definition.Description}"
+                           Style="{StaticResource RowDetailsStyle}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- SELECT a content template -->
+        <local:ContentTemplateSelector
+                DatePickerTemplate="{StaticResource DateContentEditingTemplate}"
+                DefaultTemplate="{StaticResource ContentEditingTemplate}"
+                x:Key="ContentEditingTemplateSelector" />
+
+    </DockPanel.Resources>
+    
+    <!-- GUI CONTROLS -->
+    
+    <!-- this grid defines the layout of the buttons, validation listbox, etc -->
     <Grid DockPanel.Dock="Bottom">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
-            <ColumnDefinition/>
-            
+            <ColumnDefinition/>        
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -69,167 +179,59 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Button Click="Add_Metadata_Button_Click"
-            Grid.Column="0" 
-            Grid.Row="0">
-            Add
-        </Button>
-        
-        <Button Click="Remove_Metadata_Button_Click"
-            Grid.Column="1"
-            Grid.Row="0"
+        <Button Click="Add_Metadata_Button_Click" Grid.Column="0" Grid.Row="0" Content="Add"/>
+        <Button Click="Remove_Metadata_Button_Click" Grid.Column="1" Grid.Row="0"
             IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor,  
  	                                            AncestorType={x:Type local:MetadataPaneView}},  
  	                            Path=DataContext.SelectedMetadata, 
                                 Converter={StaticResource isNotRequiredOccurrenceConverter}}"
-            >
-            Remove
-        </Button>
-        
-        <Button Click="Validate_Metadata_Click" 
-                Grid.Column="2" 
-                Grid.Row="0">
-            Validate All
-        </Button>
-        <TextBlock Grid.Row="1"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   Margin="0,3,0,3"
-                   >
-            <TextBlock.Text>
-                <Binding ElementName="errorsList" 
-                         Path="Items.Count" 
-                         Converter="{StaticResource validationStatusTextConverter}"/>
-            </TextBlock.Text>
-        </TextBlock>
+            Content="Remove"/>
+        <Button Click="Validate_Metadata_Click" Grid.Column="2" Grid.Row="0" Content="Validate All"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,3,0,3"
+                   Text="{Binding ElementName=errorsList, Path=Items.Count,
+                                  Converter={StaticResource validationStatusTextConverter}}"/>
                    
-        <ListBox x:Name="errorsList" 
+        <ListBox x:Name="errorsList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="100" 
                  ItemsSource="{Binding ValidationErrors, 
                                     Converter={StaticResource removeReadOnlyErrorsConverter}}"
-                 Grid.Row="2" 
-                 Grid.Column="0" 
-                 Grid.ColumnSpan="2" MinHeight="100"
-                 >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=., 
-                        Converter={StaticResource descriptiveErrorTextConverter}}"
-                    />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Click="Whats_In_The_Data_Model_Button_Click"
-                Grid.Column="0"
-                Grid.Row="3">
-            What's in the data model?
-        </Button>
-
-
+                  ItemTemplate="{StaticResource ListBoxItemTemplate}"/>
+        
+        <Button Click="Whats_In_The_Data_Model_Button_Click" Grid.Column="0" Grid.Row="3"
+                Content="What's in the data model?"/>
     </Grid>
-
+    
+    <!-- this datagrid shows the metadata -->
     <toolkit:DataGrid
         x:Name="MetadataGrid"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
         ItemsSource="{Binding Metadatas, Mode=OneWay}"
-        AutoGenerateColumns="False"
-        SelectionMode="Single"
-        RowDetailsVisibilityMode="VisibleWhenSelected"
         SelectionChanged="DataGrid_SelectionChanged"
-        AlternationCount="2"
-        ScrollViewer.CanContentScroll="True"
-        ScrollViewer.VerticalScrollBarVisibility="Auto"
         RowEditEnding="MetadataGrid_RowEditEnding"
-        SnapsToDevicePixels="True"
         CanUserReorderColumns="False"
-        GridLinesVisibility="Horizontal">
-      
-        <toolkit:DataGrid.RowDetailsTemplate>
-            <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,  
- 	                                                        AncestorType={x:Type local:MetadataPaneView}},  
- 	                                          Path=DataContext.SelectedMetadata.Definition,
-                                              Converter={StaticResource occurrenceDescriptionConverter}}"
-                               FontStyle="Italic"/>
-                    <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,  
- 	                                                        AncestorType={x:Type local:MetadataPaneView}},  
- 	                                          Path=DataContext.SelectedMetadata.Definition.Description}"/>
-                    
-                </StackPanel>
-                
-            </DataTemplate>
-        </toolkit:DataGrid.RowDetailsTemplate>
+        RowDetailsTemplate="{StaticResource RowDetailsTemplate}">
         
         <toolkit:DataGrid.Columns>
-            
             <!-- NAME field-->
             <toolkit:DataGridTemplateColumn Header="Name" Width="SizeToCells"
-                                            IsReadOnly="False">
-                <toolkit:DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" Margin="0,0,0,3"/>
-                    </DataTemplate>
-                    
-                </toolkit:DataGridTemplateColumn.CellTemplate>
-                
-                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
-                    <DataTemplate>
-                        <ComboBox ItemsSource="{Binding
-                                                    RelativeSource={RelativeSource FindAncestor,  
- 	                                                AncestorType={x:Type local:MetadataPaneView}},  
- 	                                                Path=DataContext.AvailableMetadata}"
-                                  SelectedValue="{Binding 
-                                                    RelativeSource={RelativeSource FindAncestor, 
-                                                    AncestorType={x:Type local:MetadataPaneView}}, 
-                                                    Path=DataContext.SelectedMetadata.Name}" 
-                                   SelectionChanged="ComboBox_SelectionChanged"
-                                  />
-                    </DataTemplate>
-                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
-            
-            </toolkit:DataGridTemplateColumn>
+                                            IsReadOnly="False"
+                                            CellTemplate="{StaticResource NameTemplate}"
+                                            CellEditingTemplate="{StaticResource NameEditingTemplate}"/>
             
             <!-- CONTENT field -->
-            <toolkit:DataGridTemplateColumn Header="Content" Width="SizeToCells"  
-                                               IsReadOnly="False">
-                <toolkit:DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock x:Name="textBlock" Text="{Binding Content}"/>    
-                    </DataTemplate>
-                </toolkit:DataGridTemplateColumn.CellTemplate>
-                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
-                    <DataTemplate>
-                            <TextBox x:Name="textBox" Text="{Binding Path=Content, 
-                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    </DataTemplate>
-                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
-            </toolkit:DataGridTemplateColumn>
+            <toolkit:DataGridTemplateColumn Header="Content" 
+                                            Width="SizeToCells"  
+                                            IsReadOnly="False"
+                                            CellTemplate="{StaticResource ContentTemplate}"
+                                            CellEditingTemplate="{StaticResource ContentEditingTemplate}"/>
+             <!--                               CellEditingTemplateSelector="{StaticResource ContentEditingTemplateSelector}"/>-->
             
             <!-- VALIDATION errors field -->
-            <toolkit:DataGridTemplateColumn>
-                <toolkit:DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock x:Name="errorText"/>
-                        
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding IsValid}" Value="false">
-                                <Setter TargetName="errorText" 
-                                        Property="TextBlock.Text" 
-                                        Value="{Binding ValidationError,
-                                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
-                                <Setter TargetName="errorText"
-                                        Property="TextBlock.Style"
-                                        Value="{StaticResource ErrorTextStyle}"/>
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-
-                    </DataTemplate>
-                </toolkit:DataGridTemplateColumn.CellTemplate>
-            </toolkit:DataGridTemplateColumn>
-            
+            <toolkit:DataGridTemplateColumn CellTemplate="{StaticResource ValidationErrorsTemplate}"/>
+               
         </toolkit:DataGrid.Columns>
-        
+    
     </toolkit:DataGrid>
+    
+    
 </DockPanel>
 

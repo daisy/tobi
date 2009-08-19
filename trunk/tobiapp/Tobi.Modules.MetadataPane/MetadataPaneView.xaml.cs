@@ -136,7 +136,7 @@ namespace Tobi.Modules.MetadataPane
             if (value == null) return "";
             MetadataDefinition item = (MetadataDefinition)value;
             if (item.Occurrence == MetadataOccurrence.Required)
-                return "Required. ";
+                return "Required.  ";
             else if (item.Occurrence == MetadataOccurrence.Recommended)
                 return "Recommended. ";
             else
