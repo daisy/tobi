@@ -240,14 +240,14 @@ namespace Tobi.Modules.AudioPane
 
                 if (State.Audio.PlayStream == null)
                 {
-                    StreamWithMarkers? sm = State.CurrentTreeNode.GetManagedAudioDataFlattened();
+                    StreamWithMarkers? sm = State.CurrentTreeNode.OpenPcmInputStreamOfManagedAudioMediaFlattened();
 
                     if (sm == null)
                     {
                         TreeNode ancerstor = State.CurrentTreeNode.GetFirstAncestorWithManagedAudio();
                         if (ancerstor != null)
                         {
-                            StreamWithMarkers? sma = ancerstor.GetManagedAudioData();
+                            StreamWithMarkers? sma = ancerstor.OpenPcmInputStreamOfManagedAudioMedia();
                             if (sma != null)
                             {
                                 TreeNode theCurrentSubTreeNode = State.CurrentTreeNode;
@@ -621,7 +621,7 @@ namespace Tobi.Modules.AudioPane
             PeakMeterBarDataCh1.ValueDb = m_PeakMeterValues[0];
 
             PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
-            if (pcmInfo.NumberOfChannels > 1)
+            if (pcmInfo.Data.NumberOfChannels > 1)
             {
                 PeakMeterBarDataCh2.ValueDb = m_PeakMeterValues[1];
             }
@@ -676,7 +676,7 @@ namespace Tobi.Modules.AudioPane
 
                 PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
 
-                if (pcmInfo.NumberOfChannels > 1)
+                if (pcmInfo.Data.NumberOfChannels > 1)
                 {
                     m_PeakMeterValues[1] = e.PeakDb[1];
                 }
@@ -713,11 +713,12 @@ namespace Tobi.Modules.AudioPane
 
             try
             {
-                //unused, but necessary to reach byte offset after RIFF header
-                PCMDataInfo pcmFormat = PCMDataInfo.ParseRiffWaveHeader(recordingStream);
-                long dataLength = recordingStream.Length - recordingStream.Position;
+                //necessary to reach byte offset after RIFF header
+                uint dataLength;
+                AudioLibPCMFormat.RiffHeaderParse(recordingStream, out dataLength);
 
-                //double recordingDuration = pcmFormat.GetDuration(dataLength).TimeDeltaAsMillisecondDouble;
+                dataLength = (uint) (recordingStream.Length - recordingStream.Position);
+
                 double recordingDuration = State.Audio.ConvertBytesToMilliseconds(dataLength);
 
                 managedAudioMediaNew = nodeRecord.Presentation.MediaFactory.CreateManagedAudioMedia();
@@ -729,7 +730,7 @@ namespace Tobi.Modules.AudioPane
                 managedAudioMediaNew.AudioMediaData = mediaData;
 
                 //mediaData.AppendAudioDataFromRiffWave(m_Recorder.RecordedFilePath);
-                mediaData.AppendAudioData(recordingStream, new TimeDelta(recordingDuration));
+                mediaData.AppendPcmData(recordingStream, new TimeDelta(recordingDuration));
             }
             finally
             {
@@ -750,12 +751,12 @@ namespace Tobi.Modules.AudioPane
 
             string filePath = str;
 
-            if (filePath == null && View != null)
+            if (String.IsNullOrEmpty(filePath) && View != null)
             {
                 filePath = View.OpenFileDialog();
             }
 
-            if (filePath == null)
+            if (String.IsNullOrEmpty(filePath))
             {
                 return;
             }
@@ -767,7 +768,9 @@ namespace Tobi.Modules.AudioPane
                     Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     try
                     {
-                        State.Audio.PcmFormatAlt = PCMDataInfo.ParseRiffWaveHeader(fileStream);
+                        uint dataLength;
+                        AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                        State.Audio.PcmFormatAlt = new PCMFormatInfo(format);
                     }
                     finally
                     {
@@ -889,7 +892,7 @@ namespace Tobi.Modules.AudioPane
                             }
 
                             AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                            sumData += AudioLibPCMFormat.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble, (int)audioData.PCMFormat.SampleRate, audioData.PCMFormat.BlockAlign);
+                            sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble);
                             if (byteOffset < sumData)
                             {
                                 timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);

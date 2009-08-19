@@ -32,14 +32,14 @@ namespace Tobi.Modules.AudioPane
             {
                 PCMFormatInfo pcmInfo = GetCurrentPcmFormat();
 
-                return AudioLibPCMFormat.ConvertBytesToTime(bytes, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                return pcmInfo.Data.ConvertBytesToTime(bytes);
             }
 
             public long ConvertMillisecondsToBytes(double ms)
             {
                 PCMFormatInfo pcmInfo = GetCurrentPcmFormat();
 
-                return AudioLibPCMFormat.ConvertTimeToBytes(ms, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                return pcmInfo.Data.ConvertTimeToBytes(ms);
             }
 
 
@@ -75,9 +75,12 @@ namespace Tobi.Modules.AudioPane
                         }
                         else
                         {
-                            PcmFormat = PCMDataInfo.ParseRiffWaveHeader(m_PlayStream);
+                            uint dataLength;
+                            AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(m_PlayStream, out dataLength);
 
-                            long dataLength = m_PlayStream.Length - m_PlayStream.Position;
+                            PcmFormat = new PCMFormatInfo(format);
+
+                            dataLength = (uint)(m_PlayStream.Length - m_PlayStream.Position);
 
                             m_PlayStream = new SubStream(m_PlayStream, m_PlayStream.Position, dataLength);
 

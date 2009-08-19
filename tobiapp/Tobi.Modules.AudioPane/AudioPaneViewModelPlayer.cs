@@ -145,6 +145,11 @@ namespace Tobi.Modules.AudioPane
                     long byteLeft = State.Audio.ConvertMillisecondsToBytes(from);
                     long byteRight = State.Audio.ConvertMillisecondsToBytes(to);
 
+                    if (byteRight == byteLeft)
+                    {
+                        return;
+                    }
+
                     //if (verifyBeginEndPlayerValues(byteLeft, byteRight))
                     //{
                     //}
@@ -815,7 +820,7 @@ namespace Tobi.Modules.AudioPane
             {
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
-                              new AudioLibPCMFormat(State.Audio.PcmFormat.NumberOfChannels, (int) State.Audio.PcmFormat.SampleRate, State.Audio.PcmFormat.BitDepth),
+                              new AudioLibPCMFormat(State.Audio.PcmFormat.Data.NumberOfChannels, State.Audio.PcmFormat.Data.SampleRate, State.Audio.PcmFormat.Data.BitDepth),
                               -1, -1);
             }
             else
@@ -887,7 +892,7 @@ namespace Tobi.Modules.AudioPane
 
                     m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                                   State.Audio.DataLength,
-                                  new AudioLibPCMFormat(State.Audio.PcmFormat.NumberOfChannels, (int)State.Audio.PcmFormat.SampleRate, State.Audio.PcmFormat.BitDepth),
+                                  new AudioLibPCMFormat(State.Audio.PcmFormat.Data.NumberOfChannels, State.Audio.PcmFormat.Data.SampleRate, State.Audio.PcmFormat.Data.BitDepth),
                                   bytesStart,
                                   -1
                         );
@@ -914,7 +919,7 @@ namespace Tobi.Modules.AudioPane
 
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
-                              new AudioLibPCMFormat(State.Audio.PcmFormat.NumberOfChannels, (int)State.Audio.PcmFormat.SampleRate, State.Audio.PcmFormat.BitDepth),
+                              new AudioLibPCMFormat(State.Audio.PcmFormat.Data.NumberOfChannels, State.Audio.PcmFormat.Data.SampleRate, State.Audio.PcmFormat.Data.BitDepth),
                               bytesStart,
                               bytesEnd
                     );

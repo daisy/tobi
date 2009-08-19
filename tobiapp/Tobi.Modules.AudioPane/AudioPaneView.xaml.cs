@@ -584,7 +584,7 @@ namespace Tobi.Modules.AudioPane
             PCMFormatInfo pcmInfo = ViewModel.State.Audio.GetCurrentPcmFormat();
 
             double barWidth = PeakMeterCanvas.ActualWidth;
-            if (pcmInfo.NumberOfChannels > 1)
+            if (pcmInfo.Data.NumberOfChannels > 1)
             {
                 barWidth = barWidth / 2;
             }
@@ -624,7 +624,7 @@ namespace Tobi.Modules.AudioPane
             }
 
             StreamGeometry geometry2 = null;
-            if (pcmInfo.NumberOfChannels > 1)
+            if (pcmInfo.Data.NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
@@ -671,7 +671,7 @@ namespace Tobi.Modules.AudioPane
             {
                 PeakMeterPathCh1.InvalidateVisual();
             }
-            if (pcmInfo.NumberOfChannels > 1)
+            if (pcmInfo.Data.NumberOfChannels > 1)
             {
                 if (PeakMeterPathCh2.Data == null)
                 {
