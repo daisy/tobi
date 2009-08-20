@@ -633,7 +633,7 @@ namespace Tobi.Modules.AudioPane
                 }
                 RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
             }
-            else
+            else if (time >= 0)
             {
                 LastPlayHeadTime = time;
             }
