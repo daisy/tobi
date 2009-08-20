@@ -255,7 +255,9 @@ namespace Tobi.Modules.AudioPane
             if (!m_ControlKeyWasDownAtLastMouseMove)
             {
                 Point p = e.GetPosition(WaveFormCanvas);
-                selectionFinished(p.X);
+                double x = Math.Min(p.X, WaveFormCanvas.ActualWidth);
+                x = Math.Max(x, 0);
+                selectionFinished(x);
             }
             m_ControlKeyWasDownAtLastMouseMove = false;
         }
