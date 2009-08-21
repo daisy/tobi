@@ -52,13 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMetadataPaneView.cs" />
+    <Compile Include="MetadataConverters.cs" />
     <Compile Include="MetadataObjects.cs" />
     <Compile Include="MetadataPaneModule.cs" />
     <Compile Include="MetadataPaneView.xaml.cs">
       <DependentUpon>MetadataPaneView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MetadataPaneViewModel.cs" />
-    <Compile Include="MetadataTemplateSelectors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
