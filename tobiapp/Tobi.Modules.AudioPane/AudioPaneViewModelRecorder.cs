@@ -49,7 +49,6 @@ namespace Tobi.Modules.AudioPane
                     {
                         State.ResetAll();
 
-                        m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
                         State.Audio.PcmFormatAlt = new PCMFormatInfo();
                     }
                     else
@@ -95,7 +94,6 @@ namespace Tobi.Modules.AudioPane
                     {
                         State.ResetAll();
 
-                        m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
                         State.Audio.PcmFormatAlt = new PCMFormatInfo();
 
                         //m_PcmFormatOfAudioToInsert = IsAudioLoaded ? State.Audio.PcmFormat : new PCMFormatInfo();
@@ -172,7 +170,10 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            openFile(e.RecordedFilePath, true);
+            if (!String.IsNullOrEmpty(e.RecordedFilePath))
+            {
+                openFile(e.RecordedFilePath, true, true);
+            }
         }
 
         // ReSharper disable MemberCanBeMadeStatic.Local

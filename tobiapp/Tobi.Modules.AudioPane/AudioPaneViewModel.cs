@@ -12,6 +12,7 @@ using Tobi.Common.MVVM;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
+using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
@@ -97,6 +98,7 @@ namespace Tobi.Modules.AudioPane
             m_Recorder.SetDevice(@"fakename");
             m_Recorder.StateChanged += OnStateChanged_Recorder;
             m_Recorder.AudioRecordingFinished += OnAudioRecordingFinished;
+            m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
 
             //m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
 
@@ -329,6 +331,10 @@ namespace Tobi.Modules.AudioPane
             {
                 project.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+            }
+            else
+            {
+                m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
             }
         }
 
@@ -703,47 +709,8 @@ namespace Tobi.Modules.AudioPane
 
         #endregion VuMeter / PeakMeter
 
-        private ManagedAudioMedia makeManagedAudioMediaFromFile(string filePath)
-        {
-            ManagedAudioMedia managedAudioMediaNew = null;
 
-            TreeNode nodeRecord = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
-
-            Stream recordingStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            try
-            {
-                //necessary to reach byte offset after RIFF header
-                uint dataLength;
-                AudioLibPCMFormat.RiffHeaderParse(recordingStream, out dataLength);
-
-                dataLength = (uint) (recordingStream.Length - recordingStream.Position);
-
-                double recordingDuration = State.Audio.ConvertBytesToMilliseconds(dataLength);
-
-                managedAudioMediaNew = nodeRecord.Presentation.MediaFactory.CreateManagedAudioMedia();
-
-                var mediaData =
-                    (WavAudioMediaData)
-                    nodeRecord.Presentation.MediaDataFactory.CreateAudioMediaData();
-
-                managedAudioMediaNew.AudioMediaData = mediaData;
-
-                //mediaData.AppendAudioDataFromRiffWave(m_Recorder.RecordedFilePath);
-                mediaData.AppendPcmData(recordingStream, new TimeDelta(recordingDuration));
-            }
-            finally
-            {
-                recordingStream.Close();
-            }
-
-            File.Delete(filePath);
-
-            return managedAudioMediaNew;
-        }
-
-
-        private void openFile(String str, bool insert)
+        private void openFile(String str, bool insert, bool deleteAfterInsert)
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
@@ -763,6 +730,17 @@ namespace Tobi.Modules.AudioPane
 
             if (insert)
             {
+                if (View != null)
+                {
+                    View.ResetAll();
+                }
+
+                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                {
+                    State.Audio.PcmFormatAlt = null;
+                    return;
+                }
+
                 if (State.Audio.PcmFormatAlt == null)
                 {
                     Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -782,16 +760,6 @@ namespace Tobi.Modules.AudioPane
                 //var presenter = Container.Resolve<IShellPresenter>();
                 //presenter.PlayAudioCueTockTock();
 
-                if (View != null)
-                {
-                    View.ResetAll();
-                }
-
-                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
-                {
-                    State.Audio.PcmFormatAlt = null;
-                    return;
-                }
 
                 var session = Container.Resolve<IUrakawaSession>();
 
@@ -805,7 +773,31 @@ namespace Tobi.Modules.AudioPane
 
                     TreeNode nodeRecord = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
 
-                    ManagedAudioMedia recordingManagedAudioMedia = makeManagedAudioMediaFromFile(filePath);
+                    ManagedAudioMedia recordingManagedAudioMedia = nodeRecord.Presentation.MediaFactory.CreateManagedAudioMedia();
+
+                    var mediaData = (WavAudioMediaData) nodeRecord.Presentation.MediaDataFactory.CreateAudioMediaData();
+
+                    recordingManagedAudioMedia.AudioMediaData = mediaData;
+                    
+                    //Directory.GetParent(filePath).FullName
+                    //bool recordedFileIsInDataDir = Path.GetDirectoryName(filePath) == nodeRecord.Presentation.DataProviderManager.DataFileDirectoryFullPath;
+
+                    if (deleteAfterInsert)
+                    {
+                        FileDataProvider dataProv = (FileDataProvider)nodeRecord.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                        dataProv.InitByMovingExistingFile(filePath);
+                        mediaData.AppendPcmData(dataProv);
+                    }
+                    else
+                    {
+                        mediaData.AppendPcmData_RiffHeader(filePath);
+                    }
+
+
+                    if (deleteAfterInsert && File.Exists(filePath)) //check exist just in case file adopted by DataProviderManager
+                    {
+                        File.Delete(filePath);
+                    }
 
                     Media audioMedia = nodeRecord.GetManagedAudioMediaOrSequenceMedia();
                     if (audioMedia == null)
