@@ -165,7 +165,7 @@ namespace Tobi.Modules.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandOpenFile", Category.Debug, Priority.Medium);
 
                     State.Audio.PcmFormatAlt = null;
-                    openFile(obj as String, false);
+                    openFile(obj as String, false, false);
                 },
                 obj => !IsWaveFormLoading && !IsMonitoring && !IsRecording);
 
@@ -181,7 +181,7 @@ namespace Tobi.Modules.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandInsertFile", Category.Debug, Priority.Medium);
 
                     State.Audio.PcmFormatAlt = null;
-                    openFile(obj as String, true);
+                    openFile(obj as String, true, false);
                 },
                 obj =>
                 {

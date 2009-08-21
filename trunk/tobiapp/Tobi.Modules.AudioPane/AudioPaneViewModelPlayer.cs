@@ -1028,8 +1028,7 @@ namespace Tobi.Modules.AudioPane
                     }
                     try
                     {
-                        State.Audio.PlayStream = File.Open(State.FilePath, FileMode.Open, FileAccess.Read,
-                                                           FileShare.Read);
+                        State.Audio.PlayStream = File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     }
                     catch (Exception ex)
                     {
