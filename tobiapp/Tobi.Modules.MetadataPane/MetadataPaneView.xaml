@@ -16,7 +16,6 @@
         <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
         <local:ValidationStatusTextConverter x:Key="validationStatusTextConverter"/>
         <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
-        
         <!-- STYLES-->
         <Style TargetType="{x:Type Button}">
             <Setter Property="MinWidth" Value="50"/>
@@ -118,12 +117,6 @@
                 UpdateSourceTrigger=PropertyChanged}"/>
         </DataTemplate>
 
-        <!-- CONTENT (editing dates) -->
-        <DataTemplate x:Key="DateContentEditingTemplate">
-            <toolkit:DatePickerTextBox Text="{Binding Path=Content, Mode=TwoWay, 
-                UpdateSourceTrigger=PropertyChanged}"/>
-        </DataTemplate>
-
         <!-- VALIDATION -->
         <DataTemplate x:Key="ValidationErrorsTemplate">
             <TextBlock x:Name="errorText"/>
@@ -155,12 +148,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <!-- SELECT a content template -->
-        <local:ContentTemplateSelector
-                DatePickerTemplate="{StaticResource DateContentEditingTemplate}"
-                DefaultTemplate="{StaticResource ContentEditingTemplate}"
-                x:Key="ContentEditingTemplateSelector" />
-
+        
     </DockPanel.Resources>
     
     <!-- GUI CONTROLS -->
@@ -180,12 +168,16 @@
         </Grid.RowDefinitions>
 
         <Button Click="Add_Metadata_Button_Click" Grid.Column="0" Grid.Row="0" Content="Add"/>
-        <Button Click="Remove_Metadata_Button_Click" Grid.Column="1" Grid.Row="0"
-            IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor,  
- 	                                            AncestorType={x:Type local:MetadataPaneView}},  
- 	                            Path=DataContext.SelectedMetadata, 
-                                Converter={StaticResource isNotRequiredOccurrenceConverter}}"
-            Content="Remove"/>
+        <Button Click="Remove_Metadata_Button_Click" Grid.Column="1" Grid.Row="0" Content="Remove">
+            <Button.IsEnabled>
+                <MultiBinding Converter="{StaticResource isNotRequiredOccurrenceConverter}">
+                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
+                             Path="DataContext.SelectedMetadata"/>
+                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
+                             Path="DataContext.Metadatas"/>                             
+                </MultiBinding>
+            </Button.IsEnabled>
+        </Button>
         <Button Click="Validate_Metadata_Click" Grid.Column="2" Grid.Row="0" Content="Validate All"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,3,0,3"
@@ -223,7 +215,6 @@
                                             IsReadOnly="False"
                                             CellTemplate="{StaticResource ContentTemplate}"
                                             CellEditingTemplate="{StaticResource ContentEditingTemplate}"/>
-             <!--                               CellEditingTemplateSelector="{StaticResource ContentEditingTemplateSelector}"/>-->
             
             <!-- VALIDATION errors field -->
             <toolkit:DataGridTemplateColumn CellTemplate="{StaticResource ValidationErrorsTemplate}"/>
