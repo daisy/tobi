@@ -180,20 +180,20 @@ namespace Tobi.Modules.MetadataPane
         public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
             var session = Container.Resolve<IUrakawaSession>();
-
-            MetadataRemoveCommand cmd = new MetadataRemoveCommand();
-            cmd.Init(metadata.UrakawaMetadata, session.DocumentProject.Presentations.Get(0));
-            session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(cmd);
+            Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            MetadataRemoveCommand cmd = presentation.CommandFactory.CreateMetadataRemoveCommand
+                (metadata.UrakawaMetadata, presentation);
+            presentation.UndoRedoManager.Execute(cmd);
         }
 
         public void AddEmptyMetadata()
         {
             Metadata metadata = new Metadata {Name = "", Content = ""};
             var session = Container.Resolve<IUrakawaSession>();
-            
-            MetadataAddCommand cmd = new MetadataAddCommand();
-            cmd.Init(metadata, session.DocumentProject.Presentations.Get(0));
-            session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(cmd);
+            Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
+                (metadata, presentation);
+            presentation.UndoRedoManager.Execute(cmd);
         }
 
         
