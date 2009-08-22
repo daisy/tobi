@@ -59,7 +59,7 @@ namespace Tobi.Modules.AudioPane
                         }
 
                         Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
                     m_Recorder.StartRecording(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
@@ -102,7 +102,7 @@ namespace Tobi.Modules.AudioPane
                     else
                     {
                         Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
                     m_Recorder.StartMonitoring(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
