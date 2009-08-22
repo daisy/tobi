@@ -106,8 +106,9 @@ namespace Tobi.Modules.MetadataPane
             set
             {
                 if (value == null) return;
-                MetadataSetContentCommand cmd = new MetadataSetContentCommand();
-                cmd.Init(UrakawaMetadata, value);
+                MetadataSetContentCommand cmd = 
+                    ParentCollection.UrakawaPresentation.CommandFactory.CreateMetadataSetContentCommand
+                    (UrakawaMetadata, value);
                 ParentCollection.UrakawaPresentation.UndoRedoManager.Execute(cmd);
             }
         }
@@ -121,8 +122,9 @@ namespace Tobi.Modules.MetadataPane
             set
             {
                 if (value == null) return;
-                MetadataSetNameCommand cmd = new MetadataSetNameCommand();
-                cmd.Init(UrakawaMetadata, value);
+                MetadataSetNameCommand cmd =
+                    ParentCollection.UrakawaPresentation.CommandFactory.CreateMetadataSetNameCommand
+                    (UrakawaMetadata, value);
                 ParentCollection.UrakawaPresentation.UndoRedoManager.Execute(cmd);
             }
         }
