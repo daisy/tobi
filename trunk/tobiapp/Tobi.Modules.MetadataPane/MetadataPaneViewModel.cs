@@ -11,6 +11,9 @@ using Tobi.Common.UI;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
+using urakawa.commands;
+using urakawa.command;
+using urakawa.undo;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -90,30 +93,48 @@ namespace Tobi.Modules.MetadataPane
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
                 shellPresenter.LoadTangoIcon("accessories-text-editor"),
-                obj =>
-                {
-                    Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
-
-                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
-
-                    var windowPopup = new PopupModalWindow(shellPresenter_,
-                                                           UserInterfaceStrings.EscapeMnemonic(
-                                                               UserInterfaceStrings.ShowMetadata),
-                                                           View,
-                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                           PopupModalWindow.DialogButton.Ok,
-                                                           true, 500, 500);
-                    windowPopup.ShowModal();
-                },
-                obj =>
-                {
-                    var session = Container.Resolve<IUrakawaSession>();
-                    return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
-                });
+                obj => { this.ShowDialog(); },
+                obj => { return this.CanShowDialog();});
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
         }
 
+        bool CanShowDialog()
+        {
+            var session = Container.Resolve<IUrakawaSession>();
+            return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
+        }
+        
+        void ShowDialog()
+        {
+            Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
+            
+            var shellPresenter_ = Container.Resolve<IShellPresenter>();
+            var windowPopup = new PopupModalWindow(shellPresenter_,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.ShowMetadata),
+                                                   View,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 700, 500);
+            windowPopup.Closed += new System.EventHandler(OnDialogClosed);
+            //start a transaction
+            var session = Container.Resolve<IUrakawaSession>();
+            session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
+                ("Open metadata editor", "The metadata editor modal dialog is opening.");
+   
+            windowPopup.ShowModal();
+                    
+        }
+        void OnDialogClosed(object sender, System.EventArgs e)
+        {
+            ((PopupModalWindow)sender).Closed -= new System.EventHandler(OnDialogClosed);
+            //end the transaction
+            var session = Container.Resolve<IUrakawaSession>();
+            session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+        }
+
+        
         #endregion Commands
         
       
@@ -142,44 +163,37 @@ namespace Tobi.Modules.MetadataPane
                 {
                     if (m_Metadatas == null)
                     {
+                        Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            
                         m_Metadatas = new ObservableMetadataCollection
-                            (session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy,
-                            SupportedMetadata_Z39862005.MetadataList);
-                        session.DocumentProject.Presentations.Get(0).Metadatas.ObjectAdded += m_Metadatas.OnMetadataAdded;
-                        session.DocumentProject.Presentations.Get(0).Metadatas.ObjectRemoved += m_Metadatas.OnMetadataDeleted;
+                            (presentation.Metadatas.ContentsAs_ListCopy,
+                            SupportedMetadata_Z39862005.MetadataList,
+                            presentation);
+                        presentation.Metadatas.ObjectAdded += m_Metadatas.OnMetadataAdded;
+                        presentation.Metadatas.ObjectRemoved += m_Metadatas.OnMetadataDeleted;
                     }
                 }
                 return m_Metadatas;
             }
         }
 
-        //make sure that changes to the data model are reflected in this module
-        public void CreateFakeData()
-        {
-            var session = Container.Resolve<IUrakawaSession>();
-
-            List<Metadata> list = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-            Metadata metadata = list.Find(s => s.Name == "dc:Title");
-            if (metadata != null)
-            {
-                metadata.Content = "Fake book about fake things";
-                metadata.Name = "dtb:sourceDate";
-            }
-        }
-
         public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
             var session = Container.Resolve<IUrakawaSession>();
-            session.DocumentProject.Presentations.Get(0).Metadatas.Remove(metadata.UrakawaMetadata);
+
+            MetadataRemoveCommand cmd = new MetadataRemoveCommand();
+            cmd.Init(metadata.UrakawaMetadata, session.DocumentProject.Presentations.Get(0));
+            session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(cmd);
         }
 
         public void AddEmptyMetadata()
         {
             Metadata metadata = new Metadata {Name = "", Content = ""};
-
             var session = Container.Resolve<IUrakawaSession>();
-            ObjectListProvider<Metadata> list = session.DocumentProject.Presentations.Get(0).Metadatas;
-            list.Insert(list.Count, metadata);
+            
+            MetadataAddCommand cmd = new MetadataAddCommand();
+            cmd.Init(metadata, session.DocumentProject.Presentations.Get(0));
+            session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(cmd);
         }
 
         
@@ -199,12 +213,25 @@ namespace Tobi.Modules.MetadataPane
         }
 
         
-        public string GetDebugStringForMetaData()
+        public string GetViewModelDebugStringForMetaData()
+        {
+            string data = "";
+            
+            //iterate through our observable collection
+            foreach (NotifyingMetadataItem m in this.Metadatas)
+            {
+                data += string.Format("{0} = {1}\n", m.Name, m.Content);
+            }
+            return data;
+        }
+
+        public string GetDataModelDebugStringForMetaData()
         {
             string data = "";
             var session = Container.Resolve<IUrakawaSession>();
-
-            foreach (Metadata m in session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy)
+            List<Metadata> list = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
+            //iterate through the SDK metadata
+            foreach (Metadata m in list)
             {
                 data += string.Format("{0} = {1}\n", m.Name, m.Content);
             }
@@ -212,11 +239,11 @@ namespace Tobi.Modules.MetadataPane
         }
 
         private NotifyingMetadataItem m_SelectedMetadata;
-        public NotifyingMetadataItem SelectedMetadata 
-        { 
+        public NotifyingMetadataItem SelectedMetadata
+        {
             get
             {
-                return m_SelectedMetadata;    
+                return m_SelectedMetadata;
             }
             set
             {

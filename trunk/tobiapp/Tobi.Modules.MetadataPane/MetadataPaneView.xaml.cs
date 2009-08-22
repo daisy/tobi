@@ -106,9 +106,15 @@ namespace Tobi.Modules.MetadataPane
             ViewModel.ValidateMetadata();
         }
 
+        private void Whats_In_The_View_Model_Button_Click(object sender, RoutedEventArgs e)
+        {
+            string metas = ViewModel.GetViewModelDebugStringForMetaData();
+            MessageBox.Show(metas);
+        }
+
         private void Whats_In_The_Data_Model_Button_Click(object sender, RoutedEventArgs e)
         {
-            string metas = ViewModel.GetDebugStringForMetaData();
+            string metas = ViewModel.GetDataModelDebugStringForMetaData();
             MessageBox.Show(metas);
         }
     }
