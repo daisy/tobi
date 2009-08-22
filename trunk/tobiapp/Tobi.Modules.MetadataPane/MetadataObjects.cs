@@ -1,8 +1,4 @@
 using Tobi.Common.MVVM;
-using Tobi.Common;
-using Tobi.Common.MVVM.Command;
-
-using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using urakawa;
@@ -10,8 +6,6 @@ using urakawa.metadata;
 using urakawa.events.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
-using urakawa.undo;
-using System;
 
 namespace Tobi.Modules.MetadataPane
 {
