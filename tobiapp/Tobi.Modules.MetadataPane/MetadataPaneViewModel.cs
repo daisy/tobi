@@ -12,8 +12,6 @@ using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
-using urakawa.command;
-using urakawa.undo;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -182,7 +180,7 @@ namespace Tobi.Modules.MetadataPane
             var session = Container.Resolve<IUrakawaSession>();
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
             MetadataRemoveCommand cmd = presentation.CommandFactory.CreateMetadataRemoveCommand
-                (metadata.UrakawaMetadata, presentation);
+                (metadata.UrakawaMetadata);
             presentation.UndoRedoManager.Execute(cmd);
         }
 
@@ -192,7 +190,7 @@ namespace Tobi.Modules.MetadataPane
             var session = Container.Resolve<IUrakawaSession>();
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
-                (metadata, presentation);
+                (metadata);
             presentation.UndoRedoManager.Execute(cmd);
         }
 
