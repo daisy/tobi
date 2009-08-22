@@ -191,6 +191,8 @@
         
         <Button Click="Whats_In_The_Data_Model_Button_Click" Grid.Column="0" Grid.Row="3"
                 Content="What's in the data model?"/>
+        <Button Click="Whats_In_The_View_Model_Button_Click" Grid.Column="1" Grid.Row="3"
+                Content="What's in the view model?"/>
     </Grid>
     
     <!-- this datagrid shows the metadata -->

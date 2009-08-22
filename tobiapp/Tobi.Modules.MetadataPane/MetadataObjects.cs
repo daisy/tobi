@@ -1,4 +1,7 @@
 using Tobi.Common.MVVM;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
+
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -6,39 +9,37 @@ using urakawa;
 using urakawa.metadata;
 using urakawa.events.metadata;
 using urakawa.metadata.daisy;
+using urakawa.commands;
+using urakawa.undo;
 using System;
 
 namespace Tobi.Modules.MetadataPane
-{   
+{
+    // NotifyingMetadataItem is a wrapper around basic urakawa.Metadata
+    // it has a MetadataDefinition, it validates itself
+    // and it raises PropertyChanged notifications
     public class NotifyingMetadataItem : PropertyChangedNotifyBase
     {
-        private Metadata m_Metadata;
-       
+        
         public MetadataDefinition Definition
         {
-            get
-            {
-                return SupportedMetadata_Z39862005.GetMetadataDefinition(this.Name, true);
-            }
+            get {return SupportedMetadata_Z39862005.GetMetadataDefinition(this.Name, true);}
         }
-        
-        public Metadata UrakawaMetadata
-        {
-            get
-            {
-                return m_Metadata;
-            }
-        }
+
+        public Metadata UrakawaMetadata { get; private set; }
+        public ObservableMetadataCollection ParentCollection{get; private set;}
         //copy constructor
         public NotifyingMetadataItem(NotifyingMetadataItem notifyingMetadataItem):
-            this(notifyingMetadataItem.UrakawaMetadata)
+            this(notifyingMetadataItem.UrakawaMetadata, notifyingMetadataItem.ParentCollection)
         {   
         }
-        public NotifyingMetadataItem(Metadata metadata)
+        public NotifyingMetadataItem(Metadata metadata, ObservableMetadataCollection parentCollection)
         {
-            m_Metadata = metadata;
-            m_Metadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
-            m_Metadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
+            UrakawaMetadata = metadata;
+            UrakawaMetadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
+            UrakawaMetadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
+            ParentCollection = parentCollection;
+
             Validate();
         }
 
@@ -48,8 +49,8 @@ namespace Tobi.Modules.MetadataPane
             get
             {
                 return m_IsValid;
-            } 
-            set
+            }
+            private set
             {
                 if (m_IsValid != value)
                 {
@@ -100,19 +101,14 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return m_Metadata.Content;
+                return UrakawaMetadata.Content;
             }
             set
             {
-                if (m_Metadata.Content == value) return;
-
-                //we have to protect the Urakawa SDK from null metadata values ... 
-                if (value != null)
-                {
-                    m_Metadata.Content = value;
-                    RaisePropertyChanged(() => Content);
-                }
-
+                if (value == null) return;
+                MetadataSetContentCommand cmd = new MetadataSetContentCommand();
+                cmd.Init(UrakawaMetadata, value);
+                ParentCollection.UrakawaPresentation.UndoRedoManager.Execute(cmd);
             }
         }
 
@@ -120,19 +116,14 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return m_Metadata.Name;
+                return UrakawaMetadata.Name;
             }
             set
             {
-                if (m_Metadata.Name == value) return;
-                //we have to protect the Urakawa SDK from null metadata values ... 
-                if (value != null)
-                {
-                    m_Metadata.Name = value;
-                    RaisePropertyChanged(() => Name);
-                    RaisePropertyChanged(() => Definition);
-                    
-                }
+                if (value == null) return;
+                MetadataSetNameCommand cmd = new MetadataSetNameCommand();
+                cmd.Init(UrakawaMetadata, value);
+                ParentCollection.UrakawaPresentation.UndoRedoManager.Execute(cmd);
             }
         }
 
@@ -148,29 +139,28 @@ namespace Tobi.Modules.MetadataPane
         }
 
         internal void RemoveEvents()
-        {
-            m_Metadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-            m_Metadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+        {   
+            UrakawaMetadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+            UrakawaMetadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
         }
     }
 
 
     public class ObservableMetadataCollection : ObservableCollection<NotifyingMetadataItem>
     {
-        private List<MetadataDefinition> m_Definitions;
-        public List<MetadataDefinition> Definitions 
-        { 
-            get
-            {
-                return m_Definitions;
-            }
-        }
-        public ObservableMetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
+        public List<MetadataDefinition> Definitions {get; private set;}
+        public Presentation UrakawaPresentation { get; private set; }
+
+        //the Presentation is used by the NotifyingMetadataItem objects so they can use the UndoRedo manager.
+        public ObservableMetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions,
+            Presentation presentation)
         {
-            m_Definitions = definitions;
+            Definitions = definitions;
+            UrakawaPresentation = presentation;
+            //build this observable collection from the source list of urakawa.Metadata objects
             foreach (Metadata metadata in metadatas)
             {
-                _addItem(metadata);
+                addItem(metadata);
             }
         }
 
@@ -179,9 +169,9 @@ namespace Tobi.Modules.MetadataPane
         {
             foreach (NotifyingMetadataItem metadata in this)
             {
-                if (metadata.Content == ev.m_RemovedObject.Content &&
-                    metadata.Name == ev.m_RemovedObject.Name)
+                if (metadata.UrakawaMetadata == ev.m_RemovedObject)
                 {
+                    //reflect the removal in this observable collection
                     this.Remove(metadata);
                     metadata.RemoveEvents();
                     break;
@@ -191,17 +181,17 @@ namespace Tobi.Modules.MetadataPane
 
         public void OnMetadataAdded(object sender, ObjectAddedEventArgs<Metadata> ev)
         {
-            _addItem(ev.m_AddedObject);
+            //reflect the addition in this observable collection                    
+            addItem(ev.m_AddedObject);
         }
         #endregion sdk-events
 
-        /// <summary>
-        /// all new item additions end up here
-        /// </summary>
-        /// <param name="metadata"></param>
-        private void _addItem(Metadata metadata)
+        // all new item additions end up here
+        // it was useful during testing when more than one action was taken during an add, 
+        // but perhaps now is redundant? will let it stay in for now.
+        private void addItem(Metadata metadata)
         {
-            this.Add(new NotifyingMetadataItem(metadata));       
+            this.Add(new NotifyingMetadataItem(metadata, this));
         }
     }
 }
