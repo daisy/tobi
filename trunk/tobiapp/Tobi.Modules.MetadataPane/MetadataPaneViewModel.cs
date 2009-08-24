@@ -12,6 +12,7 @@ using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
+using urakawa.xuk;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -219,6 +220,12 @@ namespace Tobi.Modules.MetadataPane
             foreach (NotifyingMetadataItem m in this.Metadatas)
             {
                 data += string.Format("{0} = {1}\n", m.Name, m.Content);
+
+                foreach (var optAttrName in m.UrakawaMetadata.OptionalAttributeNames)
+                {
+                    var optAttrValue = m.UrakawaMetadata.GetOptionalAttributeValue(optAttrName);
+                    data += string.Format("-- {0} = {1}\n", optAttrName, optAttrValue);
+                }
             }
             return data;
         }
@@ -232,6 +239,12 @@ namespace Tobi.Modules.MetadataPane
             foreach (Metadata m in list)
             {
                 data += string.Format("{0} = {1}\n", m.Name, m.Content);
+
+                foreach (var optAttrName in m.OptionalAttributeNames)
+                {
+                    var optAttrValue = m.GetOptionalAttributeValue(optAttrName);
+                    data += string.Format("-- {0} = {1}\n", optAttrName, optAttrValue);
+                }
             }
             return data;
         }
