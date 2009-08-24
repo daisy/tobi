@@ -2,71 +2,89 @@
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.commands;
-using urakawa.core;
-using urakawa.events;
 using urakawa.events.undo;
 
 namespace Tobi.Modules.AudioPane
 {
     public partial class AudioPaneViewModel
     {
-        private void UndoRedoManagerChanged(TreeNodeSetManagedAudioMediaCommand command)
+        private void UndoRedoManagerChanged(TreeNodeSetManagedAudioMediaCommand command, bool done)
         {
-            TreeNode treeNode = command.TreeNode;
-
-            if (treeNode == null)
-            {
-                return;
-            }
-
-            if (AudioPlaybackStreamKeepAlive)
-            {
-                ensurePlaybackStreamIsDead();
-                m_CurrentAudioStreamProvider();
-            }
-
-            double timeOffset = getTimeOffset(treeNode, command.ManagedAudioMedia);
-
-            m_StateToRestore = new StateToRestore
-            {
-                SelectionBegin = -1,
-                SelectionEnd = -1,
-                LastPlayHeadTime = timeOffset
-            };
-
-            bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(treeNode);
+            bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(command.TreeNode);
 
             if (!isTreeNodeInAudioWaveForm)
             {
+                if (done)
+                {
+                    m_StateToRestore = new StateToRestore
+                    {
+                        SelectionBegin = 0,
+                        SelectionEnd = command.ManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble,
+                        LastPlayHeadTime = 0
+                    };
+                }
+
                 Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.TreeNode);
             }
             else
             {
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                    m_CurrentAudioStreamProvider();
+                }
+
+                if (done)
+                {
+                    double timeOffset = getTimeOffset(command.TreeNode, command.ManagedAudioMedia);
+
+                    m_StateToRestore = new StateToRestore
+                                           {
+                                               SelectionBegin = timeOffset,
+                                               SelectionEnd = timeOffset + command.ManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble,
+                                               LastPlayHeadTime = timeOffset
+                                           };
+                }
+
                 CommandRefresh.Execute(null);
             }
         }
 
-        private void UndoRedoManagerChanged(ManagedAudioMediaInsertDataCommand command, UndoRedoManagerEventArgs e)
+        private void UndoRedoManagerChanged(ManagedAudioMediaInsertDataCommand command, bool done)
         {
-            TreeNode treeNode = command.TreeNode;
-
-            if (treeNode == null)
+            bool bCurrentTreeNodeNeedsRefresh = false;
+            if (State.CurrentTreeNode != command.CurrentTreeNode)
             {
-                return;
-            }
+                bCurrentTreeNodeNeedsRefresh = true;
 
-            if (AudioPlaybackStreamKeepAlive)
-            {
-                ensurePlaybackStreamIsDead();
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                }
+
+                State.ResetAll();
+                State.CurrentTreeNode = command.CurrentTreeNode;
+                m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
+
                 m_CurrentAudioStreamProvider();
             }
-
-            double timeOffset = getTimeOffset(treeNode, command.ManagedAudioMediaTarget);
-
-            if (e is DoneEventArgs || e is ReDoneEventArgs)
+            else
             {
-                double begin = command.TimeInsert.TimeAsMillisecondFloat + timeOffset;
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                    m_CurrentAudioStreamProvider();
+                }
+            }
+
+            bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(command.TreeNode);
+
+            double timeOffset = isTreeNodeInAudioWaveForm ? getTimeOffset(command.TreeNode, command.ManagedAudioMediaTarget) : 0;
+
+            if (done)
+            {
+                double begin = timeOffset + command.TimeInsert.TimeAsMillisecondFloat;
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBegin = begin,
@@ -74,22 +92,41 @@ namespace Tobi.Modules.AudioPane
                     LastPlayHeadTime = begin
                 };
             }
-            else if (e is UnDoneEventArgs)
+            else
             {
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBegin = -1,
                     SelectionEnd = -1,
-                    LastPlayHeadTime = command.TimeInsert.TimeAsMillisecondFloat + timeOffset
+                    LastPlayHeadTime = timeOffset + command.TimeInsert.TimeAsMillisecondFloat
                 };
             }
 
-            bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(treeNode);
-
-            if (!isTreeNodeInAudioWaveForm)
+            if (bCurrentTreeNodeNeedsRefresh)
             {
-                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                StateToRestore? state = new StateToRestore
+                {
+                    SelectionBegin = m_StateToRestore.Value.SelectionBegin,
+                    SelectionEnd = m_StateToRestore.Value.SelectionEnd,
+                    LastPlayHeadTime = m_StateToRestore.Value.LastPlayHeadTime
+                };
+
+                State.CurrentTreeNode = null;
+
+                Logger.Log(
+                    "-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
+                    Category.Debug, Priority.Medium);
+                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
+
+                m_StateToRestore = state;
+            }
+
+            if (State.CurrentSubTreeNode != command.TreeNode)
+            {
+                Logger.Log(
+                    "-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
+                    Category.Debug, Priority.Medium);
+                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.TreeNode);
             }
             else
             {
@@ -97,23 +134,18 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
+        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
-            bool refresh = e is TransactionStartedEventArgs
-                           || e is TransactionEndedEventArgs
-                           || e is TransactionCancelledEventArgs
-                           || e is DoneEventArgs
-                           || e is UnDoneEventArgs
-                           || e is ReDoneEventArgs;
+            bool refresh = eventt is DoneEventArgs
+                           || eventt is UnDoneEventArgs
+                           || eventt is ReDoneEventArgs;
             if (!refresh)
             {
                 Debug.Fail("This should never happen !!");
                 return;
             }
-
-            var eventt = (UndoRedoManagerEventArgs)e;
 
             var presenter = Container.Resolve<IShellPresenter>();
             presenter.PlayAudioCueTockTock();
@@ -123,18 +155,21 @@ namespace Tobi.Modules.AudioPane
                 View.ResetAll();
             }
 
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs;
+
             if (eventt.Command is ManagedAudioMediaInsertDataCommand)
             {
                 var command = (ManagedAudioMediaInsertDataCommand)eventt.Command;
 
-                UndoRedoManagerChanged(command, eventt);
+                UndoRedoManagerChanged(command, done);
                 return;
             }
-            else if (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
+
+            if (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
             {
                 var command = (TreeNodeSetManagedAudioMediaCommand)eventt.Command;
 
-                UndoRedoManagerChanged(command);
+                UndoRedoManagerChanged(command, done);
                 return;
             }
             // TODO: TreeNode delete command, etc. (make sure CurrentTreeNode / CurrentSubTreeNode is up to date)

@@ -435,6 +435,8 @@ namespace Tobi.Modules.AudioPane
         // not including the PCM format RIFF header.
         // The function also calculates the initial StateData
         private AudioPlayer.StreamProviderDelegate m_CurrentAudioStreamProvider;
+        private AudioPlayer.StreamProviderDelegate m_AudioStreamProvider_TreeNode;
+        private AudioPlayer.StreamProviderDelegate m_AudioStreamProvider_File;
 
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
@@ -1012,36 +1014,8 @@ namespace Tobi.Modules.AudioPane
 
             State.FilePath = path;
 
-            m_CurrentAudioStreamProvider = () =>
-            {
-                if (State.Audio.PlayStream == null)
-                {
-                    if (String.IsNullOrEmpty(State.FilePath))
-                    {
-                        State.ResetAll();
-                        return null;
-                    }
-                    if (!File.Exists(State.FilePath))
-                    {
-                        State.ResetAll();
-                        return null;
-                    }
-                    try
-                    {
-                        State.Audio.PlayStream = File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    }
-                    catch (Exception ex)
-                    {
-                        State.ResetAll();
-
-                        m_LastPlayHeadTime = -1;
-                        IsWaveFormLoading = false;
-                        return null;
-                    }
-                }
-                return State.Audio.PlayStream;
-            };
-
+            m_CurrentAudioStreamProvider = m_AudioStreamProvider_File;
+            
             if (m_CurrentAudioStreamProvider() == null)
             {
                 State.ResetAll();
