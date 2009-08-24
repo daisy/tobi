@@ -39,6 +39,91 @@ namespace Tobi.Modules.AudioPane
             Logger = logger;
 
             Initialize();
+
+            m_AudioStreamProvider_File = () =>
+            {
+                if (State.Audio.PlayStream == null)
+                {
+                    if (String.IsNullOrEmpty(State.FilePath))
+                    {
+                        State.ResetAll();
+                        return null;
+                    }
+                    if (!File.Exists(State.FilePath))
+                    {
+                        State.ResetAll();
+                        return null;
+                    }
+                    try
+                    {
+                        State.Audio.PlayStream = File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    }
+                    catch (Exception ex)
+                    {
+                        State.ResetAll();
+
+                        m_LastPlayHeadTime = -1;
+                        IsWaveFormLoading = false;
+                        return null;
+                    }
+                }
+                return State.Audio.PlayStream;
+            };
+
+            m_AudioStreamProvider_TreeNode = () =>
+            {
+                if (State.CurrentTreeNode == null) return null;
+
+                if (State.Audio.PlayStream == null)
+                {
+                    StreamWithMarkers? sm = State.CurrentTreeNode.OpenPcmInputStreamOfManagedAudioMediaFlattened();
+
+                    if (sm == null)
+                    {
+                        TreeNode ancerstor = State.CurrentTreeNode.GetFirstAncestorWithManagedAudio();
+                        if (ancerstor != null)
+                        {
+                            StreamWithMarkers? sma = ancerstor.OpenPcmInputStreamOfManagedAudioMedia();
+                            if (sma != null)
+                            {
+                                TreeNode theCurrentSubTreeNode = State.CurrentTreeNode;
+                                State.CurrentTreeNode = ancerstor;
+
+                                State.Audio.PlayStream = sma.GetValueOrDefault().m_Stream;
+                                State.Audio.PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
+
+                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+
+                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(State.CurrentTreeNode);
+
+                                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+
+                                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        State.Audio.PlayStream = sm.GetValueOrDefault().m_Stream;
+                        State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
+                    }
+
+                    if (State.Audio.PlayStream == null)
+                    {
+                        //State.ResetAll();
+                        //m_LastPlayHeadTime = -1;
+                        //IsWaveFormLoading = false;
+                        return null;
+                    }
+
+                    //if (State.Audio.PlayStreamMarkers.Count == 1)
+                    //{
+                    //    State.CurrentSubTreeNode = State.CurrentTreeNode;
+                    //}
+                }
+
+                return State.Audio.PlayStream;
+            };
         }
 
         ~AudioPaneViewModel()
@@ -236,60 +321,7 @@ namespace Tobi.Modules.AudioPane
 
             State.CurrentTreeNode = node;
 
-            m_CurrentAudioStreamProvider = () =>
-            {
-                if (State.CurrentTreeNode == null) return null;
-
-                if (State.Audio.PlayStream == null)
-                {
-                    StreamWithMarkers? sm = State.CurrentTreeNode.OpenPcmInputStreamOfManagedAudioMediaFlattened();
-
-                    if (sm == null)
-                    {
-                        TreeNode ancerstor = State.CurrentTreeNode.GetFirstAncestorWithManagedAudio();
-                        if (ancerstor != null)
-                        {
-                            StreamWithMarkers? sma = ancerstor.OpenPcmInputStreamOfManagedAudioMedia();
-                            if (sma != null)
-                            {
-                                TreeNode theCurrentSubTreeNode = State.CurrentTreeNode;
-                                State.CurrentTreeNode = ancerstor;
-
-                                State.Audio.PlayStream = sma.GetValueOrDefault().m_Stream;
-                                State.Audio.PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
-
-                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
-
-                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(State.CurrentTreeNode);
-
-                                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
-
-                                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        State.Audio.PlayStream = sm.GetValueOrDefault().m_Stream;
-                        State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
-                    }
-
-                    if (State.Audio.PlayStream == null)
-                    {
-                        //State.ResetAll();
-                        //m_LastPlayHeadTime = -1;
-                        //IsWaveFormLoading = false;
-                        return null;
-                    }
-
-                    //if (State.Audio.PlayStreamMarkers.Count == 1)
-                    //{
-                    //    State.CurrentSubTreeNode = State.CurrentTreeNode;
-                    //}
-                }
-
-                return State.Audio.PlayStream;
-            };
+            m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
 
             if (m_CurrentAudioStreamProvider() == null)
             {
@@ -314,7 +346,9 @@ namespace Tobi.Modules.AudioPane
 
         private void OnProjectUnLoaded(Project project)
         {
-            project.Presentations.Get(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             OnProjectLoaded(null);
         }
 
@@ -329,7 +363,9 @@ namespace Tobi.Modules.AudioPane
             //shell.DocumentProject
             if (project != null)
             {
-                project.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
             }
             else
@@ -859,7 +895,8 @@ namespace Tobi.Modules.AudioPane
                         var command = nodeRecord.Presentation.CommandFactory.
                             CreateManagedAudioMediaInsertDataCommand(
                             nodeRecord, managedAudioMedia, recordingManagedAudioMedia,
-                            new Time(timeOffset));
+                            new Time(timeOffset),
+                            State.CurrentTreeNode);
 
                         nodeRecord.Presentation.UndoRedoManager.Execute(command);
 
@@ -905,7 +942,8 @@ namespace Tobi.Modules.AudioPane
                                 var command = nodeRecord.Presentation.CommandFactory.
                                     CreateManagedAudioMediaInsertDataCommand(
                                     nodeRecord, manangedMediaSeqItem, recordingManagedAudioMedia,
-                                    new Time(timeOffset));
+                                    new Time(timeOffset),
+                                    State.CurrentTreeNode);
 
                                 nodeRecord.Presentation.UndoRedoManager.Execute(command);
 

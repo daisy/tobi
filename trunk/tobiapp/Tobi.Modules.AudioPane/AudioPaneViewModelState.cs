@@ -303,7 +303,7 @@ namespace Tobi.Modules.AudioPane
 
             public bool IsTreeNodeShownInAudioWaveForm(TreeNode treeNode)
             {
-                if (CurrentTreeNode == null || !Audio.HasContent)
+                if (treeNode == null)
                 {
                     return false;
                 }
@@ -313,10 +313,16 @@ namespace Tobi.Modules.AudioPane
                     return true;
                 }
 
+                if (!Audio.HasContent)
+                {
+                    return false;
+                }
+
                 foreach (TreeNodeAndStreamDataLength marker in Audio.PlayStreamMarkers)
                 {
                     if (marker.m_TreeNode == treeNode) return true;
                 }
+
                 return false;
             }
 

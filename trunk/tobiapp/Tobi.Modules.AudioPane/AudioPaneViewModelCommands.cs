@@ -73,7 +73,7 @@ namespace Tobi.Modules.AudioPane
 
                     StartWaveFormLoadTimer(500, IsAutoPlay);
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded);
+                obj => !IsWaveFormLoading); //IsAudioLoaded
 
             shellPresenter.RegisterRichCommand(CommandRefresh);
             //
