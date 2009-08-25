@@ -1,10 +1,23 @@
 ﻿using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Tobi.Common.UI
 {
+    public class TextBoxEx : TextBox
+    {
+        public AutomationPeer m_AutomationPeer;
+
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            m_AutomationPeer = base.OnCreateAutomationPeer();
+            return m_AutomationPeer;
+        }
+    }
+
     public static class FocusHelper
     {
         public static void Focus(DependencyObject obj, UIElement ui)
@@ -31,6 +44,12 @@ namespace Tobi.Common.UI
                                           tbSel.length = tb.SelectionLength;
 
                                           tb.SetValue(AutomationProperties.NameProperty, tb.SelectedText);
+
+                                          if (tb is TextBoxEx)
+                                          {
+                                              var tbx = (TextBoxEx) tb;
+                                              tbx.m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
+                                          }
                                       });
 
             tb.TextChanged += ((sender, e) =>

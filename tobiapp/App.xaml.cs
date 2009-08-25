@@ -286,7 +286,7 @@ c.Execute();
 
 
 
-            var labelMsg = new TextBox
+            var labelMsg = new TextBoxEx
             {
                 FontWeight = FontWeights.ExtraBlack,
                 Margin = margin,
