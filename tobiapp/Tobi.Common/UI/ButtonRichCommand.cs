@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
@@ -60,6 +61,8 @@ namespace Tobi.Common.UI
             button.ToolTip = command.LongDescription +
                              (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
 
+            button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
+            //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
             if (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription))
             {
@@ -86,9 +89,12 @@ namespace Tobi.Common.UI
                                           Path = new PropertyPath("IconMedium")
                                       };
 
-                    var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
-                    ((ImageAndTextPlaceholder) button.Tag).m_TextHost.Content = command.ShortDescription;
+                    //var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
+                    ((ImageAndTextPlaceholder)button.Tag).m_TextHost.Content = command.ShortDescription;
                     button.ToolTip = command.LongDescription;
+
+                    button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
+                    //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
                 }
                 else
                 {
@@ -102,7 +108,7 @@ namespace Tobi.Common.UI
                                         Orientation = Orientation.Horizontal
                                     };
 
-                    var imageHost = new ContentControl();
+                    var imageHost = new ContentControl { Focusable = false };
 
                     var binding = new Binding
                                       {
@@ -128,6 +134,9 @@ namespace Tobi.Common.UI
                     button.Content = panel;
 
                     button.ToolTip = command.LongDescription;
+
+                    button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
+                    //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
                     button.Tag = new ImageAndTextPlaceholder
                                      {

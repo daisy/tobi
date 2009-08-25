@@ -7,7 +7,9 @@ using System.Media;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
@@ -286,19 +288,35 @@ c.Execute();
 
             var labelMsg = new TextBox
             {
-                AcceptsReturn = true,
                 FontWeight = FontWeights.ExtraBlack,
-                Text = UserInterfaceStrings.UnhandledException,
                 Margin = margin,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 TextWrapping = TextWrapping.Wrap,
-                IsReadOnly = true,
                 BorderBrush = Brushes.Red,
                 BorderThickness = new Thickness(1),
                 SnapsToDevicePixels = true,
-                Padding = new Thickness(5)
+                Padding = new Thickness(5),
+                Text = UserInterfaceStrings.UnhandledException
             };
+
+            FocusHelper.ConfigureReadOnlyTextBoxHack(labelMsg, labelMsg.Text, new FocusHelper.TextBoxSelection());
+            
+
+            //var binding = new Binding
+            //                  {
+            //                      Mode = BindingMode.OneWay,
+            //                      Source = UserInterfaceStrings.UnhandledException,
+            //                      Path = new PropertyPath(".")
+            //                  };
+            //var expr = labelMsg.SetBinding(TextBox.TextProperty, binding);
+
+            //labelMsg.PreviewKeyDown += ((sender, e) =>
+            //                              {
+            //                                  if (!(e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Home || e.Key == Key.End || e.Key == Key.PageDown || e.Key == Key.PageUp || e.Key == Key.Tab))
+            //                                      e.Handled = true;
+            //                              });
+
             labelMsg.SetValue(DockPanel.DockProperty, Dock.Top);
             panel.Children.Add(labelMsg);
 
@@ -320,18 +338,18 @@ c.Execute();
 
             var labelSummary = new TextBox
             {
-                AcceptsReturn = true,
                 Text = exMessage,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 TextWrapping = TextWrapping.Wrap,
-                IsReadOnly = true,
                 Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = null,
                 BorderThickness = new Thickness(0),
                 SnapsToDevicePixels = true,
                 Padding = new Thickness(5)
             };
+
+            FocusHelper.ConfigureReadOnlyTextBoxHack(labelSummary, labelSummary.Text, new FocusHelper.TextBoxSelection());
 
             var scroll = new ScrollViewer
             {
@@ -367,18 +385,18 @@ c.Execute();
 
             var stackTrace = new TextBox
             {
-                AcceptsReturn = true,
-                                     Text = exStackTrace,
-                                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                                     VerticalAlignment = VerticalAlignment.Stretch,
-                                     TextWrapping = TextWrapping.Wrap,
-                                     IsReadOnly = true,
+                Text = exStackTrace,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                TextWrapping = TextWrapping.Wrap,
                 Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = null,
                 BorderThickness = new Thickness(0),
-                                     SnapsToDevicePixels = true,
-                                     Padding = new Thickness(5)
-                                 };
+                SnapsToDevicePixels = true,
+                Padding = new Thickness(5)
+            };
+
+            FocusHelper.ConfigureReadOnlyTextBoxHack(stackTrace, stackTrace.Text, new FocusHelper.TextBoxSelection());
 
             var details = new ScrollViewer
                              {
