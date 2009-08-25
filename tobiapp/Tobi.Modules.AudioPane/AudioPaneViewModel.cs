@@ -439,6 +439,59 @@ namespace Tobi.Modules.AudioPane
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOn("IsSelectionSet")]
+        public bool TimeStringSelectionVisible
+        {
+            get
+            {
+                return IsAudioLoaded && IsSelectionSet;
+            }
+        }
+
+        [NotifyDependsOn("TimeStringSelectionVisible")]
+        public string TimeStringSelectionStart
+        {
+            get
+            {
+                if (!TimeStringSelectionVisible)
+                {
+                    return "";
+                }
+                var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionBegin);
+                return formatTimeSpan(timeSpan);
+            }
+        }
+
+        [NotifyDependsOn("TimeStringSelectionVisible")]
+        public string TimeStringSelectionEnd
+        {
+            get
+            {
+                if (!TimeStringSelectionVisible)
+                {
+                    return "";
+                }
+
+                var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionEnd);
+                return formatTimeSpan(timeSpan);
+            }
+        }
+
+        [NotifyDependsOn("TimeStringSelectionVisible")]
+        public string TimeStringSelectionDur
+        {
+            get
+            {
+                if (!TimeStringSelectionVisible)
+                {
+                    return "";
+                }
+                var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionEnd - State.Selection.SelectionBegin);
+                return formatTimeSpan(timeSpan);
+            }
+        }
+
+        [NotifyDependsOn("IsAudioLoaded")]
         [NotifyDependsOn("DataLength")]
         public string TimeStringTotalWaveform
         {
@@ -449,7 +502,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
                 var timeSpan = TimeSpan.FromMilliseconds(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
-                return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                return formatTimeSpan(timeSpan);
             }
         }
 
@@ -463,39 +516,87 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private static readonly PropertyChangedEventArgs m_TimeStringCurrentArgs
-            = new PropertyChangedEventArgs("TimeStringCurrent");
-        [NotifyDependsOn("IsPlaying")]
+        private string formatTimeSpan(TimeSpan timeSpan)
+        {
+            if (timeSpan.Hours != 0)
+            {
+                return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.Hours, timeSpan.Minutes,
+                                     timeSpan.Seconds, timeSpan.Milliseconds);
+            }
+            if (timeSpan.Minutes != 0)
+            {
+                return string.Format("{0:00}:{1:00}:{2:000}", timeSpan.Minutes,
+                                     timeSpan.Seconds, timeSpan.Milliseconds);
+            }
+            return string.Format("{0:00}:{1:000}",
+                                     timeSpan.Seconds, timeSpan.Milliseconds);
+        }
+
+
+        [NotifyDependsOn("TimeStringSelectionEnd")]
+        [NotifyDependsOn("TimeStringSelectionStart")]
+        [NotifyDependsOn("TimeStringSelectionDur")]
+        public String TimeStringSelection
+        {
+            get
+            {
+                return "Selection: [" + TimeStringSelectionStart + " - " + TimeStringSelectionEnd + " (" + TimeStringSelectionDur + ")]";
+            }
+        }
+
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsAudioLoaded")]
+        public bool TimeStringCurrentVisible
+        {
+            get
+            {
+                return IsAudioLoaded || IsRecording || IsMonitoring;
+            }
+        }
+
+        private static readonly PropertyChangedEventArgs m_TimeStringCurrentArgs
+        = new PropertyChangedEventArgs("TimeStringCurrent");
+        [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOn("TimeStringCurrentVisible")]
+        [NotifyDependsOn("TimeStringTotalWaveform")]
         [NotifyDependsOnFast("m_LastPlayHeadTimeArgs", "m_TimeStringCurrentArgs")]
         [NotifyDependsOnFast("m_RecorderCurrentDurationArgs", "m_TimeStringCurrentArgs")]
         public String TimeStringCurrent
         {
             get
             {
+                string strToDisplay = null;
+
                 if (IsRecording || IsMonitoring)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
-                    return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
-                }
+                    strToDisplay = formatTimeSpan(timeSpan);
 
+                    return "[" + strToDisplay + "]";
+                }
+                
                 if (!IsAudioLoaded)
                 {
                     return "";
                 }
-
-                if (IsPlaying)
+                else if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTime);
-                    return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                    strToDisplay = formatTimeSpan(timeSpan);
                 }
-
-                if (m_Player.CurrentState == AudioPlayer.State.Paused || m_Player.CurrentState == AudioPlayer.State.Stopped)
+                else if (LastPlayHeadTime >= 0 && (
+                                                 m_Player.CurrentState == AudioPlayer.State.Paused ||
+                                                 m_Player.CurrentState == AudioPlayer.State.Stopped
+                                             ))
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);
-                    return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.TotalHours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                    strToDisplay = formatTimeSpan(timeSpan);
+                }
+
+                if (!String.IsNullOrEmpty(strToDisplay))
+                {
+                    return "Time: [" + strToDisplay + " / " + TimeStringTotalWaveform + "]";
                 }
 
                 return "";
@@ -811,10 +912,10 @@ namespace Tobi.Modules.AudioPane
 
                     ManagedAudioMedia recordingManagedAudioMedia = nodeRecord.Presentation.MediaFactory.CreateManagedAudioMedia();
 
-                    var mediaData = (WavAudioMediaData) nodeRecord.Presentation.MediaDataFactory.CreateAudioMediaData();
+                    var mediaData = (WavAudioMediaData)nodeRecord.Presentation.MediaDataFactory.CreateAudioMediaData();
 
                     recordingManagedAudioMedia.AudioMediaData = mediaData;
-                    
+
                     //Directory.GetParent(filePath).FullName
                     //bool recordedFileIsInDataDir = Path.GetDirectoryName(filePath) == nodeRecord.Presentation.DataProviderManager.DataFileDirectoryFullPath;
 

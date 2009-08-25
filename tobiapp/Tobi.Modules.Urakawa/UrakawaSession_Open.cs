@@ -151,7 +151,7 @@ namespace Tobi.Modules.Urakawa
                     Margin = new Thickness(0, 0, 0, 8),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Focusable = false
+                    Focusable = true,
                 };
                 var panel = new StackPanel
                 {

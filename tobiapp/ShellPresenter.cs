@@ -198,7 +198,20 @@ namespace Tobi
                 UserInterfaceStrings.ManageShortcuts_,
                 UserInterfaceStrings.ManageShortcuts_KEYS,
                 LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
-                obj => ManageShortcutsCommand_Executed(),
+                obj =>
+                {
+                    Logger.Log("ShellPresenter.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
+
+                    var windowPopup = new PopupModalWindow(this,
+                                                           UserInterfaceStrings.EscapeMnemonic(
+                                                               UserInterfaceStrings.ManageShortcuts),
+                                                           new KeyboardShortcuts(this),
+                                                           PopupModalWindow.DialogButtonsSet.Ok,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           true, 500, 600);
+
+                    windowPopup.ShowFloating(null);
+                },
                 obj => true);
 
             RegisterRichCommand(ManageShortcutsCommand);
@@ -861,21 +874,6 @@ namespace Tobi
                 m_listOfIconRichCommands3.Clear();
                 m_listOfIconRichCommands4.Clear();
             });
-        }
-
-        private void ManageShortcutsCommand_Executed()
-        {
-            Logger.Log("ShellPresenter.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
-
-            var windowPopup = new PopupModalWindow(this,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.ManageShortcuts),
-                                                   new KeyboardShortcuts(this),
-                                                   PopupModalWindow.DialogButtonsSet.Ok,
-                                                   PopupModalWindow.DialogButton.Ok,
-                                                   true, 500, 600);
-
-            windowPopup.ShowFloating(null);
         }
 
         private void exit()

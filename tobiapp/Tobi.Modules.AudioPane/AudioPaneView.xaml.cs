@@ -1150,5 +1150,10 @@ namespace Tobi.Modules.AudioPane
         {
             FocusHelper.Focus(this, FocusStart);
         }
+        
+        public void BringIntoFocusStatusBar()
+        {
+            FocusHelper.Focus(this, FocusStartStatusBar);
+        }
     }
 }

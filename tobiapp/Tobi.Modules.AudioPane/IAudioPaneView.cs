@@ -17,6 +17,7 @@
         // ReSharper restore InconsistentNaming
 
         void BringIntoFocus();
+        void BringIntoFocusStatusBar();
         void TimeMessageHide();
         void TimeMessageRefresh();
         void TimeMessageShow();

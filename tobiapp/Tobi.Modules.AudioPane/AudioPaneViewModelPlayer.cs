@@ -549,7 +549,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return State.Audio.HasContent && (View == null || View.BytesPerPixel > 0);
+                return State.Audio.HasContent; // && (View == null || View.BytesPerPixel > 0);
             }
         }
 
@@ -1032,6 +1032,16 @@ namespace Tobi.Modules.AudioPane
 
         [NotifyDependsOn("PcmFormatAlt")]
         [NotifyDependsOn("PcmFormat")]
+        public bool PcmFormatStringVisible
+        {
+            get
+            {
+                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
+                return pcmInfo != null;
+            }
+        }
+
+        [NotifyDependsOn("PcmFormatStringVisible")]
         public String PcmFormatString
         {
             get
