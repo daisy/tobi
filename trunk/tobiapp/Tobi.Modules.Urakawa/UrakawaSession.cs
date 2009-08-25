@@ -180,7 +180,7 @@ namespace Tobi.Modules.Urakawa
                     Margin = new Thickness(8, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
-                    Focusable = false,
+                    Focusable = true,
                     TextWrapping = TextWrapping.Wrap
                 };
 

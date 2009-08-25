@@ -1,0 +1,35 @@
+﻿<StackPanel x:Class="Tobi.Modules.AudioPane.AudioSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+            
+            
+        Orientation="Vertical"
+                    HorizontalAlignment="Left">
+  <StackPanel
+          Orientation="Horizontal">
+
+
+    <TextBlock x:Name="LabelOutputDevices" Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static Common:UserInterfaceStrings.ComboLabel_Playback}"/>
+    <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
+              SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
+              DisplayMemberPath="Name"
+              SelectedValuePath="Name"
+              Margin="2"
+              IsEnabled="{Binding CanSwapOutputDevice, Mode=OneWay}"
+              AutomationProperties.LabeledBy="{Binding ElementName=LabelOutputDevices}"/>
+
+  </StackPanel>
+  <StackPanel
+          Orientation="Horizontal">
+    <TextBlock x:Name="LabelInputDevices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static Common:UserInterfaceStrings.ComboLabel_Recording}"/>
+    <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
+              SelectedItem="{Binding InputDevice, Mode=TwoWay}"
+              DisplayMemberPath="Name"
+              SelectedValuePath="Name"
+              Margin="2"
+              IsEnabled="{Binding CanSwapInputDevice, Mode=OneWay}"
+              AutomationProperties.LabeledBy="{Binding ElementName=LabelInputDevices}"/>
+
+  </StackPanel>
+</StackPanel>

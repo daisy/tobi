@@ -18,6 +18,7 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandShowOptionsDialog { get; private set; }
 
         public RichDelegateCommand<object> CommandFocus { get; private set; }
+        public RichDelegateCommand<object> CommandFocusStatusBar { get; private set; }
         public RichDelegateCommand<object> CommandOpenFile { get; private set; }
         public RichDelegateCommand<object> CommandInsertFile { get; private set; }
         public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
@@ -32,6 +33,7 @@ namespace Tobi.Modules.AudioPane
         public RichDelegateCommand<object> CommandZoomFitFull { get; private set; }
         public RichDelegateCommand<object> CommandRefresh { get; private set; }
         public RichDelegateCommand<object> CommandAutoPlay { get; private set; }
+        public RichDelegateCommand<object> CommandAudioSettings { get; private set; }
         public RichDelegateCommand<object> CommandPlay { get; private set; }
         public RichDelegateCommand<object> CommandPlayPreviewLeft { get; private set; }
         public RichDelegateCommand<object> CommandPlayPreviewRight { get; private set; }
@@ -108,6 +110,30 @@ namespace Tobi.Modules.AudioPane
 
             shellPresenter.RegisterRichCommand(CommandZoomFitFull);
             //
+            //
+            CommandAudioSettings = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_Settings,
+                UserInterfaceStrings.Audio_Settings_,
+                null,
+                shellPresenter.LoadTangoIcon("audio-card"),
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandAudioSettings", Category.Debug, Priority.Medium);
+
+                    var windowPopup = new PopupModalWindow(shellPresenter,
+                                                           UserInterfaceStrings.EscapeMnemonic(
+                                                               UserInterfaceStrings.Audio_Settings),
+                                                           new AudioSettings(this),
+                                                           PopupModalWindow.DialogButtonsSet.Close,
+                                                           PopupModalWindow.DialogButton.Close,
+                                                           true, 500, 600);
+
+                    windowPopup.ShowFloating(null);
+                },
+                obj => true);
+
+            shellPresenter.RegisterRichCommand(CommandAudioSettings);
+            //
             CommandShowOptionsDialog = new RichDelegateCommand<object>(
                 UserInterfaceStrings.Audio_ShowOptions,
                 null,
@@ -148,6 +174,21 @@ namespace Tobi.Modules.AudioPane
                 obj => View != null);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
+            //
+            CommandFocusStatusBar = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Audio_FocusStatusBar,
+                null,
+                UserInterfaceStrings.Audio_FocusStatusBar_KEYS,
+                null,
+                obj =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandFocusStatusBar", Category.Debug, Priority.Medium);
+
+                    View.BringIntoFocusStatusBar();
+                },
+                obj => View != null);
+
+            shellPresenter.RegisterRichCommand(CommandFocusStatusBar);
             //
         }
 

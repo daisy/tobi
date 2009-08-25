@@ -68,6 +68,9 @@
     <Compile Include="AudioPaneViewModelUndoRedo.cs" />
     <Compile Include="AudioPaneView_WaveFormLoader.cs" />
     <Compile Include="AudioPaneView_WaveFormSelection.cs" />
+    <Compile Include="AudioSettings.xaml.cs">
+      <DependentUpon>AudioSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IAudioPaneView.cs" />
     <Compile Include="PeakMeterBarData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AudioPaneView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AudioSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

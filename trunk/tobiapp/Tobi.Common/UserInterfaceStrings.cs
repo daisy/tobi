@@ -43,6 +43,9 @@ namespace Tobi.Common
         public const string Audio_Focus = "Bring focus to the audio panel";
         public static KeyGesture Audio_Focus_KEYS = new KeyGesture(Key.A, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
 
+        public const string Audio_FocusStatusBar = "Bring focus to the audio status bar";
+        public static KeyGesture Audio_FocusStatusBar_KEYS = new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
+
 
         public const string FileSystem_MyComputer = "Computer drives";
         
@@ -277,6 +280,9 @@ namespace Tobi.Common
         public const string Audio_ZoomSelection = "_Zoom on selection";
         public const string Audio_ZoomSelection_ = "Zoom waveform selection into view";
         public static KeyGesture Audio_ZoomSelection_KEYS = new KeyGesture(Key.W, ModifierKeys.Control);
+
+        public const string Audio_Settings = "Audio se_ttings";
+        public const string Audio_Settings_ = "Settings for the audio player and recorder";
 
         public const string Audio_FitFull = "_Fit into view";
         public const string Audio_FitFull_ = "Fit the entire audio waveform into view";
