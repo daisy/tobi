@@ -286,21 +286,12 @@ c.Execute();
 
 
 
-            var labelMsg = new TextBoxEx
+            var labelMsg = new TextBoxEx(UserInterfaceStrings.UnhandledException)
             {
                 FontWeight = FontWeights.ExtraBlack,
                 Margin = margin,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                TextWrapping = TextWrapping.Wrap,
-                BorderBrush = Brushes.Red,
-                BorderThickness = new Thickness(1),
-                SnapsToDevicePixels = true,
-                Padding = new Thickness(5),
-                Text = UserInterfaceStrings.UnhandledException
+                BorderBrush = Brushes.Red
             };
-
-            FocusHelper.ConfigureReadOnlyTextBoxHack(labelMsg, labelMsg.Text, new FocusHelper.TextBoxSelection());
             
 
             //var binding = new Binding
@@ -336,20 +327,11 @@ c.Execute();
                 exinnerd = exinnerd.InnerException;
             }
 
-            var labelSummary = new TextBox
+            var labelSummary = new TextBoxEx(exMessage)
             {
-                Text = exMessage,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                TextWrapping = TextWrapping.Wrap,
-                Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = null,
-                BorderThickness = new Thickness(0),
-                SnapsToDevicePixels = true,
-                Padding = new Thickness(5)
+                BorderThickness = new Thickness(0)
             };
-
-            FocusHelper.ConfigureReadOnlyTextBoxHack(labelSummary, labelSummary.Text, new FocusHelper.TextBoxSelection());
 
             var scroll = new ScrollViewer
             {
@@ -383,20 +365,11 @@ c.Execute();
                 exinner = exinner.InnerException;
             }
 
-            var stackTrace = new TextBox
+            var stackTrace = new TextBoxEx(exStackTrace)
             {
-                Text = exStackTrace,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                TextWrapping = TextWrapping.Wrap,
-                Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = null,
-                BorderThickness = new Thickness(0),
-                SnapsToDevicePixels = true,
-                Padding = new Thickness(5)
+                BorderThickness = new Thickness(0)
             };
-
-            FocusHelper.ConfigureReadOnlyTextBoxHack(stackTrace, stackTrace.Text, new FocusHelper.TextBoxSelection());
 
             var details = new ScrollViewer
                              {

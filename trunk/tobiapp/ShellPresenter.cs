@@ -946,13 +946,18 @@ namespace Tobi
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
+
+            var details = new TextBoxEx(UserInterfaceStrings.ExitConfirm+" (DEBUG MESSAGE)")
+            {
+            };
+
             var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Exit),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 160);
+                                                   true, 300, 160, details, 40);
 
             windowPopup.ShowModal();
 

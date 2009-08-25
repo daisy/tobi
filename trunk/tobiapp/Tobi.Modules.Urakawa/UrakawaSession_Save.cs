@@ -224,20 +224,9 @@ namespace Tobi.Modules.Urakawa
             panel.Children.Add(label);
             panel.Children.Add(progressBar);
 
-            var details = new TextBox
+            var details = new TextBoxEx(action.LongDescription)
             {
-                Text = action.LongDescription,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                TextWrapping = TextWrapping.Wrap,
-                Background = SystemColors.ControlLightLightBrush,
-                BorderBrush = SystemColors.ControlDarkDarkBrush,
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(6),
-                SnapsToDevicePixels = true
             };
-
-            FocusHelper.ConfigureReadOnlyTextBoxHack(details, details.Text, new FocusHelper.TextBoxSelection());
 
             var windowPopup = new PopupModalWindow(shellPresenter,
                                                    UserInterfaceStrings.EscapeMnemonic(
