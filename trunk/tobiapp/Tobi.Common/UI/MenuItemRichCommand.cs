@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Tobi.Common.MVVM.Command;
@@ -29,6 +30,10 @@ namespace Tobi.Common.UI
 
             menuItem.Header = command.ShortDescription;
             menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " " + command.KeyGestureText + " " : "");
+
+            menuItem.SetValue(AutomationProperties.NameProperty, menuItem.ToolTip);
+            //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
+
             menuItem.InputGestureText = command.KeyGestureText;
 
             //Image image = command.IconProvider.IconSmall;

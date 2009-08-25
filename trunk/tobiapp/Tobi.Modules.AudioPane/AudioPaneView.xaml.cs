@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -39,6 +40,9 @@ namespace Tobi.Modules.AudioPane
             InitializeComponent();
 
             WinFormHost.Child = ViewModel.GetWindowsFormsHookControl();
+
+            ZoomSlider.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.Audio_ZoomSlider);
+            //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
         }
 
         public void InitGraphicalCommandBindings()

@@ -230,13 +230,14 @@ namespace Tobi.Modules.Urakawa
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 TextWrapping = TextWrapping.Wrap,
-                IsReadOnly = true,
                 Background = SystemColors.ControlLightLightBrush,
                 BorderBrush = SystemColors.ControlDarkDarkBrush,
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(6),
                 SnapsToDevicePixels = true
             };
+
+            FocusHelper.ConfigureReadOnlyTextBoxHack(details, details.Text, new FocusHelper.TextBoxSelection());
 
             var windowPopup = new PopupModalWindow(shellPresenter,
                                                    UserInterfaceStrings.EscapeMnemonic(
