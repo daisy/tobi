@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -28,6 +29,8 @@ namespace Tobi.Common.UI
                                       {
                                           tbSel.start = tb.SelectionStart;
                                           tbSel.length = tb.SelectionLength;
+
+                                          tb.SetValue(AutomationProperties.NameProperty, tb.SelectedText);
                                       });
 
             tb.TextChanged += ((sender, e) =>
