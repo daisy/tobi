@@ -14,6 +14,7 @@ using Tobi.Common;
 using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
 
@@ -138,16 +139,36 @@ namespace Tobi.Modules.DocumentPane
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("id");
 
+            string pageID = null;
+
             if (attr != null &&
                 !String.IsNullOrEmpty(attr.Value))
             {
-                data.Name = IdToName(attr.Value);
+                pageID = attr.Value;
+            }
+            else
+            {
+                string innerText = node.GetTextMediaFlattened();
+                if (!string.IsNullOrEmpty(innerText))
+                {
+                    pageID = generatePageId(innerText);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(pageID))
+            {
+                data.Name = IdToName(pageID);
                 data.ToolTip = data.Name;
 
                 Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
 
                 EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
             }
+        }
+
+        private string generatePageId(string pageText)
+        {
+            return "id_tobipage_" + pageText.Replace(" ", "_");
         }
 
         private void addInline(TextElement parent, Inline data)

@@ -34,7 +34,10 @@
                   SelectedItemChanged="onHeadingSelected">
     <TreeView.ItemContainerStyle>
             <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+
+              <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
+
+              <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                 <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
               <Setter Property="FontSize" Value="15" /-->
                 <Setter Property="FontWeight" Value="Normal" />
@@ -53,6 +56,10 @@
                                             ItemsSource="{Binding Children}">
 
                 <TextBlock Text="{Binding Path=Title}">
+                  <!-- 
+                           AutomationProperties.Name="{Binding Path=Text,
+           RelativeSource={x:Static RelativeSource.Self}}"
+           -->
 
                 <TextBlock.ContextMenu>
                   <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
@@ -68,13 +75,11 @@
                 </TextBlock.ContextMenu>
                 </TextBlock>
 
-                <HierarchicalDataTemplate.ItemTemplate>
+              <!-- HierarchicalDataTemplate.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=Title}">
 
                     <TextBlock.ContextMenu>
-                      <!--  DataContext="{Binding Path=PlacementTarget.DataContext,
-             RelativeSource={x:Static RelativeSource.Self}}" -->
 
                       <ContextMenu>
                         <UI:MenuItemRichCommand RichCommand="{Binding Path=CommandExpandAll}"
@@ -86,7 +91,7 @@
                     </TextBlock.ContextMenu>
                         </TextBlock>
                     </DataTemplate>
-                </HierarchicalDataTemplate.ItemTemplate>
+                </HierarchicalDataTemplate.ItemTemplate -->
             </HierarchicalDataTemplate>
         </TreeView.Resources>
 

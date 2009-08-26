@@ -1,12 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Tobi.Common.UI
 {
+    // no need for this class in .NET 4 with IsReadOnlyCaretVisible...
     public class TextBoxEx : TextBox
     {
         public AutomationPeer m_AutomationPeer;
@@ -21,6 +21,7 @@ namespace Tobi.Common.UI
         {
             Text = txt;
 
+            AcceptsTab = false;
             AcceptsReturn = true;
             IsReadOnly = false;
 

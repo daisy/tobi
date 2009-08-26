@@ -55,6 +55,14 @@ namespace Tobi.Common.UI
             var expr = menuItem.SetBinding(MenuItem.IconProperty, binding);
         }
 
+        //protected override bool IsEnabledCore
+        //{
+        //    get
+        //    {
+        //        return true;
+        //    }
+        //}
+
         public RichDelegateCommand<object> RichCommand
         {
             get
