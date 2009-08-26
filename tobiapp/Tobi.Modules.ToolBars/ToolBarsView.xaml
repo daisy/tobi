@@ -8,7 +8,6 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
            Orientation="Horizontal"
            
-  AutomationProperties.Name="Application toolbar buttons"
   Focusable="True"
   x:Name="FocusStart"
            KeyboardNavigation.DirectionalNavigation="Cycle"

@@ -626,8 +626,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Focusable="false">
 
     <StackPanel
-      
-  AutomationProperties.Name="Audio panel"
+  
   Focusable="True"
   x:Name="FocusStart"
   
@@ -764,8 +763,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   <DockPanel
     Margin="0, 0, 0, 5"
       Focusable="True"
-    
-  AutomationProperties.Name="Status bar"
+  
            KeyboardNavigation.DirectionalNavigation="Cycle"
     x:Name="FocusStartStatusBar"
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"

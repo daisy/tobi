@@ -307,7 +307,6 @@ namespace Tobi.Modules.DocumentPane
 
             //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
 
-            FlowDocReader.Zoom = 110;
             FlowDocReader.Document = m_FlowDoc;
 
             //annotationsOn();
