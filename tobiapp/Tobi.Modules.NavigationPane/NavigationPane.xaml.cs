@@ -23,7 +23,7 @@ namespace Tobi.Modules.NavigationPane
                                     null,
                                     UserInterfaceStrings.Navigation_Focus_KEYS,
                                     null,
-                                    obj => FocusHelper.Focus(this, NavTabs),
+                                    obj => FocusHelper.Focus(this, FocusStart),
                                     obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);

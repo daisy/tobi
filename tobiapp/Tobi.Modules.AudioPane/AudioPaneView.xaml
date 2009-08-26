@@ -13,10 +13,6 @@
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
              Loaded="OnPaneLoaded"
   
-  AutomationProperties.HelpText="The document audio pane (editable waveform display)"
-  Focusable="True"
-  x:Name="FocusStart"
-  
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
   >
   <Grid.Resources>
@@ -629,8 +625,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
     Focusable="false">
 
+    <StackPanel
+      
+  AutomationProperties.Name="Audio panel"
+  Focusable="True"
+  x:Name="FocusStart"
+  
+           KeyboardNavigation.DirectionalNavigation="Cycle"
+        Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-    <UI:ButtonRichCommand RichCommand="{Binding CommandAudioSettings}"
+
+      <UI:ButtonRichCommand RichCommand="{Binding CommandAudioSettings}"
                                  />
 
     <UI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
@@ -725,6 +732,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
                                  />
 
+    </StackPanel>
 
     <!-- DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
              
@@ -756,12 +764,16 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   <DockPanel
     Margin="0, 0, 0, 5"
       Focusable="True"
+    
+  AutomationProperties.Name="Status bar"
+           KeyboardNavigation.DirectionalNavigation="Cycle"
     x:Name="FocusStartStatusBar"
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
     HorizontalAlignment="Stretch"
     LastChildFill="True">
 
     <StackPanel
+      
     Margin="0, 0, 15, 0"
     DockPanel.Dock="Right"
         Orientation="Horizontal"
