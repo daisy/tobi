@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Media;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -197,6 +198,10 @@ namespace Tobi.Modules.DocumentPane
 
             InitializeComponent();
 
+
+            resetFlowDocument();
+
+
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
 
@@ -287,16 +292,7 @@ namespace Tobi.Modules.DocumentPane
 
             if (project == null)
             {
-                FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("No document.")))
-                                             {
-                                                 IsEnabled = true,
-                                                 IsHyphenationEnabled = false,
-                                                 IsOptimalParagraphEnabled = false,
-                                                 ColumnWidth = Double.PositiveInfinity,
-                                                 IsColumnWidthFlexible = false,
-                                                 TextAlignment = TextAlignment.Left
-                                             };
-                FlowDocReader.Document.Blocks.Add(new Paragraph(new Run("Text to append...")));
+                resetFlowDocument();
 
                 return;
             }
@@ -317,6 +313,7 @@ namespace Tobi.Modules.DocumentPane
 
             //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
 
+            FlowDocReader.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.Feature_Not_Available);
             FlowDocReader.Document = m_FlowDoc;
 
             //annotationsOn();
@@ -347,6 +344,22 @@ namespace Tobi.Modules.DocumentPane
                 }
             }*/
 
+        }
+
+        private void resetFlowDocument()
+        {
+            FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(UserInterfaceStrings.No_Document)))
+            {
+                IsEnabled = false,
+                IsHyphenationEnabled = false,
+                IsOptimalParagraphEnabled = false,
+                ColumnWidth = Double.PositiveInfinity,
+                IsColumnWidthFlexible = false,
+                TextAlignment = TextAlignment.Center
+            };
+            //FlowDocReader.Document.Blocks.Add(new Paragraph(new Run("Use 'new' or 'open' from the menu bar.")));
+
+            FlowDocReader.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
         }
 
         private TreeNode m_CurrentTreeNode;

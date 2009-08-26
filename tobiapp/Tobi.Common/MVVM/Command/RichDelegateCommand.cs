@@ -15,6 +15,14 @@ namespace Tobi.Common.MVVM.Command
     ///<typeparam name="T"></typeparam>
     public class RichDelegateCommand<T> : DelegateCommand<T>
     {
+        public string FullDescription
+        {
+            get
+            {
+                return UserInterfaceStrings.EscapeMnemonic(ShortDescription) + ", " + KeyGestureText + ", " + UserInterfaceStrings.EscapeMnemonic(LongDescription);
+            }
+        }
+
         public ScalableGreyableImageProvider IconProvider { get; private set; }
 
         public RichDelegateCommand(String shortDescription, String longDescription,
