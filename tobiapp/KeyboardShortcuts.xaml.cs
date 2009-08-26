@@ -1,4 +1,7 @@
-﻿namespace Tobi
+﻿using System;
+using Microsoft.Windows.Controls;
+
+namespace Tobi
 {
     /// <summary>
     /// Interaction logic for KeyboardShortcuts.xaml
@@ -7,7 +10,8 @@
     {
         private ShellPresenter ShellPresenter
         {
-            get; set;
+            get;
+            set;
         }
 
         public KeyboardShortcuts(ShellPresenter shellPresenter)
@@ -16,6 +20,11 @@
             DataContext = ShellPresenter;
 
             InitializeComponent();
+        }
+
+        private void OnLoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            e.Row.Header = e.Row.GetIndex();
         }
     }
 }

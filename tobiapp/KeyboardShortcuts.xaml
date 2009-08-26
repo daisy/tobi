@@ -7,12 +7,58 @@
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
   TabStripPlacement="Top">
 
-  <!-- TabItem Header="Shortcuts (DataGrid)">
+  <!-- TabControl.Resources>
 
-    <Controls:DataGrid
+    <Style x:Key="dataGridRowStyle"
+              TargetType="{x:Type Controls:DataGridRow}">
+
+      <Setter Property="FontWeight" Value="Normal" />
+
+      <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="FontWeight" Value="Bold" />
+          <Setter Property="Foreground" Value="Red"/>
+        </Trigger>
+      </Style.Triggers>
       
+      <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.IconsDebug}"/>
 
+    </Style>
+
+
+
+    
+RowStyle="{StaticResource dataGridRowStyle}"
+
+
+
+  </TabControl.Resources -->
+
+  <TabItem Header="Shortcuts (DataGrid)">
+
+
+
+
+    <!--     VerticalGridLinesBrush="Transparent" -->
+    <Controls:DataGrid
+
+    LoadingRow="OnLoadingRow"
+    
     ItemsSource="{Binding RegisteredRichCommands, Mode=OneWay}"
+    CanUserDeleteRows="False" CanUserAddRows="False"
+    CanUserResizeRows="False"
+    EnableColumnVirtualization="False"
+    EnableRowVirtualization="False"
+    IsReadOnly="True"
+    AutoGenerateColumns="False"
+        CanUserReorderColumns="False"
+    
+    HeadersVisibility="All"
+    
+    GridLinesVisibility="Horizontal"
+    
+    HorizontalContentAlignment="Center"
+    VerticalContentAlignment="Center"
     
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
@@ -25,16 +71,38 @@
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
     
+    
+    AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+AlternationCount="2"
+    
     SelectionMode="Single"
-    SelectionUnit="CellOrRowHeader"
+    SelectionUnit="FullRow"
+    
     >
+      <!-- Controls:DataGrid.ItemContainerStyle>
+
+        <Style TargetType="{x:Type Controls:DataGridRow}">
+
+          <Setter Property="Control.FontWeight" Value="Normal" />
+
+          <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.IconsDebug}"/>
+
+          <Style.Triggers>
+            <Trigger Property="Selector.IsSelected" Value="True">
+              <Setter Property="Control.FontWeight" Value="Bold" />
+              <Setter Property="Control.Foreground" Value="Red"/>
+            </Trigger>
+          </Style.Triggers>
+
+        </Style>
+      </Controls:DataGrid.ItemContainerStyle -->
 
 
       <Controls:DataGrid.Resources>
+
         <ToolTip x:Key="imageIconTooltip"
            DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
-               
                >
           <ContentControl
                             Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
@@ -44,22 +112,15 @@
                   Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
 
         </ToolTip>
-
       </Controls:DataGrid.Resources>
 
       <Controls:DataGrid.Columns>
         <Controls:DataGridTemplateColumn Header="Icon"
                                      MinWidth="50"
-                                     Width="SizeToCells"
+                                     Width="Auto"
                                      IsReadOnly="True"
                                      CanUserSort="False"
                                           >
-
-          <Controls:DataGridTemplateColumn.CellEditingTemplate>
-            <DataTemplate>
-              <Controls:DatePicker SelectedDate="{Binding Date}" SelectedDateFormat="Short" />
-            </DataTemplate>
-          </Controls:DataGridTemplateColumn.CellEditingTemplate>
 
           <Controls:DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
@@ -70,58 +131,64 @@
                             
                                   Content="{Binding Path=IconProvider.IconLarge}"
                                                      
-                                                     
                       ToolTip="{StaticResource imageIconTooltip}"
-                              Margin="2, 4, 2, 4"/>
+                              Margin="2, 4, 2, 4">
+
+                <!-- ContentControl.Style>
+                  <Style TargetType="{x:Type ContentControl}">
+                    <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_BeginSelection_}"/>
+                  </Style>
+                </ContentControl.Style -->
+
+              </ContentControl>
             </DataTemplate>
           </Controls:DataGridTemplateColumn.CellTemplate>
 
-          <Controls:DataGridTemplateColumn.CellStyle>
+          <!-- Controls:DataGridTemplateColumn.CellStyle>
 
             <Style TargetType="{x:Type Controls:DataGridCell}">
 
               <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.IconsDebug}"/>
 
             </Style>
-          </Controls:DataGridTemplateColumn.CellStyle>
+          </Controls:DataGridTemplateColumn.CellStyle -->
 
         </Controls:DataGridTemplateColumn>
 
 
-        <Controls:DataGridTemplateColumn Header="Keyboard shortcut"
+        <Controls:DataGridTextColumn Header="Keyboard shortcut"
                                      MinWidth="50"
-                                     Width="SizeToCells"
+                                     Width="Auto"
                                      IsReadOnly="True"
                                      CanUserSort="True"
-                                           >
-                                           
-          <Controls:DataGridTemplateColumn.CellTemplate>
-            <DataTemplate>
-              <TextBlock Text="{Binding KeyGestureText}"/>
-            </DataTemplate>
-          </Controls:DataGridTemplateColumn.CellTemplate>
+                                         SortMemberPath="KeyGestureText"
+                                         SortDirection="Descending"
+                                     Binding="{Binding KeyGestureText}">
 
-          <Controls:DataGridTemplateColumn.CellStyle>
-            <Style TargetType="{x:Type Controls:DataGridCell}">
+          <!-- Controls:DataGridTextColumn.ElementStyle>
+            <Style TargetType="{x:Type TextBlock}">
+
+              <Setter Property="Foreground" Value="Blue"/>
               <Setter Property="AutomationProperties.Name" Value="{Binding KeyGestureText}"/>
             </Style>
-          </Controls:DataGridTemplateColumn.CellStyle>
-          
-        </Controls:DataGridTemplateColumn>
+          </Controls:DataGridTextColumn.ElementStyle -->
+
+        </Controls:DataGridTextColumn>
+        
       </Controls:DataGrid.Columns>
 
     </Controls:DataGrid>
-  </TabItem -->
+  </TabItem>
 
-  
-  
-  
-  
-  
-  
-  
-  
-    <TabItem Header="Shortcuts (ListView + GridView)">
+
+
+
+
+
+
+
+
+  <!-- TabItem Header="Shortcuts (ListView + GridView)">
 
     <UI:SortableListView
     
@@ -143,137 +210,106 @@ AlternationCount="2"
     
             >
 
-  <ListView.Resources>
-    <ToolTip x:Key="imageIconTooltip"
-       DataContext="{Binding Path=PlacementTarget,
+      <ListView.Resources>
+        <ToolTip x:Key="imageIconTooltip"
+           DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
                
                >
-      <ContentControl
-                        Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
+          <ContentControl
+                            Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
                             
-                          Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
+                              Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
                             
-              Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
+                  Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
 
-    </ToolTip>
+        </ToolTip>
 
-  </ListView.Resources>
+      </ListView.Resources>
 
-  <ListView.View>
-    <GridView AllowsColumnReorder="true">
-      <GridViewColumn Header="Icon">
-        <GridViewColumn.CellTemplate>
-          <DataTemplate>
-<!-- 
-                    Content="{Binding Path=DataContext.IconProvider.IconLarge,
-                    RelativeSource={RelativeSource FindAncestor,
-                    AncestorType={x:Type ListViewItem}}}" -->
-            <ContentControl Focusable="False"
-                              Width="{Binding Path=IconProvider.IconWidth_Large}"
+      <ListView.View>
+        <GridView AllowsColumnReorder="true">
+          <GridViewColumn Header="Icon">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+              
+                <ContentControl Focusable="False"
+                                  Width="{Binding Path=IconProvider.IconWidth_Large}"
                             
-                                Height="{Binding Path=IconProvider.IconHeight_Large}"
+                                    Height="{Binding Path=IconProvider.IconHeight_Large}"
                             
-                                Content="{Binding Path=IconProvider.IconLarge}"
+                                    Content="{Binding Path=IconProvider.IconLarge}"
                                                      
                                                      
-                    ToolTip="{StaticResource imageIconTooltip}"
-                            Margin="2, 4, 2, 4">
-            </ContentControl>
-          </DataTemplate>
+                        ToolTip="{StaticResource imageIconTooltip}"
+                                Margin="2, 4, 2, 4">
+                </ContentControl>
+              </DataTemplate>
 
-        </GridViewColumn.CellTemplate>
+            </GridViewColumn.CellTemplate>
 
-      </GridViewColumn>
+          </GridViewColumn>
 
 
-      <GridViewColumn Header="Short Description"
-                      UI:SortableListView.SortPropertyName="ShortDescription">
-        <!-- DisplayMemberBinding="{Binding ShortDescription}"-->
-        <GridViewColumn.CellTemplate>
-          <DataTemplate>
+          <GridViewColumn Header="Short Description"
+                          UI:SortableListView.SortPropertyName="ShortDescription"
+                          DisplayMemberBinding="{Binding ShortDescription}"/>
 
-            <TextBlock Text="{Binding ShortDescription}"
-                       
-                       Focusable="True">
+          <GridViewColumn Header="Keyboard shortcut"
+                          UI:SortableListView.SortPropertyName="KeyGestureText"
+                          DisplayMemberBinding="{Binding KeyGestureText}"/>
 
-              <TextBlock.Style>
+          <GridViewColumn Header="Long Description"
+                        UI:SortableListView.SortPropertyName="KeyGestureText"
+                        DisplayMemberBinding="{Binding KeyGestureText}"/>
 
-                <Style TargetType="{x:Type TextBlock}">
+        </GridView>
+      </ListView.View>
 
-                  <Setter Property="AutomationProperties.Name" Value="{Binding Path=KeyGestureText}"/>
-                  <Setter Property="Background" Value="Yellow"/>
-                </Style>
+      <ListView.ItemContainerStyle>
 
-              </TextBlock.Style>
-            </TextBlock>
+        <Style TargetType="{x:Type ListViewItem}">
 
-          </DataTemplate>
+          <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription}"/>
 
-        </GridViewColumn.CellTemplate>
-      </GridViewColumn>
-      
-      <GridViewColumn Header="Keyboard shortcut"
-                      UI:SortableListView.SortPropertyName="KeyGestureText">
+          <Style.Triggers>
+            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+              <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            </Trigger>
+          </Style.Triggers>
+        </Style>
 
-        <GridViewColumn.CellTemplate>
-          <DataTemplate>
+      </ListView.ItemContainerStyle>
+    </UI:SortableListView>
 
-            <DataTemplate.Resources>
+  </TabItem -->
 
-              <Style x:Key="accessStyle" TargetType="{x:Type TextBlock}">
 
-                <Setter Property="AutomationProperties.Name" Value="{Binding Path=KeyGestureText}"/>
-                <Setter Property="Background" Value="Red"/>
-
-              </Style>
-              </DataTemplate.Resources>
-            <TextBlock Text="{Binding KeyGestureText}"
-                       Style="{StaticResource accessStyle}"
-                       Focusable="True">
-<!-- AutomationProperties.Name="{Binding KeyGestureText}"-->
-              <!-- TextBlock.Style>
-
-                <Style TargetType="{x:Type TextBlock}">
-
-                  <Setter Property="AutomationProperties.Name" Value="{Binding Path=KeyGestureText}"/>
-
-                </Style>
-
-              </TextBlock.Style -->
-            </TextBlock>
-            
-          </DataTemplate>
-
-        </GridViewColumn.CellTemplate>
-
-      </GridViewColumn>
-
-        <GridViewColumn Header="Long Description"
-                      UI:SortableListView.SortPropertyName="LongDescription"
-         DisplayMemberBinding="{Binding LongDescription}" />
-    </GridView>
-  </ListView.View>
-      
-  <ListView.ItemContainerStyle>
-
-    <Style TargetType="{x:Type ListViewItem}">
-
-      <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription}"/>
-
-      <Style.Triggers>
-        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-          <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        </Trigger>
-        <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
+  <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
           </Trigger -->
-      </Style.Triggers>
-    </Style>
+  <!-- GridViewColumn.CellTemplate>
+            <DataTemplate>
 
-  </ListView.ItemContainerStyle>
-</UI:SortableListView>
+              <DataTemplate.Resources>
 
-  </TabItem>
+                <Style x:Key="accessStyle" TargetType="{x:Type TextBlock}">
 
-  </TabControl>
+                  <Setter Property="Text" Value="{Binding Path=LongDescription}"/>
+                  <Setter Property="AutomationProperties.Name" Value="{Binding Path=LongDescription}"/>
+                  <Setter Property="Background" Value="Red"/>
+
+                </Style>
+              </DataTemplate.Resources>
+              <TextBlock
+                         Style="{StaticResource accessStyle}"
+                         Focusable="True">
+              </TextBlock>
+
+            </DataTemplate>
+
+          </GridViewColumn.CellTemplate>
+
+        </GridViewColumn -->
+
+</TabControl>
