@@ -164,6 +164,15 @@ AlternationCount="2"
         </Controls:DataGridTemplateColumn>
 
 
+        <Controls:DataGridTextColumn Header="Short description"
+                                     MinWidth="50"
+                                     Width="Auto"
+                                     IsReadOnly="True"
+                                     CanUserSort="True"
+                                         SortMemberPath="ShortDescription"
+                                         SortDirection="Descending"
+                                     Binding="{Binding ShortDescription}"/>
+
         <Controls:DataGridTextColumn Header="Keyboard shortcut"
                                      MinWidth="50"
                                      Width="Auto"
@@ -173,7 +182,7 @@ AlternationCount="2"
                                          SortDirection="Descending"
                                      Binding="{Binding KeyGestureText}">
 
-          <Controls:DataGridTextColumn.HeaderStyle>
+          <!-- Controls:DataGridTextColumn.HeaderStyle>
             <Style  TargetType="{x:Type Primitives:DataGridColumnHeader}">
               <Setter Property="HorizontalContentAlignment" Value="Right"/>
 
@@ -197,11 +206,21 @@ AlternationCount="2"
               <Setter Property="Foreground" Value="Blue"/>
               <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
             </Style>
-          </Controls:DataGridTextColumn.ElementStyle>
+          </Controls:DataGridTextColumn.ElementStyle -->
           
 
         </Controls:DataGridTextColumn>
-        
+
+
+        <Controls:DataGridTextColumn Header="Long description"
+                                     MinWidth="50"
+                                     Width="Auto"
+                                     IsReadOnly="True"
+                                     CanUserSort="True"
+                                         SortMemberPath="LongDescription"
+                                         SortDirection="Descending"
+                                     Binding="{Binding LongDescription}"/>
+
       </Controls:DataGrid.Columns>
 
     </Controls:DataGrid>
