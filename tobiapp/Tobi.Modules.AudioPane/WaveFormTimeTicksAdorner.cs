@@ -12,9 +12,13 @@ namespace Tobi.Modules.AudioPane
     {
         private AudioPaneView m_AudioPaneView;
 
+        private double m_standardTextHeight;
+
         public WaveFormTimeTicksAdorner(FrameworkElement adornedElement, AudioPaneView view)
             : base(adornedElement)
         {
+            m_standardTextHeight = -1;
+
             IsHitTestVisible = false;
             ClipToBounds = true;
             m_AudioPaneView = view;
@@ -289,6 +293,18 @@ namespace Tobi.Modules.AudioPane
                             nodeTxt = nodeTxt.Replace("\r\n", "");
                             nodeTxt = nodeTxt.Trim();
 
+                            if (m_standardTextHeight <= 0)
+                            {
+                                var txt = new FormattedText("Test Height",
+                                                                      m_culture,
+                                                                      FlowDirection.LeftToRight,
+                                                                      m_typeFace,
+                                                                      12,
+                                                                      Brushes.Cyan
+                                    );
+                                m_standardTextHeight = txt.Height;
+                            }
+
                             var formattedText = new FormattedText(nodeTxt,
                                                                   m_culture,
                                                                   FlowDirection.LeftToRight,
@@ -299,7 +315,7 @@ namespace Tobi.Modules.AudioPane
 
                             FormattedText formattedTextDots = null;
 
-                            m_point3.Y = heightAvailable - formattedText.Height - tickHeight - tickHeight;
+                            m_point3.Y = heightAvailable - m_standardTextHeight - tickHeight - tickHeight;
 
                             minW = Math.Min(formattedText.Width + horizontalMargin * 2,
                                                 widthChunk - tickHeight - tickHeight - 1);
@@ -308,7 +324,7 @@ namespace Tobi.Modules.AudioPane
                                 m_rectRect.X = m_point3.X - horizontalMargin;
                                 m_rectRect.Y = m_point3.Y;
                                 m_rectRect.Width = minW;
-                                m_rectRect.Height = formattedText.Height;
+                                m_rectRect.Height = m_standardTextHeight;
 
                                 //drawingContext.PushOpacity(0.6);
 

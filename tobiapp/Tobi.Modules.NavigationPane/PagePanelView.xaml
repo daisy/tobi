@@ -14,6 +14,7 @@
           DataContext="{Binding Path=ViewModel,
            RelativeSource={x:Static RelativeSource.Self}}"
      ItemsSource="{Binding Pages}"
+          VirtualizingStackPanel.IsVirtualizing="False"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:infra="clr-namespace:Tobi.Common;assembly=Tobi.Common"
