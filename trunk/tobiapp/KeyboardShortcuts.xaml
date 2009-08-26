@@ -71,7 +71,20 @@ AlternationCount="2"
 
       <GridViewColumn Header="Keyboard shortcut"
                       UI:SortableListView.SortPropertyName="KeyGestureText"
-         DisplayMemberBinding="{Binding KeyGestureText}"  />
+         DisplayMemberBinding="{Binding KeyGestureText}">
+
+
+        <GridViewColumn.CellTemplate>
+          <DataTemplate>
+
+            <TextBlock Text="{Binding KeyGestureText}"
+                       Focusable="True"/>
+            
+          </DataTemplate>
+
+        </GridViewColumn.CellTemplate>
+
+      </GridViewColumn>
 
       <GridViewColumn Header="Short Description"
                       UI:SortableListView.SortPropertyName="ShortDescription"

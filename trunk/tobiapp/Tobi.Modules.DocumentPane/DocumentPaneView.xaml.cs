@@ -287,7 +287,17 @@ namespace Tobi.Modules.DocumentPane
 
             if (project == null)
             {
-                FlowDocReader.Document = new FlowDocument();
+                FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("No document.")))
+                                             {
+                                                 IsEnabled = true,
+                                                 IsHyphenationEnabled = false,
+                                                 IsOptimalParagraphEnabled = false,
+                                                 ColumnWidth = Double.PositiveInfinity,
+                                                 IsColumnWidthFlexible = false,
+                                                 TextAlignment = TextAlignment.Left
+                                             };
+                FlowDocReader.Document.Blocks.Add(new Paragraph(new Run("Text to append...")));
+
                 return;
             }
 
