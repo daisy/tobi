@@ -5,6 +5,7 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:Controls="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+    xmlns:Primitives="clr-namespace:Microsoft.Windows.Controls.Primitives;assembly=WPFToolkit"
   TabStripPlacement="Top">
 
   <!-- TabControl.Resources>
@@ -121,7 +122,14 @@ AlternationCount="2"
                                      IsReadOnly="True"
                                      CanUserSort="False"
                                           >
+          <Controls:DataGridTemplateColumn.HeaderStyle>
 
+            <Style>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_ClearSelection_}"/>
+            </Style>
+            
+          </Controls:DataGridTemplateColumn.HeaderStyle>
+          
           <Controls:DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <ContentControl Focusable="False"
@@ -165,13 +173,32 @@ AlternationCount="2"
                                          SortDirection="Descending"
                                      Binding="{Binding KeyGestureText}">
 
-          <!-- Controls:DataGridTextColumn.ElementStyle>
-            <Style TargetType="{x:Type TextBlock}">
+          <Controls:DataGridTextColumn.HeaderStyle>
+            <Style  TargetType="{x:Type Primitives:DataGridColumnHeader}">
+              <Setter Property="HorizontalContentAlignment" Value="Right"/>
 
-              <Setter Property="Foreground" Value="Blue"/>
-              <Setter Property="AutomationProperties.Name" Value="{Binding KeyGestureText}"/>
+              <Setter Property="Foreground" Value="Red"/>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
             </Style>
-          </Controls:DataGridTextColumn.ElementStyle -->
+          </Controls:DataGridTextColumn.HeaderStyle>
+
+          <Controls:DataGridTextColumn.CellStyle>
+            <Style TargetType="{x:Type Controls:DataGridCell}">
+              <Setter Property="HorizontalContentAlignment" Value="Right"/>
+
+              <Setter Property="Foreground" Value="Yellow"/>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
+            </Style>
+          </Controls:DataGridTextColumn.CellStyle>
+          
+          <Controls:DataGridTextColumn.ElementStyle>
+            <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="HorizontalAlignment" Value="Center"/>
+              <Setter Property="Foreground" Value="Blue"/>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
+            </Style>
+          </Controls:DataGridTextColumn.ElementStyle>
+          
 
         </Controls:DataGridTextColumn>
         
