@@ -1,5 +1,6 @@
 ﻿using System.Windows.Documents;
 using System.Text;
+using urakawa.core;
 
 namespace Tobi.Modules.NavigationPane
 {
@@ -26,10 +27,15 @@ namespace Tobi.Modules.NavigationPane
         {
             get
             {
-                if (TextElement is Paragraph)
+                string pageTxt = ((TreeNode)TextElement.Tag).GetTextMediaFlattened();
+                if (!string.IsNullOrEmpty(pageTxt))
                 {
-                    return extractString((Paragraph)TextElement);
+                    return pageTxt;
                 }
+                //if (TextElement is Paragraph)
+                //{
+                //    return extractString((Paragraph)TextElement);
+                //}
                 return "??";
             }
         }

@@ -58,7 +58,7 @@ namespace Tobi.Modules.NavigationPane
         public override bool IsIncluded(TreeNode node)
         {
             QualifiedName qname = node.GetXmlElementQName();
-            return qname != null &&
+            bool condition = qname != null &&
                 (qname.LocalName == "level1"
                 || qname.LocalName == "level"
                 || qname.LocalName == "level2"
@@ -67,6 +67,8 @@ namespace Tobi.Modules.NavigationPane
                 || qname.LocalName == "level5"
                 || qname.LocalName == "level6"
                 );
+
+            return condition;
         }
 
         private HeadingTreeNodeWrapper findTreeNodeWrapper(TreeNode node)
@@ -152,7 +154,9 @@ namespace Tobi.Modules.NavigationPane
                 {
                     return false;
                 }
-                return m_navigator.GetChildCount(m_TreeNode) > 0;
+
+                int n = m_navigator.GetChildCount(m_TreeNode);
+                return n > 0;
             }
         }
         public bool IsExpanded

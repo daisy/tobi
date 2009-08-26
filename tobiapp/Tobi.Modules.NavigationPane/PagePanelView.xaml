@@ -22,22 +22,28 @@
                 xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
 
             SelectionMode="Single"
-             SelectionChanged="onPageSelected"
-             DisplayMemberPath="Name">
+             SelectionChanged="onPageSelected">
+   <!-- 
+             DisplayMemberPath="Name" -->
 
-    <!-- ListBox.ItemTemplate>
+   <ListBox.ItemTemplate>
         <DataTemplate>
-          <Label Content="{Binding Name}"/>
+          <TextBlock Text="{Binding Name}"/>
+          <!-- 
+          AutomationProperties.Name="{Binding Path=Content,
+          RelativeSource={x:Static RelativeSource.Self}}"ctx -->
         </DataTemplate>
-      </ListBox.ItemTemplate -->
+      </ListBox.ItemTemplate>
 
     <ListBox.ItemContainerStyle>
-        <Style TargetType="{x:Type ListBoxItem}">
 
+      <Style TargetType="{x:Type ListBoxItem}">
+
+        <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
             <!-- Setter Property="FontSize" Value="15" / -->
             <Setter Property="FontWeight" Value="Normal" />
 
-            <Style.Triggers>
+          <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="FontWeight" Value="Bold" />
                 </Trigger>
