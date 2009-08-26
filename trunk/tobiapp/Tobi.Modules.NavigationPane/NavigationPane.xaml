@@ -2,7 +2,7 @@
   x:Class="Tobi.Modules.NavigationPane.NavigationPane"
   AutomationProperties.HelpText="The document navigation pane (table of content, pages, etc.)"
   Focusable="True"
-  x:Name="NavTabs"
+  x:Name="FocusStart"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cal="http://www.codeplex.com/CompositeWPF"

@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
            
-  AutomationProperties.HelpText="The document audio pane (editable waveform display)"
+  AutomationProperties.Name="Document view"
   Focusable="True"
   x:Name="FocusStart"
            
