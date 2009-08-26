@@ -31,6 +31,9 @@ namespace Tobi.Common
             return str.Replace("_", "");
         }
 
+        public const string No_Document = "No document.";
+        public const string Feature_Not_Available = "This feature is not available.";
+
         public const string Navigation_Focus = "Bring focus to the navigation pane";
         public static KeyGesture Navigation_Focus_KEYS = new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
 
