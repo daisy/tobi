@@ -1,6 +1,6 @@
 ﻿<UI:LazyKeepAliveTabControl
   x:Class="Tobi.Modules.NavigationPane.NavigationPane"
-  AutomationProperties.HelpText="The document navigation pane (table of content, pages, etc.)"
+  
   Focusable="True"
   x:Name="FocusStart"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
