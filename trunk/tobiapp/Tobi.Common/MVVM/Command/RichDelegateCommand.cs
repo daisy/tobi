@@ -15,6 +15,11 @@ namespace Tobi.Common.MVVM.Command
     ///<typeparam name="T"></typeparam>
     public class RichDelegateCommand<T> : DelegateCommand<T>
     {
+        public override string ToString()
+        {
+            return FullDescription;
+        }
+
         public string FullDescription
         {
             get
