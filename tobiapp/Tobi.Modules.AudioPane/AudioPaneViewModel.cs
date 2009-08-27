@@ -26,7 +26,7 @@ namespace Tobi.Modules.AudioPane
     {
         #region Construction
 
-        protected IEventAggregator EventAggregator { get; private set; }
+        public IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
         ///<summary>
@@ -124,6 +124,26 @@ namespace Tobi.Modules.AudioPane
 
                 return State.Audio.PlayStream;
             };
+
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Subscribe(str => StatusBarMessage = str,
+                                                                              ThreadOption.UIThread);
+        }
+
+        //StatusBarMessageUpdateEvent
+        private string m_StatusBarMessage;
+        public string StatusBarMessage
+        {
+            private set
+            {
+                if (m_StatusBarMessage == value)
+                {
+                    return;
+                }
+                m_StatusBarMessage = value;
+
+                RaisePropertyChanged(() => StatusBarMessage);
+            }
+            get { return m_StatusBarMessage; }
         }
 
         ~AudioPaneViewModel()
@@ -575,7 +595,7 @@ namespace Tobi.Modules.AudioPane
 
                     return "[" + strToDisplay + "]";
                 }
-                
+
                 if (!IsAudioLoaded)
                 {
                     return "";

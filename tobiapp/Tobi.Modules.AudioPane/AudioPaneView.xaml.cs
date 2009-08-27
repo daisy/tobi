@@ -375,6 +375,8 @@ namespace Tobi.Modules.AudioPane
             m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll, this);
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
+
+            ViewModel.EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(UserInterfaceStrings.Ready);
         }
 
         #endregion Event / Callbacks
