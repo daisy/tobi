@@ -23,7 +23,10 @@
                 xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
 
             SelectionMode="Single"
-             SelectionChanged="onPageSelected">
+             SelectionChanged="onPageSelected"
+          
+          Focusable="True"
+              AutomationProperties.Name="{x:Static local:PagePanelView.View_Name}">
    <!-- 
              DisplayMemberPath="Name" -->
 

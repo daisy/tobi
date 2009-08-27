@@ -1,4 +1,5 @@
-﻿using urakawa.core;
+﻿using System.Windows;
+using urakawa.core;
 
 namespace Tobi.Modules.NavigationPane
 {
@@ -8,5 +9,7 @@ namespace Tobi.Modules.NavigationPane
         void LoadProject();
         void UnloadProject();
         void SelectTreeNode(TreeNode node);
+
+        UIElement ViewControl { get; }
     }
 }

@@ -24,7 +24,8 @@ namespace Tobi.Modules.NavigationPane
             //regionManager.RegisterViewWithRegion(RegionNames.AudioPane, typeof(IAudioPaneView));
 
             var view = _mContainer.Resolve<IPagePaneView>();
-            IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPanel];
+
+            IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPaneTabs];
 
             targetRegion.Add(view);
             //targetRegion.Activate(view);  //TCM - This region is not activated because we want the "Headings" tab to display by default.

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -14,7 +15,6 @@ namespace Tobi.Modules.NavigationPane
     {
         private bool _ignoreTreeNodeSelectedEvent = false;
         private bool _ignoreHeadingSelected = false;
-        private const string TAB_HEADING = "TOC";
         public HeadingPaneViewModel ViewModel { get; private set; }
 
         public HeadingPanelView(HeadingPaneViewModel viewModel)
@@ -49,9 +49,20 @@ namespace Tobi.Modules.NavigationPane
             TreeView.SelectItem(nodeTOC);
         }
 
+        public const string View_Name = "Headings";
         public string ViewName
         {
-            get { return TAB_HEADING; }
+            get { return View_Name; }
+        }
+
+        public void SelectTreeNode(TreeNode node)
+        {
+            if (_ignoreTreeNodeSelectedEvent)
+            {
+                _ignoreTreeNodeSelectedEvent = false;
+                return;
+            }
+            updateContentTreeSelection(node);
         }
 
         public void LoadProject()
@@ -64,14 +75,9 @@ namespace Tobi.Modules.NavigationPane
             TreeView.DataContext = null;
         }
 
-        public void SelectTreeNode(TreeNode node)
+        public UIElement ViewControl
         {
-            if (_ignoreTreeNodeSelectedEvent)
-            {
-                _ignoreTreeNodeSelectedEvent = false;
-                return;
-            }
-            updateContentTreeSelection(node);
+            get { return this; }
         }
     }
 }

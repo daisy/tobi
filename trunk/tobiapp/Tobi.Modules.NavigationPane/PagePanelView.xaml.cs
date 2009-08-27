@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -13,7 +14,6 @@ namespace Tobi.Modules.NavigationPane
     {
         private bool _ignorePageSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
-        private const string TAB_HEADING = "Pages";
 
         public PagesPaneViewModel ViewModel { get; private set; }
         public PagePanelView(PagesPaneViewModel viewModel)
@@ -68,15 +68,21 @@ namespace Tobi.Modules.NavigationPane
             }
         }
 
- 
+
+        public const string View_Name = "Pages";
         public string ViewName
         {
-            get { return TAB_HEADING; }
+            get { return View_Name; }
         }
 
         public void LoadProject()
         {
             ListView.DataContext = ViewModel;
+        }
+
+        public UIElement ViewControl
+        {
+            get { return this; }
         }
     }
 }

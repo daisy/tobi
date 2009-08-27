@@ -2,9 +2,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-  
-  Focusable="True"
-  x:Name="FocusStart"
            
            LastChildFill="True" 
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
@@ -60,6 +57,7 @@
   </WrapPanel>
 
   <FlowDocumentScrollViewer x:Name="FlowDocReader"
+                            Focusable="True"
                             Zoom="110"
                       FontFamily="Palatino Linotype"
                       Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"

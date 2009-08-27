@@ -1,4 +1,6 @@
-﻿using Microsoft.Practices.Unity;
+﻿using System.Windows;
+using Microsoft.Practices.Composite.Regions;
+using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
@@ -23,7 +25,34 @@ namespace Tobi.Modules.NavigationPane
                                     null,
                                     UserInterfaceStrings.Navigation_Focus_KEYS,
                                     null,
-                                    obj => FocusHelper.Focus(this, FocusStart),
+                                    obj =>
+                                    {
+
+                                        var regionManager = container.Resolve<IRegionManager>();
+                                        IRegion tabRegion = regionManager.Regions[RegionNames.NavigationPaneTabs];
+                                        
+                                        UIElement ui = null;
+                                        var pageView = container.Resolve<IPagePaneView>();
+                                        var headingView = container.Resolve<IHeadingPaneView>();
+                                        foreach (var view in tabRegion.ActiveViews)
+                                        {
+                                            if (view == pageView.ViewControl)
+                                            {
+                                                ui = pageView.ViewControl;
+                                                break;
+                                            }
+                                            if (view == headingView.ViewControl)
+                                            {
+                                                ui = headingView.ViewControl;
+                                                break;
+                                            }
+                                        }
+
+                                        if (ui != null)
+                                        {
+                                            FocusHelper.Focus(this, ui);
+                                        }
+                                    },
                                     obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);

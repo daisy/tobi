@@ -190,7 +190,7 @@ namespace Tobi.Modules.DocumentPane
                 null,
                 UserInterfaceStrings.Document_Focus_KEYS,
                 null,
-                obj =>  FocusHelper.Focus(this, FocusStart),
+                obj => FocusHelper.Focus(this, FlowDocReader),
                 obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);

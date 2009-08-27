@@ -23,7 +23,7 @@ namespace Tobi.Modules.NavigationPane
             //regionManager.RegisterViewWithRegion(RegionNames.AudioPane, typeof(IAudioPaneView));
 
             var view = _mContainer.Resolve<IHeadingPaneView>();
-            IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPanel];
+            IRegion targetRegion = regionManager.Regions[RegionNames.NavigationPaneTabs];
 
             targetRegion.Add(view);
             targetRegion.Activate(view);
