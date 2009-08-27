@@ -760,20 +760,34 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
   </UI:WrapPanelLastChildFill>
 
-  <DockPanel
-    Margin="0, 0, 0, 5"
-      Focusable="True"
-  
-           KeyboardNavigation.DirectionalNavigation="Cycle"
+  <StatusBar
     x:Name="FocusStartStatusBar"
+    
+      Focusable="True"
+    Margin="0, 0, 0, 5"
+           KeyboardNavigation.DirectionalNavigation="Cycle"
+    
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+    
     HorizontalAlignment="Stretch"
-    LastChildFill="True">
+    >
 
+    <!-- LastChildFill="True" -->
+
+    <StatusBarItem DockPanel.Dock="Left" Focusable="True">
+    <TextBlock  Text="{Binding StatusBarMessage}" Focusable="True" 
+    Margin="4, 0, 0, 0" 
+                    HorizontalAlignment="Left"/>
+    </StatusBarItem>
+
+    <StatusBarItem DockPanel.Dock="Left">
+      <Separator/>
+    </StatusBarItem>
+
+    <StatusBarItem Focusable="True" 
+    DockPanel.Dock="Right">
     <StackPanel
       
-    Margin="0, 0, 15, 0"
-    DockPanel.Dock="Right"
         Orientation="Horizontal"
                     HorizontalAlignment="Right"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
@@ -782,7 +796,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                  Visibility="{Binding Path=PcmFormatStringVisible,
                             Converter={StaticResource boolToVisConverter},
                             Mode=OneWay}" 
-                 Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{Binding PcmFormatString, Mode=OneWay}"/>
+                 Focusable="True" VerticalAlignment="Center" Text="{Binding PcmFormatString, Mode=OneWay}"/>
 
       <TextBlock
         
@@ -814,13 +828,14 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                             Converter={StaticResource boolToVisConverter},
                             Mode=OneWay}" 
         VerticalAlignment="Center" Text="{Binding TimeStringSelection, Mode=OneWay}"/>
-
-      <TextBlock
-        Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-        VerticalAlignment="Center" Text="/"/>
     </StackPanel>
+      
+    </StatusBarItem>
 
-  </DockPanel>
+    <StatusBarItem>
+      <Separator/>
+    </StatusBarItem>
+  </StatusBar>
 
 </Grid >
 

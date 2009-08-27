@@ -342,6 +342,8 @@ namespace Tobi.Common
 
         public const string Audio_ShowOptions = "Show audio options";
         public static KeyGesture Audio_ShowOptions_KEYS = new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+        
+        public const string Ready = "Ready.";
 
         public const string Audio_ZoomSlider = "Audio waveform zoom";
     }
