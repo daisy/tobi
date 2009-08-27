@@ -229,7 +229,7 @@ namespace Tobi.Modules.DocumentPane
                 Foreground = Brushes.Black,
                 Cursor = Cursors.Cross,
                 FontWeight = FontWeights.ExtraBold,
-                Style = m_ButtonStyle,
+                //Style = m_ButtonStyle,
                 Focusable = true,
                 //IsTabStop = true
             };
