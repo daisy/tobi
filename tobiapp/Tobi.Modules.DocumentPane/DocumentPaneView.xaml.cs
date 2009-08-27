@@ -26,7 +26,7 @@ using System.Diagnostics;
 
 namespace Tobi.Modules.DocumentPane
 {
-    public class ButtonEx : Button
+    public class TextBlockEx : TextBlock
     {
         public AutomationPeer m_AutomationPeer;
 
@@ -60,7 +60,7 @@ namespace Tobi.Modules.DocumentPane
     public partial class DocumentPaneView // : INotifyPropertyChangedEx
     {
 
-        private ButtonEx m_FocusStartButton;
+        private TextBlockEx m_FocusStartElement;
 
         //public event PropertyChangedEventHandler PropertyChanged;
         //public void RaisePropertyChanged(PropertyChangedEventArgs e)
@@ -210,7 +210,7 @@ namespace Tobi.Modules.DocumentPane
                 null,
                 UserInterfaceStrings.Document_Focus_KEYS,
                 null,
-                obj => FocusHelper.Focus(this, m_FocusStartButton),
+                obj => FocusHelper.Focus(this, m_FocusStartElement),
                 obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
@@ -219,21 +219,22 @@ namespace Tobi.Modules.DocumentPane
             InitializeComponent();
 
             var arrow = (Path)Application.Current.FindResource("Arrow");
-            m_FocusStartButton = new ButtonEx
+            m_FocusStartElement = new TextBlockEx
             {
-                Content = arrow,
-                BorderBrush = null,
-                BorderThickness = new Thickness(0.0),
+                Text=" ",
+                //Content = arrow,
+                //BorderBrush = null,
+                //BorderThickness = new Thickness(0.0),
                 Background = Brushes.Transparent,
                 Foreground = Brushes.Black,
                 Cursor = Cursors.Cross,
                 FontWeight = FontWeights.ExtraBold,
                 Style = m_ButtonStyle,
                 Focusable = true,
-                IsTabStop = true
+                //IsTabStop = true
             };
             BreadcrumbPanel.Children.Clear();
-            BreadcrumbPanel.Children.Add(m_FocusStartButton);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
             resetFlowDocument();
             TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
@@ -315,7 +316,7 @@ namespace Tobi.Modules.DocumentPane
             CurrentSubTreeNode = null;
 
             BreadcrumbPanel.Children.Clear();
-            BreadcrumbPanel.Children.Add(m_FocusStartButton);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement);
             
             PathToCurrentTreeNode = null;
 
@@ -347,7 +348,7 @@ namespace Tobi.Modules.DocumentPane
 
             //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
 
-            m_FocusStartButton.SetValue(AutomationProperties.NameProperty, "Nothing selected in document");
+            m_FocusStartElement.SetValue(AutomationProperties.NameProperty, "Nothing selected in document");
             //FlowDocReader.Document = m_FlowDoc;
 
             //annotationsOn();
@@ -395,7 +396,7 @@ namespace Tobi.Modules.DocumentPane
 
             TheFlowDocument.Blocks.Clear();
 
-            m_FocusStartButton.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
+            m_FocusStartElement.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
         }
 
         private TreeNode m_CurrentTreeNode;
@@ -442,11 +443,11 @@ namespace Tobi.Modules.DocumentPane
                     }
                     string str = strPrepend + m_CurrentSubTreeNode.GetTextMediaFlattened();
 
-                    m_FocusStartButton.SetValue(AutomationProperties.NameProperty, str);
+                    m_FocusStartElement.SetValue(AutomationProperties.NameProperty, str);
 
-                    if (m_FocusStartButton.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                    if (m_FocusStartElement.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
                     {
-                        m_FocusStartButton.m_AutomationPeer.RaiseAutomationEvent(
+                        m_FocusStartElement.m_AutomationPeer.RaiseAutomationEvent(
                             AutomationEvents.AutomationFocusChanged);
                     }
                 }
@@ -473,11 +474,11 @@ namespace Tobi.Modules.DocumentPane
                             strPrepend = "XML: [" + qName.LocalName + "]. ";
                         }
 
-                        m_FocusStartButton.SetValue(AutomationProperties.NameProperty, strPrepend + str);
+                        m_FocusStartElement.SetValue(AutomationProperties.NameProperty, strPrepend + str);
 
-                        if (m_FocusStartButton.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                        if (m_FocusStartElement.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
                         {
-                            m_FocusStartButton.m_AutomationPeer.RaiseAutomationEvent(
+                            m_FocusStartElement.m_AutomationPeer.RaiseAutomationEvent(
                                 AutomationEvents.AutomationFocusChanged);
                         }
                     }
