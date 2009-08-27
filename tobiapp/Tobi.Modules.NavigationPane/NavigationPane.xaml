@@ -1,8 +1,6 @@
 ﻿<UI:LazyKeepAliveTabControl
   x:Class="Tobi.Modules.NavigationPane.NavigationPane"
   
-  Focusable="True"
-  x:Name="FocusStart"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
@@ -11,7 +9,12 @@
   TabStripPlacement="Bottom"
   BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
   BorderThickness="0"
-    cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPanel}">
+    cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPaneTabs}">
+  
+  <!-- 
+  Focusable="True"
+  x:Name="FocusStart" -->
+  
     <TabControl.Resources>
         <!-- Style TargetType="{x:Type TabControl}">
       <Setter Property="Template">

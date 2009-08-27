@@ -1,4 +1,5 @@
-﻿using urakawa.core;
+﻿using System.Windows;
+using urakawa.core;
 
 namespace Tobi.Modules.NavigationPane
 {
@@ -7,5 +8,7 @@ namespace Tobi.Modules.NavigationPane
         string ViewName { get; }
         void LoadProject();
         void UpdatePageListSelection(TreeNode node);
+
+        UIElement ViewControl { get; }
     }
 }
