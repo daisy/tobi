@@ -2,8 +2,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+    xmlns:DocumentPane="clr-namespace:Tobi.Modules.DocumentPane"
            
-           LastChildFill="True" 
+           LastChildFill="True"
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
   <Border DockPanel.Dock="Top"
@@ -15,7 +18,7 @@
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              x:Name="BreadcrumbPanel" Orientation="Horizontal"
              >
-  </WrapPanel>
+    </WrapPanel>
   </Border>
 
   <!-- Grid DockPanel.Dock="Top">
@@ -36,7 +39,7 @@
              Grid.Row="0" Grid.Column="1"/>
    
   </Grid -->
-  
+
   <WrapPanel DockPanel.Dock="Bottom"
         Focusable="False"
                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
@@ -44,26 +47,64 @@
              HorizontalAlignment="Right"
              >
     <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
-    
-  <UI:ButtonRichCommand 
-                        RichCommand="{Binding CommandSwitchPhrasePrevious}"
+
+    <UI:ButtonRichCommand
+                          RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />
 
 
-  <UI:ButtonRichCommand
-    RichCommand="{Binding CommandSwitchPhraseNext}"
+    <UI:ButtonRichCommand
+      RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
   </WrapPanel>
-
-  <FlowDocumentScrollViewer x:Name="FlowDocReader"
+  <DocumentPane:FlowDocumentReadeViewer x:Name="FlowDocReader"
                             Focusable="True"
                             Zoom="110"
                       FontFamily="Palatino Linotype"
                       Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
-                            IsSelectionEnabled="True"
-                      />
-  
+                      >
+<!-- 
+                            IsFindEnabled="False"
+                      IsPrintEnabled="False"
+                      
+                        IsScrollViewEnabled="True"
+                      IsPageViewEnabled="True"
+                      IsTwoPageViewEnabled="False"
+                      
+                      ViewingMode="Scroll" -->
+    
+      <FlowDocument x:Name="TheFlowDocument"
+                    AutomationProperties.Name="{x:Static Common:UserInterfaceStrings.Feature_Not_Available}"
+           IsEnabled = "True"
+           IsHyphenationEnabled = "False"
+           IsOptimalParagraphEnabled = "False"
+           ColumnWidth = "Infinity"
+           IsColumnWidthFlexible="False"
+           TextAlignment = "Left"
+                    Focusable="False"
+                    />
+
+
+    <!-- ScrollViewer
+                VerticalScrollBarVisibility="Visible"
+                HorizontalScrollBarVisibility="Auto"
+                
+             CanContentScroll="False"
+                IsDeferredScrollingEnabled="False"
+                  Focusable="False"
+                >
+    </ScrollViewer -->
+
+
+
+  </DocumentPane:FlowDocumentReadeViewer>
+  <!-- IsSelectionEnabled="True"
+    
+                        IsScrollViewEnabled="False"
+    -->
+
   <!-- FlowDocumentReader i IsFindEnabled="False" ViewingMode="Scroll" -->
+
 </DockPanel>

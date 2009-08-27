@@ -246,6 +246,15 @@ namespace Tobi.Modules.Urakawa
 
                 EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
 
+                var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText();
+                if (treeNode != null)
+                {
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                }
+
                 return true;
             }
             return false;

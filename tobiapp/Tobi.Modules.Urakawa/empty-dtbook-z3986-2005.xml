@@ -52,7 +52,7 @@
 			  <pagenum page="front">1</pagenum>
 			  <h1>Heading Level 1(frontmatter)</h1>
 			  
-				<p>Text after heading</p>
+				<p>Text <strong>after</strong> heading</p>
 
 			<level2>
 			  <h2>Heading Level 2 . (frontmatter)</h2>

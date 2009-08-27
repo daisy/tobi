@@ -4,8 +4,11 @@ using System.ComponentModel;
 using System.Media;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -22,6 +25,16 @@ using System.Diagnostics;
 
 namespace Tobi.Modules.DocumentPane
 {
+    public class FlowDocumentReadeViewer : FlowDocumentScrollViewer
+    {
+        public AutomationPeer m_AutomationPeer;
+
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            m_AutomationPeer = base.OnCreateAutomationPeer();
+            return m_AutomationPeer;
+        }
+    }
     internal class TreeNodeWrapper
     {
         public TreeNode TreeNode;
@@ -200,7 +213,7 @@ namespace Tobi.Modules.DocumentPane
 
 
             resetFlowDocument();
-
+            TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
@@ -251,7 +264,7 @@ namespace Tobi.Modules.DocumentPane
 
 
         
-        private FlowDocument m_FlowDoc;
+        //private FlowDocument m_FlowDoc;
 
 
         private TextElement m_lastHighlighted;
@@ -290,31 +303,27 @@ namespace Tobi.Modules.DocumentPane
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
 
+            resetFlowDocument();
+
             if (project == null)
             {
-                resetFlowDocument();
-
+                TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
                 return;
             }
 
             createFlowDocumentFromXuk(project);
 
-            if (m_FlowDoc == null)
-            {
-                return;
-            }
-
-            m_FlowDoc.IsEnabled = true;
-            m_FlowDoc.IsHyphenationEnabled = false;
-            m_FlowDoc.IsOptimalParagraphEnabled = false;
-            m_FlowDoc.ColumnWidth = Double.PositiveInfinity;
-            m_FlowDoc.IsColumnWidthFlexible = false;
-            m_FlowDoc.TextAlignment = TextAlignment.Left;
+            //m_FlowDoc.IsEnabled = true;
+            //m_FlowDoc.IsHyphenationEnabled = false;
+            //m_FlowDoc.IsOptimalParagraphEnabled = false;
+            //m_FlowDoc.ColumnWidth = Double.PositiveInfinity;
+            //m_FlowDoc.IsColumnWidthFlexible = false;
+            //m_FlowDoc.TextAlignment = TextAlignment.Left;
 
             //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
 
-            FlowDocReader.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.Feature_Not_Available);
-            FlowDocReader.Document = m_FlowDoc;
+            FlowDocReader.SetValue(AutomationProperties.NameProperty, "No selection in document");
+            //FlowDocReader.Document = m_FlowDoc;
 
             //annotationsOn();
 
@@ -348,16 +357,18 @@ namespace Tobi.Modules.DocumentPane
 
         private void resetFlowDocument()
         {
-            FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(UserInterfaceStrings.No_Document)))
-            {
-                IsEnabled = false,
-                IsHyphenationEnabled = false,
-                IsOptimalParagraphEnabled = false,
-                ColumnWidth = Double.PositiveInfinity,
-                IsColumnWidthFlexible = false,
-                TextAlignment = TextAlignment.Center
-            };
+            //FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(UserInterfaceStrings.No_Document)))
+            //{
+            //    IsEnabled = false,
+            //    IsHyphenationEnabled = false,
+            //    IsOptimalParagraphEnabled = false,
+            //    ColumnWidth = Double.PositiveInfinity,
+            //    IsColumnWidthFlexible = false,
+            //    TextAlignment = TextAlignment.Center
+            //};
             //FlowDocReader.Document.Blocks.Add(new Paragraph(new Run("Use 'new' or 'open' from the menu bar.")));
+
+            TheFlowDocument.Blocks.Clear();
 
             FlowDocReader.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
         }
@@ -372,6 +383,7 @@ namespace Tobi.Modules.DocumentPane
             set
             {
                 if (m_CurrentTreeNode == value) return;
+
                 m_CurrentTreeNode = value;
                 //RaisePropertyChanged(() => CurrentTreeNode);
             }
@@ -388,6 +400,64 @@ namespace Tobi.Modules.DocumentPane
             {
                 if (m_CurrentSubTreeNode == value) return;
                 m_CurrentSubTreeNode = value;
+
+
+                if (m_CurrentSubTreeNode != null)
+                {
+                    var qName = m_CurrentSubTreeNode.GetXmlElementQName();
+
+                    string strAppend = "";
+                    if (qName == null)
+                    {
+                        strAppend = " [No XML] ...";
+                    }
+                    else
+                    {
+                        strAppend = " XML: [" + qName.LocalName + "] ...";
+                    }
+                    string str = m_CurrentSubTreeNode.GetTextMediaFlattened() + strAppend;
+                    
+                    FlowDocReader.SetValue(AutomationProperties.NameProperty, str);
+
+                    if (FlowDocReader.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                    {
+                        FlowDocReader.m_AutomationPeer.RaiseAutomationEvent(
+                            AutomationEvents.AutomationFocusChanged);
+                    }
+                }
+                else
+                {
+                    if (CurrentTreeNode != null)
+                    {
+                        string str = CurrentTreeNode.GetTextMediaFlattened();
+                        if (str.Length > 100)
+                        {
+                            str = str.Substring(0, 100) + ". . .";
+                        }
+                        Console.WriteLine("}}}}}" + str);
+
+                        var qName = CurrentTreeNode.GetXmlElementQName();
+
+                        string strAppend = "";
+                        if (qName == null)
+                        {
+                            strAppend = " [No XML] ...";
+                        }
+                        else
+                        {
+                            strAppend = " XML: [" + qName.LocalName + "] ...";
+                        }
+
+                        FlowDocReader.SetValue(AutomationProperties.NameProperty, str + strAppend);
+
+                        if (FlowDocReader.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                        {
+                            FlowDocReader.m_AutomationPeer.RaiseAutomationEvent(
+                                AutomationEvents.AutomationFocusChanged);
+                        }
+                    }
+                }
+
                 //RaisePropertyChanged(() => CurrentSubTreeNode);
             }
         }
@@ -407,6 +477,7 @@ namespace Tobi.Modules.DocumentPane
                 return;
             }
             CurrentSubTreeNode = node;
+
             BringIntoViewAndHighlightSub(node);
             updateBreadcrumbPanel(node);
         }
@@ -504,7 +575,7 @@ namespace Tobi.Modules.DocumentPane
                             {
                                 m_idLinkTargets.Add(name, data);
                             });
-            m_FlowDoc = converter.Convert(nodeBook);
+            converter.Convert(nodeBook, TheFlowDocument);
         }
 
         private void selectNode(TreeNode node)
@@ -734,7 +805,7 @@ namespace Tobi.Modules.DocumentPane
         }
         private TextElement FindTextElement(TreeNode node)
         {
-            return FindTextElement(node, m_FlowDoc.Blocks);
+            return FindTextElement(node, TheFlowDocument.Blocks);
         }
         private TextElement FindTextElement(TreeNode node, Section section)
         {
@@ -787,7 +858,7 @@ namespace Tobi.Modules.DocumentPane
             }
             if (textElement == null)
             {
-                textElement = m_FlowDoc.FindName(id) as TextElement;
+                textElement = TheFlowDocument.FindName(id) as TextElement;
             }
             if (textElement != null)
             {

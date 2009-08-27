@@ -8,40 +8,60 @@
     </Grid>
 </UserControl>
 -->
- <ListBox xmlns:NavigationPane="clr-namespace:Tobi.Modules.NavigationPane" xmlns:Data="clr-namespace:System.Windows.Data;assembly=PresentationFramework" 
-     x:Class="Tobi.Modules.NavigationPane.PagePanelView"
+
+
+<ScrollViewer x:Class="Tobi.Modules.NavigationPane.PagePanelView"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
+                 xmlns:NavigationPane="clr-namespace:Tobi.Modules.NavigationPane"
+              xmlns:Data="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
+                xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
+                xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+                
+                
+                xmlns:infra="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+                
+
+   xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+              VerticalScrollBarVisibility="Visible"
+              HorizontalScrollBarVisibility="Auto"
+              
+              
+           CanContentScroll="True"
+              IsDeferredScrollingEnabled="False"
+             Focusable="False"
+    >
+
+ <ListView 
+     
     x:Name="ListView" 
           DataContext="{Binding Path=ViewModel,
            RelativeSource={x:Static RelativeSource.Self}}"
      ItemsSource="{Binding Pages}"
           VirtualizingStackPanel.IsVirtualizing="False"
-                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:infra="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-                xmlns:local="clr-namespace:Tobi.Modules.NavigationPane"
-                xmlns:Regions="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
-                xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
             SelectionMode="Single"
              SelectionChanged="onPageSelected"
-          
+          IsTabStop="True"
           Focusable="True"
               AutomationProperties.Name="{x:Static local:PagePanelView.View_Name}">
    <!-- 
              DisplayMemberPath="Name" -->
 
-   <ListBox.ItemTemplate>
+   <ListView.ItemTemplate>
         <DataTemplate>
           <TextBlock Text="{Binding Name}"/>
-          <!-- 
+        </DataTemplate>
+      </ListView.ItemTemplate>
+
+   <!-- 
           AutomationProperties.Name="{Binding Path=Content,
           RelativeSource={x:Static RelativeSource.Self}}"ctx -->
-        </DataTemplate>
-      </ListBox.ItemTemplate>
+   
+    <ListView.ItemContainerStyle>
 
-    <ListBox.ItemContainerStyle>
-
-      <Style TargetType="{x:Type ListBoxItem}">
+      <Style TargetType="{x:Type ListViewItem}">
 
         <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
             <!-- Setter Property="FontSize" Value="15" / -->
@@ -53,11 +73,13 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-    </ListBox.ItemContainerStyle>
-    <!-- ListView.View>
+    </ListView.ItemContainerStyle>
+
+   <!-- ListView.View>
         <GridView>
-          <GridViewColumn Header="Page number/name"
+          <GridViewColumn Header="Page"
              DisplayMemberBinding="{Binding Name}" />
         </GridView>
       </ListView.View -->
-</ListBox>
+</ListView>
+  </ScrollViewer>

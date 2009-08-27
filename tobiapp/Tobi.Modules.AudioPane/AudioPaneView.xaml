@@ -413,6 +413,11 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   DockPanel.Dock="Bottom"
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Visible"
+                
+             CanContentScroll="True"
+                IsDeferredScrollingEnabled="False"
+                  Focusable="False"
+                  
                   Background="Black"
                   VerticalAlignment="Stretch"
                   ScrollChanged="OnWaveFormScrollChanged"

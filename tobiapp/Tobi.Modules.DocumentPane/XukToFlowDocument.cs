@@ -46,20 +46,16 @@ namespace Tobi.Modules.DocumentPane
         private FlowDocument m_FlowDoc;
         private TreeNode m_TreeNode;
 
-        public FlowDocument Convert(TreeNode node)
+        public void Convert(TreeNode node, FlowDocument flowDoc)
         {
             m_TreeNode = node;
-
-            m_FlowDoc = new FlowDocument
-                            {
-                                //FontFamily = new FontFamily("Palatino Linotype")
-                            };
+            
+            m_FlowDoc = flowDoc;
 
             walkBookTreeAndGenerateFlowDocument(m_TreeNode, null);
 
-            m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
+            //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
 
-            return m_FlowDoc;
         }
 
         private int m_currentTD;
