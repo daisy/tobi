@@ -478,7 +478,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
                 var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionBegin);
-                return formatTimeSpan(timeSpan);
+                return FormatTimeSpan_Units(Standard(Standard(timeSpan)));
             }
         }
 
@@ -493,7 +493,7 @@ namespace Tobi.Modules.AudioPane
                 }
 
                 var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionEnd);
-                return formatTimeSpan(timeSpan);
+                return FormatTimeSpan_Units(timeSpan);
             }
         }
 
@@ -507,7 +507,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
                 var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionEnd - State.Selection.SelectionBegin);
-                return formatTimeSpan(timeSpan);
+                return FormatTimeSpan_Units(timeSpan);
             }
         }
 
@@ -522,7 +522,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
                 var timeSpan = TimeSpan.FromMilliseconds(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
-                return formatTimeSpan(timeSpan);
+                return FormatTimeSpan_Standard(timeSpan);
             }
         }
 
@@ -536,7 +536,16 @@ namespace Tobi.Modules.AudioPane
             }
         }
 
-        private string formatTimeSpan(TimeSpan timeSpan)
+        public static string FormatTimeSpan_Units(TimeSpan time)
+        {
+            return
+                (time.Hours != 0 ? time.Hours + "h" : "") +
+                (time.Minutes != 0 ? time.Minutes + "mn" : "") +
+                (time.Seconds != 0 ? time.Seconds + "s" : "") +
+                (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
+        }
+
+        public static string FormatTimeSpan_Standard(TimeSpan timeSpan)
         {
             if (timeSpan.Hours != 0)
             {
@@ -560,7 +569,7 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                return "Selection: [" + TimeStringSelectionStart + " - " + TimeStringSelectionEnd + " (" + TimeStringSelectionDur + ")]";
+                return "Selection: " + TimeStringSelectionStart + " - " + TimeStringSelectionEnd + " (" + TimeStringSelectionDur + ")";
             }
         }
 
@@ -586,15 +595,15 @@ namespace Tobi.Modules.AudioPane
         {
             get
             {
-                string strToDisplay = null;
-
                 if (IsRecording || IsMonitoring)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
-                    strToDisplay = formatTimeSpan(timeSpan);
 
-                    return "[" + strToDisplay + "]";
+                    return "Time: " + FormatTimeSpan_Standard(timeSpan);
                 }
+
+                string strToDisplay = null;
+
 
                 if (!IsAudioLoaded)
                 {
@@ -603,7 +612,7 @@ namespace Tobi.Modules.AudioPane
                 else if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTime);
-                    strToDisplay = formatTimeSpan(timeSpan);
+                    strToDisplay = FormatTimeSpan_Standard(timeSpan);
                 }
                 else if (LastPlayHeadTime >= 0 && (
                                                  m_Player.CurrentState == AudioPlayer.State.Paused ||
@@ -611,12 +620,12 @@ namespace Tobi.Modules.AudioPane
                                              ))
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);
-                    strToDisplay = formatTimeSpan(timeSpan);
+                    strToDisplay = FormatTimeSpan_Standard(timeSpan);
                 }
 
                 if (!String.IsNullOrEmpty(strToDisplay))
                 {
-                    return "Time: [" + strToDisplay + " / " + TimeStringTotalWaveform + "]";
+                    return "Time: " + strToDisplay + " / " + TimeStringTotalWaveform;
                 }
 
                 return "";
