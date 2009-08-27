@@ -21,11 +21,10 @@ namespace Tobi.Modules.DocumentPane
 
         private void updateBreadcrumbPanel(TreeNode node)
         {
-
             BreadcrumbPanel.Children.Clear();
-            BreadcrumbPanel.Children.Add(m_FocusStartButton);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
-            if (PathToCurrentTreeNode == null || !PathToCurrentTreeNode.Contains(node))
+            if (PathToCurrentTreeNode == null) // || !PathToCurrentTreeNode.Contains(node))
             {
                 PathToCurrentTreeNode = new List<TreeNode>();
                 TreeNode treeNode = node;
