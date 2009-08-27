@@ -47,7 +47,7 @@ namespace Tobi.Common
         public static KeyGesture Audio_Focus_KEYS = new KeyGesture(Key.A, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
 
         public const string Audio_FocusStatusBar = "Bring focus to the audio status bar";
-        public static KeyGesture Audio_FocusStatusBar_KEYS = new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
+        public static KeyGesture Audio_FocusStatusBar_KEYS = new KeyGesture(Key.F8, ModifierKeys.None);
 
 
         public const string FileSystem_MyComputer = "Computer drives";

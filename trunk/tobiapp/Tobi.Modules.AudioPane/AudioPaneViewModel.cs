@@ -522,7 +522,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
                 var timeSpan = TimeSpan.FromMilliseconds(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
-                return FormatTimeSpan_Standard(timeSpan);
+                return FormatTimeSpan_Units(timeSpan);
             }
         }
 
@@ -539,9 +539,9 @@ namespace Tobi.Modules.AudioPane
         public static string FormatTimeSpan_Units(TimeSpan time)
         {
             return
-                (time.Hours != 0 ? time.Hours + "h" : "") +
-                (time.Minutes != 0 ? time.Minutes + "mn" : "") +
-                (time.Seconds != 0 ? time.Seconds + "s" : "") +
+                (time.Hours != 0 ? time.Hours + "h " : "") +
+                (time.Minutes != 0 ? time.Minutes + "mn " : "") +
+                (time.Seconds != 0 ? time.Seconds + "s " : "") +
                 (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
 
@@ -599,7 +599,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
 
-                    return "Time: " + FormatTimeSpan_Standard(timeSpan);
+                    return "Time: " + FormatTimeSpan_Units(timeSpan);
                 }
 
                 string strToDisplay = null;
@@ -612,7 +612,7 @@ namespace Tobi.Modules.AudioPane
                 else if (IsPlaying)
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTime);
-                    strToDisplay = FormatTimeSpan_Standard(timeSpan);
+                    strToDisplay = FormatTimeSpan_Units(timeSpan);
                 }
                 else if (LastPlayHeadTime >= 0 && (
                                                  m_Player.CurrentState == AudioPlayer.State.Paused ||
@@ -620,7 +620,7 @@ namespace Tobi.Modules.AudioPane
                                              ))
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);
-                    strToDisplay = FormatTimeSpan_Standard(timeSpan);
+                    strToDisplay = FormatTimeSpan_Units(timeSpan);
                 }
 
                 if (!String.IsNullOrEmpty(strToDisplay))
