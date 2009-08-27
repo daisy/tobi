@@ -653,6 +653,16 @@ namespace Tobi.Modules.AudioPane
                 if (value != m_IsWaveFormLoading)
                 {
                     m_IsWaveFormLoading = value;
+
+                    if (m_IsWaveFormLoading)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Loading waveform...");
+                    }
+                    else
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Waveform loaded.");
+                    }
+
                     RaisePropertyChanged(() => IsWaveFormLoading);
 
                     // Manually forcing the commands to refresh their "canExecute" state
@@ -927,6 +937,8 @@ namespace Tobi.Modules.AudioPane
                     );
             }
 
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playing...");
+
             //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
 
@@ -982,6 +994,8 @@ namespace Tobi.Modules.AudioPane
             if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
+
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback stopped.");
             }
         }
 
@@ -1070,6 +1084,8 @@ namespace Tobi.Modules.AudioPane
             Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             RaisePropertyChanged(() => IsPlaying);
+
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback ended.");
 
             if (State.Audio.HasContent)
             {

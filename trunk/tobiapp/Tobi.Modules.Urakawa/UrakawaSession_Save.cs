@@ -132,6 +132,8 @@ namespace Tobi.Modules.Urakawa
                 DocumentFilePath = m_SaveAsDocumentFilePath;
             }
 
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");
+
             IsDirty = false;
         }
 

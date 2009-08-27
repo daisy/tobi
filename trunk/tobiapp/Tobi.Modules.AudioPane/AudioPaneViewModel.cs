@@ -387,10 +387,14 @@ namespace Tobi.Modules.AudioPane
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(UserInterfaceStrings.Ready);
             }
             else
             {
                 m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
+
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");
             }
         }
 

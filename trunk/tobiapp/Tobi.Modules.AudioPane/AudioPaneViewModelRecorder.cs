@@ -29,6 +29,9 @@ namespace Tobi.Modules.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
 
                     m_Recorder.StopRecording();
+
+
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped.");
                 },
                 obj => !IsWaveFormLoading && IsRecording);
 
@@ -63,6 +66,8 @@ namespace Tobi.Modules.AudioPane
                     }
 
                     m_Recorder.StartRecording(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
+
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording...");
                 },
                 obj =>
                 {
@@ -107,6 +112,9 @@ namespace Tobi.Modules.AudioPane
 
                     m_Recorder.StartMonitoring(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
 
+
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Monitoring...");
+
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTock();
                 },
@@ -124,6 +132,9 @@ namespace Tobi.Modules.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
 
                     m_Recorder.StopRecording();
+
+
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Monitoring stopped.");
 
                     State.Audio.PcmFormatAlt = null;
 
