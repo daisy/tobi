@@ -84,5 +84,9 @@ namespace Tobi.Modules.NavigationPane
         {
             get { return this; }
         }
+        public UIElement ViewFocusStart
+        {
+            get { return ListView; }
+        }
     }
 }

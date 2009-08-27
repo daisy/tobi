@@ -10,5 +10,6 @@ namespace Tobi.Modules.NavigationPane
         void UpdatePageListSelection(TreeNode node);
 
         UIElement ViewControl { get; }
+        UIElement ViewFocusStart { get; }
     }
 }

@@ -11,5 +11,6 @@ namespace Tobi.Modules.NavigationPane
         void SelectTreeNode(TreeNode node);
 
         UIElement ViewControl { get; }
+        UIElement ViewFocusStart { get; }
     }
 }

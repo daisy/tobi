@@ -59,9 +59,9 @@ namespace Tobi.Common.UI
         /// </summary>
         /// <param name="treeView">The TreeView containing the item</param>
         /// <param name="item">The item to search and select</param>
-        public static void SelectItem(this TreeView treeView, object item)
+        public static TreeViewItem SelectItem(this TreeView treeView, object item, bool doNotSelect)
         {
-            ExpandAndSelectItem(treeView, item);
+            return ExpandAndSelectItem(treeView, item, doNotSelect);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Tobi.Common.UI
         /// <param name="parentContainer">The parent container whose children will be searched for the selected item</param>
         /// <param name="itemToSelect">The item to select</param>
         /// <returns>True if the item is found and selected, false otherwise</returns>
-        private static bool ExpandAndSelectItem(ItemsControl parentContainer, object itemToSelect)
+        private static TreeViewItem ExpandAndSelectItem(ItemsControl parentContainer, object itemToSelect, bool doNotSelect)
         {
             //check all items at the current level
             foreach (Object item in parentContainer.Items)
@@ -81,12 +81,15 @@ namespace Tobi.Common.UI
                 //TreeViewItem IsSelected to true
                 if (item == itemToSelect && currentContainer != null)
                 {
-                    currentContainer.IsSelected = true;
-                    currentContainer.BringIntoView();
-                    //currentContainer.Focus();
+                    if (!doNotSelect)
+                    {
+                        currentContainer.IsSelected = true;
+                        currentContainer.BringIntoView();
+                        //currentContainer.Focus();
+                    }
 
                     //the item was found
-                    return true;
+                    return currentContainer;
                 }
             }
 
@@ -114,7 +117,8 @@ namespace Tobi.Common.UI
                         {
                             if (currentContainer.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
                             {
-                                if (ExpandAndSelectItem(currentContainer, itemToSelect) == false)
+                                var treeViewItem = ExpandAndSelectItem(currentContainer, itemToSelect, doNotSelect);
+                                if (treeViewItem == null)
                                 {
                                     //The assumption is that code executing in this EventHandler is the result of the parent not
                                     //being expanded since the containers were not generated.
@@ -130,21 +134,22 @@ namespace Tobi.Common.UI
                     }
                     else //otherwise the containers have been generated, so look for item to select in the children
                     {
-                        if (ExpandAndSelectItem(currentContainer, itemToSelect) == false)
+                        var treeViewItem = ExpandAndSelectItem(currentContainer, itemToSelect, doNotSelect);
+                        if (treeViewItem == null)
                         {
                             //restore the current TreeViewItem's expanded state
                             currentContainer.IsExpanded = wasExpanded;
                         }
                         else //otherwise the node was found and selected, so return true
                         {
-                            return true;
+                            return treeViewItem;
                         }
                     }
                 }
             }
 
             //no item was found
-            return false;
+            return null;
         }
     }
 }

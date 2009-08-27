@@ -38,12 +38,12 @@ namespace Tobi.Modules.NavigationPane
                                         {
                                             if (view == pageView.ViewControl)
                                             {
-                                                ui = pageView.ViewControl;
+                                                ui = pageView.ViewFocusStart;
                                                 break;
                                             }
                                             if (view == headingView.ViewControl)
                                             {
-                                                ui = headingView.ViewControl;
+                                                ui = headingView.ViewFocusStart;
                                                 break;
                                             }
                                         }

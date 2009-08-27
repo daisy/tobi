@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.UI;
@@ -37,16 +38,21 @@ namespace Tobi.Modules.NavigationPane
 
             _ignoreTreeNodeSelectedEvent = true;
 
+            m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
+
             ViewModel.Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.onHeadingSelected", Category.Debug, Priority.Medium);
 
             ViewModel.EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
+
+        private TreeViewItem m_SelectedTreeViewItem;
         private void updateContentTreeSelection(TreeNode node)
         {
             HeadingTreeNodeWrapper nodeTOC = ViewModel.HeadingsNavigator.GetAncestorContainer(node);
             if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
             _ignoreHeadingSelected = true;
-            TreeView.SelectItem(nodeTOC);
+
+            m_SelectedTreeViewItem = TreeView.SelectItem(nodeTOC, false);
         }
 
         public const string View_Name = "Headings";
@@ -67,17 +73,31 @@ namespace Tobi.Modules.NavigationPane
 
         public void LoadProject()
         {
+            m_SelectedTreeViewItem = null;
             TreeView.DataContext = ViewModel.HeadingsNavigator;
         }
 
         public void UnloadProject()
         {
+            m_SelectedTreeViewItem = null;
             TreeView.DataContext = null;
         }
 
         public UIElement ViewControl
         {
             get { return this; }
+        }
+
+        public UIElement ViewFocusStart
+        {
+            get
+            {
+                if (m_SelectedTreeViewItem != null)
+                {
+                    return m_SelectedTreeViewItem;
+                }
+                return TreeView;
+            }
         }
     }
 }
