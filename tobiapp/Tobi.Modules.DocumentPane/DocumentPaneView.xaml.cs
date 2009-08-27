@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -25,7 +26,7 @@ using System.Diagnostics;
 
 namespace Tobi.Modules.DocumentPane
 {
-    public class FlowDocumentReadeViewer : FlowDocumentScrollViewer
+    public class ButtonEx : Button
     {
         public AutomationPeer m_AutomationPeer;
 
@@ -35,6 +36,8 @@ namespace Tobi.Modules.DocumentPane
             return m_AutomationPeer;
         }
     }
+
+
     internal class TreeNodeWrapper
     {
         public TreeNode TreeNode;
@@ -56,6 +59,9 @@ namespace Tobi.Modules.DocumentPane
     /// </summary>
     public partial class DocumentPaneView // : INotifyPropertyChangedEx
     {
+
+        private ButtonEx m_FocusStartButton;
+
         //public event PropertyChangedEventHandler PropertyChanged;
         //public void RaisePropertyChanged(PropertyChangedEventArgs e)
         //{
@@ -95,6 +101,7 @@ namespace Tobi.Modules.DocumentPane
             Logger = logger;
 
             DataContext = this;
+
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
@@ -203,7 +210,7 @@ namespace Tobi.Modules.DocumentPane
                 null,
                 UserInterfaceStrings.Document_Focus_KEYS,
                 null,
-                obj => FocusHelper.Focus(this, FlowDocReader),
+                obj => FocusHelper.Focus(this, m_FocusStartButton),
                 obj => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
@@ -211,6 +218,22 @@ namespace Tobi.Modules.DocumentPane
 
             InitializeComponent();
 
+            var arrow = (Path)Application.Current.FindResource("Arrow");
+            m_FocusStartButton = new ButtonEx
+            {
+                Content = arrow,
+                BorderBrush = null,
+                BorderThickness = new Thickness(0.0),
+                Background = Brushes.Transparent,
+                Foreground = Brushes.Black,
+                Cursor = Cursors.Cross,
+                FontWeight = FontWeights.ExtraBold,
+                Style = m_ButtonStyle,
+                Focusable = true,
+                IsTabStop = true
+            };
+            BreadcrumbPanel.Children.Clear();
+            BreadcrumbPanel.Children.Add(m_FocusStartButton);
 
             resetFlowDocument();
             TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
@@ -292,6 +315,8 @@ namespace Tobi.Modules.DocumentPane
             CurrentSubTreeNode = null;
 
             BreadcrumbPanel.Children.Clear();
+            BreadcrumbPanel.Children.Add(m_FocusStartButton);
+            
             PathToCurrentTreeNode = null;
 
             if (m_idLinkTargets != null)
@@ -322,7 +347,7 @@ namespace Tobi.Modules.DocumentPane
 
             //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
 
-            FlowDocReader.SetValue(AutomationProperties.NameProperty, "No selection in document");
+            m_FocusStartButton.SetValue(AutomationProperties.NameProperty, "Nothing selected in document");
             //FlowDocReader.Document = m_FlowDoc;
 
             //annotationsOn();
@@ -370,7 +395,7 @@ namespace Tobi.Modules.DocumentPane
 
             TheFlowDocument.Blocks.Clear();
 
-            FlowDocReader.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
+            m_FocusStartButton.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
         }
 
         private TreeNode m_CurrentTreeNode;
@@ -406,22 +431,22 @@ namespace Tobi.Modules.DocumentPane
                 {
                     var qName = m_CurrentSubTreeNode.GetXmlElementQName();
 
-                    string strAppend = "";
+                    string strPrepend = "";
                     if (qName == null)
                     {
-                        strAppend = " [No XML] ...";
+                        strPrepend = "[No XML]. ";
                     }
                     else
                     {
-                        strAppend = " XML: [" + qName.LocalName + "] ...";
+                        strPrepend = "XML: [" + qName.LocalName + "]. ";
                     }
-                    string str = m_CurrentSubTreeNode.GetTextMediaFlattened() + strAppend;
-                    
-                    FlowDocReader.SetValue(AutomationProperties.NameProperty, str);
+                    string str = strPrepend + m_CurrentSubTreeNode.GetTextMediaFlattened();
 
-                    if (FlowDocReader.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                    m_FocusStartButton.SetValue(AutomationProperties.NameProperty, str);
+
+                    if (m_FocusStartButton.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
                     {
-                        FlowDocReader.m_AutomationPeer.RaiseAutomationEvent(
+                        m_FocusStartButton.m_AutomationPeer.RaiseAutomationEvent(
                             AutomationEvents.AutomationFocusChanged);
                     }
                 }
@@ -438,21 +463,21 @@ namespace Tobi.Modules.DocumentPane
 
                         var qName = CurrentTreeNode.GetXmlElementQName();
 
-                        string strAppend = "";
+                        string strPrepend = "";
                         if (qName == null)
                         {
-                            strAppend = " [No XML] ...";
+                            strPrepend = "[No XML]. ";
                         }
                         else
                         {
-                            strAppend = " XML: [" + qName.LocalName + "] ...";
+                            strPrepend = "XML: [" + qName.LocalName + "]. ";
                         }
 
-                        FlowDocReader.SetValue(AutomationProperties.NameProperty, str + strAppend);
+                        m_FocusStartButton.SetValue(AutomationProperties.NameProperty, strPrepend + str);
 
-                        if (FlowDocReader.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                        if (m_FocusStartButton.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
                         {
-                            FlowDocReader.m_AutomationPeer.RaiseAutomationEvent(
+                            m_FocusStartButton.m_AutomationPeer.RaiseAutomationEvent(
                                 AutomationEvents.AutomationFocusChanged);
                         }
                     }
@@ -519,9 +544,10 @@ namespace Tobi.Modules.DocumentPane
 
             if (subTreeNode == node)
             {
-#if DEBUG
-            Debugger.Break();
-#endif
+                CurrentTreeNode = node;
+                CurrentSubTreeNode = CurrentTreeNode;
+                BringIntoViewAndHighlight(node);
+                updateBreadcrumbPanel(node);
             }
             else
             {
@@ -580,6 +606,20 @@ namespace Tobi.Modules.DocumentPane
 
         private void selectNode(TreeNode node)
         {
+            if (node == CurrentTreeNode)
+            {
+                var treeNode = node.GetFirstDescendantWithText();
+                if (treeNode != null)
+                {
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+                               Category.Debug, Priority.Medium);
+
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                }
+
+                return;
+            }
+
             if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
                 && node.IsDescendantOf(CurrentTreeNode))
             {
