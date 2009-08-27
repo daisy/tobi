@@ -764,7 +764,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     x:Name="FocusStartStatusBar"
     
       Focusable="True"
-    Margin="0, 0, 0, 2"
+    Margin="0, 0, 0, 0"
            KeyboardNavigation.DirectionalNavigation="Cycle"
     
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
@@ -776,7 +776,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <StatusBarItem DockPanel.Dock="Left" Focusable="True">
     <TextBlock  Text="{Binding StatusBarMessage}" Focusable="True" 
-    Margin="4, 0, 0, 0" 
+    Margin="0, 0, 0, 0" 
                     HorizontalAlignment="Left"/>
     </StatusBarItem>
 
@@ -788,7 +788,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     DockPanel.Dock="Right">
     <StackPanel
       
-    Margin="0, 0, 6, 0"
+    Margin="0, 0, 11, 0"
         Orientation="Horizontal"
                     HorizontalAlignment="Right"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
