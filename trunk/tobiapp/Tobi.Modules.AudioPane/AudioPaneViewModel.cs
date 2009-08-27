@@ -478,7 +478,7 @@ namespace Tobi.Modules.AudioPane
                     return "";
                 }
                 var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionBegin);
-                return FormatTimeSpan_Units(Standard(Standard(timeSpan)));
+                return FormatTimeSpan_Units(timeSpan);
             }
         }
 
