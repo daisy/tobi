@@ -8,13 +8,15 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
            Orientation="Horizontal"
            
-  Focusable="True"
-  x:Name="FocusStart"
            KeyboardNavigation.DirectionalNavigation="Cycle"
            >
 
 
       <UI:ButtonRichCommand
+        
+  Focusable="True"
+  x:Name="FocusStart"
+        
         RichCommand="{Binding NewCommand}"/>
       
       <UI:ButtonRichCommand RichCommand="{Binding OpenCommand}"/>
