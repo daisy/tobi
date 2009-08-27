@@ -14,11 +14,15 @@
           BorderThickness="1,1,1,1"
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
     <WrapPanel
+      
       Focusable="False"
+      
+      KeyboardNavigation.DirectionalNavigation="Cycle"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              x:Name="BreadcrumbPanel" Orientation="Horizontal"
              >
     </WrapPanel>
+    
   </Border>
 
   <!-- Grid DockPanel.Dock="Top">
@@ -58,8 +62,9 @@
                                  />
 
   </WrapPanel>
-  <DocumentPane:FlowDocumentReadeViewer x:Name="FlowDocReader"
-                            Focusable="True"
+  <FlowDocumentScrollViewer x:Name="FlowDocReader"
+                    IsTabStop="False"
+                    Focusable="False"
                             Zoom="110"
                       FontFamily="Palatino Linotype"
                       Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
@@ -84,6 +89,7 @@
            IsColumnWidthFlexible="False"
            TextAlignment = "Left"
                     Focusable="False"
+
                     />
 
 
@@ -99,12 +105,13 @@
 
 
 
-  </DocumentPane:FlowDocumentReadeViewer>
+  </FlowDocumentScrollViewer>
   <!-- IsSelectionEnabled="True"
     
                         IsScrollViewEnabled="False"
     -->
 
   <!-- FlowDocumentReader i IsFindEnabled="False" ViewingMode="Scroll" -->
+
 
 </DockPanel>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -22,6 +23,7 @@ namespace Tobi.Modules.DocumentPane
         {
 
             BreadcrumbPanel.Children.Clear();
+            BreadcrumbPanel.Children.Add(m_FocusStartButton);
 
             if (PathToCurrentTreeNode == null || !PathToCurrentTreeNode.Contains(node))
             {
@@ -58,7 +60,10 @@ namespace Tobi.Modules.DocumentPane
                     Style = m_ButtonStyle
                 };
 
-                var run = new Run((qname != null ? qname.LocalName : "TEXT")) { TextDecorations = TextDecorations.Underline };
+                var run = new Run((qname != null ? qname.LocalName : "TEXT"))
+                              {
+                                  TextDecorations = TextDecorations.Underline
+                              };
                 butt.Content = run;
 
                 butt.Click += OnBreadCrumbButtonClick;
@@ -79,7 +84,9 @@ namespace Tobi.Modules.DocumentPane
                         Foreground = Brushes.Black,
                         Cursor = Cursors.Cross,
                         FontWeight = FontWeights.ExtraBold,
-                        Style = m_ButtonStyle
+                        Style = m_ButtonStyle,
+                        Focusable = false,
+                        IsTabStop = false
                     };
 
                     tb.Click += OnBreadCrumbSeparatorClick;
@@ -87,11 +94,13 @@ namespace Tobi.Modules.DocumentPane
                     BreadcrumbPanel.Children.Add(tb);
                 }
 
+                bool selected = false;
                 if (CurrentTreeNode == CurrentSubTreeNode)
                 {
                     if (n == node)
                     {
                         run.FontWeight = FontWeights.Heavy;
+                        selected = true;
                     }
                 }
                 else
@@ -99,8 +108,11 @@ namespace Tobi.Modules.DocumentPane
                     if (n == CurrentTreeNode)
                     {
                         run.FontWeight = FontWeights.Heavy;
+                        selected = true;
                     }
                 }
+
+                butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : "No XML") + (selected ? ", Selected." : "") + (withMedia ? "Audio." : ""));
 
                 counter++;
             }
@@ -189,6 +201,8 @@ namespace Tobi.Modules.DocumentPane
             }
 
             selectNode((TreeNode)ui.Tag);
+
+            CommandFocus.Execute(null);
         }
 
     }

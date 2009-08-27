@@ -30,6 +30,7 @@ namespace Tobi.Common
         {
             return str.Replace("_", "");
         }
+        
 
         public const string No_Document = "No document.";
         public const string Feature_Not_Available = "This feature is not available.";
