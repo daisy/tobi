@@ -35,19 +35,19 @@ namespace Tobi.Common
         public const string Feature_Not_Available = "This feature is not available.";
 
         public const string Navigation_Focus = "Bring focus to the navigation pane";
-        public static KeyGesture Navigation_Focus_KEYS = new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
+        public static KeyGesture Navigation_Focus_KEYS = new KeyGesture(Key.F6, ModifierKeys.None);
 
         public const string Document_Focus = "Bring focus to the document pane";
-        public static KeyGesture Document_Focus_KEYS = new KeyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
+        public static KeyGesture Document_Focus_KEYS = new KeyGesture(Key.F8, ModifierKeys.None);
 
         public const string Toolbar_Focus = "Bring focus to the toolbar";
         public static KeyGesture Toolbar_Focus_KEYS = new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift );
 
         public const string Audio_Focus = "Bring focus to the audio panel";
-        public static KeyGesture Audio_Focus_KEYS = new KeyGesture(Key.A, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift);
+        public static KeyGesture Audio_Focus_KEYS = new KeyGesture(Key.F7, ModifierKeys.None);
 
         public const string Audio_FocusStatusBar = "Bring focus to the audio status bar";
-        public static KeyGesture Audio_FocusStatusBar_KEYS = new KeyGesture(Key.F8, ModifierKeys.None);
+        public static KeyGesture Audio_FocusStatusBar_KEYS = new KeyGesture(Key.F4, ModifierKeys.None);
 
 
         public const string FileSystem_MyComputer = "Computer drives";

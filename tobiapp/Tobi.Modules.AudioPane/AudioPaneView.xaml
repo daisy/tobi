@@ -627,21 +627,38 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <StackPanel
   
-  Focusable="True"
-  x:Name="FocusStart"
-  
            KeyboardNavigation.DirectionalNavigation="Cycle"
         Orientation="Horizontal"
                     HorizontalAlignment="Left"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
 
-      <UI:ButtonRichCommand RichCommand="{Binding CommandAudioSettings}"
+      <UI:TwoStateButtonRichCommand
+  x:Name="FocusStart"
+      RichCommandOne="{Binding CommandStopMonitor}"
+      RichCommandTwo="{Binding CommandStartMonitor}"
+      InputBindingManager="{Binding InputBindingManager}"
+            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
+
+      <UI:TwoStateButtonRichCommand
+  
+        RichCommandOne="{Binding CommandStopRecord}"
+        RichCommandTwo="{Binding CommandStartRecord}"
+        InputBindingManager="{Binding InputBindingManager}"
+              RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
+
+      <UI:ButtonRichCommand
+        RichCommand="{Binding CommandInsertFile}"/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"
                                  />
 
-    <UI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
-            IsChecked="{Binding IsAutoPlay, Mode=OneWay}"/>
+      <Separator/>
 
+      <!-- UI:ButtonRichCommand RichCommand="{Binding CommandAudioSettings}" / -->
+
+      <!-- UI:ToggleButtonRichCommand RichCommand="{Binding CommandAutoPlay}"
+            IsChecked="{Binding IsAutoPlay, Mode=OneWay}"/ -->
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandPlayPreviewLeft}"
                                  />
@@ -685,46 +702,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                                  />
     <UI:ButtonRichCommand RichCommand="{Binding CommandSelectNextChunk}"
                                  />
-    
-    <UI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}"
-                               Visibility="Collapsed"
-                                 />
-    <UI:ButtonRichCommand RichCommand="{Binding CommandEndSelection}"
-                               Visibility="Collapsed"
-                                 />
+
+      <!-- UI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}" />
+    <UI:ButtonRichCommand RichCommand="{Binding CommandEndSelection}" / -->
     
     <UI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
                                  />
 
     <Separator/>
 
-    <UI:TwoStateButtonRichCommand
-      RichCommandOne="{Binding CommandStopMonitor}"
-      RichCommandTwo="{Binding CommandStartMonitor}"
-      InputBindingManager="{Binding InputBindingManager}"
-            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
+      <!-- UI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/ -->
 
-    <UI:ButtonRichCommand
-      RichCommand="{Binding CommandOpenFile}"/>
-
-    <Separator/>
-
-    <UI:TwoStateButtonRichCommand
-      RichCommandOne="{Binding CommandStopRecord}"
-      RichCommandTwo="{Binding CommandStartRecord}"
-      InputBindingManager="{Binding InputBindingManager}"
-            RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
-
-    <UI:ButtonRichCommand
-      RichCommand="{Binding CommandInsertFile}"/>
-    
-    <UI:ButtonRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"
-                                 />
-
-    <Separator/>
-    <UI:ButtonRichCommand RichCommand="{Binding CommandRefresh}"
-                                 />
-    <Separator/>
+      <!-- UI:ButtonRichCommand RichCommand="{Binding CommandRefresh}" / -->
+      
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandZoomFitFull}"
                                  />
@@ -761,7 +751,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   </UI:WrapPanelLastChildFill>
 
   <StatusBar
-    x:Name="FocusStartStatusBar"
     
       Focusable="True"
     Margin="0, 0, 0, 0"
@@ -775,7 +764,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <!-- LastChildFill="True" -->
 
     <StatusBarItem DockPanel.Dock="Left" Focusable="True">
-    <TextBlock  Text="{Binding StatusBarMessage}" Focusable="True" 
+    <TextBlock 
+    x:Name="FocusStartStatusBar" Text="{Binding StatusBarMessage}" Focusable="True" 
     Margin="0, 0, 0, 0" 
                     HorizontalAlignment="Left"/>
     </StatusBarItem>
