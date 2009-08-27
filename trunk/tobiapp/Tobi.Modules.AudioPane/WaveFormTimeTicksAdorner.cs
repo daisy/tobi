@@ -175,7 +175,7 @@ namespace Tobi.Modules.AudioPane
                     double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX)));
 
                     var formattedText = new FormattedText(
-                        FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
+                        AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
                         m_culture,
                         FlowDirection.LeftToRight,
                         m_typeFace,
@@ -242,7 +242,7 @@ namespace Tobi.Modules.AudioPane
                         double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
 
                         var formattedTextDuration = new FormattedText(
-                                                FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
+                                                AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
                                                               m_culture,
                                                               FlowDirection.LeftToRight,
                                                               m_typeFace,
@@ -386,7 +386,7 @@ namespace Tobi.Modules.AudioPane
                 double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX)));
 
                 var formattedText = new FormattedText(
-                    FormatTimeSpan(TimeSpan.FromMilliseconds(ms)),
+                    AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
                     m_culture,
                     FlowDirection.LeftToRight,
                     m_typeFace,
@@ -421,15 +421,6 @@ namespace Tobi.Modules.AudioPane
 
                 drawingContext.DrawText(formattedText, m_point3);
             }
-        }
-
-        private static string FormatTimeSpan(TimeSpan time)
-        {
-            return
-                (time.Hours != 0 ? time.Hours + "h" : "") +
-                (time.Minutes != 0 ? time.Minutes + "mn" : "") +
-                (time.Seconds != 0 ? time.Seconds + "s" : "") +
-                (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
     }
 }
