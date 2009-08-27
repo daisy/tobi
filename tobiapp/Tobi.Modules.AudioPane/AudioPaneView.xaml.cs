@@ -376,7 +376,7 @@ namespace Tobi.Modules.AudioPane
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
 
-            ViewModel.EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(UserInterfaceStrings.Ready);
+            ViewModel.EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");
         }
 
         #endregion Event / Callbacks
