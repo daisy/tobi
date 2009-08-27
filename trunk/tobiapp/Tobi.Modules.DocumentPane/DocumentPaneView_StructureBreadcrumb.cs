@@ -7,6 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.xuk;
@@ -24,7 +25,9 @@ namespace Tobi.Modules.DocumentPane
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
-            if (PathToCurrentTreeNode == null) // || !PathToCurrentTreeNode.Contains(node))
+            bool firstTime = PathToCurrentTreeNode == null;
+
+            if (PathToCurrentTreeNode == null || !PathToCurrentTreeNode.Contains(node))
             {
                 PathToCurrentTreeNode = new List<TreeNode>();
                 TreeNode treeNode = node;
@@ -69,7 +72,7 @@ namespace Tobi.Modules.DocumentPane
 
                 BreadcrumbPanel.Children.Add(butt);
 
-                if (counter < PathToCurrentTreeNode.Count - 1)
+                if (counter < PathToCurrentTreeNode.Count && n.Children.Count > 0)
                 {
                     var arrow = (Path)Application.Current.FindResource("Arrow");
 
@@ -84,13 +87,15 @@ namespace Tobi.Modules.DocumentPane
                         Cursor = Cursors.Cross,
                         FontWeight = FontWeights.ExtraBold,
                         Style = m_ButtonStyle,
-                        Focusable = false,
-                        IsTabStop = false
+                        Focusable = true,
+                        IsTabStop = true
                     };
 
                     tb.Click += OnBreadCrumbSeparatorClick;
 
                     BreadcrumbPanel.Children.Add(tb);
+
+                    tb.SetValue(AutomationProperties.NameProperty, "XML Children.");
                 }
 
                 bool selected = false;
@@ -114,6 +119,11 @@ namespace Tobi.Modules.DocumentPane
                 butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : "No XML") + (selected ? ", Selected." : "") + (withMedia ? "Audio." : ""));
 
                 counter++;
+            }
+
+            if (firstTime)
+            {
+                CommandFocus.Execute(null);
             }
         }
 
@@ -155,7 +165,8 @@ namespace Tobi.Modules.DocumentPane
 
             popup.Child = scroll;
             popup.IsOpen = true;
-            popup.Focus();
+            
+            FocusHelper.Focus(this, listOfNodes);
         }
 
         private void OnPopupLostFocus(object sender, RoutedEventArgs e)

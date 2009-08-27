@@ -156,7 +156,7 @@ namespace Tobi.Modules.DocumentPane
                 data.Name = IdToName(pageID);
                 data.ToolTip = data.Name;
 
-                Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
+                //Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
 
                 EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
             }
