@@ -549,6 +549,12 @@ namespace Tobi.Modules.AudioPane
                 (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
 
+        private static string FormatTimeSpan_Npt(TimeSpan time)
+        {
+            double dTime = Math.Round(time.TotalSeconds, 3, MidpointRounding.ToEven);
+            return "npt=" + dTime.ToString() + "s";
+        }
+
         public static string FormatTimeSpan_Standard(TimeSpan timeSpan)
         {
             if (timeSpan.Hours != 0)
