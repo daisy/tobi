@@ -12,6 +12,7 @@ using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Modules.MetadataPane
@@ -187,7 +188,8 @@ namespace Tobi.Modules.MetadataPane
 
         public void AddEmptyMetadata()
         {
-            Metadata metadata = new Metadata {Name = "", Content = ""};
+            Metadata metadata = new Metadata {NameContentAttribute = new XmlAttribute {LocalName = "", Value = ""}};
+
             var session = Container.Resolve<IUrakawaSession>();
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
@@ -221,10 +223,9 @@ namespace Tobi.Modules.MetadataPane
             {
                 data += string.Format("{0} = {1}\n", m.Name, m.Content);
 
-                foreach (var optAttrName in m.UrakawaMetadata.OptionalAttributeNames)
+                foreach (var optAttr in m.UrakawaMetadata.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
-                    var optAttrValue = m.UrakawaMetadata.GetOptionalAttributeValue(optAttrName);
-                    data += string.Format("-- {0} = {1}\n", optAttrName, optAttrValue);
+                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.LocalName, optAttr.Value, optAttr.NamespaceUri);
                 }
             }
             return data;
@@ -238,12 +239,11 @@ namespace Tobi.Modules.MetadataPane
             //iterate through the SDK metadata
             foreach (Metadata m in list)
             {
-                data += string.Format("{0} = {1}\n", m.Name, m.Content);
+                data += string.Format("{0} = {1}\n", m.NameContentAttribute.LocalName, m.NameContentAttribute.Value);
 
-                foreach (var optAttrName in m.OptionalAttributeNames)
+                foreach (var optAttr in m.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
-                    var optAttrValue = m.GetOptionalAttributeValue(optAttrName);
-                    data += string.Format("-- {0} = {1}\n", optAttrName, optAttrValue);
+                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.LocalName, optAttr.Value, optAttr.NamespaceUri);
                 }
             }
             return data;

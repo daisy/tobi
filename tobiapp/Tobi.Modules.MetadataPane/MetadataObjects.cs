@@ -2,6 +2,7 @@ using Tobi.Common.MVVM;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using urakawa;
+using urakawa.events;
 using urakawa.metadata;
 using urakawa.events.metadata;
 using urakawa.metadata.daisy;
@@ -30,8 +31,9 @@ namespace Tobi.Modules.MetadataPane
         public NotifyingMetadataItem(Metadata metadata, ObservableMetadataCollection parentCollection)
         {
             UrakawaMetadata = metadata;
-            UrakawaMetadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
-            UrakawaMetadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
+            UrakawaMetadata.Changed += new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
+            //UrakawaMetadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
+            //UrakawaMetadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
             ParentCollection = parentCollection;
 
             Validate();
@@ -95,7 +97,7 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return UrakawaMetadata.Content;
+                return UrakawaMetadata.NameContentAttribute.Value;
             }
             set
             {
@@ -111,7 +113,7 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return UrakawaMetadata.Name;
+                return UrakawaMetadata.NameContentAttribute.LocalName;
             }
             set
             {
@@ -123,21 +125,31 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
-        void OnContentChanged(object sender, ContentChangedEventArgs e)
-        {
-            RaisePropertyChanged(() => Content);
-        }
+        //void OnContentChanged(object sender, ContentChangedEventArgs e)
+        //{
+        //    RaisePropertyChanged(() => Content);
+        //}
 
-        void OnNameChanged(object sender, NameChangedEventArgs e)
+        //void OnNameChanged(object sender, NameChangedEventArgs e)
+        //{
+        //    RaisePropertyChanged(() => Name);
+        //    RaisePropertyChanged(() => Definition);
+        //}
+
+        void OnMetadataChangedChanged(object sender, DataModelChangedEventArgs e)
         {
+            //e actually is MetadataEventArgs
             RaisePropertyChanged(() => Name);
+            RaisePropertyChanged(() => Content);
             RaisePropertyChanged(() => Definition);
         }
 
         internal void RemoveEvents()
-        {   
-            UrakawaMetadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-            UrakawaMetadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
+        {
+            UrakawaMetadata.Changed -= new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
+
+            //UrakawaMetadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
+            //UrakawaMetadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
         }
     }
 
