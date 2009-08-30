@@ -234,7 +234,7 @@ AlternationCount="2"
 
 
 
-  <!-- TabItem Header="Shortcuts (ListView + GridView)">
+  <TabItem Header="Shortcuts (ListView + GridView)">
 
     <UI:SortableListView
     
@@ -257,7 +257,7 @@ AlternationCount="2"
             >
 
       <ListView.Resources>
-        <ToolTip x:Key="imageIconTooltip"
+        <ToolTip x:Key="imageIconTooltipp"
            DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
                
@@ -287,7 +287,7 @@ AlternationCount="2"
                                     Content="{Binding Path=IconProvider.IconLarge}"
                                                      
                                                      
-                        ToolTip="{StaticResource imageIconTooltip}"
+                        ToolTip="{StaticResource imageIconTooltipp}"
                                 Margin="2, 4, 2, 4">
                 </ContentControl>
               </DataTemplate>
@@ -328,7 +328,7 @@ AlternationCount="2"
       </ListView.ItemContainerStyle>
     </UI:SortableListView>
 
-  </TabItem -->
+  </TabItem>
 
 
   <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">

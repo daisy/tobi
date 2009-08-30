@@ -1379,6 +1379,8 @@ namespace Tobi.Modules.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
                         }
                     case "list":
+                    case "ul":
+                    case "ol":
                     case "dl":
                         {
                             return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, qname, textMedia);
