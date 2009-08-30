@@ -22,13 +22,13 @@ namespace Tobi.Modules.MetadataPane
         }
 
         public Metadata UrakawaMetadata { get; private set; }
-        public ObservableMetadataCollection ParentCollection{get; private set;}
+        public MetadataCollection ParentCollection{get; private set;}
         //copy constructor
         public NotifyingMetadataItem(NotifyingMetadataItem notifyingMetadataItem):
             this(notifyingMetadataItem.UrakawaMetadata, notifyingMetadataItem.ParentCollection)
         {   
         }
-        public NotifyingMetadataItem(Metadata metadata, ObservableMetadataCollection parentCollection)
+        public NotifyingMetadataItem(Metadata metadata, MetadataCollection parentCollection)
         {
             UrakawaMetadata = metadata;
             UrakawaMetadata.Changed += new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
@@ -57,18 +57,21 @@ namespace Tobi.Modules.MetadataPane
         }
         public bool Validate()
         {
-            MetadataValidator validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
-            IsValid = validator.ValidateItem(UrakawaMetadata);
-            if (IsValid == false && validator.Errors.Count > 0)
+            ValidationError = null;
+            IsValid = ParentCollection.Validate(this);
+            if (!IsValid)
             {
-                MetadataValidationError error = validator.Errors[validator.Errors.Count - 1];
-                System.Diagnostics.Debug.Assert(error is MetadataValidationFormatError);
-                ValidationError = (MetadataValidationFormatError) error;
+                foreach (MetadataValidationError error in ParentCollection.ValidationErrors)
+                {
+                    if (error is MetadataValidationFormatError &&
+                        ((MetadataValidationFormatError)error).Metadata == this.UrakawaMetadata)
+                    {
+                        ValidationError = (MetadataValidationFormatError)error;
+                        break;
+                    }
+                }
             }
-            else
-            {
-                ValidationError = null;
-            }
+
             return IsValid;    
         }
 
@@ -103,9 +106,10 @@ namespace Tobi.Modules.MetadataPane
             {
                 if (value == null) return;
                 MetadataSetContentCommand cmd = 
-                    ParentCollection.UrakawaPresentation.CommandFactory.CreateMetadataSetContentCommand
+                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetContentCommand
                     (UrakawaMetadata, value);
-                ParentCollection.UrakawaPresentation.UndoRedoManager.Execute(cmd);
+                UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
+                Validate();
             }
         }
 
@@ -119,9 +123,10 @@ namespace Tobi.Modules.MetadataPane
             {
                 if (value == null) return;
                 MetadataSetNameCommand cmd =
-                    ParentCollection.UrakawaPresentation.CommandFactory.CreateMetadataSetNameCommand
+                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetNameCommand
                     (UrakawaMetadata, value);
-                ParentCollection.UrakawaPresentation.UndoRedoManager.Execute(cmd);
+                UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
+                Validate();
             }
         }
 
@@ -153,34 +158,82 @@ namespace Tobi.Modules.MetadataPane
         }
     }
 
-
-    public class ObservableMetadataCollection : ObservableCollection<NotifyingMetadataItem>
+    public class MetadataCollection : PropertyChangedNotifyBase
     {
+        private ObservableCollection<NotifyingMetadataItem> m_Metadatas;
+        public ObservableCollection<NotifyingMetadataItem> Metadatas
+        {
+            get
+            {
+                return m_Metadatas;
+            }
+            set
+            {
+                if (m_Metadatas != value)
+                {
+                    m_Metadatas = value;
+                    RaisePropertyChanged(() => Metadatas);
+                }
+            }
+        }
         public List<MetadataDefinition> Definitions {get; private set;}
-        public Presentation UrakawaPresentation { get; private set; }
-
-        //the Presentation is used by the NotifyingMetadataItem objects so they can use the UndoRedo manager.
-        public ObservableMetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions,
-            Presentation presentation)
+        private MetadataValidator m_Validator;
+        
+        public MetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
         {
             Definitions = definitions;
-            UrakawaPresentation = presentation;
-            //build this observable collection from the source list of urakawa.Metadata objects
+            m_Validator = new MetadataValidator(Definitions);
+            m_Metadatas = new ObservableCollection<NotifyingMetadataItem>();
             foreach (Metadata metadata in metadatas)
             {
                 addItem(metadata);
             }
         }
 
+        public bool Validate(NotifyingMetadataItem metadata)
+        {
+            return Validate(metadata.UrakawaMetadata);
+        }
+        public bool Validate(Metadata metadata)
+        {
+            bool result = m_Validator.Validate(metadata);
+            RaisePropertyChanged(() => ValidationErrors);
+            return result;
+        }
+        //validate all metadata
+        public bool Validate()
+        {
+            bool result = false;
+            if (this.Metadatas.Count > 0)
+            {
+                Presentation presentation = this.Metadatas[0].UrakawaMetadata.Presentation;
+                result = m_Validator.Validate(presentation.Metadatas.ContentsAs_ListCopy);
+                RaisePropertyChanged(() => ValidationErrors);
+            }
+            return result;
+        }
+
+        public ObservableCollection<MetadataValidationError> ValidationErrors
+        {
+            get
+            {
+                ObservableCollection<MetadataValidationError> errors =
+                    new ObservableCollection<MetadataValidationError>(m_Validator.Errors);
+                return errors;
+            }
+        }
+
+
+
         #region sdk-events
         public void OnMetadataDeleted(object sender, ObjectRemovedEventArgs<Metadata> ev)
         {
-            foreach (NotifyingMetadataItem metadata in this)
+            foreach (NotifyingMetadataItem metadata in this.Metadatas)
             {
                 if (metadata.UrakawaMetadata == ev.m_RemovedObject)
                 {
                     //reflect the removal in this observable collection
-                    this.Remove(metadata);
+                    this.Metadatas.Remove(metadata);
                     metadata.RemoveEvents();
                     break;
                 }
@@ -199,7 +252,7 @@ namespace Tobi.Modules.MetadataPane
         // but perhaps now is redundant? will let it stay in for now.
         private void addItem(Metadata metadata)
         {
-            this.Add(new NotifyingMetadataItem(metadata, this));
+            m_Metadatas.Add(new NotifyingMetadataItem(metadata, this));
         }
     }
 }
