@@ -250,7 +250,7 @@ namespace Tobi.Modules.MetadataPane
         /// based on the existing metadata, return a list of metadata fields available
         /// for addition
         /// </summary>
-        public ObservableCollection<string> AvailableMetadata
+        public ObservableCollection<string> AvailableMetadataNames
         {
             get
             {

@@ -4,10 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Tobi.Modules.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-    xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:urakawa="clr-namespace:urakawa.metadata.daisy;assembly=urakawa"
-    LastChildFill="True"
-    Loaded="DockPanel_Loaded">
+    LastChildFill="True">
     <!-- ALL RESOURCES -->
     <DockPanel.Resources>
         <!-- CONVERTERS -->
@@ -75,42 +73,45 @@
             <TextBlock x:Name="textBlock" Text="{Binding Content}" TextWrapping="Wrap"/>
         </DataTemplate>
 
-        
+        <!-- DESCRIPTIONS -->
+        <DataTemplate x:Key="DescriptionTemplate">
+            <TextBlock Text="{Binding Path=Definition.Description}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OccurrenceTemplate">
+            <TextBlock Text="{Binding Definition,
+                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
+        </DataTemplate>
+
+
         <!-- NAME (editing) -->
         <DataTemplate x:Key="NameEditingTemplate">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Name: "/>
-                <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,  
+            <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,  
  	                                        AncestorType={x:Type local:MetadataPaneView}},  
- 	                                        Path=AvailableMetadata}"
+ 	                                        Path=AvailableMetadataNames}"
                       SelectedItem="{Binding Name}"
-                      Width="Auto"
-                      HorizontalContentAlignment="Stretch"/>
-            </StackPanel>
+                      HorizontalContentAlignment="Stretch"
+                      SelectionChanged="ComboBox_SelectionChanged"/>
         </DataTemplate>
 
         
         <!-- CONTENT (editing) -->
         <DataTemplate x:Key="ContentEditingTemplate">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Content: "/>
-                <TextBox x:Name="textBox" Text="{Binding Path=Content, Mode=TwoWay,
+            <TextBox Text="{Binding Path=Content, Mode=TwoWay,
 	                UpdateSourceTrigger=PropertyChanged}"
-                    Width="Auto"
                     HorizontalContentAlignment="Stretch"
                     TextWrapping="Wrap"/>
-            </StackPanel>
         </DataTemplate>
         
         <!-- VALIDATION -->
-        <DataTemplate x:Key="ValidationErrorsTemplate">
+        <DataTemplate x:Key="ValidationErrorTextFromMetadataObject">
             <TextBlock x:Name="errorText" Text="Valid!"/>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsValid}" Value="false">
                     <Setter TargetName="errorText" 
                                         Property="TextBlock.Text" 
                                         Value="{Binding ValidationError,
-                                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+                                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
                     <Setter TargetName="errorText"
                                         Property="TextBlock.Style"
                                         Value="{StaticResource ErrorTextStyle}"/>
@@ -118,46 +119,41 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
-
-        <DataTemplate x:Key="DefinitionTemplate">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Definition,
-                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
-                <TextBlock Text="{Binding Path=Definition.Description}"/>
-            </StackPanel>
-        </DataTemplate>
-        
-        <DataTemplate x:Key="ValidationTextTemplate">
-            <TextBlock x:Name="errorText" Text="{Binding ValidationError,
-                                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
+        <DataTemplate x:Key="ValidationErrorTextFromErrorObject">
+            <TextBlock Text="{Binding Path=., 
+                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
         </DataTemplate>
         
     </DockPanel.Resources>
     
     <!-- GUI CONTROLS -->
-    <StackPanel Orientation="Horizontal" >
-        <!-- List -->
-        <Grid>
+    <Grid>
+        <!-- split the screen into two columns of equal size -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left side: List of all metadata, and a summary of validation errors -->
+        <Grid Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+            <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                   ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
                   IsSynchronizedWithCurrentItem="True"
                   AlternationCount="2"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  Width="350"
                   HorizontalContentAlignment="Stretch"
-                  x:Name="MetadataListView"
-                  >
+                  x:Name="MetadataListView">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -168,7 +164,9 @@
                 </ListView.View>
             </ListView>
 
+            <!-- buttons -->
             <Button Click="Add_Metadata_Button_Click" Grid.Row="1" Grid.Column="0" Content="Add"/>
+            <!-- this button is in a content control because it has to react to the current selection -->
             <ContentControl Content="{StaticResource MetadatasCVS}" Grid.Row="1" Grid.Column="1">
                 <ContentControl.ContentTemplate>
                     <DataTemplate>
@@ -186,34 +184,62 @@
                 </ContentControl.ContentTemplate>
             </ContentControl>
             <Button Click="Validate_Metadata_Click" Grid.Row="1" Grid.Column="2" Content="Validate All"/>
+            
+            <!-- validation issues -->
             <ListBox x:Name="errorsList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" MinHeight="100"
 	                 ItemsSource="{Binding Path=MetadataCollection.ValidationErrors,
-	                                    Converter={StaticResource removeReadOnlyErrorsConverter}}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock 
-                            Text="{Binding Path=., 
-                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+	                                    Converter={StaticResource removeReadOnlyErrorsConverter}}"
+                     MouseDoubleClick="errorsList_MouseDoubleClick" 
+                     ItemTemplate="{StaticResource ValidationErrorTextFromErrorObject}"/>
+                
         </Grid>
-        <!-- Editing details -->
-        <StackPanel>    
-            <ContentControl Content="{Binding Source={StaticResource MetadatasCVS}}"
-                            ContentTemplate="{StaticResource DefinitionTemplate}"/>
+        
+        <!-- Right side: Editing details -->
+        <Grid Grid.Column="1" Margin="3,0,0,0">   
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="20"/>
+                <RowDefinition  Height="*"/>
+                <RowDefinition  Height="*"/>
+                <RowDefinition  Height="*"/>
+                <RowDefinition  Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" 
+                       FontWeight="Bold" Text="Description:" />
+            <ContentControl Grid.Row="0" Grid.Column="1" 
+                            Content="{Binding Source={StaticResource MetadatasCVS}}"
+                            ContentTemplate="{StaticResource DescriptionTemplate}"/>
 
-            <ContentControl Content="{Binding Source={StaticResource MetadatasCVS}}" 
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                        FontWeight="Bold" Text="Occurrence: "/>
+            <ContentControl Grid.Row="1" Grid.Column="1" 
+                            Content="{Binding Source={StaticResource MetadatasCVS}}"
+                            ContentTemplate="{StaticResource OccurrenceTemplate}"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                        FontWeight="Bold" Text="Name: "/>
+            <ContentControl Grid.Row="2" Grid.Column="1" 
+                            Content="{Binding Source={StaticResource MetadatasCVS}}" 
                             ContentTemplate="{StaticResource NameEditingTemplate}"/>
             
-            <ContentControl Content="{Binding Source={StaticResource MetadatasCVS}}"
+            <TextBlock Grid.Row="3" Grid.Column="0"
+                        FontWeight="Bold" Text="Content: "/>
+            <ContentControl Grid.Row="3" Grid.Column="1"
+                            Content="{Binding Source={StaticResource MetadatasCVS}}"
                             ContentTemplate="{StaticResource ContentEditingTemplate}"/>
 
-            <ContentControl Content="{Binding Source={StaticResource MetadatasCVS}}"
-                            ContentTemplate="{StaticResource ValidationTextTemplate}"/>
-        </StackPanel>       
+            <TextBlock Grid.Row="4" Grid.Column="0"
+                        FontWeight="Bold" Text="Errors: "/>
+            <ContentControl Grid.Row="4" Grid.Column="1"  
+                            Content="{Binding Source={StaticResource MetadatasCVS}}"
+                            ContentTemplate="{StaticResource ValidationErrorTextFromMetadataObject}"/>
+        </Grid>       
                             
-    </StackPanel>
+    </Grid>
         
 </DockPanel>
 

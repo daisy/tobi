@@ -254,5 +254,16 @@ namespace Tobi.Modules.MetadataPane
         {
             m_Metadatas.Add(new NotifyingMetadataItem(metadata, this));
         }
+
+        //find the item that is wrapping the given metadata object
+        public NotifyingMetadataItem Find(Metadata metadata)
+        {
+            foreach (NotifyingMetadataItem metadataItem in Metadatas)
+            {
+                if (metadataItem.UrakawaMetadata == metadata)
+                    return metadataItem;
+            }
+            return null;
+        }
     }
 }
