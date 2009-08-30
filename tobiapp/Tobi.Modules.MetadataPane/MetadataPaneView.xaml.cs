@@ -70,16 +70,11 @@ namespace Tobi.Modules.MetadataPane
             
         }
 
-        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
-        {
-//            ViewModel.ValidateMetadata();
-        }
-
-        public ObservableCollection<string> AvailableMetadata
+        public ObservableCollection<string> AvailableMetadataNames
         {
             get
             {
-                ObservableCollection<string> list = ViewModel.AvailableMetadata;
+                ObservableCollection<string> list = ViewModel.AvailableMetadataNames;
 
                 //the available metadata list might not have our selection in it
                 //if the selection is meant not to be duplicated
@@ -95,6 +90,31 @@ namespace Tobi.Modules.MetadataPane
                     }
                 }
                 return list;
+            }
+        }
+
+        //select the corresponding metadata from the item double-clicked in the errors list
+        private void errorsList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (errorsList.SelectedItem != null && 
+                errorsList.SelectedItem is MetadataValidationFormatError)
+            {
+                MetadataValidationFormatError error = (MetadataValidationFormatError) errorsList.SelectedItem;
+                NotifyingMetadataItem metadataItem = ViewModel.MetadataCollection.Find(error.Metadata);
+                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
+                if (metadataItem != null) cvs.View.MoveCurrentTo(metadataItem);
+            }
+
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] != null)
+            {
+                string metaname = (string)e.AddedItems[0];
+                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
+                if (cvs.View.CurrentItem != null)
+                    ((NotifyingMetadataItem) cvs.View.CurrentItem).Name = metaname;
             }
         }
     }
