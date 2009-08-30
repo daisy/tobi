@@ -46,18 +46,21 @@ namespace Tobi.Modules.MetadataPane
         private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.AddEmptyMetadata();
-            if (ViewModel.Metadatas.Count > 0)
+            ObservableCollection<NotifyingMetadataItem> metadataItems =
+                ViewModel.MetadataCollection.Metadatas;
+            if (metadataItems.Count > 0)
             {
-                MetadataGrid.SelectedItem = ViewModel.Metadatas[ViewModel.Metadatas.Count - 1];
-                MetadataGrid.ScrollIntoView(MetadataGrid.SelectedItem);
-                //TODO: put the user in "edit" mode so they see a combo box
+                NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
+                CollectionViewSource cvs = (CollectionViewSource) this.FindResource("MetadatasCVS");
+                cvs.View.MoveCurrentTo(metadata);
             }
         }
         
         private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
-            NotifyingMetadataItem selected = ViewModel.SelectedMetadata;
-            ViewModel.RemoveMetadata(selected);
+            CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
+            NotifyingMetadataItem metadata = (NotifyingMetadataItem)cvs.View.CurrentItem;
+            ViewModel.RemoveMetadata(metadata);
         }
 
         
@@ -67,55 +70,32 @@ namespace Tobi.Modules.MetadataPane
             
         }
 
-        
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                if (e.AddedItems[0] is NotifyingMetadataItem)
-                    ViewModel.SelectedMetadata = (NotifyingMetadataItem) e.AddedItems[0];
-            }
-            else
-            {
-                ViewModel.SelectedMetadata = null;
-            }
-           
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                ViewModel.SelectedMetadata.Name = (string)e.AddedItems[0];
-                ViewModel.SelectedMetadata.Validate();
-            }
-        }
-
-       
-        private void MetadataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
-        {   
-            if (e.Row != null && e.Row.Item != null)
-            {
-                NotifyingMetadataItem item = (NotifyingMetadataItem) e.Row.Item;
-                item.Validate();
-            }
-        }
-
         private void DockPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.ValidateMetadata();
+//            ViewModel.ValidateMetadata();
         }
 
-        private void Whats_In_The_View_Model_Button_Click(object sender, RoutedEventArgs e)
+        public ObservableCollection<string> AvailableMetadata
         {
-            string metas = ViewModel.GetViewModelDebugStringForMetaData();
-            MessageBox.Show(metas);
-        }
+            get
+            {
+                ObservableCollection<string> list = ViewModel.AvailableMetadata;
 
-        private void Whats_In_The_Data_Model_Button_Click(object sender, RoutedEventArgs e)
-        {
-            string metas = ViewModel.GetDataModelDebugStringForMetaData();
-            MessageBox.Show(metas);
+                //the available metadata list might not have our selection in it
+                //if the selection is meant not to be duplicated
+                //we need users to be able to have the current Name as an option
+                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
+                if (cvs.View.CurrentItem != null)
+                {
+                    NotifyingMetadataItem selection = (NotifyingMetadataItem)cvs.View.CurrentItem;
+                    if (selection.Name != "")
+                    {
+                        if (list.Contains(selection.Name) == false)
+                            list.Insert(0, selection.Name);
+                    }
+                }
+                return list;
+            }
         }
     }
     

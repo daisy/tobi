@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -35,9 +36,10 @@ namespace Tobi.Modules.MetadataPane
         {
             EventAggregator = eventAggregator;
             Logger = logger;
-            m_Metadatas = null;
+            m_MetadataCollection = null;
             Initialize();
             m_Validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
+            
         }
         
         #endregion Construction
@@ -72,7 +74,7 @@ namespace Tobi.Modules.MetadataPane
             Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
                 Category.Debug, Priority.Medium);
 
-            RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => MetadataCollection);
         }
 
         
@@ -116,7 +118,7 @@ namespace Tobi.Modules.MetadataPane
                                                    View,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 700, 500);
+                                                   true, 700, 400);
             windowPopup.Closed += new System.EventHandler(OnDialogClosed);
             //start a transaction
             var session = Container.Resolve<IUrakawaSession>();
@@ -138,7 +140,7 @@ namespace Tobi.Modules.MetadataPane
         #endregion Commands
         
       
-        public ObservableCollection<MetadataValidationError> ValidationErrors
+        /*public ObservableCollection<MetadataValidationError> ValidationErrors
         {
             get
             {
@@ -146,10 +148,10 @@ namespace Tobi.Modules.MetadataPane
                     new ObservableCollection<MetadataValidationError>(m_Validator.Errors);
                 return errors;
             }
-        }
+        }*/
 
-        private ObservableMetadataCollection m_Metadatas;   
-        public ObservableMetadataCollection Metadatas 
+        private MetadataCollection m_MetadataCollection;   
+        public MetadataCollection MetadataCollection 
         {
             get
             {
@@ -157,26 +159,25 @@ namespace Tobi.Modules.MetadataPane
 
                 if (session.DocumentProject == null || session.DocumentProject.Presentations.Count <= 0)
                 {
-                    m_Metadatas = null;
+                    m_MetadataCollection = null;
                 }
                 else
                 {
-                    if (m_Metadatas == null)
+                    if (m_MetadataCollection == null)
                     {
                         Presentation presentation = session.DocumentProject.Presentations.Get(0);
             
-                        m_Metadatas = new ObservableMetadataCollection
+                        m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
-                            SupportedMetadata_Z39862005.MetadataList,
-                            presentation);
-                        presentation.Metadatas.ObjectAdded += m_Metadatas.OnMetadataAdded;
-                        presentation.Metadatas.ObjectRemoved += m_Metadatas.OnMetadataDeleted;
+                            SupportedMetadata_Z39862005.MetadataList);
+                        presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
+                        presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
                     }
                 }
-                return m_Metadatas;
+                return m_MetadataCollection;
             }
         }
-
+        
         public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
             var session = Container.Resolve<IUrakawaSession>();
@@ -188,10 +189,12 @@ namespace Tobi.Modules.MetadataPane
 
         public void AddEmptyMetadata()
         {
-            Metadata metadata = new Metadata {NameContentAttribute = new XmlAttribute {LocalName = "", Value = ""}};
-
             var session = Container.Resolve<IUrakawaSession>();
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            
+            Metadata metadata = presentation.MetadataFactory.CreateMetadata();
+            metadata.NameContentAttribute = new XmlAttribute {LocalName = "", Value = ""};
+
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
                 (metadata);
             presentation.UndoRedoManager.Execute(cmd);
@@ -203,14 +206,8 @@ namespace Tobi.Modules.MetadataPane
         /// </summary>
         public bool ValidateMetadata()
         {
-            ValidationErrors.Clear();
-            var session = Container.Resolve<IUrakawaSession>();
-
-            List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-            bool result = m_Validator.Validate(metadatas);
-            RaisePropertyChanged(() => ValidationErrors);
-            
-            return result;
+            return MetadataCollection.Validate();
+           
         }
 
         
@@ -219,7 +216,7 @@ namespace Tobi.Modules.MetadataPane
             string data = "";
             
             //iterate through our observable collection
-            foreach (NotifyingMetadataItem m in this.Metadatas)
+            foreach (NotifyingMetadataItem m in this.MetadataCollection.Metadatas)
             {
                 data += string.Format("{0} = {1}\n", m.Name, m.Content);
 
@@ -249,22 +246,6 @@ namespace Tobi.Modules.MetadataPane
             return data;
         }
 
-        private NotifyingMetadataItem m_SelectedMetadata;
-        public NotifyingMetadataItem SelectedMetadata
-        {
-            get
-            {
-                return m_SelectedMetadata;
-            }
-            set
-            {
-                if (m_SelectedMetadata != value)
-                {
-                    m_SelectedMetadata = value;
-                    RaisePropertyChanged(() => SelectedMetadata);
-                }
-            }
-        }
         /// <summary>
         /// based on the existing metadata, return a list of metadata fields available
         /// for addition
@@ -290,19 +271,7 @@ namespace Tobi.Modules.MetadataPane
                 {
                     list.Add(metadata.Name);
                 }
-                
-                //the available metadata list might not have our selection in it
-                //if the selection is meant not to be duplicated
-                //we need users to be able to have the current Name as an option
-                if (SelectedMetadata != null)
-                {
-                    NotifyingMetadataItem selection = (NotifyingMetadataItem)SelectedMetadata;
-                    if (selection.Name != "")
-                    {
-                        if (list.Contains(selection.Name) == false)
-                            list.Insert(0, selection.Name);
-                    }
-                }
+             
                 return list;
             }
         }

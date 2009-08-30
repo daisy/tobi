@@ -13,17 +13,22 @@ namespace Tobi.Modules.MetadataPane
     public class IsNotRequiredOccurrenceConverter : IMultiValueConverter
     {
         //return false if required
+        //value parameters: the metadata object, and the collection of all metadata objects
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values.Length < 2) return false;
             if (values[0] == null || values[1] == null) return false;
+            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is MetadataCollection))
+                return false;
+
             NotifyingMetadataItem item = (NotifyingMetadataItem)values[0];
-            ObservableMetadataCollection metadatas = (ObservableMetadataCollection) values[1];
+            MetadataCollection metadataCollection = (MetadataCollection) values[1];
 
             if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required)
             {
                 //check for duplicates.  a required item can be removed if it is not the only one.
-                List<NotifyingMetadataItem> results = metadatas.ToList().FindAll(s => s.Name == item.Name);
+                List<NotifyingMetadataItem> results = 
+                    metadataCollection.Metadatas.ToList().FindAll(s => s.Name == item.Name);
                 if (results.Count > 1)
                     return true;
                 else
