@@ -55,32 +55,47 @@ namespace Tobi.Modules.NavigationPane
 
         //treeView.SelectedNode.EnsureVisible();
 
+        public static bool IsLevel(string localXmlName)
+        {
+            return localXmlName == "level1"
+                   || localXmlName == "level2"
+                   || localXmlName == "level3"
+                   || localXmlName == "level4"
+                   || localXmlName == "level5"
+                   || localXmlName == "level6"
+                   || localXmlName == "level";
+        }
+
+        public static bool IsHeading(string localXmlName)
+        {
+            return localXmlName == "h1"
+                   || localXmlName == "h2"
+                   || localXmlName == "h3"
+                   || localXmlName == "h4"
+                   || localXmlName == "h5"
+                   || localXmlName == "h6"
+                   || localXmlName == "hd";
+        }
+
         public override bool IsIncluded(TreeNode node)
         {
             QualifiedName qname = node.GetXmlElementQName();
-            bool condition = qname != null &&
-                (qname.LocalName == "level1"
-                || qname.LocalName == "level"
-                || qname.LocalName == "level2"
-                || qname.LocalName == "level3"
-                || qname.LocalName == "level4"
-                || qname.LocalName == "level5"
-                || qname.LocalName == "level6"
-                );
-
-            return condition;
+            return qname != null && (IsLevel(qname.LocalName) || IsHeading(qname.LocalName));
         }
 
         private HeadingTreeNodeWrapper findTreeNodeWrapper(TreeNode node)
         {
             foreach (HeadingTreeNodeWrapper root in Roots)
             {
-                if (root.WrappedTreeNode_Level == node)
+                if (root.WrappedTreeNode_Level == node || root.WrappedTreeNode_LevelHeading == node)
                 {
                     return root;
                 }
                 HeadingTreeNodeWrapper wrapperChild = root.FindTreeNodeWrapper(node);
-                if (wrapperChild != null) return wrapperChild;
+                if (wrapperChild != null)
+                {
+                    return wrapperChild;
+                }
             }
             return null;
         }
@@ -91,29 +106,88 @@ namespace Tobi.Modules.NavigationPane
             {
                 return findTreeNodeWrapper(node);
             }
-            else
+            if (node.Parent != null)
             {
-                if (node.Parent != null)
-                {
-                    return GetAncestorContainer(node.Parent);
-                }
+                return GetAncestorContainer(node.Parent);
             }
             return null;
         }
     }
     public class HeadingTreeNodeWrapper : PropertyChangedNotifyBase
     {
-        private TreeNode m_TreeNode;
-        private HeadingTreeNodeWrapper m_parent;
+        private TreeNode m_TreeNodeLevel;
         private TreeNode m_TreeNodeHeading;
+
+        private HeadingTreeNodeWrapper m_parent;
+
         private HeadingsNavigator m_navigator;
         private ObservableCollection<HeadingTreeNodeWrapper> m_children;
         private bool m_isExpanded;
         private HeadingTreeNodeWrapper m_dummyNode;
 
+
+        public RichDelegateCommand<object> CommandExpandAll { get; private set; }
+        public RichDelegateCommand<object> CommandCollapseAll { get; private set; }
+
+        public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
+        {
+            CommandExpandAll = HeadingPaneViewModel.CommandExpandAll;
+            CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
+
+            m_parent = parent;
+            m_navigator = navigator;
+            m_isExpanded = false;
+
+            m_TreeNodeHeading = null;
+            m_TreeNodeLevel = null;
+
+            if (node == null)
+            {
+                return;
+            }
+
+            QualifiedName qName = node.GetXmlElementQName();
+
+            if (qName == null)
+            {
+                return;
+            }
+
+            if (HeadingsNavigator.IsLevel(qName.LocalName))
+            {
+                m_TreeNodeLevel = node; //WrappedTreeNode_Level
+            }
+            else if (HeadingsNavigator.IsHeading(qName.LocalName))
+            {
+                m_TreeNodeHeading = node; //WrappedTreeNode_LevelHeading
+            }
+
+            if (WrappedTreeNode_Level != null && WrappedTreeNode_Level.Children.Count > 0)
+            {
+                TreeNode nd = WrappedTreeNode_Level.Children.Get(0);
+                if (nd != null)
+                {
+                    QualifiedName qname = nd.GetXmlElementQName();
+                    if (qname != null && qname.LocalName == "pagenum" && WrappedTreeNode_Level.Children.Count > 1)
+                    {
+                        nd = WrappedTreeNode_Level.Children.Get(1);
+                        if (nd != null)
+                        {
+                            qname = nd.GetXmlElementQName();
+                        }
+                    }
+                    if (qname != null &&
+                        (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
+                    {
+                        m_TreeNodeHeading = nd;
+                    }
+                }
+            }
+        }
+
         public HeadingTreeNodeWrapper FindTreeNodeWrapper(TreeNode node)
         {
-            if (m_TreeNode == node)
+            if (WrappedTreeNode_Level == node || WrappedTreeNode_LevelHeading == node)
             {
                 return this;
             }
@@ -121,14 +195,17 @@ namespace Tobi.Modules.NavigationPane
             foreach (HeadingTreeNodeWrapper child in Children)
             {
                 HeadingTreeNodeWrapper wrapperChild = child.FindTreeNodeWrapper(node);
-                if (wrapperChild != null) return wrapperChild;
+                if (wrapperChild != null)
+                {
+                    return wrapperChild;
+                }
             }
             return null;
         }
 
         private void LoadChildren()
         {
-            if (m_TreeNode == null)
+            if (WrappedTreeNode_Level == null)
             {
                 return;
             }
@@ -136,10 +213,10 @@ namespace Tobi.Modules.NavigationPane
             {
                 m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
 
-                int n = m_navigator.GetChildCount(m_TreeNode);
+                int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
                 for (int index = 0; index < n; index++)
                 {
-                    TreeNode node = m_navigator.GetChild(m_TreeNode, index);
+                    TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
                     m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
                 }
 
@@ -150,12 +227,12 @@ namespace Tobi.Modules.NavigationPane
         {
             get
             {
-                if (m_TreeNode == null)
+                if (WrappedTreeNode_Level == null)
                 {
                     return false;
                 }
 
-                int n = m_navigator.GetChildCount(m_TreeNode);
+                int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
                 return n > 0;
             }
         }
@@ -188,13 +265,15 @@ namespace Tobi.Modules.NavigationPane
                 }
             }
         }
+
         public TreeNode WrappedTreeNode_Level
         {
             get
             {
-                return m_TreeNode;
+                return m_TreeNodeLevel;
             }
         }
+
         public TreeNode WrappedTreeNode_LevelHeading
         {
             get
@@ -203,71 +282,25 @@ namespace Tobi.Modules.NavigationPane
             }
         }
 
-        public RichDelegateCommand<object> CommandExpandAll { get; private set; }
-        public RichDelegateCommand<object> CommandCollapseAll { get; private set; }
-
-        public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
-        {
-            m_parent = parent;
-            m_TreeNode = node;
-            m_navigator = navigator;
-            m_isExpanded = false;
-            m_TreeNodeHeading = null;
-
-            CommandExpandAll = HeadingPaneViewModel.CommandExpandAll;
-            CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
-
-            if (m_TreeNode == null)
-            {
-                return;
-            }
-
-            if (m_TreeNode.Children.Count > 0)
-            {
-                TreeNode nd = m_TreeNode.Children.Get(0);
-                if (nd != null)
-                {
-                    QualifiedName qname = nd.GetXmlElementQName();
-                    if (qname != null && qname.LocalName == "pagenum" && m_TreeNode.Children.Count > 1)
-                    {
-                        nd = m_TreeNode.Children.Get(1);
-                        if (nd != null)
-                        {
-                            qname = nd.GetXmlElementQName();
-                        }
-                    }
-                    if (qname != null && (qname.LocalName == "hd"
-                                          || qname.LocalName == "h1"
-                                          || qname.LocalName == "h2"
-                                          || qname.LocalName == "h3"
-                                          || qname.LocalName == "h4"
-                                          || qname.LocalName == "h5"
-                                          || qname.LocalName == "h6"
-                                          || qname.LocalName == "doctitle"
-                                         ))
-                    {
-                        m_TreeNodeHeading = nd;
-                    }
-                }
-            }
-        }
         public string Title
         {
             get
             {
-                if (m_TreeNode == null)
+                if (WrappedTreeNode_Level == null && WrappedTreeNode_LevelHeading == null)
                 {
                     return "DUMMY";
                 }
-                string str = (m_TreeNodeHeading != null ? m_TreeNodeHeading.GetTextMediaFlattened() : "??" + m_TreeNode.GetXmlElementQName().LocalName);
+                string str = (WrappedTreeNode_LevelHeading != null ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened()
+                    : "[No heading] " + WrappedTreeNode_Level.GetXmlElementQName().LocalName);
                 return str.Trim();
             }
         }
+
         public ObservableCollection<HeadingTreeNodeWrapper> Children
         {
             get
             {
-                if (m_TreeNode == null)
+                if (WrappedTreeNode_Level == null)
                 {
                     return new ObservableCollection<HeadingTreeNodeWrapper>();
                 }
