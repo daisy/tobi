@@ -45,7 +45,8 @@
              SelectionChanged="onPageSelected"
           IsTabStop="True"
           Focusable="True"
-              AutomationProperties.Name="{x:Static local:PagePanelView.View_Name}">
+              AutomationProperties.Name="{x:Static local:PagePanelView.View_Name}"
+    >
    <!-- 
              DisplayMemberPath="Name" -->
 
@@ -67,7 +68,10 @@
             <!-- Setter Property="FontSize" Value="15" / -->
             <Setter Property="FontWeight" Value="Normal" />
 
-          <Style.Triggers>
+        <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
+        <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
+
+        <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="FontWeight" Value="Bold" />
                 </Trigger>
