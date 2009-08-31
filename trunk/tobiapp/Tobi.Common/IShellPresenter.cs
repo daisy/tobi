@@ -27,6 +27,7 @@ namespace Tobi.Common
 
         IShellView View { get; }
 
+        void PlayAudioCueHi();
         void PlayAudioCueTock();
         void PlayAudioCueTockTock();
 
