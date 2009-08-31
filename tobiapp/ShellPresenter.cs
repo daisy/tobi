@@ -62,6 +62,11 @@ namespace Tobi
             }
         }
 
+        public void PlayAudioCueHi()
+        {
+            playAudioCue("hi.wav");
+        }
+
         public void PlayAudioCueTock()
         {
             playAudioCue("tock.wav");

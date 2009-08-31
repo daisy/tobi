@@ -870,6 +870,9 @@ namespace Tobi.Modules.AudioPane
         {
             if (e != null)
             {
+                var presenter = Container.Resolve<IShellPresenter>();
+                presenter.PlayAudioCueHi();
+
                 if (e.Channel == 1)
                 {
                     PeakOverloadCountCh1++;
