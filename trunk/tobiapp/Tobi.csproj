@@ -249,6 +249,7 @@
     <Resource Include="TobiSplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="hi.wav" />
     <Content Include="tock.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
