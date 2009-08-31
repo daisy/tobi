@@ -14,47 +14,24 @@ namespace Tobi.Modules.NavigationPane
     /// </summary>
     public partial class HeadingPanelView : IHeadingPaneView
     {
-        private bool _ignoreTreeNodeSelectedEvent = false;
-        private bool _ignoreHeadingSelected = false;
+        private TreeViewItem m_SelectedTreeViewItem;
+
+        private bool m_ignoreTreeNodeSelectedEvent;
+        private bool m_ignoreHeadingSelected;
+
         public HeadingPaneViewModel ViewModel { get; private set; }
 
         public HeadingPanelView(HeadingPaneViewModel viewModel)
         {
             ViewModel = viewModel;
             ViewModel.SetView(this);
+
+            m_ignoreTreeNodeSelectedEvent = false;
+            m_ignoreHeadingSelected = false;
+
             InitializeComponent();
         }
-        private void onHeadingSelected(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (_ignoreHeadingSelected)
-            {
-                _ignoreHeadingSelected = false;
-                return;
-            }
 
-            HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
-            if (node == null) return;
-            TreeNode treeNode = (node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level.GetFirstDescendantWithText());
-            if (treeNode == null) return;
-
-            _ignoreTreeNodeSelectedEvent = true;
-
-            m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
-
-            ViewModel.Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.onHeadingSelected", Category.Debug, Priority.Medium);
-
-            ViewModel.EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-        }
-
-        private TreeViewItem m_SelectedTreeViewItem;
-        private void updateContentTreeSelection(TreeNode node)
-        {
-            HeadingTreeNodeWrapper nodeTOC = ViewModel.HeadingsNavigator.GetAncestorContainer(node);
-            if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
-            _ignoreHeadingSelected = true;
-
-            m_SelectedTreeViewItem = TreeView.SelectItem(nodeTOC, false);
-        }
 
         public const string View_Name = "Headings";
         public string ViewName
@@ -64,12 +41,17 @@ namespace Tobi.Modules.NavigationPane
 
         public void SelectTreeNode(TreeNode node)
         {
-            if (_ignoreTreeNodeSelectedEvent)
+            if (m_ignoreTreeNodeSelectedEvent)
             {
-                _ignoreTreeNodeSelectedEvent = false;
+                m_ignoreTreeNodeSelectedEvent = false;
                 return;
             }
-            updateContentTreeSelection(node);
+
+            HeadingTreeNodeWrapper nodeTOC = ViewModel.HeadingsNavigator.GetAncestorContainer(node);
+            if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
+            m_ignoreHeadingSelected = true;
+
+            m_SelectedTreeViewItem = TreeView.SelectItem(nodeTOC, false);
         }
 
         public void LoadProject()
@@ -99,6 +81,48 @@ namespace Tobi.Modules.NavigationPane
                 }
                 return TreeView;
             }
+        }
+
+
+        private void handleTreeViewCurrentSelection()
+        {
+            HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
+            if (node == null) return;
+
+            TreeNode treeNode = (node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level.GetFirstDescendantWithText());
+            if (treeNode == null) return;
+
+            if (m_ignoreHeadingSelected)
+            {
+                m_ignoreHeadingSelected = false;
+                return;
+            }
+
+            m_ignoreTreeNodeSelectedEvent = true;
+
+            m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
+
+            ViewModel.Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
+
+            ViewModel.EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+        }
+
+        private void OnKeyDown_TreeViewItem(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                handleTreeViewCurrentSelection();
+            }
+        }
+
+        private void OnSelectedItemChanged_TreeView(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            // do nothing here (to avoid selecting in the document and audio views whilst navigating/exploring the TOC).
+        }
+
+        private void OnMouseDoubleClick_TreeItem(object sender, MouseButtonEventArgs e)
+        {
+            handleTreeViewCurrentSelection();
         }
     }
 }
