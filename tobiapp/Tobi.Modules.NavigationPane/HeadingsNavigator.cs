@@ -209,6 +209,7 @@ namespace Tobi.Modules.NavigationPane
             {
                 return;
             }
+
             if (m_children == null)
             {
                 m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
@@ -217,6 +218,12 @@ namespace Tobi.Modules.NavigationPane
                 for (int index = 0; index < n; index++)
                 {
                     TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
+
+                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading == node)
+                    {
+                        continue;
+                    }
+
                     m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
                 }
 
@@ -233,7 +240,20 @@ namespace Tobi.Modules.NavigationPane
                 }
 
                 int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
-                return n > 0;
+                int childrenCount = 0;
+                for (int index = 0; index < n; index++)
+                {
+                    TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
+
+                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading == node)
+                    {
+                        continue;
+                    }
+
+                    childrenCount++;
+                }
+
+                return childrenCount > 0;
             }
         }
         public bool IsExpanded
@@ -291,7 +311,7 @@ namespace Tobi.Modules.NavigationPane
                     return "DUMMY";
                 }
                 string str = (WrappedTreeNode_LevelHeading != null ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened()
-                    : "[No heading] " + WrappedTreeNode_Level.GetXmlElementQName().LocalName);
+                    : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + "] (No heading)");
                 return str.Trim();
             }
         }
@@ -304,6 +324,7 @@ namespace Tobi.Modules.NavigationPane
                 {
                     return new ObservableCollection<HeadingTreeNodeWrapper>();
                 }
+
                 if (IsExpanded)
                 {
                     if (m_children == null)
@@ -312,6 +333,7 @@ namespace Tobi.Modules.NavigationPane
                     }
                     return m_children;
                 }
+
                 var col = new ObservableCollection<HeadingTreeNodeWrapper>();
                 if (HasChildren)
                 {
