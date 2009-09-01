@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -203,6 +204,7 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
+                Debugger.Break();
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
@@ -264,6 +266,7 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
+                Debugger.Break();
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
@@ -395,6 +398,7 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
+                Debugger.Break();
                 throw new Exception("Trying to add TableCell btu parent is not Table ??");
             }
         }
@@ -562,6 +566,7 @@ namespace Tobi.Modules.DocumentPane
         {
             if (!(parent is List))
             {
+                Debugger.Break();
                 throw new Exception("list item not in List ??");
             }
             ListItem data = new ListItem();
@@ -666,6 +671,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
+                    Debugger.Break();
                     throw new Exception("table row not in Table ??");
                 }
             }
@@ -757,6 +763,7 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
+                    Debugger.Break();
                     throw new Exception("table row not in Table ??");
                 }
             }
@@ -987,6 +994,7 @@ namespace Tobi.Modules.DocumentPane
         {
             if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
             {
+                Debugger.Break();
                 throw new Exception("Node has children or text exists when processing image ??");
             }
 
@@ -1056,41 +1064,52 @@ namespace Tobi.Modules.DocumentPane
             //image.MaxWidth = image.Width;
             //image.MaxHeight = image.Height;
 
-            //BlockUIContainer img = new BlockUIContainer(image);
-            //addBlock(parent, img);
-
-            //InlineUIContainer img = new InlineUIContainer(image);
-            //addInline(parent, img);
-
-            BlockUIContainer img = new BlockUIContainer(image);
-
-            img.BorderBrush = Brushes.RoyalBlue;
-            img.BorderThickness = new Thickness(2.0);
-
-            setTag(img, node);
-
             //Floater floater = new Floater();
             //floater.Blocks.Add(img);
             //floater.Width = image.Width;
             //addInline(parent, floater);
 
-
             //Figure figure = new Figure(img);
             //figure.Width = image.Width;
             //addInline(parent, figure);
 
-            addBlock(parent, img);
+            bool parentHasBlocks = parent is TableCell
+                                   || parent is Section
+                                   || parent is Floater
+                                   || parent is Figure
+                                   || parent is ListItem;
 
-            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
-
-            if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
+            if (parentHasBlocks)
             {
-                image.ToolTip = altAttr.Value;
-                Paragraph paraAlt = new Paragraph(new Run("ALT: " + altAttr.Value));
-                paraAlt.BorderBrush = Brushes.CadetBlue;
-                paraAlt.BorderThickness = new Thickness(1.0);
-                paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
-                addBlock(parent, paraAlt);
+                BlockUIContainer img = new BlockUIContainer(image);
+
+                //img.BorderBrush = Brushes.RoyalBlue;
+                //img.BorderThickness = new Thickness(2.0);
+
+                setTag(img, node);
+
+                addBlock(parent, img);
+
+
+                XmlAttribute altAttr = xmlProp.GetAttribute("alt");
+
+                if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
+                {
+                    image.ToolTip = altAttr.Value;
+                    Paragraph paraAlt = new Paragraph(new Run("ALT: " + altAttr.Value));
+                    paraAlt.BorderBrush = Brushes.CadetBlue;
+                    paraAlt.BorderThickness = new Thickness(1.0);
+                    paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
+                    addBlock(parent, paraAlt);
+                }
+            }
+            else
+            {
+                InlineUIContainer img = new InlineUIContainer(image);
+
+                setTag(img, node);
+
+                addInline(parent, img);
             }
 
 
@@ -1534,6 +1553,7 @@ namespace Tobi.Modules.DocumentPane
                 {
                     if (textMedia == null)
                     {
+                        Debugger.Break();
                         throw new Exception("The given TreeNode has no children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount == 0 && qname == null && textMedia != null
@@ -1562,10 +1582,12 @@ namespace Tobi.Modules.DocumentPane
                 {
                     if (textMedia == null)
                     {
+                        Debugger.Break();
                         throw new Exception("The given TreeNode has children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount != 0 && qname == null && textMedia != null
                     {
+                        Debugger.Break();
                         throw new Exception("The given TreeNode has children, has no XmlProperty, and has TextMedia.");
                     }
                 }
@@ -1578,6 +1600,7 @@ namespace Tobi.Modules.DocumentPane
                     }
                     else //childCount != 0 && qname != null && textMedia != null
                     {
+                        Debugger.Break();
                         throw new Exception("The given TreeNode has children, has XmlProperty, and has TextMedia.");
                     }
                 }
