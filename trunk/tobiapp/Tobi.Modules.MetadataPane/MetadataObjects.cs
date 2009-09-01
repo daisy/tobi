@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using urakawa;
 using urakawa.events;
 using urakawa.metadata;
-using urakawa.events.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
 
@@ -117,7 +116,7 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return UrakawaMetadata.NameContentAttribute.LocalName;
+                return UrakawaMetadata.NameContentAttribute.Name;
             }
             set
             {
