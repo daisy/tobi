@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Data;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -13,8 +12,6 @@ using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
-using urakawa.property.xml;
-using urakawa.xuk;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -193,7 +190,7 @@ namespace Tobi.Modules.MetadataPane
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
             
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
-            metadata.NameContentAttribute = new XmlAttribute {LocalName = "", Value = ""};
+            metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "", Value = "" };
 
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
                 (metadata);
@@ -222,7 +219,7 @@ namespace Tobi.Modules.MetadataPane
 
                 foreach (var optAttr in m.UrakawaMetadata.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
-                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.LocalName, optAttr.Value, optAttr.NamespaceUri);
+                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
                 }
             }
             return data;
@@ -236,11 +233,11 @@ namespace Tobi.Modules.MetadataPane
             //iterate through the SDK metadata
             foreach (Metadata m in list)
             {
-                data += string.Format("{0} = {1}\n", m.NameContentAttribute.LocalName, m.NameContentAttribute.Value);
+                data += string.Format("{0} = {1}\n", m.NameContentAttribute.Name, m.NameContentAttribute.Value);
 
                 foreach (var optAttr in m.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
-                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.LocalName, optAttr.Value, optAttr.NamespaceUri);
+                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
                 }
             }
             return data;
@@ -275,7 +272,5 @@ namespace Tobi.Modules.MetadataPane
                 return list;
             }
         }
-        
     }
-    
 }
