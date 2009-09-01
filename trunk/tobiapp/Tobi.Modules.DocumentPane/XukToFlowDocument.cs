@@ -1251,7 +1251,7 @@ namespace Tobi.Modules.DocumentPane
                             {
                                 return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
                             }
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
                                     data.FontSize = m_FlowDoc.FontSize * 2;
@@ -1260,7 +1260,7 @@ namespace Tobi.Modules.DocumentPane
                         }
                     case "h2":
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
                                     data.FontSize = m_FlowDoc.FontSize * 1.5;
@@ -1272,7 +1272,7 @@ namespace Tobi.Modules.DocumentPane
                     case "h5":
                     case "h6":
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
                                     data.FontSize = m_FlowDoc.FontSize * 1.2;
@@ -1499,6 +1499,11 @@ namespace Tobi.Modules.DocumentPane
                     case "colgroup":
                         {
                             System.Diagnostics.Debug.Fail(String.Format("DTBook element not yet supported [{0}]", qname.LocalName));
+                            break;
+                        }
+                    case "hr":
+                        {
+                            Console.WriteLine("XUK to FlowDocument converter: ignoring HR markup.");
                             break;
                         }
                     default:
