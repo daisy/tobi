@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +14,9 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.events;
+using urakawa.property.channel;
+using urakawa.publish;
+using urakawa.xuk;
 
 namespace Tobi.Modules.Urakawa
 {
@@ -56,9 +61,57 @@ namespace Tobi.Modules.Urakawa
                 {
                     m_DocumentProject.Changed += OnDocumentProjectChanged;
                     //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
+
+                    //testExport(); // TODO REMOVE THIS !!!!! THIS IS FOR TEST PURPOSES ONLY !!!!
                 }
                 RaisePropertyChanged(() => DocumentProject);
             }
+        }
+
+        public void testExport()
+        {
+            var publishVisitor = new PublishFlattenedManagedAudioVisitor(
+            node =>
+            {
+                var qName = node.GetXmlElementQName();
+                return qName != null && qName.LocalName == "level1";
+            },
+            n => false);
+
+            //Directory.GetParent(DocumentFilePath) + Path.DirectorySeparatorChar + Path.GetFileName(DocumentFilePath)
+
+            var dirPath = DocumentFilePath + ".EXPORT_DATA";
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            publishVisitor.DestinationDirectory = new Uri(dirPath, UriKind.Absolute);
+            publishVisitor.SourceChannel =
+                DocumentProject.Presentations.Get(0).ChannelsManager.GetOrCreateAudioChannel();
+            Channel publishChannel = DocumentProject.Presentations.Get(0).ChannelFactory.CreateAudioChannel();
+            publishChannel.Name = "Temporary External Audio Medias (Publish Visitor)";
+            publishVisitor.DestinationChannel = publishChannel;
+
+            Debugger.Break();
+            DocumentProject.Presentations.Get(0).RootNode.AcceptDepthFirst(publishVisitor);
+
+            Debugger.Break();
+            publishVisitor.VerifyTree(DocumentProject.Presentations.Get(0).RootNode);
+
+            Debugger.Break();
+            DocumentProject.Presentations.Get(0).ChannelsManager.RemoveManagedObject(publishChannel);
+
+            Debugger.Break();
+            var project = new Project();
+            var action = new OpenXukAction(project, new Uri(DocumentFilePath, UriKind.Absolute));
+            action.Execute();
+
+            Debugger.Break();
+            DocumentProject.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+            project.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+            Debug.Assert(project.ValueEquals(DocumentProject));
+
+            Debugger.Break();
         }
 
         //private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
