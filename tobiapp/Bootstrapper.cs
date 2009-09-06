@@ -38,18 +38,6 @@ namespace Tobi
             get { return m_Logger; }
         }
 
-        ///<summary>
-        /// Registration of the Shell View into the container
-        ///</summary>
-        protected override void ConfigureContainer()
-        {
-            //Container.RegisterInstance<Dispatcher>(Dispatcher.CurrentDispatcher);
-
-            Container.RegisterType<IShellView, Shell>(new ContainerControlledLifetimeManager());
-            Container.RegisterType<IShellPresenter, ShellPresenter>(new ContainerControlledLifetimeManager());
-            Container.RegisterType<IUrakawaSession, UrakawaSession>(new ContainerControlledLifetimeManager());
-            base.ConfigureContainer();
-        }
 
         /// <summary>
         /// Initialization of the Tobi Shell window
@@ -78,19 +66,25 @@ namespace Tobi
             //}
         }
 
-        /// <summary>
-        /// Tobi loads its main Modules statically
-        /// </summary>
+        protected override void ConfigureContainer()
+        {
+            //Container.RegisterInstance<Dispatcher>(Dispatcher.CurrentDispatcher);
+
+            Container.RegisterType<IShellView, Shell>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IShellPresenter, ShellPresenter>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IUrakawaSession, UrakawaSession>(new ContainerControlledLifetimeManager());
+            base.ConfigureContainer();
+        }
+
         protected override IModuleCatalog GetModuleCatalog()
         {
             //return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
 
             return new ModuleCatalog()
                 .AddModule(typeof(FileDialogModule))
-                //.AddModule(typeof(UrakawaModule))
-                //.AddModule(typeof(MenuBarModule), "UrakawaModule")
+                //.AddModule(typeof(UrakawaModule)) NOTE: we force IUrakawaSession to be loaded first, see ConfigureContainer() above !
                 //.AddModule(typeof(ToolBarsModule), new string[]{"MetadataPaneModule", "UrakawaModule"})
-                .AddModule(typeof(MenuBarModule))
+                .AddModule(typeof(MenuBarModule), "MetadataPaneModule")
                 .AddModule(typeof(ToolBarsModule), "MetadataPaneModule")
                 .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
                 .AddModule(typeof(HeadingPaneModule), "NavigationPaneModule")
@@ -98,6 +92,7 @@ namespace Tobi
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))
+                .AddModule(typeof(UrakawaModule))
                 ;
 
             //.AddModule(typeof (StatusBarModule));
