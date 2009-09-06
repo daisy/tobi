@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Media;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -179,11 +180,11 @@ namespace Tobi
                 UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
                 obj =>
-                    {
-                        Logger.Log("ShellPresenter.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
+                {
+                    Logger.Log("ShellPresenter.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
 
-                        View.MagnificationLevel -= 0.15;
-                    },
+                    View.MagnificationLevel -= 0.15;
+                },
                 obj => true);
 
             RegisterRichCommand(MagnifyUiDecreaseCommand);
@@ -894,6 +895,30 @@ namespace Tobi
             Application.Current.Shutdown();
         }
 
+        // Could be used after a ClickOnce update:
+        // private void OnUpdatingCompleted(object sender, AsyncCompletedEventArgs e)
+        private void restart()
+        {
+            string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
+
+            using (StreamWriter writer = new StreamWriter(File.Create(batchFile)))
+            {
+                string location = Assembly.GetExecutingAssembly().Location;
+                writer.WriteLine("start " + location);
+            }
+
+            Application.Current.Exit += (o, a) =>
+            {
+                using (Process p = new Process())
+                {
+                    p.StartInfo.FileName = batchFile;
+                    p.Start();
+                }
+            };
+
+            exit();
+        }
+
         public bool OnShellWindowClosing()
         {
             Logger.Log("ShellPresenter.OnShellWindowClosing", Category.Debug, Priority.Medium);
@@ -950,7 +975,7 @@ namespace Tobi
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxEx(UserInterfaceStrings.ExitConfirm+" (DEBUG MESSAGE)")
+            var details = new TextBoxEx(UserInterfaceStrings.ExitConfirm + " (DEBUG MESSAGE)")
             {
             };
 
