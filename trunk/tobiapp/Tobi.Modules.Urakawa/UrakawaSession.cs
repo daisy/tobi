@@ -62,7 +62,7 @@ namespace Tobi.Modules.Urakawa
                     m_DocumentProject.Changed += OnDocumentProjectChanged;
                     //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
 
-                    testExport(); // TODO REMOVE THIS !!!!! THIS IS FOR TEST PURPOSES ONLY !!!!
+                    //testExport(); // TODO REMOVE THIS !!!!! THIS IS FOR TEST PURPOSES ONLY !!!!
                 }
                 RaisePropertyChanged(() => DocumentProject);
             }
