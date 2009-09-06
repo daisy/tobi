@@ -212,7 +212,7 @@ namespace Tobi.Common.UI
             CommandDetailsCollapse.IconProvider.IconDrawScale = zoom;
             CommandDetailsExpand.IconProvider.IconDrawScale = zoom;
 
-            Title = title;
+            Title = "Tobi: " + title;
             Icon = null;
             ContentPlaceHolder.Content = content;
             DetailsPlaceHolder.Content = details;
