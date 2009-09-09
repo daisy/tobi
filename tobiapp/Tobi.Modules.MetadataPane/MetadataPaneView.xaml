@@ -14,6 +14,9 @@
         <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
         <local:ValidationStatusTextConverter x:Key="validationStatusTextConverter"/>
         <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
+        <local:LowerCaseConverter x:Key="lowerCaseConverter"/>
+        <local:AvailableMetadataNamesConverter x:Key="availableMetadataNamesConverter"/>
+        
         <!-- STYLES-->
         <Style TargetType="{x:Type Button}">
             <Setter Property="MinWidth" Value="50"/>
@@ -51,6 +54,7 @@
 
         <!-- COLLECTION VIEW SOURCE-->
         <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
+
         
         <!-- DATA TEMPLATES -->
        
@@ -86,12 +90,18 @@
 
         <!-- NAME (editing) -->
         <DataTemplate x:Key="NameEditingTemplate">
-            <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,  
- 	                                        AncestorType={x:Type local:MetadataPaneView}},  
- 	                                        Path=AvailableMetadataNames}"
-                      SelectedItem="{Binding Name}"
-                      HorizontalContentAlignment="Stretch"
-                      SelectionChanged="ComboBox_SelectionChanged"/>
+            <ComboBox HorizontalContentAlignment="Stretch" 
+                      SelectedItem="{Binding Path=Name, Converter={StaticResource lowerCaseConverter}}">
+                <ComboBox.ItemsSource>
+                    <MultiBinding Converter="{StaticResource availableMetadataNamesConverter}"
+                                  UpdateSourceTrigger="PropertyChanged">
+                        <Binding RelativeSource="{RelativeSource FindAncestor,
+                                                  AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.AvailableMetadataNames"/>
+                        <Binding Path="Name"/>
+                    </MultiBinding>
+                </ComboBox.ItemsSource>
+            </ComboBox>
         </DataTemplate>
 
         
@@ -120,14 +130,17 @@
         </DataTemplate>
 
         <DataTemplate x:Key="ValidationErrorTextFromErrorObject">
-            <TextBlock Text="{Binding Path=., 
-                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
+            <Border BorderBrush="Black" BorderThickness="1">
+                <TextBlock Text="{Binding Path=., 
+                            Converter={StaticResource descriptiveErrorTextConverter}}"
+                           TextWrapping="Wrap"/>
+            </Border>
         </DataTemplate>
         
     </DockPanel.Resources>
     
     <!-- GUI CONTROLS -->
-    <Grid>
+    <Grid Height="Auto" Width="Auto">
         <!-- split the screen into two columns of equal size -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -153,7 +166,8 @@
                   AlternationCount="2"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   HorizontalContentAlignment="Stretch"
-                  x:Name="MetadataListView">
+                  x:Name="MetadataListView"
+                  SelectionChanged="MetadataListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -201,11 +215,11 @@
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="20"/>
-                <RowDefinition  Height="*"/>
-                <RowDefinition  Height="*"/>
-                <RowDefinition  Height="*"/>
-                <RowDefinition  Height="*"/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             
             <TextBlock Grid.Row="0" Grid.Column="0" 
@@ -224,13 +238,15 @@
                         FontWeight="Bold" Text="Name: "/>
             <ContentControl Grid.Row="2" Grid.Column="1" 
                             Content="{Binding Source={StaticResource MetadatasCVS}}" 
-                            ContentTemplate="{StaticResource NameEditingTemplate}"/>
+                            ContentTemplate="{StaticResource NameEditingTemplate}" 
+                            Height="Auto"/>
             
             <TextBlock Grid.Row="3" Grid.Column="0"
                         FontWeight="Bold" Text="Content: "/>
             <ContentControl Grid.Row="3" Grid.Column="1"
                             Content="{Binding Source={StaticResource MetadatasCVS}}"
-                            ContentTemplate="{StaticResource ContentEditingTemplate}"/>
+                            ContentTemplate="{StaticResource ContentEditingTemplate}" 
+                            />
 
             <TextBlock Grid.Row="4" Grid.Column="0"
                         FontWeight="Bold" Text="Errors: "/>

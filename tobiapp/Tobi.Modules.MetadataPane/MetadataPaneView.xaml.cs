@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Collections.ObjectModel;
 using urakawa.metadata.daisy;
 using Microsoft.Windows.Controls;
+using Tobi.Common.MVVM;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -20,7 +21,7 @@ namespace Tobi.Modules.MetadataPane
     /// The backing ViewModel is injected in the constructor ("passive" view design pattern)
     /// </summary>
     public partial class MetadataPaneView : IMetadataPaneView
-    {
+    {   
         #region Construction
 
         public MetadataPaneViewModel ViewModel { get; private set; }
@@ -70,29 +71,7 @@ namespace Tobi.Modules.MetadataPane
             
         }
 
-        public ObservableCollection<string> AvailableMetadataNames
-        {
-            get
-            {
-                ObservableCollection<string> list = ViewModel.AvailableMetadataNames;
-
-                //the available metadata list might not have our selection in it
-                //if the selection is meant not to be duplicated
-                //we need users to be able to have the current Name as an option
-                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
-                if (cvs.View.CurrentItem != null)
-                {
-                    NotifyingMetadataItem selection = (NotifyingMetadataItem)cvs.View.CurrentItem;
-                    if (selection.Name != "")
-                    {
-                        if (list.Contains(selection.Name) == false)
-                            list.Insert(0, selection.Name);
-                    }
-                }
-                return list;
-            }
-        }
-
+     
         //select the corresponding metadata from the item double-clicked in the errors list
         private void errorsList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -114,8 +93,13 @@ namespace Tobi.Modules.MetadataPane
                 string metaname = (string)e.AddedItems[0];
                 CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
                 if (cvs.View.CurrentItem != null)
-                    ((NotifyingMetadataItem) cvs.View.CurrentItem).Name = metaname;
+                    ((NotifyingMetadataItem)cvs.View.CurrentItem).Name = metaname;
             }
+        }
+
+        private void MetadataListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.SelectionChanged();
         }
     }
     

@@ -31,8 +31,6 @@ namespace Tobi.Modules.MetadataPane
         {
             UrakawaMetadata = metadata;
             UrakawaMetadata.Changed += new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
-            //UrakawaMetadata.NameChanged += new System.EventHandler<NameChangedEventArgs>(this.OnNameChanged);
-            //UrakawaMetadata.ContentChanged += new System.EventHandler<ContentChangedEventArgs>(this.OnContentChanged);
             ParentCollection = parentCollection;
 
             Validate();
@@ -120,25 +118,19 @@ namespace Tobi.Modules.MetadataPane
             }
             set
             {
-                if (value == null) return;
+                if (value == null || value == "") return;
                 MetadataSetNameCommand cmd =
                     UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetNameCommand
                     (UrakawaMetadata, value);
                 UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
                 Validate();
+
+                //need to raise these here because the XmlAttribute in control of the metadata name
+                //does not send a name changed notification
+                RaisePropertyChanged(() => Name);
+                RaisePropertyChanged(() => Definition);
             }
         }
-
-        //void OnContentChanged(object sender, ContentChangedEventArgs e)
-        //{
-        //    RaisePropertyChanged(() => Content);
-        //}
-
-        //void OnNameChanged(object sender, NameChangedEventArgs e)
-        //{
-        //    RaisePropertyChanged(() => Name);
-        //    RaisePropertyChanged(() => Definition);
-        //}
 
         void OnMetadataChangedChanged(object sender, DataModelChangedEventArgs e)
         {
@@ -151,9 +143,6 @@ namespace Tobi.Modules.MetadataPane
         internal void RemoveEvents()
         {
             UrakawaMetadata.Changed -= new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
-
-            //UrakawaMetadata.NameChanged -= new System.EventHandler<NameChangedEventArgs>(OnNameChanged);
-            //UrakawaMetadata.ContentChanged -= new System.EventHandler<ContentChangedEventArgs>(OnContentChanged);
         }
     }
 

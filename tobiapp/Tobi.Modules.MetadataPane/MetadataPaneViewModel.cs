@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -137,16 +138,6 @@ namespace Tobi.Modules.MetadataPane
         #endregion Commands
         
       
-        /*public ObservableCollection<MetadataValidationError> ValidationErrors
-        {
-            get
-            {
-                ObservableCollection<MetadataValidationError> errors =
-                    new ObservableCollection<MetadataValidationError>(m_Validator.Errors);
-                return errors;
-            }
-        }*/
-
         private MetadataCollection m_MetadataCollection;   
         public MetadataCollection MetadataCollection 
         {
@@ -191,7 +182,6 @@ namespace Tobi.Modules.MetadataPane
             
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
             metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "", Value = "" };
-
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
                 (metadata);
             presentation.UndoRedoManager.Execute(cmd);
@@ -266,11 +256,16 @@ namespace Tobi.Modules.MetadataPane
 
                 foreach (MetadataDefinition metadata in availableMetadata)
                 {
-                    list.Add(metadata.Name);
+                    list.Add(metadata.Name.ToLower());
                 }
              
                 return list;
             }
+        }
+
+        internal void SelectionChanged()
+        {
+            RaisePropertyChanged(() => AvailableMetadataNames);
         }
     }
 }
