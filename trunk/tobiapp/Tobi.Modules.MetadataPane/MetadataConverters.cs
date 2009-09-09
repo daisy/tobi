@@ -43,6 +43,7 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
+    
     public class OccurrenceDescriptionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -138,4 +139,59 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
+
+    public class LowerCaseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is string)) return null;
+            return ((string) value).ToLower();
+        }
+
+        //this isn't converting back .. it's just making it lower case again
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is string)) return null;
+            return ((string)value).ToLower();
+            /*
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+             * */
+        }
+    }
+
+    public class AvailableMetadataNamesConverter : IMultiValueConverter
+    {
+        //append values[1] to the list in values[0]
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values.Length < 2) return null;
+            if (values[0] == null || values[1] == null) return null;
+            if (!(values[0] is ObservableCollection<string>) || !(values[1] is string))
+                return null;
+
+            ObservableCollection<string> list = (ObservableCollection<string>)values[0];
+            string newItem = (string) values[1];
+
+            bool found = false;
+            foreach (string s in list)
+            {
+                if (s.ToLower() == newItem.ToLower())
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) list.Insert(0, newItem.ToLower());
+
+            return list;
+        }
+
+        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
+    
 }
