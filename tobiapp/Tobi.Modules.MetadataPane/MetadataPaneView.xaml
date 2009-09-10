@@ -5,6 +5,8 @@
     xmlns:local="clr-namespace:Tobi.Modules.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:urakawa="clr-namespace:urakawa.metadata.daisy;assembly=urakawa"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
     LastChildFill="True">
     <!-- ALL RESOURCES -->
     <DockPanel.Resources>
@@ -41,10 +43,14 @@
         <Style TargetType="{x:Type ListView}">
             <Setter Property="BorderBrush" Value="Black"/>
             <Style.Triggers>
+                <!-- this wasn't working properly!-->
+                <!--
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" 
+                    Setter Property="Background" 
                             Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    
                 </Trigger>
+                -->
             </Style.Triggers>
         </Style>
         
@@ -53,8 +59,12 @@
         </Style>
 
         <!-- COLLECTION VIEW SOURCE-->
-        <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
-
+        <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name"/>
+                <scm:SortDescription PropertyName="Content"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
         
         <!-- DATA TEMPLATES -->
        
@@ -72,22 +82,6 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- CONTENT -->
-        <DataTemplate x:Key="ContentTemplate">
-            <TextBlock x:Name="textBlock" Text="{Binding Content}" TextWrapping="Wrap"/>
-        </DataTemplate>
-
-        <!-- DESCRIPTIONS -->
-        <DataTemplate x:Key="DescriptionTemplate">
-            <TextBlock Text="{Binding Path=Definition.Description}"/>
-        </DataTemplate>
-
-        <DataTemplate x:Key="OccurrenceTemplate">
-            <TextBlock Text="{Binding Definition,
-                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
-        </DataTemplate>
-
-
         <!-- NAME (editing) -->
         <DataTemplate x:Key="NameEditingTemplate">
             <ComboBox HorizontalContentAlignment="Stretch" 
@@ -104,6 +98,11 @@
             </ComboBox>
         </DataTemplate>
 
+
+        <!-- CONTENT -->
+        <DataTemplate x:Key="ContentTemplate">
+            <TextBlock x:Name="textBlock" Text="{Binding Content}" TextWrapping="Wrap"/>
+        </DataTemplate>
         
         <!-- CONTENT (editing) -->
         <DataTemplate x:Key="ContentEditingTemplate">
@@ -113,9 +112,21 @@
                     TextWrapping="Wrap"/>
         </DataTemplate>
         
-        <!-- VALIDATION -->
+        <!-- DESCRIPTIONS -->
+        <DataTemplate x:Key="DescriptionTemplate">
+            <TextBlock Text="{Binding Path=Definition.Description}" TextWrapping="Wrap"/>
+        </DataTemplate>
+
+        <!-- REQUIRED, RECOMMENDED, OR OPTIONAL -->
+        <DataTemplate x:Key="OccurrenceTemplate">
+            <TextBlock Text="{Binding Definition,
+                                      Converter={StaticResource occurrenceDescriptionConverter}}"
+                       TextWrapping="Wrap"/>
+        </DataTemplate>
+        
+        <!-- ITEM VALIDATION STATUS (details view) -->
         <DataTemplate x:Key="ValidationErrorTextFromMetadataObject">
-            <TextBlock x:Name="errorText" Text="Valid!"/>
+            <TextBlock x:Name="errorText" Text="Valid" TextWrapping="Wrap"/>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsValid}" Value="false">
                     <Setter TargetName="errorText" 
@@ -129,12 +140,19 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
+        <!-- ITEM VALIDATION STATUS (list view) -->
         <DataTemplate x:Key="ValidationErrorTextFromErrorObject">
-            <Border BorderBrush="Black" BorderThickness="1">
+            <BulletDecorator>
+                <BulletDecorator.Bullet>
+                    <Ellipse Fill="BlueViolet" Width="5" Height="5" 
+                        VerticalAlignment="Center"/>
+                </BulletDecorator.Bullet>
+                
                 <TextBlock Text="{Binding Path=., 
                             Converter={StaticResource descriptiveErrorTextConverter}}"
-                           TextWrapping="Wrap"/>
-            </Border>
+                       TextWrapping="Wrap" 
+                        Margin="5,0,0,0"/>
+             </BulletDecorator>
         </DataTemplate>
         
     </DockPanel.Resources>
@@ -171,8 +189,8 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn CellTemplate="{StaticResource NameTemplate}"/>
-                            <GridViewColumn CellTemplate="{StaticResource ContentTemplate}"/>
+                            <GridViewColumn Header="Name" CellTemplate="{StaticResource NameTemplate}"/>
+                            <GridViewColumn Header="Content" CellTemplate="{StaticResource ContentTemplate}"/>
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
@@ -197,36 +215,41 @@
                     </DataTemplate>
                 </ContentControl.ContentTemplate>
             </ContentControl>
-            <Button Click="Validate_Metadata_Click" Grid.Row="1" Grid.Column="2" Content="Validate All"/>
+            <!--<Button Click="Validate_Metadata_Click" Grid.Row="1" Grid.Column="2" Content="Validate All"/>-->
             
             <!-- validation issues -->
             <ListBox x:Name="errorsList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" MinHeight="100"
 	                 ItemsSource="{Binding Path=MetadataCollection.ValidationErrors,
 	                                    Converter={StaticResource removeReadOnlyErrorsConverter}}"
                      MouseDoubleClick="errorsList_MouseDoubleClick" 
-                     ItemTemplate="{StaticResource ValidationErrorTextFromErrorObject}"/>
+                     ItemTemplate="{StaticResource ValidationErrorTextFromErrorObject}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     HorizontalContentAlignment="Stretch"/>
                 
         </Grid>
         
         <!-- Right side: Editing details -->
-        <Grid Grid.Column="1" Margin="3,0,0,0">   
+        <Grid Grid.Column="1" Margin="15,0,0,0">   
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <!-- empty spacer row at the bottom; don't know if there's a better way to do this -->
+                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             
             <TextBlock Grid.Row="0" Grid.Column="0" 
                        FontWeight="Bold" Text="Description:" />
             <ContentControl Grid.Row="0" Grid.Column="1" 
                             Content="{Binding Source={StaticResource MetadatasCVS}}"
-                            ContentTemplate="{StaticResource DescriptionTemplate}"/>
+                            ContentTemplate="{StaticResource DescriptionTemplate}"
+                            />
 
             <TextBlock Grid.Row="1" Grid.Column="0"
                         FontWeight="Bold" Text="Occurrence: "/>
@@ -239,14 +262,14 @@
             <ContentControl Grid.Row="2" Grid.Column="1" 
                             Content="{Binding Source={StaticResource MetadatasCVS}}" 
                             ContentTemplate="{StaticResource NameEditingTemplate}" 
-                            Height="Auto"/>
+                            Height="20" VerticalAlignment="Top"/>
             
             <TextBlock Grid.Row="3" Grid.Column="0"
                         FontWeight="Bold" Text="Content: "/>
             <ContentControl Grid.Row="3" Grid.Column="1"
                             Content="{Binding Source={StaticResource MetadatasCVS}}"
                             ContentTemplate="{StaticResource ContentEditingTemplate}" 
-                            />
+                            Height="20" VerticalAlignment="Top"/>
 
             <TextBlock Grid.Row="4" Grid.Column="0"
                         FontWeight="Bold" Text="Errors: "/>

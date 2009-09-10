@@ -97,20 +97,20 @@ namespace Tobi.Modules.MetadataPane
             if (error is MetadataValidationFormatError)
             {
                 description = string.Format("{0} must be {1}.",
-                    error.Definition.Name,
+                    error.Definition.Name.ToLower(),
                     ((MetadataValidationFormatError)error).Hint);
             }
             else if (error is MetadataValidationMissingItemError)
             {
-                description = string.Format("Missing {0}", error.Definition.Name);
+                description = string.Format("Missing {0}", error.Definition.Name.ToLower());
             }
             else if (error is MetadataValidationDuplicateItemError)
             {
-                description = string.Format("Duplicate of {0} not allowed.", error.Definition.Name);
+                description = string.Format("Duplicate of {0} not allowed.", error.Definition.Name.ToLower());
             }
             else
             {
-                description = string.Format("Unspecified error in {0}.", error.Definition.Name);
+                description = string.Format("Unspecified error in {0}.", error.Definition.Name.ToLower());
             }
             return description;
         }
@@ -184,6 +184,7 @@ namespace Tobi.Modules.MetadataPane
             }
             if (!found) list.Insert(0, newItem.ToLower());
 
+            //TODO: sort list alpha a-z
             return list;
         }
 
