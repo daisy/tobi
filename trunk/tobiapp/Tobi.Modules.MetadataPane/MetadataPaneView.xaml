@@ -28,7 +28,7 @@
 
         <!-- text block styles-->
         <Style x:Key="ErrorTextStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="Foreground" Value="DarkRed"/>
         </Style>
        
         <Style x:Key="NameStyle" TargetType="{x:Type TextBlock}">
@@ -38,7 +38,6 @@
         <Style x:Key="RequiredNameStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource NameStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-        
         
         <Style TargetType="{x:Type ListView}">
             <Setter Property="BorderBrush" Value="Black"/>
@@ -60,10 +59,11 @@
 
         <!-- COLLECTION VIEW SOURCE-->
         <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS">
-            <CollectionViewSource.SortDescriptions>
+           <!-- <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name"/>
                 <scm:SortDescription PropertyName="Content"/>
             </CollectionViewSource.SortDescriptions>
+            -->
         </CollectionViewSource>
         
         <!-- DATA TEMPLATES -->
@@ -126,7 +126,7 @@
         
         <!-- ITEM VALIDATION STATUS (details view) -->
         <DataTemplate x:Key="ValidationErrorTextFromMetadataObject">
-            <TextBlock x:Name="errorText" Text="Valid" TextWrapping="Wrap"/>
+            <TextBlock x:Name="errorText" Text="None" TextWrapping="Wrap"/>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsValid}" Value="false">
                     <Setter TargetName="errorText" 
@@ -144,7 +144,7 @@
         <DataTemplate x:Key="ValidationErrorTextFromErrorObject">
             <BulletDecorator>
                 <BulletDecorator.Bullet>
-                    <Ellipse Fill="BlueViolet" Width="5" Height="5" 
+                    <Ellipse Fill="DarkRed" Width="5" Height="5" 
                         VerticalAlignment="Center"/>
                 </BulletDecorator.Bullet>
                 
@@ -178,7 +178,7 @@
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+            <UI:SortableListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                   ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
                   IsSynchronizedWithCurrentItem="True"
                   AlternationCount="2"
@@ -189,12 +189,16 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn Header="Name" CellTemplate="{StaticResource NameTemplate}"/>
-                            <GridViewColumn Header="Content" CellTemplate="{StaticResource ContentTemplate}"/>
+                            <GridViewColumn Header="Name" 
+                                            CellTemplate="{StaticResource NameTemplate}"
+                                            UI:SortableListView.SortPropertyName="Name"/>
+                            <GridViewColumn Header="Content" 
+                                            CellTemplate="{StaticResource ContentTemplate}"
+                                            UI:SortableListView.SortPropertyName="Content"/>
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
-            </ListView>
+            </UI:SortableListView>
 
             <!-- buttons -->
             <Button Click="Add_Metadata_Button_Click" Grid.Row="1" Grid.Column="0" Content="Add"/>
@@ -218,14 +222,17 @@
             <!--<Button Click="Validate_Metadata_Click" Grid.Row="1" Grid.Column="2" Content="Validate All"/>-->
             
             <!-- validation issues -->
-            <ListBox x:Name="errorsList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" MinHeight="100"
-	                 ItemsSource="{Binding Path=MetadataCollection.ValidationErrors,
-	                                    Converter={StaticResource removeReadOnlyErrorsConverter}}"
-                     MouseDoubleClick="errorsList_MouseDoubleClick" 
-                     ItemTemplate="{StaticResource ValidationErrorTextFromErrorObject}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     HorizontalContentAlignment="Stretch"/>
-                
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
+                <TextBlock Text="Summary of errors" Margin="0,10,0,10"/>        
+                <ListBox x:Name="errorsList" MinHeight="100"
+	                     ItemsSource="{Binding Path=MetadataCollection.ValidationErrors,
+	                                        Converter={StaticResource removeReadOnlyErrorsConverter}}"
+                         MouseDoubleClick="errorsList_MouseDoubleClick" 
+                         ItemTemplate="{StaticResource ValidationErrorTextFromErrorObject}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         HorizontalContentAlignment="Stretch"/>
+            </StackPanel>
+
         </Grid>
         
         <!-- Right side: Editing details -->

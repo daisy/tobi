@@ -184,8 +184,7 @@ namespace Tobi.Modules.MetadataPane
             }
             if (!found) list.Insert(0, newItem.ToLower());
 
-            //TODO: sort list alpha a-z
-            return list;
+            return list.OrderBy(s => s.ToLower());
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
