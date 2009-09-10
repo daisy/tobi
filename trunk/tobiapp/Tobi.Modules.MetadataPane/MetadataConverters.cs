@@ -193,5 +193,24 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
+
+    public class FullDescriptionConverter : IMultiValueConverter
+    {
+        //concatenate values[0] and values[1]
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values.Length < 2) return null;
+            if (values[0] == null || values[1] == null) return null;
+            if (!(values[0] is string) || !(values[1] is string))return null;
+
+            return string.Format("{0}: {1}", (string) values[0], (string) values[1]);
+        }
+
+        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
     
 }

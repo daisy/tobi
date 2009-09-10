@@ -18,6 +18,7 @@
         <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
         <local:LowerCaseConverter x:Key="lowerCaseConverter"/>
         <local:AvailableMetadataNamesConverter x:Key="availableMetadataNamesConverter"/>
+        <local:FullDescriptionConverter x:Key="fullDescriptionConverter"/>
         
         <!-- STYLES-->
         <Style TargetType="{x:Type Button}">
@@ -27,6 +28,12 @@
         </Style>
 
         <!-- text block styles-->
+        
+        <!-- default text block style sets focusable true for screen-reader compatibility -->
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Focusable" Value="True"/>
+        </Style>
+        
         <Style x:Key="ErrorTextStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="DarkRed"/>
         </Style>
@@ -35,7 +42,8 @@
             <Setter Property="Margin" Value="0,0,0,3"/>
         </Style>
         
-        <Style x:Key="RequiredNameStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource NameStyle}">
+        <Style x:Key="RequiredNameStyle" TargetType="{x:Type TextBlock}" 
+               BasedOn="{StaticResource NameStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         
@@ -55,19 +63,28 @@
         
         <Style TargetType="{x:Type ListViewItem}">
             <Setter Property="Margin" Value="4"/>
+            <Setter>
+                <Setter.Property>AutomationProperties.Name</Setter.Property>
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource fullDescriptionConverter}">
+                        <Binding Path="Name"/>
+                        <Binding Path="Content"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <!-- COLLECTION VIEW SOURCE-->
-        <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS">
-           <!-- <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Name"/>
-                <scm:SortDescription PropertyName="Content"/>
-            </CollectionViewSource.SortDescriptions>
-            -->
-        </CollectionViewSource>
+        <!-- COLLECTION VIEW SOURCE for Metadata objects-->
+        <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
         
         <!-- DATA TEMPLATES -->
        
+        <!-- acessibility testing-->
+        <DataTemplate x:Key="Testing">
+            <TextBlock Text="{Binding ElementName=MetadataListView, 
+                                      Path=/AutomationProperties.Name}"/>
+        </DataTemplate>
+        
         <!-- NAME -->
         <DataTemplate x:Key="NameTemplate">
             <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}" x:Name="nameText"
@@ -151,7 +168,9 @@
                 <TextBlock Text="{Binding Path=., 
                             Converter={StaticResource descriptiveErrorTextConverter}}"
                        TextWrapping="Wrap" 
-                        Margin="5,0,0,0"/>
+                       Margin="5,0,0,0"
+                       AutomationProperties.Name="{Binding Path=., 
+                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
              </BulletDecorator>
         </DataTemplate>
         
@@ -195,6 +214,8 @@
                             <GridViewColumn Header="Content" 
                                             CellTemplate="{StaticResource ContentTemplate}"
                                             UI:SortableListView.SortPropertyName="Content"/>
+                            <GridViewColumn Header="Testing"
+                                            CellTemplate="{StaticResource Testing}"/>
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
@@ -223,7 +244,7 @@
             
             <!-- validation issues -->
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
-                <TextBlock Text="Summary of errors" Margin="0,10,0,10"/>        
+                <TextBlock Text="Summary of errors" Margin="0,10,0,10" />        
                 <ListBox x:Name="errorsList" MinHeight="100"
 	                     ItemsSource="{Binding Path=MetadataCollection.ValidationErrors,
 	                                        Converter={StaticResource removeReadOnlyErrorsConverter}}"
