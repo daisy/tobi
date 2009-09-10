@@ -55,6 +55,8 @@ namespace Tobi.Modules.MetadataPane
         public bool Validate()
         {
             ValidationError = null;
+            //validate everything to get missing/duplicate errors sorted out
+            ParentCollection.Validate();
             IsValid = ParentCollection.Validate(this);
             if (!IsValid)
             {
@@ -124,11 +126,6 @@ namespace Tobi.Modules.MetadataPane
                     (UrakawaMetadata, value);
                 UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
                 Validate();
-
-                //need to raise these here because the XmlAttribute in control of the metadata name
-                //does not send a name changed notification
-                RaisePropertyChanged(() => Name);
-                RaisePropertyChanged(() => Definition);
             }
         }
 
@@ -160,6 +157,7 @@ namespace Tobi.Modules.MetadataPane
                 if (m_Metadatas != value)
                 {
                     m_Metadatas = value;
+                    Validate();
                     RaisePropertyChanged(() => Metadatas);
                 }
             }
