@@ -18,17 +18,17 @@ namespace Tobi.Modules.MetadataPane
         {
             if (values.Length < 2) return false;
             if (values[0] == null || values[1] == null) return false;
-            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is MetadataCollection))
+            if (!(values[0] is NotifyingMetadataItem) || 
+                !(values[1] is ObservableCollection<NotifyingMetadataItem>))
                 return false;
 
             NotifyingMetadataItem item = (NotifyingMetadataItem)values[0];
-            MetadataCollection metadataCollection = (MetadataCollection) values[1];
+            ObservableCollection<NotifyingMetadataItem> metadatas = (ObservableCollection<NotifyingMetadataItem>)values[1];
 
             if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required)
             {
                 //check for duplicates.  a required item can be removed if it is not the only one.
-                List<NotifyingMetadataItem> results = 
-                    metadataCollection.Metadatas.ToList().FindAll(s => s.Name == item.Name);
+                List<NotifyingMetadataItem> results = metadatas.ToList().FindAll(s => s.Name == item.Name);
                 if (results.Count > 1)
                     return true;
                 else

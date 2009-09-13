@@ -19,7 +19,7 @@ namespace Tobi.Modules.MetadataPane
         {
             get {return SupportedMetadata_Z39862005.GetMetadataDefinition(this.Name, true);}
         }
-
+       
         public Metadata UrakawaMetadata { get; private set; }
         public MetadataCollection ParentCollection{get; private set;}
         //copy constructor
