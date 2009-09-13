@@ -33,20 +33,63 @@
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="Focusable" Value="True"/>
         </Style>
-        
-        <Style x:Key="ErrorTextStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="DarkRed"/>
-        </Style>
-       
+
         <Style x:Key="NameStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Margin" Value="0,0,0,3"/>
+            <Setter Property="Focusable" Value="True"/>
         </Style>
         
         <Style x:Key="RequiredNameStyle" TargetType="{x:Type TextBlock}" 
                BasedOn="{StaticResource NameStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
+
+        <Style x:Key="NameEditingStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="AutomationProperties.Name" Value="{Binding}"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="ToolTip" Value="{Binding}"/> 
+        </Style>
+
+        <Style x:Key="DescriptionStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="AutomationProperties.Name" Value="{Binding Path=Definition.Description}"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="ToolTip" Value="{Binding Path=Definition.Description}"/>
+        </Style>
+            
+        <Style x:Key="OccurrenceStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="AutomationProperties.Name" Value="{Binding Definition,
+                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="ToolTip" Value="{Binding Definition,
+                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
+        </Style>
+
+        <!-- details view; no errors -->
+        <Style x:Key="IsValidTextDetailsViewStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="AutomationProperties.Name" Value="None"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="ToolTip" Value="None"/>
+        </Style>
         
+        <!-- details view: errors -->
+        <Style x:Key="IsInvalidTextDetailsViewStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="DarkRed"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="AutomationProperties.Name" Value="{Binding ValidationError,
+                                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
+            <Setter Property="ToolTip" Value="{Binding ValidationError,
+                                            Converter={StaticResource descriptiveErrorTextConverter}}"/>
+        </Style>
+        
+        <Style x:Key="ValidationErrorTextInListStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="AutomationProperties.Name" Value="{Binding Path=., 
+                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+            <Setter Property="ToolTip" Value="{Binding Path=., 
+                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+        </Style>
+        
+        
+            
         <Style TargetType="{x:Type ListView}">
             <Setter Property="BorderBrush" Value="Black"/>
             <Style.Triggers>
@@ -78,12 +121,6 @@
         <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
         
         <!-- DATA TEMPLATES -->
-       
-        <!-- acessibility testing-->
-        <DataTemplate x:Key="Testing">
-            <TextBlock Text="{Binding ElementName=MetadataListView, 
-                                      Path=/AutomationProperties.Name}"/>
-        </DataTemplate>
         
         <!-- NAME -->
         <DataTemplate x:Key="NameTemplate">
@@ -112,6 +149,11 @@
                         <Binding Path="Name"/>
                     </MultiBinding>
                 </ComboBox.ItemsSource>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Style="{StaticResource NameEditingStyle}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
             </ComboBox>
         </DataTemplate>
 
@@ -131,19 +173,21 @@
         
         <!-- DESCRIPTIONS -->
         <DataTemplate x:Key="DescriptionTemplate">
-            <TextBlock Text="{Binding Path=Definition.Description}" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding Path=Definition.Description}" 
+                       TextWrapping="Wrap" Style="{StaticResource DescriptionStyle}" GotFocus="TextBlock_GotFocus"/>
         </DataTemplate>
 
         <!-- REQUIRED, RECOMMENDED, OR OPTIONAL -->
         <DataTemplate x:Key="OccurrenceTemplate">
             <TextBlock Text="{Binding Definition,
                                       Converter={StaticResource occurrenceDescriptionConverter}}"
-                       TextWrapping="Wrap"/>
+                       TextWrapping="Wrap" Style="{StaticResource OccurrenceStyle}"/>
         </DataTemplate>
         
         <!-- ITEM VALIDATION STATUS (details view) -->
         <DataTemplate x:Key="ValidationErrorTextFromMetadataObject">
-            <TextBlock x:Name="errorText" Text="None" TextWrapping="Wrap"/>
+            <TextBlock x:Name="errorText" Text="None" TextWrapping="Wrap" 
+                       Style="{StaticResource IsValidTextDetailsViewStyle}"/>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsValid}" Value="false">
                     <Setter TargetName="errorText" 
@@ -152,7 +196,8 @@
                                             Converter={StaticResource descriptiveErrorTextConverter}}"/>
                     <Setter TargetName="errorText"
                                         Property="TextBlock.Style"
-                                        Value="{StaticResource ErrorTextStyle}"/>
+                                        Value="{StaticResource IsInvalidTextDetailsViewStyle}"/>
+                    
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -169,8 +214,7 @@
                             Converter={StaticResource descriptiveErrorTextConverter}}"
                        TextWrapping="Wrap" 
                        Margin="5,0,0,0"
-                       AutomationProperties.Name="{Binding Path=., 
-                        Converter={StaticResource descriptiveErrorTextConverter}}"/>
+                       Style="{StaticResource ValidationErrorTextInListStyle}"/>
              </BulletDecorator>
         </DataTemplate>
         
@@ -214,20 +258,19 @@
                             <GridViewColumn Header="Content" 
                                             CellTemplate="{StaticResource ContentTemplate}"
                                             UI:SortableListView.SortPropertyName="Content"/>
-                            <GridViewColumn Header="Testing"
-                                            CellTemplate="{StaticResource Testing}"/>
+                           
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
             </UI:SortableListView>
 
             <!-- buttons -->
-            <Button Click="Add_Metadata_Button_Click" Grid.Row="1" Grid.Column="0" Content="Add"/>
+            <Button Click="Add_Metadata_Button_Click" Grid.Row="1" Grid.Column="0" Content="_Add"/>
             <!-- this button is in a content control because it has to react to the current selection -->
             <ContentControl Content="{StaticResource MetadatasCVS}" Grid.Row="1" Grid.Column="1">
                 <ContentControl.ContentTemplate>
                     <DataTemplate>
-                        <Button Click="Remove_Metadata_Button_Click" Content="Remove">
+                        <Button Click="Remove_Metadata_Button_Click" Content="_Remove">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource isNotRequiredOccurrenceConverter}">
                                     <Binding Path="/"/>
@@ -240,7 +283,6 @@
                     </DataTemplate>
                 </ContentControl.ContentTemplate>
             </ContentControl>
-            <!--<Button Click="Validate_Metadata_Click" Grid.Row="1" Grid.Column="2" Content="Validate All"/>-->
             
             <!-- validation issues -->
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
@@ -274,7 +316,7 @@
             
             <TextBlock Grid.Row="0" Grid.Column="0" 
                        FontWeight="Bold" Text="Description:" />
-            <ContentControl Grid.Row="0" Grid.Column="1" 
+            <ContentControl Grid.Row="0" Grid.Column="1"
                             Content="{Binding Source={StaticResource MetadatasCVS}}"
                             ContentTemplate="{StaticResource DescriptionTemplate}"
                             />

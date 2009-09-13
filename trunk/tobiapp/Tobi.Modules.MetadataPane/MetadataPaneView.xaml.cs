@@ -64,14 +64,6 @@ namespace Tobi.Modules.MetadataPane
             ViewModel.RemoveMetadata(metadata);
         }
 
-        
-        private void Validate_Metadata_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ValidateMetadata();
-            
-        }
-
-     
         //select the corresponding metadata from the item double-clicked in the errors list
         private void errorsList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -100,6 +92,11 @@ namespace Tobi.Modules.MetadataPane
         private void MetadataListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ViewModel.SelectionChanged();
+        }
+
+        private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
+        {
+           // MessageBox.Show("hi");
         }
     }
     
