@@ -284,13 +284,13 @@ c.Execute();
 
 
 
-            var labelMsg = new TextBoxEx(UserInterfaceStrings.UnhandledException)
+            var labelMsg = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnhandledException)
             {
                 FontWeight = FontWeights.ExtraBlack,
                 Margin = margin,
                 BorderBrush = Brushes.Red
             };
-            
+
 
             //var binding = new Binding
             //                  {
@@ -325,7 +325,7 @@ c.Execute();
                 exinnerd = exinnerd.InnerException;
             }
 
-            var labelSummary = new TextBoxEx(exMessage)
+            var labelSummary = new TextBoxReadOnlyCaretVisible(exMessage)
             {
                 BorderBrush = null,
                 BorderThickness = new Thickness(0)
@@ -363,7 +363,7 @@ c.Execute();
                 exinner = exinner.InnerException;
             }
 
-            var stackTrace = new TextBoxEx(exStackTrace)
+            var stackTrace = new TextBoxReadOnlyCaretVisible(exStackTrace)
             {
                 BorderBrush = null,
                 BorderThickness = new Thickness(0)
@@ -432,7 +432,18 @@ c.Execute();
         {
             string dictionaryName = string.Format("/{0};component/{1}", assemblyFullName, path);
             var uri = new Uri(dictionaryName, UriKind.Relative);
+
             var dictionary = (ResourceDictionary)Application.LoadComponent(uri);
+
+            // Or:
+            //var resDictionary = new ResourceDictionary
+            //{
+            //    Source =
+            //        new Uri(
+            //        "pack://application:,,,/" + assemblyFullName +
+            //        ";Component/" + path)
+            //};
+
             Application.Current.Resources.MergedDictionaries.Add(dictionary);
         }
     }

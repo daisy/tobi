@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="UI\ScalableGreyableImageProvider.cs" />
     <Compile Include="UI\SortableListView.cs" />
+    <Compile Include="UI\TextBoxReadOnlyCaretVisible.cs" />
     <Compile Include="UI\TreeViewExtensions.cs" />
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />

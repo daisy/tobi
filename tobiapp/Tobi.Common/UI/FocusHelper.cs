@@ -1,78 +1,34 @@
-﻿using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Automation.Peers;
-using System.Windows.Controls;
+﻿using System;
+using System.Threading;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Tobi.Common.UI
 {
-    // no need for this class in .NET 4 with IsReadOnlyCaretVisible...
-    public class TextBoxEx : TextBox
-    {
-        public AutomationPeer m_AutomationPeer;
-
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            m_AutomationPeer = base.OnCreateAutomationPeer();
-            return m_AutomationPeer;
-        }
-
-        public TextBoxEx(string txt)
-        {
-            Text = txt;
-
-            AcceptsTab = false;
-            AcceptsReturn = true;
-            IsReadOnly = false;
-
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-            VerticalAlignment = VerticalAlignment.Stretch;
-            TextWrapping = TextWrapping.Wrap;
-            Background = SystemColors.ControlLightLightBrush;
-            BorderBrush = SystemColors.ControlDarkDarkBrush;
-            BorderThickness = new Thickness(1);
-            Padding = new Thickness(6);
-            SnapsToDevicePixels = true;
-
-            var tbSel = new FocusHelper.TextBoxSelection();
-
-            SelectionChanged += ((sender, e) =>
-            {
-                tbSel.start = SelectionStart;
-                tbSel.length = SelectionLength;
-
-                SetValue(AutomationProperties.NameProperty, SelectedText);
-
-                if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
-                {
-                    m_AutomationPeer.RaiseAutomationEvent(
-                        AutomationEvents.AutomationFocusChanged);
-                }
-            });
-
-            TextChanged += ((sender, e) =>
-            {
-                int start = tbSel.start;
-                int length = tbSel.length;
-                Text = txt;
-                Select(start, length);
-            });
-        }
-    }
-
     public static class FocusHelper
     {
         public static void Focus(DependencyObject obj, UIElement ui)
         {
+            ui.Focusable = true;
             ui.Focus();
             FocusManager.SetFocusedElement(obj, ui);
             Keyboard.Focus(ui);
         }
 
-        public struct TextBoxSelection
+        public static void FocusBeginInvoke(DependencyObject obj, UIElement ui)
         {
-            public int start;
-            public int length;
+            ui.Dispatcher.BeginInvoke(new Action(() => Focus(obj, ui)), DispatcherPriority.Render);
+        }
+
+        public static void FocusThreadAndInvoke(DependencyObject obj, UIElement ui)
+        {
+            ThreadPool.QueueUserWorkItem(delegate(Object foo)
+            {
+                var elem = (UIElement)foo;
+                elem.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)(() => Focus(obj, elem)));
+            },ui);
         }
     }
 }

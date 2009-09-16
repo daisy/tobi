@@ -72,6 +72,7 @@ namespace Tobi.Common.UI
                     else // trying string 
                     {
                         bitmapImage = new BitmapImage(new Uri(autoGreyScaleImg.Source.ToString()));
+                        bitmapImage.Freeze();
                     }
 
                     autoGreyScaleImg.Source = new FormatConvertedBitmap(bitmapImage,
