@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -1009,7 +1010,26 @@ namespace Tobi.Modules.DocumentPane
             {
                 try
                 {
-                    image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
+                    //image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
+
+                    string imagePath = new Uri(srcAttr.Value, UriKind.Absolute).AbsolutePath;
+                    imagePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(imagePath));
+
+                    //string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
+
+                    WebClient webClient = new WebClient();
+                    webClient.Proxy = null;
+                    webClient.DownloadFile(srcAttr.Value, imagePath);
+
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(imagePath, UriKind.Absolute);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.CreateOptions = BitmapCreateOptions.None;
+                    bitmap.EndInit();
+
+                    //bitmap.Freeze(); COM Exception !!
+                    image.Source = bitmap;
                 }
                 catch (Exception)
                 {
@@ -1025,7 +1045,17 @@ namespace Tobi.Modules.DocumentPane
 
                 try
                 {
-                    image.Source = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)); // { CacheOption = BitmapCacheOption.OnLoad };
+                    //BitmapImage bitmap = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)); // { CacheOption = BitmapCacheOption.OnLoad };
+
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullImagePath, UriKind.Absolute);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.CreateOptions = BitmapCreateOptions.None;
+                    bitmap.EndInit();
+
+                    bitmap.Freeze();
+                    image.Source = bitmap;
                 }
                 catch (Exception)
                 {

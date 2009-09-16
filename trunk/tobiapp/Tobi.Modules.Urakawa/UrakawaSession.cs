@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
@@ -253,7 +252,7 @@ namespace Tobi.Modules.Urakawa
                 panel.Children.Add(label);
                 //panel.Margin = new Thickness(8, 8, 8, 0);
 
-                var details = new TextBoxEx(UserInterfaceStrings.UnsavedChangesDetails)
+                var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnsavedChangesDetails)
                 {
                 };
 

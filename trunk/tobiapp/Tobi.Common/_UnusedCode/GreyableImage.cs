@@ -123,7 +123,9 @@ namespace Tobi.Common._UnusedCode
                     }
 
                     // create and cache greyscale ImageSource
-                    _sourceG = new FormatConvertedBitmap(new BitmapImage(uri), PixelFormats.Gray8, null, 0);
+                    BitmapImage bitmap = new BitmapImage(uri);
+                    bitmap.Freeze();
+                    _sourceG = new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, null, 0);
                 }
                 catch (Exception e)
                 {

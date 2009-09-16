@@ -975,7 +975,7 @@ namespace Tobi
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxEx(UserInterfaceStrings.ExitConfirm + " (DEBUG MESSAGE)")
+            var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.ExitConfirm + " (DEBUG MESSAGE)")
             {
             };
 

@@ -226,7 +226,7 @@ namespace Tobi.Modules.Urakawa
             panel.Children.Add(label);
             panel.Children.Add(progressBar);
 
-            var details = new TextBoxEx(action.LongDescription)
+            var details = new TextBoxReadOnlyCaretVisible(action.LongDescription)
             {
             };
 
