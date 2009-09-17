@@ -92,7 +92,6 @@ namespace Tobi
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))
-                .AddModule(typeof(UrakawaModule))
                 ;
 
             //.AddModule(typeof (StatusBarModule));

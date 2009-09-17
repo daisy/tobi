@@ -38,6 +38,8 @@ namespace Tobi.Modules.MenuBar
         //public RichDelegateCommand<object> NavNextCommand { get; private set; }
         //public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
 
+        public RichDelegateCommand<object> ExportCommand { get; private set; }
+
         public RichDelegateCommand<object> SaveCommand { get; private set; }
         public RichDelegateCommand<object> SaveAsCommand { get; private set; }
 
@@ -62,6 +64,7 @@ namespace Tobi.Modules.MenuBar
             if (session != null)
             {
                 SaveCommand = session.SaveCommand;
+                ExportCommand = session.ExportCommand;
                 SaveAsCommand = session.SaveAsCommand;
                 OpenCommand = session.OpenCommand;
                 NewCommand = session.NewCommand;

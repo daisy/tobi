@@ -46,7 +46,12 @@ namespace Tobi.Modules.Urakawa
                     {
                         FileName = "dtbook",
                         DefaultExt = ".xml",
-                        Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub"
+                        Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub",
+                        CheckFileExists = false,
+                        CheckPathExists = false,
+                        AddExtension = true,
+                        DereferenceLinks = true,
+                        Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Open)
                     };
 
                     var shellPresenter_ = Container.Resolve<IShellPresenter>();

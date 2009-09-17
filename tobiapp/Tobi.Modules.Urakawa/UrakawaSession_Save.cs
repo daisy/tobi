@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using DaisyExport;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
@@ -19,6 +20,61 @@ namespace Tobi.Modules.Urakawa
         private void initCommands_Save()
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
+            //
+            //
+            ExportCommand = new RichDelegateCommand<object>(
+                UserInterfaceStrings.Export,
+                UserInterfaceStrings.Export_,
+                UserInterfaceStrings.Export_KEYS,
+                shellPresenter.LoadTangoIcon("emblem-symbolic-link"),
+                //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
+                obj =>
+                {
+                    if (DocumentProject == null)
+                    {
+                        return;
+                    }
+
+                    Logger.Log("UrakawaSession.Export", Category.Debug, Priority.Medium);
+
+                    var dlg = new OpenFileDialog
+                    {
+                        FileName = "folder",
+                        CheckFileExists = false,
+                        CheckPathExists = false,
+                        AddExtension = true,
+                        DereferenceLinks = true,
+                        Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Export)
+                    };
+
+                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
+
+                    bool? result = false;
+
+                    shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+                    if (result == false)
+                    {
+                        return;
+                    }
+
+                    if (Directory.Exists(dlg.FileName))
+                    {
+                        if (!askUserConfirmOverwrite())
+                        {
+                            return;
+                        }
+
+                        Directory.Delete(dlg.FileName, true);
+                        Directory.CreateDirectory(dlg.FileName);
+                    }
+
+                    var exporter = new DAISY3Export(DocumentProject.Presentations.Get(0));
+                    exporter.ExportToDaisy3(dlg.FileName);
+                },
+                obj => DocumentProject != null);
+
+            shellPresenter.RegisterRichCommand(ExportCommand);
             //
             SaveAsCommand = new RichDelegateCommand<object>(
                 UserInterfaceStrings.SaveAs,
@@ -39,7 +95,14 @@ namespace Tobi.Modules.Urakawa
                     {
                         FileName = "tobi_doc",
                         DefaultExt = ".xuk",
-                        Filter = "XUK (*.xuk)|*.xuk"
+                        Filter = "XUK (*.xuk)|*.xuk",
+                        CheckFileExists = false,
+                        CheckPathExists = false,
+                        AddExtension = true,
+                        CreatePrompt = false,
+                        DereferenceLinks = true,
+                        OverwritePrompt = false,
+                        Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.SaveAs)
                     };
 
                     var shellPresenter_ = Container.Resolve<IShellPresenter>();

@@ -12,6 +12,8 @@ namespace Tobi.Common
 
         bool Close();
 
+        RichDelegateCommand<object> ExportCommand { get; }
+
         RichDelegateCommand<object> SaveCommand { get; }
         RichDelegateCommand<object> SaveAsCommand { get; }
 
