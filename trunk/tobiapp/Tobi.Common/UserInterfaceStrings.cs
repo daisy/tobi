@@ -211,6 +211,12 @@ namespace Tobi.Common
         public const string Save_ = "Save the current document";
         public static KeyGesture Save_KEYS = new KeyGesture(Key.S, ModifierKeys.Control);
 
+
+        public const string Export = "Export...";
+        public const string Export_ = "Export the current document  to DAISY...";
+        public static KeyGesture Export_KEYS = new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+
+
         public const string SaveAs = "S_ave as...";
         public const string SaveAs_ = "Save the current document as...";
         public static KeyGesture SaveAs_KEYS = new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift);

@@ -20,6 +20,8 @@
         />
       <UI:MenuItemRichCommand RichCommand="{Binding SaveAsCommand}"
         />
+      <UI:MenuItemRichCommand RichCommand="{Binding ExportCommand}"
+        />
       <UI:MenuItemRichCommand RichCommand="{Binding CloseCommand}"
         />
       <Separator/>

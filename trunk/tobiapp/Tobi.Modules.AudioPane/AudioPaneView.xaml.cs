@@ -391,7 +391,12 @@ namespace Tobi.Modules.AudioPane
             {
                 FileName = "audio",
                 DefaultExt = ".wav",
-                Filter = "WAV files (.wav)|*.wav;*.aiff"
+                Filter = "WAV files (.wav)|*.wav;*.aiff",
+                CheckFileExists = false,
+                CheckPathExists = false,
+                AddExtension = true,
+                DereferenceLinks = true,
+                Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_OpenFile)
             };
 
             var shellPresenter = ViewModel.Container.Resolve<IShellPresenter>();

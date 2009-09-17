@@ -32,6 +32,8 @@ namespace Tobi.Modules.Urakawa
         public RichDelegateCommand<object> SaveAsCommand { get; private set; }
         public RichDelegateCommand<object> SaveCommand { get; private set; }
 
+        public RichDelegateCommand<object> ExportCommand { get; private set; }
+
         public RichDelegateCommand<object> NewCommand { get; private set; }
         public RichDelegateCommand<object> OpenCommand { get; private set; }
         public RichDelegateCommand<object> CloseCommand { get; private set; }
