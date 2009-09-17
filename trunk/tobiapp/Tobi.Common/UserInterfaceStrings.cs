@@ -239,11 +239,11 @@ namespace Tobi.Common
 
         public const string Event_SwitchPrevious = "_Previous phrase";
         public const string Event_SwitchPrevious_ = "Select the previous phrase";
-        public static KeyGesture Event_SwitchPrevious_KEYS = new KeyGesture(Key.J, ModifierKeys.Control);
+        public static KeyGesture Event_SwitchPrevious_KEYS = new KeyGesture(Key.I, ModifierKeys.Control);
 
         public const string Event_SwitchNext = "_Next phrase";
         public const string Event_SwitchNext_ = "Select the next phrase";
-        public static KeyGesture Event_SwitchNext_KEYS = new KeyGesture(Key.I, ModifierKeys.Control);
+        public static KeyGesture Event_SwitchNext_KEYS = new KeyGesture(Key.J, ModifierKeys.Control);
 
         public const string Audio_GotoBegin = "_Rewind to begin";
         public const string Audio_GotoBegin_ = "Rewind to the begining of the audio stream";
