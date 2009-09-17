@@ -4,14 +4,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using DaisyExport;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.events.progress;
 using urakawa.xuk;
+using HorizontalAlignment=System.Windows.HorizontalAlignment;
+using Orientation=System.Windows.Controls.Orientation;
+using ProgressBar=System.Windows.Controls.ProgressBar;
+using SaveFileDialog=Microsoft.Win32.SaveFileDialog;
 
 namespace Tobi.Modules.Urakawa
 {
@@ -37,40 +41,36 @@ namespace Tobi.Modules.Urakawa
 
                     Logger.Log("UrakawaSession.Export", Category.Debug, Priority.Medium);
 
-                    var dlg = new OpenFileDialog
+                    var dlg = new FolderBrowserDialog
                     {
-                        FileName = "folder",
-                        CheckFileExists = false,
-                        CheckPathExists = false,
-                        AddExtension = true,
-                        DereferenceLinks = true,
-                        Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Export)
+                        ShowNewFolderButton = true,
+                        Description = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Export)
                     };
 
                     var shellPresenter_ = Container.Resolve<IShellPresenter>();
 
-                    bool? result = false;
+                    DialogResult result = DialogResult.Abort;
 
                     shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
 
-                    if (result == false)
+                    if (result != DialogResult.OK && result != DialogResult.Yes)
                     {
                         return;
                     }
 
-                    if (Directory.Exists(dlg.FileName))
+                    if (Directory.Exists(dlg.SelectedPath))
                     {
                         if (!askUserConfirmOverwrite())
                         {
                             return;
                         }
 
-                        Directory.Delete(dlg.FileName, true);
-                        Directory.CreateDirectory(dlg.FileName);
+                        Directory.Delete(dlg.SelectedPath, true);
+                        Directory.CreateDirectory(dlg.SelectedPath);
                     }
 
                     var exporter = new DAISY3Export(DocumentProject.Presentations.Get(0));
-                    exporter.ExportToDaisy3(dlg.FileName);
+                    exporter.ExportToDaisy3(dlg.SelectedPath);
                 },
                 obj => DocumentProject != null);
 
