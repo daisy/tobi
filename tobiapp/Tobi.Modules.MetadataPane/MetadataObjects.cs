@@ -110,6 +110,13 @@ namespace Tobi.Modules.MetadataPane
                 Validate();
             }
         }
+        public bool IsRequired
+        {
+            get
+            {
+                return Definition.Occurrence == MetadataOccurrence.Required;
+            }
+        }
 
         public string Name
         {
@@ -119,7 +126,7 @@ namespace Tobi.Modules.MetadataPane
             }
             set
             {
-                if (value == null || value == "") return;
+                if (string.IsNullOrEmpty(value)) return;
                 MetadataSetNameCommand cmd =
                     UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetNameCommand
                     (UrakawaMetadata, value);
@@ -151,10 +158,7 @@ namespace Tobi.Modules.MetadataPane
             set
             {
                 if (value == IsPrimaryIdentifier) return;
-                if (value)
-                    this.UrakawaMetadata.Uid = this.Content;
-                else
-                    this.UrakawaMetadata.Uid = "";
+                this.UrakawaMetadata.Uid = value ? this.Content : "";
                 RaisePropertyChanged(() => IsPrimaryIdentifier);
             }
         }

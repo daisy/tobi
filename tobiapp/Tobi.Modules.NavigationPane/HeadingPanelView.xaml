@@ -39,10 +39,12 @@
               IsDeferredScrollingEnabled="False"
                 Focusable="False"
                 >
+
+  <!-- 
+                  DataContext="{Binding Path=ViewModel.HeadingsNavigator,
+           RelativeSource={x:Static RelativeSource.Self}}" -->
     <TreeView
               x:Name="TreeView"
-                  DataContext="{Binding Path=ViewModel.HeadingsNavigator,
-           RelativeSource={x:Static RelativeSource.Self}}"
                   ItemsSource="{Binding Roots}"
                   SelectedItemChanged="OnSelectedItemChanged_TreeView"
               

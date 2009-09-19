@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -37,19 +36,11 @@ namespace Tobi.Modules.MetadataPane
             m_MetadataCollection = null;
             Initialize();
             m_Validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
-            
         }
         
         #endregion Construction
 
         #region Initialization
-
-        protected IMetadataPaneView View { get; private set; }
-        public void SetView(IMetadataPaneView view)
-        {
-            View = view;
-            
-        }
 
         protected void Initialize()
         {
@@ -93,8 +84,8 @@ namespace Tobi.Modules.MetadataPane
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
                 shellPresenter.LoadTangoIcon("accessories-text-editor"),
-                obj => { this.ShowDialog(); },
-                obj => { return this.CanShowDialog();});
+                obj => ShowDialog(),
+                obj => CanShowDialog());
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
         }
@@ -113,7 +104,7 @@ namespace Tobi.Modules.MetadataPane
             var windowPopup = new PopupModalWindow(shellPresenter_,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.ShowMetadata),
-                                                   View,
+                                                   Container.Resolve<IMetadataPaneView>(),
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 700, 400);
