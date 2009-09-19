@@ -32,7 +32,6 @@ namespace Tobi.Modules.MetadataPane
         public MetadataPaneView(MetadataPaneViewModel viewModel)
         {
             ViewModel = viewModel;
-            ViewModel.SetView(this);
 
             ViewModel.Logger.Log("MetadataPaneView.ctor", Category.Debug, Priority.Medium);
 

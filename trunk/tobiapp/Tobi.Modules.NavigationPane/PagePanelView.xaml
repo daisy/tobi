@@ -33,11 +33,13 @@
              Focusable="False"
     >
 
+  <!-- 
+          DataContext="{Binding Path=ViewModel,
+           RelativeSource={x:Static RelativeSource.Self}}" -->
+  
  <ListView 
      
     x:Name="ListView" 
-          DataContext="{Binding Path=ViewModel,
-           RelativeSource={x:Static RelativeSource.Self}}"
      ItemsSource="{Binding Pages}"
           VirtualizingStackPanel.IsVirtualizing="False"
              VirtualizingStackPanel.VirtualizationMode="Recycling"

@@ -24,13 +24,10 @@ namespace Tobi.Modules.MetadataPane
             m_Container.RegisterType<MetadataPaneViewModel>(new ContainerControlledLifetimeManager());
             m_Container.RegisterType<IMetadataPaneView, MetadataPaneView>(new ContainerControlledLifetimeManager());
 
-            // making sure to load the view instance, otherwise ViewModel.View is null.
-            var view = m_Container.Resolve<IMetadataPaneView>();
-
-
             /*
              * The popup window (modal or not) that contains the metadata editor does not provide a region.
              * It could, but it's not necessary here.
+             * 
             var regionManager = m_Container.Resolve<IRegionManager>();
             IRegion targetRegion = regionManager.Regions[RegionNames.MetadataPane];
 
