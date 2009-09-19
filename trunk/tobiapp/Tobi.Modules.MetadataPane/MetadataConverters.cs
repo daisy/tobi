@@ -10,20 +10,16 @@ namespace Tobi.Modules.MetadataPane
 {
     //all classes here represent value converters used by XAML
 
-    public class IsNotRequiredOccurrenceConverter : IMultiValueConverter
+    public class IsNotRequiredOccurrenceConverter : IValueConverter
     {
         //return false if required
-        //value parameters: the metadata object, and the collection of all metadata objects
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values.Length < 2) return false;
-            if (values[0] == null || values[1] == null) return false;
-            if (!(values[0] is NotifyingMetadataItem) || 
-                !(values[1] is ObservableCollection<NotifyingMetadataItem>))
-                return false;
+            if (value == null) return false;
+            if (!(value is NotifyingMetadataItem))return false;
 
-            NotifyingMetadataItem item = (NotifyingMetadataItem)values[0];
-            ObservableCollection<NotifyingMetadataItem> metadatas = (ObservableCollection<NotifyingMetadataItem>)values[1];
+            NotifyingMetadataItem item = (NotifyingMetadataItem)value;
+            ObservableCollection<NotifyingMetadataItem> metadatas = item.ParentCollection.Metadatas;
 
             if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required)
             {
@@ -37,7 +33,7 @@ namespace Tobi.Modules.MetadataPane
             else return true;
         }
         
-        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
@@ -64,18 +60,21 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
-    public class RemoveReadOnlyErrorsConverter : IValueConverter
+    public class ErrorsToListConverter : IValueConverter
     {
         //don't include errors about read-only metadata items
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
+            //ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
+            ObservableCollection<string> errors = new ObservableCollection<string>();
             ObservableCollection<MetadataValidationError> sourceList =
                 (ObservableCollection<MetadataValidationError>)value;
+            DescriptiveErrorTextConverter descriptiveConverter = new DescriptiveErrorTextConverter();
+
             foreach (MetadataValidationError error in sourceList)
             {
                 if (error.Definition.IsReadOnly == false)
-                    errors.Add(error);
+                    errors.Add((string)descriptiveConverter.Convert(error, null, null, null));
             }
 
             return errors;
@@ -89,9 +88,12 @@ namespace Tobi.Modules.MetadataPane
     }
     public class DescriptiveErrorTextConverter : IValueConverter
     {
+        private static string NoErrors = "None";
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null) return null;
+            if (value == null) return NoErrors;
+            if (!(value is MetadataValidationError)) return NoErrors;
+
             MetadataValidationError error = (MetadataValidationError)value;
             string description = null;
             if (error is MetadataValidationFormatError)
@@ -121,25 +123,7 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
-    public class ValidationStatusTextConverter : IValueConverter
-    {
-        private static string NoErrorsFound = "All metadata is valid.";
-        private static string ErrorsFound = "Please correct the following errors:";
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value == null || (int)value == 0)
-                return NoErrorsFound;
-            else
-                return ErrorsFound;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-    }
-
+    
     public class LowerCaseConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -207,6 +191,32 @@ namespace Tobi.Modules.MetadataPane
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+    }
+
+    public class PrimaryIdentifierConverter : IValueConverter
+    {
+        //return Visible if the item is a candidate for being the primary identifier
+        //else return Hidden
+        //value parameters: the metadata object, and the MetadataCollection
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return System.Windows.Visibility.Hidden;
+            if (!(value is NotifyingMetadataItem)) return System.Windows.Visibility.Hidden;
+
+            NotifyingMetadataItem item = (NotifyingMetadataItem)value;
+            MetadataCollection metadatas = item.ParentCollection;
+
+            if (item.IsPrimaryIdentifier || metadatas.IsCandidateForPrimaryIdentifier(item))
+                return System.Windows.Visibility.Visible;
+            else
+                return System.Windows.Visibility.Hidden;
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");

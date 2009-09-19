@@ -32,7 +32,6 @@ namespace Tobi.Modules.MetadataPane
             UrakawaMetadata = metadata;
             UrakawaMetadata.Changed += new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
             ParentCollection = parentCollection;
-
             Validate();
         }
 
@@ -141,6 +140,25 @@ namespace Tobi.Modules.MetadataPane
         {
             UrakawaMetadata.Changed -= new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
         }
+
+        //private bool m_IsPrimaryIdentifier;
+        public bool IsPrimaryIdentifier
+        {
+            get
+            {
+                return !(string.IsNullOrEmpty(this.UrakawaMetadata.Uid));
+            }
+            set
+            {
+                if (value == IsPrimaryIdentifier) return;
+                if (value)
+                    this.UrakawaMetadata.Uid = this.Content;
+                else
+                    this.UrakawaMetadata.Uid = "";
+                RaisePropertyChanged(() => IsPrimaryIdentifier);
+            }
+        }
+
     }
 
     public class MetadataCollection : PropertyChangedNotifyBase
@@ -250,6 +268,31 @@ namespace Tobi.Modules.MetadataPane
                     return metadataItem;
             }
             return null;
+        }
+
+        public bool IsCandidateForPrimaryIdentifier(NotifyingMetadataItem item)
+        {
+            //if this item is an identifier, and there is currently no primary identifier
+            bool found = false;
+            IEnumerator<NotifyingMetadataItem> enumerator = Metadatas.GetEnumerator();
+
+            while(enumerator.MoveNext())
+            {
+                if (enumerator.Current.IsPrimaryIdentifier)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            //if we already have a primary identifier
+            if (found == true) return false;
+
+            //it should have a dc:identifier definition even if it is actually one of the synonyms
+            if (item.Definition.Name.ToLower() == "dc:identifier")
+                return true;
+            else
+                return false;
         }
     }
 }

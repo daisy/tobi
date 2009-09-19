@@ -256,7 +256,8 @@ namespace Tobi.Modules.MetadataPane
 
                 foreach (MetadataDefinition metadata in availableMetadata)
                 {
-                    list.Add(metadata.Name.ToLower());
+                    if (!metadata.IsReadOnly) 
+                        list.Add(metadata.Name.ToLower());
                 }
              
                 return list;
