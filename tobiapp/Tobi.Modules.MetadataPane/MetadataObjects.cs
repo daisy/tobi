@@ -131,6 +131,9 @@ namespace Tobi.Modules.MetadataPane
                     UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetNameCommand
                     (UrakawaMetadata, value);
                 UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
+
+                //when you change the name, you can't be sure that it's the primary identifier anymore
+                IsPrimaryIdentifier = false;
                 Validate();
             }
         }
@@ -141,6 +144,9 @@ namespace Tobi.Modules.MetadataPane
             RaisePropertyChanged(() => Name);
             RaisePropertyChanged(() => Content);
             RaisePropertyChanged(() => Definition);
+            RaisePropertyChanged(() => IsRequired);
+            RaisePropertyChanged(() => IsPrimaryIdentifier);
+            Validate();
         }
 
         internal void RemoveEvents()
@@ -148,7 +154,6 @@ namespace Tobi.Modules.MetadataPane
             UrakawaMetadata.Changed -= new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
         }
 
-        //private bool m_IsPrimaryIdentifier;
         public bool IsPrimaryIdentifier
         {
             get
@@ -158,7 +163,13 @@ namespace Tobi.Modules.MetadataPane
             set
             {
                 if (value == IsPrimaryIdentifier) return;
-                this.UrakawaMetadata.Uid = value ? this.Content : "";
+
+                string uid = value ? this.Content : "";
+                MetadataSetUidCommand cmd =
+                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetUidCommand
+                        (UrakawaMetadata, uid);
+                UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
+
                 RaisePropertyChanged(() => IsPrimaryIdentifier);
             }
         }
