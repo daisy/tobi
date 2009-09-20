@@ -81,10 +81,21 @@ namespace Tobi.Modules.MetadataPane
         {
             if (e.AddedItems.Count > 0 && e.AddedItems[0] != null)
             {
-                string metaname = (string)e.AddedItems[0];
                 CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
-                if (cvs.View.CurrentItem != null)
-                    ((NotifyingMetadataItem)cvs.View.CurrentItem).Name = metaname;
+                NotifyingMetadataItem metadata = (NotifyingMetadataItem)cvs.View.CurrentItem;
+
+                //checkbox check
+                primaryIdentifierCheckBox.IsChecked = metadata.IsPrimaryIdentifier;
+
+                //checkbox visibility
+                PrimaryIdentifierConverter primaryIdentifierConverter = new PrimaryIdentifierConverter();
+                primaryIdentifierCheckBox.Visibility = 
+                    (System.Windows.Visibility)primaryIdentifierConverter.Convert(metadata, null, null, null);
+                
+                //the remove button's enabled-ness
+                IsNotRequiredOccurrenceConverter requiredOccurrenceConverter = new IsNotRequiredOccurrenceConverter();
+                removeButton.IsEnabled = (bool)requiredOccurrenceConverter.Convert(metadata, null, null, null);
+                
             }
         }
 
@@ -96,6 +107,11 @@ namespace Tobi.Modules.MetadataPane
         private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
         {
            // MessageBox.Show("hi");
+        }
+
+        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
     
