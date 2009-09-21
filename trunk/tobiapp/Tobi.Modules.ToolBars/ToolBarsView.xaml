@@ -28,11 +28,12 @@
       <UI:ButtonRichCommand RichCommand="{Binding CommandShowMetadataPane}"/>
       <Separator/>
       
-      <UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
+      <!--<UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding CutCommand}"/>
 
       <UI:ButtonRichCommand RichCommand="{Binding PasteCommand}"/>
-      <Separator/>
+      <Separator/>-->
+    
       <UI:ButtonRichCommand RichCommand="{Binding UndoCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding RedoCommand}"/>
       <Separator/>
@@ -46,11 +47,11 @@
 
       <Separator/>
 
-      <UI:ButtonRichCommand RichCommand="{Binding PreferencesCommand}"/>
+      <!--<UI:ButtonRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
       <UI:ButtonRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
-      <Separator/>
+      <!--<Separator/>
 
-      <UI:ButtonRichCommand RichCommand="{Binding HelpCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding HelpCommand}"/>-->
   <!-- UI:ButtonRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
 
 

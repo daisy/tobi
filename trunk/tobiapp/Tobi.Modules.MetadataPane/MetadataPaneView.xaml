@@ -254,6 +254,7 @@
                   FontWeight="Bold" Text="Name: " Focusable="True"/>
 
             <ComboBox Grid.Row="2" Grid.Column="1"
+                x:Name="namesComboBox"
                 AutomationProperties.LabeledBy="{Binding ElementName=LabelNames}"
                 Height="20" VerticalAlignment="Top"
                 HorizontalContentAlignment="Stretch"

@@ -287,6 +287,10 @@ namespace Tobi.Modules.MetadataPane
 
         public bool IsCandidateForPrimaryIdentifier(NotifyingMetadataItem item)
         {
+            if (item == null) return false;
+            //if this item has a definition (new items have nothing)
+            if (item.Definition == null) return false;
+
             //if this item is an identifier, and there is currently no primary identifier
             bool found = false;
             IEnumerator<NotifyingMetadataItem> enumerator = Metadatas.GetEnumerator();

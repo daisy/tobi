@@ -38,7 +38,11 @@
       <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>
     </MenuItem>
 
-    <!-- Tools Menu -->
+      <!-- Audio Menu -->
+        <MenuItem Header="Audio">
+            
+        </MenuItem>
+            <!-- Tools Menu -->
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Tools}">
       <UI:MenuItemRichCommand RichCommand="{Binding PreferencesCommand}"/>
       <Separator/>
