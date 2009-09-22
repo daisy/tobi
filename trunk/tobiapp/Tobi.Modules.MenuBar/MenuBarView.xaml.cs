@@ -69,7 +69,7 @@ namespace Tobi.Modules.MenuBar
         public RichDelegateCommand<object> CloseCommand { get; private set; }
 
         public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
-
+        
         //AUDIO commands
         public RichDelegateCommand<object> AudioCommandInsertFile { get; private set; }
         public RichDelegateCommand<object> AudioCommandGotoBegining { get; private set; }
@@ -137,7 +137,7 @@ namespace Tobi.Modules.MenuBar
                 MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
                 MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
                 ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
-
+               
                 CopyCommand = shellPresenter.CopyCommand;
                 CutCommand = shellPresenter.CutCommand;
                 PasteCommand = shellPresenter.PasteCommand;

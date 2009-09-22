@@ -655,8 +655,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <UI:ButtonRichCommand
         RichCommand="{Binding CommandInsertFile}"/>
 
-      <UI:ButtonRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"
-                                 />
+      <!--<UI:ButtonRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"
+                                 />-->
 
       <Separator/>
 
