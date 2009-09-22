@@ -4,6 +4,7 @@ using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Modules.MetadataPane;
+using Tobi.Modules.AudioPane;
 
 namespace Tobi.Modules.MenuBar
 {
@@ -48,6 +49,33 @@ namespace Tobi.Modules.MenuBar
         public RichDelegateCommand<object> CloseCommand { get; private set; }
 
         public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
+
+        //AUDIO commands
+        public RichDelegateCommand<object> AudioCommandInsertFile { get; private set; }
+        public RichDelegateCommand<object> AudioCommandGotoBegining { get; private set; }
+        public RichDelegateCommand<object> AudioCommandGotoEnd { get; private set; }
+        public RichDelegateCommand<object> AudioCommandStepBack { get; private set; }
+        public RichDelegateCommand<object> AudioCommandStepForward { get; private set; }
+        public RichDelegateCommand<object> AudioCommandRewind { get; private set; }
+        public RichDelegateCommand<object> AudioCommandFastForward { get; private set; }
+        public RichDelegateCommand<object> AudioCommandSelectAll { get; private set; }
+        public RichDelegateCommand<object> AudioCommandClearSelection { get; private set; }
+        public RichDelegateCommand<object> AudioCommandZoomSelection { get; private set; }
+        public RichDelegateCommand<object> AudioCommandZoomFitFull { get; private set; }
+        public RichDelegateCommand<object> AudioCommandPlay { get; private set; }
+        public RichDelegateCommand<object> AudioCommandPlayPreviewLeft { get; private set; }
+        public RichDelegateCommand<object> AudioCommandPlayPreviewRight { get; private set; }
+        public RichDelegateCommand<object> AudioCommandPause { get; private set; }
+        public RichDelegateCommand<object> AudioCommandStartRecord { get; private set; }
+        public RichDelegateCommand<object> AudioCommandStopRecord { get; private set; }
+        public RichDelegateCommand<object> AudioCommandStartMonitor { get; private set; }
+        public RichDelegateCommand<object> AudioCommandStopMonitor { get; private set; }
+        public RichDelegateCommand<object> AudioCommandBeginSelection { get; private set; }
+        public RichDelegateCommand<object> AudioCommandEndSelection { get; private set; }
+        public RichDelegateCommand<object> AudioCommandSelectNextChunk { get; private set; }
+        public RichDelegateCommand<object> AudioCommandSelectPreviousChunk { get; private set; }
+        public RichDelegateCommand<object> AudioCommandDeleteAudioSelection { get; private set; }
+        //end AUDIO commands
 
         ///<summary>
         /// Dependency-injected constructor
@@ -100,6 +128,36 @@ namespace Tobi.Modules.MenuBar
 
                 //NavNextCommand = shellPresenter.NavNextCommand;
                 //NavPreviousCommand = shellPresenter.NavPreviousCommand;
+            }
+
+            var audioModule = Container.Resolve<AudioPaneViewModel>();
+            if (audioModule != null)
+            {
+
+                AudioCommandInsertFile = audioModule.CommandInsertFile;
+                AudioCommandGotoBegining = audioModule.CommandGotoBegining;
+                AudioCommandGotoEnd = audioModule.CommandGotoEnd;
+                AudioCommandStepBack = audioModule.CommandStepBack;
+                AudioCommandStepForward = audioModule.CommandStepForward;
+                AudioCommandRewind = audioModule.CommandRewind;
+                AudioCommandFastForward = audioModule.CommandFastForward;
+                AudioCommandSelectAll = audioModule.CommandSelectAll;
+                AudioCommandClearSelection = audioModule.CommandClearSelection;
+                AudioCommandZoomSelection = audioModule.CommandZoomSelection;
+                AudioCommandZoomFitFull = audioModule.CommandZoomFitFull;
+                AudioCommandPlay = audioModule.CommandPlay;
+                AudioCommandPlayPreviewLeft = audioModule.CommandPlayPreviewLeft;
+                AudioCommandPlayPreviewRight = audioModule.CommandPlayPreviewRight;
+                AudioCommandPause = audioModule.CommandPause;
+                AudioCommandStartRecord = audioModule.CommandStartRecord;
+                AudioCommandStopRecord = audioModule.CommandStopRecord;
+                AudioCommandStartMonitor = audioModule.CommandStartMonitor;
+                AudioCommandStopMonitor = audioModule.CommandStopMonitor;
+                AudioCommandBeginSelection = audioModule.CommandBeginSelection;
+                AudioCommandEndSelection = audioModule.CommandEndSelection;
+                AudioCommandSelectNextChunk = audioModule.CommandSelectNextChunk;
+                AudioCommandSelectPreviousChunk = audioModule.CommandSelectPreviousChunk;
+                AudioCommandDeleteAudioSelection = audioModule.CommandDeleteAudioSelection;
             }
 
             InitializeComponent();

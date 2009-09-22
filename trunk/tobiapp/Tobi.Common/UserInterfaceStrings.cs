@@ -130,6 +130,7 @@ namespace Tobi.Common
 
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";
+        public const string Menu_Audio = "_Audio";
 
         public const string Audio_InsertFile = "_Insert audio file";
         public const string Audio_InsertFile_ = "Inserts a local WAV file (PCM 16 bits)";
