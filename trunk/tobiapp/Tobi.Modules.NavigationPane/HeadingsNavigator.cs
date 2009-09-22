@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 using urakawa.navigation;
@@ -15,24 +17,50 @@ namespace Tobi.Modules.NavigationPane
         {
             m_Project = project;
         }
+        public HeadingsNavigator(Project project, object shellPresenter)
+        {
+            m_Project = project;
+            m_ShellPresenter = (IShellPresenter)shellPresenter;
+        }
         private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
         private readonly Project m_Project;
+        private readonly IShellPresenter m_ShellPresenter;
 
         public void ExpandAll()
         {
-            foreach (HeadingTreeNodeWrapper node in Roots)
-            {
-                node.IsExpanded = true;
-            }
+            foreach (HeadingTreeNodeWrapper node in Roots) { ExpandNode(node); }
         }
+        private static void ExpandNode(HeadingTreeNodeWrapper node)
+        {
+            node.IsExpanded = true;
+            if (!node.HasChildren) return;
+            foreach (HeadingTreeNodeWrapper child in node.Children){ExpandNode(child);}
+        }
+        public void Expand(HeadingTreeNodeWrapper node) { node.IsExpanded = true; }
+
         public void CollapseAll()
         {
-            foreach (HeadingTreeNodeWrapper node in Roots)
-            {
-                node.IsExpanded = false;
-            }
+            foreach (HeadingTreeNodeWrapper node in Roots) { node.IsExpanded = false; }
         }
+        public void Collapse(HeadingTreeNodeWrapper node) { node.IsExpanded = false; }
 
+        public void EditText(HeadingTreeNodeWrapper parameter)
+        {
+            if (parameter == null) { return; }
+            string sTitle = parameter.Title;
+            if (sTitle.StartsWith("[")) { sTitle = sTitle.Substring(sTitle.IndexOf("] ") + 1); }
+            InputBox myTest = new InputBox(UserInterfaceStrings.HeadingEdit_, sTitle.Trim());
+            var windowPopup = new PopupModalWindow(m_ShellPresenter,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                   UserInterfaceStrings.HeadingEdit),
+                                                   myTest,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   false, 350, 175);
+            windowPopup.ShowDialog();
+            if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok) { return; }
+            parameter.Title = myTest.tbInput.Text;
+        }
 
         public ObservableCollection<HeadingTreeNodeWrapper> Roots
         {
@@ -125,14 +153,19 @@ namespace Tobi.Modules.NavigationPane
         private bool m_isExpanded;
         private HeadingTreeNodeWrapper m_dummyNode;
 
-
         public RichDelegateCommand<object> CommandExpandAll { get; private set; }
+        //public RichDelegateCommand<object> CommandExpand { get; private set; }
         public RichDelegateCommand<object> CommandCollapseAll { get; private set; }
+        //public RichDelegateCommand<object> CommandCollapse { get; private set; }
+        public RichDelegateCommand<object> CommandEditText { get; private set; }
 
         public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
         {
             CommandExpandAll = HeadingPaneViewModel.CommandExpandAll;
+            //CommandExpand = HeadingPaneViewModel.CommandExpand;
             CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
+            //CommandCollapse = HeadingPaneViewModel.CommandCollapse;
+            CommandEditText = HeadingPaneViewModel.CommandEditText;
 
             m_parent = parent;
             m_navigator = navigator;
@@ -140,6 +173,7 @@ namespace Tobi.Modules.NavigationPane
 
             m_TreeNodeHeading = null;
             m_TreeNodeLevel = null;
+
 
             if (node == null)
             {
@@ -195,10 +229,7 @@ namespace Tobi.Modules.NavigationPane
             foreach (HeadingTreeNodeWrapper child in Children)
             {
                 HeadingTreeNodeWrapper wrapperChild = child.FindTreeNodeWrapper(node);
-                if (wrapperChild != null)
-                {
-                    return wrapperChild;
-                }
+                if (wrapperChild != null) return wrapperChild;
             }
             return null;
         }
@@ -209,7 +240,6 @@ namespace Tobi.Modules.NavigationPane
             {
                 return;
             }
-
             if (m_children == null)
             {
                 m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
@@ -264,28 +294,25 @@ namespace Tobi.Modules.NavigationPane
             }
             set
             {
-                if (value != m_isExpanded)
+                if (value == m_isExpanded) return;
+                m_isExpanded = value;
+
+                if (m_isExpanded)
                 {
-                    m_isExpanded = value;
-
-                    if (m_isExpanded)
+                    if (m_parent != null)
                     {
-                        if (m_parent != null)
-                        {
-                            m_parent.IsExpanded = true;
-                        }
-                        LoadChildren();
+                        m_parent.IsExpanded = true;
                     }
-                    else
-                    {
-                        m_children = null;
-                    }
-
-                    RaisePropertyChanged(() => IsExpanded);
+                    LoadChildren();
                 }
+                else
+                {
+                    m_children = null;
+                }
+
+                RaisePropertyChanged(() => IsExpanded);
             }
         }
-
         public TreeNode WrappedTreeNode_Level
         {
             get
@@ -293,7 +320,6 @@ namespace Tobi.Modules.NavigationPane
                 return m_TreeNodeLevel;
             }
         }
-
         public TreeNode WrappedTreeNode_LevelHeading
         {
             get
@@ -301,6 +327,7 @@ namespace Tobi.Modules.NavigationPane
                 return m_TreeNodeHeading;
             }
         }
+
 
         public string Title
         {
@@ -314,8 +341,25 @@ namespace Tobi.Modules.NavigationPane
                     : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + "] (No heading)");
                 return str.Trim();
             }
+            internal set
+            {
+                if (m_TreeNodeHeading == null || m_TreeNodeLevel==null) { return; }
+                if (m_TreeNodeHeading.GetTextMediaFlattened() == value) { return; }
+                if (m_TreeNodeHeading.GetTextMedia() != null)
+                {
+                    m_TreeNodeHeading.GetTextMedia().Text = value;
+                }
+                else
+                {
+                    if (m_TreeNodeHeading.Children.Count > 0)
+                    {
+                        m_TreeNodeHeading.Children.Get(0).GetTextMedia().Text = value;
+                    }
+                    else { return; }
+                }
+                RaisePropertyChanged(() => Title);
+            }
         }
-
         public ObservableCollection<HeadingTreeNodeWrapper> Children
         {
             get
@@ -324,7 +368,6 @@ namespace Tobi.Modules.NavigationPane
                 {
                     return new ObservableCollection<HeadingTreeNodeWrapper>();
                 }
-
                 if (IsExpanded)
                 {
                     if (m_children == null)
@@ -333,7 +376,6 @@ namespace Tobi.Modules.NavigationPane
                     }
                     return m_children;
                 }
-
                 var col = new ObservableCollection<HeadingTreeNodeWrapper>();
                 if (HasChildren)
                 {
