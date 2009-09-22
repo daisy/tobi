@@ -61,7 +61,8 @@ namespace Tobi.Modules.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
-            _headingsNavigator = new HeadingsNavigator(project);
+//            _headingsNavigator = new HeadingsNavigator(project);
+            _headingsNavigator = new HeadingsNavigator(project, Container.Resolve<IShellPresenter>());
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)
