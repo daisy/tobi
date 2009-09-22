@@ -93,8 +93,20 @@ namespace Tobi.Common
         public const string TreeExpandAll = "E_xpand all";
         public const string TreeExpandAll_ = "Expand all children in the tree";
 
+        public const string TreeExpand = "Ex_pand";
+        public const string TreeExpand_ = "Expand the current item in the tree";
+
         public const string TreeCollapseAll = "_Collapse all";
         public const string TreeCollapseAll_ = "Collapse all children in the tree";
+
+        public const string TreeCollapse = "Co_llapse";
+        public const string TreeCollapse_ = "Collapse the current item in the tree";
+
+        public const string TreeEdit = "Edit _Heading";
+        public const string TreeEdit_ = "Edit the current heading";
+
+        public const string HeadingEdit = "Edit Heading";
+        public const string HeadingEdit_ = "Please Enter The New Value For This Heading.";
 
         public const string Menu_File = "_File";
 
