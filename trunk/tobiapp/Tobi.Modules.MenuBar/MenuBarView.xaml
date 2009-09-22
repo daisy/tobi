@@ -40,19 +40,43 @@
 
       <!-- Audio Menu -->
         <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Audio}">
-            <!-- TODO: use toggle-able menu widget for start/stop monitor-->
+
+          <UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding AudioCommandStopMonitor}"
+            RichCommandTwo="{Binding AudioCommandStartMonitor}"
+            InputBindingManager="{Binding InputBindingManager}"
+                  RichCommandActive="{Binding AudioPaneViewModel.IsMonitoring, Mode=OneWay}"/>
+
+          <!-- TODO: use toggle-able menu widget for start/stop monitor>
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStartMonitor}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopMonitor}"/>
-            <!-- TODO: use toggle-able menu widget for start/stop record-->
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopMonitor}"/-->
+          
+            <!-- TODO: use toggle-able menu widget for start/stop record>
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStartRecord}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopRecord}"/>
-            <Separator/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopRecord}"/ -->
+
+
+          <UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding AudioCommandStopRecord}"
+            RichCommandTwo="{Binding AudioCommandStartRecord}"
+            InputBindingManager="{Binding InputBindingManager}"
+                  RichCommandActive="{Binding AudioPaneViewModel.IsRecording, Mode=OneWay}"/>
+
+          <Separator/>
             
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewLeft}"/>
-            <!-- TODO: use toggle-able menu widget for pause/play-->
+            <!-- TODO: use toggle-able menu widget for pause/play>
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPause}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlay}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewRight}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlay}"/ -->
+
+
+          <UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding AudioCommandPause}"
+            RichCommandTwo="{Binding AudioCommandPlay}"
+            InputBindingManager="{Binding InputBindingManager}"
+                  RichCommandActive="{Binding AudioPaneViewModel.IsPlaying, Mode=OneWay}"/>
+
+          <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewRight}"/>
             <Separator/>
 
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandGotoBegining}"/>

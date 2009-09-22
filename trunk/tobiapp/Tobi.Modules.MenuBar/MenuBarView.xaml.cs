@@ -13,6 +13,26 @@ namespace Tobi.Modules.MenuBar
     /// </summary>
     public partial class MenuBarView
     {
+        public AudioPaneViewModel AudioPaneViewModel
+        {
+            get
+            {
+                var viewModel = Container.Resolve<AudioPaneViewModel>();
+
+                return viewModel;
+            }
+        }
+
+        public IInputBindingManager InputBindingManager
+        {
+            get
+            {
+                var shellPresenter = Container.Resolve<IShellPresenter>();
+
+                return shellPresenter;
+            }
+        }
+
         protected IUnityContainer Container { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
