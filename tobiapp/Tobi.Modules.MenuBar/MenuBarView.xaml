@@ -33,18 +33,49 @@
       <UI:MenuItemRichCommand RichCommand="{Binding UndoCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding RedoCommand}"/>
       <Separator/>
-      <UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
+      <!--<UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
-      <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>-->
     </MenuItem>
 
       <!-- Audio Menu -->
-        <MenuItem Header="Audio">
+        <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Audio}">
+            <!-- TODO: use toggle-able menu widget for start/stop monitor-->
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStartMonitor}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopMonitor}"/>
+            <!-- TODO: use toggle-able menu widget for start/stop record-->
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStartRecord}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopRecord}"/>
+            <Separator/>
             
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewLeft}"/>
+            <!-- TODO: use toggle-able menu widget for pause/play-->
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPause}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlay}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewRight}"/>
+            <Separator/>
+
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandGotoBegining}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStepBack}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandRewind}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandFastForward}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStepForward}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandGotoEnd}"/>
+            <Separator/>
+
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandSelectAll}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandSelectPreviousChunk}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandSelectNextChunk}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandEndSelection}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandClearSelection}"/>
+            <Separator/>
+            
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandZoomFitFull}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandZoomSelection}"/>
         </MenuItem>
             <!-- Tools Menu -->
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Tools}">
-      <UI:MenuItemRichCommand RichCommand="{Binding PreferencesCommand}"/>
+      <!--<UI:MenuItemRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
       <Separator/>
       <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Addins}"/>
       <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Logging}"/>
@@ -82,7 +113,7 @@
     <!-- Help Menu -->
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Help}">
       <!-- UI:MenuItemRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
-      <UI:MenuItemRichCommand RichCommand="{Binding HelpCommand}"/>
+      <!--<UI:MenuItemRichCommand RichCommand="{Binding HelpCommand}"/>-->
       <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_About}"/>
     </MenuItem>
 
