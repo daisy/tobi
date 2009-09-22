@@ -59,6 +59,9 @@
     <Compile Include="HeadingPaneViewModelCommands.cs" />
     <Compile Include="HeadingsNavigator.cs" />
     <Compile Include="IHeadingPaneView.cs" />
+    <Compile Include="InputBox.xaml.cs">
+      <DependentUpon>InputBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IPagePaneView.cs" />
     <Compile Include="NavigationPane.xaml.cs">
       <DependentUpon>NavigationPane.xaml</DependentUpon>
@@ -71,9 +74,14 @@
     <Compile Include="PagesPaneViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NavigationPaneModule.cs" />
+    <Compile Include="Search.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="HeadingPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InputBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
