@@ -32,7 +32,7 @@
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Edit}">
       <UI:MenuItemRichCommand RichCommand="{Binding UndoCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding RedoCommand}"/>
-      <Separator/>
+      <!--<Separator/>-->
       <!--<UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>-->
@@ -99,17 +99,20 @@
         </MenuItem>
             <!-- Tools Menu -->
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Tools}">
+        <UI:MenuItemRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
+        <UI:MenuItemRichCommand RichCommand="{Binding CommandShowMetadataPane}"/>
       <!--<UI:MenuItemRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
-      <Separator/>
-      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Addins}"/>
-      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Logging}"/>
+      <!--<Separator/>-->
+      <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Addins}"/>-->
+      <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Logging}"/>-->
     </MenuItem>
 
     <!-- View Menu -->
-    <MenuItem x:Name="MenuView" Header="{x:Static Common:UserInterfaceStrings.Menu_View}">
+      <!-- removed for now because it's empty -->
+      <!--<MenuItem x:Name="MenuView" Header="{x:Static Common:UserInterfaceStrings.Menu_View}">-->
 
       <!-- TODO: this menu container should be empty here. It is filled by modules dynamically, as they register their UI views. -->
-      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_ToolBars}"
+     <!-- <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_ToolBars}"
                 IsCheckable="True"
                 IsChecked="True"/>
       <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_StatusBar}"
@@ -123,7 +126,7 @@
                 IsChecked="True"/>
       <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_NavigationPane}"
                 IsCheckable="True"
-                IsChecked="True"/>
+                IsChecked="True"/>-->
 
       <!-- MenuItem x:Name="ZoomMenuItem"
                 Header="{Binding ZoomToggleCommand.ShortDescription}"
@@ -132,14 +135,17 @@
                 InputGestureText="{Binding ZoomToggleCommand.KeyGestureText}"
                 Command="{Binding ZoomToggleCommand}"
                 CommandParameter="{Binding ElementName=ZoomMenuItem, Path=IsChecked}"/ -->
-    </MenuItem>
+    <!--</MenuItem>-->
 
     <!-- Help Menu -->
-    <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Help}">
+
+        <!-- removed for now because it's empty -->
+        <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Help}">-->
       <!-- UI:MenuItemRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
       <!--<UI:MenuItemRichCommand RichCommand="{Binding HelpCommand}"/>-->
-      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_About}"/>
-    </MenuItem>
+      <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_About}"/>-->
+    <!--</MenuItem>-->
+      
 
   </Menu>
 
