@@ -24,7 +24,8 @@ namespace Tobi.Modules.MetadataPane
             if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required)
             {
                 //check for duplicates.  a required item can be removed if it is not the only one.
-                List<NotifyingMetadataItem> results = metadatas.ToList().FindAll(s => s.Name == item.Name);
+                List<NotifyingMetadataItem> results = metadatas.ToList().FindAll
+                    (s => s.Name.ToLower() == item.Name.ToLower());
                 if (results.Count > 1)
                     return true;
                 else
