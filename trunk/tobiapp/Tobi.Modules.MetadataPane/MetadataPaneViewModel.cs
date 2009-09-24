@@ -35,7 +35,7 @@ namespace Tobi.Modules.MetadataPane
             Logger = logger;
             m_MetadataCollection = null;
             Initialize();
-            m_Validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataList);
+            m_Validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataDefinitions);
         }
         
         #endregion Construction
@@ -148,7 +148,7 @@ namespace Tobi.Modules.MetadataPane
             
                         m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
-                            SupportedMetadata_Z39862005.MetadataList);
+                            SupportedMetadata_Z39862005.MetadataDefinitions);
                         presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
                         presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
                     }
@@ -242,7 +242,7 @@ namespace Tobi.Modules.MetadataPane
 
                 List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
                 List<MetadataDefinition> availableMetadata =
-                    MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataList);
+                    MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataDefinitions);
 
 
                 foreach (MetadataDefinition metadata in availableMetadata)
