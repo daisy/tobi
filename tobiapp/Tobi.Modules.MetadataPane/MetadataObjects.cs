@@ -270,11 +270,17 @@ namespace Tobi.Modules.MetadataPane
         #endregion sdk-events
 
         // all new item additions end up here
-        // it was useful during testing when more than one action was taken during an add, 
-        // but perhaps now is redundant? will let it stay in for now.
         private void addItem(Metadata metadata)
         {
-            m_Metadatas.Add(new NotifyingMetadataItem(metadata, this));
+            //TODO: this breaks the rule that this metadata collection is definition-set agnostic
+            //it doesn't matter for now, though, but eventually, we will define an interface to
+            //metadata defintion sets, including a search feature.
+            MetadataDefinition definition =
+                urakawa.metadata.daisy.SupportedMetadata_Z39862005.GetMetadataDefinition(
+                    metadata.NameContentAttribute.Name.ToLower(), true);
+            //filter out read-only items because they will be filled in by Tobi at export time
+            if (definition.IsReadOnly == false)
+                m_Metadatas.Add(new NotifyingMetadataItem(metadata, this));
         }
 
         //find the item that is wrapping the given metadata object
