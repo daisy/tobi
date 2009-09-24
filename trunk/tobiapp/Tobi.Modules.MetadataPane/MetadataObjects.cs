@@ -114,7 +114,10 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return Definition.Occurrence == MetadataOccurrence.Required;
+                if (Definition != null)
+                    return Definition.Occurrence == MetadataOccurrence.Required;
+                else
+                    return false;
             }
         }
 
@@ -162,8 +165,8 @@ namespace Tobi.Modules.MetadataPane
             }
             set
             {
-                if (value == IsPrimaryIdentifier) return;
-
+                bool current = !(string.IsNullOrEmpty(this.UrakawaMetadata.Uid));
+                if (value == current) return;
                 string uid = value ? this.Content : "";
                 MetadataSetUidCommand cmd =
                     UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetUidCommand
