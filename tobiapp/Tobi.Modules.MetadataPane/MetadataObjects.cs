@@ -161,16 +161,16 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return !(string.IsNullOrEmpty(this.UrakawaMetadata.Uid));
+                return !(string.IsNullOrEmpty(this.UrakawaMetadata.Id));
             }
             set
             {
-                bool current = !(string.IsNullOrEmpty(this.UrakawaMetadata.Uid));
+                bool current = !(string.IsNullOrEmpty(this.UrakawaMetadata.Id));
                 if (value == current) return;
-                string uid = value ? this.Content : "";
-                MetadataSetUidCommand cmd =
-                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetUidCommand
-                        (UrakawaMetadata, uid);
+                string id = value ? this.Content : "";
+                MetadataSetIdCommand cmd =
+                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetIdCommand
+                        (UrakawaMetadata, id);
                 UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
 
                 RaisePropertyChanged(() => IsPrimaryIdentifier);
