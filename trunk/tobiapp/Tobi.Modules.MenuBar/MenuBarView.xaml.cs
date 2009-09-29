@@ -1,4 +1,8 @@
-﻿using Microsoft.Practices.Composite.Events;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
@@ -11,8 +15,24 @@ namespace Tobi.Modules.MenuBar
     /// <summary>
     /// Interaction logic for MenuBarView.xaml
     /// </summary>
-    public partial class MenuBarView
+    // [Export]
+    public partial class MenuBarView // : IPartImportsSatisfiedNotification
     {
+        //public void OnImportsSatisfied()
+        //{
+        //    Debugger.Break();
+        //}
+
+        //[Import(typeof(ILoggerFacade), AllowRecomposition = true, AllowDefault = false)]
+        //protected ILoggerFacade LoggerFromMEF { get; set; }
+
+        //[Import]
+        //protected Lazy<ILoggerFacade> LoggerFromMEF { get; set; }
+
+        //[ImportMany(typeof(ILoggerFacade), AllowRecomposition = true)]
+        //public IEnumerable<ILoggerFacade> LoggersFromMEF { get; set; }
+
+
         public AudioPaneViewModel AudioPaneViewModel
         {
             get
@@ -34,9 +54,8 @@ namespace Tobi.Modules.MenuBar
         }
 
         protected IUnityContainer Container { get; private set; }
-        protected ILoggerFacade Logger { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
-
+        protected ILoggerFacade Logger { get; private set; }
 
         public RichDelegateCommand<object> ExitCommand { get; private set; }
 
@@ -70,7 +89,6 @@ namespace Tobi.Modules.MenuBar
 
         public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
         
-        //AUDIO commands
         public RichDelegateCommand<object> AudioCommandInsertFile { get; private set; }
         public RichDelegateCommand<object> AudioCommandGotoBegining { get; private set; }
         public RichDelegateCommand<object> AudioCommandGotoEnd { get; private set; }
@@ -95,13 +113,26 @@ namespace Tobi.Modules.MenuBar
         public RichDelegateCommand<object> AudioCommandSelectNextChunk { get; private set; }
         public RichDelegateCommand<object> AudioCommandSelectPreviousChunk { get; private set; }
         public RichDelegateCommand<object> AudioCommandDeleteAudioSelection { get; private set; }
-        //end AUDIO commands
+        
+
 
         ///<summary>
         /// Dependency-injected constructor
         ///</summary>
+        //[ImportingConstructor]
         public MenuBarView(IUnityContainer container, ILoggerFacade logger, IEventAggregator eventAggregator)
         {
+            //LoggerFromMEF.Value.Log(
+            //    "MenuBarView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+            //    Category.Info, Priority.Low);
+
+            //foreach (ILoggerFacade log in LoggersFromMEF)
+            //{
+            //    log.Log(
+            //        "MenuBarView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+            //        Category.Info, Priority.Low);
+            //}
+
             Container = container;
             Logger = logger;
             EventAggregator = eventAggregator;

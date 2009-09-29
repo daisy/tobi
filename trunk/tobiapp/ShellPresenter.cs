@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -51,8 +52,15 @@ namespace Tobi
         }
     }
 
-    public class ShellPresenter : IShellPresenter
+    //[Export(typeof(IShellPresenter)), PartCreationPolicy(CreationPolicy.Shared)]
+    //[Export]
+    public class ShellPresenter : IShellPresenter, IPartImportsSatisfiedNotification
     {
+        public void OnImportsSatisfied()
+        {
+            Debugger.Break();
+        }
+
         private void playAudioCue(string audioClipName)
         {
             string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -111,6 +119,7 @@ namespace Tobi
         /// Default constructor
         ///</summary>
         ///<param name="view"></param>
+        //[ImportingConstructor]
         public ShellPresenter(IShellView view, ILoggerFacade logger,
                             IRegionManager regionManager, IUnityContainer container,
                             IEventAggregator eventAggregator
@@ -919,8 +928,39 @@ namespace Tobi
             exit();
         }
 
+        [Import(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+        protected ILoggerFacade LoggerFromMEF { get; set; }
+
+        [Import(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+        protected Lazy<ILoggerFacade> LoggerFromMEFLazy { get; set; }
+
+        [ImportMany(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true)]
+        public IEnumerable<ILoggerFacade> LoggersFromMEF { get; set; }
+
+
+        [Import(typeof(IShellPresenter), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+        protected Lazy<IShellPresenter> Presenter { get; set; }
+
         public bool OnShellWindowClosing()
         {
+            Presenter.Value.PlayAudioCueHi();
+
+            LoggerFromMEFLazy.Value.Log(
+                "ShellPresenter:OnShellWindowClosing() 1 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+                Category.Debug, Priority.Low);
+
+            LoggerFromMEF.Log(
+                "ShellPresenter:OnShellWindowClosing() 2 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+                Category.Debug, Priority.Low);
+
+            foreach (ILoggerFacade log in LoggersFromMEF)
+            {
+                log.Log(
+                    "ShellPresenter:OnShellWindowClosing() 3 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+                    Category.Debug, Priority.Low);
+            }
+
+
             Logger.Log("ShellPresenter.OnShellWindowClosing", Category.Debug, Priority.Medium);
 
             if (m_Exiting) return true;

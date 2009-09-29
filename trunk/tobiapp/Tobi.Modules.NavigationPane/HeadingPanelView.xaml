@@ -11,9 +11,9 @@
     
 
     <TextBox x:Name="SearchBox"
-                         BorderThickness="1"
-                         HorizontalAlignment="Left"
-                         Height="25" Width="200" DockPanel.Dock="Bottom" />
+                         BorderThickness="0"
+                         HorizontalAlignment="Stretch"
+                          DockPanel.Dock="Top" />
     <pres:ScrollViewer
         VerticalScrollBarVisibility="Auto"
         HorizontalScrollBarVisibility="Visible"
@@ -34,7 +34,7 @@
         Focusable="True"
         IsTabStop="True"
         AutomationProperties.Name="{x:Static local:HeadingPanelView.View_Name}"
-        search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text}">
+        search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
 
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -57,12 +57,14 @@
                             <Setter Property="FontWeight" Value="Bold" />
                         </Trigger>
                         <Trigger Property="search:SearchOperations.IsMatch" Value="True">
+
                             <Setter Property="Background">
                                 <Setter.Value>
-                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                  <SolidColorBrush Color="#FF99FF66"/>
+                                  <!-- LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                         <GradientStop Color="White" Offset="0"/>
                                         <GradientStop Color="#FF78C4FF" Offset="1"/>
-                                    </LinearGradientBrush>
+                                    </LinearGradientBrush -->
                                 </Setter.Value>
                             </Setter>
                         </Trigger>

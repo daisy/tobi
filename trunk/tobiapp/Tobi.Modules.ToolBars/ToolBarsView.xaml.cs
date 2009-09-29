@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
@@ -30,8 +31,13 @@ namespace Tobi.Modules.ToolBars
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
-        public ToolBarsView()
+        //[ImportingConstructor]
+        public ToolBarsView(ILoggerFacade logger)
         {
+            //logger.Log(
+            //    "ToolBarsView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+            //    Category.Info, Priority.Low);
+
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
         }

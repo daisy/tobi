@@ -173,6 +173,14 @@
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
     </ProjectReference>
+    <ProjectReference Include="ExternalLibs\MEF\Lib.MEF.csproj">
+      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
+      <Name>Lib.MEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\MEF_Unity\Lib.MEF_Unity.csproj">
+      <Project>{24A770F8-AF0E-400F-8ABB-3FD68617103E}</Project>
+      <Name>Lib.MEF_Unity</Name>
+    </ProjectReference>
     <ProjectReference Include="ExternalLibs\WPFToolkit\Lib.WPFToolkit.csproj">
       <Project>{9606A078-7135-4CE7-879E-39FCF527F1A3}</Project>
       <Name>Lib.WPFToolkit</Name>
@@ -249,7 +257,9 @@
     <Resource Include="TobiSplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="hi.wav" />
+    <Content Include="hi.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="tock.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

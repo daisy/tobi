@@ -39,9 +39,9 @@
         <search:SearchTermConverter x:Key="SearchTermConverter" />
     </DockPanel.Resources>
     <TextBox x:Name="SearchBox"
-                         BorderThickness="1"
-                         HorizontalAlignment="Left"
-                         Height="25" Width="200" DockPanel.Dock="Bottom" />
+                         BorderThickness="0"
+                         HorizontalAlignment="Stretch"
+             DockPanel.Dock="Top" />
 <!--    <ListBox x:Name="ListView" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              DataContext="{Binding Path=ViewModel,
@@ -100,7 +100,7 @@
             IsTabStop="True"
             Focusable="True"
             AutomationProperties.Name="{x:Static local:PagePanelView.View_Name}"
-            search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text}">
+            search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
@@ -131,12 +131,13 @@
                         </Trigger>
                         <Trigger Property="search:SearchOperations.IsMatch" Value="True">
                             <Setter Property="Background">
-                                <Setter.Value>
-                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                              <Setter.Value>
+                                <SolidColorBrush Color="#FF99FF66"/>
+                                <!-- LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                         <GradientStop Color="White" Offset="0"/>
                                         <GradientStop Color="#FF78C4FF" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Setter.Value>
+                                    </LinearGradientBrush -->
+                              </Setter.Value>
                             </Setter>
                         </Trigger>
                     </Style.Triggers>

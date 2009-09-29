@@ -28,7 +28,7 @@ namespace Tobi.Modules.MenuBar
         ///</summary>
         public void Initialize()
         {
-            m_Container.RegisterType<MenuBarView>(new ContainerControlledLifetimeManager());
+            //m_Container.RegisterType<MenuBarView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
 
