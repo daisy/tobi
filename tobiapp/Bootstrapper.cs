@@ -1,4 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.UnityExtensions;
@@ -38,6 +46,34 @@ namespace Tobi
             get { return m_Logger; }
         }
 
+        public CompositionContainer MefContainer { get; private set; }
+
+        protected override IUnityContainer CreateContainer()
+        {
+            LoggerFacade.Log("Binding MEF and the Unity Dependency Injection container", Category.Debug, Priority.Low);
+
+            var unityContainer = new UnityContainer();
+
+            string mefDir = AppDomain.CurrentDomain.BaseDirectory; // +Path.DirectorySeparatorChar + "MEF";
+
+            var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
+            {
+                      new AssemblyCatalog(Assembly.GetExecutingAssembly())
+                      //new DirectoryCatalog(mefDir, "*.dll")
+                      //new TypeCatalog(typeof(MenuBarView))
+            }); // MEF catalog
+
+            //var directories = Directory.GetDirectories(mefDir, "*.*", SearchOption.AllDirectories);
+            //foreach (var directory in directories)
+            //{
+            //    aggregateCatalog.Catalogs.Add(new DirectoryCatalog(directory));
+            //}
+
+            // bidirectional binding between MEF and Unity, calls Compose !
+            MefContainer = unityContainer.RegisterCatalog(aggregateCatalog);
+
+            return unityContainer;
+        }
 
         /// <summary>
         /// Initialization of the Tobi Shell window
@@ -73,6 +109,7 @@ namespace Tobi
             Container.RegisterType<IShellView, Shell>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IShellPresenter, ShellPresenter>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IUrakawaSession, UrakawaSession>(new ContainerControlledLifetimeManager());
+
             base.ConfigureContainer();
         }
 
