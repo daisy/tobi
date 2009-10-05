@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
@@ -50,7 +47,7 @@ namespace Tobi
 
         protected override IUnityContainer CreateContainer()
         {
-            LoggerFacade.Log("Binding MEF and the Unity Dependency Injection container", Category.Debug, Priority.Low);
+            LoggerFacade.Log("Binding the catalogs from MEF and the Unity Dependency Injection container", Category.Debug, Priority.Low);
 
             var unityContainer = new UnityContainer();
 
@@ -58,8 +55,8 @@ namespace Tobi
 
             var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
             {
-                      new AssemblyCatalog(Assembly.GetExecutingAssembly())
-                      //new DirectoryCatalog(mefDir, "*.dll")
+                      new AssemblyCatalog(Assembly.GetExecutingAssembly()),
+                      new DirectoryCatalog(mefDir, "Tobi*.dll")
                       //new TypeCatalog(typeof(MenuBarView))
             }); // MEF catalog
 

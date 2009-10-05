@@ -73,7 +73,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => DecibelResolution);
             }
@@ -109,7 +109,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => WaveStepX);
             }
@@ -129,7 +129,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsUseDecibelsAdjust);
             }
@@ -151,7 +151,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsUseDecibels);
             }
@@ -173,7 +173,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsUseDecibelsNoAverage);
             }
@@ -211,7 +211,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsBackgroundVisible);
             }
@@ -251,7 +251,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsWaveFillVisible);
             }
@@ -271,7 +271,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsEnvelopeVisible);
             }
@@ -291,7 +291,7 @@ namespace Tobi.Modules.AudioPane
                 //resetWaveFormBackground();
                 if (View != null)
                 {
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => IsEnvelopeFilled);
             }
@@ -359,7 +359,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => ColorWaveBackground);
             }
@@ -381,7 +381,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => ColorMarkers);
             }
@@ -402,7 +402,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => ColorWaveBars);
             }
@@ -423,7 +423,7 @@ namespace Tobi.Modules.AudioPane
                 if (View != null)
                 {
                     View.ResetWaveFormEmpty();
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => ColorEnvelopeFill);
             }
@@ -444,7 +444,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute(null);
+                    CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => ColorEnvelopeOutline);
             }

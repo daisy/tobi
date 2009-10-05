@@ -123,7 +123,7 @@ namespace Tobi.Modules.DocumentPane
 
             if (firstTime)
             {
-                CommandFocus.Execute(null);
+                CommandFocus.Execute();
             }
         }
 
@@ -212,7 +212,7 @@ namespace Tobi.Modules.DocumentPane
 
             selectNode((TreeNode)ui.Tag);
 
-            CommandFocus.Execute(null);
+            CommandFocus.Execute();
         }
 
     }

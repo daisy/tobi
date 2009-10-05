@@ -47,7 +47,7 @@ namespace Tobi.Modules.AudioPane
                                            };
                 }
 
-                CommandRefresh.Execute(null);
+                CommandRefresh.Execute();
             }
         }
 
@@ -130,7 +130,7 @@ namespace Tobi.Modules.AudioPane
             }
             else
             {
-                CommandRefresh.Execute(null);
+                CommandRefresh.Execute();
             }
         }
 
@@ -178,7 +178,7 @@ namespace Tobi.Modules.AudioPane
             {
                 ensurePlaybackStreamIsDead();
             }
-            CommandRefresh.Execute(null);
+            CommandRefresh.Execute();
         }
     }
 }

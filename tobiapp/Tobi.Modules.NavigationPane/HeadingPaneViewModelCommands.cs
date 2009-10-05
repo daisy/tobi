@@ -9,63 +9,63 @@ namespace Tobi.Modules.NavigationPane
 {
     public partial class HeadingPaneViewModel
     {
-        public static RichDelegateCommand<object> CommandExpandAll { get; private set; }
-//        public static RichDelegateCommand<object> CommandExpand { get; private set; }
-        public static RichDelegateCommand<object> CommandCollapseAll { get; private set; }
-//        public static RichDelegateCommand<object> CommandCollapse { get; private set; }
-        public static RichDelegateCommand<object> CommandEditText { get; private set; }
+        public static RichDelegateCommand CommandExpandAll { get; private set; }
+//        public static RichDelegateCommand CommandExpand { get; private set; }
+        public static RichDelegateCommand CommandCollapseAll { get; private set; }
+//        public static RichDelegateCommand CommandCollapse { get; private set; }
+        //public static RichDelegateCommand CommandEditText { get; private set; }
 
         private void intializeCommands()
         {
             Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
             var shellPresenter = Container.Resolve<IShellPresenter>();
             //
-            CommandExpandAll = new RichDelegateCommand<object>(
+            CommandExpandAll = new RichDelegateCommand(
                 UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
                 null,
                 shellPresenter.LoadTangoIcon("list-add"),
-                obj => _headingsNavigator.ExpandAll(),
-                obj => _headingsNavigator != null);
+                ()=> _headingsNavigator.ExpandAll(),
+                ()=> _headingsNavigator != null);
 /*
-            CommandExpand = new RichDelegateCommand<object>(
+            CommandExpand = new RichDelegateCommand(
                 UserInterfaceStrings.TreeExpand,
                 UserInterfaceStrings.TreeExpand_,
                 null,
                 shellPresenter.LoadGnomeNeuIcon("Neu_list-add"),
-                obj => _headingsNavigator.Expand((HeadingTreeNodeWrapper)obj),
-                obj => (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && !(obj as HeadingTreeNodeWrapper).IsExpanded));
+                ()=> _headingsNavigator.Expand((HeadingTreeNodeWrapper)obj),
+                ()=> (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && !(obj as HeadingTreeNodeWrapper).IsExpanded));
  */
             //
-            CommandCollapseAll = new RichDelegateCommand<object>(
+            CommandCollapseAll = new RichDelegateCommand(
                 UserInterfaceStrings.TreeCollapseAll,
                 UserInterfaceStrings.TreeCollapseAll_,
                 null,
                 shellPresenter.LoadTangoIcon("list-remove"),
-                obj => _headingsNavigator.CollapseAll(),
-                obj => _headingsNavigator != null);
+                ()=> _headingsNavigator.CollapseAll(),
+                ()=> _headingsNavigator != null);
 /*
-            CommandCollapse = new RichDelegateCommand<object>(
+            CommandCollapse = new RichDelegateCommand(
                 UserInterfaceStrings.TreeCollapse,
                 UserInterfaceStrings.TreeCollapse_,
                 null,
                 shellPresenter.LoadGnomeNeuIcon("Neu_list-remove"),
-                obj => _headingsNavigator.Collapse((HeadingTreeNodeWrapper)obj),
-                obj => (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && (obj as HeadingTreeNodeWrapper).IsExpanded));
+                ()=> _headingsNavigator.Collapse((HeadingTreeNodeWrapper)obj),
+                ()=> (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && (obj as HeadingTreeNodeWrapper).IsExpanded));
 */
-            CommandEditText = new RichDelegateCommand<object>(
+            /*CommandEditText = new RichDelegateCommand(
                 UserInterfaceStrings.TreeEdit,
                 UserInterfaceStrings.TreeEdit_,
                 null,
                 shellPresenter.LoadTangoIcon("accessories-text-editor"),
-                obj => _headingsNavigator.EditText((HeadingTreeNodeWrapper)obj),
-                obj => _headingsNavigator!=null);
+                ()=> _headingsNavigator.EditText((HeadingTreeNodeWrapper)obj),
+                ()=> _headingsNavigator!=null);*/
 
             shellPresenter.RegisterRichCommand(CommandExpandAll);
 //            shellPresenter.RegisterRichCommand(CommandExpand);
             shellPresenter.RegisterRichCommand(CommandCollapseAll);
 //            shellPresenter.RegisterRichCommand(CommandCollapse);
-            shellPresenter.RegisterRichCommand(CommandEditText);
+            //shellPresenter.RegisterRichCommand(CommandEditText);
         }
     }
 }

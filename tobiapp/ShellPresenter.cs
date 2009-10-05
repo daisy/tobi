@@ -89,24 +89,24 @@ namespace Tobi
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool m_Exiting;
 
-        public RichDelegateCommand<object> ExitCommand { get; private set; }
+        public RichDelegateCommand ExitCommand { get; private set; }
 
-        public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
-        public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
+        public RichDelegateCommand MagnifyUiIncreaseCommand { get; private set; }
+        public RichDelegateCommand MagnifyUiDecreaseCommand { get; private set; }
 
-        public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
-        public RichDelegateCommand<object> DisplayPreviewIconsDebugCommand { get; private set; }
+        public RichDelegateCommand ManageShortcutsCommand { get; private set; }
+        public RichDelegateCommand DisplayPreviewIconsDebugCommand { get; private set; }
 
-        public RichDelegateCommand<object> CopyCommand { get; private set; }
-        public RichDelegateCommand<object> CutCommand { get; private set; }
-        public RichDelegateCommand<object> PasteCommand { get; private set; }
+        public RichDelegateCommand CopyCommand { get; private set; }
+        public RichDelegateCommand CutCommand { get; private set; }
+        public RichDelegateCommand PasteCommand { get; private set; }
 
-        public RichDelegateCommand<object> HelpCommand { get; private set; }
-        public RichDelegateCommand<object> PreferencesCommand { get; private set; }
-        //public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+        public RichDelegateCommand HelpCommand { get; private set; }
+        public RichDelegateCommand PreferencesCommand { get; private set; }
+        //public RichDelegateCommand WebHomeCommand { get; private set; }
 
-        //public RichDelegateCommand<object> NavNextCommand { get; private set; }
-        //public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
+        //public RichDelegateCommand NavNextCommand { get; private set; }
+        //public RichDelegateCommand NavPreviousCommand { get; private set; }
 
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
@@ -145,14 +145,14 @@ namespace Tobi
             Logger.Log("ShellPresenter.initCommands", Category.Debug, Priority.Medium);
 
             //
-            ExitCommand = new RichDelegateCommand<object>(
+            ExitCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Menu_Exit,
                 UserInterfaceStrings.Menu_Exit_,
                 UserInterfaceStrings.Menu_Exit_KEYS,
                 LoadTangoIcon("system-log-out"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
                 //LoadTangoIcon("document-save"),
-                obj =>
+                () =>
                 {
                     Logger.Log("ShellPresenter.ExitCommand", Category.Debug, Priority.Medium);
 
@@ -161,59 +161,59 @@ namespace Tobi
                         exit();
                     }
                 },
-                obj => true);
+                () => true);
 
             RegisterRichCommand(ExitCommand);
             //
 
-            MagnifyUiIncreaseCommand = new RichDelegateCommand<object>(
+            MagnifyUiIncreaseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.UI_IncreaseMagnification,
                 UserInterfaceStrings.UI_IncreaseMagnification_,
                 UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                 //LoadTangoIcon("mail-forward"),
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
-                obj =>
+                ()=>
                 {
                     Logger.Log("ShellPresenter.MagnifyUiIncreaseCommand", Category.Debug, Priority.Medium);
 
                     View.MagnificationLevel += 0.15;
                 },
-                obj => true);
+                ()=> true);
 
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
 
-            MagnifyUiDecreaseCommand = new RichDelegateCommand<object>(
+            MagnifyUiDecreaseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.UI_DecreaseMagnification,
                 UserInterfaceStrings.UI_DecreaseMagnification_,
                 UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
-                obj =>
+                ()=>
                 {
                     Logger.Log("ShellPresenter.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
 
                     View.MagnificationLevel -= 0.15;
                 },
-                obj => true);
+                ()=> true);
 
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
-            DisplayPreviewIconsDebugCommand = new RichDelegateCommand<object>(
+            DisplayPreviewIconsDebugCommand = new RichDelegateCommand(
                 UserInterfaceStrings.IconsDebug,
                 null,
                 UserInterfaceStrings.IconsDebug_KEYS,
                 null,
-                obj => DisplayPreviewIconsDebugCommand_Executed(),
-                obj => true);
+                ()=> DisplayPreviewIconsDebugCommand_Executed(),
+                ()=> true);
 
             RegisterRichCommand(DisplayPreviewIconsDebugCommand);
             //
-            ManageShortcutsCommand = new RichDelegateCommand<object>(
+            ManageShortcutsCommand = new RichDelegateCommand(
                 UserInterfaceStrings.ManageShortcuts,
                 UserInterfaceStrings.ManageShortcuts_,
                 UserInterfaceStrings.ManageShortcuts_KEYS,
                 LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("ShellPresenter.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
 
@@ -227,46 +227,46 @@ namespace Tobi
 
                     windowPopup.ShowFloating(null);
                 },
-                obj => true);
+                ()=> true);
 
             RegisterRichCommand(ManageShortcutsCommand);
             //
-            CutCommand = new RichDelegateCommand<object>(
+            CutCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Cut,
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
                 LoadTangoIcon("edit-cut"),
-                obj => Debug.Fail("Functionality not implemented yet."),
-                obj => true);
+                ()=> Debug.Fail("Functionality not implemented yet."),
+                ()=> true);
 
             RegisterRichCommand(CutCommand);
             //
-            CopyCommand = new RichDelegateCommand<object>(
+            CopyCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Copy,
                 UserInterfaceStrings.Copy_,
                 UserInterfaceStrings.Copy_KEYS,
                 LoadTangoIcon("edit-copy"),
-                obj => Debug.Fail("Functionality not implemented yet."),
-                obj => true);
+                ()=> Debug.Fail("Functionality not implemented yet."),
+                ()=> true);
 
             RegisterRichCommand(CopyCommand);
             //
-            PasteCommand = new RichDelegateCommand<object>(
+            PasteCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Paste,
                 UserInterfaceStrings.Paste_,
                 UserInterfaceStrings.Paste_KEYS,
                 LoadTangoIcon("edit-paste"),
-                obj => Debug.Fail("Functionality not implemented yet."),
-                obj => true);
+                ()=> Debug.Fail("Functionality not implemented yet."),
+                ()=> true);
 
             RegisterRichCommand(PasteCommand);
             //
-            HelpCommand = new RichDelegateCommand<object>(
+            HelpCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Help,
                 UserInterfaceStrings.Help_,
                 UserInterfaceStrings.Help_KEYS,
                 LoadTangoIcon("help-browser"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("ShellPresenter.HelpCommand", Category.Debug, Priority.Medium);
 
@@ -274,42 +274,42 @@ namespace Tobi
                         new ArgumentOutOfRangeException("First Inner exception",
                             new FileNotFoundException("Third inner exception !")));
                 },
-                 obj => true);
+                 ()=> true);
 
             RegisterRichCommand(HelpCommand);
             //
-            PreferencesCommand = new RichDelegateCommand<object>(
+            PreferencesCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Preferences,
                 UserInterfaceStrings.Preferences_,
                 UserInterfaceStrings.Preferences_KEYS,
                 LoadTangoIcon("preferences-system"),
-                obj => Debug.Fail("Functionality not implemented yet."),
-                obj => true);
+                ()=> Debug.Fail("Functionality not implemented yet."),
+                ()=> true);
 
             RegisterRichCommand(PreferencesCommand);
             //
-            //WebHomeCommand = new RichDelegateCommand<object>(UserInterfaceStrings.WebHome,
+            //WebHomeCommand = new RichDelegateCommand(UserInterfaceStrings.WebHome,
             //    UserInterfaceStrings.WebHome_,
             //    UserInterfaceStrings.WebHome_KEYS,
             //    //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Home_icon")),
             //    LoadTangoIcon("go-home"),
-            //    obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+            //    ()=> { throw new NotImplementedException("Functionality not implemented, sorry :("); }, ()=> true);
 
             //RegisterRichCommand(WebHomeCommand);
             ////
-            //NavNextCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavNext,
+            //NavNextCommand = new RichDelegateCommand(UserInterfaceStrings.NavNext,
             //    UserInterfaceStrings.NavNext_,
             //    UserInterfaceStrings.NavNext_KEYS,
             //    ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Forward")),
-            //    obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+            //    ()=> { throw new NotImplementedException("Functionality not implemented, sorry :("); }, ()=> true);
 
             //RegisterRichCommand(NavNextCommand);
             ////
-            //NavPreviousCommand = new RichDelegateCommand<object>(UserInterfaceStrings.NavPrevious,
+            //NavPreviousCommand = new RichDelegateCommand(UserInterfaceStrings.NavPrevious,
             //    UserInterfaceStrings.NavPrevious_,
             //    UserInterfaceStrings.NavPrevious_KEYS,
             //    ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Back")),
-            //    obj => { throw new NotImplementedException("Functionality not implemented, sorry :("); }, obj => true);
+            //    ()=> { throw new NotImplementedException("Functionality not implemented, sorry :("); }, ()=> true);
 
             //RegisterRichCommand(NavPreviousCommand);
             //
@@ -815,11 +815,11 @@ namespace Tobi
             {
                 foreach (string resourceKey in resourceKeys)
                 {
-                    var command = new RichDelegateCommand<object>(resourceKey,
+                    var command = new RichDelegateCommand(resourceKey,
                                                                   resourceKey,
                                                                   null,
                                                                   LoadTangoIcon(resourceKey),
-                                                                  null, obj => true);
+                                                                  null, ()=> true);
                     m_listOfIconRichCommands.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -830,11 +830,11 @@ namespace Tobi
             {
                 foreach (string resourceKey2 in resourceKeys2)
                 {
-                    var command = new RichDelegateCommand<object>(resourceKey2,
+                    var command = new RichDelegateCommand(resourceKey2,
                                                                   resourceKey2,
                                                                   null,
                                                                   LoadGnomeNeuIcon(resourceKey2),
-                                                                  null, obj => true);
+                                                                  null, ()=> true);
                     m_listOfIconRichCommands2.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -847,11 +847,11 @@ namespace Tobi
             {
                 foreach (string resourceKey3 in resourceKeys3)
                 {
-                    var command = new RichDelegateCommand<object>(resourceKey3,
+                    var command = new RichDelegateCommand(resourceKey3,
                                                                   resourceKey3,
                                                                   null,
                                                                   LoadGnomeGionIcon(resourceKey3),
-                                                                  null, obj => true);
+                                                                  null, ()=> true);
                     m_listOfIconRichCommands3.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -862,11 +862,11 @@ namespace Tobi
             {
                 foreach (string resourceKey4 in resourceKeys4)
                 {
-                    var command = new RichDelegateCommand<object>(resourceKey4,
+                    var command = new RichDelegateCommand(resourceKey4,
                                                                   resourceKey4,
                                                                   null,
                                                                   LoadGnomeFoxtrotIcon(resourceKey4),
-                                                                  null, obj => true);
+                                                                  null, ()=> true);
                     m_listOfIconRichCommands4.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -965,7 +965,7 @@ namespace Tobi
 
             if (m_Exiting) return true;
 
-            if (ExitCommand.CanExecute(null))
+            if (ExitCommand.CanExecute())
             {
                 if (askUserConfirmExit())
                 {
@@ -1047,10 +1047,10 @@ namespace Tobi
             return false;
         }
 
-        private readonly List<RichDelegateCommand<object>> m_listOfRegisteredRichCommands =
-            new List<RichDelegateCommand<object>>();
+        private readonly List<RichDelegateCommand> m_listOfRegisteredRichCommands =
+            new List<RichDelegateCommand>();
 
-        public List<RichDelegateCommand<object>> RegisteredRichCommands
+        public List<RichDelegateCommand> RegisteredRichCommands
         {
             get
             {
@@ -1058,9 +1058,9 @@ namespace Tobi
             }
         }
 
-        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands =
-            new List<RichDelegateCommand<object>>();
-        public List<RichDelegateCommand<object>> IconRichCommands
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands
         {
             get
             {
@@ -1068,27 +1068,27 @@ namespace Tobi
             }
         }
 
-        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands2 =
-            new List<RichDelegateCommand<object>>();
-        public List<RichDelegateCommand<object>> IconRichCommands2
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands2 =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands2
         {
             get
             {
                 return m_listOfIconRichCommands2;
             }
         }
-        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands3 =
-            new List<RichDelegateCommand<object>>();
-        public List<RichDelegateCommand<object>> IconRichCommands3
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands3 =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands3
         {
             get
             {
                 return m_listOfIconRichCommands3;
             }
         }
-        private readonly List<RichDelegateCommand<object>> m_listOfIconRichCommands4 =
-            new List<RichDelegateCommand<object>>();
-        public List<RichDelegateCommand<object>> IconRichCommands4
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands4 =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands4
         {
             get
             {
@@ -1180,13 +1180,13 @@ namespace Tobi
             return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Foxtrot/", resourceKey);
         }
 
-        public void RegisterRichCommand(RichDelegateCommand<object> command)
+        public void RegisterRichCommand(RichDelegateCommand command)
         {
             m_listOfRegisteredRichCommands.Add(command);
             AddInputBinding(command.KeyBinding);
         }
 
-        public void UnRegisterRichCommand(RichDelegateCommand<object> command)
+        public void UnRegisterRichCommand(RichDelegateCommand command)
         {
             m_listOfRegisteredRichCommands.Remove(command);
             RemoveInputBinding(command.KeyBinding);

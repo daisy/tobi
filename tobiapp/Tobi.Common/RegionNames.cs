@@ -13,5 +13,7 @@ namespace Tobi.Common
 
         public const string NavigationPane = "NavigationPane";
         public const string NavigationPaneTabs = "NavigationPanel";
+
+        public const string MainToolbar = "MainToolbar";
     }
 }

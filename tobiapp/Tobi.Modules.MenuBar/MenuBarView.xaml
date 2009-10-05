@@ -10,10 +10,10 @@
 
     <!-- File Menu -->
     <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_File}">
-      <UI:MenuItemRichCommand
+      <!-- UI:MenuItemRichCommand
         RichCommand="{Binding NewCommand}"
                 CommandParameter="{Binding}"
-                />
+                / -->
       <UI:MenuItemRichCommand RichCommand="{Binding OpenCommand}"
         />
       <UI:MenuItemRichCommand RichCommand="{Binding SaveCommand}"

@@ -81,9 +81,9 @@ namespace Tobi.Modules.DocumentPane
         //    m_PropertyChangeHandler.InitializeDependentProperties(this);
         //}
 
-        public RichDelegateCommand<object> CommandSwitchPhrasePrevious { get; private set; }
-        public RichDelegateCommand<object> CommandSwitchPhraseNext { get; private set; }
-        public RichDelegateCommand<object> CommandFocus { get; private set; }
+        public RichDelegateCommand CommandSwitchPhrasePrevious { get; private set; }
+        public RichDelegateCommand CommandSwitchPhraseNext { get; private set; }
+        public RichDelegateCommand CommandFocus { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
 
@@ -105,12 +105,12 @@ namespace Tobi.Modules.DocumentPane
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            CommandSwitchPhrasePrevious = new RichDelegateCommand<object>(
+            CommandSwitchPhrasePrevious = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
                 UserInterfaceStrings.Event_SwitchPrevious_KEYS,
                 shellPresenter.LoadTangoIcon("format-indent-less"),
-                obj =>
+                ()=>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
                     {
@@ -151,16 +151,16 @@ namespace Tobi.Modules.DocumentPane
 
                     SystemSounds.Beep.Play();
                 },
-                obj => CurrentTreeNode != null);
+                ()=> CurrentTreeNode != null);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
-            CommandSwitchPhraseNext = new RichDelegateCommand<object>(
+            CommandSwitchPhraseNext = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchNext,
                 UserInterfaceStrings.Event_SwitchNext_,
                 UserInterfaceStrings.Event_SwitchNext_KEYS,
                 shellPresenter.LoadTangoIcon("format-indent-more"),
-                obj =>
+                ()=>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
                     {
@@ -201,17 +201,17 @@ namespace Tobi.Modules.DocumentPane
 
                     SystemSounds.Beep.Play();
                 },
-                obj => CurrentTreeNode != null);
+                ()=> CurrentTreeNode != null);
 
             shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
             //
-            CommandFocus = new RichDelegateCommand<object>(
+            CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Document_Focus,
                 null,
                 UserInterfaceStrings.Document_Focus_KEYS,
                 null,
-                obj => FocusHelper.Focus(this, m_FocusStartElement),
-                obj => true);
+                ()=> FocusHelper.Focus(this, m_FocusStartElement),
+                ()=> true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
             //

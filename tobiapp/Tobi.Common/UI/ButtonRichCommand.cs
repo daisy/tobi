@@ -16,7 +16,7 @@ namespace Tobi.Common.UI
     {
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(ButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
@@ -27,7 +27,7 @@ namespace Tobi.Common.UI
             {
                 return;
             }
-            var command = e.NewValue as RichDelegateCommand<object>;
+            var command = e.NewValue as RichDelegateCommand;
             if (command == null)
             {
                 return;
@@ -54,7 +54,7 @@ namespace Tobi.Common.UI
             }
         }
 
-        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand<object> command, bool showTextLabel)
+        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand command, bool showTextLabel)
         {
             button.Command = command;
 
@@ -153,11 +153,11 @@ namespace Tobi.Common.UI
             public Label m_TextHost;
         }
 
-        public RichDelegateCommand<object> RichCommand
+        public RichDelegateCommand RichCommand
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+                return (RichDelegateCommand)GetValue(RichCommandProperty);
             }
             set
             {
@@ -173,7 +173,7 @@ namespace Tobi.Common.UI
     {
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(ToggleButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
@@ -184,7 +184,7 @@ namespace Tobi.Common.UI
             {
                 return;
             }
-            var command = e.NewValue as RichDelegateCommand<object>;
+            var command = e.NewValue as RichDelegateCommand;
             if (command == null)
             {
                 return;
@@ -210,11 +210,11 @@ namespace Tobi.Common.UI
                 SetValue(ShowTextLabelProperty, value);
             }
         }
-        public RichDelegateCommand<object> RichCommand
+        public RichDelegateCommand RichCommand
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+                return (RichDelegateCommand)GetValue(RichCommandProperty);
             }
             set
             {
@@ -230,7 +230,7 @@ namespace Tobi.Common.UI
     {
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(RepeatButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
@@ -241,7 +241,7 @@ namespace Tobi.Common.UI
             {
                 return;
             }
-            var command = e.NewValue as RichDelegateCommand<object>;
+            var command = e.NewValue as RichDelegateCommand;
             if (command == null)
             {
                 return;
@@ -267,11 +267,11 @@ namespace Tobi.Common.UI
                 SetValue(ShowTextLabelProperty, value);
             }
         }
-        public RichDelegateCommand<object> RichCommand
+        public RichDelegateCommand RichCommand
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandProperty);
+                return (RichDelegateCommand)GetValue(RichCommandProperty);
             }
             set
             {
@@ -311,7 +311,7 @@ namespace Tobi.Common.UI
 
         public static readonly DependencyProperty RichCommandOneProperty =
             DependencyProperty.Register("RichCommandOne",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(TwoStateToggleButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandOneChanged)));
 
@@ -320,11 +320,11 @@ namespace Tobi.Common.UI
             //ButtonRichCommand.OnRichCommandChanged(d, e);
         }
 
-        public RichDelegateCommand<object> RichCommandOne
+        public RichDelegateCommand RichCommandOne
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandOneProperty);
+                return (RichDelegateCommand)GetValue(RichCommandOneProperty);
             }
             set
             {
@@ -334,7 +334,7 @@ namespace Tobi.Common.UI
 
         public static readonly DependencyProperty RichCommandTwoProperty =
             DependencyProperty.Register("RichCommandTwo",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(TwoStateToggleButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandTwoChanged)));
 
@@ -343,11 +343,11 @@ namespace Tobi.Common.UI
             //ButtonRichCommand.OnRichCommandChanged(d, e);
         }
 
-        public RichDelegateCommand<object> RichCommandTwo
+        public RichDelegateCommand RichCommandTwo
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandTwoProperty);
+                return (RichDelegateCommand)GetValue(RichCommandTwoProperty);
             }
             set
             {
@@ -387,7 +387,7 @@ namespace Tobi.Common.UI
             }
             var choice = (Boolean)e.NewValue;
 
-            RichDelegateCommand<object> command = button.RichCommandOne;
+            RichDelegateCommand command = button.RichCommandOne;
 
             if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
             {
@@ -471,7 +471,7 @@ namespace Tobi.Common.UI
 
         public static readonly DependencyProperty RichCommandOneProperty =
             DependencyProperty.Register("RichCommandOne",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(TwoStateButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandOneChanged)));
 
@@ -480,11 +480,11 @@ namespace Tobi.Common.UI
             //ButtonRichCommand.OnRichCommandChanged(d, e);
         }
 
-        public RichDelegateCommand<object> RichCommandOne
+        public RichDelegateCommand RichCommandOne
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandOneProperty);
+                return (RichDelegateCommand)GetValue(RichCommandOneProperty);
             }
             set
             {
@@ -494,7 +494,7 @@ namespace Tobi.Common.UI
 
         public static readonly DependencyProperty RichCommandTwoProperty =
             DependencyProperty.Register("RichCommandTwo",
-                                        typeof(RichDelegateCommand<object>),
+                                        typeof(RichDelegateCommand),
                                         typeof(TwoStateButtonRichCommand),
                                         new PropertyMetadata(new PropertyChangedCallback(OnRichCommandTwoChanged)));
 
@@ -503,11 +503,11 @@ namespace Tobi.Common.UI
             //ButtonRichCommand.OnRichCommandChanged(d, e);
         }
 
-        public RichDelegateCommand<object> RichCommandTwo
+        public RichDelegateCommand RichCommandTwo
         {
             get
             {
-                return (RichDelegateCommand<object>)GetValue(RichCommandTwoProperty);
+                return (RichDelegateCommand)GetValue(RichCommandTwoProperty);
             }
             set
             {
@@ -547,7 +547,7 @@ namespace Tobi.Common.UI
             }
             var choice = (Boolean)e.NewValue;
 
-            RichDelegateCommand<object> command = button.RichCommandOne;
+            RichDelegateCommand command = button.RichCommandOne;
 
             if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
             {

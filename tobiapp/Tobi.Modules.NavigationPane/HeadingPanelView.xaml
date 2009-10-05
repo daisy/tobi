@@ -84,7 +84,7 @@
                             <!-- <UI:MenuItemRichCommand RichCommand="{Binding CommandExpand}" CommandParameter="{Binding Path=.}"/> -->
                             <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
                             <!-- <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapse}" CommandParameter="{Binding Path=.}"/> -->
-                            <UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" CommandParameter="{Binding Path=.}"/>
+                          <!-- UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" CommandParameter="{Binding Path=.}"/ -->
                         </ContextMenu>
                     </TextBlock.ContextMenu>
                     </TextBlock>

@@ -71,7 +71,7 @@ namespace Tobi.Modules.MetadataPane
 
         #region Commands
 
-        public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
+        public RichDelegateCommand CommandShowMetadataPane { get; private set; }
         
         private void initializeCommands()
         {
@@ -79,13 +79,13 @@ namespace Tobi.Modules.MetadataPane
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
             
-            CommandShowMetadataPane = new RichDelegateCommand<object>(
+            CommandShowMetadataPane = new RichDelegateCommand(
                 UserInterfaceStrings.ShowMetadata,
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
                 shellPresenter.LoadTangoIcon("accessories-text-editor"),
-                obj => ShowDialog(),
-                obj => CanShowDialog());
+                ShowDialog,
+                CanShowDialog);
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
         }

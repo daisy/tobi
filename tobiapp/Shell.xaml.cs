@@ -231,7 +231,7 @@ namespace Tobi
             /*
             foreach(InputBinding ib in InputBindings)
             {
-                var command = ib.Command as RichDelegateCommand<object>;
+                var command = ib.Command as RichDelegateCommand;
                 if (command != null)
                 {
                     command.IconDrawScale = e.NewValue;
