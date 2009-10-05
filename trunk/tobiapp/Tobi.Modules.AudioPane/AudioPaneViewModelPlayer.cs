@@ -30,43 +30,43 @@ namespace Tobi.Modules.AudioPane
         private void initializeCommands_Player()
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            CommandAutoPlay = new RichDelegateCommand<object>(
+            CommandAutoPlay = new RichDelegateCommand(
                UserInterfaceStrings.Audio_AutoPlay,
                UserInterfaceStrings.Audio_AutoPlay_,
                UserInterfaceStrings.Audio_AutoPlay_KEYS,
                shellPresenter.LoadGnomeNeuIcon("Neu_go-last"),
-               obj =>
+               ()=>
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
 
                    IsAutoPlay = !IsAutoPlay;
                },
-               obj => !IsWaveFormLoading);
+               ()=> !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandAutoPlay);
             //
             //
-            CommandPause = new RichDelegateCommand<object>(
+            CommandPause = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Pause,
                 UserInterfaceStrings.Audio_Pause_,
                 UserInterfaceStrings.Audio_Pause_KEYS,
                 shellPresenter.LoadTangoIcon("media-playback-pause"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
 
                     AudioPlayer_Stop();
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && IsPlaying);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && IsPlaying);
 
             shellPresenter.RegisterRichCommand(CommandPause);
             //
-            CommandPlay = new RichDelegateCommand<object>(
+            CommandPlay = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Play,
                 UserInterfaceStrings.Audio_Play_,
                 UserInterfaceStrings.Audio_Play_KEYS,
                 shellPresenter.LoadTangoIcon("media-playback-start"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
 
@@ -110,73 +110,36 @@ namespace Tobi.Modules.AudioPane
                         }
                     }
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording);
 
             shellPresenter.RegisterRichCommand(CommandPlay);
             //
-            CommandPlayPreviewLeft = new RichDelegateCommand<object>(
+            CommandPlayPreviewLeft = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewLeft,
                 UserInterfaceStrings.Audio_PlayPreviewLeft_,
                 UserInterfaceStrings.Audio_PlayPreviewLeft_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
-                obj =>
-                {
-                    bool left = (obj == null ? true : false);
-
-                    Logger.Log(
-                        String.Format("AudioPaneViewModel.CommandPlayPreview ({0})",
-                                      (left ? "before" : "after")), Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    double from = 0;
-                    double to = 0;
-                    if (left)
-                    {
-                        from = Math.Max(0, LastPlayHeadTime - m_TimePreviewPlay);
-                        to = LastPlayHeadTime;
-                    }
-                    else
-                    {
-                        from = LastPlayHeadTime;
-                        to = Math.Min(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength), LastPlayHeadTime + m_TimePreviewPlay);
-                    }
-
-                    long byteLeft = State.Audio.ConvertMillisecondsToBytes(from);
-                    long byteRight = State.Audio.ConvertMillisecondsToBytes(to);
-
-                    if (byteRight == byteLeft)
-                    {
-                        return;
-                    }
-
-                    //if (verifyBeginEndPlayerValues(byteLeft, byteRight))
-                    //{
-                    //}
-                    AudioPlayer_PlayFromTo(byteLeft, byteRight);
-
-                    State.Audio.EndOffsetOfPlayStream = left ? byteRight : byteLeft;
-                },
-                obj => CommandPlay.CanExecute(null));
+                ()=> PlayPreviewLeftRight(true),
+                ()=> CommandPlay.CanExecute());
 
             shellPresenter.RegisterRichCommand(CommandPlayPreviewLeft);
             //
-            CommandPlayPreviewRight = new RichDelegateCommand<object>(
+            CommandPlayPreviewRight = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewRight,
                 UserInterfaceStrings.Audio_PlayPreviewRight_,
                 UserInterfaceStrings.Audio_PlayPreviewRight_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
-                obj => CommandPlayPreviewLeft.Execute(new Boolean()),
-                obj => CommandPlay.CanExecute(null));
+                () => PlayPreviewLeftRight(false),
+                ()=> CommandPlay.CanExecute());
 
             shellPresenter.RegisterRichCommand(CommandPlayPreviewRight);
             //
-            CommandGotoBegining = new RichDelegateCommand<object>(
+            CommandGotoBegining = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
                 UserInterfaceStrings.Audio_GotoBegin_KEYS,
                 shellPresenter.LoadTangoIcon("go-first"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoBegining", Category.Debug, Priority.Medium);
 
@@ -199,16 +162,16 @@ namespace Tobi.Modules.AudioPane
                         LastPlayHeadTime = 0;
                     }
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandGotoBegining);
             //
-            CommandGotoEnd = new RichDelegateCommand<object>(
+            CommandGotoEnd = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoEnd,
                 UserInterfaceStrings.Audio_GotoEnd_,
                 UserInterfaceStrings.Audio_GotoEnd_KEYS,
                 shellPresenter.LoadTangoIcon("go-last"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoEnd", Category.Debug, Priority.Medium);
 
@@ -233,16 +196,16 @@ namespace Tobi.Modules.AudioPane
                         LastPlayHeadTime = end;
                     }
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandGotoEnd);
             //
-            CommandStepBack = new RichDelegateCommand<object>(
+            CommandStepBack = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepBack,
                  UserInterfaceStrings.Audio_StepBack_,
                  UserInterfaceStrings.Audio_StepBack_KEYS,
                 shellPresenter.LoadTangoIcon("media-skip-backward"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepBack", Category.Debug, Priority.Medium);
 
@@ -295,16 +258,16 @@ namespace Tobi.Modules.AudioPane
                         bytesLeft += marker.m_LocalStreamDataLength;
                     }
                 },
-                obj => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
+                ()=> !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandStepBack);
             //
-            CommandStepForward = new RichDelegateCommand<object>(
+            CommandStepForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepForward,
                 UserInterfaceStrings.Audio_StepForward_,
                 UserInterfaceStrings.Audio_StepForward_KEYS,
                 shellPresenter.LoadTangoIcon("media-skip-forward"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepForward", Category.Debug, Priority.Medium);
 
@@ -355,16 +318,16 @@ namespace Tobi.Modules.AudioPane
 
                     SystemSounds.Beep.Play();
                 },
-                obj => CommandStepBack.CanExecute(null));
+                ()=> CommandStepBack.CanExecute());
 
             shellPresenter.RegisterRichCommand(CommandStepForward);
             //
-            CommandFastForward = new RichDelegateCommand<object>(
+            CommandFastForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FastForward,
                 UserInterfaceStrings.Audio_FastForward_,
                 UserInterfaceStrings.Audio_FastForward_KEYS,
                 shellPresenter.LoadTangoIcon("media-seek-forward"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFastForward", Category.Debug, Priority.Medium);
 
@@ -388,16 +351,16 @@ namespace Tobi.Modules.AudioPane
 
                     LastPlayHeadTime = newTime;
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandFastForward);
             //
-            CommandRewind = new RichDelegateCommand<object>(
+            CommandRewind = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Rewind,
                 UserInterfaceStrings.Audio_Rewind_,
                 UserInterfaceStrings.Audio_Rewind_KEYS,
                 shellPresenter.LoadTangoIcon("media-seek-backward"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandRewind", Category.Debug, Priority.Medium);
 
@@ -420,12 +383,48 @@ namespace Tobi.Modules.AudioPane
 
                     LastPlayHeadTime = newTime;
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandRewind);
             //
         }
 
+        private void PlayPreviewLeftRight(bool left)
+        {
+            Logger.Log(
+                String.Format("AudioPaneViewModel.CommandPlayPreview ({0})",
+                              (left ? "before" : "after")), Category.Debug, Priority.Medium);
+
+            AudioPlayer_Stop();
+
+            double from = 0;
+            double to = 0;
+            if (left)
+            {
+                from = Math.Max(0, LastPlayHeadTime - m_TimePreviewPlay);
+                to = LastPlayHeadTime;
+            }
+            else
+            {
+                from = LastPlayHeadTime;
+                to = Math.Min(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength), LastPlayHeadTime + m_TimePreviewPlay);
+            }
+
+            long byteLeft = State.Audio.ConvertMillisecondsToBytes(from);
+            long byteRight = State.Audio.ConvertMillisecondsToBytes(to);
+
+            if (byteRight == byteLeft)
+            {
+                return;
+            }
+
+            //if (verifyBeginEndPlayerValues(byteLeft, byteRight))
+            //{
+            //}
+            AudioPlayer_PlayFromTo(byteLeft, byteRight);
+
+            State.Audio.EndOffsetOfPlayStream = left ? byteRight : byteLeft;
+        }
 
         //private long m_StreamRiffHeaderEndPos;
 
@@ -501,7 +500,7 @@ namespace Tobi.Modules.AudioPane
             {
                 Logger.Log("AudioPaneViewModel.checkAndDoAutoPlay", Category.Debug, Priority.Medium);
 
-                CommandPlay.Execute(null);
+                CommandPlay.Execute();
             }
         }
 

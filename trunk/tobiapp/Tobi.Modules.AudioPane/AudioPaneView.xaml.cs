@@ -109,7 +109,7 @@ namespace Tobi.Modules.AudioPane
             ViewModel.Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = false;
 
-            ViewModel.CommandRefresh.Execute(null);
+            ViewModel.CommandRefresh.Execute();
         }
 
         private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -174,7 +174,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            ViewModel.CommandRefresh.Execute(null);
+            ViewModel.CommandRefresh.Execute();
         }
 
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
@@ -210,7 +210,7 @@ namespace Tobi.Modules.AudioPane
 
             if (p.X == m_TimeSelectionLeftX)
             {
-                ViewModel.CommandClearSelection.Execute(null);
+                ViewModel.CommandClearSelection.Execute();
                 m_TimeSelectionLeftX = p.X;
 
                 WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
@@ -278,19 +278,19 @@ namespace Tobi.Modules.AudioPane
                 {
                     if (!ViewModel.State.Audio.HasContent || ViewModel.State.CurrentTreeNode == null)
                     {
-                        ViewModel.CommandClearSelection.Execute(null);
-                        ViewModel.CommandSelectAll.Execute(null);
+                        ViewModel.CommandClearSelection.Execute();
+                        ViewModel.CommandSelectAll.Execute();
                     }
                     else
                     {
-                        ViewModel.CommandClearSelection.Execute(null);
+                        ViewModel.CommandClearSelection.Execute();
                         ViewModel.SelectChunk(Convert.ToInt64(p.X*BytesPerPixel));
                     }
                 }
                 else if (m_MouseClicks == 3)
                 {
-                    ViewModel.CommandClearSelection.Execute(null);
-                    ViewModel.CommandSelectAll.Execute(null);
+                    ViewModel.CommandClearSelection.Execute();
+                    ViewModel.CommandSelectAll.Execute();
                 }
                 else
                 {
@@ -335,7 +335,7 @@ namespace Tobi.Modules.AudioPane
             else
             {
                 backupSelection();
-                ViewModel.CommandClearSelection.Execute(null);
+                ViewModel.CommandClearSelection.Execute();
                 m_TimeSelectionLeftX = p.X;
             }
         }

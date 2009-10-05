@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Presentation.Regions;
+using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -31,52 +32,49 @@ namespace Tobi.Modules.ToolBars
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
-        //[ImportingConstructor]
-        public ToolBarsView(ILoggerFacade logger)
-        {
-            //logger.Log(
-            //    "ToolBarsView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
-            //    Category.Info, Priority.Low);
+        public RichDelegateCommand MagnifyUiIncreaseCommand { get; private set; }
+        public RichDelegateCommand MagnifyUiDecreaseCommand { get; private set; }
+        public RichDelegateCommand ManageShortcutsCommand { get; private set; }
+        public RichDelegateCommand SaveCommand { get; private set; }
+        public RichDelegateCommand SaveAsCommand { get; private set; }
 
-            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
-            m_PropertyChangeHandler.InitializeDependentProperties(this);
-        }
+        public RichDelegateCommand NewCommand { get; private set; }
+        public RichDelegateCommand OpenCommand { get; private set; }
 
-        public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
-        public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
-        public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
-        public RichDelegateCommand<object> SaveCommand { get; private set; }
-        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
+        public RichDelegateCommand UndoCommand { get; private set; }
+        public RichDelegateCommand RedoCommand { get; private set; }
 
-        public RichDelegateCommand<object> NewCommand { get; private set; }
-        public RichDelegateCommand<object> OpenCommand { get; private set; }
+        public RichDelegateCommand CopyCommand { get; private set; }
+        public RichDelegateCommand CutCommand { get; private set; }
+        public RichDelegateCommand PasteCommand { get; private set; }
 
-        public RichDelegateCommand<object> UndoCommand { get; private set; }
-        public RichDelegateCommand<object> RedoCommand { get; private set; }
+        public RichDelegateCommand HelpCommand { get; private set; }
+        public RichDelegateCommand PreferencesCommand { get; private set; }
+        //public RichDelegateCommand WebHomeCommand { get; private set; }
 
-        public RichDelegateCommand<object> CopyCommand { get; private set; }
-        public RichDelegateCommand<object> CutCommand { get; private set; }
-        public RichDelegateCommand<object> PasteCommand { get; private set; }
+        //public RichDelegateCommand NavNextCommand { get; private set; }
+        //public RichDelegateCommand NavPreviousCommand { get; private set; }
 
-        public RichDelegateCommand<object> HelpCommand { get; private set; }
-        public RichDelegateCommand<object> PreferencesCommand { get; private set; }
-        //public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+        public RichDelegateCommand CommandFocus { get; private set; }
 
-        //public RichDelegateCommand<object> NavNextCommand { get; private set; }
-        //public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
-
-        public RichDelegateCommand<object> CommandFocus { get; private set; }
-
-        public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
+        public RichDelegateCommand CommandShowMetadataPane { get; private set; }
 
         protected IUnityContainer Container { get; private set; }
         public ILoggerFacade Logger { get; private set; }
 
-        ///<summary>
-        /// Default constructor
-        ///</summary>
+        //[ImportingConstructor]
+        //public ToolBarsView() //ILoggerFacade logger)
+        //{
+        //logger.Log(
+        //    "ToolBarsView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
+        //    Category.Info, Priority.Low);
+        //}
+
         public ToolBarsView(IUnityContainer container, ILoggerFacade logger)
         {
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
+
             Container = container;
             Logger = logger;
 
@@ -119,13 +117,13 @@ namespace Tobi.Modules.ToolBars
                 //NavPreviousCommand = shellPresenter.NavPreviousCommand;
             }
             //
-            CommandFocus = new RichDelegateCommand<object>(
+            CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Toolbar_Focus,
                 null,
                 UserInterfaceStrings.Toolbar_Focus_KEYS,
                 null,
-                obj => FocusHelper.Focus(this, FocusStart),
-                obj => true);
+                () => FocusHelper.Focus(this, FocusStart),
+                () => true);
 
             if (shellPresenter != null)
             {
@@ -134,6 +132,33 @@ namespace Tobi.Modules.ToolBars
             //
 
             InitializeComponent();
+
+            RegionManager.SetRegionManager(this, Container.Resolve<IRegionManager>());
+            RegionManager.UpdateRegions();
+
+            var regionManager = Container.Resolve<IRegionManager>();
+            IRegion targetRegion = regionManager.Regions[RegionNames.MainToolbar];
+
+            targetRegion.Add(OpenCommand);
+            targetRegion.Activate(OpenCommand);
+
+            targetRegion.Add(SaveCommand);
+            targetRegion.Activate(SaveCommand);
+
+            targetRegion.Add(UndoCommand);
+            targetRegion.Activate(UndoCommand);
+
+            targetRegion.Add(RedoCommand);
+            targetRegion.Activate(RedoCommand);
+
+            targetRegion.Add(MagnifyUiDecreaseCommand);
+            targetRegion.Activate(MagnifyUiDecreaseCommand);
+
+            targetRegion.Add(MagnifyUiIncreaseCommand);
+            targetRegion.Activate(MagnifyUiIncreaseCommand);
+
+            targetRegion.Add(CommandShowMetadataPane);
+            targetRegion.Activate(CommandShowMetadataPane);
         }
 
         // ReSharper disable RedundantDefaultFieldInitializer

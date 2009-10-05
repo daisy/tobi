@@ -1,55 +1,89 @@
-﻿<WrapPanel x:Class="Tobi.Modules.ToolBars.ToolBarsView"
+﻿<ItemsControl
+  
+   x:Class="Tobi.Modules.ToolBars.ToolBarsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="PresentationOptions"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  
+  xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+  
+  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
+   
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}">
+  
+  <ItemsControl.ItemsPanel>
+    <ItemsPanelTemplate>
+      <WrapPanel Orientation="Horizontal"
+                 KeyboardNavigation.DirectionalNavigation="Cycle"/>
+    </ItemsPanelTemplate>
+  </ItemsControl.ItemsPanel>
+  <ItemsControl.ItemTemplate>
+    <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
+      <UI:ButtonRichCommand RichCommand="{Binding .}" />
+    </DataTemplate>
+  </ItemsControl.ItemTemplate>
+  <UI:ButtonRichCommand  
+  Focusable="True"
+  x:Name="FocusStart"
+  RichCommand="{Binding ManageShortcutsCommand}"/>
+</ItemsControl>
+
+
+<!-- WrapPanel
            Orientation="Horizontal"
            
            KeyboardNavigation.DirectionalNavigation="Cycle"
            >
-
 
       <UI:ButtonRichCommand
         
   Focusable="True"
   x:Name="FocusStart"
         
-        RichCommand="{Binding NewCommand}"/>
-      
-      <UI:ButtonRichCommand RichCommand="{Binding OpenCommand}"/>
+        RichCommand="{Binding OpenCommand}"/>
       
       <UI:ButtonRichCommand RichCommand="{Binding SaveCommand}"/>
-      <!-- UI:ButtonRichCommand RichCommand="{Binding SaveAsCommand}"/ -->
-      <Separator/>
+  <Separator/>
 
-      <UI:ButtonRichCommand RichCommand="{Binding CommandShowMetadataPane}"/>
-      <Separator/>
-      
-      <!--<UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
-      <UI:ButtonRichCommand RichCommand="{Binding CutCommand}"/>
+  <UI:ButtonRichCommand RichCommand="{Binding CommandShowMetadataPane}"/>
+  <Separator/>
 
-      <UI:ButtonRichCommand RichCommand="{Binding PasteCommand}"/>
-      <Separator/>-->
     
       <UI:ButtonRichCommand RichCommand="{Binding UndoCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding RedoCommand}"/>
       <Separator/>
       
-      <!-- UI:ButtonRichCommand RichCommand="{Binding NavPreviousCommand}"/>
-      <UI:ButtonRichCommand RichCommand="{Binding NavNextCommand}"/>
-      <Separator/ -->
-      
       <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiDecreaseCommand}"/>
       <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiIncreaseCommand}"/>
 
       <Separator/>
+  <UI:ButtonRichCommand RichCommand="{Binding ManageShortcutsCommand}"/ -->
 
-      <!--<UI:ButtonRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
-      <UI:ButtonRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
-      <!--<Separator/>
+
+
+  <!-- UI:ButtonRichCommand
+        RichCommand="{Binding NewCommand}"/ -->
+
+
+  <!--<UI:ButtonRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
+
+  <!-- UI:ButtonRichCommand RichCommand="{Binding NavPreviousCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding NavNextCommand}"/>
+      <Separator/ -->
+
+  <!-- UI:ButtonRichCommand RichCommand="{Binding SaveAsCommand}"/ -->
+  <!--<UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding CutCommand}"/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding PasteCommand}"/>
+      <Separator/>-->
+
+  <!--<Separator/>
 
       <UI:ButtonRichCommand RichCommand="{Binding HelpCommand}"/>-->
   <!-- UI:ButtonRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
@@ -253,5 +287,3 @@ KeyboardNavigation.TabNavigation="Continue">
     </ToolBar>
 
   </ToolBarTray -->
-  
-</WrapPanel>

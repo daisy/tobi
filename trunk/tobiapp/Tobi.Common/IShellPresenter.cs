@@ -9,21 +9,21 @@ namespace Tobi.Common
     ///</summary>
     public interface IShellPresenter : IInputBindingManager
     {
-        RichDelegateCommand<object> ExitCommand { get; }
-        RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; }
-        RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; }
-        RichDelegateCommand<object> ManageShortcutsCommand { get; }
+        RichDelegateCommand ExitCommand { get; }
+        RichDelegateCommand MagnifyUiIncreaseCommand { get; }
+        RichDelegateCommand MagnifyUiDecreaseCommand { get; }
+        RichDelegateCommand ManageShortcutsCommand { get; }
 
-        RichDelegateCommand<object> CopyCommand { get; }
-        RichDelegateCommand<object> CutCommand { get; }
-        RichDelegateCommand<object> PasteCommand { get; }
+        RichDelegateCommand CopyCommand { get; }
+        RichDelegateCommand CutCommand { get; }
+        RichDelegateCommand PasteCommand { get; }
 
-        RichDelegateCommand<object> HelpCommand { get; }
-        RichDelegateCommand<object> PreferencesCommand { get; }
-        //RichDelegateCommand<object> WebHomeCommand { get; }
+        RichDelegateCommand HelpCommand { get; }
+        RichDelegateCommand PreferencesCommand { get; }
+        //RichDelegateCommand WebHomeCommand { get; }
 
-        //RichDelegateCommand<object> NavNextCommand { get; }
-        //RichDelegateCommand<object> NavPreviousCommand { get; }
+        //RichDelegateCommand NavNextCommand { get; }
+        //RichDelegateCommand NavPreviousCommand { get; }
 
         IShellView View { get; }
 
@@ -31,7 +31,7 @@ namespace Tobi.Common
         void PlayAudioCueTock();
         void PlayAudioCueTockTock();
 
-        void RegisterRichCommand(RichDelegateCommand<object> command);
+        void RegisterRichCommand(RichDelegateCommand command);
 
         VisualBrush LoadTangoIcon(string resourceKey);
         VisualBrush LoadGnomeNeuIcon(string resourceKey);

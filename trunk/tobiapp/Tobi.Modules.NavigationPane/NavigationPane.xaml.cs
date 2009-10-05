@@ -12,7 +12,7 @@ namespace Tobi.Modules.NavigationPane
     /// </summary>
     public partial class NavigationPane // : INotifyPropertyChanged
     {
-        public RichDelegateCommand<object> CommandFocus { get; private set; }
+        public RichDelegateCommand CommandFocus { get; private set; }
 
         public NavigationPane(IUnityContainer container)
         {
@@ -20,12 +20,12 @@ namespace Tobi.Modules.NavigationPane
 
             var shellPresenter = container.Resolve<IShellPresenter>();
 
-            CommandFocus = new RichDelegateCommand<object>(
+            CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Navigation_Focus,
                                     null,
                                     UserInterfaceStrings.Navigation_Focus_KEYS,
                                     null,
-                                    obj =>
+                                    () =>
                                     {
 
                                         var regionManager = container.Resolve<IRegionManager>();
@@ -53,7 +53,7 @@ namespace Tobi.Modules.NavigationPane
                                             FocusHelper.Focus(this, ui);
                                         }
                                     },
-                                    obj => true);
+                                    () => true);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
         }

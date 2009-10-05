@@ -21,26 +21,26 @@ namespace Tobi.Modules.Urakawa
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
             //
-            NewCommand = new RichDelegateCommand<object>(
+            NewCommand = new RichDelegateCommand(
                 UserInterfaceStrings.New,
                 UserInterfaceStrings.New_,
                 UserInterfaceStrings.New_KEYS,
                 shellPresenter.LoadTangoIcon("document-new"),
-                obj =>
+                ()=>
                 {
                     string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
                 },
-                obj => true);
+                ()=> true);
 
             shellPresenter.RegisterRichCommand(NewCommand);
             //
-            OpenCommand = new RichDelegateCommand<object>(
+            OpenCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Open,
                 UserInterfaceStrings.Open_,
                 UserInterfaceStrings.Open_KEYS,
                 shellPresenter.LoadTangoIcon("document-open"),
-                obj =>
+                ()=>
                 {
                     var dlg = new OpenFileDialog
                     {
@@ -67,7 +67,7 @@ namespace Tobi.Modules.Urakawa
                     
                     openFile(dlg.FileName);
                 },
-                obj => true);
+                ()=> true);
 
             shellPresenter.RegisterRichCommand(OpenCommand);
         }

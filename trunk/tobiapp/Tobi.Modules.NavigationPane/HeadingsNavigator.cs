@@ -153,11 +153,11 @@ namespace Tobi.Modules.NavigationPane
         private bool m_isExpanded;
         private HeadingTreeNodeWrapper m_dummyNode;
 
-        public RichDelegateCommand<object> CommandExpandAll { get; private set; }
-        //public RichDelegateCommand<object> CommandExpand { get; private set; }
-        public RichDelegateCommand<object> CommandCollapseAll { get; private set; }
-        //public RichDelegateCommand<object> CommandCollapse { get; private set; }
-        public RichDelegateCommand<object> CommandEditText { get; private set; }
+        public RichDelegateCommand CommandExpandAll { get; private set; }
+        //public RichDelegateCommand CommandExpand { get; private set; }
+        public RichDelegateCommand CommandCollapseAll { get; private set; }
+        //public RichDelegateCommand CommandCollapse { get; private set; }
+        //public RichDelegateCommand CommandEditText { get; private set; }
 
         public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
         {
@@ -165,7 +165,7 @@ namespace Tobi.Modules.NavigationPane
             //CommandExpand = HeadingPaneViewModel.CommandExpand;
             CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
             //CommandCollapse = HeadingPaneViewModel.CommandCollapse;
-            CommandEditText = HeadingPaneViewModel.CommandEditText;
+//            CommandEditText = HeadingPaneViewModel.CommandEditText;
 
             m_parent = parent;
             m_navigator = navigator;

@@ -19,12 +19,12 @@ namespace Tobi.Modules.AudioPane
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            CommandStopRecord = new RichDelegateCommand<object>(
+            CommandStopRecord = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StopRecord,
                 UserInterfaceStrings.Audio_StopRecord_,
                 UserInterfaceStrings.Audio_StopRecord_KEYS,
                 shellPresenter.LoadTangoIcon("media-playback-stop"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
 
@@ -33,16 +33,16 @@ namespace Tobi.Modules.AudioPane
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped.");
                 },
-                obj => !IsWaveFormLoading && IsRecording);
+                ()=> !IsWaveFormLoading && IsRecording);
 
             shellPresenter.RegisterRichCommand(CommandStopRecord);
             //
-            CommandStartRecord = new RichDelegateCommand<object>(
+            CommandStartRecord = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StartRecord,
                 UserInterfaceStrings.Audio_StartRecord_,
                 UserInterfaceStrings.Audio_StartRecord_KEYS,
                 shellPresenter.LoadTangoIcon("media-record"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartRecord", Category.Debug, Priority.Medium);
 
@@ -69,7 +69,7 @@ namespace Tobi.Modules.AudioPane
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording...");
                 },
-                obj =>
+                ()=>
                 {
                     var session = Container.Resolve<IUrakawaSession>();
 
@@ -84,12 +84,12 @@ namespace Tobi.Modules.AudioPane
             shellPresenter.RegisterRichCommand(CommandStartRecord);
 
             //
-            CommandStartMonitor = new RichDelegateCommand<object>(
+            CommandStartMonitor = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StartMonitor,
                 UserInterfaceStrings.Audio_StartMonitor_,
                 UserInterfaceStrings.Audio_StartMonitor_KEYS,
                 shellPresenter.LoadGnomeNeuIcon("Neu_audio-x-generic"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);
 
@@ -118,16 +118,16 @@ namespace Tobi.Modules.AudioPane
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTock();
                 },
-                obj => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring);
+                ()=> !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandStartMonitor);
             //
-            CommandStopMonitor = new RichDelegateCommand<object>(
+            CommandStopMonitor = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StopMonitor,
                 UserInterfaceStrings.Audio_StopMonitor_,
                 UserInterfaceStrings.Audio_StopMonitor_KEYS,
                 shellPresenter.LoadTangoIcon("media-playback-stop"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
 
@@ -141,7 +141,7 @@ namespace Tobi.Modules.AudioPane
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTockTock();
                 },
-                obj => !IsWaveFormLoading && IsMonitoring);
+                ()=> !IsWaveFormLoading && IsMonitoring);
 
             shellPresenter.RegisterRichCommand(CommandStopMonitor);
 

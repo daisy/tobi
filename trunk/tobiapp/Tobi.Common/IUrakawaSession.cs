@@ -12,16 +12,16 @@ namespace Tobi.Common
 
         bool Close();
 
-        RichDelegateCommand<object> ExportCommand { get; }
+        RichDelegateCommand ExportCommand { get; }
 
-        RichDelegateCommand<object> SaveCommand { get; }
-        RichDelegateCommand<object> SaveAsCommand { get; }
+        RichDelegateCommand SaveCommand { get; }
+        RichDelegateCommand SaveAsCommand { get; }
 
-        RichDelegateCommand<object> NewCommand { get; }
-        RichDelegateCommand<object> OpenCommand { get; }
-        RichDelegateCommand<object> CloseCommand { get; }
+        RichDelegateCommand NewCommand { get; }
+        RichDelegateCommand OpenCommand { get; }
+        RichDelegateCommand CloseCommand { get; }
 
-        RichDelegateCommand<object> UndoCommand { get; }
-        RichDelegateCommand<object> RedoCommand { get; }
+        RichDelegateCommand UndoCommand { get; }
+        RichDelegateCommand RedoCommand { get; }
     }
 }

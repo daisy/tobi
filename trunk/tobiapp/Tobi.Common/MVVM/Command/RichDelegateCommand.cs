@@ -1,19 +1,12 @@
 using System;
 using System.Globalization;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Tobi.Common.UI;
 
 namespace Tobi.Common.MVVM.Command
 {
-    ///<summary>
-    /// Extension to <see cref="KeyGesture<T>"/> that supports a <see cref="MenuItem"/>
-    /// (for example, to display a shortcut in <see cref="DelegateCommand"/>, next to the label),
-    /// as well as a scalable icon (with 3 pre-determined sizes), and descriptions (text labels)
-    ///</summary>
-    ///<typeparam name="T"></typeparam>
-    public class RichDelegateCommand<T> : DelegateCommand<T>
+    public class RichDelegateCommand : DelegateCommand
     {
         public override string ToString()
         {
@@ -33,8 +26,8 @@ namespace Tobi.Common.MVVM.Command
         public RichDelegateCommand(String shortDescription, String longDescription,
                                    KeyGesture keyGesture,
                                    VisualBrush icon,
-                                   Action<T> executeMethod,
-                                   Predicate<T> canExecuteMethod)
+                                   Action executeMethod,
+                                   Func<bool> canExecuteMethod)
             : base(executeMethod, canExecuteMethod, false)
         {
             ShortDescription = (String.IsNullOrEmpty(shortDescription) ? "" : shortDescription);

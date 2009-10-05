@@ -30,8 +30,8 @@ namespace Tobi.Common.UI
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
-        public RichDelegateCommand<object> CommandDetailsExpand { get; private set; }
-        public RichDelegateCommand<object> CommandDetailsCollapse { get; private set; }
+        public RichDelegateCommand CommandDetailsExpand { get; private set; }
+        public RichDelegateCommand CommandDetailsCollapse { get; private set; }
 
         public IInputBindingManager InputBindingManager
         {
@@ -43,23 +43,23 @@ namespace Tobi.Common.UI
 
         private void initCommands()
         {
-            CommandDetailsExpand = new RichDelegateCommand<object>(
+            CommandDetailsExpand = new RichDelegateCommand(
                 UserInterfaceStrings.DetailsExpand,
                 UserInterfaceStrings.DetailsExpand_,
                 UserInterfaceStrings.DetailsExpand_KEYS,
                 (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-down")),
-                obj => IsDetailsExpanded = true,
-                obj => HasDetails && !IsDetailsExpanded);
+                ()=> IsDetailsExpanded = true,
+                ()=> HasDetails && !IsDetailsExpanded);
 
             AddInputBinding(CommandDetailsExpand.KeyBinding);
             //
-            CommandDetailsCollapse = new RichDelegateCommand<object>(
+            CommandDetailsCollapse = new RichDelegateCommand(
                 UserInterfaceStrings.DetailsCollapse,
                 UserInterfaceStrings.DetailsCollapse_,
                 UserInterfaceStrings.DetailsCollapse_KEYS,
                 (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-up")),
-                obj => IsDetailsExpanded = false,
-                obj => HasDetails && IsDetailsExpanded);
+                ()=> IsDetailsExpanded = false,
+                ()=> HasDetails && IsDetailsExpanded);
 
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
@@ -74,6 +74,9 @@ namespace Tobi.Common.UI
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
             InitializeComponent();
+
+            //RegionManager.SetRegionManager(this, m_Container.Resolve<IRegionManager>());
+            //RegionManager.UpdateRegions();
 
             initCommands();
 

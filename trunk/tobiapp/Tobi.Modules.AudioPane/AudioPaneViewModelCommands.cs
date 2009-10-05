@@ -15,38 +15,38 @@ namespace Tobi.Modules.AudioPane
     {
         #region Commands
 
-        public RichDelegateCommand<object> CommandShowOptionsDialog { get; private set; }
+        public RichDelegateCommand CommandShowOptionsDialog { get; private set; }
 
-        public RichDelegateCommand<object> CommandFocus { get; private set; }
-        public RichDelegateCommand<object> CommandFocusStatusBar { get; private set; }
-        public RichDelegateCommand<object> CommandOpenFile { get; private set; }
-        public RichDelegateCommand<object> CommandInsertFile { get; private set; }
-        public RichDelegateCommand<object> CommandGotoBegining { get; private set; }
-        public RichDelegateCommand<object> CommandGotoEnd { get; private set; }
-        public RichDelegateCommand<object> CommandStepBack { get; private set; }
-        public RichDelegateCommand<object> CommandStepForward { get; private set; }
-        public RichDelegateCommand<object> CommandRewind { get; private set; }
-        public RichDelegateCommand<object> CommandFastForward { get; private set; }
-        public RichDelegateCommand<object> CommandSelectAll { get; private set; }
-        public RichDelegateCommand<object> CommandClearSelection { get; private set; }
-        public RichDelegateCommand<object> CommandZoomSelection { get; private set; }
-        public RichDelegateCommand<object> CommandZoomFitFull { get; private set; }
-        public RichDelegateCommand<object> CommandRefresh { get; private set; }
-        public RichDelegateCommand<object> CommandAutoPlay { get; private set; }
-        public RichDelegateCommand<object> CommandAudioSettings { get; private set; }
-        public RichDelegateCommand<object> CommandPlay { get; private set; }
-        public RichDelegateCommand<object> CommandPlayPreviewLeft { get; private set; }
-        public RichDelegateCommand<object> CommandPlayPreviewRight { get; private set; }
-        public RichDelegateCommand<object> CommandPause { get; private set; }
-        public RichDelegateCommand<object> CommandStartRecord { get; private set; }
-        public RichDelegateCommand<object> CommandStopRecord { get; private set; }
-        public RichDelegateCommand<object> CommandStartMonitor { get; private set; }
-        public RichDelegateCommand<object> CommandStopMonitor { get; private set; }
-        public RichDelegateCommand<object> CommandBeginSelection { get; private set; }
-        public RichDelegateCommand<object> CommandEndSelection { get; private set; }
-        public RichDelegateCommand<object> CommandSelectNextChunk { get; private set; }
-        public RichDelegateCommand<object> CommandSelectPreviousChunk { get; private set; }
-        public RichDelegateCommand<object> CommandDeleteAudioSelection { get; private set; }
+        public RichDelegateCommand CommandFocus { get; private set; }
+        public RichDelegateCommand CommandFocusStatusBar { get; private set; }
+        public RichDelegateCommand CommandOpenFile { get; private set; }
+        public RichDelegateCommand CommandInsertFile { get; private set; }
+        public RichDelegateCommand CommandGotoBegining { get; private set; }
+        public RichDelegateCommand CommandGotoEnd { get; private set; }
+        public RichDelegateCommand CommandStepBack { get; private set; }
+        public RichDelegateCommand CommandStepForward { get; private set; }
+        public RichDelegateCommand CommandRewind { get; private set; }
+        public RichDelegateCommand CommandFastForward { get; private set; }
+        public RichDelegateCommand CommandSelectAll { get; private set; }
+        public RichDelegateCommand CommandClearSelection { get; private set; }
+        public RichDelegateCommand CommandZoomSelection { get; private set; }
+        public RichDelegateCommand CommandZoomFitFull { get; private set; }
+        public RichDelegateCommand CommandRefresh { get; private set; }
+        public RichDelegateCommand CommandAutoPlay { get; private set; }
+        public RichDelegateCommand CommandAudioSettings { get; private set; }
+        public RichDelegateCommand CommandPlay { get; private set; }
+        public RichDelegateCommand CommandPlayPreviewLeft { get; private set; }
+        public RichDelegateCommand CommandPlayPreviewRight { get; private set; }
+        public RichDelegateCommand CommandPause { get; private set; }
+        public RichDelegateCommand CommandStartRecord { get; private set; }
+        public RichDelegateCommand CommandStopRecord { get; private set; }
+        public RichDelegateCommand CommandStartMonitor { get; private set; }
+        public RichDelegateCommand CommandStopMonitor { get; private set; }
+        public RichDelegateCommand CommandBeginSelection { get; private set; }
+        public RichDelegateCommand CommandEndSelection { get; private set; }
+        public RichDelegateCommand CommandSelectNextChunk { get; private set; }
+        public RichDelegateCommand CommandSelectPreviousChunk { get; private set; }
+        public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
 
         public IInputBindingManager InputBindingManager
@@ -63,60 +63,60 @@ namespace Tobi.Modules.AudioPane
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            CommandRefresh = new RichDelegateCommand<object>(
+            CommandRefresh = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Reload,
                 UserInterfaceStrings.Audio_Reload_,
                 null,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //shellPresenter.LoadTangoIcon("view-refresh"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);
 
                     StartWaveFormLoadTimer(500, IsAutoPlay);
                 },
-                obj => !IsWaveFormLoading); //IsAudioLoaded
+                ()=> !IsWaveFormLoading); //IsAudioLoaded
 
             shellPresenter.RegisterRichCommand(CommandRefresh);
             //
-            CommandZoomSelection = new RichDelegateCommand<object>(
+            CommandZoomSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_ZoomSelection,
                 UserInterfaceStrings.Audio_ZoomSelection_,
                 UserInterfaceStrings.Audio_ZoomSelection_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
                 //shellPresenter.LoadTangoIcon("system-search"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandZoomSelection", Category.Debug, Priority.Medium);
 
                     View.ZoomSelection();
                 },
-                obj => View != null && !IsWaveFormLoading && IsSelectionSet);
+                ()=> View != null && !IsWaveFormLoading && IsSelectionSet);
 
             shellPresenter.RegisterRichCommand(CommandZoomSelection);
             //
-            CommandZoomFitFull = new RichDelegateCommand<object>(
+            CommandZoomFitFull = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FitFull,
                 UserInterfaceStrings.Audio_FitFull_,
                 UserInterfaceStrings.Audio_FitFull_KEYS,
                 shellPresenter.LoadTangoIcon("utilities-system-monitor"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandZoomFitFull", Category.Debug, Priority.Medium);
 
                     View.ZoomFitFull();
                 },
-                obj => View != null && !IsWaveFormLoading);
+                ()=> View != null && !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandZoomFitFull);
             //
             //
-            CommandAudioSettings = new RichDelegateCommand<object>(
+            CommandAudioSettings = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Settings,
                 UserInterfaceStrings.Audio_Settings_,
                 null,
                 shellPresenter.LoadTangoIcon("audio-card"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandAudioSettings", Category.Debug, Priority.Medium);
 
@@ -130,16 +130,16 @@ namespace Tobi.Modules.AudioPane
 
                     windowPopup.ShowFloating(null);
                 },
-                obj => true);
+                ()=> true);
 
             shellPresenter.RegisterRichCommand(CommandAudioSettings);
             //
-            CommandShowOptionsDialog = new RichDelegateCommand<object>(
+            CommandShowOptionsDialog = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_ShowOptions,
                 null,
                 UserInterfaceStrings.Audio_ShowOptions_KEYS,
                 null,
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandShowOptionsDialog", Category.Debug, Priority.Medium);
 
@@ -156,37 +156,37 @@ namespace Tobi.Modules.AudioPane
                                                            true, 400, 500);
                     windowPopup.Show();
                 },
-                obj => true);
+                ()=> true);
 
             shellPresenter.RegisterRichCommand(CommandShowOptionsDialog);
             //
-            CommandFocus = new RichDelegateCommand<object>(
+            CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Focus,
                 null,
                 UserInterfaceStrings.Audio_Focus_KEYS,
                 null,
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFocus", Category.Debug, Priority.Medium);
 
                     View.BringIntoFocus();
                 },
-                obj => View != null);
+                ()=> View != null);
 
             shellPresenter.RegisterRichCommand(CommandFocus);
             //
-            CommandFocusStatusBar = new RichDelegateCommand<object>(
+            CommandFocusStatusBar = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FocusStatusBar,
                 null,
                 UserInterfaceStrings.Audio_FocusStatusBar_KEYS,
                 null,
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFocusStatusBar", Category.Debug, Priority.Medium);
 
                     View.BringIntoFocusStatusBar();
                 },
-                obj => View != null);
+                ()=> View != null);
 
             shellPresenter.RegisterRichCommand(CommandFocusStatusBar);
             //
@@ -196,35 +196,35 @@ namespace Tobi.Modules.AudioPane
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            CommandOpenFile = new RichDelegateCommand<object>(
+            CommandOpenFile = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,
                 UserInterfaceStrings.Audio_OpenFile_KEYS,
                 shellPresenter.LoadTangoIcon("document-open"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandOpenFile", Category.Debug, Priority.Medium);
 
                     State.Audio.PcmFormatAlt = null;
-                    openFile(obj as String, false, false);
+                    openFile(null, false, false);
                 },
-                obj => !IsWaveFormLoading && !IsMonitoring && !IsRecording);
+                ()=> !IsWaveFormLoading && !IsMonitoring && !IsRecording);
 
             shellPresenter.RegisterRichCommand(CommandOpenFile);
             //
-            CommandInsertFile = new RichDelegateCommand<object>(
+            CommandInsertFile = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_InsertFile,
                 UserInterfaceStrings.Audio_InsertFile_,
                 UserInterfaceStrings.Audio_InsertFile_KEYS,
                 shellPresenter.LoadGnomeNeuIcon("Neu_go-jump"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandInsertFile", Category.Debug, Priority.Medium);
 
                     State.Audio.PcmFormatAlt = null;
-                    openFile(obj as String, true, false);
+                    openFile(null, true, false);
                 },
-                obj =>
+                ()=>
                 {
                     var session = Container.Resolve<IUrakawaSession>();
 
@@ -235,12 +235,12 @@ namespace Tobi.Modules.AudioPane
 
             shellPresenter.RegisterRichCommand(CommandInsertFile);
             //
-            CommandDeleteAudioSelection = new RichDelegateCommand<object>(
+            CommandDeleteAudioSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Delete,
                 UserInterfaceStrings.Audio_Delete_,
                 UserInterfaceStrings.Audio_Delete_KEYS,
                 shellPresenter.LoadGnomeNeuIcon("Neu_dialog-cancel"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandDeleteAudioSelection", Category.Debug, Priority.Medium);
 
@@ -344,7 +344,7 @@ namespace Tobi.Modules.AudioPane
                         session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
                     }
                 },
-                obj =>
+                ()=>
                 {
                     var session = Container.Resolve<IUrakawaSession>();
 

@@ -29,17 +29,17 @@ namespace Tobi.Modules.Urakawa
         protected IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
 
-        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
-        public RichDelegateCommand<object> SaveCommand { get; private set; }
+        public RichDelegateCommand SaveAsCommand { get; private set; }
+        public RichDelegateCommand SaveCommand { get; private set; }
 
-        public RichDelegateCommand<object> ExportCommand { get; private set; }
+        public RichDelegateCommand ExportCommand { get; private set; }
 
-        public RichDelegateCommand<object> NewCommand { get; private set; }
-        public RichDelegateCommand<object> OpenCommand { get; private set; }
-        public RichDelegateCommand<object> CloseCommand { get; private set; }
+        public RichDelegateCommand NewCommand { get; private set; }
+        public RichDelegateCommand OpenCommand { get; private set; }
+        public RichDelegateCommand CloseCommand { get; private set; }
 
-        public RichDelegateCommand<object> UndoCommand { get; private set; }
-        public RichDelegateCommand<object> RedoCommand { get; private set; }
+        public RichDelegateCommand UndoCommand { get; private set; }
+        public RichDelegateCommand RedoCommand { get; private set; }
 
         private Project m_DocumentProject;
         public Project DocumentProject
@@ -183,33 +183,33 @@ namespace Tobi.Modules.Urakawa
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
             //
-            UndoCommand = new RichDelegateCommand<object>(
+            UndoCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
                 shellPresenter.LoadTangoIcon("edit-undo"),
-                obj => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
-                obj => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
+                ()=> DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
+                ()=> DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
 
             shellPresenter.RegisterRichCommand(UndoCommand);
             //
-            RedoCommand = new RichDelegateCommand<object>(
+            RedoCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Redo,
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
                 shellPresenter.LoadTangoIcon("edit-redo"),
-                obj => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
-                obj => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
+                ()=> DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
+                ()=> DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
 
             shellPresenter.RegisterRichCommand(RedoCommand);
             //
-            CloseCommand = new RichDelegateCommand<object>(
+            CloseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Close,
                 UserInterfaceStrings.Close_,
                 UserInterfaceStrings.Close_KEYS,
                 shellPresenter.LoadTangoIcon("go-jump"),
-                obj => Close(),
-                obj => DocumentProject != null);
+                ()=> Close(),
+                ()=> DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(CloseCommand);
         }

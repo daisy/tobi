@@ -26,13 +26,13 @@ namespace Tobi.Modules.Urakawa
             var shellPresenter = Container.Resolve<IShellPresenter>();
             //
             //
-            ExportCommand = new RichDelegateCommand<object>(
+            ExportCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Export,
                 UserInterfaceStrings.Export_,
                 UserInterfaceStrings.Export_KEYS,
                 shellPresenter.LoadTangoIcon("emblem-symbolic-link"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                obj =>
+                ()=>
                 {
                     if (DocumentProject == null)
                     {
@@ -72,17 +72,17 @@ namespace Tobi.Modules.Urakawa
                     var exporter = new DAISY3Export(DocumentProject.Presentations.Get(0));
                     exporter.ExportToDaisy3(dlg.SelectedPath);
                 },
-                obj => DocumentProject != null);
+                ()=> DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(ExportCommand);
             //
-            SaveAsCommand = new RichDelegateCommand<object>(
+            SaveAsCommand = new RichDelegateCommand(
                 UserInterfaceStrings.SaveAs,
                 UserInterfaceStrings.SaveAs_,
                 UserInterfaceStrings.SaveAs_KEYS,
                 shellPresenter.LoadTangoIcon("document-save"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                obj =>
+                ()=>
                 {
                     if (DocumentProject == null)
                     {
@@ -133,7 +133,7 @@ namespace Tobi.Modules.Urakawa
                         DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(false);
 
                         IsDirty = false;
-                        CloseCommand.Execute(null);
+                        CloseCommand.Execute();
 
                         openFile(dlg.FileName);
                     }
@@ -143,18 +143,18 @@ namespace Tobi.Modules.Urakawa
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
                 },
-                obj => DocumentProject != null);
+                ()=> DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(SaveAsCommand);
             //
-            SaveCommand = new RichDelegateCommand<object>(
+            SaveCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Save,
                 UserInterfaceStrings.Save_,
                 UserInterfaceStrings.Save_KEYS,
                 shellPresenter.LoadTangoIcon("media-floppy"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                obj => save(),
-                obj => DocumentProject != null);
+                ()=> save(),
+                ()=> DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(SaveCommand);
         }

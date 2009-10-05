@@ -57,62 +57,62 @@ namespace Tobi.Modules.MenuBar
         protected IEventAggregator EventAggregator { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
 
-        public RichDelegateCommand<object> ExitCommand { get; private set; }
+        public RichDelegateCommand ExitCommand { get; private set; }
 
-        public RichDelegateCommand<object> MagnifyUiIncreaseCommand { get; private set; }
-        public RichDelegateCommand<object> MagnifyUiDecreaseCommand { get; private set; }
+        public RichDelegateCommand MagnifyUiIncreaseCommand { get; private set; }
+        public RichDelegateCommand MagnifyUiDecreaseCommand { get; private set; }
 
-        public RichDelegateCommand<object> ManageShortcutsCommand { get; private set; }
+        public RichDelegateCommand ManageShortcutsCommand { get; private set; }
 
-        public RichDelegateCommand<object> UndoCommand { get; private set; }
-        public RichDelegateCommand<object> RedoCommand { get; private set; }
+        public RichDelegateCommand UndoCommand { get; private set; }
+        public RichDelegateCommand RedoCommand { get; private set; }
 
-        public RichDelegateCommand<object> CopyCommand { get; private set; }
-        public RichDelegateCommand<object> CutCommand { get; private set; }
-        public RichDelegateCommand<object> PasteCommand { get; private set; }
+        public RichDelegateCommand CopyCommand { get; private set; }
+        public RichDelegateCommand CutCommand { get; private set; }
+        public RichDelegateCommand PasteCommand { get; private set; }
 
-        public RichDelegateCommand<object> HelpCommand { get; private set; }
-        public RichDelegateCommand<object> PreferencesCommand { get; private set; }
-        //public RichDelegateCommand<object> WebHomeCommand { get; private set; }
+        public RichDelegateCommand HelpCommand { get; private set; }
+        public RichDelegateCommand PreferencesCommand { get; private set; }
+        //public RichDelegateCommand WebHomeCommand { get; private set; }
 
-        //public RichDelegateCommand<object> NavNextCommand { get; private set; }
-        //public RichDelegateCommand<object> NavPreviousCommand { get; private set; }
+        //public RichDelegateCommand NavNextCommand { get; private set; }
+        //public RichDelegateCommand NavPreviousCommand { get; private set; }
 
-        public RichDelegateCommand<object> ExportCommand { get; private set; }
+        public RichDelegateCommand ExportCommand { get; private set; }
 
-        public RichDelegateCommand<object> SaveCommand { get; private set; }
-        public RichDelegateCommand<object> SaveAsCommand { get; private set; }
+        public RichDelegateCommand SaveCommand { get; private set; }
+        public RichDelegateCommand SaveAsCommand { get; private set; }
 
-        public RichDelegateCommand<object> NewCommand { get; private set; }
-        public RichDelegateCommand<object> OpenCommand { get; private set; }
-        public RichDelegateCommand<object> CloseCommand { get; private set; }
+        public RichDelegateCommand NewCommand { get; private set; }
+        public RichDelegateCommand OpenCommand { get; private set; }
+        public RichDelegateCommand CloseCommand { get; private set; }
 
-        public RichDelegateCommand<object> CommandShowMetadataPane { get; private set; }
+        public RichDelegateCommand CommandShowMetadataPane { get; private set; }
         
-        public RichDelegateCommand<object> AudioCommandInsertFile { get; private set; }
-        public RichDelegateCommand<object> AudioCommandGotoBegining { get; private set; }
-        public RichDelegateCommand<object> AudioCommandGotoEnd { get; private set; }
-        public RichDelegateCommand<object> AudioCommandStepBack { get; private set; }
-        public RichDelegateCommand<object> AudioCommandStepForward { get; private set; }
-        public RichDelegateCommand<object> AudioCommandRewind { get; private set; }
-        public RichDelegateCommand<object> AudioCommandFastForward { get; private set; }
-        public RichDelegateCommand<object> AudioCommandSelectAll { get; private set; }
-        public RichDelegateCommand<object> AudioCommandClearSelection { get; private set; }
-        public RichDelegateCommand<object> AudioCommandZoomSelection { get; private set; }
-        public RichDelegateCommand<object> AudioCommandZoomFitFull { get; private set; }
-        public RichDelegateCommand<object> AudioCommandPlay { get; private set; }
-        public RichDelegateCommand<object> AudioCommandPlayPreviewLeft { get; private set; }
-        public RichDelegateCommand<object> AudioCommandPlayPreviewRight { get; private set; }
-        public RichDelegateCommand<object> AudioCommandPause { get; private set; }
-        public RichDelegateCommand<object> AudioCommandStartRecord { get; private set; }
-        public RichDelegateCommand<object> AudioCommandStopRecord { get; private set; }
-        public RichDelegateCommand<object> AudioCommandStartMonitor { get; private set; }
-        public RichDelegateCommand<object> AudioCommandStopMonitor { get; private set; }
-        public RichDelegateCommand<object> AudioCommandBeginSelection { get; private set; }
-        public RichDelegateCommand<object> AudioCommandEndSelection { get; private set; }
-        public RichDelegateCommand<object> AudioCommandSelectNextChunk { get; private set; }
-        public RichDelegateCommand<object> AudioCommandSelectPreviousChunk { get; private set; }
-        public RichDelegateCommand<object> AudioCommandDeleteAudioSelection { get; private set; }
+        public RichDelegateCommand AudioCommandInsertFile { get; private set; }
+        public RichDelegateCommand AudioCommandGotoBegining { get; private set; }
+        public RichDelegateCommand AudioCommandGotoEnd { get; private set; }
+        public RichDelegateCommand AudioCommandStepBack { get; private set; }
+        public RichDelegateCommand AudioCommandStepForward { get; private set; }
+        public RichDelegateCommand AudioCommandRewind { get; private set; }
+        public RichDelegateCommand AudioCommandFastForward { get; private set; }
+        public RichDelegateCommand AudioCommandSelectAll { get; private set; }
+        public RichDelegateCommand AudioCommandClearSelection { get; private set; }
+        public RichDelegateCommand AudioCommandZoomSelection { get; private set; }
+        public RichDelegateCommand AudioCommandZoomFitFull { get; private set; }
+        public RichDelegateCommand AudioCommandPlay { get; private set; }
+        public RichDelegateCommand AudioCommandPlayPreviewLeft { get; private set; }
+        public RichDelegateCommand AudioCommandPlayPreviewRight { get; private set; }
+        public RichDelegateCommand AudioCommandPause { get; private set; }
+        public RichDelegateCommand AudioCommandStartRecord { get; private set; }
+        public RichDelegateCommand AudioCommandStopRecord { get; private set; }
+        public RichDelegateCommand AudioCommandStartMonitor { get; private set; }
+        public RichDelegateCommand AudioCommandStopMonitor { get; private set; }
+        public RichDelegateCommand AudioCommandBeginSelection { get; private set; }
+        public RichDelegateCommand AudioCommandEndSelection { get; private set; }
+        public RichDelegateCommand AudioCommandSelectNextChunk { get; private set; }
+        public RichDelegateCommand AudioCommandSelectPreviousChunk { get; private set; }
+        public RichDelegateCommand AudioCommandDeleteAudioSelection { get; private set; }
         
 
 

@@ -15,47 +15,47 @@ namespace Tobi.Modules.AudioPane
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
-            CommandSelectPreviousChunk = new RichDelegateCommand<object>(
+            CommandSelectPreviousChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectPreviousChunk,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_KEYS,
                 shellPresenter.LoadTangoIcon("go-previous"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectPreviousChunk", Category.Debug, Priority.Medium);
 
-                    CommandStepBack.Execute(null);
+                    CommandStepBack.Execute();
 
                     SelectChunk(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
                 },
-                obj => CommandStepBack.CanExecute(null));
+                ()=> CommandStepBack.CanExecute());
 
             shellPresenter.RegisterRichCommand(CommandSelectPreviousChunk);
             //
-            CommandSelectNextChunk = new RichDelegateCommand<object>(
+            CommandSelectNextChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectNextChunk,
                 UserInterfaceStrings.Audio_SelectNextChunk_,
                 UserInterfaceStrings.Audio_SelectNextChunk_KEYS,
                 shellPresenter.LoadTangoIcon("go-next"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectNextChunk", Category.Debug, Priority.Medium);
 
-                    CommandStepForward.Execute(null);
+                    CommandStepForward.Execute();
 
                     SelectChunk(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
                 },
-                obj => CommandStepForward.CanExecute(null));
+                ()=> CommandStepForward.CanExecute());
 
             shellPresenter.RegisterRichCommand(CommandSelectNextChunk);
             //
             //
-            CommandEndSelection = new RichDelegateCommand<object>(
+            CommandEndSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_EndSelection,
                 UserInterfaceStrings.Audio_EndSelection_,
                 UserInterfaceStrings.Audio_EndSelection_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandEndSelection", Category.Debug, Priority.Medium);
 
@@ -71,7 +71,7 @@ namespace Tobi.Modules.AudioPane
 
                     if (begin == end)
                     {
-                        CommandClearSelection.Execute(null);
+                        CommandClearSelection.Execute();
                         return;
                     }
 
@@ -101,16 +101,16 @@ namespace Tobi.Modules.AudioPane
                         AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                     }
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0);
+                ()=> !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0);
 
             shellPresenter.RegisterRichCommand(CommandEndSelection);
             //
-            CommandBeginSelection = new RichDelegateCommand<object>(
+            CommandBeginSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_BeginSelection,
                 UserInterfaceStrings.Audio_BeginSelection_,
                 UserInterfaceStrings.Audio_BeginSelection_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandBeginSelection", Category.Debug, Priority.Medium);
 
@@ -119,16 +119,16 @@ namespace Tobi.Modules.AudioPane
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTock();
                 },
-                obj => !IsWaveFormLoading && IsAudioLoaded);
+                ()=> !IsWaveFormLoading && IsAudioLoaded);
 
             shellPresenter.RegisterRichCommand(CommandBeginSelection);
             //
-            CommandSelectAll = new RichDelegateCommand<object>(
+            CommandSelectAll = new RichDelegateCommand(
                 UserInterfaceStrings.SelectAll,
                 UserInterfaceStrings.SelectAll_,
                 UserInterfaceStrings.SelectAll_KEYS,
                 shellPresenter.LoadTangoIcon("view-fullscreen"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectAll", Category.Debug, Priority.Medium);
 
@@ -146,21 +146,21 @@ namespace Tobi.Modules.AudioPane
                     var presenter = Container.Resolve<IShellPresenter>();
                     presenter.PlayAudioCueTockTock();
                 },
-                obj => !IsWaveFormLoading);
+                ()=> !IsWaveFormLoading);
 
             shellPresenter.RegisterRichCommand(CommandSelectAll);
             //
-            CommandClearSelection = new RichDelegateCommand<object>(UserInterfaceStrings.Audio_ClearSelection,
+            CommandClearSelection = new RichDelegateCommand(UserInterfaceStrings.Audio_ClearSelection,
                 UserInterfaceStrings.Audio_ClearSelection_,
                 UserInterfaceStrings.Audio_ClearSelection_KEYS,
                 shellPresenter.LoadTangoIcon("edit-clear"),
-                obj =>
+                ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandClearSelection", Category.Debug, Priority.Medium);
 
                     State.Selection.ClearSelection();
                 },
-                obj => !IsWaveFormLoading && IsSelectionSet);
+                ()=> !IsWaveFormLoading && IsSelectionSet);
 
             shellPresenter.RegisterRichCommand(CommandClearSelection);
             //
