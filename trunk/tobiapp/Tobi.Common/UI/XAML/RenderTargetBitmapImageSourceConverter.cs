@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Tobi.Common.UI.XAML
 {
@@ -31,7 +31,7 @@ namespace Tobi.Common.UI.XAML
                     var drawImage = values[1] as DrawingImage;
                     if (drawImage != null)
                     {
-                        var image = new Image {Source = drawImage};
+                        var image = new Image { Source = drawImage };
                         visualBrush = new VisualBrush(image);
                     }
                 }
@@ -58,36 +58,79 @@ namespace Tobi.Common.UI.XAML
         {
             if (Double.IsNaN(width))
             {
+                Debugger.Break();
                 return null;
             }
             if (Double.IsNaN(height))
             {
+                Debugger.Break();
                 return null;
             }
 
-            var rectangle = new Rectangle
-            {
-                SnapsToDevicePixels = true,
-                StrokeThickness = 0,
-                Height = height,
-                Width = width,
-                Fill = visualBrush
-            };
+            //visualBrush.ViewboxUnits = BrushMappingMode.RelativeToBoundingBox;
+            //visualBrush.Viewbox = new Rect(0, 0, 1, 1);
+
+            //visualBrush.ViewportUnits = BrushMappingMode.Absolute;
+            //visualBrush.Viewport = new Rect(0, 0, width, height);
+
+            //if (visualBrush.Visual is FrameworkElement)
+            //{
+            //    var frameElement = (FrameworkElement)visualBrush.Visual;
+            //    frameElement.Width = width;
+            //    frameElement.Height = height;
+            //}
+            //else
+            //{
+            //    Debugger.Break();
+            //}
 
             var size = new Size(width, height);
-            rectangle.Measure(size);
-            rectangle.Arrange(new Rect(0, 0, width, height));
-            rectangle.UpdateLayout();
+
+            if (visualBrush.Visual is UIElement)
+            {
+                var uiElement = (UIElement)visualBrush.Visual;
+
+                uiElement.Measure(size);
+                uiElement.Arrange(new Rect(0, 0, width, height));
+                //uiElement.UpdateLayout();
+                //uiElement.InvalidateVisual();
+            }
+
+            var visualBrushHost = new Border // Rectangle
+            {
+                //StrokeThickness = 0,
+                //Fill = Brushes.Red,
+                SnapsToDevicePixels = true,
+                Height = height,
+                Width = width,
+                BorderThickness = new Thickness(0),
+                BorderBrush = null,
+                Background = visualBrush // Fill
+            };
+            visualBrushHost.Measure(size);
+            visualBrushHost.Arrange(new Rect(0, 0, width, height));
+            visualBrushHost.UpdateLayout();
 
             var renderBitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
-            renderBitmap.Render(rectangle);
-
+            renderBitmap.Render(visualBrushHost);
             renderBitmap.Freeze();
+
+            //    Clipboard.SetImage(renderBitmap);
+
+            //PngBitmapEncoder png = new PngBitmapEncoder();
+            //png.Frames.Add(BitmapFrame.Create(renderBitmap));
+            //using (Stream stm = File.Create(filepath))
+            //{
+            //    png.Save(stm);
+            //}
 
             if (grey)
             {
-                return new FormatConvertedBitmap(renderBitmap,
-                                                PixelFormats.Gray32Float, null, 0);
+                Debugger.Break();
+
+                var bmp = new FormatConvertedBitmap(renderBitmap, PixelFormats.Gray32Float, null, 0);
+                bmp.Freeze();
+                return bmp;
             }
 
             return renderBitmap; //renderBitmap.GetAsFrozen();

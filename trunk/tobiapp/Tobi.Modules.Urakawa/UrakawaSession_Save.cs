@@ -72,7 +72,7 @@ namespace Tobi.Modules.Urakawa
                     var exporter = new DAISY3Export(DocumentProject.Presentations.Get(0));
                     exporter.ExportToDaisy3(dlg.SelectedPath);
                 },
-                ()=> DocumentProject != null);
+                () => DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(ExportCommand);
             //
@@ -143,7 +143,7 @@ namespace Tobi.Modules.Urakawa
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
                 },
-                ()=> DocumentProject != null);
+                () => DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(SaveAsCommand);
             //

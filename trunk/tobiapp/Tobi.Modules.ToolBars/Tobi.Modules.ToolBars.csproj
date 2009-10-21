@@ -84,10 +84,6 @@
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
-      <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>
-      <Name>Tobi.Modules.MetadataPane</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

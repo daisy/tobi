@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI.XAML;
@@ -32,7 +32,7 @@ namespace Tobi.Common.UI
                 if (m_IconDrawScale != value)
                 {
                     m_IconDrawScale = value;
-                    
+
                     //InvalidateIconsCache();
 
                     if (m_IconSmall != null)
@@ -75,7 +75,7 @@ namespace Tobi.Common.UI
             image.Source = RenderTargetBitmapImageSourceConverter.convert(
                 IconVisualBrush,
                 image.Width * IconDrawScale, image.Height * IconDrawScale,
-                !image.IsEnabled);
+                false); //!image.IsEnabled
         }
 
         private Image createImage(int size)
@@ -84,14 +84,17 @@ namespace Tobi.Common.UI
             {
                 IsEnabled = true,
                 VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Stretch = Stretch.Uniform,
+                SnapsToDevicePixels = true,
+
                 Margin =
                     (size == 0
                          ? IconMargin_Small
                          : (size == 1
                                 ? IconMargin_Medium
                                 : (size == 2 ? IconMargin_Large : IconMargin_XLarge))),
-                Stretch = Stretch.UniformToFill,
-                SnapsToDevicePixels = true,
+                
                 Width =
                     (size == 0
                          ? Sizes.IconWidth_Small
@@ -106,10 +109,14 @@ namespace Tobi.Common.UI
                                 : (size == 2 ? Sizes.IconHeight_Large : Sizes.IconHeight_XLarge)))
             };
 
+            updateSource(image);
+
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
+            image.SetValue(RenderOptions.CachingHintProperty, CachingHint.Unspecified);
 
-            updateSource(image);
+            //image.SetValue(RenderOptions.CacheInvalidationThresholdMinimumProperty, 1);
+            //image.SetValue(RenderOptions.CacheInvalidationThresholdMaximumProperty, 1);
 
             return image;
 
@@ -137,6 +144,7 @@ namespace Tobi.Common.UI
 
         }
 
+        /*
         private void assignMultiBinding(FrameworkElement image, string size)
         {
             var bindingMulti = new MultiBinding
@@ -197,7 +205,7 @@ namespace Tobi.Common.UI
                 multiBind.Bindings.Add(newBind);
             }
             return multiBind;
-        }
+        }*/
 
         private VisualBrush m_IconVisualBrush = null;
         public VisualBrush IconVisualBrush
@@ -208,6 +216,20 @@ namespace Tobi.Common.UI
                 if (m_IconVisualBrush != value)
                 {
                     m_IconVisualBrush = value;
+
+                    m_IconVisualBrush.Opacity = 1.0;
+                    m_IconVisualBrush.Stretch = Stretch.Uniform;
+                    m_IconVisualBrush.TileMode = TileMode.None;
+                    m_IconVisualBrush.AutoLayoutContent = false;
+                    m_IconVisualBrush.AlignmentX = AlignmentX.Center;
+                    m_IconVisualBrush.AlignmentY = AlignmentY.Center;
+
+                    m_IconVisualBrush.ViewboxUnits = BrushMappingMode.RelativeToBoundingBox;
+                    m_IconVisualBrush.Viewbox = new Rect(0, 0, 1, 1);
+
+                    m_IconVisualBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                    m_IconVisualBrush.Viewport = new Rect(0, 0, 1, 1);
+
                     RaisePropertyChanged(() => IconVisualBrush);
                 }
             }
@@ -234,6 +256,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
+                    Debugger.Break();
                     return null;
                 }
                 if (m_IconSmall == null)
@@ -267,6 +290,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
+                    Debugger.Break();
                     return null;
                 }
                 if (m_IconMedium == null)
@@ -300,6 +324,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
+                    //Debugger.Break();
                     return null;
                 }
                 if (m_IconLarge == null)
@@ -333,6 +358,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
+                    Debugger.Break();
                     return null;
                 }
                 if (m_IconXLarge == null)

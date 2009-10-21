@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Diagnostics;
-using Microsoft.Practices.Composite.Events;
+﻿using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
@@ -83,7 +79,7 @@ namespace Tobi.Modules.MenuBar
         public RichDelegateCommand SaveCommand { get; private set; }
         public RichDelegateCommand SaveAsCommand { get; private set; }
 
-        public RichDelegateCommand NewCommand { get; private set; }
+        //public RichDelegateCommand NewCommand { get; private set; }
         public RichDelegateCommand OpenCommand { get; private set; }
         public RichDelegateCommand CloseCommand { get; private set; }
 
@@ -146,7 +142,7 @@ namespace Tobi.Modules.MenuBar
                 ExportCommand = session.ExportCommand;
                 SaveAsCommand = session.SaveAsCommand;
                 OpenCommand = session.OpenCommand;
-                NewCommand = session.NewCommand;
+                //NewCommand = session.NewCommand;
                 CloseCommand = session.CloseCommand;
 
                 UndoCommand = session.UndoCommand;

@@ -42,7 +42,7 @@ namespace Tobi.Common
         public static KeyGesture Document_Focus_KEYS = new KeyGesture(Key.F8, ModifierKeys.None);
 
         public const string Toolbar_Focus = "Bring focus to the toolbar";
-        public static KeyGesture Toolbar_Focus_KEYS = new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift );
+        public static KeyGesture Toolbar_Focus_KEYS = new KeyGesture(Key.F9, ModifierKeys.None);
 
         public const string Audio_Focus = "Bring focus to the audio panel";
         public static KeyGesture Audio_Focus_KEYS = new KeyGesture(Key.F7, ModifierKeys.None);

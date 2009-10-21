@@ -13,9 +13,19 @@
   xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
   
   xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
+     
+  Focusable="True"
+  x:Name="FocusStart"
    
-   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}">
-  
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}"
+   
+   >
+
+  <!-- ItemsControl.Resources>
+    ItemTemplateSelector="{StaticResource ToolbarTemplateSelector}"
+    <local:ToolbarTemplateSelector x:Key="ToolbarTemplateSelector" />
+    </ItemsControl.Resources -->
+
   <ItemsControl.ItemsPanel>
     <ItemsPanelTemplate>
       <WrapPanel Orientation="Horizontal"
@@ -24,13 +34,14 @@
   </ItemsControl.ItemsPanel>
   <ItemsControl.ItemTemplate>
     <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
+      <!-- DataTemplate DataType="{x:Type UI:ScalableGreyableImageProvider}" -->
       <UI:ButtonRichCommand RichCommand="{Binding .}" />
-    </DataTemplate>
+      <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.ShortDescription}"/ -->
+      <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.IconProvider.IconXLarge, Mode=OneWay}"/ -->
+      <!-- ContentControl Content="{Binding Path=.IconProvider.IconXLarge}"/ -->
+      <!-- ContentControl Content="{Binding Path=.IconXLarge, Mode=OneWay}"/ -->
+    </DataTemplate> 
   </ItemsControl.ItemTemplate>
-  <UI:ButtonRichCommand  
-  Focusable="True"
-  x:Name="FocusStart"
-  RichCommand="{Binding ManageShortcutsCommand}"/>
 </ItemsControl>
 
 

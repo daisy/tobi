@@ -29,12 +29,14 @@ namespace Tobi.Modules.Urakawa
         protected IUnityContainer Container { get; private set; }
         protected IEventAggregator EventAggregator { get; private set; }
 
+        //protected Dispatcher Dispatcher { get; private set; }
+
         public RichDelegateCommand SaveAsCommand { get; private set; }
         public RichDelegateCommand SaveCommand { get; private set; }
 
         public RichDelegateCommand ExportCommand { get; private set; }
 
-        public RichDelegateCommand NewCommand { get; private set; }
+        //public RichDelegateCommand NewCommand { get; private set; }
         public RichDelegateCommand OpenCommand { get; private set; }
         public RichDelegateCommand CloseCommand { get; private set; }
 
@@ -163,16 +165,19 @@ namespace Tobi.Modules.Urakawa
         public UrakawaSession(IUnityContainer container,
                             ILoggerFacade logger,
                             IRegionManager regionManager,
-                            IEventAggregator eventAggregator)
+                            IEventAggregator eventAggregator)//Dispatcher dispatcher
         {
             Container = container;
             Logger = logger;
             RegionManager = regionManager;
             EventAggregator = eventAggregator;
+            //Dispatcher = dispatcher;
 
             IsDirty = false;
 
             initCommands();
+
+            EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
         }
 
         private void initCommands()
@@ -212,7 +217,31 @@ namespace Tobi.Modules.Urakawa
                 ()=> DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(CloseCommand);
+
+            pushCommandsToolbar();
+
+            //if (!Dispatcher.CheckAccess())
+            //{
+            //    Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(pushCommandsToolbar));
+            //    //Dispatcher.Invoke(DispatcherPriority.Normal, new Action(pushCommandsToolbar));
+            //    //Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(pushCommandsToolbar));
+            //}
+            //else
+            //{
+            //    pushCommandsToolbar();
+            //}
         }
+
+        private void pushCommandsToolbar()
+        {
+            var toolbars = Container.Resolve<IToolBarsView>();
+            if (toolbars != null)
+            {
+                int uid1 = toolbars.AddToolBarGroup(new[] { OpenCommand, SaveCommand });
+                int uid2 = toolbars.AddToolBarGroup(new[] { UndoCommand, RedoCommand });
+            }
+        }
+
 
         public bool Close()
         {

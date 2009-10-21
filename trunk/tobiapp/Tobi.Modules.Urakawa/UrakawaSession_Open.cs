@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
@@ -20,20 +19,19 @@ namespace Tobi.Modules.Urakawa
         private void initCommands_Open()
         {
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            //
-            NewCommand = new RichDelegateCommand(
-                UserInterfaceStrings.New,
-                UserInterfaceStrings.New_,
-                UserInterfaceStrings.New_KEYS,
-                shellPresenter.LoadTangoIcon("document-new"),
-                ()=>
-                {
-                    string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
-                },
-                ()=> true);
-
-            shellPresenter.RegisterRichCommand(NewCommand);
+            ////
+            //NewCommand = new RichDelegateCommand(
+            //    UserInterfaceStrings.New,
+            //    UserInterfaceStrings.New_,
+            //    UserInterfaceStrings.New_KEYS,
+            //    shellPresenter.LoadTangoIcon("document-new"),
+            //    ()=>
+            //    {
+            //        string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //        openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
+            //    },
+            //    ()=> true);
+            //shellPresenter.RegisterRichCommand(NewCommand);
             //
             OpenCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Open,
@@ -67,7 +65,7 @@ namespace Tobi.Modules.Urakawa
                     
                     openFile(dlg.FileName);
                 },
-                ()=> true);
+                () => true);
 
             shellPresenter.RegisterRichCommand(OpenCommand);
         }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="PresentationOptions">
   <VisualBrush x:Key="go-jump">
+
     <VisualBrush.Visual>
-      <Canvas   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
         <Canvas >
           <Path  RenderTransform="1.489736,0,0,-1.001252,-12.26794,72.07115" Opacity="0.14117648">
             <Path.Data>
@@ -51,7 +51,6 @@
               </LinearGradientBrush>
             </Path.Stroke>
           </Path>
-        </Canvas>
       </Canvas>
     </VisualBrush.Visual>
   </VisualBrush>
