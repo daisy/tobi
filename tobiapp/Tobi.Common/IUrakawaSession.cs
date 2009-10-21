@@ -17,7 +17,7 @@ namespace Tobi.Common
         RichDelegateCommand SaveCommand { get; }
         RichDelegateCommand SaveAsCommand { get; }
 
-        RichDelegateCommand NewCommand { get; }
+        //RichDelegateCommand NewCommand { get; }
         RichDelegateCommand OpenCommand { get; }
         RichDelegateCommand CloseCommand { get; }
 

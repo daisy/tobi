@@ -28,17 +28,16 @@ namespace Tobi.Modules.ToolBars
         ///</summary>
         public void Initialize()
         {
-            m_Container.RegisterType<ToolBarsView>(new ContainerControlledLifetimeManager());
+            m_Container.RegisterType<IToolBarsView, ToolBarsView>(new ContainerControlledLifetimeManager());
 
             var regionManager = m_Container.Resolve<IRegionManager>();
 
-            //regionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(ToolBarsView));
+            regionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(IToolBarsView));
 
-            var view = m_Container.Resolve<ToolBarsView>();
-
-            IRegion targetRegion = regionManager.Regions[RegionNames.ToolBars];
-            targetRegion.Add(view);
-            targetRegion.Activate(view);
+            //var view = m_Container.Resolve<IToolBarsView>();
+            //IRegion targetRegion = regionManager.Regions[RegionNames.ToolBars];
+            //targetRegion.Add(view);
+            //targetRegion.Activate(view);
         }
     }
 }

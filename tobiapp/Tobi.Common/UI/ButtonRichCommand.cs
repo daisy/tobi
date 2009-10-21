@@ -88,8 +88,8 @@ namespace Tobi.Common.UI
                                           Source = command.IconProvider,
                                           Path = new PropertyPath("IconMedium")
                                       };
+                    var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
 
-                    //var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
                     ((ImageAndTextPlaceholder)button.Tag).m_TextHost.Content = command.ShortDescription;
                     button.ToolTip = command.LongDescription;
 
@@ -532,6 +532,7 @@ namespace Tobi.Common.UI
                 SetValue(ShowTextLabelProperty, value);
             }
         }
+
         public static readonly DependencyProperty RichCommandActiveProperty =
             DependencyProperty.Register("RichCommandActive",
                                         typeof(Boolean),
@@ -579,6 +580,7 @@ namespace Tobi.Common.UI
                     button.InputBindingManager.AddInputBinding(command.KeyBinding);
                 }
             }
+
             ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 

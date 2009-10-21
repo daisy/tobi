@@ -88,6 +88,12 @@ namespace Tobi.Modules.MetadataPane
                 CanShowDialog);
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
+
+            var toolbars = Container.Resolve<IToolBarsView>();
+            if (toolbars != null)
+            {
+                int uid = toolbars.AddToolBarGroup(new[] {CommandShowMetadataPane});
+            }
         }
 
         bool CanShowDialog()

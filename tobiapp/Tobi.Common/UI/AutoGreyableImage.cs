@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -30,7 +31,7 @@ namespace Tobi.Common.UI
         /// </summary>
         static AutoGreyableImage()
         {
-            // Override the metadata of the IsEnabled property.
+            //Override the metadata of the IsEnabled property.
             IsEnabledProperty.OverrideMetadata(typeof(AutoGreyableImage),
                    new FrameworkPropertyMetadata(true,
                        new PropertyChangedCallback(OnAutoGreyScaleImageIsEnabledPropertyChanged)));
@@ -54,6 +55,7 @@ namespace Tobi.Common.UI
             {
                 if (autoGreyScaleImg.SourceBindingGrey != null)
                 {
+                    Debugger.Break();
                     var expr = autoGreyScaleImg.SetBinding(SourceProperty, autoGreyScaleImg.SourceBindingGrey);
                 }
                 else
@@ -87,6 +89,7 @@ namespace Tobi.Common.UI
             {
                 if (autoGreyScaleImg.SourceBindingColor != null)
                 {
+                    Debugger.Break();
                     var expr = autoGreyScaleImg.SetBinding(SourceProperty, autoGreyScaleImg.SourceBindingColor);
                 }
                 else

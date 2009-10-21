@@ -3,6 +3,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Threading;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -101,11 +102,11 @@ namespace Tobi
 
         protected override void ConfigureContainer()
         {
-            //Container.RegisterInstance<Dispatcher>(Dispatcher.CurrentDispatcher);
+            //Container.RegisterInstance(Dispatcher.CurrentDispatcher);
 
             Container.RegisterType<IShellView, Shell>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IShellPresenter, ShellPresenter>(new ContainerControlledLifetimeManager());
-            Container.RegisterType<IUrakawaSession, UrakawaSession>(new ContainerControlledLifetimeManager());
+            //Container.RegisterType<IUrakawaSession, UrakawaSession>(new ContainerControlledLifetimeManager());
 
             base.ConfigureContainer();
         }
@@ -116,13 +117,13 @@ namespace Tobi
 
             return new ModuleCatalog()
                 .AddModule(typeof(FileDialogModule))
-                //.AddModule(typeof(UrakawaModule)) NOTE: we force IUrakawaSession to be loaded first, see ConfigureContainer() above !
+                .AddModule(typeof(UrakawaModule))
                 //.AddModule(typeof(ToolBarsModule), new string[]{"MetadataPaneModule", "UrakawaModule"})
-                .AddModule(typeof(MenuBarModule), "MetadataPaneModule")
-                .AddModule(typeof(ToolBarsModule), "MetadataPaneModule")
+                .AddModule(typeof(MenuBarModule), new[] { "MetadataPaneModule", "UrakawaModule" })
                 .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
                 .AddModule(typeof(HeadingPaneModule), "NavigationPaneModule")
                 .AddModule(typeof(PagePaneModule), "NavigationPaneModule")
+                .AddModule(typeof(ToolBarsModule))
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))

@@ -4,6 +4,9 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Modularity;
+using Microsoft.Practices.Composite.Presentation.Events;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Common;
@@ -82,11 +85,15 @@ namespace Tobi
                 //app.Dispatcher.BeginInvoke((Action)(() => app.SplashScreen.Close(TimeSpan.Zero)), DispatcherPriority.Loaded);
             }
 
-            var session = Container.Resolve<IUrakawaSession>();
-            session.BindPropertyChangedToAction(() => session.DocumentFilePath,
-                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
-            session.BindPropertyChangedToAction(() => session.IsDirty,
-                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
+            var session = Container.TryResolve<IUrakawaSession>();
+            if (session == null)
+            {
+                SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IUrakawaSession, ThreadOption.UIThread, false, type => typeof(IUrakawaSession).IsAssignableFrom(type));
+            }
+            else
+            {
+                bindTitle();
+            }
 
 
             //Activate();
@@ -100,6 +107,25 @@ namespace Tobi
             */
         }
 
+        private void OnTypeConstructed_IUrakawaSession(Type type)
+        {
+            bindTitle();
+            EventAggregator.GetEvent<TypeConstructedEvent>().Unsubscribe(OnTypeConstructed_IUrakawaSession);
+        }
+
+        private void bindTitle()
+        {
+            var session = Container.Resolve<IUrakawaSession>();
+
+            session.BindPropertyChangedToAction(() => session.DocumentFilePath,
+                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
+
+            session.BindPropertyChangedToAction(() => session.IsDirty,
+                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
+
+            m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle);
+        }
+
         private void OnSystemEventsDisplaySettingsChanged(object sender, EventArgs e)
         {
             // update DPI-dependent stuff
@@ -109,12 +135,8 @@ namespace Tobi
         {
             get
             {
-                IUrakawaSession session;
-                try
-                {
-                    session = Container.Resolve<IUrakawaSession>();
-                }
-                catch (ResolutionFailedException)
+                IUrakawaSession session = Container.TryResolve<IUrakawaSession>(); ;
+                if (session == null)
                 {
                     return "Tobi - Initializing...";
                 }
@@ -224,10 +246,8 @@ namespace Tobi
             }
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
-            if (shellPresenter != null)
-            {
-                shellPresenter.OnMagnificationLevelChanged(MagnificationLevel);
-            }
+            shellPresenter.OnMagnificationLevelChanged(MagnificationLevel);
+
             /*
             foreach(InputBinding ib in InputBindings)
             {

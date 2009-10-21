@@ -85,6 +85,7 @@
     <Compile Include="IFileDialogService.cs" />
     <Compile Include="IShellPresenter.cs" />
     <Compile Include="IShellView.cs" />
+    <Compile Include="IToolbarsView.cs" />
     <Compile Include="IUrakawaSession.cs" />
     <Compile Include="MVVM\ActiveAware.cs" />
     <Compile Include="MVVM\Command\DelegateCommand.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Sizes.cs" />
     <Compile Include="StatusBarMessageUpdateEvent.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
+    <Compile Include="TypeConstructedEvent.cs" />
     <Compile Include="UI\AutoGreyableImage.cs" />
     <Compile Include="UI\ButtonRichCommand.cs" />
     <Compile Include="UI\FocusHelper.cs" />

@@ -13,7 +13,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Composite.Regions;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
@@ -58,7 +60,7 @@ namespace Tobi
     {
         public void OnImportsSatisfied()
         {
-            Debugger.Break();
+            //Debugger.Break();
         }
 
         private void playAudioCue(string audioClipName)
@@ -203,7 +205,7 @@ namespace Tobi
                 null,
                 UserInterfaceStrings.IconsDebug_KEYS,
                 null,
-                ()=> DisplayPreviewIconsDebugCommand_Executed(),
+                DisplayPreviewIconsDebugCommand_Executed,
                 ()=> true);
 
             RegisterRichCommand(DisplayPreviewIconsDebugCommand);
@@ -313,6 +315,37 @@ namespace Tobi
 
             //RegisterRichCommand(NavPreviousCommand);
             //
+
+
+            var toolbars = Container.TryResolve<IToolBarsView>();
+            if (toolbars == null)
+            {
+                SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IToolBarsView, ThreadOption.UIThread, false, type => typeof(IToolBarsView).IsAssignableFrom(type));
+            }
+            else
+            {
+                Debugger.Break();
+                pushCommandsToolbar();
+            }
+        }
+
+        private void OnTypeConstructed_IToolBarsView(Type type)
+        {
+            pushCommandsToolbar();
+            EventAggregator.GetEvent<TypeConstructedEvent>().Unsubscribe(OnTypeConstructed_IToolBarsView);
+        }
+
+        private void pushCommandsToolbar()
+        {
+            var toolbars = Container.Resolve<IToolBarsView>();
+
+            if (toolbars != null)
+            {
+                int uid1 = toolbars.AddToolBarGroup(new[] { ManageShortcutsCommand });
+                int uid2 = toolbars.AddToolBarGroup(new[] { MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
+                //int uid3 = toolbars.AddToolBarGroup(new[] { ExitCommand });
+                int uid4 = toolbars.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand });
+            }
         }
 
         private void DisplayPreviewIconsDebugCommand_Executed()
@@ -1151,13 +1184,18 @@ namespace Tobi
             if (obj == null)
             {
                 Object comp = Application.LoadComponent(
-                    new Uri(path + resourceKey + ".xaml",
-                            UriKind.Relative));
-                Application.Current.Resources.MergedDictionaries.Add(
-                    comp as ResourceDictionary);
+                    new Uri(path + resourceKey + ".xaml", UriKind.Relative));
+
+                Application.Current.Resources.MergedDictionaries.Add(comp as ResourceDictionary);
+
+                var brush = (VisualBrush) Application.Current.FindResource(resourceKey);
+
+                return brush;
             }
-            return (VisualBrush)
-                Application.Current.FindResource(resourceKey);
+            else
+            {
+                return (VisualBrush) obj;
+            }
         }
 
         public VisualBrush LoadTangoIcon(string resourceKey)
