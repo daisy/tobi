@@ -3,7 +3,9 @@
 // -----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Diagnostics;
 using System.ComponentModel.Composition.Primitives;
+using System.ComponentModel.Composition.ReflectionModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -240,17 +242,40 @@ namespace System.ComponentModel.Composition.Hosting
             this.EnsureRunning();
 
             // Use the version of the catalog appropriate to this atomicComposition
-            var currentCatalog = atomicComposition.GetValueAllowNull(this._catalog);
+            ComposablePartCatalog currentCatalog = atomicComposition.GetValueAllowNull(this._catalog);
+
+#if SILVERLIGHT
+            IPartCreatorImportDefinition partCreatorDefinition = definition as IPartCreatorImportDefinition;
+            bool isPartCreator = false;
+
+            if (partCreatorDefinition != null)
+            {
+                definition = partCreatorDefinition.ProductImportDefinition;
+                isPartCreator = true;
+            }
+#endif
+            CreationPolicy importPolicy = definition.GetRequiredCreationPolicy();
 
             List<Export> exports = new List<Export>();
-            foreach (var partDefinitionAndExportDefinition in
-                currentCatalog.GetExports(definition))
+            foreach (var partDefinitionAndExportDefinition in currentCatalog.GetExports(definition))
             {
                 if (!IsRejected(partDefinitionAndExportDefinition.Item1, atomicComposition))
                 {
-                    exports.Add(CreateExport(partDefinitionAndExportDefinition.Item1,
-                                             partDefinitionAndExportDefinition.Item2,
-                                             definition));
+#if SILVERLIGHT
+                    if (isPartCreator)
+                    {
+                        exports.Add(new PartCreatorExport(this,
+                            partDefinitionAndExportDefinition.Item1,
+                            partDefinitionAndExportDefinition.Item2));
+                    }
+                    else
+#endif
+                    {
+                        exports.Add(CatalogExport.CreateExport(this, 
+                            partDefinitionAndExportDefinition.Item1, 
+                            partDefinitionAndExportDefinition.Item2, 
+                            importPolicy));
+                    }
                 }
             }
 
@@ -262,6 +287,31 @@ namespace System.ComponentModel.Composition.Hosting
             UpdateRejections(e.AddedExports.Concat(e.RemovedExports), e.AtomicComposition);
         }
 
+        private static ExportDefinition[] GetExportsFromPartDefinitions(IEnumerable<ComposablePartDefinition> partDefinitions)
+        {
+            List<ExportDefinition> exports = new List<ExportDefinition>();
+
+            foreach (var partDefinition in partDefinitions)
+            {
+                foreach (var export in partDefinition.ExportDefinitions)
+                {
+                    exports.Add(export);
+
+                    // While creating a PartCreatorExportDefinition for every changed definition may not be the most
+                    // efficient way to do this the PartCreatorExportDefinition is very efficient and doesn't do any
+                    // real work unless its metadata is pulled on. If this turns out to be a bottleneck then we
+                    // will need to start tracking all the PartCreator's we hand out and only send those which we 
+                    // have handed out. In fact we could do the same thing for all the Exports if we wished but 
+                    // that requires a cache management which we don't want to do at this point.
+#if SILVERLIGHT
+                    exports.Add(new PartCreatorExportDefinition(export));
+#endif
+                }
+            }
+
+            return exports.ToArray();
+        }
+
         private void OnCatalogChanging(object sender, ComposablePartCatalogChangeEventArgs e)
         {
             using (var atomicComposition = new AtomicComposition(e.AtomicComposition))
@@ -271,12 +321,8 @@ namespace System.ComponentModel.Composition.Hosting
                 atomicComposition.SetValue(this._catalog,
                     new CatalogChangeProxy(this._catalog, e.AddedDefinitions, e.RemovedDefinitions));
 
-                IEnumerable<ExportDefinition> addedExports = e.AddedDefinitions
-                        .SelectMany(part => part.ExportDefinitions)
-                        .ToArray();
-                IEnumerable<ExportDefinition> removedExports = e.RemovedDefinitions
-                        .SelectMany(part => part.ExportDefinitions)
-                        .ToArray();
+                IEnumerable<ExportDefinition> addedExports = GetExportsFromPartDefinitions(e.AddedDefinitions);
+                IEnumerable<ExportDefinition> removedExports = GetExportsFromPartDefinitions(e.RemovedDefinitions);
 
                 // Remove any parts based on eliminated definitions (in a atomicComposition-friendly
                 // fashion)
@@ -312,13 +358,6 @@ namespace System.ComponentModel.Composition.Hosting
 
                 atomicComposition.Complete();
             }
-        }
-
-        private Export CreateExport(ComposablePartDefinition partDefinition,
-            ExportDefinition exportDefinition, ImportDefinition importDefinition)
-        {
-            CreationPolicy importPolicy = importDefinition.GetRequiredCreationPolicy();
-            return CatalogExport.CreateExport(this, partDefinition, exportDefinition, importPolicy);
         }
 
         private ComposablePart GetComposablePart(ComposablePartDefinition partDefinition, bool isSharedPart)
@@ -580,6 +619,8 @@ namespace System.ComponentModel.Composition.Hosting
                     this._rejectedParts.Add(definition);
                 }
 
+                CompositionTrace.PartDefinitionRejected(definition, exception);
+
             });
             if (parentAtomicComposition != null)
             {
@@ -644,6 +685,8 @@ namespace System.ComponentModel.Composition.Hosting
                             {
                                 this._rejectedParts.Remove(capturedPartDefinition);                                
                             }
+
+                            CompositionTrace.PartDefinitionResurrected(capturedPartDefinition);
                         });
                     }
                 }

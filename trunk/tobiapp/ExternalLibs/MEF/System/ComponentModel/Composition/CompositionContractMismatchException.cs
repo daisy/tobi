@@ -79,7 +79,7 @@ namespace System.ComponentModel.Composition
         /// <exception cref="InvalidCastException">
         ///     <paramref name="info"/> contains a value that cannot be cast to the correct type.
         /// </exception>
-        [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+        [System.Security.SecuritySafeCritical]
         protected CompositionContractMismatchException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

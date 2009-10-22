@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Diagnostics;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.ComponentModel.Composition.ReflectionModel;
@@ -81,16 +82,19 @@ namespace System.ComponentModel.Composition.AttributedModel
         {
             if (this._type.IsAttributeDefined<PartNotDiscoverableAttribute>())
             {
+                CompositionTrace.DefinitionMarkedWithPartNotDiscoverableAttribute(this._type);
                 return false;
             }
 
             if (this._type.ContainsGenericParameters)
             {
+                CompositionTrace.DefinitionContainsGenericsParameters(this._type);
                 return false;
             }
 
             if (!HasExports())
             {
+                CompositionTrace.DefinitionContainsNoExports(this._type);
                 return false;
             }
 
@@ -321,11 +325,10 @@ namespace System.ComponentModel.Composition.AttributedModel
             {
                 yield break;
             }
-            
+
             // Stopping at object instead of null to help with performance. It is a noticable performance
             // gain (~5%) if we don't have to try and pull the attributes we know don't exist on object.
-            // We also need the null check in case we're passed a type that doesn't live in the runtime context.
-            while (currentType != null && currentType != CompositionServices.ObjectType)
+            while (currentType != CompositionServices.ObjectType)
             {
                 if (IsInheritedExport(currentType))
                 {
@@ -396,8 +399,7 @@ namespace System.ComponentModel.Composition.AttributedModel
 
                 // Stopping at object instead of null to help with performance. It is a noticable performance
                 // gain (~5%) if we don't have to try and pull the attributes we know don't exist on object.
-                // We also need the null check in case we're passed a type that doesn't live in the runtime context.
-                while (baseType != null && baseType != CompositionServices.ObjectType)
+                while (baseType != CompositionServices.ObjectType)
                 {
                     foreach (MemberInfo member in GetDeclaredOnlyImportMembers(baseType))
                     {

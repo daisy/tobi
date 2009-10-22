@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition.Diagnostics;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Globalization;
@@ -418,6 +419,8 @@ namespace System.ComponentModel.Composition.Hosting
             {   // Dlls that have missing Managed dependencies are not loaded, but do not invalidate the Directory 
                 exception = ex;
             }
+
+            CompositionTrace.AssemblyLoadFailed(this, assemblyFilePath, exception);
 
             return null;
         }

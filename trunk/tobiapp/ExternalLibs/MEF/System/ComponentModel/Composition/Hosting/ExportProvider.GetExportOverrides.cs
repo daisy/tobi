@@ -267,7 +267,7 @@ namespace System.ComponentModel.Composition.Hosting
             IEnumerable<Export> exports = this.GetExportsCore(type, metadataViewType, contractName, ImportCardinality.ZeroOrMore);
             Collection<Lazy<object, object>> result = new Collection<Lazy<object, object>>();
 
-            Func<Export, Lazy<object, object>> typedExportFactory = ExportServices.CreateSemiStronglyTypedExportFactory(type, metadataViewType);
+            Func<Export, Lazy<object, object>> typedExportFactory = ExportServices.CreateSemiStronglyTypedLazyFactory(type, metadataViewType);
             foreach (Export export in exports)
             {
                 result.Add(typedExportFactory.Invoke(export));
@@ -723,7 +723,7 @@ namespace System.ComponentModel.Composition.Hosting
             Collection<T> result = new Collection<T>();
             foreach (Export export in exports)
             {
-                result.Add(ExportServices.GetExportedValueFromLazy<T>(export));
+                result.Add(ExportServices.GetCastedExportedValue<T>(export));
             }
             return result;
         }
@@ -734,7 +734,7 @@ namespace System.ComponentModel.Composition.Hosting
 
             Export export = this.GetExportsCore(typeof(T), (Type)null, contractName, cardinality).SingleOrDefault();
 
-            return (export != null) ? ExportServices.GetExportedValueFromLazy<T>(export) : default(T);
+            return (export != null) ? ExportServices.GetCastedExportedValue<T>(export) : default(T);
         }
 
         private IEnumerable<Lazy<T>> GetExportsCore<T>(string contractName)
@@ -744,7 +744,7 @@ namespace System.ComponentModel.Composition.Hosting
             Collection<Lazy<T>> result = new Collection<Lazy<T>>();
             foreach (Export export in exports)
             {
-                result.Add(ExportServices.CreateStronglyTypedExportOfT<T>(export));
+                result.Add(ExportServices.CreateStronglyTypedLazyOfT<T>(export));
             }
             return result;
         }
@@ -756,7 +756,7 @@ namespace System.ComponentModel.Composition.Hosting
             Collection<Lazy<T, TMetadataView>> result = new Collection<Lazy<T, TMetadataView>>();
             foreach (Export export in exports)
             {
-                result.Add(ExportServices.CreateStronglyTypedExportOfTM<T, TMetadataView>(export));
+                result.Add(ExportServices.CreateStronglyTypedLazyOfTM<T, TMetadataView>(export));
             }
             return result;
         }
@@ -765,14 +765,14 @@ namespace System.ComponentModel.Composition.Hosting
         {
             Export export = this.GetExportsCore(typeof(T), typeof(TMetadataView), contractName, ImportCardinality.ExactlyOne).SingleOrDefault();
 
-            return (export != null) ? ExportServices.CreateStronglyTypedExportOfTM<T, TMetadataView>(export) : null;
+            return (export != null) ? ExportServices.CreateStronglyTypedLazyOfTM<T, TMetadataView>(export) : null;
         }
 
         private Lazy<T> GetExportCore<T>(string contractName)
         {
             Export export = this.GetExportsCore(typeof(T), null, contractName, ImportCardinality.ExactlyOne).SingleOrDefault();
 
-            return (export != null) ? ExportServices.CreateStronglyTypedExportOfT<T>(export) : null;
+            return (export != null) ? ExportServices.CreateStronglyTypedLazyOfT<T>(export) : null;
         }
 
         private IEnumerable<Export> GetExportsCore(Type type, Type metadataViewType, string contractName, ImportCardinality cardinality)

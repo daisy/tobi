@@ -129,7 +129,7 @@ namespace System.ComponentModel.Composition
         /// <exception cref="InvalidCastException">
         ///     <paramref name="info"/> contains a value that cannot be cast to the correct type.
         /// </exception>
-        [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+        [System.Security.SecuritySafeCritical]
         protected CompositionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
@@ -160,7 +160,7 @@ namespace System.ComponentModel.Composition
         /// </value>
         public override string Message
         {
-            [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+            [System.Security.SecuritySafeCritical]
             get
             {
                 if (this.Errors.Count == 0)

@@ -13,15 +13,34 @@ namespace Microsoft.Internal.Collections
 {
     internal static partial class CollectionServices
     {
+        private static readonly Type StringType = typeof(string);
+        private static readonly Type IEnumerableType = typeof(IEnumerable);
+        private static readonly Type IEnumerableOfTType = typeof(IEnumerable<>);
+        private static readonly Type ICollectionOfTType = typeof(ICollection<>);
+
+        public static bool IsEnumerableOfT(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                Type genericType = type.GetGenericTypeDefinition();
+
+                if (genericType == IEnumerableOfTType)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static Type GetEnumerableElementType(Type type)
         {
-            if (type == typeof(string) || !typeof(IEnumerable).IsAssignableFrom(type))
+            if (type == StringType || !IEnumerableType.IsAssignableFrom(type))
             {
                 return null;
             }
 
             Type closedType;
-            if (ReflectionServices.TryGetGenericInterfaceType(type, typeof(IEnumerable<>), out closedType))
+            if (ReflectionServices.TryGetGenericInterfaceType(type, IEnumerableOfTType, out closedType))
             {
                 return closedType.GetGenericArguments()[0];
             }
@@ -32,7 +51,7 @@ namespace Microsoft.Internal.Collections
         public static Type GetCollectionElementType(Type type)
         {
             Type closedType;
-            if (ReflectionServices.TryGetGenericInterfaceType(type, typeof(ICollection<>), out closedType))
+            if (ReflectionServices.TryGetGenericInterfaceType(type, ICollectionOfTType, out closedType))
             {
                 return closedType.GetGenericArguments()[0];
             }

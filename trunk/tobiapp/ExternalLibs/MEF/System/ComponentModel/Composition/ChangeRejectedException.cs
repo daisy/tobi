@@ -56,7 +56,7 @@ namespace System.ComponentModel.Composition
         }
 
 #if !SILVERLIGHT
-        [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+        [System.Security.SecuritySafeCritical]
         protected ChangeRejectedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
@@ -72,7 +72,7 @@ namespace System.ComponentModel.Composition
         /// </value>
         public override string Message
         {
-            [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+            [System.Security.SecuritySafeCritical]
             get
             {
                 return string.Format(CultureInfo.CurrentCulture, 

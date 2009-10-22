@@ -143,7 +143,7 @@ namespace System.ComponentModel.Composition
         /// <exception cref="InvalidCastException">
         ///     <paramref name="info"/> contains a value that cannot be cast to the correct type.
         /// </exception>
-        [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+        [System.Security.SecuritySafeCritical]
         protected CompositionError(SerializationInfo info, StreamingContext context)
         {
             Requires.NotNull(info, "info");
@@ -208,7 +208,7 @@ namespace System.ComponentModel.Composition
         /// <returns>
         ///     A <see cref="String"/> containing the <see cref="Description"/> property.
         /// </returns>
-        [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+        [System.Security.SecuritySafeCritical]
         public override string ToString()
         {
             return this.Description;

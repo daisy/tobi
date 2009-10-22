@@ -40,6 +40,13 @@ namespace Microsoft.Internal
         }
 
         [DebuggerStepThrough]
+        internal static void NotNullOrEmpty<T>(T[] values)
+        {
+            Assumes.NotNull(values);
+            Assumes.IsTrue(values.Length > 0);
+        }
+
+        [DebuggerStepThrough]
         internal static void NotNullOrEmpty(string value)
         {
             NotNull(value);

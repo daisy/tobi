@@ -4,7 +4,6 @@
 #if !CLR40
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -44,6 +43,7 @@ namespace System
 
             this._valueFactory = valueFactory;
         }
+
 
         public T Value
         {

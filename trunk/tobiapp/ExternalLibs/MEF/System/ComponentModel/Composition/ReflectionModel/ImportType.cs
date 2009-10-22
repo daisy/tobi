@@ -2,34 +2,41 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using Microsoft.Internal;
 using Microsoft.Internal.Collections;
-using System.ComponentModel.Composition.Primitives;
 
 namespace System.ComponentModel.Composition.ReflectionModel
 {
     // Describes the import type of a Reflection-based import definition
     internal class ImportType
     {
+        private static readonly Type LazyOfTType = typeof(Lazy<>);
+        private static readonly Type LazyOfTMType = typeof(Lazy<,>);
+#if SILVERLIGHT
+        private static readonly Type PartCreatorOfTType = typeof(PartCreator<>);
+        private static readonly Type PartCreatorOfTMType = typeof(PartCreator<,>);
+#endif
+
         private readonly Type _type;
-        private readonly Type _elementType;
-        private readonly SpecificLazyType _lazyType;
         private readonly bool _isAssignableCollectionType;
+        private readonly Type _contractType;
+        private Func<Export, object> _castSingleValue;
 
         public ImportType(Type type, ImportCardinality cardinality)
         {
             Assumes.NotNull(type);
 
             this._type = type;
-            this._isAssignableCollectionType = IsTypeAssignableCollectionType(type);
+            this._contractType = type;
 
             if (cardinality == ImportCardinality.ZeroOrMore)
             {
-                this._elementType = CollectionServices.GetEnumerableElementType(type);
+                this._isAssignableCollectionType = IsTypeAssignableCollectionType(type);
+                this._contractType = CheckForCollection(type);
             }
 
-            this._lazyType = CreateLazyType(this._elementType ?? this._type);
+            this._contractType = CheckForLazyAndPartCreator(this._contractType);
         }
 
         public bool IsAssignableCollectionType
@@ -37,85 +44,82 @@ namespace System.ComponentModel.Composition.ReflectionModel
             get { return this._isAssignableCollectionType; }
         }
 
-        public bool IsLazy
-        {
-            get { return this._lazyType != null; }
-        }
+        public Type ElementType { get; private set; }
 
-        public SpecificLazyType LazyType
-        {
-            get { return this._lazyType; }
-        }
-
-        public Type ElementType
-        {
-            get { return this._elementType; }
-        }
-
-        public Type Type
+        public Type ActualType
         {
             get { return this._type; }
         }
 
-        public object GetStronglyTypedExport(Export exportToWrap)
+#if SILVERLIGHT
+        public bool IsPartCreator { get; private set; }
+#endif
+
+        public Type ContractType { get { return this._contractType; } }
+
+        public Func<Export, object> CastExport { get { return this._castSingleValue; } }
+
+        public Type MetadataViewType { get; private set; }
+
+        private Type CheckForCollection(Type type)
         {
-            Assumes.NotNull(this._lazyType);
-            return this._lazyType.CreateExport(exportToWrap);
+            this.ElementType = CollectionServices.GetEnumerableElementType(type);
+            if (this.ElementType != null)
+            {
+                return this.ElementType;
+            }
+            return type;
         }
 
-        private static bool IsTypeAssignableCollectionType(Type type)
-        {
-            if (type.IsArray)
-            {
-                return true;
-            }
-
-            if (type.IsGenericType)
-            {
-                Type genericType = type.GetGenericTypeDefinition();
-
-                if (genericType == typeof(IEnumerable<>))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static SpecificLazyType CreateLazyType(Type type)
+        private Type CheckForLazyAndPartCreator(Type type)
         {
             if (type.IsGenericType)
             {
                 Type genericType = type.GetGenericTypeDefinition();
                 Type[] arguments = type.GetGenericArguments();
 
-                if (genericType == typeof(Lazy<>))
+                if (genericType == LazyOfTType)
                 {
-                    return new SpecificLazyType(arguments[0], null);
+                    this._castSingleValue = ExportServices.CreateStronglyTypedLazyFactory(arguments[0], null);
+                    return arguments[0];
                 }
 
-                if (genericType == typeof(Lazy<,>))
+                if (genericType == LazyOfTMType)
                 {
-                    return new SpecificLazyType(arguments[0], arguments[1]);
+                    this.MetadataViewType = arguments[1];
+                    this._castSingleValue = ExportServices.CreateStronglyTypedLazyFactory(arguments[0], arguments[1]);
+                    return arguments[0];
                 }
+
+#if SILVERLIGHT
+                if (genericType == PartCreatorOfTType)
+                {
+                    this.IsPartCreator = true;
+                    this._castSingleValue = ExportServices.CreateStronglyTypedPartCreatorFactory(arguments[0], null);
+                    return arguments[0];
+                }
+
+                if (genericType == PartCreatorOfTMType)
+                {
+                    this.IsPartCreator = true;
+                    this._castSingleValue = ExportServices.CreateStronglyTypedPartCreatorFactory(arguments[0], arguments[1]);
+                    this.MetadataViewType = arguments[1];
+                    return arguments[0];
+                }
+#endif
             }
 
-            return null;
+            return type;
         }
 
-        internal class SpecificLazyType
+        private static bool IsTypeAssignableCollectionType(Type type)
         {
-            public SpecificLazyType(Type elementType, Type metadataViewType)
+            if (type.IsArray || CollectionServices.IsEnumerableOfT(type))
             {
-                this.ElementType = elementType ?? ExportServices.DefaultExportedValueType;
-                this.MetadataViewType = metadataViewType;
-                this.CreateExport = ExportServices.CreateStronglyTypedExportFactory(this.ElementType, this.MetadataViewType);
+                return true;
             }
 
-            public Type ElementType { get; set; }
-            public Type MetadataViewType { get; set; }
-            public Func<Export, object> CreateExport { get; set; }
+            return false;
         }
     }
 }

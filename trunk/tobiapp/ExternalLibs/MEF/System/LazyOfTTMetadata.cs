@@ -8,7 +8,7 @@ using System.Text;
 
 namespace System
 {
-#if CLR40
+#if CLR40 && !SILVERLIGHT
     [Serializable]
 #endif
     public class Lazy<T, TMetadata> : Lazy<T>

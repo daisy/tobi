@@ -21,7 +21,7 @@ namespace Microsoft.Internal
             }
 
 #if !SILVERLIGHT
-            [System.Security.SecurityCritical, System.Security.SecurityTreatAsSafe]
+            [System.Security.SecuritySafeCritical]
             protected InternalErrorException(SerializationInfo info, StreamingContext context)
                 : base(info, context)
             {
