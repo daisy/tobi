@@ -172,15 +172,43 @@ namespace System.ComponentModel.Composition
                             Expression.Constant(metadataName)));
         }
 
-        public static Expression<Func<T, bool>> AndAlso<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
+        public static Expression<Func<ExportDefinition, bool>> CreatePartCreatorConstraint(Expression<Func<ExportDefinition, bool>> baseConstraint, ImportDefinition productImportDefinition)
         {
-            Assumes.NotNull(left);
-            if (right == null)
-                return left;
+            ParameterExpression exportDefinitionParameter = baseConstraint.Parameters[0];
 
-            ParameterExpression parameter = Expression.Parameter(left.Parameters[0].Type, left.Parameters[0].Name);
-            Expression body = Expression.AndAlso(Expression.Invoke(left, parameter), Expression.Invoke(right, parameter));
-            return Expression.Lambda<Func<T, bool>>(body, parameter);
+            // exportDefinition.Metadata
+            Expression metadataExpression = Expression.Property(exportDefinitionParameter, ConstraintServices._exportDefinitionMetadataProperty);
+
+            // exportDefinition.Metadata.ContainsKey("ProductDefinition")
+            Expression containsProductExpression = Expression.Call(
+                metadataExpression,
+                ConstraintServices._metadataContainsKeyMethod,
+                Expression.Constant(CompositionConstants.ProductDefinitionMetadataName));
+
+            // exportDefinition.Metadata["ProductDefinition"]
+            Expression productExportDefinitionExpression = Expression.Call(
+                    metadataExpression,
+                    ConstraintServices._metadataItemMethod,
+                    Expression.Constant(CompositionConstants.ProductDefinitionMetadataName));
+
+            // ProductImportDefinition.Contraint((ExportDefinition)exportDefinition.Metadata["ProductDefinition"])
+            Expression productMatchExpression =
+                Expression.Invoke(productImportDefinition.Constraint,
+                    Expression.Convert(productExportDefinitionExpression, typeof(ExportDefinition)));
+
+            // baseContraint(exportDefinition) &&
+            // exportDefinition.Metadata.ContainsKey("ProductDefinition") &&
+            // ProductImportDefinition.Contraint((ExportDefinition)exportDefinition.Metadata["ProductDefinition"])
+            Expression<Func<ExportDefinition, bool>> constraint =
+                 Expression.Lambda<Func<ExportDefinition, bool>>(
+                    Expression.AndAlso(
+                        baseConstraint.Body,
+                        Expression.AndAlso(
+                           containsProductExpression,
+                           productMatchExpression)),
+                    exportDefinitionParameter);
+
+            return constraint;
         }
     }
 }

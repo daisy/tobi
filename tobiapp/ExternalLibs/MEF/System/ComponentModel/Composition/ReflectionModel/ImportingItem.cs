@@ -78,14 +78,14 @@ namespace System.ComponentModel.Composition.ReflectionModel
                 return null;
             }
 
-            return CastSingleExportToImportType(this.ImportType.Type, exports[0]);
+            return CastSingleExportToImportType(this.ImportType.ActualType, exports[0]);
         }
 
         private object CastSingleExportToImportType(Type type, Export export)
         {
-            if (this.ImportType.IsLazy)
-            {   // ie Lazy<T> or Lazy<T, TMetadataView>
-                return this.ImportType.GetStronglyTypedExport(export);
+            if (this.ImportType.CastExport != null)
+            {
+                return this.ImportType.CastExport(export);
             }
 
             return Cast(type, export);

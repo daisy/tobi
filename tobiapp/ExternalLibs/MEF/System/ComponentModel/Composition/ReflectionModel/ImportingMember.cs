@@ -99,7 +99,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
             Assumes.NotNull(values);
 
             ICollection<object> collection = null;
-            Type itemType = CollectionServices.GetCollectionElementType(this.ImportType.Type);
+            Type itemType = CollectionServices.GetCollectionElementType(this.ImportType.ActualType);
             if (itemType != null)
             {
                 collection = GetNormalizedCollection(itemType, instance);
@@ -135,7 +135,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
 
             if (collectionObject == null)
             {
-                ConstructorInfo constructor = this.ImportType.Type.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo constructor = this.ImportType.ActualType.GetConstructor(Type.EmptyTypes);
 
                 // If it contains a default public constructor create a new instance.
                 if (constructor != null)
@@ -151,7 +151,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
                             String.Format(CultureInfo.CurrentCulture,
                                 Strings.ReflectionModel_ImportCollectionConstructionThrewException,
                                 this._member.GetDisplayName(),
-                                this.ImportType.Type.FullName),
+                                this.ImportType.ActualType.FullName),
                             this.Definition.ToElement(),
                             exception.InnerException);
                     }

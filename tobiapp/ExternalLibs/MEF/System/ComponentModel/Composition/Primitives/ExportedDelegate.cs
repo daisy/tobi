@@ -48,7 +48,7 @@ namespace System.ComponentModel.Composition.Primitives
         private static Type[] _funcTypes = 
         { 
             typeof(Func<>), typeof(Func<,>), typeof(Func<,,>), typeof(Func<,,,>), typeof(Func<,,,,>) 
-#if CLR40
+#if CLR40 && !SILVERLIGHT
             , typeof(Func<,,,,,>), typeof(Func<,,,,,,>), typeof(Func<,,,,,,,>), typeof(Func<,,,,,,,,>)
 #endif 
         };
@@ -56,7 +56,7 @@ namespace System.ComponentModel.Composition.Primitives
         private static Type[] _actionTypes = 
         { 
             typeof(Action), typeof(Action<>), typeof(Action<,>), typeof(Action<,,>), typeof(Action<,,,>) 
-#if CLR40
+#if CLR40 && !SILVERLIGHT
             , typeof(Action<,,,,>), typeof(Action<,,,,,>), typeof(Action<,,,,,,>), typeof(Action<,,,,,,,>)
 #endif
         };

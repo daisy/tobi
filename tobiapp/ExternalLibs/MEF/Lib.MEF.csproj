@@ -17,13 +17,12 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\debug\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1570;1572;1573;1591;1699</NoWarn>
-    <DocumentationFile>bin\debug\System.ComponentModel.Composition.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\System.ComponentModel.Composition.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -61,6 +60,7 @@
     <Compile Include="Microsoft\Internal\Requires.cs" />
     <Compile Include="Microsoft\Internal\Runtime\Serialization\SerializationServices.cs" />
     <Compile Include="Microsoft\Internal\StringComparers.cs" />
+    <Compile Include="SilverlightAdditions.cs" />
     <Compile Include="System\ComponentModel\Composition\AttributedModelServices.cs" />
     <Compile Include="System\ComponentModel\Composition\AttributedModel\AttributedExportDefinition.cs" />
     <Compile Include="System\ComponentModel\Composition\AttributedModel\AttributedModelDiscovery.cs" />
@@ -76,6 +76,12 @@
     <Compile Include="System\ComponentModel\Composition\ConstraintServices.cs" />
     <Compile Include="System\ComponentModel\Composition\ContractNameServices.cs" />
     <Compile Include="System\ComponentModel\Composition\CreationPolicy.cs" />
+    <Compile Include="System\ComponentModel\Composition\Diagnostics\CompositionTrace.cs" />
+    <Compile Include="System\ComponentModel\Composition\Diagnostics\CompositionTraceId.cs" />
+    <Compile Include="System\ComponentModel\Composition\Diagnostics\CompositionTraceSource.cs" />
+    <Compile Include="System\ComponentModel\Composition\Diagnostics\SilverlightTraceWriter.cs" />
+    <Compile Include="System\ComponentModel\Composition\Diagnostics\TraceSourceTraceWriter.cs" />
+    <Compile Include="System\ComponentModel\Composition\Diagnostics\TraceWriter.cs" />
     <Compile Include="System\ComponentModel\Composition\ErrorBuilder.cs" />
     <Compile Include="System\ComponentModel\Composition\ExceptionBuilder.cs" />
     <Compile Include="System\ComponentModel\Composition\ExportAttribute.cs" />
@@ -92,6 +98,7 @@
     <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProvider.CatalogChangeProxy.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProvider.CatalogExport.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProvider.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProvider.PartCreatorExport.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\ComposablePartCatalogChangeEventArgs.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\ComposablePartCatalogCollection.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\ComposablePartExportProvider.cs" />
@@ -126,6 +133,9 @@
     <Compile Include="System\ComponentModel\Composition\MetadataViewGenerator.cs" />
     <Compile Include="System\ComponentModel\Composition\MetadataViewProvider.cs" />
     <Compile Include="System\ComponentModel\Composition\PartCreationPolicyAttribute.cs" />
+    <Compile Include="System\ComponentModel\Composition\PartCreatorOfT.cs" />
+    <Compile Include="System\ComponentModel\Composition\PartCreatorOfTTMetadata.cs" />
+    <Compile Include="System\ComponentModel\Composition\PartLifetimeContextOfT.cs" />
     <Compile Include="System\ComponentModel\Composition\PartMetadataAttribute.cs" />
     <Compile Include="System\ComponentModel\Composition\PartNotDiscoverableAttribute.cs" />
     <Compile Include="System\ComponentModel\Composition\Primitives\ComposablePart.cs" />
@@ -143,6 +153,7 @@
     <Compile Include="System\ComponentModel\Composition\Primitives\ICompositionElement.cs" />
     <Compile Include="System\ComponentModel\Composition\Primitives\ImportCardinality.cs" />
     <Compile Include="System\ComponentModel\Composition\Primitives\ImportDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Primitives\IPartCreatorImportDefinition.cs" />
     <Compile Include="System\ComponentModel\Composition\Primitives\SerializableCompositionElement.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\DisposableReflectionComposablePart.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ExportingMember.cs" />
@@ -152,6 +163,9 @@
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ImportType.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\IReflectionPartCreationInfo.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\LazyMemberInfo.cs" />
+    <Compile Include="System\ComponentModel\Composition\ReflectionModel\PartCreatorExportDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\ReflectionModel\PartCreatorMemberImportDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\ReflectionModel\PartCreatorParameterImportDefinition.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionComposablePart.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionComposablePartDefinition.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionExtensions.cs" />

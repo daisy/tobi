@@ -105,6 +105,39 @@ namespace System.ComponentModel.Composition.ReflectionModel
             return (importDefinition is ReflectionParameterImportDefinition);
         }
 
+#if SILVERLIGHT
+
+        public static bool IsPartCreatorImportDefinition(ImportDefinition importDefinition)
+        {
+            Requires.NotNull(importDefinition, "importDefinition");
+
+            ReflectionImportDefinition reflectionImportDefinition = importDefinition as ReflectionImportDefinition;
+            if (reflectionImportDefinition == null)
+            {
+                throw new ArgumentException(
+                    string.Format(CultureInfo.CurrentCulture, Strings.ReflectionModel_InvalidImportDefinition, importDefinition.GetType()),
+                    "importDefinition");
+            }
+
+            return (importDefinition is IPartCreatorImportDefinition);
+        }
+
+        public static ContractBasedImportDefinition GetPartCreatorProductImportDefinition(ImportDefinition importDefinition)
+        {
+            Requires.NotNull(importDefinition, "importDefinition");
+
+            IPartCreatorImportDefinition partCreatorImportDefinition = importDefinition as IPartCreatorImportDefinition;
+            if (partCreatorImportDefinition == null)
+            {
+                throw new ArgumentException(
+                    string.Format(CultureInfo.CurrentCulture, Strings.ReflectionModel_InvalidImportDefinition, importDefinition.GetType()),
+                    "importDefinition");
+            }
+
+            return partCreatorImportDefinition.ProductImportDefinition;
+        }
+#endif
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static ComposablePartDefinition CreatePartDefinition(
             Lazy<Type> partType,
@@ -153,19 +186,55 @@ namespace System.ComponentModel.Composition.ReflectionModel
             CreationPolicy requiredCreationPolicy,
             ICompositionElement origin)
         {
+            return CreateImportDefinition(importingMember, contractName, requiredTypeIdentity, requiredMetadata, cardinality, isRecomposable, requiredCreationPolicy, false, origin);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        public static ContractBasedImportDefinition CreateImportDefinition(
+            LazyMemberInfo importingMember,
+            string contractName,
+            string requiredTypeIdentity,
+            IEnumerable<KeyValuePair<string, Type>> requiredMetadata,
+            ImportCardinality cardinality,
+            bool isRecomposable,
+            CreationPolicy requiredCreationPolicy,
+            bool isPartCreator,
+            ICompositionElement origin)
+        {
             Requires.NotNullOrEmpty(contractName, "contractName");
             Requires.NullOrNotNullElements(requiredMetadata, "requiredMetadata");
             Requires.IsInMembertypeSet(importingMember.MemberType, "importingMember", MemberTypes.Property | MemberTypes.Field);
 
-            return new ReflectionMemberImportDefinition(
-                importingMember,
-                contractName,
-                requiredTypeIdentity,
-                requiredMetadata,
-                cardinality,
-                isRecomposable,
-                requiredCreationPolicy,
-                origin);
+            if (isPartCreator)
+            {
+#if SILVERLIGHT
+                return new PartCreatorMemberImportDefinition(
+                    importingMember,
+                    origin,
+                    new ContractBasedImportDefinition(
+                        contractName,
+                        requiredTypeIdentity,
+                        requiredMetadata,
+                        cardinality,
+                        isRecomposable,
+                        false,
+                        CreationPolicy.NonShared));
+#else
+                throw new ArgumentException("PartCreator is only support in Silverlight version of MEF", "isPartCreator");
+#endif
+            }
+            else
+            {
+                return new ReflectionMemberImportDefinition(
+                    importingMember,
+                    contractName,
+                    requiredTypeIdentity,
+                    requiredMetadata,
+                    cardinality,
+                    isRecomposable,
+                    requiredCreationPolicy,
+                    origin);
+            }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
@@ -178,18 +247,53 @@ namespace System.ComponentModel.Composition.ReflectionModel
             CreationPolicy requiredCreationPolicy,
             ICompositionElement origin)
         {
+            return CreateImportDefinition(parameter, contractName, requiredTypeIdentity, requiredMetadata, cardinality, requiredCreationPolicy, false, origin);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        public static ContractBasedImportDefinition CreateImportDefinition(
+            Lazy<ParameterInfo> parameter,
+            string contractName,
+            string requiredTypeIdentity,
+            IEnumerable<KeyValuePair<string, Type>> requiredMetadata,
+            ImportCardinality cardinality,
+            CreationPolicy requiredCreationPolicy,
+            bool isPartCreator,
+            ICompositionElement origin)
+        {
             Requires.NotNull(parameter, "parameter");
             Requires.NotNullOrEmpty(contractName, "contractName");
             Requires.NullOrNotNullElements(requiredMetadata, "requiredMetadata");
 
-            return new ReflectionParameterImportDefinition(
-                parameter,
-                contractName,
-                requiredTypeIdentity,
-                requiredMetadata,
-                cardinality,
-                requiredCreationPolicy,
-                origin);
+            if (isPartCreator)
+            {
+#if SILVERLIGHT
+                return new PartCreatorParameterImportDefinition(
+                    parameter,
+                    origin,
+                    new ContractBasedImportDefinition(
+                        contractName,
+                        requiredTypeIdentity,
+                        requiredMetadata,
+                        cardinality,
+                        false,
+                        true,
+                        CreationPolicy.NonShared));
+#else
+                throw new ArgumentException("PartCreator is only support in Silverlight version of MEF", "isPartCreator");
+#endif
+            }
+            else
+            {
+                return new ReflectionParameterImportDefinition(
+                    parameter,
+                    contractName,
+                    requiredTypeIdentity,
+                    requiredMetadata,
+                    cardinality,
+                    requiredCreationPolicy,
+                    origin);
+            }
         }
 
         private class ReflectionPartCreationInfo : IReflectionPartCreationInfo
