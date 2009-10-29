@@ -256,7 +256,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
-                    Debugger.Break();
+                    //Debugger.Break();
                     return null;
                 }
                 if (m_IconSmall == null)
@@ -290,7 +290,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
-                    Debugger.Break();
+                    //Debugger.Break();
                     return null;
                 }
                 if (m_IconMedium == null)
@@ -358,7 +358,7 @@ namespace Tobi.Common.UI
             {
                 if (IconVisualBrush == null)
                 {
-                    Debugger.Break();
+                    //Debugger.Break();
                     return null;
                 }
                 if (m_IconXLarge == null)
