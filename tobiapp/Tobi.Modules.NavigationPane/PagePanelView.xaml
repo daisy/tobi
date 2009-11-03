@@ -39,8 +39,9 @@
         <search:SearchTermConverter x:Key="SearchTermConverter" />
     </DockPanel.Resources>
     <TextBox x:Name="SearchBox"
-                         BorderThickness="0"
-                         HorizontalAlignment="Stretch"
+             BorderThickness="0"
+             HorizontalAlignment="Stretch"
+             TextChanged="SearchBox_TextChanged"
              DockPanel.Dock="Top" />
 <!--    <ListBox x:Name="ListView" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -111,17 +112,11 @@
                 <Style TargetType="{x:Type ListViewItem}">
 
                     <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
                     <!-- Setter Property="FontSize" Value="15" / -->
                     <Setter Property="FontWeight" Value="Normal" />
-                    <Setter Property="search:SearchOperations.IsMatch">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource SearchTermConverter}">
-                                <Binding Path="Name" />
-                                <Binding RelativeSource="{RelativeSource Self}" Path="(search:SearchOperations.SearchTerm)" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-
+                    <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+                    <Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
                     <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
                     <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
 
