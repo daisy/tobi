@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -13,6 +14,7 @@ namespace Tobi.Modules.NavigationPane
 
     public class HeadingsNavigator : AbstractFilterNavigator
     {
+        private string m_searchString = string.Empty;
         public HeadingsNavigator(Project project)
         {
             m_Project = project;
@@ -29,6 +31,125 @@ namespace Tobi.Modules.NavigationPane
         public void ExpandAll()
         {
             foreach (HeadingTreeNodeWrapper node in Roots) { ExpandNode(node); }
+        }
+        public void FindNext()
+        {
+            HeadingTreeNodeWrapper nextMatch = FindNextMatch(m_roots);
+            if (nextMatch != null)
+            {
+                nextMatch.IsSelected = true;
+            }
+            else
+            {
+                MessageBox.Show(UserInterfaceStrings.TreeFindNext_FAILURE);
+            }
+
+        }
+        public void FindPrevious()
+        {
+            HeadingTreeNodeWrapper nextMatch = FindPrevMatch(m_roots);
+            if (nextMatch != null)
+            {
+                nextMatch.IsSelected = true;
+            }
+            else
+            {
+                MessageBox.Show(UserInterfaceStrings.TreeFindPrev_FAILURE);
+            }
+
+        }
+
+        private static HeadingTreeNodeWrapper FindNextMatch(ObservableCollection<HeadingTreeNodeWrapper> nodes)
+        {
+            HeadingTreeNodeWrapper htnwResult = null;
+            int iStarting = -1;
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if ((nodes[i].HasMatches || nodes[i].SearchMatch) && iStarting == -1) { iStarting = i; }
+                if (!nodes[i].IsSelected && !nodes[i].ChildSelected) continue;
+                iStarting = i;
+                break;
+            }
+            if (iStarting < 0) { return null; }
+            if (nodes[iStarting].IsSelected)
+            {
+                if (nodes[iStarting].HasChildren && nodes[iStarting].HasMatches)
+                {
+                    htnwResult = nodes[iStarting].GetChildMatch();
+                }
+            }
+            else if (nodes[iStarting].ChildSelected)
+            {
+                htnwResult = FindNextMatch(nodes[iStarting].Children);
+            }else if (nodes[iStarting].SearchMatch)
+            {
+                htnwResult = nodes[iStarting];
+            }
+            else
+            {
+                htnwResult = nodes[iStarting].GetChildMatch();
+            }
+            if (htnwResult==null)
+            {
+                for (int i = iStarting+1; i<nodes.Count; i++)
+                {
+                    if (nodes[i].SearchMatch)
+                    {
+                        htnwResult = nodes[i];
+                        break;
+                    }
+                    if (!nodes[i].HasMatches) continue;
+                    htnwResult = nodes[i].GetChildMatch();
+                    break;
+                }
+            }
+            return htnwResult;
+        }
+        private static HeadingTreeNodeWrapper FindPrevMatch(ObservableCollection<HeadingTreeNodeWrapper> nodes)
+        {
+            HeadingTreeNodeWrapper htnwResult = null;
+            int iStarting = -1;
+            for (int i = nodes.Count-1; i >= 0; i--)
+            {
+                if ((nodes[i].HasMatches || nodes[i].SearchMatch) && iStarting == -1) { iStarting = i; }
+                if (!nodes[i].IsSelected && !nodes[i].ChildSelected)
+                    continue;
+                iStarting = i;
+                break;
+            }
+            if (iStarting < 0) { return null; }
+            if (nodes[iStarting].ChildSelected)
+            {
+                htnwResult = FindPrevMatch(nodes[iStarting].Children);
+                if (htnwResult == null && nodes[iStarting].SearchMatch)
+                {
+                    htnwResult = nodes[iStarting];
+                }
+            }
+            else if (nodes[iStarting].SearchMatch)
+            {
+                htnwResult = nodes[iStarting];
+            }
+            else if (nodes[iStarting].HasMatches)
+            {
+                htnwResult = nodes[iStarting].GetPreviousChildMatch();
+            }
+            if (htnwResult == null || nodes[iStarting].IsSelected)
+            {
+                htnwResult = null;
+                for (int i = iStarting-1; i >= 0; i--)
+                {
+                    if (nodes[i].HasMatches)
+                    {
+                        htnwResult = nodes[i].GetPreviousChildMatch();
+                        break;
+                    }
+                    if (!nodes[i].SearchMatch) { continue; }
+                    htnwResult = nodes[i];
+                    break;
+                }
+            }
+            return htnwResult;
         }
         private static void ExpandNode(HeadingTreeNodeWrapper node)
         {
@@ -80,8 +201,6 @@ namespace Tobi.Modules.NavigationPane
                 return m_roots;
             }
         }
-
-        //treeView.SelectedNode.EnsureVisible();
 
         public static bool IsLevel(string localXmlName)
         {
@@ -140,7 +259,29 @@ namespace Tobi.Modules.NavigationPane
             }
             return null;
         }
+
+        public string SearchTerm
+        {
+            get { return m_searchString; }
+            set
+            {
+                if (m_searchString == value) { return; }
+                m_searchString = value;
+                SearchNodes(m_roots, m_searchString);
+            }
+        }
+        internal static void SearchNodes(ObservableCollection<HeadingTreeNodeWrapper> nodes, string searchTerm)
+        {
+            foreach (HeadingTreeNodeWrapper node in nodes)
+            {
+                node.SearchMatch = !string.IsNullOrEmpty(searchTerm) &&
+                   !string.IsNullOrEmpty(node.Title) &&
+                   node.Title.ToLower().Contains(searchTerm.ToLower());
+                if (node.Children != null && node.Children.Count > 0) { SearchNodes(node.Children, searchTerm); }
+            }
+        }
     }
+
     public class HeadingTreeNodeWrapper : PropertyChangedNotifyBase
     {
         private TreeNode m_TreeNodeLevel;
@@ -151,6 +292,8 @@ namespace Tobi.Modules.NavigationPane
         private HeadingsNavigator m_navigator;
         private ObservableCollection<HeadingTreeNodeWrapper> m_children;
         private bool m_isExpanded;
+        private bool m_isMatch;
+        private bool m_isSelected;
         private HeadingTreeNodeWrapper m_dummyNode;
 
         public RichDelegateCommand CommandExpandAll { get; private set; }
@@ -165,7 +308,7 @@ namespace Tobi.Modules.NavigationPane
             //CommandExpand = HeadingPaneViewModel.CommandExpand;
             CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
             //CommandCollapse = HeadingPaneViewModel.CommandCollapse;
-//            CommandEditText = HeadingPaneViewModel.CommandEditText;
+            //            CommandEditText = HeadingPaneViewModel.CommandEditText;
 
             m_parent = parent;
             m_navigator = navigator;
@@ -229,7 +372,8 @@ namespace Tobi.Modules.NavigationPane
             foreach (HeadingTreeNodeWrapper child in Children)
             {
                 HeadingTreeNodeWrapper wrapperChild = child.FindTreeNodeWrapper(node);
-                if (wrapperChild != null) return wrapperChild;
+                if (wrapperChild != null)
+                    return wrapperChild;
             }
             return null;
         }
@@ -259,6 +403,7 @@ namespace Tobi.Modules.NavigationPane
 
                 RaisePropertyChanged(() => Children);
             }
+            if (!string.IsNullOrEmpty(m_navigator.SearchTerm)) { HeadingsNavigator.SearchNodes(m_children, m_navigator.SearchTerm); }
         }
         public bool HasChildren
         {
@@ -286,6 +431,59 @@ namespace Tobi.Modules.NavigationPane
                 return childrenCount > 0;
             }
         }
+        public bool HasMatches
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_navigator.SearchTerm) || WrappedTreeNode_Level == null) { return false; }
+                return CheckMatches(WrappedTreeNode_Level);
+            }
+        }
+        private bool CheckMatches(TreeNode baseNode)
+        {
+            bool bResult = false;
+            int n = m_navigator.GetChildCount(baseNode);
+            for (int index = 0; index < n; index++)
+            {
+                TreeNode node = m_navigator.GetChild(baseNode, index);
+                if (WrappedTreeNode_LevelHeading != null && WrappedTreeNode_LevelHeading == node) { continue; }
+                string sText = GetNodeText(node);
+                if (string.IsNullOrEmpty(sText)) { continue; }
+                bResult |= sText.ToLower().Contains(m_navigator.SearchTerm.ToLower());
+                if (!bResult) { bResult |= CheckMatches(node); }
+                if (bResult) { break; }
+            }
+            return bResult;
+        }
+        private static string GetNodeText(TreeNode node)
+        {
+            string sResult = string.Empty;
+            QualifiedName qName = node.GetXmlElementQName();
+            if (qName == null){return sResult;}
+            if (HeadingsNavigator.IsLevel(qName.LocalName))
+            {
+                if (node.Children.Count > 0)
+                {
+                    TreeNode nd = node.Children.Get(0);
+                    if (nd != null)
+                    {
+                        QualifiedName qname = nd.GetXmlElementQName();
+                        if (qname != null && qname.LocalName == "pagenum" && node.Children.Count > 1)
+                        {
+                            nd = node.Children.Get(1);
+                            if (nd != null) { qname = nd.GetXmlElementQName(); }
+                        }
+                        if (qname != null &&
+                            (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
+                        {
+                            sResult = nd.GetTextMediaFlattened();
+                        }
+                    }
+                }
+            }
+            else if (HeadingsNavigator.IsHeading(qName.LocalName)){sResult = node.GetTextMediaFlattened();}
+            return sResult;
+        }
         public bool IsExpanded
         {
             get
@@ -294,24 +492,90 @@ namespace Tobi.Modules.NavigationPane
             }
             set
             {
-                if (value == m_isExpanded) return;
+                if (value == m_isExpanded)
+                    return;
                 m_isExpanded = value;
 
                 if (m_isExpanded)
                 {
-                    if (m_parent != null)
-                    {
-                        m_parent.IsExpanded = true;
-                    }
+                    if (m_parent != null) { m_parent.IsExpanded = true; }
                     LoadChildren();
                 }
                 else
                 {
                     m_children = null;
+//                    m_childSelected = false;
                 }
 
                 RaisePropertyChanged(() => IsExpanded);
+                RaisePropertyChanged(() => Children);
             }
+        }
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set
+            {
+                if (m_isSelected == value) { return; }
+                m_isSelected = value;
+                if (m_parent != null && m_isSelected)
+                {
+                    if (!m_parent.IsExpanded) { m_parent.IsExpanded = true; }
+                }
+                RaisePropertyChanged(() => IsSelected);
+            }
+        }
+        public bool ChildSelected
+        {
+            get
+            {
+                bool bResult = false;
+                if (m_children!=null)
+                {
+                    foreach (HeadingTreeNodeWrapper child in m_children)
+                    {
+                        bResult |= (child.IsSelected || child.ChildSelected);
+                        if (bResult) { break; }
+                    }
+                }
+                return bResult;
+            }
+        }
+
+
+        internal HeadingTreeNodeWrapper GetChildMatch()
+        {
+            HeadingTreeNodeWrapper htnwResult = null;
+            if (m_children == null) { LoadChildren(); }
+            foreach (HeadingTreeNodeWrapper child in m_children)
+            {
+                if (child.SearchMatch)
+                {
+                    htnwResult = child;
+                    break;
+                }
+                if (!child.HasMatches) continue;
+                htnwResult = child.GetChildMatch();
+                break;
+            }
+            return htnwResult;
+        }
+        internal HeadingTreeNodeWrapper GetPreviousChildMatch()
+        {
+            HeadingTreeNodeWrapper htnwResult = null;
+            if (m_children == null) { LoadChildren(); }
+            for (int i = m_children.Count - 1; i >= 0; i--)
+            {
+                if (m_children[i].HasMatches)
+                {
+                    htnwResult = m_children[i].GetPreviousChildMatch();
+                    break;
+                }
+                if (!m_children[i].SearchMatch) { continue; }
+                htnwResult = m_children[i];
+                break;
+            }
+            return htnwResult;
         }
         public TreeNode WrappedTreeNode_Level
         {
@@ -343,7 +607,7 @@ namespace Tobi.Modules.NavigationPane
             }
             internal set
             {
-                if (m_TreeNodeHeading == null || m_TreeNodeLevel==null) { return; }
+                if (m_TreeNodeHeading == null || m_TreeNodeLevel == null) { return; }
                 if (m_TreeNodeHeading.GetTextMediaFlattened() == value) { return; }
                 if (m_TreeNodeHeading.GetTextMedia() != null)
                 {
@@ -386,6 +650,17 @@ namespace Tobi.Modules.NavigationPane
                     col.Add(m_dummyNode);
                 }
                 return col;
+            }
+        }
+
+        public bool SearchMatch
+        {
+            get { return m_isMatch; }
+            set
+            {
+                if (m_isMatch == value) { return; }
+                m_isMatch = value;
+                RaisePropertyChanged(() => SearchMatch);
             }
         }
     }
