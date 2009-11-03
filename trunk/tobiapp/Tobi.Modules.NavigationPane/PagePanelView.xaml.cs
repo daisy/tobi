@@ -111,6 +111,11 @@ namespace Tobi.Modules.NavigationPane
             handleListCurrentSelection();
         }
 
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.SearchTerm = SearchBox.Text;
+        }
+
         //private void OnMouseDoubleClick_List(object sender, MouseButtonEventArgs e)
         //{
         //    //grab the original element that was doubleclicked on and search from child to parent until
