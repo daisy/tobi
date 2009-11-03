@@ -57,12 +57,14 @@ namespace Tobi.Modules.NavigationPane
         {
             m_SelectedTreeViewItem = null;
             TreeView.DataContext = ViewModel.HeadingsNavigator;
+//            TreeView.ContextMenu = (ContextMenu)TreeView.Resources["TreeViewContext"];
         }
 
         public void UnloadProject()
         {
             m_SelectedTreeViewItem = null;
             TreeView.DataContext = null;
+            TreeView.ContextMenu = null;
         }
 
         public UIElement ViewControl
@@ -122,6 +124,12 @@ namespace Tobi.Modules.NavigationPane
         private void OnMouseDoubleClick_TreeItem(object sender, MouseButtonEventArgs e)
         {
             handleTreeViewCurrentSelection();
+        }
+
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ViewModel.HeadingsNavigator == null) { return; }
+            ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
     }
 }
