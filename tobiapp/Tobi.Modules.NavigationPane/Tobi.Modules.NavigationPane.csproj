@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ListViewItemBehavior.cs" />
+    <Compile Include="PagePaneViewModelCommands.cs" />
+    <Compile Include="TreeViewItemBehavior.cs" />
     <Compile Include="HeadingPanelView.xaml.cs">
       <DependentUpon>HeadingPanelView.xaml</DependentUpon>
     </Compile>
