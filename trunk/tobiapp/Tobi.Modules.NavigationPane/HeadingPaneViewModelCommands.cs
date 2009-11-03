@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -15,6 +16,8 @@ namespace Tobi.Modules.NavigationPane
 //        public static RichDelegateCommand CommandCollapse { get; private set; }
         //public static RichDelegateCommand CommandEditText { get; private set; }
 
+        public static RichDelegateCommand CommandFindNext { get; private set; }
+        public static RichDelegateCommand CommandFindPrev { get; private set; }
         private void intializeCommands()
         {
             Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
@@ -23,7 +26,7 @@ namespace Tobi.Modules.NavigationPane
             CommandExpandAll = new RichDelegateCommand(
                 UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
-                null,
+                null, 
                 shellPresenter.LoadTangoIcon("list-add"),
                 ()=> _headingsNavigator.ExpandAll(),
                 ()=> _headingsNavigator != null);
@@ -44,15 +47,31 @@ namespace Tobi.Modules.NavigationPane
                 shellPresenter.LoadTangoIcon("list-remove"),
                 ()=> _headingsNavigator.CollapseAll(),
                 ()=> _headingsNavigator != null);
-/*
-            CommandCollapse = new RichDelegateCommand(
-                UserInterfaceStrings.TreeCollapse,
-                UserInterfaceStrings.TreeCollapse_,
+
+            CommandFindNext = new RichDelegateCommand(
+                UserInterfaceStrings.TreeFindNext,
+                UserInterfaceStrings.TreeFindNext_,
+                UserInterfaceStrings.TreeFindNext_KEYS,
                 null,
-                shellPresenter.LoadGnomeNeuIcon("Neu_list-remove"),
-                ()=> _headingsNavigator.Collapse((HeadingTreeNodeWrapper)obj),
-                ()=> (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && (obj as HeadingTreeNodeWrapper).IsExpanded));
-*/
+                () => _headingsNavigator.FindNext(),
+                () => _headingsNavigator != null);
+
+            CommandFindPrev = new RichDelegateCommand(
+                UserInterfaceStrings.TreeFindPrev,
+                UserInterfaceStrings.TreeFindPrev_,
+                UserInterfaceStrings.TreeFindPrev_KEYS, 
+                null,
+                () => _headingsNavigator.FindPrevious(),
+                () => _headingsNavigator != null);
+            /*
+                        CommandCollapse = new RichDelegateCommand(
+                            UserInterfaceStrings.TreeCollapse,
+                            UserInterfaceStrings.TreeCollapse_,
+                            null,
+                            shellPresenter.LoadGnomeNeuIcon("Neu_list-remove"),
+                            ()=> _headingsNavigator.Collapse((HeadingTreeNodeWrapper)obj),
+                            ()=> (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && (obj as HeadingTreeNodeWrapper).IsExpanded));
+            */
             /*CommandEditText = new RichDelegateCommand(
                 UserInterfaceStrings.TreeEdit,
                 UserInterfaceStrings.TreeEdit_,
@@ -66,6 +85,8 @@ namespace Tobi.Modules.NavigationPane
             shellPresenter.RegisterRichCommand(CommandCollapseAll);
 //            shellPresenter.RegisterRichCommand(CommandCollapse);
             //shellPresenter.RegisterRichCommand(CommandEditText);
+            shellPresenter.RegisterRichCommand(CommandFindNext);
+            shellPresenter.RegisterRichCommand(CommandFindPrev);
         }
     }
 }
