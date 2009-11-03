@@ -118,7 +118,7 @@ namespace Tobi.Modules.NavigationPane
             }
             else
             {
-                MessageBox.Show(UserInterfaceStrings.TreeFindNext_FAILURE);
+                MessageBox.Show(UserInterfaceStrings.PageFindNext_FAILURE);
             }
         }
         public void FindPrevious()
@@ -130,7 +130,7 @@ namespace Tobi.Modules.NavigationPane
             }
             else
             {
-                MessageBox.Show(UserInterfaceStrings.TreeFindNext_FAILURE);
+                MessageBox.Show(UserInterfaceStrings.PageFindPrev_FAILURE);
             }
 
         }
