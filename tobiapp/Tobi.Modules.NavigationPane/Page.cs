@@ -1,11 +1,14 @@
 ﻿using System.Windows.Documents;
 using System.Text;
+using Tobi.Common.MVVM;
 using urakawa.core;
 
 namespace Tobi.Modules.NavigationPane
 {
-    public class Page
+    public class Page:PropertyChangedNotifyBase
     {
+        private bool m_isMatch;
+        private bool m_isSelected;
         public Page(TextElement textElement)
         {
             TextElement = textElement;
@@ -23,6 +26,16 @@ namespace Tobi.Modules.NavigationPane
                 return TextElement.Name;
             }
         }
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set
+            {
+                if (m_isSelected == value) { return; }
+                m_isSelected = value;
+                RaisePropertyChanged(() => IsSelected);
+            }
+        }
         public string Name
         {
             get
@@ -37,6 +50,16 @@ namespace Tobi.Modules.NavigationPane
                 //    return extractString((Paragraph)TextElement);
                 //}
                 return "??";
+            }
+        }
+        public bool SearchMatch
+        {
+            get { return m_isMatch; }
+            set
+            {
+                if (m_isMatch == value) { return; }
+                m_isMatch = value;
+                RaisePropertyChanged(() => SearchMatch);
             }
         }
 
