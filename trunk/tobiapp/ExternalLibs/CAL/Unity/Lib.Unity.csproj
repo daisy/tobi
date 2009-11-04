@@ -8,7 +8,8 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.Practices.Unity</RootNamespace>
-    <AssemblyName>Microsoft.Practices.Unity</AssemblyName><FileUpgradeFlags>
+    <AssemblyName>Microsoft.Practices.Unity</AssemblyName>
+    <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
@@ -46,6 +47,8 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +61,7 @@
     <Compile Include="Attributes\DependencyAttribute.cs" />
     <Compile Include="ObjectBuilder\Builder.cs" />
     <Compile Include="ObjectBuilder\BuilderContext.cs" />
+    <Compile Include="ObjectBuilder\Exceptions\BuildFailedException.cs" />
     <Compile Include="ObjectBuilder\Exceptions\DependencyMissingException.cs" />
     <Compile Include="ObjectBuilder\Exceptions\DependencyMissingException.Desktop.cs" />
     <Compile Include="ObjectBuilder\Exceptions\IllegalInjectionMethodException.cs" />

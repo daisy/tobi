@@ -107,8 +107,7 @@
     </Compile>
     <Compile Include="Commands\Click.cs" />
     <Compile Include="Commands\CommandBehaviorBase.cs" />
-    <Compile Include="Commands\CompositeCommand.Desktop.cs" />
-    <Compile Include="Commands\DelegateCommand.Desktop.cs" />
+    <Compile Include="Commands\WeakEventHandlerManager.cs" />
     <Compile Include="Events\DefaultDispatcher.Desktop.cs" />
     <Compile Include="Events\IDispatcherFacade.cs" />
     <Compile Include="Events\WeakDelegatesManager.cs" />
