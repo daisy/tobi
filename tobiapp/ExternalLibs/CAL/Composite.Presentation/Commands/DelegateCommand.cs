@@ -15,6 +15,7 @@
 // places, or events is intended or should be inferred.
 //===================================================================================
 using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Presentation.Properties;
 
@@ -31,6 +32,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
     {
         private readonly Action<T> executeMethod = null;
         private readonly Func<T, bool> canExecuteMethod = null;
+        private List<WeakReference> _canExecuteChangedHandlers;
         private bool _isActive;
 
         /// <summary>
@@ -93,29 +95,35 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
             return CanExecute((T)parameter);
         }
 
-        private readonly object LOCK = new object();
-        private EventHandler m_CanExecuteChangedEvent;
-
-        ///<summary>
-        ///Occurs when changes occur that affect whether or not the command should execute.
-        ///</summary>
+        /// <summary>
+        /// Occurs when changes occur that affect whether or not the command should execute. You must keep a hard
+        /// reference to the handler to avoid garbage collection and unexpected results. See remarks for more information.
+        /// </summary>
+        /// <remarks>
+        /// When subscribing to the <see cref="ICommand.CanExecuteChanged"/> event using 
+        /// code (not when binding using XAML) will need to keep a hard reference to the event handler. This is to prevent 
+        /// garbage collection of the event handler because the command implements the Weak Event pattern so it does not have
+        /// a hard reference to this handler. An example implementation can be seen in the CompositeCommand and CommandBehaviorBase
+        /// classes. In most scenarios, there is no reason to sign up to the CanExecuteChanged event directly, but if you do, you
+        /// are responsible for maintaining the reference.
+        /// </remarks>
+        /// <example>
+        /// The following code holds a reference to the event handler. The myEventHandlerReference value should be stored
+        /// in an instance member to avoid it from being garbage collected.
+        /// <code>
+        /// EventHandler myEventHandlerReference = new EventHandler(this.OnCanExecuteChanged);
+        /// command.CanExecuteChanged += myEventHandlerReference;
+        /// </code>
+        /// </example>
         public event EventHandler CanExecuteChanged
         {
             add
             {
-                lock (LOCK)
-                {
-                    m_CanExecuteChangedEvent += value;
-                    CommandManager.RequerySuggested += value;
-                }
+                WeakEventHandlerManager.AddWeakReferenceHandler(ref _canExecuteChangedHandlers, value, 2);
             }
             remove
             {
-                lock (LOCK)
-                {
-                    m_CanExecuteChangedEvent -= value;
-                    CommandManager.RequerySuggested -= value;
-                }
+                WeakEventHandlerManager.RemoveWeakReferenceHandler(_canExecuteChangedHandlers, value);
             }
         }
 
@@ -127,6 +135,17 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
         {
             Execute((T)parameter);
         }
+
+        /// <summary>
+        /// Raises <see cref="ICommand.CanExecuteChanged"/> on the UI thread so every 
+        /// command invoker can requery <see cref="ICommand.CanExecute"/> to check if the
+        /// <see cref="CompositeCommand"/> can execute.
+        /// </summary>
+        protected virtual void OnCanExecuteChanged()
+        {
+            WeakEventHandlerManager.CallWeakReferenceHandlers(this, _canExecuteChangedHandlers);
+        }
+
 
         /// <summary>
         /// Raises <see cref="CanExecuteChanged"/> on the UI thread so every command invoker

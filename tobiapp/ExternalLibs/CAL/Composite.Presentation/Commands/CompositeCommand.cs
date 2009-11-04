@@ -29,13 +29,16 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
     public partial class CompositeCommand : ICommand
     {
         private readonly List<ICommand> registeredCommands = new List<ICommand>();
+        private List<WeakReference> _canExecuteChangedHandlers;
         private readonly bool monitorCommandActivity;
+        private readonly EventHandler onRegisteredCommandCanExecuteChangedHandler;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CompositeCommand"/>.
         /// </summary>
         public CompositeCommand()
         {
+            this.onRegisteredCommandCanExecuteChangedHandler = new EventHandler(this.OnRegisteredCommandCanExecuteChanged);
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
                 this.registeredCommands.Add(command);
             }
 
-            command.CanExecuteChanged += this.RegisteredCommand_CanExecuteChanged;
+            command.CanExecuteChanged += this.onRegisteredCommandCanExecuteChangedHandler;
             this.OnCanExecuteChanged();
 
             if (this.monitorCommandActivity)
@@ -100,7 +103,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
 
             if (removed)
             {
-                command.CanExecuteChanged -= this.RegisteredCommand_CanExecuteChanged;
+                command.CanExecuteChanged -= this.onRegisteredCommandCanExecuteChangedHandler;
                 this.OnCanExecuteChanged();
 
                 if (this.monitorCommandActivity)
@@ -114,7 +117,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
             }
         }
 
-        private void RegisteredCommand_CanExecuteChanged(object sender, EventArgs e)
+        private void OnRegisteredCommandCanExecuteChanged(object sender, EventArgs e)
         {
             this.OnCanExecuteChanged();
         }
@@ -153,9 +156,36 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
         }
 
         /// <summary>
-        /// Occurs when any of the registered commands raise <seealso cref="CanExecuteChanged"/>.
+        /// Occurs when any of the registered commands raise <see cref="ICommand.CanExecuteChanged"/>. You must keep a hard
+        /// reference to the handler to avoid garbage collection and unexpected results. See remarks for more information.
         /// </summary>
-        public event EventHandler CanExecuteChanged;
+        /// <remarks>
+        /// When subscribing to the <see cref="ICommand.CanExecuteChanged"/> event using 
+        /// code (not when binding using XAML) will need to keep a hard reference to the event handler. This is to prevent 
+        /// garbage collection of the event handler because the command implements the Weak Event pattern so it does not have
+        /// a hard reference to this handler. An example implementation can be seen in the CompositeCommand and CommandBehaviorBase
+        /// classes. In most scenarios, there is no reason to sign up to the CanExecuteChanged event directly, but if you do, you
+        /// are responsible for maintaining the reference.
+        /// </remarks>
+        /// <example>
+        /// The following code holds a reference to the event handler. The myEventHandlerReference value should be stored
+        /// in an instance member to avoid it from being garbage collected.
+        /// <code>
+        /// EventHandler myEventHandlerReference = new EventHandler(this.OnCanExecuteChanged);
+        /// command.CanExecuteChanged += myEventHandlerReference;
+        /// </code>
+        /// </example>
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                WeakEventHandlerManager.AddWeakReferenceHandler(ref _canExecuteChangedHandlers, value, 2);
+            }
+            remove
+            {
+                WeakEventHandlerManager.RemoveWeakReferenceHandler(_canExecuteChangedHandlers, value);
+            }
+        }
 
         /// <summary>
         /// Forwards <see cref="ICommand.Execute"/> to the registered commands.
@@ -219,6 +249,17 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
                 return commandList;
             }
         }
+
+        /// <summary>
+        /// Raises <see cref="ICommand.CanExecuteChanged"/> on the UI thread so every 
+        /// command invoker can requery <see cref="ICommand.CanExecute"/> to check if the
+        /// <see cref="CompositeCommand"/> can execute.
+        /// </summary>
+        protected virtual void OnCanExecuteChanged()
+        {
+            WeakEventHandlerManager.CallWeakReferenceHandlers(this, _canExecuteChangedHandlers);
+        }
+
 
         /// <summary>
         /// Handler for IsActiveChanged events of registered commands.

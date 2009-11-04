@@ -33,6 +33,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
         private ICommand command;
         private object commandParameter;
         private readonly WeakReference targetObject;
+        private readonly EventHandler commandCanExecuteChangedHandler;
 
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
         public CommandBehaviorBase(T targetObject)
         {
             this.targetObject = new WeakReference(targetObject);
+            this.commandCanExecuteChangedHandler = new EventHandler(this.CommandCanExecuteChanged);
         }
 
         /// <summary>
@@ -54,13 +56,13 @@ namespace Microsoft.Practices.Composite.Presentation.Commands
             {
                 if (this.command != null)
                 {
-                    this.command.CanExecuteChanged -= this.CommandCanExecuteChanged;
+                    this.command.CanExecuteChanged -= this.commandCanExecuteChangedHandler;
                 }
 
                 this.command = value;
                 if (this.command != null)
                 {
-                    this.command.CanExecuteChanged += this.CommandCanExecuteChanged;
+                    this.command.CanExecuteChanged += this.commandCanExecuteChangedHandler;
                     UpdateEnabledState();
                 }
             }
