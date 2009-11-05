@@ -22,7 +22,7 @@ namespace Tobi.Common
 
             string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
-            
+
             UnhandledException = "An unhandled exception occurred, the application is now closing. For more information, see the '" + LOG_FILE_NAME + "' file: [ " + LOG_FILE_PATH + " ].";
         }
 
@@ -30,7 +30,7 @@ namespace Tobi.Common
         {
             return str.Replace("_", "");
         }
-        
+
 
         public const string No_Document = "No document.";
         public const string Feature_Not_Available = "This feature is not available.";
@@ -52,7 +52,7 @@ namespace Tobi.Common
 
 
         public const string FileSystem_MyComputer = "Computer drives";
-        
+
 
         public const string ComboLabel_Playback = "Playback: ";
         public const string ComboLabel_Recording = "Recording: ";
@@ -117,12 +117,12 @@ namespace Tobi.Common
 
         public const string PageFindNext = "Find Next";
         public const string PageFindNext_ = "Find the next matching item in the page list";
-        public static KeyGesture PageFindNext_KEYS = new KeyGesture(Key.F3,ModifierKeys.Shift);
+        public static KeyGesture PageFindNext_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt);
         public const string PageFindNext_FAILURE = "No More Matches Found";
 
         public const string PageFindPrev = "Find Previous";
         public const string PageFindPrev_ = "Find the previous matching item in the page list";
-        public static KeyGesture PageFindPrev_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt);
+        public static KeyGesture PageFindPrev_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt | ModifierKeys.Shift);
         public const string PageFindPrev_FAILURE = "No More Matches Found";
 
         public const string HeadingEdit = "Edit Heading";
@@ -382,7 +382,7 @@ namespace Tobi.Common
 
         public const string Audio_ShowOptions = "Show audio options";
         public static KeyGesture Audio_ShowOptions_KEYS = new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
-        
+
         public const string Ready = "Ready.";
 
         public const string Audio_ZoomSlider = "Audio waveform zoom";
