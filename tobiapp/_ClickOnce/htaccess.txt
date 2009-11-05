@@ -1,0 +1,12 @@
+AddType application/x-ms-application application
+AddType application/x-ms-manifest manifest
+AddType application/octet-stream deploy
+AddType application/vnd.ms-xpsdocument xps
+AddType application/xaml+xml xaml
+AddType application/x-ms-xbap xbap
+AddType application/x-silverlight-app xap
+
+# 1 MIN
+<FilesMatch "\.(application|manifest|deploy)$">
+Header set Cache-Control "max-age=60, private, proxy-revalidate"
+</FilesMatch>

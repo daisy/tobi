@@ -81,7 +81,14 @@ namespace Tobi
             App app = Application.Current as App;
             if (app != null)
             {
-                app.SplashScreen.Close(TimeSpan.FromSeconds(0.5));
+                try
+                {
+                    app.SplashScreen.Close(TimeSpan.FromSeconds(0.5));
+                }
+                catch(Exception splashEx)
+                {
+                    Console.Write("SplashScreen.Close() Exception: " + splashEx.Message);
+                }
                 //app.Dispatcher.BeginInvoke((Action)(() => app.SplashScreen.Close(TimeSpan.Zero)), DispatcherPriority.Loaded);
             }
 
