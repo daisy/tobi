@@ -6,21 +6,13 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Tobi.Modules.StatusBar")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Tobi, Accessible DAISY Multimedia Authoring")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Tobi.Modules.StatusBar")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCompany("DAISY Consortium")]
+[assembly: AssemblyProduct("Tobi")]
+[assembly: AssemblyCopyright("Open-Source, Free, LGPL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("82b0811a-992a-4901-b077-afb0211f10e4")]
 
 // Version information for an assembly consists of the following four values:
 //
