@@ -17,3 +17,5 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Microsoft.Practices.Unity")]
 [assembly: AssemblyDescription("Unity Dependency Injection Framework")]
+
+[assembly: ComVisibleAttribute(false)]

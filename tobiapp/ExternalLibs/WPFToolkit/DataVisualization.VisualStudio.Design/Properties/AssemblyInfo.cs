@@ -18,3 +18,5 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.5.40128.1")]
 [assembly: AssemblyFileVersion("3.5.40619.1")]
+
+[assembly: ComVisibleAttribute(false)]

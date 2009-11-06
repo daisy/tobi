@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Deployment.Application;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
@@ -142,13 +144,25 @@ namespace Tobi
         {
             get
             {
-                IUrakawaSession session = Container.TryResolve<IUrakawaSession>(); ;
+                var session = Container.TryResolve<IUrakawaSession>(); ;
                 if (session == null)
                 {
-                    return "Tobi - Initializing...";
+                    return "Tobi" + " <" + getApplicationVersion() + ">" + " - Initializing...";
                 }
-                return "Tobi " + (session.IsDirty ? "* " : "") + "[" + (session.DocumentProject == null ? "no document" : session.DocumentFilePath) + "]";
+                return "Tobi" + " <" + getApplicationVersion() + "> " + (session.IsDirty ? "* " : "") + "[" + (session.DocumentProject == null ? "no document" : session.DocumentFilePath) + "]";
             }
+        }
+
+        private string getApplicationVersion()
+        {
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+            }
+
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            // DIFFERENT than FileVersion !!
+            // NOT: System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
         }
 
         protected void OnClosing(object sender, CancelEventArgs e)
