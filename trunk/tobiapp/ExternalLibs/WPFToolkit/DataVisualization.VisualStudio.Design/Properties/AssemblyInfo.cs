@@ -16,7 +16,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: ComVisible(false)]
-[assembly: NeutralResourcesLanguage("en-US")]
 [assembly: AssemblyVersion("3.5.40128.1")]
 [assembly: AssemblyFileVersion("3.5.40619.1")]

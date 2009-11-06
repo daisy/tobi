@@ -20,17 +20,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright @ Adolfo Marinucci 2007-2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: ComVisible(false)]
-
-//In order to begin building localizable applications, set 
-//<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
-//inside a <PropertyGroup>.  For example, if you are using US english
-//in your source files, set the <UICulture> to en-US.  Then uncomment
-//the NeutralResourceLanguage attribute below.  Update the "en-US" in
-//the line below to match the UICulture setting in the project file.
-
-//[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
-
 
 // Specifies the location in which theme dictionaries are stored for types in an assembly.
 [assembly: ThemeInfo(
