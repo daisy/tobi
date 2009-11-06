@@ -881,7 +881,16 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    var run = new Run(textMedia.Text);
+                    if (qname.LocalName == "sup")
+                    {
+                        run.SetValue(Inline.BaselineAlignmentProperty, BaselineAlignment.Superscript);
+                    }
+                    else if (qname.LocalName == "sub")
+                    {
+                        run.SetValue(Inline.BaselineAlignmentProperty, BaselineAlignment.Subscript);
+                    }
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
 
@@ -1446,8 +1455,6 @@ namespace Tobi.Modules.DocumentPane
                     case "w":
                     case "cite":
                     case "author":
-                    case "sup":
-                    case "sub":
                     case "bdo":
                     case "kbd":
                     case "dfn":
@@ -1456,6 +1463,11 @@ namespace Tobi.Modules.DocumentPane
                     case "rbc":
                     case "rtc":
                     case "rp":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                        }
+                    case "sup":
+                    case "sub":
                         {
                             return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
                         }
