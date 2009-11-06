@@ -976,7 +976,7 @@ namespace Tobi
 
         public bool OnShellWindowClosing()
         {
-            Presenter.Value.PlayAudioCueHi();
+            //Presenter.Value.PlayAudioCueHi();
 
             LoggerFromMEFLazy.Value.Log(
                 "ShellPresenter:OnShellWindowClosing() 1 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
