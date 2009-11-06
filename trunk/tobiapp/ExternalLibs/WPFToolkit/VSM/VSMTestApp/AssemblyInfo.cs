@@ -4,3 +4,5 @@
 using System.Resources;
 
 [assembly: NeutralResourcesLanguageAttribute("en-US" , UltimateResourceFallbackLocation.MainAssembly)]
+
+[assembly: ComVisibleAttribute(false)]

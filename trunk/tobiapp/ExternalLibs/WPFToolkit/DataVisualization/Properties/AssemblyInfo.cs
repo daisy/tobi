@@ -23,3 +23,5 @@ using System.Windows;
 // WPF Toolkit settings
 [assembly: AllowPartiallyTrustedCallers]
 [assembly: SecurityCritical]
+
+[assembly: ComVisibleAttribute(false)]

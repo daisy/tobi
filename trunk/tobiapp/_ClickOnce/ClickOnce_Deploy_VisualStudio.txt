@@ -2,7 +2,7 @@
 
 1) Make sure to have the latest code from SVN: "svn up --set-depth infinity" (or Tortoise equivalent). Make sure that the "tobiapp/_ClickOnce/DirectX/" folder is copied to "C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages" (it will be used as a pre-requisite for ClickOnce setup on the client machines).
 
-2) Open "tobiapp/Tobi.sln", MENU:Build->Clean, MENU:Build->Rebuild (just to make *sure* nothing is cached).
+2) Open "tobiapp/Tobi.sln", MENU:Build->Clean, MENU:Build->Rebuild (just to make *sure* nothing is cached). Check the "tobiapp/bin/release" folder, and replace unchanged DLLs with backup or versions from the previous DEPLOY (remove the deploy extension). Read point (10) about versioning and "partial" updates for more info.
 
 3) Select the "Tobi" project in the Solution Explorer, MENU:Project->Tobi Properties, open the "Signing" tab.
 
@@ -14,17 +14,19 @@
 
 7) Return to the Tobi project Properties, go to "Publish" tab.
 
-8) Make sure that the value of "Publishing Folder Location" is a local folder of your choice (e.g. "C:\TobiClickOnce").
+8) Make sure that the value of "Publishing Folder Location" is a local folder of your choice (e.g. "C:\TobiClickOnce_0.1.0.0\").
 
 9) Make sure that the "Installation Folder URL" is set to where Tobi will be deployed, for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/".
 
-10) Verify the "Publish Version" fields so that the version number matches that of the main Tobi project (declared in AssemblyInfo.cs, see the "Application" tab of project Properties, BUTTON:"Assembly Information..."). Uncheck the "Automatically increment revision with each publish", as we will use the Build number instead (the Revision field will be used for compiling the main DLL/EXE assembly instead). For example, alpha releases will be 0.100, 0.110, 0.120, etc. beta releases will be 0.500, 0.510, etc. and stable releases will be 1.000, 1.100, etc. (the next major release of Tobi with text/structure editing will be 2.000, 2.100, etc.)
+10) Verify the "Publish Version" fields so that the version number matches that of the main Tobi project (declared in AssemblyInfo.cs, see the "Application" tab of project Properties, BUTTON:"Assembly Information..."). It is important because the version is displayed in the window title (obtained from Assembly when running from a Visual Studio build, obtained from ClickOnce when running from installed Tobi ... but they should obviously be the same !). 
 
-NOTES: This is the version number that the ClickOnce bootstrapper on the client side checks first. If the number on the local client machine is different than the number on the server, then ClickOnce will download whatever needs to be downloaded (i.e. non-optional files for which the hash code has changed since the user last updated the application). Note: individual Assembly versions are NOT checked by ClickOnce, only their hash code. The hash WILL change even if the actual code has not been modified (i.e. clean+compile in Visual Studio will generate a NEW assembly, as far as ClickOnce update is concerned, even though nothing has changed).
+Uncheck the "Automatically increment revision with each publish", as we will use the Build number instead.
+
+===> Please scroll down to the bottom of this document for much more information about versioning and partial updates.
 
 11) In "Install Mode and Settings", verify that offline availability is enabled.
 
-12) Press BUTTON:"Prerequisites", CHECKBOX:"Create setup program", select "DirectX" and ".NET Framework Client Profile" from the list, deselect "Windows Installer 3.1", leave "Download prerequisites" as it is (should be "from the compoenent vendor's website")
+12) Press BUTTON:"Prerequisites", CHECKBOX:"Create setup program", select "DirectX" and ".NET Framework Client Profile" from the list, deselect "Windows Installer 3.1", leave "Download prerequisites" as it is (should be "from the component vendor's website")
 
 13) Press BUTTON:"Updates...", CHECKBOX:"The application should check for updates", RADIO:"Before the application starts", Press "OK".
 
@@ -51,6 +53,52 @@ File Associations:
 
 15) Press BUTTON:"Publish Now". This should succeed.
 
-16) Copy the contents of the destination folder (e.g. "C:\TobiClickOnce") to the FTP location corresponding to the specified publish URL (e.g. for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/")
+16) Copy the contents of the destination folder (e.g. "C:\TobiClickOnce_0.1.0.0\") to the FTP location corresponding to the specified publish URL (e.g. for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/"). Note that "Tobi.application" and "index.html" must be replaced, but the other files can stay as they are if they already exist. The subfolders of "Application Files" define the actual entire application, so they must be uploaded entirely. However the users may not necessarily need to download everything, depending on what they already have on their machine.
 
 DEPLOY is done. Now time to test the UPDATE phase of ClickOnce (install Tobi from the index.html page). And then, change code in one of the projects, compile, deploy again (increment version number). NOTE: the project assemblies do not auto-increment their versions, but ClickOnce doesn't actually care. A new version'ed subfolder is created in the "Application Files" directory of the published application. 
+
+NOTES ABOUT VERSIONING
+
+We are not using the last field REVISION (it's always 0)
+
+Alpha releases will be 0.100, 0.110, 0.120, etc. Beta releases will be 0.500, 0.510, etc. and Stable releases will be 1.000, 1.100, etc. (the next major release of Tobi with text/structure editing will be 2.000, 2.100, etc.)
+
+The version number is what the ClickOnce bootstrapper on the client side checks first. If the number on the local client machine is different than the number on the server, then ClickOnce will download whatever needs to be downloaded (i.e. non-optional files for which the hash code has changed since the user last updated the application). Note: individual Assembly versions are NOT checked by ClickOnce, only their hash code. The hash WILL change even if the actual code has not been modified (i.e. clean+compile in Visual Studio will generate a NEW assembly, as far as ClickOnce update is concerned, even though nothing has changed).
+
+"Partial" update: in order to avoid downloading the entire app when only a small part of it has changed (i.e. a DLL assembly, or another type of DEPLOY file), we have to backup the bin/release folder or the previous DEPLOY ClickOnce Publish (and rename the DEPLOY files to remove the deploy extension), and make sure that after a build ready for publish, we first replace the unchanged DLLs/files with the backup version. This requires manual tracking of "what has changed" (e.g. what project).
+
+Tobi.Infrastructure.dll (5MB) => mainly icons. should not change often at all.
+
+Libraries for which we ship the code, but we don't modify it otherwise (bar rare exceptions):
+
+NAudio.dll (290KB)
+Mp3Sharp.dll (188KB)
+ICSharpCode.dll (128KB)
+WPFToolkit.dll (444KB)
+System.ComponentModel.Composition.dll (204KB) => That's MEF
+Microsoft.Practices.Unity.dll (112KB)
+Microsoft.Practices.Composite.dll (68KB) => Prism / CAG-CAL
+Microsoft.Practices.Composite.Presentation.dll (56KB)
+Microsoft.Practices.Composite.UnityExtensions.dll (16KB)
+MefContrib.Integration.Unity.dll (16KB)
+
+Pure DLL, no code:
+
+BitFactory.Logging.dll (36KB)
+Microsoft.Practices.ServiceLocation.dll (32KB)
+
+Core likely to change, but we must track regularly to avoid download overhead:
+
+Tobi.exe (196KB)
+urakawa.dll (248KB)
+AudioLib.dll (36KB)
+DaisyExport.dll (36KB)
+DaisyToXuk.dll (2MB)
+Tobi.Common.dll (204KB)
+Tobi.Modules.AudioPane.dll (128KB)
+Tobi.Modules.NavigationPane.dll (44KB)
+Tobi.Modules.DocumentPane.dll (52KB)
+Tobi.Modules.MetadataPane.dll (36KB)
+Tobi.Modules.MenuBar.dll (24KB)
+Tobi.Modules.Urakawa.dll (28KB)
+Tobi.Modules.FileDialog.dll (28KB)
