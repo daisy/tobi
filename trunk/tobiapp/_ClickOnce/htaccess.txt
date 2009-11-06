@@ -6,7 +6,11 @@ AddType application/xaml+xml xaml
 AddType application/x-ms-xbap xbap
 AddType application/x-silverlight-app xap
 
-# 1 MIN
+
+
+# 1 min HTTP cache policy (should we use "no-store" instead ?)
+# http://www.askapache.com/htaccess/speed-up-sites-with-htaccess-caching.html
+
 <FilesMatch "\.(application|manifest|deploy)$">
 Header set Cache-Control "max-age=60, private, proxy-revalidate"
 </FilesMatch>
