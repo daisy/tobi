@@ -1,0 +1,5 @@
+Steps to add BMG folder in prerequisite of VS08.
+1. Copy the DirectX folder created by BMG.
+2. Paste the folder in the following path C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages.
+3. You can see that the DirectX folder is added in prerequisite list.
+4. If  Tobi.sln is open before the above steps ,please close and reopen it.
