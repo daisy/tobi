@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Product ProductCode="DirectX" xmlns="http://schemas.microsoft.com/developer/2004/01/bootstrapper">
+  <PackageFiles CopyAllPackageFiles="false">
+    <PackageFile Name="directxcheck.exe" Hash="12DA83354D2A26B249A57CC89D9206B6F5A725FB" />
+  </PackageFiles>
+  <Commands Reboot="Defer">
+    <Command PackageFile="directxcheck.exe">
+      <ExitCodes>
+        <DefaultExitCode Result="Success" String="Anunexpectedexitcodewasr" FormatMessageFromSystem="true" />
+      </ExitCodes>
+    </Command>
+  </Commands>
+</Product>
