@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 
 namespace Tobi.Common.UI
@@ -76,7 +77,7 @@ namespace Tobi.Common.UI
             {
                 Mode = BindingMode.OneWay,
                 Source = command.IconProvider,
-                Path = new PropertyPath("IconSmall")
+                Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconSmall))
             };
 
             var expr = menuItem.SetBinding(MenuItem.IconProperty, binding);
