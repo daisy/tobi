@@ -213,9 +213,15 @@ namespace Tobi.Common.MVVM
             m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
         }
 
+        
+        public static string GetMemberName<T>(System.Linq.Expressions.Expression<Func<T>> expression)
+        {
+            return Reflect.GetProperty(expression).Name;
+        }
+
         public void RaisePropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
-            string name = Reflect.GetProperty(expression).Name;
+            string name = GetMemberName(expression);
 #if DEBUG
             Console.WriteLine("^^^^ PropertyChanged: " + name);
 #endif

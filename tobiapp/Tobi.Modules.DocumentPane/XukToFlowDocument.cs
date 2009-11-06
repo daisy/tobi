@@ -205,7 +205,9 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
@@ -267,7 +269,9 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
@@ -399,7 +403,9 @@ namespace Tobi.Modules.DocumentPane
             }
             else
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 throw new Exception("Trying to add TableCell btu parent is not Table ??");
             }
         }
@@ -567,7 +573,9 @@ namespace Tobi.Modules.DocumentPane
         {
             if (!(parent is List))
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 throw new Exception("list item not in List ??");
             }
             ListItem data = new ListItem();
@@ -672,7 +680,9 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                     throw new Exception("table row not in Table ??");
                 }
             }
@@ -764,7 +774,9 @@ namespace Tobi.Modules.DocumentPane
                 }
                 else
                 {
-                    Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                     throw new Exception("table row not in Table ??");
                 }
             }
@@ -1004,7 +1016,9 @@ namespace Tobi.Modules.DocumentPane
         {
             if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 throw new Exception("Node has children or text exists when processing image ??");
             }
 
@@ -1595,7 +1609,9 @@ namespace Tobi.Modules.DocumentPane
                 {
                     if (textMedia == null)
                     {
-                        Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                         throw new Exception("The given TreeNode has no children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount == 0 && qname == null && textMedia != null
@@ -1624,12 +1640,16 @@ namespace Tobi.Modules.DocumentPane
                 {
                     if (textMedia == null)
                     {
-                        Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                         throw new Exception("The given TreeNode has children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount != 0 && qname == null && textMedia != null
                     {
-                        Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                         throw new Exception("The given TreeNode has children, has no XmlProperty, and has TextMedia.");
                     }
                 }
@@ -1642,7 +1662,9 @@ namespace Tobi.Modules.DocumentPane
                     }
                     else //childCount != 0 && qname != null && textMedia != null
                     {
-                        Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                         throw new Exception("The given TreeNode has children, has XmlProperty, and has TextMedia.");
                     }
                 }

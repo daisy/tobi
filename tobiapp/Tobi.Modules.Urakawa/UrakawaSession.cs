@@ -95,26 +95,38 @@ namespace Tobi.Modules.Urakawa
             publishChannel.Name = "Temporary External Audio Medias (Publish Visitor)";
             publishVisitor.DestinationChannel = publishChannel;
 
-            Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
             DocumentProject.Presentations.Get(0).RootNode.AcceptDepthFirst(publishVisitor);
 
-            Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
             publishVisitor.VerifyTree(DocumentProject.Presentations.Get(0).RootNode);
 
-            Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
             DocumentProject.Presentations.Get(0).ChannelsManager.RemoveManagedObject(publishChannel);
 
-            Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
             var project = new Project();
             var action = new OpenXukAction(project, new Uri(DocumentFilePath, UriKind.Absolute));
             action.Execute();
 
-            Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
             DocumentProject.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             project.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             Debug.Assert(project.ValueEquals(DocumentProject));
 
-            Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
         }
 
         //private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)

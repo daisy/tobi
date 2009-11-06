@@ -185,7 +185,9 @@ namespace Tobi.Modules.ToolBars
         {
             if (!Dispatcher.CheckAccess())
             {
+#if DEBUG
                 Debugger.Break();
+#endif
             }
 
             int uid = getNewUid();

@@ -40,7 +40,8 @@ namespace Tobi
 
             Logger consoleLogger = TextWriterLogger.NewConsoleLogger();
             m_Logger.AddLogger("console", consoleLogger);
-#if (true || DEBUG)
+
+#if (DEBUG)
             consoleLogger.Formatter = new LogEntryFormatterCodeLocation();
 #endif
 
@@ -55,7 +56,8 @@ namespace Tobi
 
             Logger fileLogger = new FileLogger(UserInterfaceStrings.LOG_FILE_PATH);
             m_Logger.AddLogger("file", fileLogger);
-#if (true || DEBUG)
+
+#if (DEBUG)
             fileLogger.Formatter = new LogEntryFormatterCodeLocation();
 #endif
         }
@@ -66,7 +68,7 @@ namespace Tobi
         {
             string message = msg;
 
-#if (true || DEBUG)
+#if (DEBUG)
             CodeLocation codeLocation = CodeLocation.GetCallerLocation(2);
             if (codeLocation != null)
             {

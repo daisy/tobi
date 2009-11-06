@@ -4,6 +4,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 
 namespace Tobi.Common.UI
@@ -73,7 +74,7 @@ namespace Tobi.Common.UI
                                   {
                                       Mode = BindingMode.OneWay,
                                       Source = command.IconProvider,
-                                      Path = new PropertyPath("IconMedium")
+                                      Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconMedium))
                                   };
 
                 var expr = button.SetBinding(Button.ContentProperty, binding);
@@ -86,7 +87,7 @@ namespace Tobi.Common.UI
                                       {
                                           Mode = BindingMode.OneWay,
                                           Source = command.IconProvider,
-                                          Path = new PropertyPath("IconMedium")
+                                          Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconMedium))
                                       };
                     var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
 
@@ -114,7 +115,7 @@ namespace Tobi.Common.UI
                                       {
                                           Mode = BindingMode.OneWay,
                                           Source = command.IconProvider,
-                                          Path = new PropertyPath("IconMedium")
+                                          Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconMedium))
                                       };
 
                     var bindingExpressionBase = imageHost.SetBinding(ContentControl.ContentProperty, binding);

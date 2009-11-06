@@ -55,7 +55,9 @@ namespace Tobi.Common.UI
             {
                 if (autoGreyScaleImg.SourceBindingGrey != null)
                 {
-                    Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                     var expr = autoGreyScaleImg.SetBinding(SourceProperty, autoGreyScaleImg.SourceBindingGrey);
                 }
                 else
@@ -89,7 +91,9 @@ namespace Tobi.Common.UI
             {
                 if (autoGreyScaleImg.SourceBindingColor != null)
                 {
-                    Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
                     var expr = autoGreyScaleImg.SetBinding(SourceProperty, autoGreyScaleImg.SourceBindingColor);
                 }
                 else

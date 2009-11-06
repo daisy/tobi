@@ -60,7 +60,9 @@ namespace Tobi
     {
         public void OnImportsSatisfied()
         {
-            //Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#endif
         }
 
         private void playAudioCue(string audioClipName)
@@ -324,7 +326,9 @@ namespace Tobi
             }
             else
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 pushCommandsToolbar();
             }
         }

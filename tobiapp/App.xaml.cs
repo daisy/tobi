@@ -195,7 +195,7 @@ c.Execute();
                 new RoutedEventHandler(UIElement_LostKeyboardFocus));
              * */
 
-#if (FALSE && DEBUG)
+#if (FALSE && DEBUG && VSTUDIO) // We want the release-mode exception capture dialog, even when debugging in Visual Studio
             runInDebugMode();
 #else
             runInReleaseMode();

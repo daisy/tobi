@@ -58,12 +58,16 @@ namespace Tobi.Common.UI.XAML
         {
             if (Double.IsNaN(width))
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 return null;
             }
             if (Double.IsNaN(height))
             {
+#if DEBUG
                 Debugger.Break();
+#endif
                 return null;
             }
 
@@ -126,7 +130,9 @@ namespace Tobi.Common.UI.XAML
 
             if (grey)
             {
+#if DEBUG
                 Debugger.Break();
+#endif
 
                 var bmp = new FormatConvertedBitmap(renderBitmap, PixelFormats.Gray32Float, null, 0);
                 bmp.Freeze();
