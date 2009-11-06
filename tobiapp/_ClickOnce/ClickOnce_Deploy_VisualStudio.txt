@@ -1,0 +1,56 @@
+== Procedure to deploy Tobi for ClickOnce from within Visual Studio 2008
+
+1) Make sure to have the latest code from SVN: "svn up --set-depth infinity" (or Tortoise equivalent). Make sure that the "tobiapp/_ClickOnce/DirectX/" folder is copied to "C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages" (it will be used as a pre-requisite for ClickOnce setup on the client machines).
+
+2) Open "tobiapp/Tobi.sln", MENU:Build->Clean, MENU:Build->Rebuild (just to make *sure* nothing is cached).
+
+3) Select the "Tobi" project in the Solution Explorer, MENU:Project->Tobi Properties, open the "Signing" tab.
+
+4) If first time => CHECKBOX:"Sign the ClickOnce Manifest" + BUTTON:"Create Test Certificate...", If NOT first time =>  BUTTON:"Select from File..." to re-use the previously-generated "Tobi_TemporaryKey.pfx" certificate. (either way, use "tobi" password)
+
+5) If first time => BUTTON:"More Details...", BUTTON:"Install Certificate", WIZARD:"Next", RADIO:"Place all certificates in the following store", BUTTON:"Browse", choose "Trusted Root Certification Authorities" + press "OK", WIZARD:"Next", WIZARD:"Finish", Answer "Yes" to the security warning, press "OK" for "import was successful" dialog box.
+
+6) If first time => Repeat all of the above but choose "Trusted Publishers" instead.
+
+7) Return to the Tobi project Properties, go to "Publish" tab.
+
+8) Make sure that the value of "Publishing Folder Location" is a local folder of your choice (e.g. "C:\TobiClickOnce").
+
+9) Make sure that the "Installation Folder URL" is set to where Tobi will be deployed, for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/".
+
+10) Verify the "Publish Version" fields so that the version number matches that of the main Tobi project (declared in AssemblyInfo.cs, see the "Application" tab of project Properties, BUTTON:"Assembly Information..."). Uncheck the "Automatically increment revision with each publish", as we will use the Build number instead (the Revision field will be used for compiling the main DLL/EXE assembly instead). For example, alpha releases will be 0.100, 0.110, 0.120, etc. beta releases will be 0.500, 0.510, etc. and stable releases will be 1.000, 1.100, etc. (the next major release of Tobi with text/structure editing will be 2.000, 2.100, etc.)
+
+NOTES: This is the version number that the ClickOnce bootstrapper on the client side checks first. If the number on the local client machine is different than the number on the server, then ClickOnce will download whatever needs to be downloaded (i.e. non-optional files for which the hash code has changed since the user last updated the application). Note: individual Assembly versions are NOT checked by ClickOnce, only their hash code. The hash WILL change even if the actual code has not been modified (i.e. clean+compile in Visual Studio will generate a NEW assembly, as far as ClickOnce update is concerned, even though nothing has changed).
+
+11) In "Install Mode and Settings", verify that offline availability is enabled.
+
+12) Press BUTTON:"Prerequisites", CHECKBOX:"Create setup program", select "DirectX" and ".NET Framework Client Profile" from the list, deselect "Windows Installer 3.1", leave "Download prerequisites" as it is (should be "from the compoenent vendor's website")
+
+13) Press BUTTON:"Updates...", CHECKBOX:"The application should check for updates", RADIO:"Before the application starts", Press "OK".
+
+14) Press BUTTON:"Options..." and set the following options:
+Description:
+	Publish language: DEFAULT
+	Publisher name: "DAISY Consortium"
+	Suite name: EMPTY
+	Product name: "Tobi"
+	Support URL: "http://www.daisy.org/projects/tobi/ClickOnce-Help"
+	Error URL: "http://www.daisy.org/projects/tobi/ClickOnce-Error"
+Deployment:
+	Webpage: "index.html"
+	Automatically generate webpage: CHECK
+	Open webpage after publish: CHECK
+	Use *.deploy extension: CHECK
+	CD installations and Verify: UNCHECK
+Manifests
+	CHECK Create desktop shortcut
+	UNCHECK other options
+File Associations:
+	add "xuk" with description "Tobi XML (Urakawa)" progID "000" and icon "Shortcut.ico" (NOT "Tobi.ico", because it is an embedded resource not copied into destination folder !)
+
+
+15) Press BUTTON:"Publish Now". This should succeed.
+
+16) Copy the contents of the destination folder (e.g. "C:\TobiClickOnce") to the FTP location corresponding to the specified publish URL (e.g. for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/")
+
+DEPLOY is done. Now time to test the UPDATE phase of ClickOnce (install Tobi from the index.html page). And then, change code in one of the projects, compile, deploy again (increment version number). NOTE: the project assemblies do not auto-increment their versions, but ClickOnce doesn't actually care. A new version'ed subfolder is created in the "Application Files" directory of the published application. 
