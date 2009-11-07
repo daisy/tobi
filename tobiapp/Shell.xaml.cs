@@ -147,9 +147,9 @@ namespace Tobi
                 var session = Container.TryResolve<IUrakawaSession>(); ;
                 if (session == null)
                 {
-                    return "Tobi" + " <" + getApplicationVersion() + ">" + " - Initializing...";
+                    return "Tobi" + " {" + getApplicationVersion() + "}" + " - Please wait...";
                 }
-                return "Tobi" + " <" + getApplicationVersion() + "> " + (session.IsDirty ? "* " : "") + "[" + (session.DocumentProject == null ? "no document" : session.DocumentFilePath) + "]";
+                return "Tobi" + " {" + getApplicationVersion() + "} " + (session.IsDirty ? "* " : "") + "[" + (session.DocumentProject == null ? "no document" : session.DocumentFilePath) + "]";
             }
         }
 
