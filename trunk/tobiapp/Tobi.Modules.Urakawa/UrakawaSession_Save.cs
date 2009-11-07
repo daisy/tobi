@@ -60,7 +60,7 @@ namespace Tobi.Modules.Urakawa
 
                     if (Directory.Exists(dlg.SelectedPath))
                     {
-                        if (!askUserConfirmOverwrite())
+                        if (!askUserConfirmOverwriteFileFolder(dlg.SelectedPath, true))
                         {
                             return;
                         }
@@ -118,7 +118,7 @@ namespace Tobi.Modules.Urakawa
 
                     if (File.Exists(dlg.FileName))
                     {
-                        if (!askUserConfirmOverwrite())
+                        if (!askUserConfirmOverwriteFileFolder(dlg.FileName, false))
                         {
                             return;
                         }
@@ -355,7 +355,7 @@ namespace Tobi.Modules.Urakawa
             return true;
         }
 
-        private bool askUserConfirmOverwrite()
+        private bool askUserConfirmOverwriteFileFolder(string path, bool folder)
         {
             Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
 
@@ -374,7 +374,7 @@ namespace Tobi.Modules.Urakawa
 
             var label = new TextBlock
             {
-                Text = UserInterfaceStrings.OverwriteConfirm,
+                Text = (folder ? UserInterfaceStrings.OverwriteConfirm_Folder : UserInterfaceStrings.OverwriteConfirm_File),
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -398,13 +398,17 @@ namespace Tobi.Modules.Urakawa
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
+            var details = new TextBoxReadOnlyCaretVisible("Path: " + path)
+            {
+            };
+
             var windowPopup = new PopupModalWindow(shellPresenter,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Overwrite),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   false, 300, 160);
+                                                   false, 300, 160, details, 40);
 
             windowPopup.ShowModal();
 
