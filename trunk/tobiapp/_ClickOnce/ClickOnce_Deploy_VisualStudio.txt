@@ -1,8 +1,8 @@
 == Procedure to deploy Tobi for ClickOnce from within Visual Studio 2008
 
-1) Make sure to have the latest code from SVN: "svn up --set-depth infinity" (or Tortoise equivalent). Make sure that the "tobiapp/_ClickOnce/DirectX/" folder is copied to "C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages" (it will be used as a pre-requisite for ClickOnce setup on the client machines).
+1) Make sure to have the latest code from SVN: "svn up --set-depth infinity" (or Tortoise equivalent). Make sure that the "tobiapp/_ClickOnce/DirectX/" folder is copied to "C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages" (it will be used as a pre-requisite for ClickOnce setup on the client machines). Please note that the "directx" folder on the server will need to be renamed to "DirectX" (note the case difference). Otherwise users will get a 404, as Apache is case-sensitive.
 
-2) Open "tobiapp/Tobi.sln", MENU:Build->Clean, MENU:Build->Rebuild (just to make *sure* nothing is cached). Check the "tobiapp/bin/release" folder, and replace unchanged DLLs with backup or versions from the previous DEPLOY (remove the deploy extension). Read point (10) about versioning and "partial" updates for more info.
+2) Open "tobiapp/Tobi.sln", activate the RELEASE mode (not DEBUG), MENU:Build->Clean, MENU:Build->Rebuild (just to make *sure* nothing is cached). Check the "tobiapp/bin/release" folder, and replace unchanged DLLs with backup or versions from the previous DEPLOY (remove the deploy extension). Read point (10) about versioning and "partial" updates for more info.
 
 3) Select the "Tobi" project in the Solution Explorer, MENU:Project->Tobi Properties, open the "Signing" tab.
 
@@ -26,7 +26,7 @@ Uncheck the "Automatically increment revision with each publish", as we will use
 
 11) In "Install Mode and Settings", verify that offline availability is enabled.
 
-12) Press BUTTON:"Prerequisites", CHECKBOX:"Create setup program", select "DirectX" and ".NET Framework Client Profile" from the list, deselect "Windows Installer 3.1", leave "Download prerequisites" as it is (should be "from the component vendor's website")
+12) Press BUTTON:"Prerequisites", CHECKBOX:"Create setup program", select "DirectX", "Windows Installer 3.1" and ".NET Framework Client Profile" from the list, leave "Download prerequisites" as it is (should be "from the component vendor's website")
 
 13) Press BUTTON:"Updates...", CHECKBOX:"The application should check for updates", RADIO:"Before the application starts", Press "OK".
 
@@ -36,8 +36,8 @@ Description:
 	Publisher name: "DAISY Consortium"
 	Suite name: EMPTY
 	Product name: "Tobi"
-	Support URL: "http://www.daisy.org/projects/tobi/ClickOnce-Help"
-	Error URL: "http://www.daisy.org/projects/tobi/ClickOnce-Error"
+	Support URL: "http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Help.html"
+	Error URL: "http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Error.html"
 Deployment:
 	Webpage: "index.html"
 	Automatically generate webpage: CHECK

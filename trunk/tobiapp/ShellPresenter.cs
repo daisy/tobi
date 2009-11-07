@@ -337,6 +337,8 @@ namespace Tobi
         {
             pushCommandsToolbar();
             EventAggregator.GetEvent<TypeConstructedEvent>().Unsubscribe(OnTypeConstructed_IToolBarsView);
+
+            PlayAudioCueHi();
         }
 
         private void pushCommandsToolbar()
@@ -1052,7 +1054,7 @@ namespace Tobi
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.ExitConfirm + " (DEBUG MESSAGE)")
+            var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.ExitConfirm)
             {
             };
 
