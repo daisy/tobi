@@ -12,7 +12,7 @@ namespace Tobi.Common
     {
         public static readonly string UnhandledException;
 
-        public static readonly string LOG_FILE_NAME = "Tobi.log";
+        public const string LOG_FILE_NAME = "Tobi.log";
         public static readonly string LOG_FILE_PATH;
         static UserInterfaceStrings()
         {
@@ -220,6 +220,11 @@ namespace Tobi.Common
         public const string Paste = "_Paste";
         public const string Paste_ = "Paste from clipboard";
         public static KeyGesture Paste_KEYS = new KeyGesture(Key.V, ModifierKeys.Control);
+
+
+        public const string ShowLogFilePath = "_Where is ["+ LOG_FILE_NAME+ "] ?";
+        public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
+        public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 
         public const string Help = "_Help";
         public const string Help_ = "Get help";
