@@ -131,7 +131,8 @@ namespace Tobi.Common
         public const string Menu_File = "_File";
 
         public const string Overwrite = "_Overwrite";
-        public const string OverwriteConfirm = "You are about to overwrite this file.\nAre you sure ?";
+        public const string OverwriteConfirm_File = "You are about to overwrite a file.\nAre you sure ?";
+        public const string OverwriteConfirm_Folder = "You are about to overwrite a folder.\nAre you sure ?";
 
         public const string Exit = "E_xit";
         public const string ExitConfirm = "Are you sure you want to exit Tobi ?";
