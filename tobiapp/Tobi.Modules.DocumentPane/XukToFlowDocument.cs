@@ -122,17 +122,9 @@ namespace Tobi.Modules.DocumentPane
             data.Foreground = Brushes.DarkSlateBlue;
         }
 
-        private void formatPageNumberAndSetId(TreeNode node, Paragraph data)
+        private void formatPageNumberAndSetId(TreeNode node, TextElement data)
         {
             setTag(data, node);
-
-            data.BorderBrush = Brushes.Orange;
-            data.BorderThickness = new Thickness(2.0);
-            data.Padding = new Thickness(2.0);
-            data.FontWeight = FontWeights.Bold;
-            data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.LightYellow;
-            data.Foreground = Brushes.DarkOrange;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("id");
@@ -162,6 +154,32 @@ namespace Tobi.Modules.DocumentPane
 
                 EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
             }
+        }
+
+        private void formatPageNumberAndSetId_Span(TreeNode node, Span data)
+        {
+            //data.BorderBrush = Brushes.Orange;
+            //data.BorderThickness = new Thickness(2.0);
+            //data.Padding = new Thickness(2.0);
+            data.FontWeight = FontWeights.Bold;
+            data.FontSize = m_FlowDoc.FontSize * 1.2;
+            data.Background = Brushes.Orange;
+            data.Foreground = Brushes.DarkOrange;
+
+            formatPageNumberAndSetId(node, data);
+        }
+
+        private void formatPageNumberAndSetId_Para(TreeNode node, Paragraph data)
+        {
+            data.BorderBrush = Brushes.Orange;
+            data.BorderThickness = new Thickness(2.0);
+            data.Padding = new Thickness(2.0);
+            data.FontWeight = FontWeights.Bold;
+            data.FontSize = m_FlowDoc.FontSize * 1.2;
+            data.Background = Brushes.LightYellow;
+            data.Foreground = Brushes.DarkOrange;
+
+            formatPageNumberAndSetId(node, data);
         }
 
         private string generatePageId(string pageText)
@@ -596,7 +614,7 @@ namespace Tobi.Modules.DocumentPane
                     if (qname.LocalName == "pagenum")
                     {
                         data.Tag = null;
-                        formatPageNumberAndSetId(node, para);
+                        formatPageNumberAndSetId_Para(node, para);
                     }
                     else if (qname.LocalName == "hd")
                     {
@@ -616,7 +634,7 @@ namespace Tobi.Modules.DocumentPane
                 {
                     data.Tag = null;
                     Paragraph para = new Paragraph();
-                    formatPageNumberAndSetId(node, para);
+                    formatPageNumberAndSetId_Para(node, para);
                     data.Blocks.Add(para);
                     return para;
                 }
@@ -661,7 +679,7 @@ namespace Tobi.Modules.DocumentPane
                         }
                         else
                         {
-                            formatPageNumberAndSetId(node, para);
+                            formatPageNumberAndSetId_Para(node, para);
                         }
 
                         cell.ColumnSpan = 1;
@@ -712,7 +730,7 @@ namespace Tobi.Modules.DocumentPane
                         }
                         else
                         {
-                            formatPageNumberAndSetId(node, para);
+                            formatPageNumberAndSetId_Para(node, para);
                         }
 
                         cell.ColumnSpan = 1;
@@ -1365,10 +1383,15 @@ namespace Tobi.Modules.DocumentPane
                         }
                     case "pagenum":
                         {
-                            DelegateParagraphInitializer delegatePageNum =
+                            DelegateParagraphInitializer delegatePageNumPara =
                                     data =>
                                     {
-                                        formatPageNumberAndSetId(node, data);
+                                        formatPageNumberAndSetId_Para(node, data);
+                                    };
+                            DelegateSpanInitializer delegatePageNumSpan =
+                                    data =>
+                                    {
+                                        formatPageNumberAndSetId_Span(node, data);
                                     };
                             if (parent is Table)
                             {
@@ -1378,10 +1401,17 @@ namespace Tobi.Modules.DocumentPane
                             {
                                 return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
                             }
-                            else
+                            if (parent == null || parent is TableCell || parent is Section || parent is Floater || parent is Figure || parent is ListItem)
                             {
-                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, delegatePageNum);
+                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, delegatePageNumPara);
                             }
+                            if (parent is Paragraph || parent is Span)
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, delegatePageNumSpan);
+                            }
+
+                            Debug.Fail("Page pagenum cannot be added due to incompatible FlowDocument structure !");
+                            break;
                         }
                     case "imggroup":
                         {

@@ -60,9 +60,9 @@ namespace Tobi
     {
         public void OnImportsSatisfied()
         {
-#if DEBUG
-                Debugger.Break();
-#endif
+//#if DEBUG
+//                Debugger.Break();
+//#endif
         }
 
         private void playAudioCue(string audioClipName)
@@ -111,6 +111,8 @@ namespace Tobi
 
         //public RichDelegateCommand NavNextCommand { get; private set; }
         //public RichDelegateCommand NavPreviousCommand { get; private set; }
+
+        public RichDelegateCommand ShowLogFilePathCommand { get; private set; }
 
         public IShellView View { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
@@ -264,6 +266,59 @@ namespace Tobi
                 ()=> true);
 
             RegisterRichCommand(PasteCommand);
+            //
+            ShowLogFilePathCommand = new RichDelegateCommand(
+                UserInterfaceStrings.ShowLogFilePath,
+                UserInterfaceStrings.ShowLogFilePath_,
+                UserInterfaceStrings.ShowLogFilePath_KEYS,
+                LoadTangoIcon("help-browser"),
+                () =>
+                {
+                    Logger.Log("ShellPresenter.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
+
+
+                    var label = new TextBlock
+                    {
+                        Text = UserInterfaceStrings.ShowLogFilePath_,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find")) { IconDrawScale = View.MagnificationLevel };
+                    //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    panel.Children.Add(iconProvider.IconLarge);
+                    panel.Children.Add(label);
+                    //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+                    var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.LOG_FILE_PATH)
+                    {
+                    };
+
+                    var windowPopup = new PopupModalWindow(this,
+                                                           UserInterfaceStrings.EscapeMnemonic(
+                                                               UserInterfaceStrings.ShowLogFilePath),
+                                                           panel,
+                                                           PopupModalWindow.DialogButtonsSet.Close,
+                                                           PopupModalWindow.DialogButton.Close,
+                                                           true, 300, 160, details, 40);
+
+                    windowPopup.ShowModal();
+                    
+                },
+                 () => true);
+
+            RegisterRichCommand(ShowLogFilePathCommand);
             //
             HelpCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Help,
