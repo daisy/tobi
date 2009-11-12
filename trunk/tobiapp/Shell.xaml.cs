@@ -13,6 +13,7 @@ using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.MVVM;
+using Tobi.Common.Onyx.Reflection;
 
 namespace Tobi
 {
@@ -87,7 +88,7 @@ namespace Tobi
                 {
                     app.SplashScreen.Close(TimeSpan.FromSeconds(0.5));
                 }
-                catch(Exception splashEx)
+                catch (Exception splashEx)
                 {
                     Console.Write("SplashScreen.Close() Exception: " + splashEx.Message);
                 }
@@ -140,6 +141,11 @@ namespace Tobi
             // update DPI-dependent stuff
         }
 
+        //public static PropertyPath GetPropertyPath<T>(System.Linq.Expressions.Expression<Func<T>> expression)
+        //{
+        //    return new PropertyPath(Reflect.GetProperty(expression).Name);
+        //}
+        //public static PropertyPath WindowTitlePath = GetPropertyPath(() => Shell.WindowTitlePath);
         public String WindowTitle
         {
             get

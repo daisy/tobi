@@ -2,11 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
-    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" 
-
-        ResizeMode="CanResizeWithGrip"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:Tobi="clr-namespace:Tobi" ResizeMode="CanResizeWithGrip"
         
-    Title="{Binding WindowTitle}"
+    Title="{Binding Path=WindowTitle}"
     Closing="OnClosing"
     Topmost="False"
     Width="{x:Static Common:Sizes.DefaultWindowWidth}"

@@ -1335,6 +1335,7 @@ namespace Tobi.Modules.DocumentPane
                             }
                         }
                     case "h1":
+                    case "levelhd":
                     case "hd":
                         {
                             if (qname.LocalName == "hd" && parent is List)

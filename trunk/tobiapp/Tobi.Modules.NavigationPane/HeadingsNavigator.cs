@@ -221,7 +221,8 @@ namespace Tobi.Modules.NavigationPane
                    || localXmlName == "h4"
                    || localXmlName == "h5"
                    || localXmlName == "h6"
-                   || localXmlName == "hd";
+                   || localXmlName == "hd"
+                   || localXmlName == "levelhd";
         }
 
         public override bool IsIncluded(TreeNode node)
