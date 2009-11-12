@@ -1316,7 +1316,7 @@ namespace Tobi.Modules.DocumentPane
                             }
                             else
                             {
-                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                                  data =>
                                                  {
                                                      data.BorderBrush =
