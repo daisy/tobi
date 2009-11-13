@@ -267,7 +267,7 @@
                         UpdateSourceTrigger="PropertyChanged">
                         <Binding RelativeSource="{RelativeSource FindAncestor,
                                                   AncestorType={x:Type local:MetadataPaneView}}"
-                     Path="DataContext.AvailableMetadataNames"/>
+                                 Path="DataContext.AvailableMetadataNames"/>
                         <Binding Source="{StaticResource MetadatasCVS}" Path="Name"/>
                     </MultiBinding>
                 </ComboBox.ItemsSource>

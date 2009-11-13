@@ -133,23 +133,44 @@ namespace Tobi.Modules.MetadataPane
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 700, 400);
-            windowPopup.Closed += new System.EventHandler(OnDialogClosed);
             //start a transaction
             var session = Container.Resolve<IUrakawaSession>();
             session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 ("Open metadata editor", "The metadata editor modal dialog is opening.");
    
             windowPopup.ShowModal();
-                    
-        }
-        void OnDialogClosed(object sender, System.EventArgs e)
-        {
-            ((PopupModalWindow)sender).Closed -= new System.EventHandler(OnDialogClosed);
-            //end the transaction
-            var session = Container.Resolve<IUrakawaSession>();
-            session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+            //if the user presses "Ok", then save the changes.  otherwise, don't save them.
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+            {
+                removeEmptyMetadata();
+                session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();    
+            }
+            else
+            {
+                session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
+            }
         }
 
+        //remove metadata entries with empty names
+        private void removeEmptyMetadata()
+        {
+            var session = Container.Resolve<IUrakawaSession>();
+            Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            List<MetadataRemoveCommand> removalsList = new List<MetadataRemoveCommand>();
+            
+            foreach (Metadata m in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (string.IsNullOrEmpty(m.NameContentAttribute.Name))
+                {
+                    MetadataRemoveCommand cmd = presentation.CommandFactory.CreateMetadataRemoveCommand(m);
+                    removalsList.Add(cmd);
+                }
+            }
+            foreach (MetadataRemoveCommand cmd in removalsList)
+            {
+                presentation.UndoRedoManager.Execute(cmd);
+            }
+        }
         
         #endregion Commands
         
@@ -283,6 +304,7 @@ namespace Tobi.Modules.MetadataPane
         internal void SelectionChanged()
         {
             RaisePropertyChanged(() => AvailableMetadataNames);
+            RaisePropertyChanged(() => this.MetadataCollection.Metadatas);
         }
     }
 }
