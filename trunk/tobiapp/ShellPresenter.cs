@@ -56,14 +56,14 @@ namespace Tobi
 
     //[Export(typeof(IShellPresenter)), PartCreationPolicy(CreationPolicy.Shared)]
     //[Export]
-    public class ShellPresenter : IShellPresenter, IPartImportsSatisfiedNotification
+    public class ShellPresenter : IShellPresenter //, IPartImportsSatisfiedNotification
     {
-        public void OnImportsSatisfied()
-        {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-        }
+//        public void OnImportsSatisfied()
+//        {
+////#if DEBUG
+////                Debugger.Break();
+////#endif
+//        }
 
         private void playAudioCue(string audioClipName)
         {
@@ -1023,7 +1023,7 @@ namespace Tobi
         }
 
         [Import(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-        protected ILoggerFacade LoggerFromMEF { get; set; }
+        protected ILoggerFacade LoggerFromMEF { get; private set; }
 
         [Import(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
         protected Lazy<ILoggerFacade> LoggerFromMEFLazy { get; set; }

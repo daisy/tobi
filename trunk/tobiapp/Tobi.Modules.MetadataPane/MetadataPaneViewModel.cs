@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -18,8 +20,20 @@ namespace Tobi.Modules.MetadataPane
     /// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
-    public class MetadataPaneViewModel : ViewModelBase
-    {
+    public class MetadataPaneViewModel : ViewModelBase //, IPartImportsSatisfiedNotification
+    {   
+        //[Import(typeof(IToolBarsView))]
+        //protected Lazy<IToolBarsView> TheToolBar { get; set; }
+
+        //public void OnImportsSatisfied()
+        //{
+        //    //#if DEBUG
+        //    //                Debugger.Break();
+        //    //#endif
+
+        //    int uid = TheToolBar.Value.AddToolBarGroup(new[] { CommandShowMetadataPane });
+        //}
+
         #region Construction
 
         protected IEventAggregator EventAggregator { get; private set; }
@@ -92,8 +106,13 @@ namespace Tobi.Modules.MetadataPane
             var toolbars = Container.Resolve<IToolBarsView>();
             if (toolbars != null)
             {
-                int uid = toolbars.AddToolBarGroup(new[] {CommandShowMetadataPane});
+                int uid = toolbars.AddToolBarGroup(new[] { CommandShowMetadataPane });
             }
+
+            // Does not work, because we're inside an injected constructor (by Unity),
+            // because the DIC is in the middle of resolving its chain of instances.
+            // In other words: MEF is not ready because Unity is not ready. 
+            //int uid = TheToolBar.Value.AddToolBarGroup(new[] { CommandShowMetadataPane });
         }
 
         bool CanShowDialog()
