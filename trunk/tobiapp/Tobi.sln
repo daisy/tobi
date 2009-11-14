@@ -87,6 +87,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.MEF", "ExternalLibs\MEF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.MEF_Unity", "ExternalLibs\MEF_Unity\Lib.MEF_Unity.csproj", "{24A770F8-AF0E-400F-8ABB-3FD68617103E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.Validator", "Tobi.Modules.Validator\Tobi.Modules.Validator.csproj", "{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.Validator.Metadata", "Tobi.Modules.Validator.Metadata\Tobi.Modules.Validator.Metadata.csproj", "{341678A8-F3B5-43BF-8505-69B4ED969B53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -366,6 +370,26 @@ Global
 		{24A770F8-AF0E-400F-8ABB-3FD68617103E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24A770F8-AF0E-400F-8ABB-3FD68617103E}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{24A770F8-AF0E-400F-8ABB-3FD68617103E}.test|Any CPU.Build.0 = Release|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}.test|Any CPU.Build.0 = Release|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{341678A8-F3B5-43BF-8505-69B4ED969B53}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,6 +20,7 @@ using Tobi.Modules.NavigationPane;
 using Tobi.Modules.MenuBar;
 using Tobi.Modules.ToolBars;
 using Tobi.Modules.Urakawa;
+using Tobi.Modules.Validator;
 
 namespace Tobi
 {
@@ -127,6 +128,7 @@ namespace Tobi
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
                 .AddModule(typeof(MetadataPaneModule))
+                .AddModule(typeof(ValidatorModule))
                 ;
 
             //.AddModule(typeof (StatusBarModule));

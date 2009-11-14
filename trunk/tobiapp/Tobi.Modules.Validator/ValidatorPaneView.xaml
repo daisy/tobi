@@ -1,0 +1,10 @@
+﻿<DockPanel x:Class="Tobi.Modules.Validator.ValidatorPaneView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ListBox x:Name="validation" ItemsSource="{Binding ReportResults}">
+    <!-- assuming this will be fed a list of IValidatorReportItem objects -->
+    <ListBox.ItemTemplate>
+      <TextBox Text="{Binding Message}"/>
+    </ListBox.ItemTemplate>
+  </ListBox>
+</DockPanel>
