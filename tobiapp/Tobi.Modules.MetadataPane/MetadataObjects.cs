@@ -280,7 +280,28 @@ namespace Tobi.Modules.MetadataPane
                     metadata.NameContentAttribute.Name.ToLower(), true);
             //filter out read-only items because they will be filled in by Tobi at export time
             if (definition.IsReadOnly == false)
-                m_Metadatas.Add(new NotifyingMetadataItem(metadata, this));
+            {
+                NotifyingMetadataItem newItem = new NotifyingMetadataItem(metadata, this);
+                newItem.BindPropertyChangedToAction(()=> newItem.IsPrimaryIdentifier, 
+                    ()=> notifyOfPrimaryIdentifierChange(newItem));
+                m_Metadatas.Add(newItem);
+            }
+
+        }
+        //when a new metadata object assumes the role of primary identifier,
+        //set IsPrimaryIdentifier to false on all other metadata objects
+        private void notifyOfPrimaryIdentifierChange(NotifyingMetadataItem item)
+        {
+            if (item.IsPrimaryIdentifier)
+            {
+                foreach (NotifyingMetadataItem m in m_Metadatas)
+                {
+                    if (m != item && m.IsPrimaryIdentifier)
+                    {
+                        m.IsPrimaryIdentifier = false;
+                    }
+                }
+            }
         }
 
         //find the item that is wrapping the given metadata object
@@ -301,7 +322,7 @@ namespace Tobi.Modules.MetadataPane
             if (item.Definition == null) return false;
 
             //if this item is an identifier, and there is currently no primary identifier
-            bool found = false;
+          /*  bool found = false;
             IEnumerator<NotifyingMetadataItem> enumerator = Metadatas.GetEnumerator();
 
             while(enumerator.MoveNext())
@@ -315,7 +336,7 @@ namespace Tobi.Modules.MetadataPane
 
             //if we already have a primary identifier
             if (found == true) return false;
-
+            */
             //it should have a dc:identifier definition even if it is actually one of the synonyms
             if (item.Definition.Name.ToLower() == "dc:identifier")
                 return true;

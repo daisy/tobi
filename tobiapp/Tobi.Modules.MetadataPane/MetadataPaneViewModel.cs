@@ -296,7 +296,6 @@ namespace Tobi.Modules.MetadataPane
                     if (!metadata.IsReadOnly) 
                         list.Add(metadata.Name.ToLower());
                 }
-             
                 return list;
             }
         }
