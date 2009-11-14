@@ -77,6 +77,10 @@
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
       <Name>Lib.Composite.Presentation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
+      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
+      <Name>Lib.Composite.UnityExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>

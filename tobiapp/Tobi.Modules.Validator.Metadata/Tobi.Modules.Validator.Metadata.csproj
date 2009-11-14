@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -55,6 +55,10 @@
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
+      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
+      <Name>Lib.Composite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
@@ -64,4 +68,10 @@
       <Name>Tobi.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

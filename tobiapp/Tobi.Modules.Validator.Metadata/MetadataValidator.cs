@@ -1,21 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
-using urakawa.metadata;
+using Tobi.Common.Validation;
 using urakawa.metadata.daisy;
 using System.ComponentModel.Composition;
 
 namespace Tobi.Modules.Validator.Metadata
 {
-    [Export(typeof (IValidator))]
+    [Export(typeof(IValidator))]
     public class MetadataValidator : IValidator
     {
-        [Import(typeof (IUrakawaSession))]
+        [Import(typeof(IUrakawaSession))]
         protected IUrakawaSession m_Session;
-        private urakawa.metadata.daisy.MetadataValidator m_Validator = 
+
+        private urakawa.metadata.daisy.MetadataValidator m_Validator =
             new urakawa.metadata.daisy.MetadataValidator(SupportedMetadata_Z39862005.MetadataDefinitions);
-        
+
+        [ImportingConstructor]
+        public MetadataValidator(
+            [Import(typeof(ILoggerFacade))]
+            ILoggerFacade logger)
+        {
+            logger.Log("Hello world !", Category.Info, Priority.High);
+        }
+
         #region IValidator Members
 
         public string Name
@@ -39,25 +47,26 @@ namespace Tobi.Modules.Validator.Metadata
             if (m_Session.DocumentProject != null &&
                 m_Session.DocumentProject.Presentations.Count > 0)
             {
-                List<urakawa.metadata.Metadata> metadatas = 
+                List<urakawa.metadata.Metadata> metadatas =
                     m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
                 return m_Validator.Validate(metadatas);
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
+
         public IEnumerable<ValidationItem> ValidationItems
         {
             get
             {
                 foreach (MetadataValidationError err in m_Validator.Errors)
                 {
-                    ValidationItem validationItem = new ValidationItem();
-                    validationItem.Message = getErrorText(err);
-                    validationItem.Severity = ValidationSeverity.Error;
-                    validationItem.Validator = this;
+                    var validationItem = new ValidationItem
+                                             {
+                                                 Message = getErrorText(err),
+                                                 Severity = ValidationSeverity.Error,
+                                                 Validator = this
+                                             };
                     yield return validationItem;
                 }
                 yield break;

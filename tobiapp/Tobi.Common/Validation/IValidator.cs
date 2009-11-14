@@ -1,22 +1,6 @@
-using System;
-using System.ComponentModel;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Imaging;
-using Microsoft.Practices.Composite.Events;
-using Microsoft.Practices.Composite.Modularity;
-using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Composite.UnityExtensions;
-using Microsoft.Practices.Unity;
-using Microsoft.Win32;
-using Tobi.Common;
-using Tobi.Common.MVVM;
-using Tobi.Common.Onyx.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace Tobi.Common
+namespace Tobi.Common.Validation
 {
     public interface IValidator
     {

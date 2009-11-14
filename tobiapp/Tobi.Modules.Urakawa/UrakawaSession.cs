@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -246,7 +247,7 @@ namespace Tobi.Modules.Urakawa
 
         private void pushCommandsToolbar()
         {
-            var toolbars = Container.Resolve<IToolBarsView>();
+            var toolbars = Container.TryResolve<IToolBarsView>();
             if (toolbars != null)
             {
                 int uid1 = toolbars.AddToolBarGroup(new[] { OpenCommand, SaveCommand });
