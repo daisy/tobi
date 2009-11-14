@@ -161,22 +161,19 @@ namespace Tobi.Modules.MetadataPane
         {
             get
             {
-                return !(string.IsNullOrEmpty(this.UrakawaMetadata.Id));
+                return UrakawaMetadata.IsMarkedAsPrimaryIdentifier;
             }
             set
             {
-                bool current = !(string.IsNullOrEmpty(this.UrakawaMetadata.Id));
-                if (value == current) return;
-                string id = value ? this.Content : "";
+                if (value == UrakawaMetadata.IsMarkedAsPrimaryIdentifier) return;
+
                 MetadataSetIdCommand cmd =
-                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetIdCommand
-                        (UrakawaMetadata, id);
+                    UrakawaMetadata.Presentation.CommandFactory.CreateMetadataSetIdCommand(UrakawaMetadata, value);
                 UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
 
                 RaisePropertyChanged(() => IsPrimaryIdentifier);
             }
         }
-
     }
 
     public class MetadataCollection : PropertyChangedNotifyBase

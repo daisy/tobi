@@ -74,8 +74,13 @@ namespace Tobi.Modules.MetadataPane
 
         private void OnProjectLoaded(Project project)
         {
-            Logger.Log("MetadataPaneViewModel.OnProjectLoaded" + (project == null ? "(null)" : ""), 
+            Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""), 
                 Category.Debug, Priority.Medium);
+
+            if (project == null)
+            {
+                m_MetadataCollection = null;
+            }
 
             RaisePropertyChanged(() => MetadataCollection);
         }
