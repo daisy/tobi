@@ -235,6 +235,10 @@
       <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
       <Name>Tobi.Modules.Urakawa</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator\Tobi.Modules.Validator.csproj">
+      <Project>{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}</Project>
+      <Name>Tobi.Modules.Validator</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Tobi.ico">

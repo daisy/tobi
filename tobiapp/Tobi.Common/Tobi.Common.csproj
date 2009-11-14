@@ -122,6 +122,7 @@
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
     <Compile Include="UI\XAML\RenderTargetBitmapImageSourceConverter.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
+    <Compile Include="Validation\IValidator.cs" />
     <Compile Include="_UnusedCode\BindableRun.cs" />
     <Compile Include="_UnusedCode\BindableRunTextMedia.cs" />
     <Compile Include="_UnusedCode\CollapsibleGridSplitter.cs" />
