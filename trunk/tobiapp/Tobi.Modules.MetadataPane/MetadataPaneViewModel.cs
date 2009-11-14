@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -108,7 +109,7 @@ namespace Tobi.Modules.MetadataPane
 
             shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
 
-            var toolbars = Container.Resolve<IToolBarsView>();
+            var toolbars = Container.TryResolve<IToolBarsView>();
             if (toolbars != null)
             {
                 int uid = toolbars.AddToolBarGroup(new[] { CommandShowMetadataPane });

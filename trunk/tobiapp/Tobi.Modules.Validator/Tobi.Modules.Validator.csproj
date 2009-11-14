@@ -79,6 +79,10 @@
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
+      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
+      <Name>Lib.Composite.UnityExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>

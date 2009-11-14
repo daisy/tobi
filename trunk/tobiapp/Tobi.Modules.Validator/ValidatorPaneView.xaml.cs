@@ -1,106 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Tobi.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
-using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
+using Tobi.Common.Validation;
 
 namespace Tobi.Modules.Validator
 {
     /// <summary>
     /// Interaction logic for ValidatorPaneView.xaml
     /// </summary>
-    public partial class ValidatorPaneView
+    [Export(typeof(ValidatorPaneView)), PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class ValidatorPaneView : IPartImportsSatisfiedNotification
     {
         [ImportMany(typeof(IValidator))]
-        public IEnumerable<IValidator> Validators { get; set;}
-        public ObservableCollection<ValidationItem> ReportResults { get; set;}
-        public RichDelegateCommand CommandShowValidator { get; private set; }
+        public IEnumerable<IValidator> Validators { get; set; }
+
+        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
 
         protected IEventAggregator EventAggregator { get; private set; }
-        public ILoggerFacade Logger { get; private set; }
-        public IUnityContainer Container { get; private set; }
+        protected ILoggerFacade Logger { get; private set; }
+        protected IUnityContainer Container { get; private set; }
         
-        
-        private void initializeCommands()
-        {
-            Logger.Log("ValidatorPaneView.initializeCommands", Category.Debug, Priority.Medium);
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-
-            CommandShowValidator = new RichDelegateCommand(
-                "Show Validator",
-                "",
-                new KeyGesture(Key.V, ModifierKeys.Shift | ModifierKeys.Control),
-                shellPresenter.LoadGnomeNeuIcon("preferences-user-information"),
-                ShowDialog,
-                CanShowDialog);
-
-            shellPresenter.RegisterRichCommand(CommandShowValidator);
-
-            var toolbars = Container.Resolve<IToolBarsView>();
-            if (toolbars != null)
-            {
-                int uid = toolbars.AddToolBarGroup(new[] { CommandShowValidator });
-            }
-
-        }
-
-        bool CanShowDialog()
-        {
-            var session = Container.Resolve<IUrakawaSession>();
-            return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
-        }
-
-        void ShowDialog()
-        {
-            Logger.Log("ValidatorPaneView.ShowDialog", Category.Debug, Priority.Medium);
-
-            //do the validation!!!
-            Validate();
-
-            //show the results of the validation!!!
-            var shellPresenter_ = Container.Resolve<IShellPresenter>();
-            var windowPopup = new PopupModalWindow(shellPresenter_,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                   "Validator"),
-                                                   this,
-                                                   PopupModalWindow.DialogButtonsSet.Close,
-                                                   PopupModalWindow.DialogButton.Close,
-                                                   true, 700, 400);
-            windowPopup.ShowFloating(null);
-            
-        }
-
+        [ImportingConstructor]
         public ValidatorPaneView(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
+            Container = container;
             EventAggregator = eventAggregator;
             Logger = logger;
-            Container = container;
-            initializeCommands();
+
+            ValidationItems = new ObservableCollection<ValidationItem>();
+
             DataContext = this;
             InitializeComponent();
         }
 
-        //run all the validator plugins
-        public bool Validate()
+        private bool Validate()
         {
             bool isValid = true;
-            ReportResults.Clear();
+            ValidationItems.Clear();
             foreach (IValidator v in Validators)
             {
                 isValid = isValid && v.Validate();
@@ -108,11 +52,39 @@ namespace Tobi.Modules.Validator
                 {
                     foreach (ValidationItem item in v.ValidationItems)
                     {
-                        ReportResults.Add(item);
+                        ValidationItems.Add(item);
                     }
                 }
             }
             return isValid;
+        }
+
+        private void OnClick_ValidateButton(object sender, RoutedEventArgs e)
+        {
+            Validate();
+        }
+
+        public void OnImportsSatisfied()
+        {
+#if DEBUG
+            Debugger.Break();
+#endif
+        }
+    }
+
+    public class SeverityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            var severity = (ValidationSeverity)value;
+            return severity == ValidationSeverity.Error;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException
+                ("NO !");
         }
     }
 }

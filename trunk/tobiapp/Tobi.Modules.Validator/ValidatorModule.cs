@@ -1,25 +1,49 @@
-﻿using Microsoft.Practices.Composite.Modularity;
-using Microsoft.Practices.Composite.Regions;
+﻿using System.Windows.Input;
+using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Modularity;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 
 namespace Tobi.Modules.Validator
 {
     ///<summary>
-    /// The status bar is commonly displayed at the bottom of the application window
-    /// to report live information about the state of the application.
+    /// The top-level validator engine that aggregates other plugin-contributed concrete validators.
     ///</summary>
     public class ValidatorModule : IModule
     {
-        private readonly IUnityContainer m_Container;
+        private readonly RichDelegateCommand CommandShowValidator;
 
+
+        private readonly IUnityContainer Container;
+        private readonly IEventAggregator EventAggregator;
+        private readonly ILoggerFacade Logger;
+        
         ///<summary>
         /// Dependency Injection constructor
         ///</summary>
         ///<param name="container">The DI container</param>
-        public ValidatorModule(IUnityContainer container)
+        public ValidatorModule(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
-            m_Container = container;
+            Container = container;
+            EventAggregator = eventAggregator;
+            Logger = logger;
+
+
+            var shellPresenter = Container.Resolve<IShellPresenter>();
+
+            CommandShowValidator = new RichDelegateCommand(
+                "Validation Check",
+                "",
+                new KeyGesture(Key.V, ModifierKeys.Shift | ModifierKeys.Control),
+                shellPresenter.LoadGnomeNeuIcon("Neu_preferences-user-information"),
+                ShowDialog,
+                CanShowDialog);
+
+            shellPresenter.RegisterRichCommand(CommandShowValidator);
         }
 
         ///<summary>
@@ -27,7 +51,36 @@ namespace Tobi.Modules.Validator
         ///</summary>
         public void Initialize()
         {
-            m_Container.RegisterType<ValidatorPaneView>(new ContainerControlledLifetimeManager());
+            //Container.RegisterType<ValidatorPaneView>(new ContainerControlledLifetimeManager());
+
+            Logger.Log("ValidatorModule.Initialize", Category.Debug, Priority.Medium);
+
+            var toolbars = Container.TryResolve<IToolBarsView>();
+            if (toolbars != null)
+            {
+                int uid = toolbars.AddToolBarGroup(new[] { CommandShowValidator });
+            }
+        }
+
+        bool CanShowDialog()
+        {
+            var session = Container.Resolve<IUrakawaSession>();
+            return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
+        }
+
+        void ShowDialog()
+        {
+            Logger.Log("ValidatorModule.ShowDialog", Category.Debug, Priority.Medium);
+
+            var view = Container.Resolve<ValidatorPaneView>();
+            var shellPresenter_ = Container.Resolve<IShellPresenter>();
+            var windowPopup = new PopupModalWindow(shellPresenter_,
+                                                   UserInterfaceStrings.EscapeMnemonic("Validation Checker"),
+                                                   view,
+                                                   PopupModalWindow.DialogButtonsSet.Close,
+                                                   PopupModalWindow.DialogButton.Close,
+                                                   true, 700, 400);
+            windowPopup.ShowFloating(null);
         }
     }
 }

@@ -127,8 +127,8 @@ namespace Tobi
                 .AddModule(typeof(ToolBarsModule))
                 .AddModule(typeof(DocumentPaneModule))
                 .AddModule(typeof(AudioPaneModule))
-                .AddModule(typeof(MetadataPaneModule))
-                .AddModule(typeof(ValidatorModule))
+                .AddModule(typeof(MetadataPaneModule), "ToolBarsModule")
+                .AddModule(typeof(ValidatorModule), "ToolBarsModule")
                 ;
 
             //.AddModule(typeof (StatusBarModule));

@@ -1,10 +1,33 @@
-﻿<DockPanel x:Class="Tobi.Modules.Validator.ValidatorPaneView"
+﻿<DockPanel LastChildFill="True"
+           x:Class="Tobi.Modules.Validator.ValidatorPaneView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <ListBox x:Name="validation" ItemsSource="{Binding ReportResults}">
-    <!-- assuming this will be fed a list of IValidatorReportItem objects -->
-    <ListBox.ItemTemplate>
-      <TextBox Text="{Binding Message}"/>
-    </ListBox.ItemTemplate>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:Validator="clr-namespace:Tobi.Modules.Validator">
+  <DockPanel.Resources>
+    <Validator:SeverityConverter x:Key="SeverityConverter"/>
+  </DockPanel.Resources>
+  <Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>
+  <ListBox
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    ItemsSource="{Binding ValidationItems}"
+    DisplayMemberPath="Message">
+
+    <!-- ListBox.ItemTemplate>
+      <DataTemplate>
+        <TextBox Text="{Binding Message}"/>
+      </DataTemplate>
+    </ListBox.ItemTemplate -->
+    <ListBox.ItemContainerStyle>
+      <Style TargetType="{x:Type ListBoxItem}">
+
+        <Setter Property="FontWeight" Value="Normal" />
+
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding Severity, Converter={StaticResource SeverityConverter}}" Value="True">
+            <Setter Property="FontWeight" Value="Bold" />
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ListBox.ItemContainerStyle>
   </ListBox>
 </DockPanel>
