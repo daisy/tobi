@@ -1,18 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Windows.Controls.Primitives;
-using Microsoft.Practices.Composite.Logging;
+﻿using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
-using Tobi.Modules.MetadataPane;
-using urakawa.metadata;
-using System.Collections.Generic;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Collections.ObjectModel;
 using urakawa.metadata.daisy;
-using Microsoft.Windows.Controls;
-using Tobi.Common.MVVM;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -21,7 +12,7 @@ namespace Tobi.Modules.MetadataPane
     /// The backing ViewModel is injected in the constructor ("passive" view design pattern)
     /// </summary>
     public partial class MetadataPaneView : IMetadataPaneView
-    {   
+    {
         #region Construction
 
         public MetadataPaneViewModel ViewModel { get; private set; }
@@ -41,7 +32,6 @@ namespace Tobi.Modules.MetadataPane
         }
 
         #endregion Construction
-
 
         private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {

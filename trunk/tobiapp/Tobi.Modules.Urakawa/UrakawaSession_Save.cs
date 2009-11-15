@@ -5,7 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using DaisyExport;
+using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
@@ -69,8 +69,7 @@ namespace Tobi.Modules.Urakawa
                         Directory.CreateDirectory(dlg.SelectedPath);
                     }
 
-                    var exporter = new DAISY3Export(DocumentProject.Presentations.Get(0));
-                    exporter.ExportToDaisy3(dlg.SelectedPath);
+                    var exporter = new Daisy3_Export(DocumentProject.Presentations.Get(0), dlg.SelectedPath, null);
                 },
                 () => DocumentProject != null);
 

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Windows.Controls;
+﻿//using Microsoft.Windows.Controls;
 
 namespace Tobi
 {
@@ -22,9 +21,9 @@ namespace Tobi
             InitializeComponent();
         }
 
-        private void OnLoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            e.Row.Header = e.Row.GetIndex();
-        }
+        //private void OnLoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    e.Row.Header = e.Row.GetIndex();
+        //}
     }
 }

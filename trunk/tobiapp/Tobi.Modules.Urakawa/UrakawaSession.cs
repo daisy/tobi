@@ -97,36 +97,33 @@ namespace Tobi.Modules.Urakawa
             publishVisitor.DestinationChannel = publishChannel;
 
 #if DEBUG
-                Debugger.Break();
+            Debugger.Break();
 #endif
             DocumentProject.Presentations.Get(0).RootNode.AcceptDepthFirst(publishVisitor);
 
 #if DEBUG
-                Debugger.Break();
-#endif
+            Debugger.Break();
             publishVisitor.VerifyTree(DocumentProject.Presentations.Get(0).RootNode);
-
-#if DEBUG
-                Debugger.Break();
+            Debugger.Break();
 #endif
             DocumentProject.Presentations.Get(0).ChannelsManager.RemoveManagedObject(publishChannel);
 
 #if DEBUG
-                Debugger.Break();
+            Debugger.Break();
 #endif
             var project = new Project();
             var action = new OpenXukAction(project, new Uri(DocumentFilePath, UriKind.Absolute));
             action.Execute();
 
 #if DEBUG
-                Debugger.Break();
+            Debugger.Break();
 #endif
             DocumentProject.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             project.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             Debug.Assert(project.ValueEquals(DocumentProject));
 
 #if DEBUG
-                Debugger.Break();
+            Debugger.Break();
 #endif
         }
 
@@ -206,8 +203,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
                 shellPresenter.LoadTangoIcon("edit-undo"),
-                ()=> DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
-                ()=> DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
+                () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
+                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
 
             shellPresenter.RegisterRichCommand(UndoCommand);
             //
@@ -216,8 +213,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
                 shellPresenter.LoadTangoIcon("edit-redo"),
-                ()=> DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
-                ()=> DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
+                () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
+                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
 
             shellPresenter.RegisterRichCommand(RedoCommand);
             //
@@ -226,8 +223,8 @@ namespace Tobi.Modules.Urakawa
                 UserInterfaceStrings.Close_,
                 UserInterfaceStrings.Close_KEYS,
                 shellPresenter.LoadTangoIcon("go-jump"),
-                ()=> Close(),
-                ()=> DocumentProject != null);
+                () => Close(),
+                () => DocumentProject != null);
 
             shellPresenter.RegisterRichCommand(CloseCommand);
 

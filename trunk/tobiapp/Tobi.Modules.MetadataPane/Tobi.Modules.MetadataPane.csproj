@@ -88,10 +88,6 @@
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\WPFToolkit\Lib.WPFToolkit.csproj">
-      <Project>{9606A078-7135-4CE7-879E-39FCF527F1A3}</Project>
-      <Name>Lib.WPFToolkit</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>

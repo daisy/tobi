@@ -69,8 +69,10 @@ namespace Tobi.Common.UI
                 string sortBy = GetSortPropertyName(headerClicked.Column);
                 if (string.IsNullOrEmpty(sortBy))
                 {
+                    return;
+
                     // otherwise use the column header name
-                    sortBy = headerClicked.Column.Header as string;
+                    //sortBy = headerClicked.Column.Header as string;
                 }
                 Sort(sortBy, direction);
 

@@ -9,6 +9,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.daisy.import;
 using urakawa.events.progress;
 using urakawa.xuk;
 
@@ -236,7 +237,7 @@ namespace Tobi.Modules.Urakawa
             else
             {
                 //TODO: progress bar !
-                var converter = new XukImport.DaisyToXuk(DocumentFilePath);
+                var converter = new Daisy3_Import(DocumentFilePath);
 
                 DocumentFilePath = converter.XukPath;
                 DocumentProject = converter.Project;
