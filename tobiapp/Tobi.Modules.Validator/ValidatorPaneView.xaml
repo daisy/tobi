@@ -6,7 +6,7 @@
   <DockPanel.Resources>
     <Validator:SeverityConverter x:Key="SeverityConverter"/>
   </DockPanel.Resources>
-  <Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>
+  <!--<Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>-->
   <ListBox
     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
     ItemsSource="{Binding ValidationItems}"

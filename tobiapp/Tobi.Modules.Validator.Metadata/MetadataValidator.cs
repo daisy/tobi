@@ -14,7 +14,7 @@ namespace Tobi.Modules.Validator.Metadata
     /// The main validator class
     /// </summary>
     [Export(typeof(IValidator))]
-    public class MetadataValidator : IValidator
+    public class MetadataValidator : AbstractValidator
     {
         [Import(typeof (IUrakawaSession))] 
         protected IUrakawaSession m_Session;
@@ -33,17 +33,17 @@ namespace Tobi.Modules.Validator.Metadata
 
         #region IValidator Members
 
-        public string Name
+        public override string Name
         {
             get { return "MetadataValidator";}
         }
 
-        public string Description
+        public override string Description
         {
             get{ return "Validate metadata";}
         }
 
-        public bool Validate()
+        public override bool Validate()
         {
             if (m_Session.DocumentProject != null &&
                 m_Session.DocumentProject.Presentations.Count > 0)
@@ -56,7 +56,7 @@ namespace Tobi.Modules.Validator.Metadata
             return true;
         }
 
-        public IEnumerable<ValidationItem> ValidationItems
+        public override IEnumerable<ValidationItem> ValidationItems
         {
             get { return m_ValidationItems;}
         }

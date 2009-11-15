@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
+using Tobi.Modules.Validator.Metadata;
 using urakawa.metadata.daisy;
 
 namespace Tobi.Modules.MetadataPane
@@ -58,12 +59,15 @@ namespace Tobi.Modules.MetadataPane
         private void errorsList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (errorsList.SelectedItem != null && 
-                errorsList.SelectedItem is MetadataValidationFormatError)
+                errorsList.SelectedItem is MetadataValidationError)
             {
-                MetadataValidationFormatError error = (MetadataValidationFormatError) errorsList.SelectedItem;
-                NotifyingMetadataItem metadataItem = ViewModel.MetadataCollection.Find(error.Metadata);
-                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
-                if (metadataItem != null) cvs.View.MoveCurrentTo(metadataItem);
+                MetadataValidationError error = (MetadataValidationError) errorsList.SelectedItem;
+                if (error.ErrorType == MetadataErrorType.FormatError)
+                {
+                    NotifyingMetadataItem metadataItem = ViewModel.MetadataCollection.Find(error.Target);
+                    CollectionViewSource cvs = (CollectionViewSource) this.FindResource("MetadatasCVS");
+                    if (metadataItem != null) cvs.View.MoveCurrentTo(metadataItem);
+                }
             }
 
         }
