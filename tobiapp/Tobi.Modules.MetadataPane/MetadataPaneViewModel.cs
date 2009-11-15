@@ -39,7 +39,7 @@ namespace Tobi.Modules.MetadataPane
 
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-        private MetadataValidator m_Validator;
+        private Tobi.Modules.Validator.Metadata.MetadataValidator m_Validator;
         
         ///<summary>
         /// Dependency-Injected constructor
@@ -50,7 +50,7 @@ namespace Tobi.Modules.MetadataPane
             Logger = logger;
             m_MetadataCollection = null;
             Initialize();
-            m_Validator = new MetadataValidator(SupportedMetadata_Z39862005.MetadataDefinitions);
+            m_Validator = new Tobi.Modules.Validator.Metadata.MetadataValidator(logger);
         }
         
         #endregion Construction
@@ -200,7 +200,7 @@ namespace Tobi.Modules.MetadataPane
             
                         m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
-                            SupportedMetadata_Z39862005.MetadataDefinitions);
+                            SupportedMetadata_Z39862005.DefinitionSet.Definitions);
                         presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
                         presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
                     }
@@ -294,7 +294,7 @@ namespace Tobi.Modules.MetadataPane
 
                 List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
                 List<MetadataDefinition> availableMetadata =
-                    MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.MetadataDefinitions);
+                    MetadataAvailability.GetAvailableMetadata(metadatas, m_Validator.MetadataDefinitions);
 
 
                 foreach (MetadataDefinition metadata in availableMetadata)
