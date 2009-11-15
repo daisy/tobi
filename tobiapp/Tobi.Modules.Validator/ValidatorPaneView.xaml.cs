@@ -69,6 +69,8 @@ namespace Tobi.Modules.Validator
 #if DEBUG
             Debugger.Break();
 #endif
+
+            Validate();
         }
     }
 

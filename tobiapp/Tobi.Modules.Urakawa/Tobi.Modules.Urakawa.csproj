@@ -65,13 +65,9 @@
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\XukExport\DaisyExport\DaisyExport.csproj">
-      <Project>{EEA41DEC-C8AA-4681-9A18-166C6C34C94E}</Project>
-      <Name>DaisyExport</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\XukImport\DaisyToXuk\DaisyToXuk.csproj">
-      <Project>{FB4B9F00-DAE4-46C4-B789-7A693198FA61}</Project>
-      <Name>DaisyToXuk</Name>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
+      <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
+      <Name>UrakawaSDK.daisy</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
       <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
