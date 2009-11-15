@@ -11,6 +11,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using Tobi.Common.Validation;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
@@ -27,9 +28,9 @@ namespace Tobi.Modules.MetadataPane
 
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-        //the local instance of metadata validator
-        private Validator.Metadata.MetadataValidator m_Validator;
         private MetadataDefinitionSet m_DefinitionSet;
+
+        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -40,8 +41,9 @@ namespace Tobi.Modules.MetadataPane
             Logger = logger;
             m_MetadataCollection = null;
             Initialize();
-            m_Validator = new Tobi.Modules.Validator.Metadata.MetadataValidator(logger);
-            SetMetadataDefinitions(SupportedMetadata_Z39862005.DefinitionSet);
+            //for now, this is hardcoded internally.  in the long term, this info will be pulled
+            //from a Tobi profile
+            m_DefinitionSet = SupportedMetadata_Z39862005.DefinitionSet;
         }
         
         #endregion Construction
@@ -106,10 +108,6 @@ namespace Tobi.Modules.MetadataPane
                 int uid = toolbars.AddToolBarGroup(new[] { CommandShowMetadataPane });
             }
 
-            // Does not work, because we're inside an injected constructor (by Unity),
-            // because the DIC is in the middle of resolving its chain of instances.
-            // In other words: MEF is not ready because Unity is not ready. 
-            //int uid = TheToolBar.Value.AddToolBarGroup(new[] { CommandShowMetadataPane });
         }
 
         bool CanShowDialog()
@@ -221,17 +219,6 @@ namespace Tobi.Modules.MetadataPane
             presentation.UndoRedoManager.Execute(cmd);
         }
 
-        
-        /// <summary>
-        /// validate all metadata
-        /// </summary>
-        public bool ValidateMetadata()
-        {
-            return MetadataCollection.Validate();
-           
-        }
-
-        
         public string GetViewModelDebugStringForMetaData()
         {
             string data = "";
@@ -303,17 +290,18 @@ namespace Tobi.Modules.MetadataPane
             RaisePropertyChanged(() => this.MetadataCollection.Metadatas);
         }
 
-        public void OnValidationErrorSelected(ValidationErrorSelectedEventArgs e)
+        /*public void OnValidationErrorSelected(ValidationErrorSelectedEventArgs e)
         {
             
         }
         public void OnValidationErrors(ValidationErrorsEventArgs e)
         {
-
+            if (validator is MetadataValidator)
+            {
+                //add the errors to our collection
+         * ValidationItems.Add(...);
+            }
         }
-        public void SetMetadataDefinitions(MetadataDefinitionSet definitionSet)
-        {
-            m_DefinitionSet = definitionSet;
-        }
+         * */
     }
 }

@@ -68,11 +68,28 @@
         <!-- details view: errors -->
         <Style x:Key="ValidationTextDetailsViewStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Focusable" Value="True"/>
-            <Setter Property="AutomationProperties.Name"
-              Value="{Binding ValidationError,
-                                    Converter={StaticResource descriptiveErrorTextConverter}}"/>
-            <Setter Property="ToolTip" Value="{Binding ValidationError,
-                                                       Converter={StaticResource descriptiveErrorTextConverter}}"/>
+          <Setter Property="AutomationProperties.Name">
+            <Setter.Value>
+              <MultiBinding Converter="{StaticResource descriptiveErrorTextConverter}">
+                <Binding Source="{StaticResource MetadatasCVS}"
+                   Path="/"/>
+                <Binding RelativeSource="{RelativeSource FindAncestor,
+                                                  AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.ValidationItems"/>
+              </MultiBinding>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="ToolTip">
+            <Setter.Value>
+              <MultiBinding Converter="{StaticResource descriptiveErrorTextConverter}">
+                <Binding Source="{StaticResource MetadatasCVS}"
+                   Path="/"/>
+                <Binding RelativeSource="{RelativeSource FindAncestor,
+                                                  AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.ValidationItems"/>
+              </MultiBinding>
+            </Setter.Value>
+          </Setter> 
         </Style>
 
         <!-- for the validation errors list box -->
@@ -203,7 +220,7 @@
                  MouseDoubleClick="errorsList_MouseDoubleClick"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  HorizontalContentAlignment="Stretch"
-                 ItemsSource="{Binding Path=MetadataCollection.ValidationErrors,
+                 ItemsSource="{Binding Path=DataContext.ValidationItems,
 	                                        Converter={StaticResource errorsToListConverter}}">
                 </ListBox>
             </StackPanel>
@@ -293,11 +310,17 @@
                   FontWeight="Bold" Text="Errors: "
                  Focusable="True"/>
             <TextBlock x:Name="errorText" Grid.Row="4" Grid.Column="1"
-                 Text="{Binding Source={StaticResource MetadatasCVS},
-                                      Path=ValidationError,
-                                      Converter={StaticResource descriptiveErrorTextConverter}}"
                  TextWrapping="Wrap"
                  Style="{StaticResource ValidationTextDetailsViewStyle}">
+              <TextBlock.Text>
+                <MultiBinding Converter="{StaticResource descriptiveErrorTextConverter}">
+                    <Binding Source="{StaticResource MetadatasCVS}"
+                       Path="/"/>
+                    <Binding RelativeSource="{RelativeSource FindAncestor,
+                                                  AncestorType={x:Type local:MetadataPaneView}}"
+                                     Path="DataContext.ValidationItems"/>
+                  </MultiBinding>
+              </TextBlock.Text>
             </TextBlock>
 
             <!-- PRIMARY IDENTIFIER CHECKBOX -->
