@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using Tobi.Modules.Validator.Metadata;
 using urakawa.metadata;
 using System.Collections.ObjectModel;
+using Tobi.Common.Validation;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -61,6 +63,7 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
+
     public class ErrorsToListConverter : IValueConverter
     {
         //don't include errors about read-only metadata items
@@ -68,14 +71,13 @@ namespace Tobi.Modules.MetadataPane
         {
             //ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
             ObservableCollection<string> errors = new ObservableCollection<string>();
-            ObservableCollection<MetadataValidationError> sourceList =
-                (ObservableCollection<MetadataValidationError>)value;
-            DescriptiveErrorTextConverter descriptiveConverter = new DescriptiveErrorTextConverter();
-
-            foreach (MetadataValidationError error in sourceList)
+            IEnumerable<ValidationItem> sourceList =
+                (IEnumerable<ValidationItem>)value;
+            
+            foreach (ValidationItem error in sourceList)
             {
-                if (error.Definition.IsReadOnly == false)
-                    errors.Add((string)descriptiveConverter.Convert(error, null, null, null));
+                if (((MetadataValidationError)error).Definition.IsReadOnly == false)
+                    errors.Add(error.Message);
             }
 
             return errors;
@@ -87,38 +89,32 @@ namespace Tobi.Modules.MetadataPane
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
     }
-    public class DescriptiveErrorTextConverter : IValueConverter
+
+    public class DescriptiveErrorTextConverter : IMultiValueConverter
     {
         private static string NoErrors = "None";
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        //Expected: NotifyingMetadataItem and list of ValidationItems
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null) return NoErrors;
-            if (!(value is MetadataValidationError)) return NoErrors;
+            NotifyingMetadataItem metadata = (NotifyingMetadataItem)values[0];
+            IEnumerable<ValidationItem> errors = (IEnumerable<ValidationItem>)values[1];
 
-            MetadataValidationError error = (MetadataValidationError)value;
-            string description = null;
-            if (error is MetadataValidationFormatError)
+            if (values == null || values.Length == 0) return NoErrors;
+
+            MetadataValidationError error = null;
+            //find the error for this metadata object
+            foreach (ValidationItem v in errors)
             {
-                description = string.Format("{0} must be {1}.",
-                    error.Definition.Name.ToLower(),
-                    ((MetadataValidationFormatError)error).Hint);
+                if (((MetadataValidationError) v).Target == metadata.UrakawaMetadata)
+                {
+                    error = (MetadataValidationError) v;
+                    break;
+                }
             }
-            else if (error is MetadataValidationMissingItemError)
-            {
-                description = string.Format("Missing {0}", error.Definition.Name.ToLower());
-            }
-            else if (error is MetadataValidationDuplicateItemError)
-            {
-                description = string.Format("Duplicate of {0} not allowed.", error.Definition.Name.ToLower());
-            }
-            else
-            {
-                description = string.Format("Unspecified error in {0}.", error.Definition.Name.ToLower());
-            }
-            return description;
+
+            return error.Message;
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
