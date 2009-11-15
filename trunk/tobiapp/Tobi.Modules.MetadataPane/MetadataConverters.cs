@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
-using urakawa.metadata.daisy;
+using urakawa.metadata;
 using System.Collections.ObjectModel;
 
 namespace Tobi.Modules.MetadataPane

@@ -20,5 +20,6 @@ namespace Tobi.Common.Validation
         public string Message { get; set; }
         public ValidationSeverity Severity { get; set;}
         public IValidator Validator { get; set; }
+        public object Target { get; set; }
     }
 }

@@ -92,6 +92,10 @@
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tobi.Modules.Validator.Metadata\Tobi.Modules.Validator.Metadata.csproj">
+      <Project>{341678A8-F3B5-43BF-8505-69B4ED969B53}</Project>
+      <Name>Tobi.Modules.Validator.Metadata</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MetadataPaneView.xaml">

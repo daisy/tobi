@@ -2,44 +2,45 @@
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
-using urakawa.metadata.daisy;
 using System.ComponentModel.Composition;
+using Tobi.Modules.Validator;
+using urakawa.metadata.daisy;
+using urakawa.metadata;
+using System;
 
 namespace Tobi.Modules.Validator.Metadata
-{
+{   
+    /// <summary>
+    /// The main validator class
+    /// </summary>
     [Export(typeof(IValidator))]
     public class MetadataValidator : IValidator
     {
-        [Import(typeof(IUrakawaSession))]
+        [Import(typeof (IUrakawaSession))] 
         protected IUrakawaSession m_Session;
-
-        private urakawa.metadata.daisy.MetadataValidator m_Validator =
-            new urakawa.metadata.daisy.MetadataValidator(SupportedMetadata_Z39862005.MetadataDefinitions);
-
+        
         [ImportingConstructor]
         public MetadataValidator(
             [Import(typeof(ILoggerFacade))]
             ILoggerFacade logger)
         {
             logger.Log("Hello world !", Category.Info, Priority.High);
+            
+            m_DataTypeValidator = new MetadataDataTypeValidator(this);
+            m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
+            m_ValidationItems = new List<ValidationItem>();
         }
 
         #region IValidator Members
 
         public string Name
         {
-            get
-            {
-                return "MetadataValidator";
-            }
+            get { return "MetadataValidator";}
         }
 
         public string Description
         {
-            get
-            {
-                return "Validate metadata";
-            }
+            get{ return "Validate metadata";}
         }
 
         public bool Validate()
@@ -49,7 +50,7 @@ namespace Tobi.Modules.Validator.Metadata
             {
                 List<urakawa.metadata.Metadata> metadatas =
                     m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-                return m_Validator.Validate(metadatas);
+                return _validate(metadatas);
             }
 
             return true;
@@ -57,45 +58,387 @@ namespace Tobi.Modules.Validator.Metadata
 
         public IEnumerable<ValidationItem> ValidationItems
         {
-            get
-            {
-                foreach (MetadataValidationError err in m_Validator.Errors)
-                {
-                    var validationItem = new ValidationItem
-                                             {
-                                                 Message = getErrorText(err),
-                                                 Severity = ValidationSeverity.Error,
-                                                 Validator = this
-                                             };
-                    yield return validationItem;
-                }
-                yield break;
-            }
+            get { return m_ValidationItems;}
         }
         #endregion
 
-        private string getErrorText(MetadataValidationError error)
+        //todo: un-hardcode this
+        public MetadataDefinitionSet MetadataDefinitions = 
+            SupportedMetadata_Z39862005.DefinitionSet;
+
+        private MetadataDataTypeValidator m_DataTypeValidator;
+        private MetadataOccurrenceValidator m_OccurrenceValidator;
+        private List<ValidationItem> m_ValidationItems;
+        
+        private bool _validate(List<urakawa.metadata.Metadata> metadatas)
         {
-            string description = null;
-            if (error is MetadataValidationFormatError)
+            bool isValid = true;
+            
+            //validate each item by itself
+            foreach (urakawa.metadata.Metadata metadata in metadatas)
             {
-                description = string.Format("{0} must be {1}.",
-                    error.Definition.Name.ToLower(),
-                    ((MetadataValidationFormatError)error).Hint);
+                if (!_validateItem(metadata))
+                    isValid = false;
             }
-            else if (error is MetadataValidationMissingItemError)
+
+            isValid = isValid & _validateAsSet(metadatas);
+
+            return isValid;
+            throw new System.NotImplementedException();
+        }
+
+        //validate a single item (do not look at the entire set - do not look for repetitions)
+        public bool Validate(urakawa.metadata.Metadata metadata)
+        {
+            return _validateItem(metadata);
+        }
+        internal void ReportError(MetadataValidationError error)
+        {
+            //prevent duplicate errors: check that the items aren't identical
+            //and check that the definitions don't match and the error types don't match
+            //theoretically, there should only be one error type per definition (e.g. format, duplicate, etc)
+
+            if (m_ValidationItems.Find
+                (
+                        delegate(ValidationItem e)
+                        {
+                            MetadataValidationError err = e as MetadataValidationError;
+                            bool same_item = false;
+                            if (err.ErrorType == error.ErrorType)
+                            {
+                                //does this error's target metadata item already have an error
+                                //of this type associated with it?
+                                same_item = (err.Target == error.Target);
+                            }
+                            //does this error's type and target metadata definition already exist?
+                            bool same_def = (err.Definition == error.Definition);
+                            bool same_type = (err.ErrorType == error.ErrorType);
+
+                            if (same_item | (same_def & same_type)) return true;
+                            else return false;
+                        }
+                ) == null)
             {
-                description = string.Format("Missing {0}", error.Definition.Name.ToLower());
+                m_ValidationItems.Add(error);
             }
-            else if (error is MetadataValidationDuplicateItemError)
+        }
+        private bool _validateItem(urakawa.metadata.Metadata metadata)
+        {
+            MetadataDefinition metadataDefinition = 
+                MetadataDefinitions.GetMetadataDefinition(metadata.NameContentAttribute.Name);
+			
+            if (metadataDefinition == null)
             {
-                description = string.Format("Duplicate of {0} not allowed.", error.Definition.Name.ToLower());
+                metadataDefinition = MetadataDefinitions.UnrecognizedItemFallbackDefinition;
+            }
+            
+            //check the occurrence requirement
+            bool meetsOccurrenceRequirement = m_OccurrenceValidator.Validate(metadata, metadataDefinition);
+            //check the data type
+            bool meetsDataTypeRequirement = m_DataTypeValidator.Validate(metadata, metadataDefinition);
+
+            if (!(meetsOccurrenceRequirement & meetsDataTypeRequirement))
+            {
+                return false;
             }
             else
             {
-                description = string.Format("Unspecified error in {0}.", error.Definition.Name.ToLower());
+                return true;
             }
-            return description;
+        }
+
+        private bool _validateAsSet(List<urakawa.metadata.Metadata> metadatas)
+        {
+            bool isValid = true;
+            //make sure all the required items are there
+            foreach (MetadataDefinition metadataDefinition in MetadataDefinitions.Definitions)
+            {
+                if (metadataDefinition.Occurrence == MetadataOccurrence.Required)
+                {
+                    urakawa.metadata.Metadata metadata = metadatas.Find(
+                        delegate(urakawa.metadata.Metadata item)
+                        { return item.NameContentAttribute.Name.ToLower() == 
+                            metadataDefinition.Name.ToLower(); });
+
+                    if (metadata == null)
+                    {
+                        MetadataValidationError err = new MetadataValidationError(metadataDefinition);
+                        err.ErrorType = MetadataErrorType.MissingItemError;
+                        ReportError(err);
+                        isValid = false;
+                    }
+                }
+            }
+
+            //make sure repetitions are ok
+            foreach (urakawa.metadata.Metadata metadata in metadatas)
+            {
+                MetadataDefinition metadataDefinition =
+                    MetadataDefinitions.GetMetadataDefinition(metadata.NameContentAttribute.Name);
+
+                if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
+                {
+                    List<urakawa.metadata.Metadata> list = metadatas.FindAll(
+                        delegate(urakawa.metadata.Metadata item)
+                        { return item.NameContentAttribute.Name.ToLower() == 
+                            metadata.NameContentAttribute.Name.ToLower(); });
+
+                    if (list.Count > 1)
+                    {
+                        MetadataValidationError err = new MetadataValidationError(metadataDefinition);
+                        err.ErrorType = MetadataErrorType.DuplicateItemError;
+                        ReportError(err);
+                        isValid = false;
+                    }
+                }
+            }
+            return isValid;
+        }
+    }
+
+    public class MetadataDataTypeValidator
+    {
+        private MetadataValidator m_ParentValidator;
+        //These hints describe what the data must be formatted as.
+        //Complete sentences purposefully left out.
+        private static string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";
+        private static string m_NumericHint = "a numeric value";
+
+        public MetadataDataTypeValidator(MetadataValidator parentValidator)
+        {
+            m_ParentValidator = parentValidator;
+        }
+        public bool Validate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            if (definition.DataType == MetadataDataType.ClockValue)
+            {
+                return _validateClockValue(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.Date)
+            {
+                return _validateDate(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.FileUri)
+            {
+                return _validateFileUri(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.Integer)
+            {
+                return _validateInteger(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.Double)
+            {
+                return _validateDouble(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.Number)
+            {
+                return _validateNumber(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.LanguageCode)
+            {
+                return _validateLanguageCode(metadata, definition);
+            }
+            else if (definition.DataType == MetadataDataType.String)
+            {
+                return _validateString(metadata, definition);
+            }
+            return true;
+        }
+        private bool _validateClockValue(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            return true;
+        }
+        private bool _validateDate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            MetadataValidationError err = new MetadataValidationError(definition);
+            err.ErrorType = MetadataErrorType.FormatError;
+            err.Hint = m_DateHint;
+            err.Target = metadata;
+
+            string date = metadata.NameContentAttribute.Value;
+            //Require at least the year field
+            //The max length of the entire datestring is 10
+            if (date.Length < 4 || date.Length > 10)
+            {
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
+
+            string[] dateArray = date.Split('-');
+            int year = 0;
+            int month = 0;
+            int day = 0;
+
+            //the year has to be 4 digits
+            if (dateArray[0].Length != 4)
+            {
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
+
+
+            //the year has to be digits
+            try
+            {
+                year = Convert.ToInt32(dateArray[0]);
+            }
+            catch
+            {
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
+
+            //check for a month value (it's optional)
+            if (dateArray.Length >= 2)
+            {
+                //the month has to be numeric
+                try
+                {
+                    month = Convert.ToInt32(dateArray[1]);
+                }
+                catch
+                {
+                    m_ParentValidator.ReportError(err);
+                    return false;
+                }
+                //the month has to be in this range
+                if (month < 1 || month > 12)
+                {
+                    m_ParentValidator.ReportError(err);
+                    return false;
+                }
+            }
+            //check for a day value (it's optional but only if a month is specified)
+            if (dateArray.Length == 3)
+            {
+                //the day has to be a number
+                try
+                {
+                    day = Convert.ToInt32(dateArray[2]);
+                }
+                catch
+                {
+                    m_ParentValidator.ReportError(err);
+                    return false;
+                }
+                //it has to be in this range
+                if (day < 1 || day > 31)
+                {
+                    m_ParentValidator.ReportError(err);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        private bool _validateFileUri(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            return true;
+        }
+        private bool _validateInteger(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            try
+            {
+                int x = Convert.ToInt32(metadata.NameContentAttribute.Value);
+            }
+            catch (Exception)
+            {
+                MetadataValidationError err = new MetadataValidationError(definition);
+                err.ErrorType = MetadataErrorType.FormatError;
+                err.Hint = m_NumericHint;
+                err.Target = metadata;
+
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
+            return true;
+        }
+        private bool _validateDouble(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            try
+            {
+                double x = Convert.ToDouble(metadata.NameContentAttribute.Value);
+            }
+            catch (Exception)
+            {
+                MetadataValidationError err = new MetadataValidationError(definition);
+                err.ErrorType = MetadataErrorType.FormatError;
+                err.Hint = m_NumericHint;
+                err.Target = metadata;
+
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
+            return true;
+        }
+        //works for both double and int
+        private bool _validateNumber(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            try
+            {
+                int x = Convert.ToInt32(metadata.NameContentAttribute.Value);
+            }
+            catch (Exception)
+            {
+                double x = Convert.ToDouble(metadata.NameContentAttribute.Value);
+            }
+            catch
+            {
+                MetadataValidationError err = new MetadataValidationError(definition);
+                err.ErrorType = MetadataErrorType.FormatError;
+                err.Hint = m_NumericHint;
+                err.Target = metadata;
+
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
+            return true;
+        }
+        private bool _validateLanguageCode(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            return true;
+        }
+        private bool _validateString(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            return true;
+        }
+    }
+
+    public class MetadataOccurrenceValidator
+    {
+        private MetadataValidator m_ParentValidator;
+        private static string m_NonEmptyHint = "non-empty";
+
+        public MetadataOccurrenceValidator(MetadataValidator parentValidator)
+        {
+            m_ParentValidator = parentValidator;
+        }
+
+        public bool Validate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
+        {
+            //if it's a required field, it can't be empty
+            if (definition.Occurrence == MetadataOccurrence.Required)
+            {
+                if (metadata.NameContentAttribute.Value.Length > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    MetadataValidationError err = new MetadataValidationError(definition);
+                    err.ErrorType = MetadataErrorType.FormatError;
+                    err.Hint = m_NonEmptyHint;
+                    err.Target = metadata;
+
+                    m_ParentValidator.ReportError(err);
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+
         }
     }
 }

@@ -6,6 +6,8 @@ using urakawa.events;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
+using Tobi.Common;
+using Tobi.Modules.Validator.Metadata;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -17,7 +19,7 @@ namespace Tobi.Modules.MetadataPane
         
         public MetadataDefinition Definition
         {
-            get {return SupportedMetadata_Z39862005.GetMetadataDefinition(this.Name, true);}
+            get {return SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(this.Name, true);}
         }
        
         public Metadata UrakawaMetadata { get; private set; }
@@ -61,20 +63,19 @@ namespace Tobi.Modules.MetadataPane
             {
                 foreach (MetadataValidationError error in ParentCollection.ValidationErrors)
                 {
-                    if (error is MetadataValidationFormatError &&
-                        ((MetadataValidationFormatError)error).Metadata == this.UrakawaMetadata)
+                    if (error.ErrorType == MetadataErrorType.FormatError &&
+                        error.Target == this.UrakawaMetadata)
                     {
-                        ValidationError = (MetadataValidationFormatError)error;
+                        ValidationError = error;
                         break;
                     }
                 }
             }
-
             return IsValid;    
         }
 
-        private MetadataValidationFormatError m_ValidationError;
-        public MetadataValidationFormatError ValidationError 
+        private MetadataValidationError m_ValidationError;
+        public MetadataValidationError ValidationError 
         { 
             get
             {
@@ -200,8 +201,9 @@ namespace Tobi.Modules.MetadataPane
         
         public MetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
         {
-            Definitions = definitions;
-            m_Validator = new MetadataValidator(Definitions);
+            
+            m_Validator = new MetadataValidator(null); 
+            
             m_Metadatas = new ObservableCollection<NotifyingMetadataItem>();
             foreach (Metadata metadata in metadatas)
             {
@@ -237,7 +239,7 @@ namespace Tobi.Modules.MetadataPane
             get
             {
                 ObservableCollection<MetadataValidationError> errors =
-                    new ObservableCollection<MetadataValidationError>(m_Validator.Errors);
+                    new ObservableCollection<MetadataValidationError>(m_Validator.ValidationItems);
                 return errors;
             }
         }
@@ -269,12 +271,10 @@ namespace Tobi.Modules.MetadataPane
         // all new item additions end up here
         private void addItem(Metadata metadata)
         {
-            //TODO: this breaks the rule that this metadata collection is definition-set agnostic
-            //it doesn't matter for now, though, but eventually, we will define an interface to
-            //metadata defintion sets, including a search feature.
             MetadataDefinition definition =
-                urakawa.metadata.daisy.SupportedMetadata_Z39862005.GetMetadataDefinition(
+                m_Validator.MetadataDefinitions.GetMetadataDefinition(
                     metadata.NameContentAttribute.Name.ToLower(), true);
+
             //filter out read-only items because they will be filled in by Tobi at export time
             if (definition.IsReadOnly == false)
             {
@@ -318,22 +318,6 @@ namespace Tobi.Modules.MetadataPane
             //if this item has a definition (new items have nothing)
             if (item.Definition == null) return false;
 
-            //if this item is an identifier, and there is currently no primary identifier
-          /*  bool found = false;
-            IEnumerator<NotifyingMetadataItem> enumerator = Metadatas.GetEnumerator();
-
-            while(enumerator.MoveNext())
-            {
-                if (enumerator.Current.IsPrimaryIdentifier)
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            //if we already have a primary identifier
-            if (found == true) return false;
-            */
             //it should have a dc:identifier definition even if it is actually one of the synonyms
             if (item.Definition.Name.ToLower() == "dc:identifier")
                 return true;
