@@ -41,36 +41,11 @@ namespace Tobi.Modules.Validator
             InitializeComponent();
         }
 
-        private bool Validate()
-        {
-            bool isValid = true;
-            ValidationItems.Clear();
-            foreach (IValidator v in Validators)
-            {
-                isValid = isValid && v.Validate();
-                if (!isValid)
-                {
-                    foreach (ValidationItem item in v.ValidationItems)
-                    {
-                        ValidationItems.Add(item);
-                    }
-                }
-            }
-            return isValid;
-        }
-
-        private void OnClick_ValidateButton(object sender, RoutedEventArgs e)
-        {
-            Validate();
-        }
-
         public void OnImportsSatisfied()
         {
 #if DEBUG
             Debugger.Break();
 #endif
-
-            Validate();
         }
     }
 

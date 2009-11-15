@@ -23,24 +23,14 @@ namespace Tobi.Modules.MetadataPane
     /// </summary>
     public class MetadataPaneViewModel : ViewModelBase //, IPartImportsSatisfiedNotification
     {   
-        //[Import(typeof(IToolBarsView))]
-        //protected Lazy<IToolBarsView> TheToolBar { get; set; }
-
-        //public void OnImportsSatisfied()
-        //{
-        //    //#if DEBUG
-        //    //                Debugger.Break();
-        //    //#endif
-
-        //    int uid = TheToolBar.Value.AddToolBarGroup(new[] { CommandShowMetadataPane });
-        //}
-
         #region Construction
 
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-        private Tobi.Modules.Validator.Metadata.MetadataValidator m_Validator;
-        
+        //the local instance of metadata validator
+        private Validator.Metadata.MetadataValidator m_Validator;
+        private MetadataDefinitionSet m_DefinitionSet;
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -51,6 +41,7 @@ namespace Tobi.Modules.MetadataPane
             m_MetadataCollection = null;
             Initialize();
             m_Validator = new Tobi.Modules.Validator.Metadata.MetadataValidator(logger);
+            SetMetadataDefinitions(SupportedMetadata_Z39862005.DefinitionSet);
         }
         
         #endregion Construction
@@ -200,7 +191,7 @@ namespace Tobi.Modules.MetadataPane
             
                         m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
-                            SupportedMetadata_Z39862005.DefinitionSet.Definitions);
+                            m_DefinitionSet.Definitions);
                         presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
                         presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
                     }
@@ -294,7 +285,7 @@ namespace Tobi.Modules.MetadataPane
 
                 List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
                 List<MetadataDefinition> availableMetadata =
-                    MetadataAvailability.GetAvailableMetadata(metadatas, m_Validator.MetadataDefinitions);
+                    MetadataAvailability.GetAvailableMetadata(metadatas, m_DefinitionSet.Definitions);
 
 
                 foreach (MetadataDefinition metadata in availableMetadata)
@@ -310,6 +301,19 @@ namespace Tobi.Modules.MetadataPane
         {
             RaisePropertyChanged(() => AvailableMetadataNames);
             RaisePropertyChanged(() => this.MetadataCollection.Metadatas);
+        }
+
+        public void OnValidationErrorSelected(ValidationErrorSelectedEventArgs e)
+        {
+            
+        }
+        public void OnValidationErrors(ValidationErrorsEventArgs e)
+        {
+
+        }
+        public void SetMetadataDefinitions(MetadataDefinitionSet definitionSet)
+        {
+            m_DefinitionSet = definitionSet;
         }
     }
 }
