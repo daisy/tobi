@@ -1,39 +1,110 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Presentation.Events;
+using Microsoft.Practices.Unity;
+using Tobi.Common;
 using Tobi.Common.Validation;
+using urakawa;
+using urakawa.events.undo;
 
 namespace Tobi.Modules.Validator
 {
-    public class Validator
+    [Export(typeof(Validator)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class Validator : AbstractValidator
     {
-        public bool Validate()
+        [ImportMany(typeof(IValidator))]
+        public IEnumerable<IValidator> Validators { get; set; }
+
+        //EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
+        //SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IUrakawaSession, ThreadOption.UIThread, false, type => typeof(IUrakawaSession).IsAssignableFrom(type));
+
+        protected IEventAggregator EventAggregator { get; private set; }
+        protected ILoggerFacade Logger { get; private set; }
+        protected IUnityContainer Container { get; private set; }
+
+        [ImportingConstructor]
+        public Validator(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
-            bool isValid = true;
-            ValidationItems.Clear();
-            foreach (IValidator v in Validators)
-            {
-                isValid = isValid && v.Validate();
-                if (!isValid)
-                {
-                    foreach (ValidationItem item in v.ValidationItems)
-                    {
-                        ValidationItems.Add(item);
-                    }
-                }
-            }
-            return isValid;
+            Container = container;
+            EventAggregator = eventAggregator;
+            Logger = logger;
+
+            IsValid = true;
+
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
         }
-    
-        public void OnProjectLoaded()
+
+        private void OnProjectUnLoaded(Project project)
+        {
+            IsValid = true;
+
+            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+        }
+
+        private void OnProjectLoaded(Project project)
+        {
+            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+
+            Validate();
+        }
+
+        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
         {
             Validate();
         }
 
-        public void OnUndoRedo()
+        public override string Name
         {
-            Validate();
+            get { return "Aggregator Validator"; }
+        }
+
+        public override string Description
+        {
+            get { return "This is the main content validator"; }
+        }
+
+        public override IEnumerable<ValidationItem> ValidationItems
+        {
+            get
+            {
+                if (IsValid)
+                {
+                    yield return null;
+                }
+
+                foreach (IValidator validator in Validators)
+                {
+                    if (validator.IsValid)
+                    {
+                        continue;
+                    }
+
+                    foreach (ValidationItem item in validator.ValidationItems)
+                    {
+                        yield return item;
+                    }
+                }
+
+                yield break;
+            }
+        }
+
+        public override bool Validate()
+        {
+            IsValid = true;
+
+            foreach (IValidator validator in Validators)
+            {
+                IsValid = IsValid && validator.Validate();
+            }
+            return IsValid;
         }
     }
 }

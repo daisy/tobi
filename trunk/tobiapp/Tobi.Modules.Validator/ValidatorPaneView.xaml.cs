@@ -19,26 +19,43 @@ namespace Tobi.Modules.Validator
     [Export(typeof(ValidatorPaneView)), PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class ValidatorPaneView : IPartImportsSatisfiedNotification
     {
-        [ImportMany(typeof(IValidator))]
-        public IEnumerable<IValidator> Validators { get; set; }
-
         public ObservableCollection<ValidationItem> ValidationItems { get; set; }
 
         protected IEventAggregator EventAggregator { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IUnityContainer Container { get; private set; }
-        
+
+        private readonly Validator Validator;
+
         [ImportingConstructor]
-        public ValidatorPaneView(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+        public ValidatorPaneView(Validator validator, IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
         {
             Container = container;
             EventAggregator = eventAggregator;
             Logger = logger;
 
+            Validator = validator;
+            Validator.ValidatorStateChanged += OnValidatorStateChanged;
+
             ValidationItems = new ObservableCollection<ValidationItem>();
 
             DataContext = this;
             InitializeComponent();
+        }
+
+        private void OnValidatorStateChanged(object sender, ValidatorStateChangedEventArgs e)
+        {
+            if (e.Validator.IsValid)
+            {
+                ValidationItems.Clear();
+            }
+            else
+            {
+                foreach (ValidationItem item in e.Validator.ValidationItems)
+                {
+                    ValidationItems.Add(item);
+                }
+            }
         }
 
         public void OnImportsSatisfied()
