@@ -2,11 +2,13 @@
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Modularity;
+using Microsoft.Practices.Composite.Presentation.Events;
 using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using urakawa;
 
 namespace Tobi.Modules.Validator
 {
@@ -15,8 +17,7 @@ namespace Tobi.Modules.Validator
     ///</summary>
     public class ValidatorModule : IModule
     {
-        private readonly RichDelegateCommand CommandShowValidator;
-
+        private RichDelegateCommand CommandShowValidator;
 
         private readonly IUnityContainer Container;
         private readonly IEventAggregator EventAggregator;
@@ -31,7 +32,20 @@ namespace Tobi.Modules.Validator
             Container = container;
             EventAggregator = eventAggregator;
             Logger = logger;
+        }
 
+        private void OnProjectLoaded(Project project)
+        {
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Unsubscribe(OnProjectLoaded);
+
+            Container.Resolve<Validator>();
+        }
+
+        public void Initialize()
+        {
+            //Container.RegisterType<ValidatorPaneView>(new ContainerControlledLifetimeManager());
+
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
 
@@ -44,14 +58,6 @@ namespace Tobi.Modules.Validator
                 CanShowDialog);
 
             shellPresenter.RegisterRichCommand(CommandShowValidator);
-        }
-
-        ///<summary>
-        /// Registers the <see cref="ValidatorPaneView"/> into the Dependency Injection container
-        ///</summary>
-        public void Initialize()
-        {
-            //Container.RegisterType<ValidatorPaneView>(new ContainerControlledLifetimeManager());
 
             Logger.Log("ValidatorModule.Initialize", Category.Debug, Priority.Medium);
 
@@ -62,13 +68,13 @@ namespace Tobi.Modules.Validator
             }
         }
 
-        bool CanShowDialog()
+        private bool CanShowDialog()
         {
             var session = Container.Resolve<IUrakawaSession>();
             return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
         }
 
-        void ShowDialog()
+        private void ShowDialog()
         {
             Logger.Log("ValidatorModule.ShowDialog", Category.Debug, Priority.Medium);
 
