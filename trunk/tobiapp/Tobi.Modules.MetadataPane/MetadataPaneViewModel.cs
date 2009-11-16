@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -290,10 +288,14 @@ namespace Tobi.Modules.MetadataPane
             RaisePropertyChanged(() => this.MetadataCollection.Metadatas);
         }
 
-        /*public void OnValidationErrorSelected(ValidationErrorSelectedEventArgs e)
+        /*
+        //todo: scroll to the selected item
+        public void OnValidationErrorSelected(ValidationErrorSelectedEventArgs e)
         {
             
         }
+         
+        //todo: listen to the events from the Metadata validator
         public void OnValidationErrors(ValidationErrorsEventArgs e)
         {
             if (validator is MetadataValidator)
