@@ -3,7 +3,6 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using System.ComponentModel.Composition;
-using Tobi.Modules.Validator;
 using urakawa.metadata.daisy;
 using urakawa.metadata;
 using System;
@@ -45,15 +44,21 @@ namespace Tobi.Modules.Validator.Metadata
 
         public override bool Validate()
         {
+            bool isValid = true;
             if (m_Session.DocumentProject != null &&
                 m_Session.DocumentProject.Presentations.Count > 0)
             {
                 List<urakawa.metadata.Metadata> metadatas =
                     m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-                return _validate(metadatas);
+                isValid = _validate(metadatas);
             }
 
-            return true;
+            if (!isValid)
+            {
+                //TODO: send an event that there are new validation errors
+            }
+            this.IsValid = isValid;
+            return isValid;
         }
 
         public override IEnumerable<ValidationItem> ValidationItems
@@ -62,7 +67,7 @@ namespace Tobi.Modules.Validator.Metadata
         }
         #endregion
 
-        //todo: un-hardcode this
+        //TODO: un-hardcode this
         public MetadataDefinitionSet MetadataDefinitions = 
             SupportedMetadata_Z39862005.DefinitionSet;
 
@@ -84,9 +89,9 @@ namespace Tobi.Modules.Validator.Metadata
             isValid = isValid & _validateAsSet(metadatas);
 
             return isValid;
-            throw new System.NotImplementedException();
         }
 
+        //TODO: probably do not need this function anymore
         //validate a single item (do not look at the entire set - do not look for repetitions)
         public bool Validate(urakawa.metadata.Metadata metadata)
         {
@@ -103,18 +108,20 @@ namespace Tobi.Modules.Validator.Metadata
                         delegate(ValidationItem e)
                         {
                             MetadataValidationError err = e as MetadataValidationError;
-                            bool same_item = false;
+                            if (err == null) return false;
+
+                            bool sameItem = false;
                             if (err.ErrorType == error.ErrorType)
                             {
                                 //does this error's target metadata item already have an error
                                 //of this type associated with it?
-                                same_item = (err.Target == error.Target);
+                                sameItem = (err.Target == error.Target);
                             }
                             //does this error's type and target metadata definition already exist?
-                            bool same_def = (err.Definition == error.Definition);
-                            bool same_type = (err.ErrorType == error.ErrorType);
+                            bool sameDef = (err.Definition == error.Definition);
+                            bool sameType = (err.ErrorType == error.ErrorType);
 
-                            if (same_item | (same_def & same_type)) return true;
+                            if (sameItem | (sameDef & sameType)) return true;
                             else return false;
                         }
                 ) == null)
@@ -156,9 +163,8 @@ namespace Tobi.Modules.Validator.Metadata
                 if (metadataDefinition.Occurrence == MetadataOccurrence.Required)
                 {
                     urakawa.metadata.Metadata metadata = metadatas.Find(
-                        delegate(urakawa.metadata.Metadata item)
-                        { return item.NameContentAttribute.Name.ToLower() == 
-                            metadataDefinition.Name.ToLower(); });
+                        item => item.NameContentAttribute.Name.ToLower() ==
+                                metadataDefinition.Name.ToLower());
 
                     if (metadata == null)
                     {
@@ -179,9 +185,8 @@ namespace Tobi.Modules.Validator.Metadata
                 if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
                     List<urakawa.metadata.Metadata> list = metadatas.FindAll(
-                        delegate(urakawa.metadata.Metadata item)
-                        { return item.NameContentAttribute.Name.ToLower() == 
-                            metadata.NameContentAttribute.Name.ToLower(); });
+                        item => item.NameContentAttribute.Name.ToLower() ==
+                                metadata.NameContentAttribute.Name.ToLower());
 
                     if (list.Count > 1)
                     {
@@ -201,8 +206,8 @@ namespace Tobi.Modules.Validator.Metadata
         private MetadataValidator m_ParentValidator;
         //These hints describe what the data must be formatted as.
         //Complete sentences purposefully left out.
-        private static string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";
-        private static string m_NumericHint = "a numeric value";
+        private const string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";
+        private const string m_NumericHint = "a numeric value";
 
         public MetadataDataTypeValidator(MetadataValidator parentValidator)
         {
@@ -210,40 +215,28 @@ namespace Tobi.Modules.Validator.Metadata
         }
         public bool Validate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            if (definition.DataType == MetadataDataType.ClockValue)
+            switch (definition.DataType)
             {
-                return _validateClockValue(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.Date)
-            {
-                return _validateDate(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.FileUri)
-            {
-                return _validateFileUri(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.Integer)
-            {
-                return _validateInteger(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.Double)
-            {
-                return _validateDouble(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.Number)
-            {
-                return _validateNumber(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.LanguageCode)
-            {
-                return _validateLanguageCode(metadata, definition);
-            }
-            else if (definition.DataType == MetadataDataType.String)
-            {
-                return _validateString(metadata, definition);
+                case MetadataDataType.ClockValue:
+                    return _validateClockValue(metadata, definition);
+                case MetadataDataType.Date:
+                    return _validateDate(metadata, definition);
+                case MetadataDataType.FileUri:
+                    return _validateFileUri(metadata, definition);
+                case MetadataDataType.Integer:
+                    return _validateInteger(metadata, definition);
+                case MetadataDataType.Double:
+                    return _validateDouble(metadata, definition);
+                case MetadataDataType.Number:
+                    return _validateNumber(metadata, definition);
+                case MetadataDataType.LanguageCode:
+                    return _validateLanguageCode(metadata, definition);
+                case MetadataDataType.String:
+                    return _validateString(metadata, definition);
             }
             return true;
         }
+
         private bool _validateClockValue(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
             return true;
@@ -265,9 +258,6 @@ namespace Tobi.Modules.Validator.Metadata
             }
 
             string[] dateArray = date.Split('-');
-            int year = 0;
-            int month = 0;
-            int day = 0;
 
             //the year has to be 4 digits
             if (dateArray[0].Length != 4)
@@ -280,7 +270,7 @@ namespace Tobi.Modules.Validator.Metadata
             //the year has to be digits
             try
             {
-                year = Convert.ToInt32(dateArray[0]);
+                int year = Convert.ToInt32(dateArray[0]);
             }
             catch
             {
@@ -292,6 +282,7 @@ namespace Tobi.Modules.Validator.Metadata
             if (dateArray.Length >= 2)
             {
                 //the month has to be numeric
+                int month = 0;
                 try
                 {
                     month = Convert.ToInt32(dateArray[1]);
@@ -312,6 +303,7 @@ namespace Tobi.Modules.Validator.Metadata
             if (dateArray.Length == 3)
             {
                 //the day has to be a number
+                int day = 0;
                 try
                 {
                     day = Convert.ToInt32(dateArray[2]);
@@ -407,7 +399,7 @@ namespace Tobi.Modules.Validator.Metadata
     public class MetadataOccurrenceValidator
     {
         private MetadataValidator m_ParentValidator;
-        private static string m_NonEmptyHint = "non-empty";
+        private const string m_NonEmptyHint = "non-empty";
 
         public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {

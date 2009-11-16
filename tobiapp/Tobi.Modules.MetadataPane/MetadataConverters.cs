@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using Tobi.Modules.Validator.Metadata;
 using urakawa.metadata;
@@ -30,10 +29,9 @@ namespace Tobi.Modules.MetadataPane
                     (s => s.Name.ToLower() == item.Name.ToLower());
                 if (results.Count > 1)
                     return true;
-                else
-                    return false;
+                return false;
             }
-            else return true;
+            return true;
         }
         
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -51,10 +49,9 @@ namespace Tobi.Modules.MetadataPane
             MetadataDefinition item = (MetadataDefinition)value;
             if (item.Occurrence == MetadataOccurrence.Required)
                 return "Required.  ";
-            else if (item.Occurrence == MetadataOccurrence.Recommended)
+            if (item.Occurrence == MetadataOccurrence.Recommended)
                 return "Recommended. ";
-            else
-                return "Optional. ";
+            return "Optional. ";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -92,26 +89,20 @@ namespace Tobi.Modules.MetadataPane
 
     public class DescriptiveErrorTextConverter : IMultiValueConverter
     {
-        private static string NoErrors = "None";
+        private const string NoErrors = "None";
         //Expected: NotifyingMetadataItem and list of ValidationItems
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             NotifyingMetadataItem metadata = (NotifyingMetadataItem)values[0];
             IEnumerable<ValidationItem> errors = (IEnumerable<ValidationItem>)values[1];
 
-            if (values == null || values.Length == 0) return NoErrors;
+            if (values.Length == 0) return NoErrors;
 
-            MetadataValidationError error = null;
             //find the error for this metadata object
-            foreach (ValidationItem v in errors)
-            {
-                if (((MetadataValidationError) v).Target == metadata.UrakawaMetadata)
-                {
-                    error = (MetadataValidationError) v;
-                    break;
-                }
-            }
-
+            MetadataValidationError error = 
+                errors.Where(v => ((MetadataValidationError) v).Target == 
+                    metadata.UrakawaMetadata).Cast<MetadataValidationError>().FirstOrDefault();
+            
             return error.Message;
         }
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
@@ -125,19 +116,14 @@ namespace Tobi.Modules.MetadataPane
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is string)) return null;
-            return ((string) value).ToLower();
+            return !(value is string) ? null : ((string) value).ToLower();
         }
 
         //this isn't converting back .. it's just making it lower case again
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is string)) return null;
-            return ((string)value).ToLower();
-            /*
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-             * */
+            return !(value is string) ? null : ((string) value).ToLower();
+        
         }
     }
 
@@ -154,15 +140,7 @@ namespace Tobi.Modules.MetadataPane
             ObservableCollection<string> list = (ObservableCollection<string>)values[0];
             string newItem = (string) values[1];
 
-            bool found = false;
-            foreach (string s in list)
-            {
-                if (s.ToLower() == newItem.ToLower())
-                {
-                    found = true;
-                    break;
-                }
-            }
+            bool found = list.Any(s => s.ToLower() == newItem.ToLower());
             if (!found) list.Insert(0, newItem.ToLower());
 
             return list.OrderBy(s => s.ToLower());
@@ -209,8 +187,7 @@ namespace Tobi.Modules.MetadataPane
 
             if (item.IsPrimaryIdentifier || metadatas.IsCandidateForPrimaryIdentifier(item))
                 return System.Windows.Visibility.Visible;
-            else
-                return System.Windows.Visibility.Hidden;
+            return System.Windows.Visibility.Hidden;
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
