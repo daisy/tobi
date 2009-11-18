@@ -52,7 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -63,10 +65,6 @@
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF.csproj">
-      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
-      <Name>Lib.MEF</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>

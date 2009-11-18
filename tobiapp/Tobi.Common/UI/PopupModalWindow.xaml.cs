@@ -9,6 +9,7 @@ using Tobi.Common.MVVM.Command;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using System.Diagnostics;
 
 namespace Tobi.Common.UI
 {
@@ -48,8 +49,8 @@ namespace Tobi.Common.UI
                 UserInterfaceStrings.DetailsExpand_,
                 UserInterfaceStrings.DetailsExpand_KEYS,
                 (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-down")),
-                ()=> IsDetailsExpanded = true,
-                ()=> HasDetails && !IsDetailsExpanded);
+                () => IsDetailsExpanded = true,
+                () => HasDetails && !IsDetailsExpanded);
 
             AddInputBinding(CommandDetailsExpand.KeyBinding);
             //
@@ -58,8 +59,8 @@ namespace Tobi.Common.UI
                 UserInterfaceStrings.DetailsCollapse_,
                 UserInterfaceStrings.DetailsCollapse_KEYS,
                 (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-up")),
-                ()=> IsDetailsExpanded = false,
-                ()=> HasDetails && IsDetailsExpanded);
+                () => IsDetailsExpanded = false,
+                () => HasDetails && IsDetailsExpanded);
 
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
@@ -142,8 +143,8 @@ namespace Tobi.Common.UI
             // For some reason, WindowStartupLocation.CenterOwner doesn't work in non-modal display mode.
             WindowStartupLocation = WindowStartupLocation.Manual;
 
-            double finalLeft = Math.Max(0, Owner.Left + (Owner.Width - Width) / 2);
-            double finalTop = Math.Max(0, Owner.Top + (Owner.Height - Height) / 2);
+            double finalLeft = Math.Max(0, (Owner == null ? 10 : Owner.Left) + ((Owner == null ? 800 : Owner.Width) - Width) / 2);
+            double finalTop = Math.Max(0, (Owner == null ? 10 : Owner.Top) + ((Owner == null ? 600 : Owner.Height) - Height) / 2);
 
             double availableWidth = SystemParameters.WorkArea.Width; //Screen.PrimaryScreen.Bounds.Width
             double availableHeight = SystemParameters.WorkArea.Height; //Screen.PrimaryScreen.Bounds.Height
@@ -201,7 +202,19 @@ namespace Tobi.Common.UI
             object details, double detailsHeight)
             : this(presenter)
         {
-            Owner = ShellPresenter == null ? Application.Current.MainWindow : ShellPresenter.View.Window;
+
+            if (this != Application.Current.MainWindow)
+            {
+                Owner = ShellPresenter == null ? Application.Current.MainWindow : ShellPresenter.View.Window;
+            }
+            else { Owner = null; }
+
+            //#if NET_3_5
+
+            //#else  // NET_4_0 || BOOTSTRAP_NET_4_0
+
+            //#endif
+
 
             //DataContext = Owner;
 

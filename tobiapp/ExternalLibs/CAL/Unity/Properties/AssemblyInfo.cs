@@ -19,3 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Unity Dependency Injection Framework")]
 
 [assembly: ComVisibleAttribute(false)]
+
+#if !NET_3_5 // NET_4_0 || BOOTSTRAP_NET_4_0
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif

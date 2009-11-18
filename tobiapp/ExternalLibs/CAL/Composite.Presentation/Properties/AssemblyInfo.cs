@@ -46,3 +46,7 @@ using System.Windows.Markup;
 [assembly: CLSCompliant(true)]
 [assembly: XmlnsDefinition("http://www.codeplex.com/CompositeWPF", "Microsoft.Practices.Composite.Presentation.Regions")]
 [assembly: NeutralResourcesLanguage("en")]
+
+#if !NET_3_5 // NET_4_0 || BOOTSTRAP_NET_4_0
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif
