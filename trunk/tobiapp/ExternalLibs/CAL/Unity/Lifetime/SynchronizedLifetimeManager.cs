@@ -43,9 +43,12 @@ namespace Microsoft.Practices.Unity
         /// has been set for the lifetime manager.</remarks>
         public override object GetValue()
         {
+#if false || NET_4_0
             bool lockTaken = false;
-            Monitor.Enter(lockObj, ref lockTaken);
-
+            Monitor.Enter(lockObject, ref lockTaken);
+#else
+            Monitor.Enter(lockObj);
+#endif
             object result = SynchronizedGetValue();
             if (result != null)
             {

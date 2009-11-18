@@ -37,11 +37,14 @@ namespace Tobi.Modules.MetadataPane
         {
             EventAggregator = eventAggregator;
             Logger = logger;
+
             m_MetadataCollection = null;
-            Initialize();
+
             //for now, this is hardcoded internally.  in the long term, this info will be pulled
             //from a Tobi profile
             m_DefinitionSet = SupportedMetadata_Z39862005.DefinitionSet;
+
+            Initialize();
         }
         
         #endregion Construction
@@ -56,7 +59,6 @@ namespace Tobi.Modules.MetadataPane
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-            
        }
 
         private void OnProjectUnLoaded(Project obj)
@@ -188,10 +190,12 @@ namespace Tobi.Modules.MetadataPane
                         m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
                             m_DefinitionSet.Definitions);
+
                         presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
                         presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
                     }
                 }
+
                 return m_MetadataCollection;
             }
         }
@@ -285,7 +289,7 @@ namespace Tobi.Modules.MetadataPane
         internal void SelectionChanged()
         {
             RaisePropertyChanged(() => AvailableMetadataNames);
-            RaisePropertyChanged(() => this.MetadataCollection.Metadatas);
+            RaisePropertyChanged(() => MetadataCollection.Metadatas);
         }
 
         /*

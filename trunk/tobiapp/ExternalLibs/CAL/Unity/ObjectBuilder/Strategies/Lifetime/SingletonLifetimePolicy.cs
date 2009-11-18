@@ -29,9 +29,12 @@ namespace Microsoft.Practices.ObjectBuilder2
         /// <returns>the object desired, or null if no such object is currently stored.</returns>
         public object GetValue()
         {
+#if false || NET_4_0
             bool lockTaken = false;
             Monitor.Enter(lockObject, ref lockTaken);
-
+#else
+            Monitor.Enter(lockObject);
+#endif
             if(value != null)
             {
                 Monitor.Exit(lockObject);
