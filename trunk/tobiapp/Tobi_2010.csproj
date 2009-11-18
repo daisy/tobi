@@ -75,11 +75,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ExternalLibs\BitFactory.Logging.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Xaml" />
     <Reference Include="Tobi.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
@@ -203,10 +205,6 @@
     <ProjectReference Include="ExternalLibs\CAL\Unity\Lib.Unity.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
-    </ProjectReference>
-    <ProjectReference Include="ExternalLibs\MEF\Lib.MEF.csproj">
-      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
-      <Name>Lib.MEF</Name>
     </ProjectReference>
     <ProjectReference Include="ExternalLibs\MEF_Unity\Lib.MEF_Unity.csproj">
       <Project>{24A770F8-AF0E-400F-8ABB-3FD68617103E}</Project>

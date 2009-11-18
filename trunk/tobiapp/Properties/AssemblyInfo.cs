@@ -27,6 +27,11 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.2.0")]
+[assembly: AssemblyVersion("0.1.3.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: ComVisibleAttribute(false)]
+
+
+#if !NET_3_5 // NET_4_0 || BOOTSTRAP_NET_4_0
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif

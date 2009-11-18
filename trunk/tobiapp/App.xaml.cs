@@ -274,6 +274,9 @@ c.Execute();
         {
             if (ex == null)
                 return;
+#if DEBUG
+            Debugger.Break();
+#endif
 
             logException(ex);
 

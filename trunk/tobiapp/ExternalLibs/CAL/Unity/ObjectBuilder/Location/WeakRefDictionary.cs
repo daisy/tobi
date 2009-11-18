@@ -114,7 +114,8 @@ namespace Microsoft.Practices.ObjectBuilder2
 
         static TObject DecodeNullObject<TObject>(object innerValue)
         {
-            if (innerValue == typeof(NullObject))
+            //if (innerValue == typeof(NullObject))
+            if (innerValue is NullObject)
                 return default(TObject);
             else
                 return (TObject)innerValue;
