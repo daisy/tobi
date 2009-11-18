@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{64F90229-5944-4DBB-96A0-0E09E6BF5997}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tobi</RootNamespace>
+    <AssemblyName>Tobi</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <StartupObject>Tobi.App</StartupObject>
+    <ApplicationIcon>Tobi.ico</ApplicationIcon>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <SignManifests>true</SignManifests>
+    <ManifestCertificateThumbprint>B67142354CCDF2DFD4E3BB737CE5A29414B6CC5C</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.1.2.0\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://www.digitaltalkingbook.com/projects/tobi/install/alpha/</InstallUrl>
+    <SupportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Help.html</SupportUrl>
+    <ErrorReportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
+    <ProductName>Tobi</ProductName>
+    <PublisherName>DAISY Consortium</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>index.html</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.1.2.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tobi.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BitFactory.Logging, Version=1.4.1.0, Culture=neutral, PublicKeyToken=de68848483a294a9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ExternalLibs\BitFactory.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="Tobi.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tobi.Modules.MenuBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Tobi.Modules.MenuBar\bin\Debug\Tobi.Modules.MenuBar.dll</HintPath>
+    </Reference>
+    <Reference Include="Tobi.Modules.StatusBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Tobi.Modules.StatusBar\bin\Debug\Tobi.Modules.StatusBar.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="IconsPreviewDebug.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="KeyboardShortcuts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Shell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Shell.xaml.cs">
+      <DependentUpon>Shell.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BitFactoryLoggerAdapter.cs" />
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandLineDictionary.cs" />
+    <Compile Include="CommandLineParser.cs" />
+    <Compile Include="DirectoryInfoConverter.cs" />
+    <Compile Include="FileInfoConverter.cs" />
+    <Compile Include="IconsPreviewDebug.xaml.cs">
+      <DependentUpon>IconsPreviewDebug.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KeyboardShortcuts.xaml.cs">
+      <DependentUpon>KeyboardShortcuts.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="RequiredAttribute.cs" />
+    <Compile Include="ShellPresenter.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Tobi_TemporaryKey.pfx" />
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
+      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
+      <Name>Lib.Composite.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
+      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
+      <Name>Lib.Composite.UnityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite\Lib.Composite.csproj">
+      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
+      <Name>Lib.Composite</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Unity\Lib.Unity.csproj">
+      <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
+      <Name>Lib.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\MEF\Lib.MEF.csproj">
+      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
+      <Name>Lib.MEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\MEF_Unity\Lib.MEF_Unity.csproj">
+      <Project>{24A770F8-AF0E-400F-8ABB-3FD68617103E}</Project>
+      <Name>Lib.MEF_Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Common\Tobi.Common.csproj">
+      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
+      <Name>Tobi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
+      <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
+      <Name>Tobi.Modules.AudioPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Modules.DocumentPane.csproj">
+      <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
+      <Name>Tobi.Modules.DocumentPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.FileDialog\Tobi.Modules.FileDialog.csproj">
+      <Project>{576DF227-5F83-4A41-AA5D-255D102DF5F6}</Project>
+      <Name>Tobi.Modules.FileDialog</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
+      <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>
+      <Name>Tobi.Modules.MetadataPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Modules.NavigationPane.csproj">
+      <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
+      <Name>Tobi.Modules.NavigationPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Modules.ToolBars.csproj">
+      <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
+      <Name>Tobi.Modules.ToolBars</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Urakawa\Tobi.Modules.Urakawa.csproj">
+      <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
+      <Name>Tobi.Modules.Urakawa</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator\Tobi.Modules.Validator.csproj">
+      <Project>{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}</Project>
+      <Name>Tobi.Modules.Validator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Tobi.ico">
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="DirectX">
+      <Visible>False</Visible>
+      <ProductName>DirectX</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TobiSplashScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="hi.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shortcut.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tock.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tocktock.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".xuk">
+      <Visible>False</Visible>
+      <Description>Tobi XML %28Urakawa%29</Description>
+      <Progid>0123456789</Progid>
+      <DefaultIcon>Shortcut.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

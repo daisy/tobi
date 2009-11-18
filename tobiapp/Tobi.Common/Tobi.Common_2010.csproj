@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tobi.Common</RootNamespace>
+    <AssemblyName>Tobi.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tobi.Common.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationTypes">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
+      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
+      <Name>Lib.Composite.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
+      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
+      <Name>Lib.Composite.UnityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
+      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
+      <Name>Lib.Composite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Unity\Lib.Unity.csproj">
+      <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
+      <Name>Lib.Unity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Colors.cs" />
+    <Compile Include="IFileDialogService.cs" />
+    <Compile Include="IShellPresenter.cs" />
+    <Compile Include="IShellView.cs" />
+    <Compile Include="IToolbarsView.cs" />
+    <Compile Include="IUrakawaSession.cs" />
+    <Compile Include="MVVM\ActiveAware.cs" />
+    <Compile Include="MVVM\Command\DelegateCommand.cs" />
+    <Compile Include="MVVM\Command\IInputBindingManager.cs" />
+    <Compile Include="MVVM\Command\RichDelegateCommand.cs" />
+    <Compile Include="MVVM\NotifyDependsOnAttribute.cs" />
+    <Compile Include="MVVM\PropertyChangedNotifyBase.cs" />
+    <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="Onyx\Reflection\Reflect.cs" />
+    <Compile Include="Onyx\Reflection\ReflectOn.cs" />
+    <Compile Include="PageFoundByFlowDocumentParserEvent.cs" />
+    <Compile Include="ProjectLoadedEvent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegionNames.cs" />
+    <Compile Include="Sizes.cs" />
+    <Compile Include="StatusBarMessageUpdateEvent.cs" />
+    <Compile Include="TreeNodeSelectedEvent.cs" />
+    <Compile Include="TypeConstructedEvent.cs" />
+    <Compile Include="UI\AutoGreyableImage.cs" />
+    <Compile Include="UI\ButtonRichCommand.cs" />
+    <Compile Include="UI\FocusHelper.cs" />
+    <Compile Include="UI\LazyKeepAliveTabControl.cs" />
+    <Compile Include="UI\MenuItemRichCommand.cs" />
+    <Compile Include="UI\PopupModalWindow.xaml.cs">
+      <DependentUpon>PopupModalWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ScalableGreyableImageProvider.cs" />
+    <Compile Include="UI\SortableListView.cs" />
+    <Compile Include="UI\TextBoxReadOnlyCaretVisible.cs" />
+    <Compile Include="UI\TreeViewExtensions.cs" />
+    <Compile Include="UI\WrapPanelLastChildFill.cs" />
+    <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
+    <Compile Include="UI\XAML\RenderTargetBitmapImageSourceConverter.cs" />
+    <Compile Include="UserInterfaceStrings.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\ValidationEvents.cs" />
+    <Compile Include="_UnusedCode\BindableRun.cs" />
+    <Compile Include="_UnusedCode\BindableRunTextMedia.cs" />
+    <Compile Include="_UnusedCode\CollapsibleGridSplitter.cs" />
+    <Compile Include="_UnusedCode\ComboColorPicker.xaml.cs">
+      <DependentUpon>ComboColorPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="_UnusedCode\CommandExtension.cs" />
+    <Compile Include="_UnusedCode\CommandParameter.cs" />
+    <Compile Include="_UnusedCode\CommandSource.cs" />
+    <Compile Include="_UnusedCode\CommandTrigger.cs" />
+    <Compile Include="_UnusedCode\CommandTriggerGroup.cs" />
+    <Compile Include="_UnusedCode\DataBindingDebugConverter.cs" />
+    <Compile Include="_UnusedCode\DockSplitter.cs" />
+    <Compile Include="_UnusedCode\DpiHelper.cs" />
+    <Compile Include="_UnusedCode\DynamicItemsControlRegionAdapter.cs" />
+    <Compile Include="_UnusedCode\EnumExtensions.cs" />
+    <Compile Include="_UnusedCode\EnumListExtension.cs" />
+    <Compile Include="_UnusedCode\EventCommandTrigger.cs" />
+    <Compile Include="_UnusedCode\FirstFocusedElementExtension.cs" />
+    <Compile Include="_UnusedCode\FlowDocumentFindReplace.cs" />
+    <Compile Include="_UnusedCode\FlowDocumentReaderExtensions.cs" />
+    <Compile Include="_UnusedCode\GlobalCommands.cs" />
+    <Compile Include="_UnusedCode\GreyableImage.cs" />
+    <Compile Include="_UnusedCode\HelpProvider.cs" />
+    <Compile Include="_UnusedCode\HotkeyManager.cs" />
+    <Compile Include="_UnusedCode\HotkeysBehavior.cs" />
+    <Compile Include="_UnusedCode\ICommandTrigger.cs" />
+    <Compile Include="_UnusedCode\IHeaderInfoProvider.cs" />
+    <Compile Include="_UnusedCode\IndependentModule.cs" />
+    <Compile Include="_UnusedCode\InstalledFonts.cs" />
+    <Compile Include="_UnusedCode\IToggableView.cs" />
+    <Compile Include="_UnusedCode\KeyDownCommandBinding.cs" />
+    <Compile Include="_UnusedCode\ListBoxExtensions.cs" />
+    <Compile Include="_UnusedCode\ListViewCustomComparer.cs" />
+    <Compile Include="_UnusedCode\ListViewExtensions.cs" />
+    <Compile Include="_UnusedCode\LoadingUserControl.xaml.cs" />
+    <Compile Include="_UnusedCode\MenuShortcutManager.cs" />
+    <Compile Include="_UnusedCode\NativeBehavior.cs" />
+    <Compile Include="_UnusedCode\NativeBehaviors.cs" />
+    <Compile Include="_UnusedCode\NativeMethodsKeyboard.cs" />
+    <Compile Include="_UnusedCode\NativeMethodsWindow.cs" />
+    <Compile Include="_UnusedCode\ObjectExtensions.cs" />
+    <Compile Include="_UnusedCode\ObservableWrappedCollection.cs" />
+    <Compile Include="_UnusedCode\OpaqueToolTip.cs" />
+    <Compile Include="_UnusedCode\Placeholder.cs" />
+    <Compile Include="_UnusedCode\PropertyCommandTrigger.cs" />
+    <Compile Include="_UnusedCode\RegionManagerCustomExtensions.cs" />
+    <Compile Include="_UnusedCode\RunExtensions.cs" />
+    <Compile Include="_UnusedCode\SampleSingleton.cs" />
+    <Compile Include="_UnusedCode\SmallColorPicker.xaml.cs" />
+    <Compile Include="_UnusedCode\SnapToBehavior.cs" />
+    <Compile Include="_UnusedCode\SortableObservableCollection.cs" />
+    <Compile Include="_UnusedCode\StringExtensions.cs" />
+    <Compile Include="_UnusedCode\StringXamlConverter.cs" />
+    <Compile Include="_UnusedCode\TextMediaTextBox.cs" />
+    <Compile Include="_UnusedCode\ToolBarTrayRegionAdapter.cs" />
+    <Compile Include="_UnusedCode\TriggerTracing.cs" />
+    <Compile Include="_UnusedCode\UiClipboardImageHelper.cs" />
+    <Compile Include="_UnusedCode\VisualExtensions.cs" />
+    <Compile Include="_UnusedCode\WatermarkTextBox.cs" />
+    <Compile Include="_UnusedCode\WeakReferenceCollection.cs" />
+    <Compile Include="_UnusedCode\WpfTreeHelper.cs" />
+    <Compile Include="_UnusedCode\XamlToPngConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\PopupModalWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="_UnusedCode\ComboColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="_UnusedCode\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="_UnusedCode\LoadingUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="_UnusedCode\SmallColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

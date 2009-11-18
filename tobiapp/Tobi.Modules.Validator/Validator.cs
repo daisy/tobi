@@ -98,12 +98,14 @@ namespace Tobi.Modules.Validator
 
         public override bool Validate()
         {
-            IsValid = true;
+            bool m_IsValid = true;
 
             foreach (IValidator validator in Validators)
             {
-                IsValid = IsValid && validator.Validate();
+                m_IsValid = m_IsValid && validator.Validate();
             }
+
+            IsValid = m_IsValid;
             return IsValid;
         }
     }
