@@ -5,6 +5,7 @@ using urakawa;
 using urakawa.events;
 using urakawa.metadata;
 using urakawa.commands;
+using urakawa.metadata.daisy;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -127,7 +128,7 @@ namespace Tobi.Modules.MetadataPane
                 }
             }
         }
-        public MetadataDefinitionSet Definitions {get; set;}
+        public MetadataDefinitionSet Definitions = SupportedMetadata_Z39862005.DefinitionSet;
         
         public MetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
         {

@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using Tobi.Modules.Validator.Metadata;
-using urakawa.metadata.daisy;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -94,16 +93,6 @@ namespace Tobi.Modules.MetadataPane
         private void MetadataListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ViewModel.SelectionChanged();
-        }
-
-        private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
-        {
-           // MessageBox.Show("hi");
-        }
-
-        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
         }
     }
     
