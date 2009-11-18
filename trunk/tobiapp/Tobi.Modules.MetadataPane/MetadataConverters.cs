@@ -61,31 +61,31 @@ namespace Tobi.Modules.MetadataPane
         }
     }
 
-    public class ErrorsToListConverter : IValueConverter
-    {
-        //don't include errors about read-only metadata items
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            //ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
-            ObservableCollection<string> errors = new ObservableCollection<string>();
-            IEnumerable<ValidationItem> sourceList =
-                (IEnumerable<ValidationItem>)value;
+    //public class ErrorsToListConverter : IValueConverter
+    //{
+    //    //don't include errors about read-only metadata items
+    //    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    //    {
+    //        //ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
+    //        ObservableCollection<string> errors = new ObservableCollection<string>();
+    //        IEnumerable<ValidationItem> sourceList =
+    //            (IEnumerable<ValidationItem>)value;
             
-            foreach (ValidationItem error in sourceList)
-            {
-                if (!((MetadataValidationError)error).Definition.IsReadOnly)
-                    errors.Add(error.Message);
-            }
+    //        foreach (ValidationItem error in sourceList)
+    //        {
+    //            if (!((MetadataValidationError)error).Definition.IsReadOnly)
+    //                errors.Add(error.Message);
+    //        }
 
-            return errors;
-        }
+    //        return errors;
+    //    }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-    }
+    //    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    //    {
+    //        throw new NotImplementedException
+    //            ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+    //    }
+    //}
 
     public class DescriptiveErrorTextConverter : IMultiValueConverter
     {

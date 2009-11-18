@@ -36,30 +36,38 @@ namespace Tobi.Modules.Validator
 
             ValidationItems = new ObservableCollection<ValidationItem>();
 
+            resetValidationItems(Validator);
+
             DataContext = this;
             InitializeComponent();
         }
 
+
+        private void resetValidationItems(Validator metadataValidator)
+        {
+            ValidationItems.Clear();
+            
+            if (metadataValidator.ValidationItems == null) // metadataValidator.IsValid == true
+            {
+                return;
+            }
+
+            foreach (var validationItem in metadataValidator.ValidationItems)
+            {
+                ValidationItems.Add(validationItem);
+            }
+        }
+
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
-            if (e.Validator.IsValid)
-            {
-                ValidationItems.Clear();
-            }
-            else
-            {
-                foreach (ValidationItem item in e.Validator.ValidationItems)
-                {
-                    ValidationItems.Add(item);
-                }
-            }
+            resetValidationItems((Validator)e.Validator);
         }
 
         public void OnImportsSatisfied()
         {
-#if DEBUG
-            Debugger.Break();
-#endif
+//#if DEBUG
+//            Debugger.Break();
+//#endif
         }
     }
 

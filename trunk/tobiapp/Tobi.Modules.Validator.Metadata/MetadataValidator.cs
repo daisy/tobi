@@ -165,7 +165,7 @@ namespace Tobi.Modules.Validator.Metadata
             //make sure all the required items are there
             foreach (MetadataDefinition metadataDefinition in MetadataDefinitions.Definitions)
             {
-                if (metadataDefinition.Occurrence == MetadataOccurrence.Required)
+                if (!metadataDefinition.IsReadOnly && metadataDefinition.Occurrence == MetadataOccurrence.Required)
                 {
                     urakawa.metadata.Metadata metadata = metadatas.Find(
                         item => item.NameContentAttribute.Name.ToLower() ==
