@@ -11,7 +11,7 @@
   <DockPanel.Resources>
     <!-- CONVERTERS -->
     <local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/>
-    <local:ErrorsToListConverter x:Key="errorsToListConverter"/>
+    <!-- local:ErrorsToListConverter x:Key="errorsToListConverter"/ -->
     <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
     <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
     <local:LowerCaseConverter x:Key="lowerCaseConverter"/>

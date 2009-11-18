@@ -173,8 +173,8 @@ namespace Tobi.Modules.MetadataPane
                     ()=> notifyOfPrimaryIdentifierChange(newItem));
                 m_Metadatas.Add(newItem);
             }
-
         }
+
         //when a new metadata object assumes the role of primary identifier,
         //set IsPrimaryIdentifier to false on all other metadata objects
         private void notifyOfPrimaryIdentifierChange(NotifyingMetadataItem item)

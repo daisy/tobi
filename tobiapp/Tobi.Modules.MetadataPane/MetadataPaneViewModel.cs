@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
-using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
 using Tobi.Common.Validation;
 using Tobi.Modules.Validator.Metadata;
 using urakawa;
@@ -30,9 +25,9 @@ namespace Tobi.Modules.MetadataPane
         public void OnImportsSatisfied()
         {
 
-//#if DEBUG
-//            Debugger.Break();
-//#endif
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
             foreach (var validator in Validators)
             {
                 if (validator is MetadataValidator)
@@ -82,16 +77,17 @@ namespace Tobi.Modules.MetadataPane
 
         private void resetValidationItems(MetadataValidator metadataValidator)
         {
-            if (metadataValidator.ValidationItems == null) // metadataValidator.IsValid == true
+            ValidationItems.Clear();
+
+            if (metadataValidator.ValidationItems == null) // metadataValidator.IsValid
             {
                 return;
             }
 
-            ValidationItems.Clear();
             foreach (var validationItem in metadataValidator.ValidationItems)
             {
-                if (!((MetadataValidationError)validationItem).Definition.IsReadOnly)
-                    ValidationItems.Add(validationItem);
+                //if (!((MetadataValidationError)validationItem).Definition.IsReadOnly)
+                ValidationItems.Add(validationItem);
             }
         }
 
@@ -123,7 +119,7 @@ namespace Tobi.Modules.MetadataPane
 
         #region Commands
 
-        
+
         //remove metadata entries with empty names
         public void removeEmptyMetadata()
         {
