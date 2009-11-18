@@ -45,11 +45,14 @@ namespace Tobi.Modules.Validator.Metadata
         public override bool Validate()
         {
             bool isValid = true;
+
             if (m_Session.DocumentProject != null &&
                 m_Session.DocumentProject.Presentations.Count > 0)
             {
                 List<urakawa.metadata.Metadata> metadatas =
                     m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
+
+                m_ValidationItems = new List<ValidationItem>();
                 isValid = _validate(metadatas);
             }
 
@@ -57,7 +60,9 @@ namespace Tobi.Modules.Validator.Metadata
             {
                 //TODO: send an event that there are new validation errors
             }
-            this.IsValid = isValid;
+
+            IsValid = isValid;
+
             return isValid;
         }
 
@@ -115,13 +120,13 @@ namespace Tobi.Modules.Validator.Metadata
                             {
                                 //does this error's target metadata item already have an error
                                 //of this type associated with it?
-                                sameItem = (err.Target == error.Target);
+                                sameItem = err.Target != null && (err.Target == error.Target);
                             }
                             //does this error's type and target metadata definition already exist?
                             bool sameDef = (err.Definition == error.Definition);
                             bool sameType = (err.ErrorType == error.ErrorType);
 
-                            if (sameItem | (sameDef & sameType)) return true;
+                            if (sameItem || (sameDef && sameType)) return true; // && err.ErrorType != MetadataErrorType.MissingItemError
                             else return false;
                         }
                 ) == null)

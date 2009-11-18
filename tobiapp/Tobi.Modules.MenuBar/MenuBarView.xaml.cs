@@ -3,7 +3,6 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
-using Tobi.Modules.MetadataPane;
 using Tobi.Modules.AudioPane;
 
 namespace Tobi.Modules.MenuBar
@@ -150,11 +149,11 @@ namespace Tobi.Modules.MenuBar
 
             }
 
-            var metadata = Container.Resolve<MetadataPaneViewModel>();
-            if (metadata != null)
-            {
-                CommandShowMetadataPane = metadata.CommandShowMetadataPane;
-            }
+            //var metadata = Container.Resolve<MetadataPaneViewModel>();
+            //if (metadata != null)
+            //{
+            //    CommandShowMetadataPane = metadata.CommandShowMetadataPane;
+            //}
 
             var shellPresenter = Container.Resolve<IShellPresenter>();
             if (shellPresenter != null)

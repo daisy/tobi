@@ -1,5 +1,9 @@
 ﻿using Microsoft.Practices.Composite.Modularity;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Unity;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 
 namespace Tobi.Modules.MetadataPane
 {
@@ -9,6 +13,8 @@ namespace Tobi.Modules.MetadataPane
     public class MetadataPaneModule : IModule
     {
         private readonly IUnityContainer m_Container;
+
+        public RichDelegateCommand CommandShowMetadataPane { get; private set; }
 
         ///<summary>
         /// Dependency Injection constructor
@@ -21,9 +27,28 @@ namespace Tobi.Modules.MetadataPane
 
         public void Initialize()
         {
-            m_Container.RegisterType<MetadataPaneViewModel>(new ContainerControlledLifetimeManager());
+            //m_Container.RegisterType<MetadataPaneViewModel>(new ContainerControlledLifetimeManager());
             m_Container.RegisterType<IMetadataPaneView, MetadataPaneView>(new ContainerControlledLifetimeManager());
+            
+            //Logger.Log("MetadataPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
+            var shellPresenter = m_Container.Resolve<IShellPresenter>();
+
+            CommandShowMetadataPane = new RichDelegateCommand(
+                UserInterfaceStrings.ShowMetadata,
+                UserInterfaceStrings.ShowMetadata_,
+                UserInterfaceStrings.ShowMetadata_KEYS,
+                shellPresenter.LoadTangoIcon("accessories-text-editor"),
+                ShowDialog,
+                CanShowDialog);
+
+            shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
+
+            var toolbars = m_Container.TryResolve<IToolBarsView>();
+            if (toolbars != null)
+            {
+                int uid = toolbars.AddToolBarGroup(new[] { CommandShowMetadataPane });
+            }
             /*
              * The popup window (modal or not) that contains the metadata editor does not provide a region.
              * It could, but it's not necessary here.
@@ -35,6 +60,19 @@ namespace Tobi.Modules.MetadataPane
             targetRegion.Add(view);
             targetRegion.Activate(view);
              * */
+        }
+        bool CanShowDialog()
+        {
+            var session = m_Container.Resolve<IUrakawaSession>();
+            return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
+        }
+
+        void ShowDialog()
+        {
+            //Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
+
+            var view = m_Container.Resolve<IMetadataPaneView>();
+            view.Popup();
         }
     }
 }

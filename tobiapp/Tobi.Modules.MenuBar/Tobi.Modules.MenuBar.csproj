@@ -106,10 +106,6 @@
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Modules.AudioPane</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
-      <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>
-      <Name>Tobi.Modules.MetadataPane</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

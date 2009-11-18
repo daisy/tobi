@@ -22,7 +22,7 @@ namespace Tobi.Modules.MetadataPane
             MetadataDefinition definition)
         {
             UrakawaMetadata = metadata;
-            UrakawaMetadata.Changed += new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
+            UrakawaMetadata.Changed += OnMetadataChanged;
             ParentCollection = parentCollection;
             Definition = definition;
         }
@@ -76,7 +76,7 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
-        void OnMetadataChangedChanged(object sender, DataModelChangedEventArgs e)
+        void OnMetadataChanged(object sender, DataModelChangedEventArgs e)
         {
             //e actually is MetadataEventArgs
             RaisePropertyChanged(() => Name);
@@ -88,7 +88,7 @@ namespace Tobi.Modules.MetadataPane
 
         internal void RemoveEvents()
         {
-            UrakawaMetadata.Changed -= new System.EventHandler<DataModelChangedEventArgs>(OnMetadataChangedChanged);
+            UrakawaMetadata.Changed -= OnMetadataChanged;
         }
 
         public bool IsPrimaryIdentifier
@@ -128,7 +128,6 @@ namespace Tobi.Modules.MetadataPane
                 }
             }
         }
-        public MetadataDefinitionSet Definitions = SupportedMetadata_Z39862005.DefinitionSet;
         
         public MetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
         {
@@ -164,10 +163,10 @@ namespace Tobi.Modules.MetadataPane
         // all new item additions end up here
         private void addItem(Metadata metadata)
         {
-            MetadataDefinition definition = 
-                Definitions.GetMetadataDefinition(metadata.NameContentAttribute.Name);
+            MetadataDefinition definition =
+                SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(metadata.NameContentAttribute.Name);
             //filter out read-only items because they will be filled in by Tobi at export time
-            if (definition.IsReadOnly == false)
+            if (!definition.IsReadOnly)
             {
                 NotifyingMetadataItem newItem = new NotifyingMetadataItem(metadata, this, definition);
                 newItem.BindPropertyChangedToAction(()=> newItem.IsPrimaryIdentifier, 

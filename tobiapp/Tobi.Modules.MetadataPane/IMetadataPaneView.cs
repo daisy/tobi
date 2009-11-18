@@ -2,5 +2,6 @@
 {
     public interface IMetadataPaneView
     {
+        void Popup();
     }
 }

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -10,6 +13,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using Tobi.Common.Validation;
+using Tobi.Modules.Validator.Metadata;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
@@ -20,46 +24,83 @@ namespace Tobi.Modules.MetadataPane
     /// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
-    public class MetadataPaneViewModel : ViewModelBase //, IPartImportsSatisfiedNotification
-    {   
+    [Export(typeof(MetadataPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class MetadataPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    {
+        public void OnImportsSatisfied()
+        {
+
+//#if DEBUG
+//            Debugger.Break();
+//#endif
+            foreach (var validator in Validators)
+            {
+                if (validator is MetadataValidator)
+                {
+                    m_LocalValidator = (MetadataValidator)validator;
+                    m_LocalValidator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
+                    break;
+                }
+            }
+
+            if (m_LocalValidator != null)
+            {
+                resetValidationItems(m_LocalValidator);
+            }
+        }
+
         #region Construction
 
         protected IEventAggregator EventAggregator { get; private set; }
         public ILoggerFacade Logger { get; private set; }
-        private MetadataDefinitionSet m_DefinitionSet;
 
         public ObservableCollection<ValidationItem> ValidationItems { get; set; }
+
+
+        [ImportMany(typeof(IValidator))]
+        public IEnumerable<IValidator> Validators { get; set; }
+
+        private MetadataValidator m_LocalValidator = null;
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public MetadataPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger) : base(container)
+        [ImportingConstructor]
+        public MetadataPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+            : base(container)
         {
             EventAggregator = eventAggregator;
             Logger = logger;
 
             m_MetadataCollection = null;
 
-            //for now, this is hardcoded internally.  in the long term, this info will be pulled
-            //from a Tobi profile
-            m_DefinitionSet = SupportedMetadata_Z39862005.DefinitionSet;
-
-            Initialize();
-        }
-        
-        #endregion Construction
-
-        #region Initialization
-
-        protected void Initialize()
-        {
-            Logger.Log("MetadataPaneViewModel.Initialize", Category.Debug, Priority.Medium);
-
-            initializeCommands();
-
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-       }
+
+            ValidationItems = new ObservableCollection<ValidationItem>();
+        }
+
+        private void resetValidationItems(MetadataValidator metadataValidator)
+        {
+            if (metadataValidator.ValidationItems == null) // metadataValidator.IsValid == true
+            {
+                return;
+            }
+
+            ValidationItems.Clear();
+            foreach (var validationItem in metadataValidator.ValidationItems)
+            {
+                if (!((MetadataValidationError)validationItem).Definition.IsReadOnly)
+                    ValidationItems.Add(validationItem);
+            }
+        }
+
+        private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
+        {
+            resetValidationItems((MetadataValidator)e.Validator);
+        }
+
+        #endregion Construction
 
         private void OnProjectUnLoaded(Project obj)
         {
@@ -68,7 +109,7 @@ namespace Tobi.Modules.MetadataPane
 
         private void OnProjectLoaded(Project project)
         {
-            Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""), 
+            Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
             if (project == null)
@@ -79,80 +120,17 @@ namespace Tobi.Modules.MetadataPane
             RaisePropertyChanged(() => MetadataCollection);
         }
 
-        
-        #endregion Initialization
 
         #region Commands
 
-        public RichDelegateCommand CommandShowMetadataPane { get; private set; }
         
-        private void initializeCommands()
-        {
-            Logger.Log("MetadataPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            
-            CommandShowMetadataPane = new RichDelegateCommand(
-                UserInterfaceStrings.ShowMetadata,
-                UserInterfaceStrings.ShowMetadata_,
-                UserInterfaceStrings.ShowMetadata_KEYS,
-                shellPresenter.LoadTangoIcon("accessories-text-editor"),
-                ShowDialog,
-                CanShowDialog);
-
-            shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
-
-            var toolbars = Container.TryResolve<IToolBarsView>();
-            if (toolbars != null)
-            {
-                int uid = toolbars.AddToolBarGroup(new[] { CommandShowMetadataPane });
-            }
-
-        }
-
-        bool CanShowDialog()
-        {
-            var session = Container.Resolve<IUrakawaSession>();
-            return session.DocumentProject != null && session.DocumentProject.Presentations.Count > 0;
-        }
-        
-        void ShowDialog()
-        {
-            Logger.Log("MetadataPaneViewModel.showMetadata", Category.Debug, Priority.Medium);
-            
-            var shellPresenter_ = Container.Resolve<IShellPresenter>();
-            var windowPopup = new PopupModalWindow(shellPresenter_,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.ShowMetadata),
-                                                   Container.Resolve<IMetadataPaneView>(),
-                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                   PopupModalWindow.DialogButton.Ok,
-                                                   true, 700, 400);
-            //start a transaction
-            var session = Container.Resolve<IUrakawaSession>();
-            session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
-                ("Open metadata editor", "The metadata editor modal dialog is opening.");
-   
-            windowPopup.ShowModal();
-            //if the user presses "Ok", then save the changes.  otherwise, don't save them.
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
-            {
-                removeEmptyMetadata();
-                session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();    
-            }
-            else
-            {
-                session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
-            }
-        }
-
         //remove metadata entries with empty names
-        private void removeEmptyMetadata()
+        public void removeEmptyMetadata()
         {
             var session = Container.Resolve<IUrakawaSession>();
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
             List<MetadataRemoveCommand> removalsList = new List<MetadataRemoveCommand>();
-            
+
             foreach (Metadata m in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
                 if (string.IsNullOrEmpty(m.NameContentAttribute.Name))
@@ -166,12 +144,12 @@ namespace Tobi.Modules.MetadataPane
                 presentation.UndoRedoManager.Execute(cmd);
             }
         }
-        
+
         #endregion Commands
-        
-      
-        private MetadataCollection m_MetadataCollection;   
-        public MetadataCollection MetadataCollection 
+
+
+        private MetadataCollection m_MetadataCollection;
+        public MetadataCollection MetadataCollection
         {
             get
             {
@@ -186,10 +164,10 @@ namespace Tobi.Modules.MetadataPane
                     if (m_MetadataCollection == null)
                     {
                         Presentation presentation = session.DocumentProject.Presentations.Get(0);
-            
+
                         m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
-                            m_DefinitionSet.Definitions);
+                            SupportedMetadata_Z39862005.DefinitionSet.Definitions);
 
                         presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
                         presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
@@ -199,7 +177,7 @@ namespace Tobi.Modules.MetadataPane
                 return m_MetadataCollection;
             }
         }
-        
+
         public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
             var session = Container.Resolve<IUrakawaSession>();
@@ -213,7 +191,7 @@ namespace Tobi.Modules.MetadataPane
         {
             var session = Container.Resolve<IUrakawaSession>();
             Presentation presentation = session.DocumentProject.Presentations.Get(0);
-            
+
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
             metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "", Value = "" };
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
@@ -224,7 +202,7 @@ namespace Tobi.Modules.MetadataPane
         public string GetViewModelDebugStringForMetaData()
         {
             string data = "";
-            
+
             //iterate through our observable collection
             foreach (NotifyingMetadataItem m in this.MetadataCollection.Metadatas)
             {
@@ -274,12 +252,12 @@ namespace Tobi.Modules.MetadataPane
 
                 List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
                 List<MetadataDefinition> availableMetadata =
-                    MetadataAvailability.GetAvailableMetadata(metadatas, m_DefinitionSet.Definitions);
+                    MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.DefinitionSet.Definitions);
 
 
                 foreach (MetadataDefinition metadata in availableMetadata)
                 {
-                    if (!metadata.IsReadOnly) 
+                    if (!metadata.IsReadOnly)
                         list.Add(metadata.Name.ToLower());
                 }
                 return list;
@@ -289,24 +267,17 @@ namespace Tobi.Modules.MetadataPane
         internal void SelectionChanged()
         {
             RaisePropertyChanged(() => AvailableMetadataNames);
-            RaisePropertyChanged(() => MetadataCollection.Metadatas);
+
+            //TODO: what's up here ?
+            //RaisePropertyChanged(() => MetadataCollection.Metadatas);
         }
 
         /*
+         * SEE ValidationItemSelectedEvent
         //todo: scroll to the selected item
         public void OnValidationErrorSelected(ValidationErrorSelectedEventArgs e)
         {
             
-        }
-         
-        //todo: listen to the events from the Metadata validator
-        public void OnValidationErrors(ValidationErrorsEventArgs e)
-        {
-            if (validator is MetadataValidator)
-            {
-                //add the errors to our collection
-         * ValidationItems.Add(...);
-            }
         }
          * */
     }

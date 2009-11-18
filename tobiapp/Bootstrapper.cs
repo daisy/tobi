@@ -120,7 +120,7 @@ namespace Tobi
                 .AddModule(typeof(FileDialogModule))
                 .AddModule(typeof(UrakawaModule))
                 //.AddModule(typeof(ToolBarsModule), new string[]{"MetadataPaneModule", "UrakawaModule"})
-                .AddModule(typeof(MenuBarModule), new[] { "MetadataPaneModule", "UrakawaModule" })
+                .AddModule(typeof(MenuBarModule), new[] { "UrakawaModule", "AudioPaneModule" })
                 .AddModule(typeof(NavigationPaneModule), "DocumentPaneModule")
                 .AddModule(typeof(HeadingPaneModule), "NavigationPaneModule")
                 .AddModule(typeof(PagePaneModule), "NavigationPaneModule")

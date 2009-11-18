@@ -5,7 +5,7 @@ namespace Tobi.Common.Validation
 {
     public abstract class AbstractValidator : IValidator
     {
-        public event EventHandler<ValidatorStateChangedEventArgs> ValidatorStateChanged;
+        public event EventHandler<ValidatorStateRefreshedEventArgs> ValidatorStateRefreshed;
         
         public abstract string Name { get; }
         public abstract string Description { get; }
@@ -18,24 +18,24 @@ namespace Tobi.Common.Validation
             get { return m_IsValid; }
             protected set
             {
+                EventHandler<ValidatorStateRefreshedEventArgs> ev = ValidatorStateRefreshed;
+                if (ev != null) ev(this, new ValidatorStateRefreshedEventArgs(this));
+
                 if (value == m_IsValid)
                 {
                     return;
                 }
 
                 m_IsValid = value;
-
-                EventHandler<ValidatorStateChangedEventArgs> ev = ValidatorStateChanged;
-                if (ev != null) ev(this, new ValidatorStateChangedEventArgs(this));
             }
         }
     }
 
-    public class ValidatorStateChangedEventArgs : EventArgs
+    public class ValidatorStateRefreshedEventArgs : EventArgs
     {
         public readonly IValidator Validator;
 
-        public ValidatorStateChangedEventArgs(IValidator validator)
+        public ValidatorStateRefreshedEventArgs(IValidator validator)
         {
             Validator = validator;
         }
@@ -43,7 +43,7 @@ namespace Tobi.Common.Validation
 
     public interface IValidator
     {
-        event EventHandler<ValidatorStateChangedEventArgs> ValidatorStateChanged;
+        event EventHandler<ValidatorStateRefreshedEventArgs> ValidatorStateRefreshed;
 
         string Name { get; }
         string Description { get; }
