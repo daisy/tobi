@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
+using Tobi.Common;
+using Tobi.Common.UI;
 using Tobi.Modules.Validator.Metadata;
 
 namespace Tobi.Modules.MetadataPane
@@ -93,6 +95,36 @@ namespace Tobi.Modules.MetadataPane
         private void MetadataListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ViewModel.SelectionChanged();
+        }
+
+        public void Popup()
+        {
+            var shellPresenter_ = ViewModel.Container.Resolve<IShellPresenter>();
+            var windowPopup = new PopupModalWindow(shellPresenter_,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.ShowMetadata),
+                                                   this,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 700, 400);
+            //start a transaction
+            var session = ViewModel.Container.Resolve<IUrakawaSession>();
+            
+            session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
+                ("Open metadata editor", "The metadata editor modal dialog is opening.");
+
+            windowPopup.ShowModal();
+
+            //if the user presses "Ok", then save the changes.  otherwise, don't save them.
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+            {
+                ViewModel.removeEmptyMetadata();
+                session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+            }
+            else
+            {
+                session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
+            }
         }
     }
     

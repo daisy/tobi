@@ -7,9 +7,5 @@ namespace Tobi.Common.Validation
         public class ValidationItemSelectedEvent : CompositePresentationEvent<ValidationItem>
         {
         }
-
-        public class ValidationItemsEvent : CompositePresentationEvent<IValidator>
-        {
-        }
     }
 }

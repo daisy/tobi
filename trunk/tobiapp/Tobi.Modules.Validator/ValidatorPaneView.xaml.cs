@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows;
 using System.Windows.Data;
-using Tobi.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
@@ -35,7 +32,7 @@ namespace Tobi.Modules.Validator
             Logger = logger;
 
             Validator = validator;
-            Validator.ValidatorStateChanged += OnValidatorStateChanged;
+            Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
 
             ValidationItems = new ObservableCollection<ValidationItem>();
 
@@ -43,7 +40,7 @@ namespace Tobi.Modules.Validator
             InitializeComponent();
         }
 
-        private void OnValidatorStateChanged(object sender, ValidatorStateChangedEventArgs e)
+        private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
             if (e.Validator.IsValid)
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -12,8 +13,21 @@ using urakawa.events.undo;
 namespace Tobi.Modules.Validator
 {
     [Export(typeof(Validator)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class Validator : AbstractValidator
+    public class Validator : AbstractValidator, IPartImportsSatisfiedNotification
     {
+        public void OnImportsSatisfied()
+        {
+//#if DEBUG
+//            Debugger.Break();
+//#endif
+
+            var session = Container.Resolve<IUrakawaSession>();
+            if (session.DocumentProject != null)
+            {
+                OnProjectLoaded(session.DocumentProject);
+            }
+        }
+
         [ImportMany(typeof(IValidator))]
         public IEnumerable<IValidator> Validators { get; set; }
 
@@ -37,15 +51,6 @@ namespace Tobi.Modules.Validator
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
         }
 
-        private void OnProjectUnLoaded(Project project)
-        {
-            IsValid = true;
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-        }
-
         private void OnProjectLoaded(Project project)
         {
             project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
@@ -53,6 +58,15 @@ namespace Tobi.Modules.Validator
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
 
             Validate();
+        }
+
+        private void OnProjectUnLoaded(Project project)
+        {
+            IsValid = true;
+
+            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
         }
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)

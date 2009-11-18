@@ -73,7 +73,7 @@ namespace Tobi.Modules.MetadataPane
             
             foreach (ValidationItem error in sourceList)
             {
-                if (((MetadataValidationError)error).Definition.IsReadOnly == false)
+                if (!((MetadataValidationError)error).Definition.IsReadOnly)
                     errors.Add(error.Message);
             }
 
@@ -93,16 +93,23 @@ namespace Tobi.Modules.MetadataPane
         //Expected: NotifyingMetadataItem and list of ValidationItems
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (! (values[0] is NotifyingMetadataItem))
+            {
+                return null;
+            }
+
             NotifyingMetadataItem metadata = (NotifyingMetadataItem)values[0];
             IEnumerable<ValidationItem> errors = (IEnumerable<ValidationItem>)values[1];
-
-            if (values.Length == 0) return NoErrors;
 
             //find the error for this metadata object
             MetadataValidationError error = 
                 errors.Where(v => ((MetadataValidationError) v).Target == 
                     metadata.UrakawaMetadata).Cast<MetadataValidationError>().FirstOrDefault();
             
+            if (error == null)
+            {
+                return NoErrors;
+            }
             return error.Message;
         }
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
