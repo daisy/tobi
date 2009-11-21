@@ -1,54 +1,69 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Deployment.Application;
-using System.Reflection;
+using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.Practices.Composite.Events;
-using Microsoft.Practices.Composite.Modularity;
-using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Composite.UnityExtensions;
-using Microsoft.Practices.Unity;
-using Microsoft.Win32;
+using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
-using Tobi.Common.Onyx.Reflection;
+using Tobi.Common.UI;
+using Application = System.Windows.Application;
 
 namespace Tobi
 {
     /// <summary>
-    /// 'Code behind' for the Shell window
+    /// 'Code behind' for the Shell window which host the entire application
     /// </summary>
-    public partial class Shell : IShellView
+    [Export(typeof(IShellView)), PartCreationPolicy(CreationPolicy.Shared)]
+    public partial class Shell : IShellView, IPartImportsSatisfiedNotification
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
+#pragma warning disable 1591 // non-documented method
+        public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
-            var handler = PropertyChanged;
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
 
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            // If the toolbar has been resolved, we can push our commands into it.
+            tryToolbarCommands();
+
+            // If the Urakawa Session has been resolved, we can bind the window title.
+            trySessionWindowTitle();
         }
 
-        protected IUnityContainer Container { get; private set; }
+#pragma warning disable 649 // non-initialized fields
 
-        protected IEventAggregator EventAggregator { get; private set; }
+        [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IToolBarsView m_ToolBarsView;
 
-        private bool m_InConstructor = false;
+        [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IUrakawaSession m_UrakawaSession;
 
-        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+#pragma warning restore 649
 
+        private readonly ILoggerFacade m_Logger;
 
         ///<summary>
-        /// 
+        /// We inject a few dependencies in this constructor.
+        /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
         ///</summary>
-        public Shell(IUnityContainer container, IEventAggregator eventAggregator)
+        ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
+        [ImportingConstructor]
+        public Shell(ILoggerFacade logger)
         {
-            Container = container;
-            EventAggregator = eventAggregator;
+            m_Logger = logger;
+
+            m_Logger.Log(@"ShellView.ctor", Category.Debug, Priority.Medium);
+
+            App.LOGGER = m_Logger;
+
+            m_Exiting = false;
+
+            initCommands();
 
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
@@ -65,13 +80,171 @@ namespace Tobi
             //((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
         }
 
+        private bool m_SessionTitleDone;
+        private void trySessionWindowTitle()
+        {
+            if (!m_SessionTitleDone && m_UrakawaSession != null)
+            {
+                m_UrakawaSession.BindPropertyChangedToAction(() => m_UrakawaSession.DocumentFilePath,
+                    () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
+
+                m_UrakawaSession.BindPropertyChangedToAction(() => m_UrakawaSession.IsDirty,
+                    () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
+
+                m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle);
+
+                m_SessionTitleDone = true;
+
+                m_Logger.Log(@"Urakawa session commands pushed to toolbar", Category.Debug, Priority.Medium);
+            }
+        }
+
+        private bool m_ToolBarCommandsDone;
+        private void tryToolbarCommands()
+        {
+            if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
+            {
+                int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand });
+                int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
+                int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand });
+
+                m_ToolBarCommandsDone = true;
+
+                m_Logger.Log(@"Shell commands pushed to toolbar", Category.Debug, Priority.Medium);
+            }
+        }
+
+
+        // To avoid the shutting-down loop in OnShellWindowClosing()
+        private bool m_Exiting;
+        private void exit()
+        {
+            m_Logger.Log("ShellView.exit", Category.Debug, Priority.Medium);
+
+            //MessageBox.ShowModal("Good bye !", "Tobi says:");
+            /*TaskDialog.ShowModal("Tobi is exiting.",
+                "Just saying goodbye...",
+                "The Tobi application is now closing.",
+                TaskDialogIcon.Information);*/
+            m_Exiting = true;
+            Application.Current.Shutdown();
+        }
+
+
+        protected void OnClosing(object sender, CancelEventArgs e)
+        {
+            /*
+            e.Cancel = true;
+            // Workaround for not being able to hide a window during closing.
+            // This behavior was needed in WPF to ensure consistent window visiblity state
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, (DispatcherOperationCallback)delegate(object o)
+            {
+                Hide();
+                return null;
+            }, null);
+             */
+
+            bool leaving = false;
+
+            if (m_Exiting) leaving = true;
+
+            if (ExitCommand.CanExecute())
+            {
+                if (askUserConfirmExit())
+                {
+                    exit();
+                    leaving = true;
+                }
+            }
+
+            if (!leaving) e.Cancel = true;
+        }
+
+        private bool askUserConfirmExit()
+        {
+            m_Logger.Log("ShellView.askUserConfirmExit", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock
+            {
+                Text = UserInterfaceStrings.ExitConfirm,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser")) { IconDrawScale = MagnificationLevel };
+            //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.ExitConfirm)
+            {
+            };
+
+            var windowPopup = new PopupModalWindow(this,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       UserInterfaceStrings.Exit),
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.No,
+                                                   true, 300, 160, details, 40);
+
+            windowPopup.ShowModal();
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
+            {
+                if (m_UrakawaSession != null &&
+                    m_UrakawaSession.DocumentProject != null && m_UrakawaSession.IsDirty)
+                {
+                    if (!m_UrakawaSession.Close())
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public void DimBackgroundWhile(Action action)
+        {
+            var aLayer = AdornerLayer.GetAdornerLayer((Visual)Content);
+
+            var theAdorner = new DimAdorner((UIElement)Content);
+            if (aLayer != null)
+            {
+                aLayer.Add(theAdorner);
+            }
+
+            action.Invoke();
+
+            if (aLayer != null)
+            {
+                aLayer.Remove(theAdorner);
+            }
+        }
+
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
-            SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
+            //SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
 
             try
             {
-                Uri iconUri = new Uri("pack://application:,,,/" + GetType().Assembly.GetName().Name
+                var iconUri = new Uri("pack://application:,,,/" + GetType().Assembly.GetName().Name
                                         + ";component/Tobi.ico", UriKind.Absolute);
                 //Uri iconUri = new Uri("Tobi.ico", UriKind.RelativeOrAbsolute);
                 Icon = BitmapFrame.Create(iconUri);
@@ -81,7 +254,7 @@ namespace Tobi
                 //ignore
             }
 
-            App app = Application.Current as App;
+            var app = Application.Current as App;
             if (app != null)
             {
                 try
@@ -90,19 +263,9 @@ namespace Tobi
                 }
                 catch (Exception splashEx)
                 {
-                    Console.Write("SplashScreen.Close() Exception: " + splashEx.Message);
+                    Console.Write(@"SplashScreen.Close() Exception: " + splashEx.Message);
                 }
                 //app.Dispatcher.BeginInvoke((Action)(() => app.SplashScreen.Close(TimeSpan.Zero)), DispatcherPriority.Loaded);
-            }
-
-            var session = Container.TryResolve<IUrakawaSession>();
-            if (session == null)
-            {
-                SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IUrakawaSession, ThreadOption.UIThread, false, type => typeof(IUrakawaSession).IsAssignableFrom(type));
-            }
-            else
-            {
-                bindTitle();
             }
 
 
@@ -117,30 +280,6 @@ namespace Tobi
             */
         }
 
-        private void OnTypeConstructed_IUrakawaSession(Type type)
-        {
-            bindTitle();
-            EventAggregator.GetEvent<TypeConstructedEvent>().Unsubscribe(OnTypeConstructed_IUrakawaSession);
-        }
-
-        private void bindTitle()
-        {
-            var session = Container.Resolve<IUrakawaSession>();
-
-            session.BindPropertyChangedToAction(() => session.DocumentFilePath,
-                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
-
-            session.BindPropertyChangedToAction(() => session.IsDirty,
-                () => m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle));
-
-            m_PropertyChangeHandler.RaisePropertyChanged(() => WindowTitle);
-        }
-
-        private void OnSystemEventsDisplaySettingsChanged(object sender, EventArgs e)
-        {
-            // update DPI-dependent stuff
-        }
-
         //public static PropertyPath GetPropertyPath<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         //{
         //    return new PropertyPath(Reflect.GetProperty(expression).Name);
@@ -150,141 +289,117 @@ namespace Tobi
         {
             get
             {
-                var session = Container.TryResolve<IUrakawaSession>(); ;
-                if (session == null)
+                if (m_UrakawaSession == null)
                 {
-                    return "Tobi" + " {" + getApplicationVersion() + "}" + " - Please wait...";
+                    return @"Tobi" + @" {" + App.GetVersion() + @"}" + @" - Please wait...";
                 }
-                return "Tobi" + " {" + getApplicationVersion() + "} " + (session.IsDirty ? "* " : "") + "[" + (session.DocumentProject == null ? "no document" : session.DocumentFilePath) + "]";
-            }
-        }
-
-        private string getApplicationVersion()
-        {
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-            }
-
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            // DIFFERENT than FileVersion !!
-            // NOT: System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
-        }
-
-        protected void OnClosing(object sender, CancelEventArgs e)
-        {
-            /*
-            e.Cancel = true;
-            // Workaround for not being able to hide a window during closing.
-            // This behavior was needed in WPF to ensure consistent window visiblity state
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, (DispatcherOperationCallback)delegate(object o)
-            {
-                Hide();
-                return null;
-            }, null);
-             */
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            bool leaving = shellPresenter.OnShellWindowClosing();
-            if (!leaving) e.Cancel = true;
-        }
-
-        ///<summary>
-        /// Shows the main shell window
-        ///</summary>
-        public void ShowView()
-        {
-            Show();
-        }
-
-        public Window Window
-        {
-            get { return this; }
-        }
-
-        private bool m_SplitterDrag = false;
-
-        public bool SplitterDrag
-        {
-            get
-            {
-                return m_SplitterDrag;
-            }
-        }
-
-        private void OnSplitterDragCompleted(object sender, DragCompletedEventArgs e)
-        {
-            m_SplitterDrag = false;
-        }
-
-        private void OnSplitterDragStarted(object sender, DragStartedEventArgs e)
-        {
-            m_SplitterDrag = true;
-        }
-
-        public static readonly DependencyProperty MagnificationLevelProperty =
-            DependencyProperty.Register("MagnificationLevel",
-            typeof(double),
-            typeof(Shell),
-            new PropertyMetadata(1.0, OnMagnificationLevelChanged, OnMagnificationLevelCoerce));
-
-        public double MagnificationLevel
-        {
-            get { return (double)GetValue(MagnificationLevelProperty); }
-            set
-            {
-                // The value will be coerced after this call !
-                SetValue(MagnificationLevelProperty, value);
+                return @"Tobi" + @" {" + App.GetVersion() + @"} " + (m_UrakawaSession.IsDirty ? @"* " : @"") + @"[" + (m_UrakawaSession.DocumentProject == null ? @"no document" : m_UrakawaSession.DocumentFilePath) + @"]";
             }
         }
 
 
-        private static object OnMagnificationLevelCoerce(DependencyObject d, object basevalue)
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {
-            var shell = d as Shell;
-            if (shell == null) return 1.0;
+            var handler = PropertyChanged;
 
-            var value = (Double)basevalue;
-            if (value > shell.ZoomSlider.Maximum)
+            if (handler != null)
             {
-                value = shell.ZoomSlider.Maximum;
+                handler(this, e);
             }
-            if (value < shell.ZoomSlider.Minimum)
-            {
-                value = shell.ZoomSlider.Minimum;
-            }
-
-            Application.Current.Resources["MagnificationLevel"] = value;
-
-            return value;
         }
 
-        private static void OnMagnificationLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+
+        //private void OnSystemEventsDisplaySettingsChanged(object sender, EventArgs e)
+        //{
+        //    // update DPI-dependent stuff
+        //}
+
+
+        // Could be used after a ClickOnce update:
+        // private void OnUpdatingCompleted(object sender, AsyncCompletedEventArgs e)
+        //private void restart()
+        //{
+        //    string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
+
+        //    using (StreamWriter writer = new StreamWriter(File.Create(batchFile)))
+        //    {
+        //        string location = Assembly.GetExecutingAssembly().Location;
+        //        writer.WriteLine("start " + location);
+        //    }
+
+        //    Application.Current.Exit += (o, a) =>
+        //    {
+        //        using (Process p = new Process())
+        //        {
+        //            p.StartInfo.FileName = batchFile;
+        //            p.Start();
+        //        }
+        //    };
+
+        //    exit();
+        //}
+
+
+        static Shell()
         {
-            var shell = d as Shell;
-            if (shell == null) return;
-            shell.NotifyMagnificationLevel();
+            EventManager.RegisterClassHandler(typeof(TextBox),
+                UIElement.GotFocusEvent,
+                new RoutedEventHandler(TextBox_GotFocus));
+
+            //EventManager.RegisterClassHandler(typeof(UIElement),
+            //    UIElement.GotKeyboardFocusEvent,
+            //    new RoutedEventHandler(UIElement_GotKeyboardFocus));
+
+            //EventManager.RegisterClassHandler(typeof(UIElement),
+            //    UIElement.LostKeyboardFocusEvent,
+            //    new RoutedEventHandler(UIElement_LostKeyboardFocus));
         }
 
-        private void NotifyMagnificationLevel()
+        private static void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (m_InConstructor)
-            {
-                return;
-            }
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            shellPresenter.OnMagnificationLevelChanged(MagnificationLevel);
-
-            /*
-            foreach(InputBinding ib in InputBindings)
-            {
-                var command = ib.Command as RichDelegateCommand;
-                if (command != null)
-                {
-                    command.IconDrawScale = e.NewValue;
-                }
-            }
-             */
+            if (((TextBox)sender).SelectionLength == 0)
+                ((TextBox)sender).SelectAll();
         }
+
+        //private static void UIElement_LostKeyboardFocus(object sender, RoutedEventArgs e)
+        //{
+        //    var ui = ((UIElement)sender);
+
+        //    var oldALayer = AdornerLayer.GetAdornerLayer(ui);
+        //    if (oldALayer == null)
+        //    {
+        //        return;
+        //    }
+        //    Adorner[] adorners = oldALayer.GetAdorners(ui);
+        //    if (adorners == null)
+        //    {
+        //        return;
+        //    }
+        //    foreach (Adorner adorner in adorners)
+        //    {
+        //        if (adorner is FocusOutlineAdorner)
+        //        {
+        //            oldALayer.Remove(adorner);
+        //        }
+        //    }
+        //}
+
+        //private static void UIElement_GotKeyboardFocus(object sender, RoutedEventArgs e)
+        //{
+        //    var ui = ((UIElement)sender);
+
+        //    var aLayer = AdornerLayer.GetAdornerLayer(ui);
+        //    if (aLayer == null)
+        //    {
+        //        return;
+        //    }
+        //    var theAdorner = new FocusOutlineAdorner(ui);
+        //    aLayer.Add(theAdorner);
+        //    theAdorner.InvalidateVisual();
+        //}
+
     }
 }

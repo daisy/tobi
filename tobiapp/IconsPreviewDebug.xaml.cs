@@ -1,19 +1,21 @@
-﻿namespace Tobi
+﻿using Tobi.Common;
+
+namespace Tobi
 {
     /// <summary>
     /// Interaction logic for IconsPreviewDebug.xaml
     /// </summary>
     public partial class IconsPreviewDebug
     {
-        private ShellPresenter ShellPresenter
+        private IShellView ShellView
         {
             get; set;
         }
 
-        public IconsPreviewDebug(ShellPresenter shellPresenter)
+        public IconsPreviewDebug(IShellView shellView)
         {
-            ShellPresenter = shellPresenter;
-            DataContext = ShellPresenter;
+            ShellView = shellView;
+            DataContext = ShellView;
 
             InitializeComponent();
         }

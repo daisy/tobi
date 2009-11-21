@@ -99,8 +99,8 @@ namespace Tobi.Modules.MetadataPane
 
         public void Popup()
         {
-            var shellPresenter_ = ViewModel.Container.Resolve<IShellPresenter>();
-            var windowPopup = new PopupModalWindow(shellPresenter_,
+            var shellView_ = ViewModel.Container.Resolve<IShellView>();
+            var windowPopup = new PopupModalWindow(shellView_,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.ShowMetadata),
                                                    this,

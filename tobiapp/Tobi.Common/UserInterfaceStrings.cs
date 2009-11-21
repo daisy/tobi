@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using System.Windows.Input;
@@ -10,6 +11,9 @@ namespace Tobi.Common
     ///</summary>
     public static class UserInterfaceStrings
     {
+        //http://daisy.trac.cvsdude.com/tobi/wiki/Alpha
+        public readonly static Uri TobiHomeUri = new Uri("http://www.digitaltalkingbook.com/projects/tobi/install/alpha/", UriKind.Absolute);
+
         public static readonly string UnhandledException;
 
         public const string LOG_FILE_NAME = "Tobi.log";
@@ -388,6 +392,7 @@ namespace Tobi.Common
 
         public const string Audio_ShowOptions = "Show audio options";
         public static KeyGesture Audio_ShowOptions_KEYS = new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+
 
         public const string Ready = "Ready.";
 

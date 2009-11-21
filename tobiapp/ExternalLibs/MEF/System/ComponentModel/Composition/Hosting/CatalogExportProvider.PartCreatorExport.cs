@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
 
-#if SILVERLIGHT
+#if true || SILVERLIGHT
 
 using System;
 using System.Collections.Generic;

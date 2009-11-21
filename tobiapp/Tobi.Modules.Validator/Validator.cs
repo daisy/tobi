@@ -27,8 +27,28 @@ namespace Tobi.Modules.Validator
             }
         }
 
-        [ImportMany(typeof(IValidator))]
-        public IEnumerable<IValidator> Validators { get; set; }
+        public readonly IEnumerable<IValidator> Validators;
+
+        [ImportingConstructor]
+        public Validator(
+            IUnityContainer container,
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger,
+
+            [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            IEnumerable<IValidator> validators)
+        {
+            Container = container;
+            EventAggregator = eventAggregator;
+            Logger = logger;
+
+            Validators = validators;
+
+            IsValid = true;
+
+            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+        }
 
         //EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
         //SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IUrakawaSession, ThreadOption.UIThread, false, type => typeof(IUrakawaSession).IsAssignableFrom(type));
@@ -36,19 +56,6 @@ namespace Tobi.Modules.Validator
         protected IEventAggregator EventAggregator { get; private set; }
         protected ILoggerFacade Logger { get; private set; }
         protected IUnityContainer Container { get; private set; }
-
-        [ImportingConstructor]
-        public Validator(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
-        {
-            Container = container;
-            EventAggregator = eventAggregator;
-            Logger = logger;
-
-            IsValid = true;
-
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-        }
 
         private void OnProjectLoaded(Project project)
         {

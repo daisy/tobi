@@ -21,7 +21,7 @@ namespace System.ComponentModel.Composition
         private static readonly MethodInfo _createStronglyTypedLazyOfTM = typeof(ExportServices).GetMethod("CreateStronglyTypedLazyOfTM", BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly MethodInfo _createStronglyTypedLazyOfT = typeof(ExportServices).GetMethod("CreateStronglyTypedLazyOfT", BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly MethodInfo _createSemiStronglyTypedLazy = typeof(ExportServices).GetMethod("CreateSemiStronglyTypedLazy", BindingFlags.NonPublic | BindingFlags.Static);
-#if SILVERLIGHT
+#if true || SILVERLIGHT
         private static readonly MethodInfo _createStronglyTypedPartCreatorOfT = typeof(ExportServices).GetMethod("CreateStronglyTypedPartCreatorOfT", BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly MethodInfo _createStronglyTypedPartCreatorOfTM = typeof(ExportServices).GetMethod("CreateStronglyTypedPartCreatorOfTM", BindingFlags.NonPublic | BindingFlags.Static);
 #endif
@@ -128,7 +128,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-#if SILVERLIGHT
+#if true || SILVERLIGHT
 
         internal static Func<Export, object> CreateStronglyTypedPartCreatorFactory(Type exportType, Type metadataType)
         {

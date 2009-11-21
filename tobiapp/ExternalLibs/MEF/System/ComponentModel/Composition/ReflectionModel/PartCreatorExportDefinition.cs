@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 
-#if SILVERLIGHT
+#if true || SILVERLIGHT
 
 namespace System.ComponentModel.Composition.ReflectionModel
 {

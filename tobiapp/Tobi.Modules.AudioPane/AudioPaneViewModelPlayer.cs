@@ -29,12 +29,12 @@ namespace Tobi.Modules.AudioPane
 
         private void initializeCommands_Player()
         {
-            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var shellView = Container.Resolve<IShellView>();
             CommandAutoPlay = new RichDelegateCommand(
                UserInterfaceStrings.Audio_AutoPlay,
                UserInterfaceStrings.Audio_AutoPlay_,
                UserInterfaceStrings.Audio_AutoPlay_KEYS,
-               shellPresenter.LoadGnomeNeuIcon("Neu_go-last"),
+               shellView.LoadGnomeNeuIcon("Neu_go-last"),
                ()=>
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
@@ -43,14 +43,14 @@ namespace Tobi.Modules.AudioPane
                },
                ()=> !IsWaveFormLoading);
 
-            shellPresenter.RegisterRichCommand(CommandAutoPlay);
+            shellView.RegisterRichCommand(CommandAutoPlay);
             //
             //
             CommandPause = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Pause,
                 UserInterfaceStrings.Audio_Pause_,
                 UserInterfaceStrings.Audio_Pause_KEYS,
-                shellPresenter.LoadTangoIcon("media-playback-pause"),
+                shellView.LoadTangoIcon("media-playback-pause"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
@@ -59,13 +59,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && IsPlaying);
 
-            shellPresenter.RegisterRichCommand(CommandPause);
+            shellView.RegisterRichCommand(CommandPause);
             //
             CommandPlay = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Play,
                 UserInterfaceStrings.Audio_Play_,
                 UserInterfaceStrings.Audio_Play_KEYS,
-                shellPresenter.LoadTangoIcon("media-playback-start"),
+                shellView.LoadTangoIcon("media-playback-start"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
@@ -112,7 +112,7 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording);
 
-            shellPresenter.RegisterRichCommand(CommandPlay);
+            shellView.RegisterRichCommand(CommandPlay);
             //
             CommandPlayPreviewLeft = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewLeft,
@@ -122,7 +122,7 @@ namespace Tobi.Modules.AudioPane
                 ()=> PlayPreviewLeftRight(true),
                 ()=> CommandPlay.CanExecute());
 
-            shellPresenter.RegisterRichCommand(CommandPlayPreviewLeft);
+            shellView.RegisterRichCommand(CommandPlayPreviewLeft);
             //
             CommandPlayPreviewRight = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewRight,
@@ -132,13 +132,13 @@ namespace Tobi.Modules.AudioPane
                 () => PlayPreviewLeftRight(false),
                 ()=> CommandPlay.CanExecute());
 
-            shellPresenter.RegisterRichCommand(CommandPlayPreviewRight);
+            shellView.RegisterRichCommand(CommandPlayPreviewRight);
             //
             CommandGotoBegining = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
                 UserInterfaceStrings.Audio_GotoBegin_KEYS,
-                shellPresenter.LoadTangoIcon("go-first"),
+                shellView.LoadTangoIcon("go-first"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoBegining", Category.Debug, Priority.Medium);
@@ -164,13 +164,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellPresenter.RegisterRichCommand(CommandGotoBegining);
+            shellView.RegisterRichCommand(CommandGotoBegining);
             //
             CommandGotoEnd = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoEnd,
                 UserInterfaceStrings.Audio_GotoEnd_,
                 UserInterfaceStrings.Audio_GotoEnd_KEYS,
-                shellPresenter.LoadTangoIcon("go-last"),
+                shellView.LoadTangoIcon("go-last"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoEnd", Category.Debug, Priority.Medium);
@@ -198,13 +198,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellPresenter.RegisterRichCommand(CommandGotoEnd);
+            shellView.RegisterRichCommand(CommandGotoEnd);
             //
             CommandStepBack = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepBack,
                  UserInterfaceStrings.Audio_StepBack_,
                  UserInterfaceStrings.Audio_StepBack_KEYS,
-                shellPresenter.LoadTangoIcon("media-skip-backward"),
+                shellView.LoadTangoIcon("media-skip-backward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepBack", Category.Debug, Priority.Medium);
@@ -260,13 +260,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
 
-            shellPresenter.RegisterRichCommand(CommandStepBack);
+            shellView.RegisterRichCommand(CommandStepBack);
             //
             CommandStepForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepForward,
                 UserInterfaceStrings.Audio_StepForward_,
                 UserInterfaceStrings.Audio_StepForward_KEYS,
-                shellPresenter.LoadTangoIcon("media-skip-forward"),
+                shellView.LoadTangoIcon("media-skip-forward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepForward", Category.Debug, Priority.Medium);
@@ -320,13 +320,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> CommandStepBack.CanExecute());
 
-            shellPresenter.RegisterRichCommand(CommandStepForward);
+            shellView.RegisterRichCommand(CommandStepForward);
             //
             CommandFastForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FastForward,
                 UserInterfaceStrings.Audio_FastForward_,
                 UserInterfaceStrings.Audio_FastForward_KEYS,
-                shellPresenter.LoadTangoIcon("media-seek-forward"),
+                shellView.LoadTangoIcon("media-seek-forward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFastForward", Category.Debug, Priority.Medium);
@@ -353,13 +353,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellPresenter.RegisterRichCommand(CommandFastForward);
+            shellView.RegisterRichCommand(CommandFastForward);
             //
             CommandRewind = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Rewind,
                 UserInterfaceStrings.Audio_Rewind_,
                 UserInterfaceStrings.Audio_Rewind_KEYS,
-                shellPresenter.LoadTangoIcon("media-seek-backward"),
+                shellView.LoadTangoIcon("media-seek-backward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandRewind", Category.Debug, Priority.Medium);
@@ -385,7 +385,7 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellPresenter.RegisterRichCommand(CommandRewind);
+            shellView.RegisterRichCommand(CommandRewind);
             //
         }
 

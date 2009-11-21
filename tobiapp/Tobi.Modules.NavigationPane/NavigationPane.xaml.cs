@@ -18,7 +18,7 @@ namespace Tobi.Modules.NavigationPane
         {
             InitializeComponent();
 
-            var shellPresenter = container.Resolve<IShellPresenter>();
+            var shellView = container.Resolve<IShellView>();
 
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Navigation_Focus,
@@ -55,7 +55,7 @@ namespace Tobi.Modules.NavigationPane
                                     },
                                     () => true);
 
-            shellPresenter.RegisterRichCommand(CommandFocus);
+            shellView.RegisterRichCommand(CommandFocus);
         }
 
         //public event PropertyChangedEventHandler PropertyChanged;

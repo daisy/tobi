@@ -1,5 +1,7 @@
 ﻿//using Microsoft.Windows.Controls;
 
+using Tobi.Common;
+
 namespace Tobi
 {
     /// <summary>
@@ -7,16 +9,16 @@ namespace Tobi
     /// </summary>
     public partial class KeyboardShortcuts
     {
-        private ShellPresenter ShellPresenter
+        private IShellView ShellView
         {
             get;
             set;
         }
 
-        public KeyboardShortcuts(ShellPresenter shellPresenter)
+        public KeyboardShortcuts(IShellView shellView)
         {
-            ShellPresenter = shellPresenter;
-            DataContext = ShellPresenter;
+            ShellView = shellView;
+            DataContext = ShellView;
 
             InitializeComponent();
         }

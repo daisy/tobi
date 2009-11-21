@@ -17,13 +17,13 @@ namespace Tobi.Modules.NavigationPane
         private void intializeCommands()
         {
             Logger.Log("PagesPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
-            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var shellView = Container.Resolve<IShellView>();
             //
             CommandFindNextPage = new RichDelegateCommand(UserInterfaceStrings.PageFindNext, UserInterfaceStrings.PageFindNext_, UserInterfaceStrings.PageFindNext_KEYS, null, () => FindNext(), () => m_Pages != null);
             CommandFindPrevPage = new RichDelegateCommand(UserInterfaceStrings.PageFindPrev, UserInterfaceStrings.PageFindPrev_, UserInterfaceStrings.PageFindPrev_KEYS, null, () => FindPrevious(), () => m_Pages != null);
 
-           shellPresenter.RegisterRichCommand(CommandFindNextPage);
-           shellPresenter.RegisterRichCommand(CommandFindPrevPage);
+           shellView.RegisterRichCommand(CommandFindNextPage);
+           shellView.RegisterRichCommand(CommandFindPrevPage);
         }
 
     }

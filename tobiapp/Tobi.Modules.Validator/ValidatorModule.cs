@@ -47,17 +47,17 @@ namespace Tobi.Modules.Validator
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
 
-            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var shellView = Container.Resolve<IShellView>();
 
             CommandShowValidator = new RichDelegateCommand(
                 "Validation Check",
                 "",
                 new KeyGesture(Key.V, ModifierKeys.Shift | ModifierKeys.Control),
-                shellPresenter.LoadGnomeNeuIcon("Neu_preferences-user-information"),
+                shellView.LoadGnomeNeuIcon("Neu_preferences-user-information"),
                 ShowDialog,
                 CanShowDialog);
 
-            shellPresenter.RegisterRichCommand(CommandShowValidator);
+            shellView.RegisterRichCommand(CommandShowValidator);
 
             Logger.Log("ValidatorModule.Initialize", Category.Debug, Priority.Medium);
 
@@ -79,8 +79,8 @@ namespace Tobi.Modules.Validator
             Logger.Log("ValidatorModule.ShowDialog", Category.Debug, Priority.Medium);
 
             var view = Container.Resolve<ValidatorPaneView>();
-            var shellPresenter_ = Container.Resolve<IShellPresenter>();
-            var windowPopup = new PopupModalWindow(shellPresenter_,
+            var shellView_ = Container.Resolve<IShellView>();
+            var windowPopup = new PopupModalWindow(shellView_,
                                                    UserInterfaceStrings.EscapeMnemonic("Validation Checker"),
                                                    view,
                                                    PopupModalWindow.DialogButtonsSet.Close,

@@ -13,7 +13,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
     {
         private static readonly Type LazyOfTType = typeof(Lazy<>);
         private static readonly Type LazyOfTMType = typeof(Lazy<,>);
-#if SILVERLIGHT
+#if true || SILVERLIGHT
         private static readonly Type PartCreatorOfTType = typeof(PartCreator<>);
         private static readonly Type PartCreatorOfTMType = typeof(PartCreator<,>);
 #endif
@@ -51,7 +51,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
             get { return this._type; }
         }
 
-#if SILVERLIGHT
+#if true || SILVERLIGHT
         public bool IsPartCreator { get; private set; }
 #endif
 
@@ -91,7 +91,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
                     return arguments[0];
                 }
 
-#if SILVERLIGHT
+#if true || SILVERLIGHT
                 if (genericType == PartCreatorOfTType)
                 {
                     this.IsPartCreator = true;

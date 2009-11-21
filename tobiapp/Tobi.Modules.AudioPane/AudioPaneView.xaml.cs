@@ -399,11 +399,11 @@ namespace Tobi.Modules.AudioPane
                 Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_OpenFile)
             };
 
-            var shellPresenter = ViewModel.Container.Resolve<IShellPresenter>();
+            var shellView = ViewModel.Container.Resolve<IShellView>();
 
             bool? result = false;
 
-            shellPresenter.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+            shellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
 
             if (result == false)
             {

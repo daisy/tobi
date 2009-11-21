@@ -21,13 +21,13 @@ namespace Tobi.Modules.NavigationPane
         private void intializeCommands()
         {
             Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
-            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var shellView = Container.Resolve<IShellView>();
             //
             CommandExpandAll = new RichDelegateCommand(
                 UserInterfaceStrings.TreeExpandAll,
                 UserInterfaceStrings.TreeExpandAll_,
                 null, 
-                shellPresenter.LoadTangoIcon("list-add"),
+                shellView.LoadTangoIcon("list-add"),
                 ()=> _headingsNavigator.ExpandAll(),
                 ()=> _headingsNavigator != null);
 /*
@@ -35,7 +35,7 @@ namespace Tobi.Modules.NavigationPane
                 UserInterfaceStrings.TreeExpand,
                 UserInterfaceStrings.TreeExpand_,
                 null,
-                shellPresenter.LoadGnomeNeuIcon("Neu_list-add"),
+                shellView.LoadGnomeNeuIcon("Neu_list-add"),
                 ()=> _headingsNavigator.Expand((HeadingTreeNodeWrapper)obj),
                 ()=> (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && !(obj as HeadingTreeNodeWrapper).IsExpanded));
  */
@@ -44,7 +44,7 @@ namespace Tobi.Modules.NavigationPane
                 UserInterfaceStrings.TreeCollapseAll,
                 UserInterfaceStrings.TreeCollapseAll_,
                 null,
-                shellPresenter.LoadTangoIcon("list-remove"),
+                shellView.LoadTangoIcon("list-remove"),
                 ()=> _headingsNavigator.CollapseAll(),
                 ()=> _headingsNavigator != null);
 
@@ -68,7 +68,7 @@ namespace Tobi.Modules.NavigationPane
                             UserInterfaceStrings.TreeCollapse,
                             UserInterfaceStrings.TreeCollapse_,
                             null,
-                            shellPresenter.LoadGnomeNeuIcon("Neu_list-remove"),
+                            shellView.LoadGnomeNeuIcon("Neu_list-remove"),
                             ()=> _headingsNavigator.Collapse((HeadingTreeNodeWrapper)obj),
                             ()=> (_headingsNavigator != null && (obj as HeadingTreeNodeWrapper).HasChildren && (obj as HeadingTreeNodeWrapper).IsExpanded));
             */
@@ -76,17 +76,17 @@ namespace Tobi.Modules.NavigationPane
                 UserInterfaceStrings.TreeEdit,
                 UserInterfaceStrings.TreeEdit_,
                 null,
-                shellPresenter.LoadTangoIcon("accessories-text-editor"),
+                shellView.LoadTangoIcon("accessories-text-editor"),
                 ()=> _headingsNavigator.EditText((HeadingTreeNodeWrapper)obj),
                 ()=> _headingsNavigator!=null);*/
 
-            shellPresenter.RegisterRichCommand(CommandExpandAll);
-//            shellPresenter.RegisterRichCommand(CommandExpand);
-            shellPresenter.RegisterRichCommand(CommandCollapseAll);
-//            shellPresenter.RegisterRichCommand(CommandCollapse);
-            //shellPresenter.RegisterRichCommand(CommandEditText);
-            shellPresenter.RegisterRichCommand(CommandFindNext);
-            shellPresenter.RegisterRichCommand(CommandFindPrev);
+            shellView.RegisterRichCommand(CommandExpandAll);
+//            shellView.RegisterRichCommand(CommandExpand);
+            shellView.RegisterRichCommand(CommandCollapseAll);
+//            shellView.RegisterRichCommand(CommandCollapse);
+            //shellView.RegisterRichCommand(CommandEditText);
+            shellView.RegisterRichCommand(CommandFindNext);
+            shellView.RegisterRichCommand(CommandFindPrev);
         }
     }
 }

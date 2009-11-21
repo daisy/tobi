@@ -19,14 +19,14 @@ namespace Tobi.Modules.NavigationPane
         {
             m_Project = project;
         }
-        public HeadingsNavigator(Project project, object shellPresenter)
+        public HeadingsNavigator(Project project, object shellView)
         {
             m_Project = project;
-            m_ShellPresenter = (IShellPresenter)shellPresenter;
+            m_ShellView = (IShellView)shellView;
         }
         private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
         private readonly Project m_Project;
-        private readonly IShellPresenter m_ShellPresenter;
+        private readonly IShellView m_ShellView;
 
         public void ExpandAll()
         {
@@ -171,7 +171,7 @@ namespace Tobi.Modules.NavigationPane
             string sTitle = parameter.Title;
             if (sTitle.StartsWith("[")) { sTitle = sTitle.Substring(sTitle.IndexOf("] ") + 1); }
             InputBox myTest = new InputBox(UserInterfaceStrings.HeadingEdit_, sTitle.Trim());
-            var windowPopup = new PopupModalWindow(m_ShellPresenter,
+            var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                    UserInterfaceStrings.HeadingEdit),
                                                    myTest,

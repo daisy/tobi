@@ -147,8 +147,7 @@ namespace Tobi.Modules.AudioPane
                 return;
             }
 
-            var presenter = Container.Resolve<IShellPresenter>();
-            presenter.PlayAudioCueTockTock();
+            AudioCues.PlayTockTock();
 
             if (View != null)
             {

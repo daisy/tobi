@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -7,7 +8,6 @@ using System.Media;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
@@ -22,74 +22,16 @@ namespace Tobi
     /// </summary>
     public partial class App
     {
-        public class FocusOutlineAdorner : Adorner
+        public static string GetVersion()
         {
-            private Pen m_pen;
-            private Rect m_rectRect;
-
-            public FocusOutlineAdorner(UIElement adornedElement)
-                : base(adornedElement)
+            if (ApplicationDeployment.IsNetworkDeployed)
             {
-                m_pen = new Pen(Brushes.Red, 1);
-                m_pen.Freeze();
-                m_rectRect = new Rect(0, 0, 1, 1);
+                return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
             }
 
-            protected override void OnRender(DrawingContext drawingContext)
-            {
-                var fe = AdornedElement as FrameworkElement;
-                if (fe == null)
-                {
-                    return;
-                }
-                m_rectRect.Width = fe.ActualWidth;
-                m_rectRect.Height = fe.ActualHeight;
-
-                drawingContext.DrawRectangle(null, m_pen, m_rectRect);
-            }
-        }
-
-        private void UIElement_LostKeyboardFocus(object sender, RoutedEventArgs e)
-        {
-            var ui = ((UIElement)sender);
-
-            var oldALayer = AdornerLayer.GetAdornerLayer(ui);
-            if (oldALayer == null)
-            {
-                return;
-            }
-            Adorner[] adorners = oldALayer.GetAdorners(ui);
-            if (adorners == null)
-            {
-                return;
-            }
-            foreach (Adorner adorner in adorners)
-            {
-                if (adorner is FocusOutlineAdorner)
-                {
-                    oldALayer.Remove(adorner);
-                }
-            }
-        }
-
-        private void UIElement_GotKeyboardFocus(object sender, RoutedEventArgs e)
-        {
-            var ui = ((UIElement)sender);
-
-            var aLayer = AdornerLayer.GetAdornerLayer(ui);
-            if (aLayer == null)
-            {
-                return;
-            }
-            var theAdorner = new FocusOutlineAdorner(ui);
-            aLayer.Add(theAdorner);
-            theAdorner.InvalidateVisual();
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (((TextBox)sender).SelectionLength == 0)
-                ((TextBox)sender).SelectAll();
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            // DIFFERENT than FileVersion !!
+            // NOT: System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
         }
 
         public SplashScreen SplashScreen
@@ -181,19 +123,6 @@ c.Execute();
                      XmlLanguage.GetLanguage(
                      CultureInfo.CurrentCulture.IetfLanguageTag)));
 
-            EventManager.RegisterClassHandler(typeof(TextBox),
-                UIElement.GotFocusEvent,
-                new RoutedEventHandler(TextBox_GotFocus));
-
-            /*
-            EventManager.RegisterClassHandler(typeof(UIElement),
-                UIElement.GotKeyboardFocusEvent,
-                new RoutedEventHandler(UIElement_GotKeyboardFocus));
-
-            EventManager.RegisterClassHandler(typeof(UIElement),
-                UIElement.LostKeyboardFocusEvent,
-                new RoutedEventHandler(UIElement_LostKeyboardFocus));
-             * */
 
 #if (FALSE && DEBUG && VSTUDIO) // We want the release-mode exception capture dialog, even when debugging in Visual Studio
             runInDebugMode();
@@ -202,7 +131,7 @@ c.Execute();
 #endif
         }
 
-        private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        private static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
             Assembly parentAssembly = Assembly.GetExecutingAssembly();
             //Application.ResourceAssembly = parentAssembly;
@@ -320,7 +249,7 @@ c.Execute();
                 if (!String.IsNullOrEmpty(exinnerd.InnerException.Message))
                 {
                     exMessage += Environment.NewLine;
-                    exMessage += "======";
+                    exMessage += @"======";
                     exMessage += Environment.NewLine;
                     exMessage += exinnerd.InnerException.Message;
                 }

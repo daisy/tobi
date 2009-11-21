@@ -19,45 +19,41 @@ namespace Tobi.Modules.Urakawa
     {
         private void initCommands_Open()
         {
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            ////
             //NewCommand = new RichDelegateCommand(
             //    UserInterfaceStrings.New,
             //    UserInterfaceStrings.New_,
             //    UserInterfaceStrings.New_KEYS,
-            //    shellPresenter.LoadTangoIcon("document-new"),
+            //    shellView.LoadTangoIcon("document-new"),
             //    ()=>
             //    {
             //        string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             //        openFile(currentAssemblyDirectoryName + @"\empty-dtbook-z3986-2005.xml");
             //    },
             //    ()=> true);
-            //shellPresenter.RegisterRichCommand(NewCommand);
+            //shellView.RegisterRichCommand(NewCommand);
             //
             OpenCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Open,
                 UserInterfaceStrings.Open_,
                 UserInterfaceStrings.Open_KEYS,
-                shellPresenter.LoadTangoIcon("document-open"),
+                m_ShellView.LoadTangoIcon(@"document-open"),
                 ()=>
                 {
                     var dlg = new OpenFileDialog
                     {
-                        FileName = "dtbook",
-                        DefaultExt = ".xml",
-                        Filter = "DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub",
+                        FileName = @"dtbook",
+                        DefaultExt = @".xml",
+                        Filter = @"DTBook, OPF, EPUB or XUK (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub",
                         CheckFileExists = false,
                         CheckPathExists = false,
                         AddExtension = true,
                         DereferenceLinks = true,
-                        Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Open)
+                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Open)
                     };
-
-                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
 
                     bool? result = false;
 
-                    shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+                    m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
 
                     if (result == false)
                     {
@@ -68,7 +64,7 @@ namespace Tobi.Modules.Urakawa
                 },
                 () => true);
 
-            shellPresenter.RegisterRichCommand(OpenCommand);
+            m_ShellView.RegisterRichCommand(OpenCommand);
         }
 
 
@@ -84,7 +80,9 @@ namespace Tobi.Modules.Urakawa
             m_OpenXukActionWorker.CancelAsync();
         }
 
+// ReSharper disable MemberCanBeMadeStatic.Local
         private void action_finished(object sender, FinishedEventArgs e)
+// ReSharper restore MemberCanBeMadeStatic.Local
         {
             //DoClose();
         }
@@ -115,9 +113,9 @@ namespace Tobi.Modules.Urakawa
             }
 
             DocumentFilePath = filename;
-            if (Path.GetExtension(DocumentFilePath) == ".xuk")
+            if (Path.GetExtension(DocumentFilePath) == @".xuk")
             {
-                Logger.Log(String.Format("UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
+                m_Logger.Log(String.Format(@"UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
                 m_OpenXukActionCancelFlag = false;
                 m_OpenXukActionCurrentPercentage = 0;
@@ -136,8 +134,6 @@ namespace Tobi.Modules.Urakawa
                 action.Progress += action_progress;
                 action.Finished += action_finished;
                 action.Cancelled += action_cancelled;
-
-                var shellPresenter = Container.Resolve<IShellPresenter>();
 
                 var progressBar = new ProgressBar
                 {
@@ -167,11 +163,9 @@ namespace Tobi.Modules.Urakawa
                 panel.Children.Add(label);
                 panel.Children.Add(progressBar);
 
-                var details = new TextBoxReadOnlyCaretVisible(action.LongDescription)
-                {
-                };
+                var details = new TextBoxReadOnlyCaretVisible(action.LongDescription);
 
-                var windowPopup = new PopupModalWindow(shellPresenter,
+                var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
                                                            UserInterfaceStrings.RunningTask),
                                                        panel,
@@ -187,7 +181,7 @@ namespace Tobi.Modules.Urakawa
 
                 m_OpenXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
                 {
-                    var dummy = (string)args.Argument;
+                    //var dummy = (string)args.Argument;
 
                     if (m_OpenXukActionWorker.CancellationPending)
                     {
@@ -197,7 +191,7 @@ namespace Tobi.Modules.Urakawa
 
                     action.Execute();
 
-                    args.Result = "dummy result";
+                    args.Result = @"dummy result";
                 };
 
                 m_OpenXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
@@ -220,12 +214,12 @@ namespace Tobi.Modules.Urakawa
                     }
 
 
-                    var result = (string)args.Result;
+                    //var result = (string)args.Result;
 
                     m_OpenXukActionWorker = null;
                 };
 
-                m_OpenXukActionWorker.RunWorkerAsync("dummy arg");
+                m_OpenXukActionWorker.RunWorkerAsync(@"dummy arg");
                 windowPopup.ShowModal();
 
                 if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
@@ -245,18 +239,18 @@ namespace Tobi.Modules.Urakawa
 
             if (DocumentProject != null)
             {
-                Logger.Log("-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug,
+                m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug,
                            Priority.Medium);
 
-                EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
 
                 var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText();
                 if (treeNode != null)
                 {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
+                    m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
                                Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
                 }
 
                 return true;

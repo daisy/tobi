@@ -13,13 +13,13 @@ namespace Tobi.Modules.AudioPane
     {
         private void initializeCommands_Selection()
         {
-            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var shellView = Container.Resolve<IShellView>();
 
             CommandSelectPreviousChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectPreviousChunk,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_KEYS,
-                shellPresenter.LoadTangoIcon("go-previous"),
+                shellView.LoadTangoIcon("go-previous"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectPreviousChunk", Category.Debug, Priority.Medium);
@@ -30,13 +30,13 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> CommandStepBack.CanExecute());
 
-            shellPresenter.RegisterRichCommand(CommandSelectPreviousChunk);
+            shellView.RegisterRichCommand(CommandSelectPreviousChunk);
             //
             CommandSelectNextChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectNextChunk,
                 UserInterfaceStrings.Audio_SelectNextChunk_,
                 UserInterfaceStrings.Audio_SelectNextChunk_KEYS,
-                shellPresenter.LoadTangoIcon("go-next"),
+                shellView.LoadTangoIcon("go-next"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectNextChunk", Category.Debug, Priority.Medium);
@@ -47,7 +47,7 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> CommandStepForward.CanExecute());
 
-            shellPresenter.RegisterRichCommand(CommandSelectNextChunk);
+            shellView.RegisterRichCommand(CommandSelectNextChunk);
             //
             //
             CommandEndSelection = new RichDelegateCommand(
@@ -59,8 +59,7 @@ namespace Tobi.Modules.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandEndSelection", Category.Debug, Priority.Medium);
 
-                    var presenter = Container.Resolve<IShellPresenter>();
-                    presenter.PlayAudioCueTockTock();
+                    AudioCues.PlayTockTock();
 
                     if (m_SelectionBeginTmp < 0)
                     {
@@ -103,7 +102,7 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0);
 
-            shellPresenter.RegisterRichCommand(CommandEndSelection);
+            shellView.RegisterRichCommand(CommandEndSelection);
             //
             CommandBeginSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_BeginSelection,
@@ -116,18 +115,17 @@ namespace Tobi.Modules.AudioPane
 
                     m_SelectionBeginTmp = LastPlayHeadTime;
 
-                    var presenter = Container.Resolve<IShellPresenter>();
-                    presenter.PlayAudioCueTock();
+                    AudioCues.PlayTock();
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded);
 
-            shellPresenter.RegisterRichCommand(CommandBeginSelection);
+            shellView.RegisterRichCommand(CommandBeginSelection);
             //
             CommandSelectAll = new RichDelegateCommand(
                 UserInterfaceStrings.SelectAll,
                 UserInterfaceStrings.SelectAll_,
                 UserInterfaceStrings.SelectAll_KEYS,
-                shellPresenter.LoadTangoIcon("view-fullscreen"),
+                shellView.LoadTangoIcon("view-fullscreen"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectAll", Category.Debug, Priority.Medium);
@@ -142,18 +140,17 @@ namespace Tobi.Modules.AudioPane
                     }
 
                     State.Selection.SetSelectionBytes(0, State.Audio.DataLength);
-
-                    var presenter = Container.Resolve<IShellPresenter>();
-                    presenter.PlayAudioCueTockTock();
+                    
+                    AudioCues.PlayTockTock();
                 },
                 ()=> !IsWaveFormLoading);
 
-            shellPresenter.RegisterRichCommand(CommandSelectAll);
+            shellView.RegisterRichCommand(CommandSelectAll);
             //
             CommandClearSelection = new RichDelegateCommand(UserInterfaceStrings.Audio_ClearSelection,
                 UserInterfaceStrings.Audio_ClearSelection_,
                 UserInterfaceStrings.Audio_ClearSelection_KEYS,
-                shellPresenter.LoadTangoIcon("edit-clear"),
+                shellView.LoadTangoIcon("edit-clear"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandClearSelection", Category.Debug, Priority.Medium);
@@ -162,7 +159,7 @@ namespace Tobi.Modules.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsSelectionSet);
 
-            shellPresenter.RegisterRichCommand(CommandClearSelection);
+            shellView.RegisterRichCommand(CommandClearSelection);
             //
         }
 

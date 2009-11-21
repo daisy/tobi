@@ -62,7 +62,7 @@ namespace Tobi.Modules.NavigationPane
         private void onProjectLoaded(Project project)
         {
 //            _headingsNavigator = new HeadingsNavigator(project);
-            _headingsNavigator = new HeadingsNavigator(project, Container.Resolve<IShellPresenter>());
+            _headingsNavigator = new HeadingsNavigator(project, Container.Resolve<IShellView>());
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)

@@ -12,19 +12,29 @@ namespace Tobi.Modules.Validator.Metadata
     /// <summary>
     /// The main validator class
     /// </summary>
-    [Export(typeof(IValidator))]
-    public class MetadataValidator : AbstractValidator
+    [Export(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class MetadataValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
-        [Import(typeof (IUrakawaSession))] 
-        protected IUrakawaSession m_Session;
+        public void OnImportsSatisfied()
+        {
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
+
+        protected readonly IUrakawaSession m_Session;
         
         [ImportingConstructor]
         public MetadataValidator(
-            [Import(typeof(ILoggerFacade))]
-            ILoggerFacade logger)
+            ILoggerFacade logger,
+
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+            IUrakawaSession session)
         {
-            logger.Log("Hello world !", Category.Info, Priority.High);
-            
+            //logger.Log("Hello world !", Category.Info, Priority.High);
+
+            m_Session = session;
+
             m_DataTypeValidator = new MetadataDataTypeValidator(this);
             m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
             m_ValidationItems = new List<ValidationItem>();

@@ -23,14 +23,12 @@ namespace Tobi.Modules.Urakawa
     {
         private void initCommands_Save()
         {
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            //
             //
             ExportCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Export,
                 UserInterfaceStrings.Export_,
                 UserInterfaceStrings.Export_KEYS,
-                shellPresenter.LoadTangoIcon("emblem-symbolic-link"),
+                m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 ()=>
                 {
@@ -39,19 +37,17 @@ namespace Tobi.Modules.Urakawa
                         return;
                     }
 
-                    Logger.Log("UrakawaSession.Export", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"UrakawaSession.Export", Category.Debug, Priority.Medium);
 
                     var dlg = new FolderBrowserDialog
                     {
                         ShowNewFolderButton = true,
-                        Description = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Export)
+                        Description = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Export)
                     };
-
-                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
 
                     DialogResult result = DialogResult.Abort;
 
-                    shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+                    m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
 
                     if (result != DialogResult.OK && result != DialogResult.Yes)
                     {
@@ -69,17 +65,17 @@ namespace Tobi.Modules.Urakawa
                         Directory.CreateDirectory(dlg.SelectedPath);
                     }
 
-                    var exporter = new Daisy3_Export(DocumentProject.Presentations.Get(0), dlg.SelectedPath, null);
+                    new Daisy3_Export(DocumentProject.Presentations.Get(0), dlg.SelectedPath, null);
                 },
                 () => DocumentProject != null);
 
-            shellPresenter.RegisterRichCommand(ExportCommand);
+            m_ShellView.RegisterRichCommand(ExportCommand);
             //
             SaveAsCommand = new RichDelegateCommand(
                 UserInterfaceStrings.SaveAs,
                 UserInterfaceStrings.SaveAs_,
                 UserInterfaceStrings.SaveAs_KEYS,
-                shellPresenter.LoadTangoIcon("document-save"),
+                m_ShellView.LoadTangoIcon(@"document-save"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 ()=>
                 {
@@ -88,27 +84,25 @@ namespace Tobi.Modules.Urakawa
                         return;
                     }
 
-                    Logger.Log("UrakawaSession.saveAs", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"UrakawaSession.saveAs", Category.Debug, Priority.Medium);
 
                     var dlg = new SaveFileDialog
                     {
-                        FileName = "tobi_doc",
-                        DefaultExt = ".xuk",
-                        Filter = "XUK (*.xuk)|*.xuk",
+                        FileName = @"tobi_doc",
+                        DefaultExt = @".xuk",
+                        Filter = @"XUK (*.xuk)|*.xuk",
                         CheckFileExists = false,
                         CheckPathExists = false,
                         AddExtension = true,
                         CreatePrompt = false,
                         DereferenceLinks = true,
                         OverwritePrompt = false,
-                        Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.SaveAs)
+                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.SaveAs)
                     };
-
-                    var shellPresenter_ = Container.Resolve<IShellPresenter>();
 
                     bool? result = false;
 
-                    shellPresenter_.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+                    m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
 
                     if (result == false)
                     {
@@ -144,18 +138,18 @@ namespace Tobi.Modules.Urakawa
                 },
                 () => DocumentProject != null);
 
-            shellPresenter.RegisterRichCommand(SaveAsCommand);
+            m_ShellView.RegisterRichCommand(SaveAsCommand);
             //
             SaveCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Save,
                 UserInterfaceStrings.Save_,
                 UserInterfaceStrings.Save_KEYS,
-                shellPresenter.LoadTangoIcon("media-floppy"),
+                m_ShellView.LoadTangoIcon(@"media-floppy"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
                 ()=> save(),
                 ()=> DocumentProject != null);
 
-            shellPresenter.RegisterRichCommand(SaveCommand);
+            m_ShellView.RegisterRichCommand(SaveCommand);
         }
 
         private BackgroundWorker m_SaveXukActionWorker;
@@ -194,7 +188,7 @@ namespace Tobi.Modules.Urakawa
                 DocumentFilePath = m_SaveAsDocumentFilePath;
             }
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");
+            m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");
 
             IsDirty = false;
         }
@@ -239,7 +233,7 @@ namespace Tobi.Modules.Urakawa
 
             m_SaveAsDocumentFilePath = filePath;
 
-            Logger.Log(String.Format("UrakawaSession.saveas() [{0}]", m_SaveAsDocumentFilePath), Category.Debug, Priority.Medium);
+            m_Logger.Log(String.Format(@"UrakawaSession.saveas() [{0}]", m_SaveAsDocumentFilePath), Category.Debug, Priority.Medium);
 
             m_SaveXukActionCancelFlag = false;
             m_SaveXukActionCurrentPercentage = 0;
@@ -256,9 +250,6 @@ namespace Tobi.Modules.Urakawa
             action.Progress += OnSaveXukAction_progress;
             action.Finished += OnSaveXukAction_finished;
             action.Cancelled += OnSaveXukAction_cancelled;
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            //var window = shellPresenter.View as Window;
 
             var progressBar = new ProgressBar
             {
@@ -288,11 +279,9 @@ namespace Tobi.Modules.Urakawa
             panel.Children.Add(label);
             panel.Children.Add(progressBar);
 
-            var details = new TextBoxReadOnlyCaretVisible(action.LongDescription)
-            {
-            };
+            var details = new TextBoxReadOnlyCaretVisible(action.LongDescription);
 
-            var windowPopup = new PopupModalWindow(shellPresenter,
+            var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.RunningTask),
                                                    panel,
@@ -308,7 +297,7 @@ namespace Tobi.Modules.Urakawa
 
             m_SaveXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
-                var dummy = (string)args.Argument;
+                //var dummy = (string)args.Argument;
 
                 if (m_SaveXukActionWorker.CancellationPending)
                 {
@@ -318,7 +307,7 @@ namespace Tobi.Modules.Urakawa
 
                 action.Execute();
 
-                args.Result = "dummy result";
+                args.Result = @"dummy result";
             };
 
             m_SaveXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
@@ -338,12 +327,12 @@ namespace Tobi.Modules.Urakawa
                     windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
                 }
 
-                var result = (string)args.Result;
+                //var result = (string)args.Result;
 
                 m_SaveXukActionWorker = null;
             };
 
-            m_SaveXukActionWorker.RunWorkerAsync("dummy arg");
+            m_SaveXukActionWorker.RunWorkerAsync(@"dummy arg");
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
@@ -356,20 +345,8 @@ namespace Tobi.Modules.Urakawa
 
         private bool askUserConfirmOverwriteFileFolder(string path, bool folder)
         {
-            Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"ShellView.askUserConfirmExit", Category.Debug, Priority.Medium);
 
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            //var window = shellPresenter.View as Window;
-
-            /*
-            try
-            {
-                throw new ArgumentException("Opps !", new ArgumentOutOfRangeException("Oops 2 !!"));
-            }
-            catch (Exception ex)
-            {
-                App.handleException(ex);
-            }*/
 
             var label = new TextBlock
             {
@@ -381,9 +358,9 @@ namespace Tobi.Modules.Urakawa
                 TextWrapping = TextWrapping.Wrap
             };
 
-            var iconProvider = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("dialog-warning"))
+            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon(@"dialog-warning"))
                                    {
-                                       IconDrawScale = shellPresenter.View.MagnificationLevel
+                                       IconDrawScale = m_ShellView.MagnificationLevel
                                    };
             //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
@@ -397,11 +374,9 @@ namespace Tobi.Modules.Urakawa
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
-            var details = new TextBoxReadOnlyCaretVisible("Path: " + path)
-            {
-            };
+            var details = new TextBoxReadOnlyCaretVisible("Path: " + path);
 
-            var windowPopup = new PopupModalWindow(shellPresenter,
+            var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.Overwrite),
                                                    panel,

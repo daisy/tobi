@@ -4,7 +4,7 @@
 using System;
 using Microsoft.Internal;
 
-#if SILVERLIGHT
+#if true || SILVERLIGHT
 
 namespace System.ComponentModel.Composition
 {

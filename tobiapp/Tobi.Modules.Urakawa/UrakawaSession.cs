@@ -1,48 +1,74 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Composite.UnityExtensions;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.events;
-using urakawa.property.channel;
-using urakawa.publish;
-using urakawa.xuk;
 
 namespace Tobi.Modules.Urakawa
 {
     ///<summary>
+    /// Single shared instance (singleton) of a session to host the Urakawa SDK aurthoring data model.
     ///</summary>
-    public partial class UrakawaSession : PropertyChangedNotifyBase, IUrakawaSession
+    [Export(typeof(IUrakawaSession)), PartCreationPolicy(CreationPolicy.Shared)]
+    public sealed partial class UrakawaSession : PropertyChangedNotifyBase, IUrakawaSession, IPartImportsSatisfiedNotification
     {
-        protected ILoggerFacade Logger { get; private set; }
-        protected IRegionManager RegionManager { get; private set; }
+#pragma warning disable 1591 // non-documented method
+        public void OnImportsSatisfied()
+#pragma warning restore 1591
+        {
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
 
-        protected IUnityContainer Container { get; private set; }
-        protected IEventAggregator EventAggregator { get; private set; }
+        private readonly ILoggerFacade m_Logger;
+        private readonly IEventAggregator m_EventAggregator;
+        private readonly IShellView m_ShellView;
 
-        //protected Dispatcher Dispatcher { get; private set; }
+        ///<summary>
+        /// We inject a few dependencies in this constructor.
+        /// No document is open and IsDirty is initialized to false.
+        ///</summary>
+        ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="eventAggregator">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="shellView">normally obtained from the Unity container, it's a Tobi-specific entity</param>
+        [ImportingConstructor]
+        public UrakawaSession(
+            ILoggerFacade logger,
+            IEventAggregator eventAggregator,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView)
+        {
+            m_Logger = logger;
+            m_EventAggregator = eventAggregator;
+            m_ShellView = shellView;
 
-        public RichDelegateCommand SaveAsCommand { get; private set; }
+            IsDirty = false;
+
+            InitializeCommands();
+        }
+
+#pragma warning disable 1591 // missing comments
+        //public RichDelegateCommand NewCommand { get; private set; }
+
+        public RichDelegateCommand OpenCommand { get; private set; }
+
         public RichDelegateCommand SaveCommand { get; private set; }
+        public RichDelegateCommand SaveAsCommand { get; private set; }
 
         public RichDelegateCommand ExportCommand { get; private set; }
 
-        //public RichDelegateCommand NewCommand { get; private set; }
-        public RichDelegateCommand OpenCommand { get; private set; }
         public RichDelegateCommand CloseCommand { get; private set; }
 
         public RichDelegateCommand UndoCommand { get; private set; }
         public RichDelegateCommand RedoCommand { get; private set; }
+#pragma warning restore 1591
 
         private Project m_DocumentProject;
         public Project DocumentProject
@@ -59,72 +85,16 @@ namespace Tobi.Modules.Urakawa
                     m_DocumentProject.Changed -= OnDocumentProjectChanged;
                     //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
                 }
+
                 IsDirty = false;
                 m_DocumentProject = value;
                 if (m_DocumentProject != null)
                 {
                     m_DocumentProject.Changed += OnDocumentProjectChanged;
                     //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
-
-                    //testExport(); // TODO REMOVE THIS !!!!! THIS IS FOR TEST PURPOSES ONLY !!!!
                 }
                 RaisePropertyChanged(() => DocumentProject);
             }
-        }
-
-        public void testExport()
-        {
-            var publishVisitor = new PublishFlattenedManagedAudioVisitor(
-            node =>
-            {
-                var qName = node.GetXmlElementQName();
-                return qName != null && qName.LocalName == "level1";
-            },
-            n => false);
-
-            //Directory.GetParent(DocumentFilePath) + Path.DirectorySeparatorChar + Path.GetFileName(DocumentFilePath)
-
-            var dirPath = DocumentFilePath + ".EXPORT_DATA";
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
-            publishVisitor.DestinationDirectory = new Uri(dirPath, UriKind.Absolute);
-            publishVisitor.SourceChannel =
-                DocumentProject.Presentations.Get(0).ChannelsManager.GetOrCreateAudioChannel();
-            Channel publishChannel = DocumentProject.Presentations.Get(0).ChannelFactory.CreateAudioChannel();
-            publishChannel.Name = "Temporary External Audio Medias (Publish Visitor)";
-            publishVisitor.DestinationChannel = publishChannel;
-
-#if DEBUG
-            Debugger.Break();
-#endif
-            DocumentProject.Presentations.Get(0).RootNode.AcceptDepthFirst(publishVisitor);
-
-#if DEBUG
-            Debugger.Break();
-            publishVisitor.VerifyTree(DocumentProject.Presentations.Get(0).RootNode);
-            Debugger.Break();
-#endif
-            DocumentProject.Presentations.Get(0).ChannelsManager.RemoveManagedObject(publishChannel);
-
-#if DEBUG
-            Debugger.Break();
-#endif
-            var project = new Project();
-            var action = new OpenXukAction(project, new Uri(DocumentFilePath, UriKind.Absolute));
-            action.Execute();
-
-#if DEBUG
-            Debugger.Break();
-#endif
-            DocumentProject.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
-            project.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
-            Debug.Assert(project.ValueEquals(DocumentProject));
-
-#if DEBUG
-            Debugger.Break();
-#endif
         }
 
         //private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
@@ -168,90 +138,42 @@ namespace Tobi.Modules.Urakawa
             }
         }
 
-        ///<summary>
-        /// Dependency Injection constructor
-        ///</summary>
-        ///<param name="container">The DI container</param>
-        public UrakawaSession(IUnityContainer container,
-                            ILoggerFacade logger,
-                            IRegionManager regionManager,
-                            IEventAggregator eventAggregator)//Dispatcher dispatcher
-        {
-            Container = container;
-            Logger = logger;
-            RegionManager = regionManager;
-            EventAggregator = eventAggregator;
-            //Dispatcher = dispatcher;
-
-            IsDirty = false;
-
-            initCommands();
-
-            EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
-        }
-
-        private void initCommands()
+        internal void InitializeCommands()
         {
             initCommands_Open();
             initCommands_Save();
-
-            var shellPresenter = Container.Resolve<IShellPresenter>();
 
             //
             UndoCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
                 UserInterfaceStrings.Undo_KEYS,
-                shellPresenter.LoadTangoIcon("edit-undo"),
+                m_ShellView.LoadTangoIcon(@"edit-undo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
                 () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
 
-            shellPresenter.RegisterRichCommand(UndoCommand);
+            m_ShellView.RegisterRichCommand(UndoCommand);
             //
             RedoCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Redo,
                 UserInterfaceStrings.Redo_,
                 UserInterfaceStrings.Redo_KEYS,
-                shellPresenter.LoadTangoIcon("edit-redo"),
+                m_ShellView.LoadTangoIcon(@"edit-redo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
                 () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
 
-            shellPresenter.RegisterRichCommand(RedoCommand);
+            m_ShellView.RegisterRichCommand(RedoCommand);
             //
             CloseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Close,
                 UserInterfaceStrings.Close_,
                 UserInterfaceStrings.Close_KEYS,
-                shellPresenter.LoadTangoIcon("go-jump"),
+                m_ShellView.LoadTangoIcon(@"go-jump"),
                 () => Close(),
                 () => DocumentProject != null);
 
-            shellPresenter.RegisterRichCommand(CloseCommand);
-
-            pushCommandsToolbar();
-
-            //if (!Dispatcher.CheckAccess())
-            //{
-            //    Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(pushCommandsToolbar));
-            //    //Dispatcher.Invoke(DispatcherPriority.Normal, new Action(pushCommandsToolbar));
-            //    //Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(pushCommandsToolbar));
-            //}
-            //else
-            //{
-            //    pushCommandsToolbar();
-            //}
+            m_ShellView.RegisterRichCommand(CloseCommand);
         }
-
-        private void pushCommandsToolbar()
-        {
-            var toolbars = Container.TryResolve<IToolBarsView>();
-            if (toolbars != null)
-            {
-                int uid1 = toolbars.AddToolBarGroup(new[] { OpenCommand, SaveCommand });
-                int uid2 = toolbars.AddToolBarGroup(new[] { UndoCommand, RedoCommand });
-            }
-        }
-
 
         public bool Close()
         {
@@ -262,10 +184,7 @@ namespace Tobi.Modules.Urakawa
 
             if (IsDirty)
             {
-                Logger.Log("UrakawaSession.askUserSave", Category.Debug, Priority.Medium);
-
-                var shellPresenter = Container.Resolve<IShellPresenter>();
-                //var window = shellPresenter.View as Window;
+                m_Logger.Log(@"UrakawaSession.askUserSave", Category.Debug, Priority.Medium);
 
                 var label = new TextBlock
                 {
@@ -277,9 +196,9 @@ namespace Tobi.Modules.Urakawa
                     TextWrapping = TextWrapping.Wrap
                 };
 
-                var iconProvider = new ScalableGreyableImageProvider(shellPresenter.LoadTangoIcon("help-browser"))
+                var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon(@"help-browser"))
                                        {
-                                           IconDrawScale = shellPresenter.View.MagnificationLevel
+                                           IconDrawScale = m_ShellView.MagnificationLevel
                                        };
                 //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
@@ -293,11 +212,9 @@ namespace Tobi.Modules.Urakawa
                 panel.Children.Add(label);
                 //panel.Margin = new Thickness(8, 8, 8, 0);
 
-                var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnsavedChangesDetails)
-                {
-                };
+                var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnsavedChangesDetails);
 
-                var windowPopup = new PopupModalWindow(shellPresenter,
+                var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
                                                            UserInterfaceStrings.UnsavedChanges),
                                                        panel,
@@ -321,9 +238,9 @@ namespace Tobi.Modules.Urakawa
                 }
             }
 
-            Logger.Log("-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.close", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.close", Category.Debug, Priority.Medium);
 
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(DocumentProject);
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(DocumentProject);
 
             DocumentFilePath = null;
             DocumentProject = null;
