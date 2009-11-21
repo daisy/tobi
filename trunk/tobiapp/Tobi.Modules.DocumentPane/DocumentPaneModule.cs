@@ -3,7 +3,7 @@ using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 
-namespace Tobi.Modules.DocumentPane
+namespace Tobi.Plugin.DocumentPane
 {
     ///<summary>
     /// The document pane contains the text part of the multimedia presentation.

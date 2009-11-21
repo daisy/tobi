@@ -1,4 +1,4 @@
-﻿<ScrollViewer x:Class="Tobi.Modules.AudioPane.AudioOptions"
+﻿<ScrollViewer x:Class="Tobi.Plugin.AudioPane.AudioOptions"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:infraUI="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"

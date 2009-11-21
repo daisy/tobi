@@ -10,7 +10,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 
-namespace Tobi.Modules.Validator
+namespace Tobi.Plugin.Validator
 {
     ///<summary>
     /// The top-level validator engine that aggregates other plugin-contributed concrete validators.

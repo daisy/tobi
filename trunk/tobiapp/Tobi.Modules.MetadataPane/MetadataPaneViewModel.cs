@@ -8,13 +8,13 @@ using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.Validation;
-using Tobi.Modules.Validator.Metadata;
+using Tobi.Plugin.Validator.Metadata;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
 
-namespace Tobi.Modules.MetadataPane
+namespace Tobi.Plugin.MetadataPane
 {
     /// <summary>
     /// ViewModel for the MetadataPane

@@ -3,7 +3,7 @@ using System.Text;
 using Tobi.Common.MVVM;
 using urakawa.core;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     public class Page:PropertyChangedNotifyBase
     {

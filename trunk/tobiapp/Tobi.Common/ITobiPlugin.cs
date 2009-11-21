@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.Practices.Composite.Modularity;
-using Tobi.Common.MVVM.Command;
 
 namespace Tobi.Common
 {
     /// <summary>
-    /// We re-use the concept of CAG IModule (normally instanciated in the context of Unity),
-    /// but we extend it to make it more verbose about its role in the context of a MEF container instead
-    /// (so it behaves more like a dynamically discoverable plugin).
+    /// Acts as an intermediate between a plugin and the host application,
+    /// by wiring things together, such as establishing region mapping in the user-interface.
     /// </summary>
-    public interface ITobiModule : IDisposable
+    public interface ITobiPlugin : IDisposable
     {
         ///<summary>
         /// A short name for the plugin
@@ -24,8 +20,12 @@ namespace Tobi.Common
 
         ///<summary>
         /// This points to the "home page" of the plugin (i.e. where updates can be found).
-        /// TODO: should this Uri designate a ClickOnce *.application manifest ?
         ///</summary>
         Uri Home { get; }
+
+        ///<summary>
+        /// The current plugin version
+        ///</summary>
+        string Version { get; }
     }
 }

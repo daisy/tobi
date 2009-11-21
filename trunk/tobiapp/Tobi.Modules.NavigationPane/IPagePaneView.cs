@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using urakawa.core;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     public interface IPagePaneView
     {

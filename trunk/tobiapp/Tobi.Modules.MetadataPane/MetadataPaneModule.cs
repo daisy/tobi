@@ -5,7 +5,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
-namespace Tobi.Modules.MetadataPane
+namespace Tobi.Plugin.MetadataPane
 {
     /// <summary>
     /// The metadata pane offers a viewer / editor for the Urakawa SDK data model's metadata.

@@ -7,7 +7,7 @@ using urakawa.metadata.daisy;
 using urakawa.metadata;
 using System;
 
-namespace Tobi.Modules.Validator.Metadata
+namespace Tobi.Plugin.Validator.Metadata
 {   
     /// <summary>
     /// The main validator class

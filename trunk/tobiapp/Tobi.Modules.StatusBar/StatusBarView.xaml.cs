@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Tobi.Modules.StatusBar
+namespace Tobi.Plugin.StatusBar
 {
     /// <summary>
     /// Interaction logic for StatusBarView.xaml

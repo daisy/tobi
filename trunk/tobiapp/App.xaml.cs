@@ -22,18 +22,6 @@ namespace Tobi
     /// </summary>
     public partial class App
     {
-        public static string GetVersion()
-        {
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-            }
-
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            // DIFFERENT than FileVersion !!
-            // NOT: System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
-        }
-
         public SplashScreen SplashScreen
         {
             get;

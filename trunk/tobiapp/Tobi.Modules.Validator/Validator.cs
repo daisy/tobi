@@ -9,7 +9,7 @@ using Tobi.Common.Validation;
 using urakawa;
 using urakawa.events.undo;
 
-namespace Tobi.Modules.Validator
+namespace Tobi.Plugin.Validator
 {
     [Export(typeof(Validator)), PartCreationPolicy(CreationPolicy.Shared)]
     public class Validator : AbstractValidator, IPartImportsSatisfiedNotification

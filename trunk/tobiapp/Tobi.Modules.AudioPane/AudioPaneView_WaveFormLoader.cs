@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using urakawa.core;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneView
     {

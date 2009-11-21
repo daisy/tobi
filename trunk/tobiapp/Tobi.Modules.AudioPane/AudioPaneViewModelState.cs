@@ -9,7 +9,7 @@ using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
-using Tobi.Modules.Validator.Metadata;
+using Tobi.Plugin.Validator.Metadata;
 using urakawa.metadata;
 using System.Collections.ObjectModel;
 using Tobi.Common.Validation;
 
-namespace Tobi.Modules.MetadataPane
+namespace Tobi.Plugin.MetadataPane
 {
     //all classes here represent value converters used by XAML
 

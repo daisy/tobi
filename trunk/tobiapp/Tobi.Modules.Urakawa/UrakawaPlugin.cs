@@ -3,14 +3,14 @@ using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 
-namespace Tobi.Modules.Urakawa
+namespace Tobi.Plugin.Urakawa
 {
     ///<summary>
     /// The active Urakawa SDK Project (and its Presentation) is hosted by a unique "session" instance.
     /// This plugin bootstrapper configures 
     ///</summary>
-    [Export(typeof(ITobiModule)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class UrakawaModule : ITobiModule, IPartImportsSatisfiedNotification
+    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
+    public sealed class UrakawaPlugin : ITobiPlugin, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -42,7 +42,7 @@ namespace Tobi.Modules.Urakawa
         ///<param name="logger">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         ///<param name="urakawaSession">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
-        public UrakawaModule(
+        public UrakawaPlugin(
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             UrakawaSession urakawaSession)
@@ -86,6 +86,11 @@ namespace Tobi.Modules.Urakawa
         public string Name
         {
             get { return @"Urakawa SDK session manager."; }
+        }
+
+        public string Version
+        {
+            get { return UserInterfaceStrings.APP_VERSION; }
         }
 
         public string Description

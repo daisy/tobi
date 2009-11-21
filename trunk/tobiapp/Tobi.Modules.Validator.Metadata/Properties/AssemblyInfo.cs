@@ -5,22 +5,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tobi.Modules.Validator.Metadata.Properties")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Tobi.Plugin.Validator.Metadata")]
+[assembly: AssemblyDescription("Tobi, Accessible DAISY Multimedia Authoring")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Tobi.Modules.Validator.Metadata.Properties")]
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyCompany("DAISY Consortium")]
+[assembly: AssemblyProduct("Tobi")]
+[assembly: AssemblyCopyright("Open-Source, Free, LGPL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6608623c-c7c7-4a32-97fe-2deb69220d4d")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -29,8 +21,13 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly: ComVisibleAttribute(false)]
 
 #if !NET_3_5 // NET_4_0 || BOOTSTRAP_NET_4_0
 //[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]

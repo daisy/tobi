@@ -23,32 +23,32 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Composite.UnityExtensio
 		{77138947-1D13-4E22-AEE0-5D0DD046CA34} = {77138947-1D13-4E22-AEE0-5D0DD046CA34}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.StatusBar", "Tobi.Modules.StatusBar\Tobi.Modules.StatusBar.csproj", "{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.StatusBar", "Tobi.Modules.StatusBar\Tobi.Plugin.StatusBar.csproj", "{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.MenuBar", "Tobi.Modules.MenuBar\Tobi.Modules.MenuBar.csproj", "{526DAED8-C818-49B3-ADCB-9FBE44AA7088}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.MenuBar", "Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar.csproj", "{526DAED8-C818-49B3-ADCB-9FBE44AA7088}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.NavigationPane", "Tobi.Modules.NavigationPane\Tobi.Modules.NavigationPane.csproj", "{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.NavigationPane", "Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.csproj", "{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.DocumentPane", "Tobi.Modules.DocumentPane\Tobi.Modules.DocumentPane.csproj", "{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.DocumentPane", "Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.csproj", "{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.ToolBars", "Tobi.Modules.ToolBars\Tobi.Modules.ToolBars.csproj", "{2BA3495E-8895-4D67-866C-C60BBA3C08D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.ToolBars", "Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.csproj", "{2BA3495E-8895-4D67-866C-C60BBA3C08D5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.AudioPane", "Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj", "{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.AudioPane", "Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.csproj", "{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E4C51-9506-4CC5-94E2-31F5FD90532E} = {698E4C51-9506-4CC5-94E2-31F5FD90532E}
 	EndProjectSection
@@ -63,11 +63,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAudio", "..\..\..\urakawa-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mp3Sharp", "..\..\..\urakawa-sdk\trunk\csharp\audio\mp3-sharp\Mp3Sharp.csproj", "{834CAB58-648D-47CC-AC6F-D01C08C809A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.MetadataPane", "Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj", "{F6516FB8-325F-43D5-AE86-01367B0F6181}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.MetadataPane", "Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane.csproj", "{F6516FB8-325F-43D5-AE86-01367B0F6181}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.ICSharpCode", "ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj", "{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.Urakawa", "Tobi.Modules.Urakawa\Tobi.Modules.Urakawa.csproj", "{2BA3495E-8895-4D67-866C-C60BCA3C08A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Urakawa", "Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.csproj", "{2BA3495E-8895-4D67-866C-C60BCA3C08A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Unity", "ExternalLibs\CAL\Unity\Lib.Unity.csproj", "{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}"
 EndProject
@@ -77,9 +77,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.MEF", "ExternalLibs\MEF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.MEF_Unity", "ExternalLibs\MEF_Unity\Lib.MEF_Unity.csproj", "{24A770F8-AF0E-400F-8ABB-3FD68617103E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.Validator", "Tobi.Modules.Validator\Tobi.Modules.Validator.csproj", "{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Validator", "Tobi.Modules.Validator\Tobi.Plugin.Validator.csproj", "{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Modules.Validator.Metadata", "Tobi.Modules.Validator.Metadata\Tobi.Modules.Validator.Metadata.csproj", "{341678A8-F3B5-43BF-8505-69B4ED969B53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Validator.Metadata", "Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.csproj", "{341678A8-F3B5-43BF-8505-69B4ED969B53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTDs", "..\..\..\urakawa-sdk\trunk\csharp\dtds\DTDs.csproj", "{3393A6E2-BB27-4D53-ACAA-629723D51F5E}"
 EndProject

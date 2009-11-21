@@ -4,7 +4,7 @@ using Tobi.Common;
 using urakawa.commands;
 using urakawa.events.undo;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {

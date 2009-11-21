@@ -17,7 +17,7 @@ using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     /// <summary>
     /// ViewModel for the AudioPane

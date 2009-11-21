@@ -1,4 +1,4 @@
-﻿namespace Tobi.Modules.MetadataPane
+﻿namespace Tobi.Plugin.MetadataPane
 {
     public interface IMetadataPaneView
     {

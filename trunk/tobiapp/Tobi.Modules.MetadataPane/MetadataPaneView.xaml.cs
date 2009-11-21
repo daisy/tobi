@@ -5,9 +5,9 @@ using System.Windows.Data;
 using System.Collections.ObjectModel;
 using Tobi.Common;
 using Tobi.Common.UI;
-using Tobi.Modules.Validator.Metadata;
+using Tobi.Plugin.Validator.Metadata;
 
-namespace Tobi.Modules.MetadataPane
+namespace Tobi.Plugin.MetadataPane
 {
     /// <summary>
     /// Interaction logic for MetadataPaneView.xaml

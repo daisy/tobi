@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     /// <summary>
     /// Interaction logic for AudioSettings.xaml

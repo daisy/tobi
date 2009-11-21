@@ -3,7 +3,7 @@ using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     ///<summary>
     /// The navigation center for the multimedia presentation (hierarchical table of contents, page numbers, footnotes, etc.)

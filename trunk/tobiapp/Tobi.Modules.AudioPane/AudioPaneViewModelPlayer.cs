@@ -16,7 +16,7 @@ using urakawa.core;
 using urakawa.media.data.audio;
 using System.Diagnostics;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {

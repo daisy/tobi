@@ -291,9 +291,9 @@ namespace Tobi
             {
                 if (m_UrakawaSession == null)
                 {
-                    return @"Tobi" + @" {" + App.GetVersion() + @"}" + @" - Please wait...";
+                    return @"Tobi" + @" {" + UserInterfaceStrings.APP_VERSION + @"}" + @" - Please wait...";
                 }
-                return @"Tobi" + @" {" + App.GetVersion() + @"} " + (m_UrakawaSession.IsDirty ? @"* " : @"") + @"[" + (m_UrakawaSession.DocumentProject == null ? @"no document" : m_UrakawaSession.DocumentFilePath) + @"]";
+                return @"Tobi" + @" {" + UserInterfaceStrings.APP_VERSION + @"} " + (m_UrakawaSession.IsDirty ? @"* " : @"") + @"[" + (m_UrakawaSession.DocumentProject == null ? @"no document" : m_UrakawaSession.DocumentFilePath) + @"]";
             }
         }
 

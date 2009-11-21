@@ -1,4 +1,4 @@
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public class PeakMeterBarData
     {

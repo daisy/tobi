@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     /// <summary>
     /// Interaction logic for InputBox.xaml

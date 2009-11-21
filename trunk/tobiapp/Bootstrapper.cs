@@ -11,24 +11,31 @@ using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
-using Tobi.Modules.ToolBars;
-using Tobi.Modules.Urakawa;
+using Tobi.Plugin.ToolBars;
+using Tobi.Plugin.Urakawa;
 
 namespace Tobi
 {
+    ///<summary>
+    /// Empty CAG module (Prism/CompositeWPF/Composite Application Guidance)
+    ///</summary>
     public class DummyModule : IModule{
         public void Initialize()
         {
-            int debug = 1;
         }
     }
 
     /// <summary>
     /// The Tobi application bootstrapper:
     /// overrides the logger,
-    /// defines the MEF and Unity catalogs
-    /// and binds them together (so they can exchange instances transparently) 
-    /// displays the shell.
+    /// initializes the MEF composition container
+    /// as well as the Unity dependency injection container,
+    /// and binds their respective catalogs (bi-directionally).
+    /// Then displays the shell window,
+    /// and loads the available plugins,
+    /// which fulfills contracts for extension points
+    /// and results in the application loading entirely
+    /// (dependencies being resolved automatically by the container)
     /// 
     /// Reminder of the call sequence:
     /// CreateContainer
@@ -47,10 +54,11 @@ namespace Tobi
         {
             m_Logger = new BitFactoryLoggerAdapter();
 
-            //LoggerFacade.Log(@"blabla", Category.Debug, Priority.Low);
+            // Reminder of the logging syntax:
+            //m_Logger.Log(@"blabla", Category.Debug, Priority.Low);
 
-            Console.WriteLine(@"Testing redirection of System.Console.WriteLine() to the application logger.");
-            Debug.WriteLine(@"Testing redirection of System.Diagnostics.Debug.WriteLine() to the application logger. This message should not appear in RELEASE mode.");
+            Console.WriteLine(@"Testing redirection from System.Console.WriteLine() to the application logger.");
+            Debug.WriteLine(@"Testing redirection from System.Diagnostics.Debug.WriteLine() to the application logger. This message should not appear in RELEASE mode.");
         }
 
         /// <summary>
@@ -67,51 +75,45 @@ namespace Tobi
         }
 
         /// <summary>
-        /// We keep a local copy of the MEF container,
-        /// although the MEF attributed composition model mean that we don't really need it.
-        /// (we can use the Unity Dependency Injection container instead)
+        /// We keep a local copy of the MEF container (and we actually register it into the Unity DI container).
+        /// Although the MEF attributed composition model (import/export) mean that we don't really need a reference to the container,
+        /// we may need to access the composition container to setup catalogs, etc.
         /// </summary>
         public CompositionContainer MefContainer { get; private set; }
 
         protected override IUnityContainer CreateContainer()
         {
-            LoggerFacade.Log(@"Creating the bidirectionally-bound catalogs for MEF and the Unity Dependency Injection container", Category.Debug, Priority.Low);
+            LoggerFacade.Log(@"Creating the Unity Dependency Injection container and binding (bi-directionally) with the default MEF composition catalog (i.e. Tobi.exe, for the empty shell window)", Category.Debug, Priority.Low);
 
-            // MEF will scan Tobi.exe and any DLL assemblies which name starts with "Tobi"
+            // MEF will scan Tobi.exe only to start with, so that the shell window doesn't attempt to load dependencies immediately but in a differed manner
+            // (through a container re-composition when we add further MEF discovery catalogs)
             var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
             {
                       new AssemblyCatalog(Assembly.GetExecutingAssembly()),
+                      //new AssemblyCatalog(this.GetType().Assembly),
+                      //new AssemblyCatalog(typeof(Shell).Assembly),
 
-                      //new TypeCatalog(typeof(MenuBarView))
+                      //new TypeCatalog(typeof(typeX))
                       //new TypeCatalog(typeof(type1), typeof(type2), ...)
             });
 
-            // We could add MEF sub-directories too
-            //var directories = Directory.GetDirectories(mefDir, "*.*", SearchOption.AllDirectories);
-            //foreach (var directory in directories)
-            //{
-            //    aggregateCatalog.Catalogs.Add(new DirectoryCatalog(directory));
-            //}
-
-            // Remark: this instance, once returned to this method, is available through the "Container" class member
-            // (and registered in the Unity dependency injection container itself).
+            // This instance, once returned to this method, will be available as the "Container" class member (property),
+            // and it will be registered within the Unity dependency injection container itself.
             var unityContainer = new UnityContainer();
 
-            // bidirectional binding between MEF and Unity.
-            // Remark: calls MEF-Compose, which triggers application Parts scanning,
+            // Bidirectional binding between MEF and Unity.
+            // Remark: calls MEF-Compose, which triggers application Parts scanning
+            // (building the graph of dependencies, and pruning branches that are rejected),
             // but the OnImportsSatisfied callbacks will only be activated at instanciation time.
             MefContainer = unityContainer.RegisterCatalog(aggregateCatalog);
 
             return unityContainer;
         }
 
-        /// <summary>
-        /// We explicitly register type into the Unity Dependency Injection container,
-        /// such as the Shell View and Presenter (so we guarantee they are available as soon as possible to consumers)
-        /// </summary>
         protected override void ConfigureContainer()
         {
             // We make the MEF composition container available through the Unity Dependency Injection container
+            // (just in case we need a reference to MEF in order to manipulate catalogs, exports, etc. from a plugin)
             Container.RegisterInstance(typeof(CompositionContainer), MefContainer);
 
             //Container.RegisterInstance(Dispatcher.CurrentDispatcher);
@@ -120,19 +122,15 @@ namespace Tobi
         }
 
         /// <summary>
-        /// We build a statically-predefined set of inter-dependent application parts to be loaded at startup.
-        /// Remark: MEF may load parts in a more dynamic way.
+        /// We return a dummy empty CAG module catalog,
+        /// as we use MEF to dynamically discover and compose parts.
+        /// MEF is a much more efficient way of resolving dependencies.
         /// </summary>
         /// <returns></returns>
         protected override IModuleCatalog GetModuleCatalog()
         {
-            // We could scan a directory instead of hard-coding types,
-            // CAG would then find all implementation of IModule.
-            // However we use MEF for such purpose, as it is more suitable for dynamic discovery.
             //return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
 
-            // We let MEF pull the ITobiModules from the Tobi*.dll assemblies in the application directory.
-            // This way, we don't have to statically declare dependencies (MEF resolves its own graph of application Parts).
             return new ModuleCatalog().AddModule(typeof(DummyModule))
 
                 //.AddModule(typeof(UrakawaModule))
@@ -151,9 +149,6 @@ namespace Tobi
                 ;
         }
 
-        /// <summary>
-        /// We don't actually perform any extra configuration here.
-        /// </summary>
         protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
         {
             var mappings = base.ConfigureRegionAdapterMappings();
@@ -168,7 +163,8 @@ namespace Tobi
 
         /// <summary>
         /// We display Tobi's main window (the "shell")
-        /// Remark: CAG regions defines extension points for views, which can registered as Modules get initialized.
+        /// Remark: CAG regions defines extension points for views,
+        /// which get loaded as ITobiModule instances get created.
         /// </summary>
         protected override DependencyObject CreateShell()
         {
@@ -180,52 +176,64 @@ namespace Tobi
         }
 
         /// <summary>
-        /// We don't actually perform any extra initialization here.
+        /// The shell is loaded at this stage, so we load the rest of the application
+        /// by discovering plugins and the extension points they fulfill,
+        /// and by resolving instances through the MEF dependency graph. 
         /// </summary>
         protected override void InitializeModules()
         {
-            // Does nothing, as we do not have CAG IModules (instead we use MEF, see below)
+            // Does nothing, as we do not use any real CAG IModule (only the dummy empty one).
             base.InitializeModules();
 
             // MEF will fetch DLL assemblies adjacent to the Tobi.exe executable
-            // We could add support for a special "plugin" folder, using something like: + Path.DirectorySeparatorChar + "addons";
+            // We could add support for a special "plugin" folder,
+            // using something like: + Path.DirectorySeparatorChar + "addons";
             string mefDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            // TODO: save the catalog in the MEF container, so we can call dirCatalog.Refresh(); when needed (which triggers re-composition)
-            var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Modules.*.dll");
+            // TODO: save the catalog in the MEF container,
+            // so we can call dirCatalog.Refresh(); when needed (which triggers re-composition)
+            var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.*.dll");
             
             // TODO: deactivated for debugging only ! (to avoid scanning DLLs other than the below explicit ones)
             //Container.RegisterCatalog(dirCatalog);
 
-            MessageBox.Show(@"Just before resolving Urakawa session (take a look at the window title 'waiting...')");
+            // We could add MEF sub-directories too
+            //var directories = Directory.GetDirectories(mefDir, "*.*", SearchOption.AllDirectories);
+            //foreach (var directory in directories)
+            //{
+            //    aggregateCatalog.Catalogs.Add(new DirectoryCatalog(directory));
+            //}
+
+            //MessageBox.Show(@"Just before resolving Urakawa session (take a look at the window title 'waiting...')");
 
             // TODO: for debugging only: we're loading selectively to avoid interference (and weird part dependencies)
-            Container.RegisterCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaModule))));
+            Container.RegisterCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))));
 
-            MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");
+            //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");
 
-            var tobiModules = MefContainer.GetExportedValues<ITobiModule>();
+            var tobiModules = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModule in tobiModules)
             {
-                LoggerFacade.Log(@"Loaded plugins: [[" + tobiModule.Name + @"]] [[" + tobiModule.Description + @"]]", Category.Debug, Priority.Low);
+                LoggerFacade.Log(@"Loaded plugin: [[" + tobiModule.Name + @"]] [[" + tobiModule.Version + @"]] [[" + tobiModule.Description + @"]]", Category.Debug, Priority.Low);
             }
 
-            MessageBox.Show(@"Urakawa module is loaded but it 'waits' for a toolbar to push its commands: press ok to get the toolbar view to load (but not to display yet)");
+            //MessageBox.Show(@"Urakawa module is loaded but it 'waits' for a toolbar to push its commands: press ok to get the toolbar view to load (but not to display yet)");
 
             // This artificially emulates the dynamic loading of the Toolbar plugin:
             // the container gets composed again and the modules dependent on the toolbar gets satisified
-            Container.RegisterCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsModule))));
+            Container.RegisterCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))));
 
 
-            MessageBox.Show(@"After pressing ok the toolbar module will load to integrate the view into the window");
+            //MessageBox.Show(@"After pressing ok the toolbar module will load to integrate the view into the window");
 
 
-            var tobiModulesAFTER = MefContainer.GetExportedValues<ITobiModule>();
+            var tobiModulesAFTER = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModuleAFTER in tobiModulesAFTER)
             {
                 LoggerFacade.Log(@"Loaded plugins: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
             }
 
+            // The code below is totally obsolete, as we are not using CAG modules.
             //var name = typeof (UrakawaModule).Name;
             //var moduleCatalog = Container.Resolve<IModuleCatalog>();
             //foreach (var module in moduleCatalog.Modules)

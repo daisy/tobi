@@ -3,9 +3,9 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
-using Tobi.Modules.AudioPane;
+using Tobi.Plugin.AudioPane;
 
-namespace Tobi.Modules.MenuBar
+namespace Tobi.Plugin.MenuBar
 {
     /// <summary>
     /// Interaction logic for MenuBarView.xaml
