@@ -8,7 +8,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.core;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     /// <summary>
     /// Interaction logic for PagePanelView.xaml

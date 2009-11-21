@@ -1,6 +1,8 @@
 using System;
+using System.Deployment.Application;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Tobi.Common
@@ -26,8 +28,21 @@ namespace Tobi.Common
 
             string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
+            APP_VERSION = GetVersion();
 
             UnhandledException = "An unhandled exception occurred, the application is now closing. For more information, see the '" + LOG_FILE_NAME + "' file: [ " + LOG_FILE_PATH + " ].";
+        }
+        public static readonly string APP_VERSION;
+        private static string GetVersion()
+        {
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+            }
+            return Application.Current.GetType().Assembly.GetName().Version.ToString();
+            //return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            // DIFFERENT than FileVersion !!
+            // NOT: System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
         }
 
         public static string EscapeMnemonic(string str)

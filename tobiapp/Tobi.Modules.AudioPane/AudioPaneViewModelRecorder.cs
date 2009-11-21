@@ -9,7 +9,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using urakawa.media.data.audio;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {

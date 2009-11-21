@@ -5,7 +5,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     /// <summary>
     /// Interaction logic for NavigationPane.xaml

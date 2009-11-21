@@ -1,7 +1,7 @@
 ﻿using urakawa.metadata;
 using Tobi.Common.Validation;
 
-namespace Tobi.Modules.Validator.Metadata
+namespace Tobi.Plugin.Validator.Metadata
 {
     public enum MetadataErrorType
     {

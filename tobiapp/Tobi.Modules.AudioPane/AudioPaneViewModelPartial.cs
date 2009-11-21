@@ -6,7 +6,7 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using Colors = System.Windows.Media.Colors;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     /// <summary>
     /// Temporary class to use for storing code whilst refactoring into the ViewModel

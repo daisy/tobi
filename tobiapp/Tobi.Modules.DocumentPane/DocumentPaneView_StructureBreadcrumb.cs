@@ -12,7 +12,7 @@ using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.xuk;
 
-namespace Tobi.Modules.DocumentPane
+namespace Tobi.Plugin.DocumentPane
 {
     public partial class DocumentPaneView
     {

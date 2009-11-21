@@ -8,7 +8,7 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Unity;
 using Tobi.Common.Validation;
 
-namespace Tobi.Modules.Validator
+namespace Tobi.Plugin.Validator
 {
     /// <summary>
     /// Interaction logic for ValidatorPaneView.xaml

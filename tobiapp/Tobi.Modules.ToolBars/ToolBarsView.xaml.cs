@@ -12,7 +12,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
 
-namespace Tobi.Modules.ToolBars
+namespace Tobi.Plugin.ToolBars
 {
     ///<summary>
     /// Single shared instance (singleton) of the toolbar view

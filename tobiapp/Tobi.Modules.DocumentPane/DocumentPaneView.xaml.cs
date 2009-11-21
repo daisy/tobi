@@ -24,7 +24,7 @@ using urakawa.core;
 using urakawa.xuk;
 using System.Diagnostics;
 
-namespace Tobi.Modules.DocumentPane
+namespace Tobi.Plugin.DocumentPane
 {
     public class TextBlockEx : TextBlock
     {

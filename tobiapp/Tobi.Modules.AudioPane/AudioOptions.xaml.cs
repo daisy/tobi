@@ -1,4 +1,4 @@
-﻿namespace Tobi.Modules.AudioPane
+﻿namespace Tobi.Plugin.AudioPane
 {
     /// <summary>
     /// Interaction logic for AudioOptions.xaml

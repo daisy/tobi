@@ -6,7 +6,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     public partial class HeadingPaneViewModel
     {

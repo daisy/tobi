@@ -3,7 +3,7 @@ using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 
-namespace Tobi.Modules.MenuBar
+namespace Tobi.Plugin.MenuBar
 {
     ///<summary>
     /// The status bar is commonly displayed at the bottom of the application window

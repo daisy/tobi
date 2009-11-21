@@ -1,6 +1,6 @@
 ﻿<ItemsControl
   
-   x:Class="Tobi.Modules.ToolBars.ToolBarsView"
+   x:Class="Tobi.Plugin.ToolBars.ToolBarsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"

@@ -6,7 +6,7 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.core;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
     /// <summary>
     /// Interaction logic for HeadingPanelView.xaml

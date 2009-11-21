@@ -10,7 +10,7 @@ using Tobi.Common.UI;
 using urakawa;
 using urakawa.events;
 
-namespace Tobi.Modules.Urakawa
+namespace Tobi.Plugin.Urakawa
 {
     ///<summary>
     /// Single shared instance (singleton) of a session to host the Urakawa SDK aurthoring data model.

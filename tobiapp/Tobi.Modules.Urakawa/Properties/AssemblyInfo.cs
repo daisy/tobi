@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tobi.Modules.Urakawa")]
+[assembly: AssemblyTitle("Tobi.Plugin.Urakawa")]
 [assembly: AssemblyDescription("Tobi, Accessible DAISY Multimedia Authoring")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("DAISY Consortium")]
-[assembly: AssemblyProduct("Tobi.Modules.Urakawa")]
+[assembly: AssemblyProduct("Tobi")]
 [assembly: AssemblyCopyright("Open-Source, Free, LGPL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

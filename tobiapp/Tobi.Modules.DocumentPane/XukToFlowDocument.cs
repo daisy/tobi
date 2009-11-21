@@ -20,7 +20,7 @@ using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
 
-namespace Tobi.Modules.DocumentPane
+namespace Tobi.Plugin.DocumentPane
 {
     public class XukToFlowDocument
     {

@@ -1,4 +1,4 @@
-﻿namespace Tobi.Modules.AudioPane
+﻿namespace Tobi.Plugin.AudioPane
 {
     /// <summary>
     /// Minimal functionality exposed by the View, essentially to be consumed by the ViewModel

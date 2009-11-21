@@ -5,7 +5,7 @@ using System.Windows.Media;
 using Tobi.Common;
 using Colors=System.Windows.Media.Colors;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public class WaveFormLoadingAdorner : Adorner
     {

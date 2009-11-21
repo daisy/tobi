@@ -13,7 +13,7 @@ using urakawa.daisy.import;
 using urakawa.events.progress;
 using urakawa.xuk;
 
-namespace Tobi.Modules.Urakawa
+namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {

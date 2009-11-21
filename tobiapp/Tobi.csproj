@@ -197,45 +197,45 @@
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Modules.AudioPane.csproj">
+    <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
-      <Name>Tobi.Modules.AudioPane</Name>
+      <Name>Tobi.Plugin.AudioPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Modules.DocumentPane.csproj">
+    <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.csproj">
       <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
-      <Name>Tobi.Modules.DocumentPane</Name>
+      <Name>Tobi.Plugin.DocumentPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.MenuBar\Tobi.Modules.MenuBar.csproj">
+    <ProjectReference Include="Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar.csproj">
       <Project>{526DAED8-C818-49B3-ADCB-9FBE44AA7088}</Project>
-      <Name>Tobi.Modules.MenuBar</Name>
+      <Name>Tobi.Plugin.MenuBar</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.MetadataPane\Tobi.Modules.MetadataPane.csproj">
+    <ProjectReference Include="Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane.csproj">
       <Project>{F6516FB8-325F-43D5-AE86-01367B0F6181}</Project>
-      <Name>Tobi.Modules.MetadataPane</Name>
+      <Name>Tobi.Plugin.MetadataPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Modules.NavigationPane.csproj">
+    <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.csproj">
       <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
-      <Name>Tobi.Modules.NavigationPane</Name>
+      <Name>Tobi.Plugin.NavigationPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.StatusBar\Tobi.Modules.StatusBar.csproj">
+    <ProjectReference Include="Tobi.Modules.StatusBar\Tobi.Plugin.StatusBar.csproj">
       <Project>{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}</Project>
-      <Name>Tobi.Modules.StatusBar</Name>
+      <Name>Tobi.Plugin.StatusBar</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Modules.ToolBars.csproj">
+    <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
-      <Name>Tobi.Modules.ToolBars</Name>
+      <Name>Tobi.Plugin.ToolBars</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.Urakawa\Tobi.Modules.Urakawa.csproj">
+    <ProjectReference Include="Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
-      <Name>Tobi.Modules.Urakawa</Name>
+      <Name>Tobi.Plugin.Urakawa</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.Validator.Metadata\Tobi.Modules.Validator.Metadata.csproj">
+    <ProjectReference Include="Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.csproj">
       <Project>{341678A8-F3B5-43BF-8505-69B4ED969B53}</Project>
-      <Name>Tobi.Modules.Validator.Metadata</Name>
+      <Name>Tobi.Plugin.Validator.Metadata</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.Validator\Tobi.Modules.Validator.csproj">
+    <ProjectReference Include="Tobi.Modules.Validator\Tobi.Plugin.Validator.csproj">
       <Project>{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}</Project>
-      <Name>Tobi.Modules.Validator</Name>
+      <Name>Tobi.Plugin.Validator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

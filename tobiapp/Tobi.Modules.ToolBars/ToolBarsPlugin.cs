@@ -4,14 +4,14 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
 
-namespace Tobi.Modules.ToolBars
+namespace Tobi.Plugin.ToolBars
 {
     ///<summary>
     /// The tool bar contains groups of buttons (commands actually) from various parts of the application.
     /// (i.e. it is a host service, it doesn't own command data directly)
     ///</summary>
-    [Export(typeof(ITobiModule)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class ToolBarsModule : ITobiModule, IPartImportsSatisfiedNotification
+    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
+    public sealed class ToolBarsPlugin : ITobiPlugin, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -35,7 +35,7 @@ namespace Tobi.Modules.ToolBars
         ///<param name="regionManager">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         ///<param name="toolBarsView">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
-        public ToolBarsModule(
+        public ToolBarsPlugin(
             ILoggerFacade logger,
             IRegionManager regionManager,
             [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
@@ -71,6 +71,11 @@ namespace Tobi.Modules.ToolBars
         public string Description
         {
             get { return @"The visual host for command buttons."; }
+        }
+
+        public string Version
+        {
+            get { return UserInterfaceStrings.APP_VERSION; }
         }
 
         public Uri Home

@@ -13,7 +13,7 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.media.data.audio;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     /// <summary>
     /// Interaction logic for the AudioPaneView.xaml view.

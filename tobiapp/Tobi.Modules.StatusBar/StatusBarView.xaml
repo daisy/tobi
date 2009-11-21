@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Tobi.Modules.StatusBar.StatusBarView"
+﻿<UserControl x:Class="Tobi.Plugin.StatusBar.StatusBarView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     

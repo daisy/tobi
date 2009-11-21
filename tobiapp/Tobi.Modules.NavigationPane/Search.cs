@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace Tobi.Modules.NavigationPane.Search
+namespace Tobi.Plugin.NavigationPane.Search
 {
     public static class SearchOperations
     {

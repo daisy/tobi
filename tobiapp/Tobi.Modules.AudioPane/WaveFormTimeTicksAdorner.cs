@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using urakawa.core;
 
-namespace Tobi.Modules.AudioPane
+namespace Tobi.Plugin.AudioPane
 {
     public class WaveFormTimeTicksAdorner : Adorner
     {

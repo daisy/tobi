@@ -9,7 +9,7 @@ using urakawa.core;
 using urakawa.navigation;
 using urakawa.xuk;
 
-namespace Tobi.Modules.NavigationPane
+namespace Tobi.Plugin.NavigationPane
 {
 
     public class HeadingsNavigator : AbstractFilterNavigator

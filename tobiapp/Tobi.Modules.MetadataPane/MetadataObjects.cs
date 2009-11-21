@@ -7,7 +7,7 @@ using urakawa.metadata;
 using urakawa.commands;
 using urakawa.metadata.daisy;
 
-namespace Tobi.Modules.MetadataPane
+namespace Tobi.Plugin.MetadataPane
 {
     // NotifyingMetadataItem is a wrapper around basic urakawa.Metadata
     // it has a MetadataDefinition, it validates itself

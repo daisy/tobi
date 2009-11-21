@@ -17,7 +17,7 @@ using Orientation=System.Windows.Controls.Orientation;
 using ProgressBar=System.Windows.Controls.ProgressBar;
 using SaveFileDialog=Microsoft.Win32.SaveFileDialog;
 
-namespace Tobi.Modules.Urakawa
+namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
