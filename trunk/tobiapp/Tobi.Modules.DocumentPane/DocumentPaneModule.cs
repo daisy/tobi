@@ -31,13 +31,13 @@ namespace Tobi.Modules.DocumentPane
 
             var regionManager = m_Container.Resolve<IRegionManager>();
 
-            //regionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
+            regionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
 
-            var view = m_Container.Resolve<DocumentPaneView>();
+            //var view = m_Container.Resolve<DocumentPaneView>();
 
-            IRegion targetRegion = regionManager.Regions[RegionNames.DocumentPane];
-            targetRegion.Add(view);
-            targetRegion.Activate(view);
+            //IRegion targetRegion = regionManager.Regions[RegionNames.DocumentPane];
+            //targetRegion.Add(view);
+            //targetRegion.Activate(view);
         }
     }
 }

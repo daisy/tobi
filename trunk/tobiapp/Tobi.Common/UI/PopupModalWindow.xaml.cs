@@ -48,7 +48,7 @@ namespace Tobi.Common.UI
                 UserInterfaceStrings.DetailsExpand,
                 UserInterfaceStrings.DetailsExpand_,
                 UserInterfaceStrings.DetailsExpand_KEYS,
-                (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-down")),
+                (ShellView == null ? null : ShellView.LoadTangoIcon("go-down")),
                 () => IsDetailsExpanded = true,
                 () => HasDetails && !IsDetailsExpanded);
 
@@ -58,16 +58,16 @@ namespace Tobi.Common.UI
                 UserInterfaceStrings.DetailsCollapse,
                 UserInterfaceStrings.DetailsCollapse_,
                 UserInterfaceStrings.DetailsCollapse_KEYS,
-                (ShellPresenter == null ? null : ShellPresenter.LoadTangoIcon("go-up")),
+                (ShellView == null ? null : ShellView.LoadTangoIcon("go-up")),
                 () => IsDetailsExpanded = false,
                 () => HasDetails && IsDetailsExpanded);
 
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
 
-        private PopupModalWindow(IShellPresenter presenter)
+        private PopupModalWindow(IShellView presenter)
         {
-            ShellPresenter = presenter;
+            ShellView = presenter;
 
             ClickedDialogButton = DialogButton.ESC;
 
@@ -119,9 +119,9 @@ namespace Tobi.Common.UI
         {
             ensureVisible(true);
 
-            if (ShellPresenter != null)
+            if (ShellView != null)
             {
-                ShellPresenter.DimBackgroundWhile(() => ShowDialog());
+                ShellView.DimBackgroundWhile(() => ShowDialog());
             }
             else
             {
@@ -195,19 +195,23 @@ namespace Tobi.Common.UI
             Height = finalHeight;
         }
 
-        public PopupModalWindow(IShellPresenter presenter, string title,
+        public PopupModalWindow(IShellView presenter, string title,
             object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
             double width, double height,
             object details, double detailsHeight)
             : this(presenter)
         {
-
             if (this != Application.Current.MainWindow)
             {
-                Owner = ShellPresenter == null ? Application.Current.MainWindow : ShellPresenter.View.Window;
+                Owner = Application.Current.MainWindow;
             }
-            else { Owner = null; }
+
+            //if (this != Application.Current.MainWindow)
+            //{
+            //    Owner = ShellView == null ? Application.Current.MainWindow : ShellView.View.Window;
+            //}
+            //else { Owner = null; }
 
             //#if NET_3_5
 
@@ -237,14 +241,14 @@ namespace Tobi.Common.UI
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
         }
 
-        public PopupModalWindow(IShellPresenter window, string title, object content,
+        public PopupModalWindow(IShellView window, string title, object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
             : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null, 0)
         {
         }
 
         private bool m_ButtonTriggersClose = false;
-        private readonly IShellPresenter ShellPresenter;
+        private readonly IShellView ShellView;
         private Action m_whenDoneAction;
 
         public bool AllowEscapeAndCloseButton

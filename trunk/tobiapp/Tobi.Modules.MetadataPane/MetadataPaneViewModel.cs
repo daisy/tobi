@@ -24,10 +24,10 @@ namespace Tobi.Modules.MetadataPane
     {
         public void OnImportsSatisfied()
         {
-
             //#if DEBUG
             //            Debugger.Break();
             //#endif
+
             foreach (var validator in Validators)
             {
                 if (validator is MetadataValidator)
@@ -44,28 +44,21 @@ namespace Tobi.Modules.MetadataPane
             }
         }
 
-        #region Construction
-
-        protected IEventAggregator EventAggregator { get; private set; }
-        public ILoggerFacade Logger { get; private set; }
-
-        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
-
-
-        [ImportMany(typeof(IValidator))]
-        public IEnumerable<IValidator> Validators { get; set; }
-
-        private MetadataValidator m_LocalValidator = null;
-
-        ///<summary>
-        /// Dependency-Injected constructor
-        ///</summary>
         [ImportingConstructor]
-        public MetadataPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+        public MetadataPaneViewModel(
+            IUnityContainer container,
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger,
+
+            [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            IEnumerable<IValidator> validators
+            )
             : base(container)
         {
             EventAggregator = eventAggregator;
             Logger = logger;
+
+            Validators = validators;
 
             m_MetadataCollection = null;
 
@@ -74,6 +67,17 @@ namespace Tobi.Modules.MetadataPane
 
             ValidationItems = new ObservableCollection<ValidationItem>();
         }
+
+        #region Construction
+
+        protected IEventAggregator EventAggregator { get; private set; }
+        public ILoggerFacade Logger { get; private set; }
+
+        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
+
+        public readonly IEnumerable<IValidator> Validators;
+
+        private MetadataValidator m_LocalValidator;
 
         private void resetValidationItems(MetadataValidator metadataValidator)
         {

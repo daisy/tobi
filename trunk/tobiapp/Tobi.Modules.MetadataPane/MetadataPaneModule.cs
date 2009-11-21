@@ -32,17 +32,17 @@ namespace Tobi.Modules.MetadataPane
             
             //Logger.Log("MetadataPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
-            var shellPresenter = m_Container.Resolve<IShellPresenter>();
+            var shellView = m_Container.Resolve<IShellView>();
 
             CommandShowMetadataPane = new RichDelegateCommand(
                 UserInterfaceStrings.ShowMetadata,
                 UserInterfaceStrings.ShowMetadata_,
                 UserInterfaceStrings.ShowMetadata_KEYS,
-                shellPresenter.LoadTangoIcon("accessories-text-editor"),
+                shellView.LoadTangoIcon("accessories-text-editor"),
                 ShowDialog,
                 CanShowDialog);
 
-            shellPresenter.RegisterRichCommand(CommandShowMetadataPane);
+            shellView.RegisterRichCommand(CommandShowMetadataPane);
 
             var toolbars = m_Container.TryResolve<IToolBarsView>();
             if (toolbars != null)

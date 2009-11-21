@@ -1,98 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Media;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Composite.UnityExtensions;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
+using System.Diagnostics;
+using System.IO;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using Application = System.Windows.Application;
 
 namespace Tobi
 {
-    public class DimAdorner : Adorner
+    public partial class Shell
     {
-        private Pen m_pen;
-        private Rect m_rectRect;
-
-        public DimAdorner(UIElement adornedElement)
-            : base(adornedElement)
-        {
-            m_pen = new Pen(Brushes.Black, 1);
-            m_pen.Freeze();
-            m_rectRect = new Rect(new Point(0, 0), new Size(1, 1));
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            m_rectRect.Size = DesiredSize;
-
-            var fe = AdornedElement as FrameworkElement;
-            if (fe != null)
-            {
-                m_rectRect.Width = fe.ActualWidth;
-                m_rectRect.Height = fe.ActualHeight;
-            }
-
-            drawingContext.PushOpacity(0.4);
-            drawingContext.DrawRectangle(Brushes.Black, m_pen, m_rectRect);
-            drawingContext.Pop();
-        }
-    }
-
-    //[Export(typeof(IShellPresenter)), PartCreationPolicy(CreationPolicy.Shared)]
-    //[Export]
-    public class ShellPresenter : IShellPresenter //, IPartImportsSatisfiedNotification
-    {
-//        public void OnImportsSatisfied()
-//        {
-////#if DEBUG
-////                Debugger.Break();
-////#endif
-//        }
-
-        private void playAudioCue(string audioClipName)
-        {
-            string audioClipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                               audioClipName);
-            if (File.Exists(audioClipPath))
-            {
-                new SoundPlayer(audioClipPath).Play();
-            }
-        }
-
-        public void PlayAudioCueHi()
-        {
-            playAudioCue("hi.wav");
-        }
-
-        public void PlayAudioCueTock()
-        {
-            playAudioCue("tock.wav");
-        }
-
-        public void PlayAudioCueTockTock()
-        {
-            playAudioCue("tocktock.wav");
-        }
-
-        // To avoid the shutting-down loop in OnShellWindowClosing()
-        private bool m_Exiting;
-
         public RichDelegateCommand ExitCommand { get; private set; }
 
         public RichDelegateCommand MagnifyUiIncreaseCommand { get; private set; }
@@ -114,41 +38,9 @@ namespace Tobi
 
         public RichDelegateCommand ShowLogFilePathCommand { get; private set; }
 
-        public IShellView View { get; private set; }
-        protected ILoggerFacade Logger { get; private set; }
-        protected IRegionManager RegionManager { get; private set; }
-
-        protected IUnityContainer Container { get; private set; }
-        protected IEventAggregator EventAggregator { get; private set; }
-
-        ///<summary>
-        /// Default constructor
-        ///</summary>
-        ///<param name="view"></param>
-        //[ImportingConstructor]
-        public ShellPresenter(IShellView view, ILoggerFacade logger,
-                            IRegionManager regionManager, IUnityContainer container,
-                            IEventAggregator eventAggregator
-                            )
-        {
-            m_Exiting = false;
-
-            View = view;
-            Logger = logger;
-            Container = container;
-            RegionManager = regionManager;
-            EventAggregator = eventAggregator;
-
-            Logger.Log("ShellPresenter.ctor", Category.Debug, Priority.Medium);
-
-            App.LOGGER = Logger;
-
-            initCommands();
-        }
-
         private void initCommands()
         {
-            Logger.Log("ShellPresenter.initCommands", Category.Debug, Priority.Medium);
+            m_Logger.Log("ShellView.initCommands", Category.Debug, Priority.Medium);
 
             //
             ExitCommand = new RichDelegateCommand(
@@ -160,7 +52,7 @@ namespace Tobi
                 //LoadTangoIcon("document-save"),
                 () =>
                 {
-                    Logger.Log("ShellPresenter.ExitCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log("ShellView.ExitCommand", Category.Debug, Priority.Medium);
 
                     if (askUserConfirmExit())
                     {
@@ -178,13 +70,13 @@ namespace Tobi
                 UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                 //LoadTangoIcon("mail-forward"),
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
-                ()=>
+                () =>
                 {
-                    Logger.Log("ShellPresenter.MagnifyUiIncreaseCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log("ShellView.MagnifyUiIncreaseCommand", Category.Debug, Priority.Medium);
 
-                    View.MagnificationLevel += 0.15;
+                    MagnificationLevel += 0.15;
                 },
-                ()=> true);
+                () => true);
 
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
@@ -194,34 +86,36 @@ namespace Tobi
                 UserInterfaceStrings.UI_DecreaseMagnification_,
                 UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
-                ()=>
+                () =>
                 {
-                    Logger.Log("ShellPresenter.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log("ShellView.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
 
-                    View.MagnificationLevel -= 0.15;
+                    MagnificationLevel -= 0.15;
                 },
-                ()=> true);
+                () => true);
 
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
+#if ICONS
             DisplayPreviewIconsDebugCommand = new RichDelegateCommand(
                 UserInterfaceStrings.IconsDebug,
                 null,
                 UserInterfaceStrings.IconsDebug_KEYS,
                 null,
                 DisplayPreviewIconsDebugCommand_Executed,
-                ()=> true);
+                () => true);
 
             RegisterRichCommand(DisplayPreviewIconsDebugCommand);
+#endif
             //
             ManageShortcutsCommand = new RichDelegateCommand(
                 UserInterfaceStrings.ManageShortcuts,
                 UserInterfaceStrings.ManageShortcuts_,
                 UserInterfaceStrings.ManageShortcuts_KEYS,
                 LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
-                ()=>
+                () =>
                 {
-                    Logger.Log("ShellPresenter.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
+                    m_Logger.Log("ShellView.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
 
                     var windowPopup = new PopupModalWindow(this,
                                                            UserInterfaceStrings.EscapeMnemonic(
@@ -233,7 +127,7 @@ namespace Tobi
 
                     windowPopup.ShowFloating(null);
                 },
-                ()=> true);
+                () => true);
 
             RegisterRichCommand(ManageShortcutsCommand);
             //
@@ -242,8 +136,8 @@ namespace Tobi
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
                 LoadTangoIcon("edit-cut"),
-                ()=> Debug.Fail("Functionality not implemented yet."),
-                ()=> true);
+                () => Debug.Fail("Functionality not implemented yet."),
+                () => true);
 
             RegisterRichCommand(CutCommand);
             //
@@ -252,8 +146,8 @@ namespace Tobi
                 UserInterfaceStrings.Copy_,
                 UserInterfaceStrings.Copy_KEYS,
                 LoadTangoIcon("edit-copy"),
-                ()=> Debug.Fail("Functionality not implemented yet."),
-                ()=> true);
+                () => Debug.Fail("Functionality not implemented yet."),
+                () => true);
 
             RegisterRichCommand(CopyCommand);
             //
@@ -262,8 +156,8 @@ namespace Tobi
                 UserInterfaceStrings.Paste_,
                 UserInterfaceStrings.Paste_KEYS,
                 LoadTangoIcon("edit-paste"),
-                ()=> Debug.Fail("Functionality not implemented yet."),
-                ()=> true);
+                () => Debug.Fail("Functionality not implemented yet."),
+                () => true);
 
             RegisterRichCommand(PasteCommand);
             //
@@ -274,7 +168,7 @@ namespace Tobi
                 LoadTangoIcon("help-browser"),
                 () =>
                 {
-                    Logger.Log("ShellPresenter.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log("ShellView.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
 
 
                     var label = new TextBlock
@@ -287,7 +181,7 @@ namespace Tobi
                         TextWrapping = TextWrapping.Wrap
                     };
 
-                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find")) { IconDrawScale = View.MagnificationLevel };
+                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find")) { IconDrawScale = MagnificationLevel };
                     //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
                     var panel = new StackPanel
@@ -314,7 +208,7 @@ namespace Tobi
                                                            true, 300, 160, details, 40);
 
                     windowPopup.ShowModal();
-                    
+
                 },
                  () => true);
 
@@ -325,15 +219,15 @@ namespace Tobi
                 UserInterfaceStrings.Help_,
                 UserInterfaceStrings.Help_KEYS,
                 LoadTangoIcon("help-browser"),
-                ()=>
+                () =>
                 {
-                    Logger.Log("ShellPresenter.HelpCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log("ShellView.HelpCommand", Category.Debug, Priority.Medium);
 
                     throw new NotImplementedException("Functionality not implemented, sorry :(",
                         new ArgumentOutOfRangeException("First Inner exception",
                             new FileNotFoundException("Third inner exception !")));
                 },
-                 ()=> true);
+                 () => true);
 
             RegisterRichCommand(HelpCommand);
             //
@@ -342,8 +236,8 @@ namespace Tobi
                 UserInterfaceStrings.Preferences_,
                 UserInterfaceStrings.Preferences_KEYS,
                 LoadTangoIcon("preferences-system"),
-                ()=> Debug.Fail("Functionality not implemented yet."),
-                ()=> true);
+                () => Debug.Fail("Functionality not implemented yet."),
+                () => true);
 
             RegisterRichCommand(PreferencesCommand);
             //
@@ -371,47 +265,188 @@ namespace Tobi
             //    ()=> { throw new NotImplementedException("Functionality not implemented, sorry :("); }, ()=> true);
 
             //RegisterRichCommand(NavPreviousCommand);
-            //
 
+        }
 
-            var toolbars = Container.TryResolve<IToolBarsView>();
-            if (toolbars == null)
+        public VisualBrush LoadIcon(string path, string resourceKey)
+        {
+            Object obj = Application.Current.TryFindResource(resourceKey);
+            if (obj == null)
             {
-                SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IToolBarsView, ThreadOption.UIThread, false, type => typeof(IToolBarsView).IsAssignableFrom(type));
+                Object comp = Application.LoadComponent(
+                    new Uri(path + resourceKey + ".xaml", UriKind.Relative));
+
+                Application.Current.Resources.MergedDictionaries.Add(comp as ResourceDictionary);
+
+                var brush = (VisualBrush)Application.Current.FindResource(resourceKey);
+
+                return brush;
             }
             else
             {
-#if DEBUG
-                Debugger.Break();
-#endif
-                pushCommandsToolbar();
+                return (VisualBrush)obj;
             }
         }
 
-        private void OnTypeConstructed_IToolBarsView(Type type)
+        public VisualBrush LoadTangoIcon(string resourceKey)
         {
-            pushCommandsToolbar();
-            EventAggregator.GetEvent<TypeConstructedEvent>().Unsubscribe(OnTypeConstructed_IToolBarsView);
-
-            PlayAudioCueHi();
+            return LoadIcon("Tobi.Infrastructure;component/tango-icons/", resourceKey);
         }
 
-        private void pushCommandsToolbar()
+        public VisualBrush LoadGnomeNeuIcon(string resourceKey)
         {
-            var toolbars = Container.Resolve<IToolBarsView>();
+            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Neu/", resourceKey);
+        }
 
-            if (toolbars != null)
+        public VisualBrush LoadGnomeGionIcon(string resourceKey)
+        {
+            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Gion/", resourceKey);
+        }
+
+        public VisualBrush LoadGnomeFoxtrotIcon(string resourceKey)
+        {
+            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Foxtrot/", resourceKey);
+        }
+
+        private readonly List<RichDelegateCommand> m_listOfRegisteredRichCommands =
+            new List<RichDelegateCommand>();
+
+        public List<RichDelegateCommand> RegisteredRichCommands
+        {
+            get
             {
-                int uid1 = toolbars.AddToolBarGroup(new[] { ManageShortcutsCommand });
-                int uid2 = toolbars.AddToolBarGroup(new[] { MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
-                //int uid3 = toolbars.AddToolBarGroup(new[] { ExitCommand });
-                int uid4 = toolbars.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand });
+                return m_listOfRegisteredRichCommands;
+            }
+        }
+
+        public void RegisterRichCommand(RichDelegateCommand command)
+        {
+            m_listOfRegisteredRichCommands.Add(command);
+            AddInputBinding(command.KeyBinding);
+        }
+
+        public void UnRegisterRichCommand(RichDelegateCommand command)
+        {
+            m_listOfRegisteredRichCommands.Remove(command);
+            RemoveInputBinding(command.KeyBinding);
+        }
+
+        public bool AddInputBinding(InputBinding inputBinding)
+        {
+            var window = this as Window;
+            if (window != null && inputBinding != null)
+            {
+                logInputBinding(inputBinding);
+                window.InputBindings.Add(inputBinding);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void RemoveInputBinding(InputBinding inputBinding)
+        {
+            var window = this as Window;
+            if (window != null && inputBinding != null)
+            {
+                logInputBinding(inputBinding);
+                window.InputBindings.Remove(inputBinding);
+            }
+        }
+
+        private void logInputBinding(InputBinding inputBinding)
+        {
+            if (inputBinding.Gesture is KeyGesture)
+            {
+                m_Logger.Log(
+                    "KeyBinding (" +
+                    ((KeyGesture)(inputBinding.Gesture)).GetDisplayStringForCulture(CultureInfo.CurrentCulture) + ")",
+                    Category.Debug, Priority.Medium);
+            }
+            else
+            {
+                m_Logger.Log(
+                       "InputBinding (" +
+                       inputBinding.Gesture + ")",
+                       Category.Debug, Priority.Medium);
+            }
+        }
+
+        public void updateIconDrawScales(double value)
+        {
+            /*if (EventAggregator == null)
+            {
+                return;
+            }
+            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Publish(value);
+             */
+
+            foreach (var command in m_listOfRegisteredRichCommands)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+#if ICONS
+            foreach (var command in m_listOfIconRichCommands)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands2)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands3)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+            foreach (var command in m_listOfIconRichCommands4)
+            {
+                command.IconProvider.IconDrawScale = value;
+            }
+#endif
+        }
+
+#if ICONS
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands
+        {
+            get
+            {
+                return m_listOfIconRichCommands;
+            }
+        }
+
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands2 =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands2
+        {
+            get
+            {
+                return m_listOfIconRichCommands2;
+            }
+        }
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands3 =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands3
+        {
+            get
+            {
+                return m_listOfIconRichCommands3;
+            }
+        }
+        private readonly List<RichDelegateCommand> m_listOfIconRichCommands4 =
+            new List<RichDelegateCommand>();
+        public List<RichDelegateCommand> IconRichCommands4
+        {
+            get
+            {
+                return m_listOfIconRichCommands4;
             }
         }
 
         private void DisplayPreviewIconsDebugCommand_Executed()
         {
-            Logger.Log("ShellPresenter.DisplayPreviewIconsDebugCommand_Executed", Category.Debug, Priority.Medium);
+            m_Logger.Log("ShellView.DisplayPreviewIconsDebugCommand_Executed", Category.Debug, Priority.Medium);
 
             var resourceKeys = new[]
             {
@@ -913,7 +948,7 @@ namespace Tobi
                                                                   resourceKey,
                                                                   null,
                                                                   LoadTangoIcon(resourceKey),
-                                                                  null, ()=> true);
+                                                                  null, () => true);
                     m_listOfIconRichCommands.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -928,7 +963,7 @@ namespace Tobi
                                                                   resourceKey2,
                                                                   null,
                                                                   LoadGnomeNeuIcon(resourceKey2),
-                                                                  null, ()=> true);
+                                                                  null, () => true);
                     m_listOfIconRichCommands2.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -945,7 +980,7 @@ namespace Tobi
                                                                   resourceKey3,
                                                                   null,
                                                                   LoadGnomeGionIcon(resourceKey3),
-                                                                  null, ()=> true);
+                                                                  null, () => true);
                     m_listOfIconRichCommands3.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -960,7 +995,7 @@ namespace Tobi
                                                                   resourceKey4,
                                                                   null,
                                                                   LoadGnomeFoxtrotIcon(resourceKey4),
-                                                                  null, ()=> true);
+                                                                  null, () => true);
                     m_listOfIconRichCommands4.Add(command);
 
                     command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
@@ -984,396 +1019,6 @@ namespace Tobi
                 m_listOfIconRichCommands4.Clear();
             });
         }
-
-        private void exit()
-        {
-            Logger.Log("ShellPresenter.exit", Category.Debug, Priority.Medium);
-
-            //MessageBox.ShowModal("Good bye !", "Tobi says:");
-            /*TaskDialog.ShowModal("Tobi is exiting.",
-                "Just saying goodbye...",
-                "The Tobi application is now closing.",
-                TaskDialogIcon.Information);*/
-            m_Exiting = true;
-            Application.Current.Shutdown();
-        }
-
-        // Could be used after a ClickOnce update:
-        // private void OnUpdatingCompleted(object sender, AsyncCompletedEventArgs e)
-        private void restart()
-        {
-            string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
-
-            using (StreamWriter writer = new StreamWriter(File.Create(batchFile)))
-            {
-                string location = Assembly.GetExecutingAssembly().Location;
-                writer.WriteLine("start " + location);
-            }
-
-            Application.Current.Exit += (o, a) =>
-            {
-                using (Process p = new Process())
-                {
-                    p.StartInfo.FileName = batchFile;
-                    p.Start();
-                }
-            };
-
-            exit();
-        }
-
-        [Import(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-        protected ILoggerFacade LoggerFromMEF { get; private set; }
-
-        [Import(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-        protected Lazy<ILoggerFacade> LoggerFromMEFLazy { get; set; }
-
-        [ImportMany(typeof(ILoggerFacade), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true)]
-        public IEnumerable<ILoggerFacade> LoggersFromMEF { get; set; }
-
-
-        [Import(typeof(IShellPresenter), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-        protected Lazy<IShellPresenter> Presenter { get; set; }
-
-        public bool OnShellWindowClosing()
-        {
-            //Presenter.Value.PlayAudioCueHi();
-
-            LoggerFromMEFLazy.Value.Log(
-                "ShellPresenter:OnShellWindowClosing() 1 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
-                Category.Debug, Priority.Low);
-
-            LoggerFromMEF.Log(
-                "ShellPresenter:OnShellWindowClosing() 2 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
-                Category.Debug, Priority.Low);
-
-            foreach (ILoggerFacade log in LoggersFromMEF)
-            {
-                log.Log(
-                    "ShellPresenter:OnShellWindowClosing() 3 using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
-                    Category.Debug, Priority.Low);
-            }
-
-
-            Logger.Log("ShellPresenter.OnShellWindowClosing", Category.Debug, Priority.Medium);
-
-            if (m_Exiting) return true;
-
-            if (ExitCommand.CanExecute())
-            {
-                if (askUserConfirmExit())
-                {
-                    exit();
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool askUserConfirmExit()
-        {
-            Logger.Log("ShellPresenter.askUserConfirmExit", Category.Debug, Priority.Medium);
-
-            /*
-            try
-            {
-                throw new ArgumentException("Opps !", new ArgumentOutOfRangeException("Oops 2 !!"));
-            }
-            catch (Exception ex)
-            {
-                App.handleException(ex);
-            }*/
-
-            var label = new TextBlock
-                            {
-                                Text = UserInterfaceStrings.ExitConfirm,
-                                Margin = new Thickness(8, 0, 8, 0),
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                Focusable = true,
-                                TextWrapping = TextWrapping.Wrap
-                            };
-
-            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser")) { IconDrawScale = View.MagnificationLevel };
-            //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
-
-            var panel = new StackPanel
-                            {
-                                Orientation = Orientation.Horizontal,
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Stretch,
-                            };
-            panel.Children.Add(iconProvider.IconLarge);
-            panel.Children.Add(label);
-            //panel.Margin = new Thickness(8, 8, 8, 0);
-
-
-            var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.ExitConfirm)
-            {
-            };
-
-            var windowPopup = new PopupModalWindow(this,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.Exit),
-                                                   panel,
-                                                   PopupModalWindow.DialogButtonsSet.YesNo,
-                                                   PopupModalWindow.DialogButton.No,
-                                                   true, 300, 160, details, 40);
-
-            windowPopup.ShowModal();
-
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
-            {
-                var session = Container.Resolve<IUrakawaSession>();
-
-                if (session.DocumentProject != null && session.IsDirty)
-                {
-                    if (!session.Close())
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private readonly List<RichDelegateCommand> m_listOfRegisteredRichCommands =
-            new List<RichDelegateCommand>();
-
-        public List<RichDelegateCommand> RegisteredRichCommands
-        {
-            get
-            {
-                return m_listOfRegisteredRichCommands;
-            }
-        }
-
-        private readonly List<RichDelegateCommand> m_listOfIconRichCommands =
-            new List<RichDelegateCommand>();
-        public List<RichDelegateCommand> IconRichCommands
-        {
-            get
-            {
-                return m_listOfIconRichCommands;
-            }
-        }
-
-        private readonly List<RichDelegateCommand> m_listOfIconRichCommands2 =
-            new List<RichDelegateCommand>();
-        public List<RichDelegateCommand> IconRichCommands2
-        {
-            get
-            {
-                return m_listOfIconRichCommands2;
-            }
-        }
-        private readonly List<RichDelegateCommand> m_listOfIconRichCommands3 =
-            new List<RichDelegateCommand>();
-        public List<RichDelegateCommand> IconRichCommands3
-        {
-            get
-            {
-                return m_listOfIconRichCommands3;
-            }
-        }
-        private readonly List<RichDelegateCommand> m_listOfIconRichCommands4 =
-            new List<RichDelegateCommand>();
-        public List<RichDelegateCommand> IconRichCommands4
-        {
-            get
-            {
-                return m_listOfIconRichCommands4;
-            }
-        }
-
-        public void OnMagnificationLevelChanged(double value)
-        {
-            /*if (EventAggregator == null)
-            {
-                return;
-            }
-            EventAggregator.GetEvent<UserInterfaceScaledEvent>().Publish(value);
-             */
-
-            foreach (var command in m_listOfRegisteredRichCommands)
-            {
-                command.IconProvider.IconDrawScale = value;
-            }
-            foreach (var command in m_listOfIconRichCommands)
-            {
-                command.IconProvider.IconDrawScale = value;
-            }
-            foreach (var command in m_listOfIconRichCommands2)
-            {
-                command.IconProvider.IconDrawScale = value;
-            }
-            foreach (var command in m_listOfIconRichCommands3)
-            {
-                command.IconProvider.IconDrawScale = value;
-            }
-            foreach (var command in m_listOfIconRichCommands4)
-            {
-                command.IconProvider.IconDrawScale = value;
-            }
-        }
-
-        public void DimBackgroundWhile(Action action)
-        {
-            var aLayer = AdornerLayer.GetAdornerLayer((Visual)View.Window.Content);
-
-            var theAdorner = new DimAdorner((UIElement)View.Window.Content);
-            if (aLayer != null)
-            {
-                aLayer.Add(theAdorner);
-            }
-
-            action.Invoke();
-
-            if (aLayer != null)
-            {
-                aLayer.Remove(theAdorner);
-            }
-        }
-
-        public VisualBrush LoadIcon(string path, string resourceKey)
-        {
-            Object obj = Application.Current.TryFindResource(resourceKey);
-            if (obj == null)
-            {
-                Object comp = Application.LoadComponent(
-                    new Uri(path + resourceKey + ".xaml", UriKind.Relative));
-
-                Application.Current.Resources.MergedDictionaries.Add(comp as ResourceDictionary);
-
-                var brush = (VisualBrush) Application.Current.FindResource(resourceKey);
-
-                return brush;
-            }
-            else
-            {
-                return (VisualBrush) obj;
-            }
-        }
-
-        public VisualBrush LoadTangoIcon(string resourceKey)
-        {
-            return LoadIcon("Tobi.Infrastructure;component/tango-icons/", resourceKey);
-        }
-
-        public VisualBrush LoadGnomeNeuIcon(string resourceKey)
-        {
-            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Neu/", resourceKey);
-        }
-
-        public VisualBrush LoadGnomeGionIcon(string resourceKey)
-        {
-            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Gion/", resourceKey);
-        }
-
-        public VisualBrush LoadGnomeFoxtrotIcon(string resourceKey)
-        {
-            return LoadIcon("Tobi.Infrastructure;component/gnome-extra-icons/Foxtrot/", resourceKey);
-        }
-
-        public void RegisterRichCommand(RichDelegateCommand command)
-        {
-            m_listOfRegisteredRichCommands.Add(command);
-            AddInputBinding(command.KeyBinding);
-        }
-
-        public void UnRegisterRichCommand(RichDelegateCommand command)
-        {
-            m_listOfRegisteredRichCommands.Remove(command);
-            RemoveInputBinding(command.KeyBinding);
-        }
-
-        public bool AddInputBinding(InputBinding inputBinding)
-        {
-            var window = View as Window;
-            if (window != null && inputBinding != null)
-            {
-                logInputBinding(inputBinding);
-                window.InputBindings.Add(inputBinding);
-                return true;
-            }
-
-            return false;
-        }
-
-        public void RemoveInputBinding(InputBinding inputBinding)
-        {
-            var window = View as Window;
-            if (window != null && inputBinding != null)
-            {
-                logInputBinding(inputBinding);
-                window.InputBindings.Remove(inputBinding);
-            }
-        }
-
-        private void logInputBinding(InputBinding inputBinding)
-        {
-            if (inputBinding.Gesture is KeyGesture)
-            {
-                Logger.Log(
-                    "KeyBinding (" +
-                    ((KeyGesture)(inputBinding.Gesture)).GetDisplayStringForCulture(CultureInfo.CurrentCulture) + ")",
-                    Category.Debug, Priority.Medium);
-            }
-            else
-            {
-                Logger.Log(
-                       "InputBinding (" +
-                       inputBinding.Gesture + ")",
-                       Category.Debug, Priority.Medium);
-            }
-        }
+#endif
     }
 }
-
-/*
- 
-        public void ToggleView(bool? show, IToggableView view)
-        {
-            Logger.Log("ShellPresenter.ToggleView", Category.Debug, Priority.Medium);
-
-            var region = RegionManager.Regions[view.RegionName];
-            var isVisible = region.ActiveViews.Contains(view);
-
-            var makeVisible = true;
-            switch (show)
-            {
-                case null:
-                    {
-                        makeVisible = !isVisible;
-                    }
-                    break;
-                default:
-                    {
-                        makeVisible = (bool)show;
-                    }
-                    break;
-            }
-            if (makeVisible)
-            {
-                if (!isVisible)
-                {
-                    region.Add(view);
-                    region.Activate(view);
-                }
-                view.FocusControl();
-            }
-            else if (isVisible)
-            {
-                region.Deactivate(view);
-                region.Remove(view);
-            }
-
-            var menuView = Container.Resolve<MenuBarView>();
-            menuView.EnsureViewMenuCheckState(view.RegionName, makeVisible);
-        }
-
- */

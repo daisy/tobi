@@ -379,7 +379,7 @@ namespace Tobi.Modules.AudioPane
             m_LastPlayHeadTime = -1;
             IsWaveFormLoading = false;
 
-            //var shell = Container.Resolve<IShellPresenter>();
+            //var shell = Container.Resolve<IShellView>();
             //shell.DocumentProject
             if (project != null)
             {
@@ -870,8 +870,7 @@ namespace Tobi.Modules.AudioPane
         {
             if (e != null)
             {
-                var presenter = Container.Resolve<IShellPresenter>();
-                presenter.PlayAudioCueHi();
+                AudioCues.PlayHi();
 
                 if (e.Channel == 1)
                 {
@@ -936,8 +935,9 @@ namespace Tobi.Modules.AudioPane
 
                     RaisePropertyChanged("PcmFormat");
                 }
-                //var presenter = Container.Resolve<IShellPresenter>();
-                //presenter.PlayAudioCueTockTock();
+
+
+                //AudioCues.PlayTockTock();
 
 
                 var session = Container.Resolve<IUrakawaSession>();

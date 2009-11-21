@@ -24,7 +24,7 @@ namespace Tobi.Modules.MenuBar
         //[Import]
         //protected Lazy<ILoggerFacade> LoggerFromMEF { get; set; }
 
-        //[ImportMany(typeof(ILoggerFacade), AllowRecomposition = true)]
+        //[ImportMany(typeof(ILoggerFacade), AllowRecomposition = true, AllowDefault = false)]
         //public IEnumerable<ILoggerFacade> LoggersFromMEF { get; set; }
 
 
@@ -42,9 +42,9 @@ namespace Tobi.Modules.MenuBar
         {
             get
             {
-                var shellPresenter = Container.Resolve<IShellPresenter>();
+                var shellView = Container.Resolve<IShellView>();
 
-                return shellPresenter;
+                return shellView;
             }
         }
 
@@ -59,8 +59,8 @@ namespace Tobi.Modules.MenuBar
 
         public RichDelegateCommand ManageShortcutsCommand { get; private set; }
 
-        public RichDelegateCommand UndoCommand { get; private set; }
-        public RichDelegateCommand RedoCommand { get; private set; }
+        //public RichDelegateCommand UndoCommand { get; private set; }
+        //public RichDelegateCommand RedoCommand { get; private set; }
 
         public RichDelegateCommand CopyCommand { get; private set; }
         public RichDelegateCommand CutCommand { get; private set; }
@@ -73,14 +73,14 @@ namespace Tobi.Modules.MenuBar
         //public RichDelegateCommand NavNextCommand { get; private set; }
         //public RichDelegateCommand NavPreviousCommand { get; private set; }
 
-        public RichDelegateCommand ExportCommand { get; private set; }
+        //public RichDelegateCommand ExportCommand { get; private set; }
 
-        public RichDelegateCommand SaveCommand { get; private set; }
-        public RichDelegateCommand SaveAsCommand { get; private set; }
+        //public RichDelegateCommand SaveCommand { get; private set; }
+        //public RichDelegateCommand SaveAsCommand { get; private set; }
 
-        //public RichDelegateCommand NewCommand { get; private set; }
-        public RichDelegateCommand OpenCommand { get; private set; }
-        public RichDelegateCommand CloseCommand { get; private set; }
+        ////public RichDelegateCommand NewCommand { get; private set; }
+        //public RichDelegateCommand OpenCommand { get; private set; }
+        //public RichDelegateCommand CloseCommand { get; private set; }
 
         public RichDelegateCommand CommandShowMetadataPane { get; private set; }
         
@@ -134,20 +134,20 @@ namespace Tobi.Modules.MenuBar
 
             Logger.Log("MenuBarView.ctor", Category.Debug, Priority.Medium);
 
-            var session = Container.Resolve<IUrakawaSession>();
-            if (session != null)
-            {
-                SaveCommand = session.SaveCommand;
-                ExportCommand = session.ExportCommand;
-                SaveAsCommand = session.SaveAsCommand;
-                OpenCommand = session.OpenCommand;
-                //NewCommand = session.NewCommand;
-                CloseCommand = session.CloseCommand;
+            //var session = Container.Resolve<IUrakawaSession>();
+            //if (session != null)
+            //{
+            //    SaveCommand = session.SaveCommand;
+            //    ExportCommand = session.ExportCommand;
+            //    SaveAsCommand = session.SaveAsCommand;
+            //    OpenCommand = session.OpenCommand;
+            //    //NewCommand = session.NewCommand;
+            //    CloseCommand = session.CloseCommand;
 
-                UndoCommand = session.UndoCommand;
-                RedoCommand = session.RedoCommand;
+            //    UndoCommand = session.UndoCommand;
+            //    RedoCommand = session.RedoCommand;
 
-            }
+            //}
 
             //var metadata = Container.Resolve<MetadataPaneViewModel>();
             //if (metadata != null)
@@ -155,25 +155,25 @@ namespace Tobi.Modules.MenuBar
             //    CommandShowMetadataPane = metadata.CommandShowMetadataPane;
             //}
 
-            var shellPresenter = Container.Resolve<IShellPresenter>();
-            if (shellPresenter != null)
+            var shellView = Container.Resolve<IShellView>();
+            if (shellView != null)
             {
-                ExitCommand = shellPresenter.ExitCommand;
+                ExitCommand = shellView.ExitCommand;
 
-                MagnifyUiIncreaseCommand = shellPresenter.MagnifyUiIncreaseCommand;
-                MagnifyUiDecreaseCommand = shellPresenter.MagnifyUiDecreaseCommand;
-                ManageShortcutsCommand = shellPresenter.ManageShortcutsCommand;
+                MagnifyUiIncreaseCommand = shellView.MagnifyUiIncreaseCommand;
+                MagnifyUiDecreaseCommand = shellView.MagnifyUiDecreaseCommand;
+                ManageShortcutsCommand = shellView.ManageShortcutsCommand;
                
-                CopyCommand = shellPresenter.CopyCommand;
-                CutCommand = shellPresenter.CutCommand;
-                PasteCommand = shellPresenter.PasteCommand;
+                CopyCommand = shellView.CopyCommand;
+                CutCommand = shellView.CutCommand;
+                PasteCommand = shellView.PasteCommand;
 
-                HelpCommand = shellPresenter.HelpCommand;
-                PreferencesCommand = shellPresenter.PreferencesCommand;
-                //WebHomeCommand = shellPresenter.WebHomeCommand;
+                HelpCommand = shellView.HelpCommand;
+                PreferencesCommand = shellView.PreferencesCommand;
+                //WebHomeCommand = shellView.WebHomeCommand;
 
-                //NavNextCommand = shellPresenter.NavNextCommand;
-                //NavPreviousCommand = shellPresenter.NavPreviousCommand;
+                //NavNextCommand = shellView.NavNextCommand;
+                //NavPreviousCommand = shellView.NavPreviousCommand;
             }
 
             var audioModule = Container.Resolve<AudioPaneViewModel>();

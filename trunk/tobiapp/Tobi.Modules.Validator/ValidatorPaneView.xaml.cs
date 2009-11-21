@@ -16,6 +16,18 @@ namespace Tobi.Modules.Validator
     [Export(typeof(ValidatorPaneView)), PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class ValidatorPaneView : IPartImportsSatisfiedNotification
     {
+        public void OnImportsSatisfied()
+        {
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
+
+        //[Import(typeof(ValidatorPaneView), RequiredCreationPolicy = CreationPolicy.NonShared, AllowRecomposition = false)]
+        //protected PartCreator<ValidatorPaneView> PART;
+        //var v1 = PART.CreatePart().ExportedValue;
+        //var v2 = PART.CreatePart().ExportedValue;
+
         public ObservableCollection<ValidationItem> ValidationItems { get; set; }
 
         protected IEventAggregator EventAggregator { get; private set; }
@@ -25,7 +37,12 @@ namespace Tobi.Modules.Validator
         private readonly Validator Validator;
 
         [ImportingConstructor]
-        public ValidatorPaneView(Validator validator, IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+        public ValidatorPaneView(
+            [Import(typeof(Validator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+            Validator validator,
+            IUnityContainer container,
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger)
         {
             Container = container;
             EventAggregator = eventAggregator;
@@ -61,13 +78,6 @@ namespace Tobi.Modules.Validator
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
             resetValidationItems((Validator)e.Validator);
-        }
-
-        public void OnImportsSatisfied()
-        {
-//#if DEBUG
-//            Debugger.Break();
-//#endif
         }
     }
 

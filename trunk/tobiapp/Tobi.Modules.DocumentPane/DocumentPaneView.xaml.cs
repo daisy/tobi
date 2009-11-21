@@ -103,13 +103,13 @@ namespace Tobi.Modules.DocumentPane
             DataContext = this;
 
 
-            var shellPresenter = Container.Resolve<IShellPresenter>();
+            var shellView = Container.Resolve<IShellView>();
 
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
                 UserInterfaceStrings.Event_SwitchPrevious_KEYS,
-                shellPresenter.LoadTangoIcon("format-indent-less"),
+                shellView.LoadTangoIcon("format-indent-less"),
                 ()=>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
@@ -153,13 +153,13 @@ namespace Tobi.Modules.DocumentPane
                 },
                 ()=> CurrentTreeNode != null);
 
-            shellPresenter.RegisterRichCommand(CommandSwitchPhrasePrevious);
+            shellView.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
             CommandSwitchPhraseNext = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchNext,
                 UserInterfaceStrings.Event_SwitchNext_,
                 UserInterfaceStrings.Event_SwitchNext_KEYS,
-                shellPresenter.LoadTangoIcon("format-indent-more"),
+                shellView.LoadTangoIcon("format-indent-more"),
                 ()=>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
@@ -203,7 +203,7 @@ namespace Tobi.Modules.DocumentPane
                 },
                 ()=> CurrentTreeNode != null);
 
-            shellPresenter.RegisterRichCommand(CommandSwitchPhraseNext);
+            shellView.RegisterRichCommand(CommandSwitchPhraseNext);
             //
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Document_Focus,
@@ -213,7 +213,7 @@ namespace Tobi.Modules.DocumentPane
                 ()=> FocusHelper.Focus(this, m_FocusStartElement),
                 ()=> true);
 
-            shellPresenter.RegisterRichCommand(CommandFocus);
+            shellView.RegisterRichCommand(CommandFocus);
             //
 
             InitializeComponent();

@@ -1,27 +1,32 @@
 ﻿using Tobi.Common.MVVM;
-using Tobi.Common.MVVM.Command;
 using urakawa;
 
 namespace Tobi.Common
 {
+    ///<summary>
+    /// The public facade for an authoring session based on the Urakawa SDK data model.
+    ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        /// <summary>
+        /// The Project instance for the currently active document.
+        /// </summary>
         Project DocumentProject { get; }
+
+        /// <summary>
+        /// The file path where the current document was last saved.
+        /// </summary>
         string DocumentFilePath { get; }
+
+        /// <summary>
+        /// Tells whether the current document contains unsaved modifications.
+        /// </summary>
         bool IsDirty { get; }
 
+        /// <summary>
+        /// Requests to close the current document.
+        /// </summary>
+        /// <returns>true if the current document was successfully closed.</returns>
         bool Close();
-
-        RichDelegateCommand ExportCommand { get; }
-
-        RichDelegateCommand SaveCommand { get; }
-        RichDelegateCommand SaveAsCommand { get; }
-
-        //RichDelegateCommand NewCommand { get; }
-        RichDelegateCommand OpenCommand { get; }
-        RichDelegateCommand CloseCommand { get; }
-
-        RichDelegateCommand UndoCommand { get; }
-        RichDelegateCommand RedoCommand { get; }
     }
 }
