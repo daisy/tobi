@@ -124,13 +124,15 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
+            //Console.WriteLine(@"^^^^ PropertyChanged: " + propertyName);
+
             //TypeDescriptor.GetProperties(m_ClassInstancePropertyHost)[propertyName] == null
             if (!string.IsNullOrEmpty(propertyName) &&
                 m_ClassInstancePropertyHost.GetType().GetProperty(propertyName) == null)
             {
                 m_missingClassProperties.Add(propertyName);
 
-                string msg = String.Format("=== Invalid property name: ({0} / {1}) on {2}", propertyName, Reflect.GetField(() => propertyName).Name, m_ClassInstancePropertyHost.GetType().FullName);
+                string msg = String.Format(@"=== Invalid property name: ({0} / {1}) on {2}", propertyName, Reflect.GetField(() => propertyName).Name, m_ClassInstancePropertyHost.GetType().FullName);
                 //Debug.Fail(msg);
                 Console.WriteLine(msg);
             }
@@ -183,6 +185,8 @@ namespace Tobi.Common.MVVM
 
             PropertyChangedEventArgs argz = m_EventArgsCache.Handle(propertyName);
 
+            Debug.Assert(propertyName == argz.PropertyName);
+
             m_ClassInstancePropertyHost.DispatchPropertyChangedEvent(argz);
 
             /*
@@ -198,7 +202,14 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-            m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
+            string argzBump = m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
+
+#if DEBUG
+            if (argzBump != null)
+            {
+                Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (STRING): " + propertyName + @" --> " + argzBump);
+            }
+#endif
         }
 
         public void RaisePropertyChanged(PropertyChangedEventArgs argz)
@@ -210,7 +221,14 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-            m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
+            PropertyChangedEventArgs argzBump = m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
+
+#if DEBUG
+            if (argzBump != null)
+            {
+                Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (PROP): " + argz.PropertyName + @" --> " + argzBump.PropertyName);
+            }
+#endif
         }
 
         
@@ -222,9 +240,6 @@ namespace Tobi.Common.MVVM
         public void RaisePropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
             string name = GetMemberName(expression);
-#if DEBUG
-            Console.WriteLine("^^^^ PropertyChanged: " + name);
-#endif
             RaisePropertyChanged(name);
         }
 
@@ -239,6 +254,214 @@ namespace Tobi.Common.MVVM
                                             action.Invoke();
                                         }
                                     });
+        }
+    }
+
+    public class EventArgsCache
+    {
+        private CacheItem m_First;
+
+        protected class CacheItem
+        {
+            public CacheData data;
+            public CacheItem nextItem;
+        }
+
+        protected struct CacheData
+        {
+            public string propertyName;
+            public PropertyChangedEventArgs argz;
+        }
+
+        public PropertyChangedEventArgs Handle(string propertyName)
+        {
+            PropertyChangedEventArgs argz = find(propertyName);
+
+            if (argz == null)
+            {
+#if DEBUG
+                Console.WriteLine(@"^^^^ PropertyChangedEventArgs: " + propertyName);
+#endif
+                argz = new PropertyChangedEventArgs(propertyName);
+                add(propertyName, argz);
+            }
+
+            return argz;
+        }
+
+        private void add(string propertyName, PropertyChangedEventArgs argz)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    propertyName = propertyName,
+                    argz = argz
+                },
+                nextItem = null
+            };
+
+            if (m_First == null)
+            {
+                m_First = item;
+                return;
+            }
+
+            CacheItem last = m_First;
+            while (last.nextItem != null)
+            {
+                last = last.nextItem;
+            }
+            last.nextItem = item;
+        }
+
+        private PropertyChangedEventArgs find(string propertyName)
+        {
+            if (m_First == null)
+            {
+                return null;
+            }
+
+            CacheItem current = m_First;
+            do
+            {
+                if (current.data.propertyName == propertyName)
+                {
+                    return current.data.argz;
+                }
+                current = current.nextItem;
+            } while (current != null);
+
+            return null;
+        }
+    }
+
+    public class DependentPropsCache
+    {
+        private CacheItem m_First;
+
+        protected class CacheItem
+        {
+            public CacheData data;
+            public CacheItem nextItem;
+        }
+
+        protected struct CacheData
+        {
+            public string dependencyPropertyName;
+            public PropertyChangedEventArgs dependencyPropertyChangeEventArgs;
+
+            public string dependentPropertyName;
+            public PropertyChangedEventArgs dependentPropertyChangeEventArgs;
+        }
+
+        public PropertyChangedEventArgs Handle(PropertyChangedEventArgs dependency, Action<PropertyChangedEventArgs> action)
+        {
+            if (IsEmpty)
+            {
+                return null;
+            }
+
+            CacheItem current = m_First;
+            do
+            {
+                if (current.data.dependencyPropertyChangeEventArgs != null)
+                {
+                    if (current.data.dependencyPropertyChangeEventArgs == dependency)
+                    {
+                        action(current.data.dependentPropertyChangeEventArgs);
+
+                        return current.data.dependentPropertyChangeEventArgs;
+                    }
+                }
+                current = current.nextItem;
+            } while (current != null);
+
+            return null;
+        }
+
+        public string Handle(string dependency, Action<string> action)
+        {
+            if (IsEmpty)
+            {
+                return null;
+            }
+
+            CacheItem current = m_First;
+            do
+            {
+                if (current.data.dependencyPropertyName != null)
+                {
+                    if (current.data.dependencyPropertyName == dependency)
+                    {
+                        action(current.data.dependentPropertyName);
+
+                        return current.data.dependentPropertyName;
+                    }
+                }
+                current = current.nextItem;
+            } while (current != null);
+
+            return null;
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_First == null;
+            }
+        }
+
+        public void Flush()
+        {
+            m_First = null;
+        }
+
+        private void add(CacheItem item)
+        {
+            if (m_First == null)
+            {
+                m_First = item;
+                return;
+            }
+
+            CacheItem last = m_First;
+            while (last.nextItem != null)
+            {
+                last = last.nextItem;
+            }
+            last.nextItem = item;
+        }
+
+        public void Add(string dependency, string dependent)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    dependencyPropertyName = dependency,
+                    dependentPropertyName = dependent
+                },
+                nextItem = null
+            };
+
+            add(item);
+        }
+
+        public void Add(PropertyChangedEventArgs dependency, PropertyChangedEventArgs dependent)
+        {
+            var item = new CacheItem()
+            {
+                data = new CacheData()
+                {
+                    dependencyPropertyChangeEventArgs = dependency,
+                    dependentPropertyChangeEventArgs = dependent
+                },
+                nextItem = null
+            };
+
+            add(item);
         }
     }
 }
