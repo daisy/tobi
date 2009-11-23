@@ -144,7 +144,8 @@ namespace Tobi.Common.MVVM
         #region INotifyPropertyChanged
 
         //private Dictionary<String, PropertyChangedEventArgs> m_cachePropertyChangedEventArgs;
-        private EventArgsCache m_EventArgsCache = new EventArgsCache();
+        private static EventArgsCache m_EventArgsCache = new EventArgsCache();
+        private static readonly Object m_EventArgsCache_LOCK = new object();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -183,7 +184,11 @@ namespace Tobi.Common.MVVM
             VerifyPropertyName(propertyName);
 #endif
 
-            PropertyChangedEventArgs argz = m_EventArgsCache.Handle(propertyName);
+            PropertyChangedEventArgs argz;
+            lock (m_EventArgsCache_LOCK)
+            {
+                argz = m_EventArgsCache.Handle(propertyName);
+            }
 
             Debug.Assert(propertyName == argz.PropertyName);
 
