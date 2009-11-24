@@ -91,9 +91,6 @@ namespace Tobi.Plugin.ToolBars
 
         public int AddToolBarGroup(RichDelegateCommand[] commands)
         {
-            //TODO: restore TOOLBAR comands !
-            return -1;
-
             m_Logger.Log(@"AddToolBarGroup", Category.Debug, Priority.Medium);
 #if DEBUG
             if (!Dispatcher.CheckAccess())

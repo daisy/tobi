@@ -14,48 +14,50 @@ namespace Tobi.Plugin.Validator
     [Export(typeof(Validator)), PartCreationPolicy(CreationPolicy.Shared)]
     public class Validator : AbstractValidator, IPartImportsSatisfiedNotification
     {
+#pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
-//#if DEBUG
-//            Debugger.Break();
-//#endif
-
-            var session = Container.Resolve<IUrakawaSession>();
-            if (session.DocumentProject != null)
-            {
-                OnProjectLoaded(session.DocumentProject);
-            }
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        
         }
 
-        public readonly IEnumerable<IValidator> Validators;
+        private readonly IEventAggregator m_EventAggregator;
+        private readonly ILoggerFacade m_Logger;
+
+        private readonly IUrakawaSession m_UrakawaSession;
+        public readonly IEnumerable<IValidator> m_Validators;
 
         [ImportingConstructor]
         public Validator(
-            IUnityContainer container,
-            IEventAggregator eventAggregator,
             ILoggerFacade logger,
-
+            IEventAggregator eventAggregator,
             [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
-            IEnumerable<IValidator> validators)
+            IEnumerable<IValidator> validators,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session)
         {
-            Container = container;
-            EventAggregator = eventAggregator;
-            Logger = logger;
+            m_EventAggregator = eventAggregator;
+            m_Logger = logger;
 
-            Validators = validators;
+            m_Validators = validators;
+            m_UrakawaSession = session;
 
             IsValid = true;
 
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+            if (m_UrakawaSession.DocumentProject != null)
+            {
+                OnProjectLoaded(m_UrakawaSession.DocumentProject);
+            }
+
+            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
         }
 
         //EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
         //SubscriptionToken token = EventAggregator.GetEvent<TypeConstructedEvent>().Subscribe(OnTypeConstructed_IUrakawaSession, ThreadOption.UIThread, false, type => typeof(IUrakawaSession).IsAssignableFrom(type));
-
-        protected IEventAggregator EventAggregator { get; private set; }
-        protected ILoggerFacade Logger { get; private set; }
-        protected IUnityContainer Container { get; private set; }
 
         private void OnProjectLoaded(Project project)
         {
@@ -84,12 +86,12 @@ namespace Tobi.Plugin.Validator
 
         public override string Name
         {
-            get { return "Aggregator Validator"; }
+            get { return @"Aggregator Validator"; }
         }
 
         public override string Description
         {
-            get { return "This is the main content validator"; }
+            get { return @"This is the main content validator"; }
         }
 
         public override IEnumerable<ValidationItem> ValidationItems
@@ -101,7 +103,7 @@ namespace Tobi.Plugin.Validator
                     yield return null;
                 }
 
-                foreach (IValidator validator in Validators)
+                foreach (IValidator validator in m_Validators)
                 {
                     if (validator.IsValid)
                     {
@@ -120,9 +122,12 @@ namespace Tobi.Plugin.Validator
 
         public override bool Validate()
         {
+            // Is LINQ really more readble for the average developer ?
+            //bool m_IsValid = Validators.Aggregate(true, (current, validator) => current && validator.Validate());
+
             bool m_IsValid = true;
 
-            foreach (IValidator validator in Validators)
+            foreach (IValidator validator in m_Validators)
             {
                 m_IsValid = m_IsValid && validator.Validate();
             }

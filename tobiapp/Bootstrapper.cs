@@ -17,6 +17,8 @@ using Tobi.Plugin.AudioPane;
 using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
+using Tobi.Plugin.Validator;
+using Tobi.Plugin.Validator.Metadata;
 
 namespace Tobi
 {
@@ -215,7 +217,9 @@ namespace Tobi
             Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
             {
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin)))
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin)))
             }));
 
             //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");

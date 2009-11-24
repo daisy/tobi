@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="MetadataValidationError.cs" />
     <Compile Include="MetadataValidator.cs" />
+    <Compile Include="MetadataValidatorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
