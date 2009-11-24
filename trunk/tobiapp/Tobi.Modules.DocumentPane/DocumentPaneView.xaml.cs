@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Media;
 using System.Windows;
 using System.Windows.Automation;
@@ -57,6 +58,7 @@ namespace Tobi.Plugin.DocumentPane
     /// <summary>
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
+    [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class DocumentPaneView // : INotifyPropertyChangedEx
     {
 
@@ -83,33 +85,36 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandSwitchPhrasePrevious { get; private set; }
         public RichDelegateCommand CommandSwitchPhraseNext { get; private set; }
+
         public RichDelegateCommand CommandFocus { get; private set; }
 
-        protected IUnityContainer Container { get; private set; }
+        private readonly ILoggerFacade m_Logger;
 
-        protected ILoggerFacade Logger { private set; get; }
+        private readonly IEventAggregator m_EventAggregator;
 
-        protected IEventAggregator EventAggregator { private set; get; }
+        private readonly IShellView m_ShellView;
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public DocumentPaneView(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
+        [ImportingConstructor]
+        public DocumentPaneView(
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView)
         {
-            EventAggregator = eventAggregator;
-            Container = container;
-            Logger = logger;
+            m_EventAggregator = eventAggregator;
+            m_Logger = logger;
+            m_ShellView = shellView;
 
             DataContext = this;
-
-
-            var shellView = Container.Resolve<IShellView>();
 
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
                 UserInterfaceStrings.Event_SwitchPrevious_KEYS,
-                shellView.LoadTangoIcon("format-indent-less"),
+                m_ShellView.LoadTangoIcon("format-indent-less"),
                 ()=>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
@@ -117,10 +122,10 @@ namespace Tobi.Plugin.DocumentPane
                         TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
                         if (nextNode != null)
                         {
-                            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
                                        Category.Debug, Priority.Medium);
 
-                            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                             return;
                         }
                     }
@@ -129,10 +134,10 @@ namespace Tobi.Plugin.DocumentPane
                         TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(CurrentTreeNode);
                         if (nextNode != null)
                         {
-                            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
                                        Category.Debug, Priority.Medium);
 
-                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
                             return;
                         }
                         else
@@ -140,10 +145,10 @@ namespace Tobi.Plugin.DocumentPane
                             nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
                             if (nextNode != null)
                             {
-                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                                m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
                                            Category.Debug, Priority.Medium);
 
-                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                                 return;
                             }
                         }
@@ -153,13 +158,13 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 ()=> CurrentTreeNode != null);
 
-            shellView.RegisterRichCommand(CommandSwitchPhrasePrevious);
+            m_ShellView.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
             CommandSwitchPhraseNext = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchNext,
                 UserInterfaceStrings.Event_SwitchNext_,
                 UserInterfaceStrings.Event_SwitchNext_KEYS,
-                shellView.LoadTangoIcon("format-indent-more"),
+                m_ShellView.LoadTangoIcon("format-indent-more"),
                 ()=>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
@@ -167,10 +172,10 @@ namespace Tobi.Plugin.DocumentPane
                         TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithText();
                         if (nextNode != null)
                         {
-                            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
                                        Category.Debug, Priority.Medium);
 
-                            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                             return;
                         }
                     }
@@ -179,10 +184,10 @@ namespace Tobi.Plugin.DocumentPane
                         TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(CurrentTreeNode);
                         if (nextNode != null)
                         {
-                            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
                                        Category.Debug, Priority.Medium);
 
-                            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
                             return;
                         }
                         else
@@ -190,10 +195,10 @@ namespace Tobi.Plugin.DocumentPane
                             nextNode = CurrentTreeNode.GetNextSiblingWithText();
                             if (nextNode != null)
                             {
-                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                                m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
                                            Category.Debug, Priority.Medium);
 
-                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                                 return;
                             }
                         }
@@ -203,7 +208,7 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 ()=> CurrentTreeNode != null);
 
-            shellView.RegisterRichCommand(CommandSwitchPhraseNext);
+            m_ShellView.RegisterRichCommand(CommandSwitchPhraseNext);
             //
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Document_Focus,
@@ -213,7 +218,7 @@ namespace Tobi.Plugin.DocumentPane
                 ()=> FocusHelper.Focus(this, m_FocusStartElement),
                 ()=> true);
 
-            shellView.RegisterRichCommand(CommandFocus);
+            m_ShellView.RegisterRichCommand(CommandFocus);
             //
 
             InitializeComponent();
@@ -239,11 +244,11 @@ namespace Tobi.Plugin.DocumentPane
             resetFlowDocument();
             TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
 
-            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
-            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
+            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
 
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
         }
 
         /*
@@ -559,10 +564,10 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (subTreeNode != null)
                 {
-                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected",
+                    m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected",
                                Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+                    m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
                 }
             }
         }
@@ -576,7 +581,7 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            var converter = new XukToFlowDocument(Logger, EventAggregator,
+            var converter = new XukToFlowDocument(m_Logger, m_EventAggregator,
                             OnMouseUpFlowDoc,
                             (textElem) =>
                             {
@@ -590,7 +595,7 @@ namespace Tobi.Plugin.DocumentPane
                             },
                             (uri) =>
                             {
-                                Logger.Log("DocumentPaneView.OnRequestNavigate", Category.Debug, Priority.Medium);
+                                m_Logger.Log("DocumentPaneView.OnRequestNavigate", Category.Debug, Priority.Medium);
 
                                 if (uri.ToString().StartsWith("#"))
                                 {
@@ -612,10 +617,10 @@ namespace Tobi.Plugin.DocumentPane
                 var treeNode = node.GetFirstDescendantWithText();
                 if (treeNode != null)
                 {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+                    m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
                                Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
                 }
 
                 return;
@@ -624,25 +629,25 @@ namespace Tobi.Plugin.DocumentPane
             if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
                 && node.IsDescendantOf(CurrentTreeNode))
             {
-                Logger.Log(
+                m_Logger.Log(
                     "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
                     Category.Debug, Priority.Medium);
 
-                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
+                m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
             }
             else
             {
-                Logger.Log(
+                m_Logger.Log(
                     "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
                     Category.Debug, Priority.Medium);
 
-                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
             }
         }
 
         private void OnMouseUpFlowDoc()
         {
-            Logger.Log("DocumentPaneView.OnMouseUpFlowDoc", Category.Debug, Priority.Medium);
+            m_Logger.Log("DocumentPaneView.OnMouseUpFlowDoc", Category.Debug, Priority.Medium);
 
             TextSelection selection = FlowDocReader.Selection;
             if (selection != null && !selection.IsEmpty)
@@ -905,9 +910,9 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textElement.Tag is TreeNode)
                 {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
+                    m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
+                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
                 }
                 else
                 {

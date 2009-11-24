@@ -181,6 +181,8 @@ namespace Tobi.Common
         public const string Menu_NavigationPane = "_Navigation panel"; // TODO: move this language resource in its own module (NavigationModule)
         public const string Menu_DocumentPane = "_Document panel"; // TODO: move this language resource in its own module (DocumentModule)
         public const string Menu_AudioPane = "_Audio panel"; // TODO: move this language resource in its own module (AudioModule)
+        
+        public const string Menu_Navigation = "Navi_gation";
 
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";
