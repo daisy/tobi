@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
-using Tobi.Plugin.AudioPane;
 using System.Linq;
 
 namespace Tobi.Plugin.MenuBar
@@ -34,7 +29,6 @@ namespace Tobi.Plugin.MenuBar
 
         private readonly ILoggerFacade m_Logger;
         private readonly IRegionManager m_RegionManager;
-        private readonly IShellView m_ShellView;
 
 
         ///<summary>
@@ -43,17 +37,13 @@ namespace Tobi.Plugin.MenuBar
         ///</summary>
         ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
         ///<param name="regionManager">normally obtained from the Unity container, it's a built-in CAG service</param>
-        ///<param name="shellView">normally obtained from the Unity container, it's a Tobi-specific entity</param>
         [ImportingConstructor]
         public MenuBarView(
             ILoggerFacade logger,
-            IRegionManager regionManager,
-            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            IShellView shellView)
+            IRegionManager regionManager)
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
-            m_ShellView = shellView;
 
             m_Logger.Log(@"MenuBarView.ctor", Category.Debug, Priority.Medium);
 
@@ -67,27 +57,6 @@ namespace Tobi.Plugin.MenuBar
             //if (metadata != null)
             //{
             //    CommandShowMetadataPane = metadata.CommandShowMetadataPane;
-            //}
-
-            //var shellView = Container.Resolve<IShellView>();
-            //if (shellView != null)
-            //{
-            //    ExitCommand = shellView.ExitCommand;
-
-            //    MagnifyUiIncreaseCommand = shellView.MagnifyUiIncreaseCommand;
-            //    MagnifyUiDecreaseCommand = shellView.MagnifyUiDecreaseCommand;
-            //    ManageShortcutsCommand = shellView.ManageShortcutsCommand;
-
-            //    CopyCommand = shellView.CopyCommand;
-            //    CutCommand = shellView.CutCommand;
-            //    PasteCommand = shellView.PasteCommand;
-
-            //    HelpCommand = shellView.HelpCommand;
-            //    PreferencesCommand = shellView.PreferencesCommand;
-            //    //WebHomeCommand = shellView.WebHomeCommand;
-
-            //    //NavNextCommand = shellView.NavNextCommand;
-            //    //NavPreviousCommand = shellView.NavPreviousCommand;
             //}
 
             //var audioModule = Container.Resolve<AudioPaneViewModel>();
@@ -264,39 +233,39 @@ namespace Tobi.Plugin.MenuBar
         //}
     }
 
-    /// <summary>
-    /// Multiple choice of DataTemplate for the MenuItems based on the DataContext type
-    /// </summary>
-    public class MenuItemDataTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate MenuItemSeparatorDataTemplate { get; set; }
-        public DataTemplate MenuItemSimpleDataTemplate { get; set; }
-        public DataTemplate MenuItemToggleDataTemplate { get; set; }
+    ///// <summary>
+    ///// Multiple choice of DataTemplate for the MenuItems based on the DataContext type
+    ///// </summary>
+    //public class MenuItemDataTemplateSelector : DataTemplateSelector
+    //{
+    //    public DataTemplate MenuItemSeparatorDataTemplate { get; set; }
+    //    public DataTemplate MenuItemSimpleDataTemplate { get; set; }
+    //    public DataTemplate MenuItemToggleDataTemplate { get; set; }
 
-        public override DataTemplate SelectTemplate(object item,
-                   DependencyObject container)
-        {
-            if (item == null)
-            {
-                return MenuItemSeparatorDataTemplate;
-            }
+    //    public override DataTemplate SelectTemplate(object item,
+    //               DependencyObject container)
+    //    {
+    //        if (item == null)
+    //        {
+    //            return MenuItemSeparatorDataTemplate;
+    //        }
 
-            if (item is RichDelegateCommand)
-            {
-                //RichDelegateCommand cmd = item as RichDelegateCommand;
+    //        if (item is RichDelegateCommand)
+    //        {
+    //            //RichDelegateCommand cmd = item as RichDelegateCommand;
 
-                //Window window = Application.Current.MainWindow;
-                //window.FindResource("MenuItemSimpleDataTemplate") as DataTemplate;
+    //            //Window window = Application.Current.MainWindow;
+    //            //window.FindResource("MenuItemSimpleDataTemplate") as DataTemplate;
 
-                return MenuItemSimpleDataTemplate;
-            }
+    //            return MenuItemSimpleDataTemplate;
+    //        }
 
-            if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
-            {
-                return MenuItemToggleDataTemplate;
-            }
+    //        if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
+    //        {
+    //            return MenuItemToggleDataTemplate;
+    //        }
 
-            return MenuItemSeparatorDataTemplate;
-        }
-    }
+    //        return MenuItemSeparatorDataTemplate;
+    //    }
+    //}
 }

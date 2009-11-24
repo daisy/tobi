@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -20,7 +21,23 @@ namespace Tobi.Common.UI
             else if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
             {
                 var data = (TwoStateMenuItemRichCommand_DataContextWrapper)item;
-                TwoStateMenuItemRichCommand.ConfigureTwoStateMenuItemRichCommand((TwoStateMenuItemRichCommand)element, data.RichCommandActive);
+                var menuItem = (TwoStateMenuItemRichCommand) element;
+
+                menuItem.RichCommandOne = data.RichCommandOne;
+                menuItem.RichCommandTwo = data.RichCommandTwo;
+                menuItem.InputBindingManager = data.InputBindingManager;
+
+                var binding = new Binding
+                {
+                    Mode = BindingMode.OneWay,
+                    Source = data.RichCommandActive_BindingSource,
+                    Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(data.RichCommandActive_BindingPropertyPathLambdaExpr))
+                };
+
+                var expr = menuItem.SetBinding(TwoStateMenuItemRichCommand.RichCommandActiveProperty, binding);
+
+                // NOT needed because OnRichCommandActiveChanged() is triggered by the above binding statement
+                //TwoStateMenuItemRichCommand.ConfigureTwoStateMenuItemRichCommand(menuItem, data.RichCommandActive);
             }
 
             base.PrepareContainerForItemOverride(element, item);
@@ -281,54 +298,90 @@ namespace Tobi.Common.UI
         }
     }
 
-    public class TwoStateMenuItemRichCommand_DataContextWrapper : PropertyChangedNotifyBase
+    public class TwoStateMenuItemRichCommand_DataContextWrapper // : PropertyChangedNotifyBase
     {
-        private IInputBindingManager m_InputBindingManager;
+        public object RichCommandActive_BindingSource
+        {
+            get;
+            set;
+        }
+
         public IInputBindingManager InputBindingManager
         {
-            get { return m_InputBindingManager; }
-            set
-            {
-                if (value == m_InputBindingManager) { return; }
-                m_InputBindingManager = value;
-                RaisePropertyChanged(() => InputBindingManager);
-            }
+            get;
+            set;
         }
 
-        private RichDelegateCommand m_RichCommandOne;
         public RichDelegateCommand RichCommandOne
         {
-            get { return m_RichCommandOne; }
-            set
-            {
-                if (value == m_RichCommandOne) { return; }
-                m_RichCommandOne = value;
-                RaisePropertyChanged(() => RichCommandOne);
-            }
+            get;
+            set;
         }
 
-        private RichDelegateCommand m_RichCommandTwo;
         public RichDelegateCommand RichCommandTwo
         {
-            get { return m_RichCommandTwo; }
-            set
-            {
-                if (value == m_RichCommandTwo) { return; }
-                m_RichCommandTwo = value;
-                RaisePropertyChanged(() => RichCommandTwo);
-            }
+            get;
+            set;
         }
 
-        private Boolean m_RichCommandActive;
         public Boolean RichCommandActive
         {
-            get { return m_RichCommandActive; }
-            set
-            {
-                if (value == m_RichCommandActive) { return; }
-                m_RichCommandActive = value;
-                RaisePropertyChanged(() => RichCommandActive);
-            }
+            get;
+            set;
         }
+
+        public Expression<Func<object>> RichCommandActive_BindingPropertyPathLambdaExpr
+        {
+            get;
+            set;
+        }
+
+        //private IInputBindingManager m_InputBindingManager;
+        //public IInputBindingManager InputBindingManager
+        //{
+        //    get { return m_InputBindingManager; }
+        //    set
+        //    {
+        //        if (value == m_InputBindingManager) { return; }
+        //        m_InputBindingManager = value;
+        //        RaisePropertyChanged(() => InputBindingManager);
+        //    }
+        //}
+
+        //private RichDelegateCommand m_RichCommandOne;
+        //public RichDelegateCommand RichCommandOne
+        //{
+        //    get { return m_RichCommandOne; }
+        //    set
+        //    {
+        //        if (value == m_RichCommandOne) { return; }
+        //        m_RichCommandOne = value;
+        //        RaisePropertyChanged(() => RichCommandOne);
+        //    }
+        //}
+
+        //private RichDelegateCommand m_RichCommandTwo;
+        //public RichDelegateCommand RichCommandTwo
+        //{
+        //    get { return m_RichCommandTwo; }
+        //    set
+        //    {
+        //        if (value == m_RichCommandTwo) { return; }
+        //        m_RichCommandTwo = value;
+        //        RaisePropertyChanged(() => RichCommandTwo);
+        //    }
+        //}
+
+        //private Boolean m_RichCommandActive;
+        //public Boolean RichCommandActive
+        //{
+        //    get { return m_RichCommandActive; }
+        //    set
+        //    {
+        //        if (value == m_RichCommandActive) { return; }
+        //        m_RichCommandActive = value;
+        //        RaisePropertyChanged(() => RichCommandActive);
+        //    }
+        //}
     }
 }

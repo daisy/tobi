@@ -48,21 +48,8 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandSelectPreviousChunk { get; private set; }
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
-
-        public IInputBindingManager InputBindingManager
-        {
-            get
-            {
-                var shellView = Container.Resolve<IShellView>();
-
-                return shellView;
-            }
-        }
-
         private void initializeCommands_View()
         {
-            var shellView = Container.Resolve<IShellView>();
-
             CommandRefresh = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Reload,
                 UserInterfaceStrings.Audio_Reload_,
@@ -77,7 +64,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading); //IsAudioLoaded
 
-            shellView.RegisterRichCommand(CommandRefresh);
+            m_ShellView.RegisterRichCommand(CommandRefresh);
             //
             CommandZoomSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_ZoomSelection,
@@ -93,13 +80,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> View != null && !IsWaveFormLoading && IsSelectionSet);
 
-            shellView.RegisterRichCommand(CommandZoomSelection);
+            m_ShellView.RegisterRichCommand(CommandZoomSelection);
             //
             CommandZoomFitFull = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FitFull,
                 UserInterfaceStrings.Audio_FitFull_,
                 UserInterfaceStrings.Audio_FitFull_KEYS,
-                shellView.LoadTangoIcon("utilities-system-monitor"),
+                m_ShellView.LoadTangoIcon("utilities-system-monitor"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandZoomFitFull", Category.Debug, Priority.Medium);
@@ -108,19 +95,19 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> View != null && !IsWaveFormLoading);
 
-            shellView.RegisterRichCommand(CommandZoomFitFull);
+            m_ShellView.RegisterRichCommand(CommandZoomFitFull);
             //
             //
             CommandAudioSettings = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Settings,
                 UserInterfaceStrings.Audio_Settings_,
                 null,
-                shellView.LoadTangoIcon("audio-card"),
+                m_ShellView.LoadTangoIcon("audio-card"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandAudioSettings", Category.Debug, Priority.Medium);
 
-                    var windowPopup = new PopupModalWindow(shellView,
+                    var windowPopup = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(
                                                                UserInterfaceStrings.Audio_Settings),
                                                            new AudioSettings(this),
@@ -132,7 +119,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> true);
 
-            shellView.RegisterRichCommand(CommandAudioSettings);
+            m_ShellView.RegisterRichCommand(CommandAudioSettings);
             //
             CommandShowOptionsDialog = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_ShowOptions,
@@ -143,12 +130,11 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandShowOptionsDialog", Category.Debug, Priority.Medium);
 
-                    var shellView_ = Container.Resolve<IShellView>();
                     //var window = shellView.View as Window;
 
                     var pane = new AudioOptions { DataContext = this };
 
-                    var windowPopup = new PopupModalWindow(shellView_,
+                    var windowPopup = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_ShowOptions),
                                                            pane,
                                                            PopupModalWindow.DialogButtonsSet.Close,
@@ -158,7 +144,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> true);
 
-            shellView.RegisterRichCommand(CommandShowOptionsDialog);
+            m_ShellView.RegisterRichCommand(CommandShowOptionsDialog);
             //
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Focus,
@@ -173,7 +159,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> View != null);
 
-            shellView.RegisterRichCommand(CommandFocus);
+            m_ShellView.RegisterRichCommand(CommandFocus);
             //
             CommandFocusStatusBar = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FocusStatusBar,
@@ -188,19 +174,17 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> View != null);
 
-            shellView.RegisterRichCommand(CommandFocusStatusBar);
+            m_ShellView.RegisterRichCommand(CommandFocusStatusBar);
             //
         }
 
         private void initializeCommands_Edit()
         {
-            var shellView = Container.Resolve<IShellView>();
-
             CommandOpenFile = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,
                 UserInterfaceStrings.Audio_OpenFile_KEYS,
-                shellView.LoadTangoIcon("document-open"),
+                m_ShellView.LoadTangoIcon("document-open"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandOpenFile", Category.Debug, Priority.Medium);
@@ -210,13 +194,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && !IsMonitoring && !IsRecording);
 
-            shellView.RegisterRichCommand(CommandOpenFile);
+            m_ShellView.RegisterRichCommand(CommandOpenFile);
             //
             CommandInsertFile = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_InsertFile,
                 UserInterfaceStrings.Audio_InsertFile_,
                 UserInterfaceStrings.Audio_InsertFile_KEYS,
-                shellView.LoadGnomeNeuIcon("Neu_go-jump"),
+                m_ShellView.LoadGnomeNeuIcon("Neu_go-jump"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandInsertFile", Category.Debug, Priority.Medium);
@@ -226,20 +210,18 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=>
                 {
-                    var session = Container.Resolve<IUrakawaSession>();
-
                     return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
-                        && session.DocumentProject != null && State.CurrentTreeNode != null
+                        && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
                         && IsAudioLoaded;
                 });
 
-            shellView.RegisterRichCommand(CommandInsertFile);
+            m_ShellView.RegisterRichCommand(CommandInsertFile);
             //
             CommandDeleteAudioSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Delete,
                 UserInterfaceStrings.Audio_Delete_,
                 UserInterfaceStrings.Audio_Delete_KEYS,
-                shellView.LoadGnomeNeuIcon("Neu_dialog-cancel"),
+                m_ShellView.LoadGnomeNeuIcon("Neu_dialog-cancel"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandDeleteAudioSelection", Category.Debug, Priority.Medium);
@@ -320,42 +302,38 @@ namespace Tobi.Plugin.AudioPane
                         return;
                     }
 
-                    var session = Container.Resolve<IUrakawaSession>();
-
                     if (listOfTreeNodeAndStreamSelection.Count == 1)
                     {
-                        var command = session.DocumentProject.Presentations.Get(0).CommandFactory.
+                        var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
                                     CreateTreeNodeAudioStreamDeleteCommand(listOfTreeNodeAndStreamSelection[0]);
 
-                        session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
+                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
                     }
                     else
                     {
-                        session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction("Delete spanning audio portion", "Delete a portion of audio that spans across several treenodes");
+                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction("Delete spanning audio portion", "Delete a portion of audio that spans across several treenodes");
 
                         foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
                         {
-                            var command = session.DocumentProject.Presentations.Get(0).CommandFactory.
+                            var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
                                         CreateTreeNodeAudioStreamDeleteCommand(selection);
 
-                            session.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
+                            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
                         }
 
-                        session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
                     }
                 },
                 ()=>
                 {
-                    var session = Container.Resolve<IUrakawaSession>();
-
                     return !IsWaveFormLoading
                         && !IsPlaying && !IsMonitoring && !IsRecording
-                        && session.DocumentProject != null
+                        && m_UrakawaSession.DocumentProject != null
                         && State.CurrentTreeNode != null
                         && IsAudioLoaded && IsSelectionSet;
                 });
 
-            shellView.RegisterRichCommand(CommandDeleteAudioSelection);
+            m_ShellView.RegisterRichCommand(CommandDeleteAudioSelection);
             //
         }
 

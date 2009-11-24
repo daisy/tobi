@@ -1,14 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
@@ -19,24 +20,54 @@ using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
-    /// <summary>
-    /// ViewModel for the AudioPane
-    /// </summary>
-    public partial class AudioPaneViewModel : ViewModelBase
+    ///<summary>
+    /// Single shared instance (singleton) of the audio view
+    ///</summary>
+    [Export(typeof(AudioPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
+    public partial class AudioPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
+#pragma warning disable 1591 // non-documented method
+        public void OnImportsSatisfied()
+#pragma warning restore 1591
+        {
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
+
         #region Construction
 
-        public IEventAggregator EventAggregator { get; private set; }
-        public ILoggerFacade Logger { get; private set; }
+        private readonly ILoggerFacade Logger;
+        private readonly IEventAggregator EventAggregator;
 
+        private readonly IShellView m_ShellView;
+        private readonly IUrakawaSession m_UrakawaSession;
+
+        
         ///<summary>
-        /// Dependency-Injected constructor
+        /// We inject a few dependencies in this constructor.
+        /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
         ///</summary>
-        public AudioPaneViewModel(IUnityContainer container, IEventAggregator eventAggregator, ILoggerFacade logger)
-            : base(container)
+        ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="eventAggregator">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="shellView">normally obtained from the Unity container, it's a Tobi built-in type</param>
+        ///<param name="session">normally obtained from the Unity container, it's a Tobi built-in type</param>
+        [ImportingConstructor]
+        public AudioPaneViewModel(
+            ILoggerFacade logger,
+            IEventAggregator eventAggregator,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session
+            )
+            : base(null) // TODO: remove this init !
         {
             EventAggregator = eventAggregator;
             Logger = logger;
+
+            m_ShellView = shellView;
+            m_UrakawaSession = session;
 
             Initialize();
 
@@ -144,6 +175,11 @@ namespace Tobi.Plugin.AudioPane
                 RaisePropertyChanged(() => StatusBarMessage);
             }
             get { return m_StatusBarMessage; }
+        }
+
+        public IInputBindingManager InputBindingManager
+        {
+            get { return m_ShellView; }
         }
 
         ~AudioPaneViewModel()
@@ -453,12 +489,7 @@ namespace Tobi.Plugin.AudioPane
         {
             get
             {
-                var shell = Container.Resolve<IShellView>();
-                if (shell != null)
-                {
-                    return shell.SplitterDrag;
-                }
-                return false;
+                return m_ShellView.SplitterDrag;
             }
         }
 
@@ -939,10 +970,7 @@ namespace Tobi.Plugin.AudioPane
 
                 //AudioCues.PlayTockTock();
 
-
-                var session = Container.Resolve<IUrakawaSession>();
-
-                if (session.DocumentProject != null)
+                if (m_UrakawaSession.DocumentProject != null)
                 {
                     if (State.CurrentTreeNode == null)
                     {

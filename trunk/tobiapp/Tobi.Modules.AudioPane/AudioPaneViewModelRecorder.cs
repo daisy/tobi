@@ -17,13 +17,11 @@ namespace Tobi.Plugin.AudioPane
 
         private void initializeCommands_Recorder()
         {
-            var shellView = Container.Resolve<IShellView>();
-
             CommandStopRecord = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StopRecord,
                 UserInterfaceStrings.Audio_StopRecord_,
                 UserInterfaceStrings.Audio_StopRecord_KEYS,
-                shellView.LoadTangoIcon("media-playback-stop"),
+                m_ShellView.LoadTangoIcon("media-playback-stop"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
@@ -35,20 +33,18 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsRecording);
 
-            shellView.RegisterRichCommand(CommandStopRecord);
+            m_ShellView.RegisterRichCommand(CommandStopRecord);
             //
             CommandStartRecord = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StartRecord,
                 UserInterfaceStrings.Audio_StartRecord_,
                 UserInterfaceStrings.Audio_StartRecord_KEYS,
-                shellView.LoadTangoIcon("media-record"),
+                m_ShellView.LoadTangoIcon("media-record"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartRecord", Category.Debug, Priority.Medium);
 
-                    var session = Container.Resolve<IUrakawaSession>();
-
-                    if (session.DocumentProject == null)
+                    if (m_UrakawaSession.DocumentProject == null)
                     {
                         State.ResetAll();
 
@@ -61,8 +57,8 @@ namespace Tobi.Plugin.AudioPane
                             return;
                         }
 
-                        Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                        Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                        State.Audio.PcmFormatAlt = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
                     m_Recorder.StartRecording(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
@@ -71,31 +67,27 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=>
                 {
-                    var session = Container.Resolve<IUrakawaSession>();
-
                     return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
                         && (
-                        (session.DocumentProject != null && State.CurrentTreeNode != null)
+                        (m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null)
                         ||
-                        (session.DocumentProject == null)
+                        (m_UrakawaSession.DocumentProject == null)
                         );
                 });
 
-            shellView.RegisterRichCommand(CommandStartRecord);
+            m_ShellView.RegisterRichCommand(CommandStartRecord);
 
             //
             CommandStartMonitor = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StartMonitor,
                 UserInterfaceStrings.Audio_StartMonitor_,
                 UserInterfaceStrings.Audio_StartMonitor_KEYS,
-                shellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
+                m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);
 
-                    var session = Container.Resolve<IUrakawaSession>();
-
-                    if (session.DocumentProject == null)
+                    if (m_UrakawaSession.DocumentProject == null)
                     {
                         State.ResetAll();
 
@@ -106,8 +98,8 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        State.Audio.PcmFormatAlt = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                        Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                        State.Audio.PcmFormatAlt = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
                     m_Recorder.StartMonitoring(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
@@ -119,13 +111,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandStartMonitor);
+            m_ShellView.RegisterRichCommand(CommandStartMonitor);
             //
             CommandStopMonitor = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StopMonitor,
                 UserInterfaceStrings.Audio_StopMonitor_,
                 UserInterfaceStrings.Audio_StopMonitor_KEYS,
-                shellView.LoadTangoIcon("media-playback-stop"),
+                m_ShellView.LoadTangoIcon("media-playback-stop"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
@@ -141,7 +133,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandStopMonitor);
+            m_ShellView.RegisterRichCommand(CommandStopMonitor);
 
             //
         }
