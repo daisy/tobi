@@ -22,13 +22,45 @@ namespace Tobi.Plugin.MetadataPane
     [Export(typeof(MetadataPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
     public class MetadataPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
+#pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
             //#if DEBUG
             //            Debugger.Break();
             //#endif
 
-            foreach (var validator in Validators)
+        }
+
+        private readonly IEventAggregator m_EventAggregator;
+        private readonly ILoggerFacade m_Logger;
+
+        private readonly IUrakawaSession m_UrakawaSession;
+        private readonly IEnumerable<IValidator> m_Validators;
+
+        [ImportingConstructor]
+        public MetadataPaneViewModel(
+            IUnityContainer container,
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session,
+            [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            IEnumerable<IValidator> validators
+            )
+            : base(container)
+        {
+            m_EventAggregator = eventAggregator;
+            m_Logger = logger;
+
+            m_Validators = validators;
+            m_UrakawaSession = session;
+
+            m_MetadataCollection = null;
+
+            ValidationItems = new ObservableCollection<ValidationItem>();
+
+            foreach (var validator in m_Validators)
             {
                 if (validator is MetadataValidator)
                 {
@@ -42,41 +74,12 @@ namespace Tobi.Plugin.MetadataPane
             {
                 resetValidationItems(m_LocalValidator);
             }
+
+            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
         }
-
-        [ImportingConstructor]
-        public MetadataPaneViewModel(
-            IUnityContainer container,
-            IEventAggregator eventAggregator,
-            ILoggerFacade logger,
-
-            [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
-            IEnumerable<IValidator> validators
-            )
-            : base(container)
-        {
-            EventAggregator = eventAggregator;
-            Logger = logger;
-
-            Validators = validators;
-
-            m_MetadataCollection = null;
-
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-
-            ValidationItems = new ObservableCollection<ValidationItem>();
-        }
-
-        #region Construction
-
-        protected IEventAggregator EventAggregator { get; private set; }
-        public ILoggerFacade Logger { get; private set; }
 
         public ObservableCollection<ValidationItem> ValidationItems { get; set; }
-
-        public readonly IEnumerable<IValidator> Validators;
-
         private MetadataValidator m_LocalValidator;
 
         private void resetValidationItems(MetadataValidator metadataValidator)
@@ -100,7 +103,6 @@ namespace Tobi.Plugin.MetadataPane
             resetValidationItems((MetadataValidator)e.Validator);
         }
 
-        #endregion Construction
 
         private void OnProjectUnLoaded(Project obj)
         {
@@ -109,7 +111,7 @@ namespace Tobi.Plugin.MetadataPane
 
         private void OnProjectLoaded(Project project)
         {
-            Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
+            m_Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
             if (project == null)
@@ -121,14 +123,10 @@ namespace Tobi.Plugin.MetadataPane
         }
 
 
-        #region Commands
-
-
         //remove metadata entries with empty names
         public void removeEmptyMetadata()
         {
-            var session = Container.Resolve<IUrakawaSession>();
-            Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
             List<MetadataRemoveCommand> removalsList = new List<MetadataRemoveCommand>();
 
             foreach (Metadata m in presentation.Metadatas.ContentsAs_YieldEnumerable)
@@ -145,17 +143,13 @@ namespace Tobi.Plugin.MetadataPane
             }
         }
 
-        #endregion Commands
-
 
         private MetadataCollection m_MetadataCollection;
         public MetadataCollection MetadataCollection
         {
             get
             {
-                var session = Container.Resolve<IUrakawaSession>();
-
-                if (session.DocumentProject == null || session.DocumentProject.Presentations.Count <= 0)
+                if (m_UrakawaSession.DocumentProject == null || m_UrakawaSession.DocumentProject.Presentations.Count <= 0)
                 {
                     m_MetadataCollection = null;
                 }
@@ -163,7 +157,7 @@ namespace Tobi.Plugin.MetadataPane
                 {
                     if (m_MetadataCollection == null)
                     {
-                        Presentation presentation = session.DocumentProject.Presentations.Get(0);
+                        Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
 
                         m_MetadataCollection = new MetadataCollection
                             (presentation.Metadatas.ContentsAs_ListCopy,
@@ -180,8 +174,7 @@ namespace Tobi.Plugin.MetadataPane
 
         public void RemoveMetadata(NotifyingMetadataItem metadata)
         {
-            var session = Container.Resolve<IUrakawaSession>();
-            Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
             MetadataRemoveCommand cmd = presentation.CommandFactory.CreateMetadataRemoveCommand
                 (metadata.UrakawaMetadata);
             presentation.UndoRedoManager.Execute(cmd);
@@ -189,8 +182,7 @@ namespace Tobi.Plugin.MetadataPane
 
         public void AddEmptyMetadata()
         {
-            var session = Container.Resolve<IUrakawaSession>();
-            Presentation presentation = session.DocumentProject.Presentations.Get(0);
+            Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
 
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
             metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "", Value = "" };
@@ -244,13 +236,12 @@ namespace Tobi.Plugin.MetadataPane
             {
                 ObservableCollection<string> list = new ObservableCollection<string>();
 
-                var session = Container.Resolve<IUrakawaSession>();
-                if (session.DocumentProject == null)
+                if (m_UrakawaSession.DocumentProject == null)
                 {
                     return list;
                 }
 
-                List<Metadata> metadatas = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
+                List<Metadata> metadatas = m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
                 List<MetadataDefinition> availableMetadata =
                     MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.DefinitionSet.Definitions);
 
