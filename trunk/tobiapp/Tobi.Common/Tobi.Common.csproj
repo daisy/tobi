@@ -11,8 +11,9 @@
     <RootNamespace>Tobi.Common</RootNamespace>
     <AssemblyName>Tobi.Common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkSubset>Client</TargetFrameworkSubset>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
