@@ -220,10 +220,6 @@
       <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
       <Name>Tobi.Plugin.NavigationPane</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.StatusBar\Tobi.Plugin.StatusBar.csproj">
-      <Project>{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}</Project>
-      <Name>Tobi.Plugin.StatusBar</Name>
-    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
       <Name>Tobi.Plugin.ToolBars</Name>

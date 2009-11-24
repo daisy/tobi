@@ -71,7 +71,7 @@
     <Compile Include="IMetadataPaneView.cs" />
     <Compile Include="MetadataConverters.cs" />
     <Compile Include="MetadataObjects.cs" />
-    <Compile Include="MetadataPaneModule.cs" />
+    <Compile Include="MetadataPanePlugin.cs" />
     <Compile Include="MetadataPaneView.xaml.cs">
       <DependentUpon>MetadataPaneView.xaml</DependentUpon>
     </Compile>

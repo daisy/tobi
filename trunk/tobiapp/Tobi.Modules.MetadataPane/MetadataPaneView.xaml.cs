@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Composite.Logging;
+﻿using System.ComponentModel.Composition;
+using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,33 +14,47 @@ namespace Tobi.Plugin.MetadataPane
     /// Interaction logic for MetadataPaneView.xaml
     /// The backing ViewModel is injected in the constructor ("passive" view design pattern)
     /// </summary>
+    [Export(typeof(IMetadataPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class MetadataPaneView : IMetadataPaneView
     {
-        #region Construction
+        private readonly MetadataPaneViewModel m_ViewModel;
 
-        public MetadataPaneViewModel ViewModel { get; private set; }
+        private readonly ILoggerFacade m_Logger;
+
+        private readonly IUrakawaSession m_UrakawaSession;
+        private readonly IShellView m_ShellView;
 
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
-        public MetadataPaneView(MetadataPaneViewModel viewModel)
+        [ImportingConstructor]
+        public MetadataPaneView(
+            ILoggerFacade logger,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView,
+            [Import(typeof(MetadataPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            MetadataPaneViewModel viewModel)
         {
-            ViewModel = viewModel;
+            m_Logger = logger;
+            m_UrakawaSession = session;
+            m_ShellView = shellView;
 
-            ViewModel.Logger.Log("MetadataPaneView.ctor", Category.Debug, Priority.Medium);
+            m_ViewModel = viewModel;
 
-            DataContext = ViewModel;
+            m_Logger.Log("MetadataPaneView.ctor", Category.Debug, Priority.Medium);
+
+            DataContext = m_ViewModel;
 
             InitializeComponent();
         }
 
-        #endregion Construction
-
         private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.AddEmptyMetadata();
+            m_ViewModel.AddEmptyMetadata();
             ObservableCollection<NotifyingMetadataItem> metadataItems =
-                ViewModel.MetadataCollection.Metadatas;
+                m_ViewModel.MetadataCollection.Metadatas;
             if (metadataItems.Count > 0)
             {
                 NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
@@ -53,7 +68,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
             NotifyingMetadataItem metadata = (NotifyingMetadataItem)cvs.View.CurrentItem;
-            ViewModel.RemoveMetadata(metadata);
+            m_ViewModel.RemoveMetadata(metadata);
         }
 
         //select the corresponding metadata from the item double-clicked in the errors list
@@ -65,7 +80,7 @@ namespace Tobi.Plugin.MetadataPane
                 MetadataValidationError error = (MetadataValidationError) errorsList.SelectedItem;
                 if (error.ErrorType == MetadataErrorType.FormatError)
                 {
-                    NotifyingMetadataItem metadataItem = ViewModel.MetadataCollection.Find(error.Target);
+                    NotifyingMetadataItem metadataItem = m_ViewModel.MetadataCollection.Find(error.Target);
                     CollectionViewSource cvs = (CollectionViewSource) this.FindResource("MetadatasCVS");
                     if (metadataItem != null) cvs.View.MoveCurrentTo(metadataItem);
                 }
@@ -94,23 +109,20 @@ namespace Tobi.Plugin.MetadataPane
 
         private void MetadataListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ViewModel.SelectionChanged();
+            m_ViewModel.SelectionChanged();
         }
 
         public void Popup()
         {
-            var shellView_ = ViewModel.Container.Resolve<IShellView>();
-            var windowPopup = new PopupModalWindow(shellView_,
+            var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        UserInterfaceStrings.ShowMetadata),
                                                    this,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 700, 400);
-            //start a transaction
-            var session = ViewModel.Container.Resolve<IUrakawaSession>();
             
-            session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
+            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 ("Open metadata editor", "The metadata editor modal dialog is opening.");
 
             windowPopup.ShowModal();
@@ -118,14 +130,13 @@ namespace Tobi.Plugin.MetadataPane
             //if the user presses "Ok", then save the changes.  otherwise, don't save them.
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
             {
-                ViewModel.removeEmptyMetadata();
-                session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+                m_ViewModel.removeEmptyMetadata();
+                m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
             }
             else
             {
-                session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
+                m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
             }
         }
     }
-    
 }
