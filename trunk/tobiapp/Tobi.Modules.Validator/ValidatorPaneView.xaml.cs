@@ -1,75 +1,66 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
-using Microsoft.Practices.Unity;
 using Tobi.Common.Validation;
 
 namespace Tobi.Plugin.Validator
 {
     /// <summary>
-    /// Interaction logic for ValidatorPaneView.xaml
+    /// The view passively waits for validation refreshes and displays a list with clickable items.
     /// </summary>
-    [Export(typeof(ValidatorPaneView)), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export(typeof(ValidatorPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class ValidatorPaneView : IPartImportsSatisfiedNotification
     {
+#pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
             //#if DEBUG
             //            Debugger.Break();
             //#endif
         }
 
-        //[Import(typeof(ValidatorPaneView), RequiredCreationPolicy = CreationPolicy.NonShared, AllowRecomposition = false)]
-        //protected PartCreator<ValidatorPaneView> PART;
-        //var v1 = PART.CreatePart().ExportedValue;
-        //var v2 = PART.CreatePart().ExportedValue;
+        private readonly IEventAggregator m_EventAggregator;
+        private readonly ILoggerFacade m_Logger;
 
-        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
-
-        protected IEventAggregator EventAggregator { get; private set; }
-        protected ILoggerFacade Logger { get; private set; }
-        protected IUnityContainer Container { get; private set; }
-
-        private readonly Validator Validator;
+        private readonly Validator m_Validator;
 
         [ImportingConstructor]
         public ValidatorPaneView(
-            [Import(typeof(Validator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-            Validator validator,
-            IUnityContainer container,
+            ILoggerFacade logger,
             IEventAggregator eventAggregator,
-            ILoggerFacade logger)
+            [Import(typeof(Validator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+            Validator validator
+            )
         {
-            Container = container;
-            EventAggregator = eventAggregator;
-            Logger = logger;
+            m_EventAggregator = eventAggregator;
+            m_Logger = logger;
 
-            Validator = validator;
-            Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
+            m_Validator = validator;
+            m_Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
 
             ValidationItems = new ObservableCollection<ValidationItem>();
-
-            resetValidationItems(Validator);
+            resetValidationItems(m_Validator);
 
             DataContext = this;
             InitializeComponent();
         }
 
+        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
 
-        private void resetValidationItems(Validator metadataValidator)
+        private void resetValidationItems(Validator validator)
         {
             ValidationItems.Clear();
             
-            if (metadataValidator.ValidationItems == null) // metadataValidator.IsValid == true
+            if (validator.ValidationItems == null) // metadataValidator.IsValid == true
             {
                 return;
             }
 
-            foreach (var validationItem in metadataValidator.ValidationItems)
+            foreach (var validationItem in validator.ValidationItems)
             {
                 ValidationItems.Add(validationItem);
             }

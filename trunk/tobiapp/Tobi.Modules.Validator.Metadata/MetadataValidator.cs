@@ -15,32 +15,39 @@ namespace Tobi.Plugin.Validator.Metadata
     [Export(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
     public class MetadataValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
+#pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
             //#if DEBUG
             //            Debugger.Break();
             //#endif
         }
 
+        private readonly ILoggerFacade m_Logger;
         protected readonly IUrakawaSession m_Session;
-        
+
+        ///<summary>
+        /// We inject a few dependencies in this constructor.
+        /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
+        ///</summary>
+        ///<param name="logger">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
+        ///<param name="session">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
         public MetadataValidator(
             ILoggerFacade logger,
-
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
             IUrakawaSession session)
         {
-            //logger.Log("Hello world !", Category.Info, Priority.High);
-
+            m_Logger = logger;
             m_Session = session;
 
             m_DataTypeValidator = new MetadataDataTypeValidator(this);
             m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
             m_ValidationItems = new List<ValidationItem>();
-        }
 
-        #region IValidator Members
+            m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
+        }
 
         public override string Name
         {
@@ -49,7 +56,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Description
         {
-            get{ return "Validate metadata";}
+            get{ return "Validate publication metadata";}
         }
 
         public override bool Validate()
@@ -80,7 +87,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             get { return m_ValidationItems;}
         }
-        #endregion
+
 
         //TODO: un-hardcode this
         public MetadataDefinitionSet MetadataDefinitions = 
