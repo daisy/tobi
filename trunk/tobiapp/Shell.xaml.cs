@@ -31,6 +31,9 @@ namespace Tobi
             // If the toolbar has been resolved, we can push our commands into it.
             tryToolbarCommands();
 
+            // If the menubar has been resolved, we can push our commands into it.
+            tryMenubarCommands();
+
             // If the Urakawa Session has been resolved, we can bind the window title.
             trySessionWindowTitle();
         }
@@ -39,6 +42,9 @@ namespace Tobi
 
         [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IToolBarsView m_ToolBarsView;
+
+        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IMenuBarView m_MenuBarView;
 
         [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IUrakawaSession m_UrakawaSession;
@@ -105,7 +111,7 @@ namespace Tobi
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
                 int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand });
-                int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
+                int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
                 int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand });
 
                 m_ToolBarCommandsDone = true;
@@ -114,6 +120,24 @@ namespace Tobi
             }
         }
 
+        private bool m_MenuBarCommandsDone;
+        private void tryMenubarCommands()
+        {
+            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
+            {
+                int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, new[] { ExitCommand }, null);
+                int uid2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, UserInterfaceStrings.Menu_Magnification);
+                int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ManageShortcutsCommand }, null);
+
+#if DEBUG
+                int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null);
+#endif
+
+                m_MenuBarCommandsDone = true;
+
+                m_Logger.Log(@"Shell commands pushed to menubar", Category.Debug, Priority.Medium);
+            }
+        }
 
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool m_Exiting;

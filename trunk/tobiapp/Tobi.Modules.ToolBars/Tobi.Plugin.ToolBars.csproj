@@ -8,8 +8,8 @@
     <ProjectGuid>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.ToolBars</RootNamespace>
-    <AssemblyName>Tobi.Modules.ToolBars</AssemblyName>
+    <RootNamespace>Tobi.Plugin.ToolBars</RootNamespace>
+    <AssemblyName>Tobi.Plugin.ToolBars</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.ToolBars.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.ToolBars.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

@@ -28,4 +28,25 @@ namespace Tobi.Common
         ///</summary>
         string Version { get; }
     }
+
+    ///<summary>
+    /// Default implementation for Version and Home.
+    ///</summary>
+    public abstract class AbstractTobiPlugin : ITobiPlugin
+    {
+        public string Version
+        {
+            get { return UserInterfaceStrings.APP_VERSION; }
+        }
+
+        public Uri Home
+        {
+            get { return UserInterfaceStrings.TobiHomeUri; }
+        }
+
+        public abstract string Name { get; }
+        public abstract string Description { get; }
+
+        public abstract void Dispose();
+    }
 }

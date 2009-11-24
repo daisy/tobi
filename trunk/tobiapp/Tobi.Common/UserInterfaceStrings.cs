@@ -173,6 +173,8 @@ namespace Tobi.Common
         public const string Menu_Logging = "_Log window";
 
         public const string Menu_View = "_View"; // This is a top-menu that is empty by default and gets filled dynamically by modules that register GUI views
+        public const string Menu_Magnification = "Ma_gnification";
+
         public const string Menu_ToolBars = "_Tool bars"; // TODO: move this language resource in its own module (ToolBarsModule)
         public const string Menu_StatusBar = "_Status bar"; // TODO: move this language resource in its own module (StatusBarModule)
         //public const string Menu_Zoom = "UI _Zoom"; // TODO: move this language resource in its own module (ZoomModule)
@@ -279,13 +281,17 @@ namespace Tobi.Common
         public const string SaveAs_ = "Save the current document as...";
         public static KeyGesture SaveAs_KEYS = new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift);
 
+        public const string UI_ResetMagnification = "_Reset magnification";
+        public const string UI_ResetMagnification_ = "Reset the UI magnification level";
+        public static KeyGesture UI_ResetMagnification_KEYS = new KeyGesture(Key.Y, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+
         public const string UI_IncreaseMagnification = "_Increase magnification";
         public const string UI_IncreaseMagnification_ = "Increase the UI magnification level";
-        public static KeyGesture UI_IncreaseMagnification_KEYS = new KeyGesture(Key.Y, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+        public static KeyGesture UI_IncreaseMagnification_KEYS = new KeyGesture(Key.Y, ModifierKeys.Control | ModifierKeys.Shift);
 
         public const string UI_DecreaseMagnification = "_Decrease magnification";
         public const string UI_DecreaseMagnification_ = "Decrease the UI magnification level";
-        public static KeyGesture UI_DecreaseMagnification_KEYS = new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
+        public static KeyGesture UI_DecreaseMagnification_KEYS = new KeyGesture(Key.Y, ModifierKeys.Control);
 
         public const string ManageShortcuts = "_Keyboard shortcuts";
         public const string ManageShortcuts_ = "View keyboard shortcuts";

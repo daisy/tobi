@@ -8,8 +8,8 @@
     <ProjectGuid>{F6516FB8-325F-43D5-AE86-01367B0F6181}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.MetadataPane</RootNamespace>
-    <AssemblyName>Tobi.Modules.MetadataPane</AssemblyName>
+    <RootNamespace>Tobi.Plugin.MetadataPane</RootNamespace>
+    <AssemblyName>Tobi.Plugin.MetadataPane</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.MetadataPane.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.MetadataPane.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

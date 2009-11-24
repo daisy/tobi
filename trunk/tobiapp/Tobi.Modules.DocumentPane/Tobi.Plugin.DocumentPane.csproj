@@ -8,8 +8,8 @@
     <ProjectGuid>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.DocumentPane</RootNamespace>
-    <AssemblyName>Tobi.Modules.DocumentPane</AssemblyName>
+    <RootNamespace>Tobi.Plugin.DocumentPane</RootNamespace>
+    <AssemblyName>Tobi.Plugin.DocumentPane</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.DocumentPane.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.DocumentPane.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

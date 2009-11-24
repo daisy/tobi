@@ -8,8 +8,8 @@
     <ProjectGuid>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.Urakawa</RootNamespace>
-    <AssemblyName>Tobi.Modules.Urakawa</AssemblyName>
+    <RootNamespace>Tobi.Plugin.Urakawa</RootNamespace>
+    <AssemblyName>Tobi.Plugin.Urakawa</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.Urakawa.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.Urakawa.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

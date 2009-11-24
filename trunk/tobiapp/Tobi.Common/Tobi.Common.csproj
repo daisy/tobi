@@ -103,6 +103,7 @@
     <Compile Include="AudioCues.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="IFileDialogService.cs" />
+    <Compile Include="IMenuBarView.cs" />
     <Compile Include="ITobiPlugin.cs" />
     <Compile Include="IShellView.cs" />
     <Compile Include="IToolbarsView.cs" />

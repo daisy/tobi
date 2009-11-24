@@ -8,8 +8,8 @@
     <ProjectGuid>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.AudioPane</RootNamespace>
-    <AssemblyName>Tobi.Modules.AudioPane</AssemblyName>
+    <RootNamespace>Tobi.Plugin.AudioPane</RootNamespace>
+    <AssemblyName>Tobi.Plugin.AudioPane</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.AudioPane.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.AudioPane.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

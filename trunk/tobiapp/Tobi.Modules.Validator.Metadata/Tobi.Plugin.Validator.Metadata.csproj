@@ -8,8 +8,8 @@
     <ProjectGuid>{341678A8-F3B5-43BF-8505-69B4ED969B53}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.Validator.Metadata</RootNamespace>
-    <AssemblyName>Tobi.Modules.Validator.Metadata</AssemblyName>
+    <RootNamespace>Tobi.Plugin.Validator.Metadata</RootNamespace>
+    <AssemblyName>Tobi.Plugin.Validator.Metadata</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>

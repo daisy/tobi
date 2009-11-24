@@ -21,6 +21,7 @@ namespace Tobi
 
         public RichDelegateCommand MagnifyUiIncreaseCommand { get; private set; }
         public RichDelegateCommand MagnifyUiDecreaseCommand { get; private set; }
+        public RichDelegateCommand MagnifyUiResetCommand { get; private set; }
 
         public RichDelegateCommand ManageShortcutsCommand { get; private set; }
         public RichDelegateCommand DisplayPreviewIconsDebugCommand { get; private set; }
@@ -40,19 +41,19 @@ namespace Tobi
 
         private void initCommands()
         {
-            m_Logger.Log("ShellView.initCommands", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
 
             //
             ExitCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Menu_Exit,
                 UserInterfaceStrings.Menu_Exit_,
                 UserInterfaceStrings.Menu_Exit_KEYS,
-                LoadTangoIcon("system-log-out"),
+                LoadTangoIcon(@"system-log-out"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
                 //LoadTangoIcon("document-save"),
                 () =>
                 {
-                    m_Logger.Log("ShellView.ExitCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"ShellView.ExitCommand", Category.Debug, Priority.Medium);
 
                     if (askUserConfirmExit())
                     {
@@ -64,15 +65,30 @@ namespace Tobi
             RegisterRichCommand(ExitCommand);
             //
 
+            MagnifyUiResetCommand = new RichDelegateCommand(
+                UserInterfaceStrings.UI_ResetMagnification,
+                UserInterfaceStrings.UI_ResetMagnification_,
+                UserInterfaceStrings.UI_ResetMagnification_KEYS,
+                LoadTangoIcon(@"weather-clear"),
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.MagnifyUiResetCommand", Category.Debug, Priority.Medium);
+
+                    MagnificationLevel = 1;
+                },
+                () => true);
+
+            RegisterRichCommand(MagnifyUiResetCommand);
+            //
             MagnifyUiIncreaseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.UI_IncreaseMagnification,
                 UserInterfaceStrings.UI_IncreaseMagnification_,
                 UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
                 //LoadTangoIcon("mail-forward"),
-                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_In")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource(@"Horizon_Image_Zoom_In")),
                 () =>
                 {
-                    m_Logger.Log("ShellView.MagnifyUiIncreaseCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"ShellView.MagnifyUiIncreaseCommand", Category.Debug, Priority.Medium);
 
                     MagnificationLevel += 0.15;
                 },
@@ -85,10 +101,10 @@ namespace Tobi
                 UserInterfaceStrings.UI_DecreaseMagnification,
                 UserInterfaceStrings.UI_DecreaseMagnification_,
                 UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
-                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Zoom_out")),
+                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource(@"Horizon_Image_Zoom_out")),
                 () =>
                 {
-                    m_Logger.Log("ShellView.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"ShellView.MagnifyUiDecreaseCommand", Category.Debug, Priority.Medium);
 
                     MagnificationLevel -= 0.15;
                 },
@@ -112,10 +128,10 @@ namespace Tobi
                 UserInterfaceStrings.ManageShortcuts,
                 UserInterfaceStrings.ManageShortcuts_,
                 UserInterfaceStrings.ManageShortcuts_KEYS,
-                LoadTangoIcon("preferences-desktop-keyboard-shortcuts"),
+                LoadTangoIcon(@"preferences-desktop-keyboard-shortcuts"),
                 () =>
                 {
-                    m_Logger.Log("ShellView.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"ShellView.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
 
                     var windowPopup = new PopupModalWindow(this,
                                                            UserInterfaceStrings.EscapeMnemonic(
@@ -135,8 +151,8 @@ namespace Tobi
                 UserInterfaceStrings.Cut,
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
-                LoadTangoIcon("edit-cut"),
-                () => Debug.Fail("Functionality not implemented yet."),
+                LoadTangoIcon(@"edit-cut"),
+                () => Debug.Fail(@"Functionality not implemented yet."),
                 () => true);
 
             RegisterRichCommand(CutCommand);
@@ -145,8 +161,8 @@ namespace Tobi
                 UserInterfaceStrings.Copy,
                 UserInterfaceStrings.Copy_,
                 UserInterfaceStrings.Copy_KEYS,
-                LoadTangoIcon("edit-copy"),
-                () => Debug.Fail("Functionality not implemented yet."),
+                LoadTangoIcon(@"edit-copy"),
+                () => Debug.Fail(@"Functionality not implemented yet."),
                 () => true);
 
             RegisterRichCommand(CopyCommand);
@@ -155,8 +171,8 @@ namespace Tobi
                 UserInterfaceStrings.Paste,
                 UserInterfaceStrings.Paste_,
                 UserInterfaceStrings.Paste_KEYS,
-                LoadTangoIcon("edit-paste"),
-                () => Debug.Fail("Functionality not implemented yet."),
+                LoadTangoIcon(@"edit-paste"),
+                () => Debug.Fail(@"Functionality not implemented yet."),
                 () => true);
 
             RegisterRichCommand(PasteCommand);
@@ -165,10 +181,10 @@ namespace Tobi
                 UserInterfaceStrings.ShowLogFilePath,
                 UserInterfaceStrings.ShowLogFilePath_,
                 UserInterfaceStrings.ShowLogFilePath_KEYS,
-                LoadTangoIcon("help-browser"),
+                LoadTangoIcon(@"help-browser"),
                 () =>
                 {
-                    m_Logger.Log("ShellView.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"ShellView.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
 
 
                     var label = new TextBlock

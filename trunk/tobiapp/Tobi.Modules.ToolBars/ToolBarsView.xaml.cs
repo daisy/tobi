@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Controls;
@@ -7,7 +6,6 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
-using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
@@ -18,7 +16,7 @@ namespace Tobi.Plugin.ToolBars
     /// Single shared instance (singleton) of the toolbar view
     ///</summary>
     [Export(typeof(IToolBarsView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed partial class ToolBarsView : INotifyPropertyChangedEx, IToolBarsView, IPartImportsSatisfiedNotification
+    public sealed partial class ToolBarsView : IToolBarsView, IPartImportsSatisfiedNotification //INotifyPropertyChangedEx
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -79,47 +77,23 @@ namespace Tobi.Plugin.ToolBars
             m_ShellView.RegisterRichCommand(CommandFocus);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
-        {
-            var handler = PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
+        //{
+        //    var handler = PropertyChanged;
 
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
+        //    if (handler != null)
+        //    {
+        //        handler(this, e);
+        //    }
+        //}
 
-        public void RemoveToolBarGroup(int uid)
-        {
-            m_Logger.Log(@"RemoveToolBarGroup", Category.Debug, Priority.Medium);
-
-#if DEBUG
-            if (!Dispatcher.CheckAccess())
-            {
-                Debugger.Break();
-            }
-#endif
-            
-            IRegion targetRegion = m_RegionManager.Regions[RegionNames.MainToolbar];
-
-            var viewsToRemove = new List<object>();
-
-            int count = 0;
-            object view;
-            while ((view = targetRegion.GetView(uid + @"_" + count++)) != null)
-            {
-                viewsToRemove.Add(view);
-            }
-
-            foreach (var obj in viewsToRemove)
-            {
-                targetRegion.Remove(obj);
-            }
-        }
 
         public int AddToolBarGroup(RichDelegateCommand[] commands)
         {
+            //TODO: restore TOOLBAR comands !
+            return -1;
+
             m_Logger.Log(@"AddToolBarGroup", Category.Debug, Priority.Medium);
 #if DEBUG
             if (!Dispatcher.CheckAccess())
@@ -146,6 +120,34 @@ namespace Tobi.Plugin.ToolBars
             targetRegion.Activate(sep);
 
             return uid;
+        }
+
+        public void RemoveToolBarGroup(int uid)
+        {
+            m_Logger.Log(@"RemoveToolBarGroup", Category.Debug, Priority.Medium);
+
+#if DEBUG
+            if (!Dispatcher.CheckAccess())
+            {
+                Debugger.Break();
+            }
+#endif
+
+            IRegion targetRegion = m_RegionManager.Regions[RegionNames.MainToolbar];
+
+            var viewsToRemove = new List<object>();
+
+            int count = 0;
+            object view;
+            while ((view = targetRegion.GetView(uid + @"_" + count++)) != null)
+            {
+                viewsToRemove.Add(view);
+            }
+
+            foreach (var obj in viewsToRemove)
+            {
+                targetRegion.Remove(obj);
+            }
         }
 
         private int m_Uid;

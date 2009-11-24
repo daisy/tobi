@@ -3,14 +3,14 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
 
-namespace Tobi.Plugin.ToolBars
+namespace Tobi.Plugin.MenuBar
 {
     ///<summary>
-    /// The tool bar contains groups of buttons (commands actually) from various parts of the application.
+    /// The menu bar contains commands from various parts of the application, organized in predefined regions.
     /// (i.e. it is a host service, it doesn't own command data directly)
     ///</summary>
     [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class ToolBarsPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class MenuBarPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -24,7 +24,7 @@ namespace Tobi.Plugin.ToolBars
         private readonly ILoggerFacade m_Logger;
         private readonly IRegionManager m_RegionManager;
 
-        private readonly ToolBarsView m_ToolBarsView;
+        private readonly MenuBarView m_MenuBarView;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -34,42 +34,42 @@ namespace Tobi.Plugin.ToolBars
         ///<param name="regionManager">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         ///<param name="toolBarsView">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
-        public ToolBarsPlugin(
+        public MenuBarPlugin(
             ILoggerFacade logger,
             IRegionManager regionManager,
-            [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            ToolBarsView toolBarsView)
+            [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            MenuBarView toolBarsView)
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
 
-            m_ToolBarsView = toolBarsView;
+            m_MenuBarView = toolBarsView;
 
-            m_RegionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(IToolBarsView));
+            m_RegionManager.RegisterViewWithRegion(RegionNames.MenuBar, typeof(IMenuBarView));
 
-            //IRegion targetRegion = m_RegionManager.Regions[RegionNames.ToolBars];
-            //targetRegion.Add(m_ToolBarsView);
-            //targetRegion.Activate(m_ToolBarsView);
+            //IRegion targetRegion = m_RegionManager.Regions[RegionNames.MenuBar];
+            //targetRegion.Add(m_MenuBarView);
+            //targetRegion.Activate(m_MenuBarView);
 
-            m_Logger.Log(@"Toolbar pushed to region", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"MenuBar pushed to region", Category.Debug, Priority.Medium);
         }
 
         public override void Dispose()
         {
-            m_RegionManager.Regions[RegionNames.ToolBars].Deactivate(m_ToolBarsView);
-            m_RegionManager.Regions[RegionNames.ToolBars].Remove(m_ToolBarsView);
+            m_RegionManager.Regions[RegionNames.MenuBar].Deactivate(m_MenuBarView);
+            m_RegionManager.Regions[RegionNames.MenuBar].Remove(m_MenuBarView);
 
-            m_Logger.Log(@"Toolbar removed from region", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"MenuBar removed from region", Category.Debug, Priority.Medium);
         }
 
         public override string Name
         {
-            get { return @"Application toolbar."; }
+            get { return @"Application menubar."; }
         }
 
         public override string Description
         {
-            get { return @"The visual host for command buttons."; }
+            get { return @"The menu that contains application commands."; }
         }
     }
 }

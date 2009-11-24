@@ -10,7 +10,7 @@ namespace Tobi.Plugin.Urakawa
     /// This plugin bootstrapper configures 
     ///</summary>
     [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class UrakawaPlugin : ITobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class UrakawaPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -22,12 +22,18 @@ namespace Tobi.Plugin.Urakawa
 
             // If the toolbar has been resolved, we can push our commands into it.
             tryToolbarCommands();
+
+            // If the menubar has been resolved, we can push our commands into it.
+            tryMenubarCommands();
         }
 
 #pragma warning disable 649 // non-initialized fields
-
+        
         [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IToolBarsView m_ToolBarsView;
+
+        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IMenuBarView m_MenuBarView;
 
 #pragma warning restore 649
 
@@ -70,7 +76,28 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
-        public void Dispose()
+        private int m_MenuBarId_1;
+        private int m_MenuBarId_2;
+        private int m_MenuBarId_3;
+        private int m_MenuBarId_4;
+        private bool m_MenuBarCommandsDone;
+        private void tryMenubarCommands()
+        {
+            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
+            {
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, new[] { m_UrakawaSession.OpenCommand }, null);
+                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, new[] { m_UrakawaSession.SaveCommand, m_UrakawaSession.SaveAsCommand, m_UrakawaSession.ExportCommand }, null);
+                m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, new[] { m_UrakawaSession.CloseCommand }, null);
+
+                m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand }, null);
+
+                m_MenuBarCommandsDone = true;
+
+                m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
+            }
+        }
+
+        public override void Dispose()
         {
             if (m_ToolBarCommandsDone)
             {
@@ -81,26 +108,29 @@ namespace Tobi.Plugin.Urakawa
 
                 m_Logger.Log(@"Urakawa session commands removed from toolbar", Category.Debug, Priority.Medium);
             }
+
+            if (m_MenuBarCommandsDone)
+            {
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_File, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_File, m_MenuBarId_2);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_File, m_MenuBarId_3);
+
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Edit, m_MenuBarId_4);
+
+                m_MenuBarCommandsDone = false;
+
+                m_Logger.Log(@"Urakawa session commands removed from menubar", Category.Debug, Priority.Medium);
+            }
         }
 
-        public string Name
+        public override string Name
         {
             get { return @"Urakawa SDK session manager."; }
         }
 
-        public string Version
-        {
-            get { return UserInterfaceStrings.APP_VERSION; }
-        }
-
-        public string Description
+        public override string Description
         {
             get { return @"A context for opening and saving the data model of a Urakawa SDK project."; }
-        }
-
-        public Uri Home
-        {
-            get { return UserInterfaceStrings.TobiHomeUri; }
         }
     }
 }
