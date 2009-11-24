@@ -13,13 +13,11 @@ namespace Tobi.Plugin.AudioPane
     {
         private void initializeCommands_Selection()
         {
-            var shellView = Container.Resolve<IShellView>();
-
             CommandSelectPreviousChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectPreviousChunk,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_KEYS,
-                shellView.LoadTangoIcon("go-previous"),
+                m_ShellView.LoadTangoIcon("go-previous"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectPreviousChunk", Category.Debug, Priority.Medium);
@@ -30,13 +28,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> CommandStepBack.CanExecute());
 
-            shellView.RegisterRichCommand(CommandSelectPreviousChunk);
+            m_ShellView.RegisterRichCommand(CommandSelectPreviousChunk);
             //
             CommandSelectNextChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectNextChunk,
                 UserInterfaceStrings.Audio_SelectNextChunk_,
                 UserInterfaceStrings.Audio_SelectNextChunk_KEYS,
-                shellView.LoadTangoIcon("go-next"),
+                m_ShellView.LoadTangoIcon("go-next"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectNextChunk", Category.Debug, Priority.Medium);
@@ -47,7 +45,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> CommandStepForward.CanExecute());
 
-            shellView.RegisterRichCommand(CommandSelectNextChunk);
+            m_ShellView.RegisterRichCommand(CommandSelectNextChunk);
             //
             //
             CommandEndSelection = new RichDelegateCommand(
@@ -102,7 +100,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0);
 
-            shellView.RegisterRichCommand(CommandEndSelection);
+            m_ShellView.RegisterRichCommand(CommandEndSelection);
             //
             CommandBeginSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_BeginSelection,
@@ -119,13 +117,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded);
 
-            shellView.RegisterRichCommand(CommandBeginSelection);
+            m_ShellView.RegisterRichCommand(CommandBeginSelection);
             //
             CommandSelectAll = new RichDelegateCommand(
                 UserInterfaceStrings.SelectAll,
                 UserInterfaceStrings.SelectAll_,
                 UserInterfaceStrings.SelectAll_KEYS,
-                shellView.LoadTangoIcon("view-fullscreen"),
+                m_ShellView.LoadTangoIcon("view-fullscreen"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectAll", Category.Debug, Priority.Medium);
@@ -145,12 +143,12 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading);
 
-            shellView.RegisterRichCommand(CommandSelectAll);
+            m_ShellView.RegisterRichCommand(CommandSelectAll);
             //
             CommandClearSelection = new RichDelegateCommand(UserInterfaceStrings.Audio_ClearSelection,
                 UserInterfaceStrings.Audio_ClearSelection_,
                 UserInterfaceStrings.Audio_ClearSelection_KEYS,
-                shellView.LoadTangoIcon("edit-clear"),
+                m_ShellView.LoadTangoIcon("edit-clear"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandClearSelection", Category.Debug, Priority.Medium);
@@ -159,7 +157,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsSelectionSet);
 
-            shellView.RegisterRichCommand(CommandClearSelection);
+            m_ShellView.RegisterRichCommand(CommandClearSelection);
             //
         }
 

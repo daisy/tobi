@@ -22,7 +22,7 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
         {
-            if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels == 1)
+            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels == 1)
             {
                 PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
                 PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 2);
@@ -44,25 +44,25 @@ namespace Tobi.Plugin.AudioPane
                 heightReal = WaveFormCanvas.Height;
             }
 
-            double realBytesPerPixel = ViewModel.State.Audio.DataLength / widthReal;
+            double realBytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
 
             var zoom = (Double)FindResource("MagnificationLevel"); // Resources["MagnificationLevel"]; //Application.Current.
 
             double widthMagnified = widthReal * zoom;
             double heightMagnified = heightReal * zoom;
 
-            BytesPerPixel = ViewModel.State.Audio.DataLength / widthMagnified;
+            BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthMagnified;
 
-            int byteDepth = ViewModel.State.Audio.PcmFormat.Data.BitDepth / 8; //bytes per sample (data for one channel only)
+            int byteDepth = m_ViewModel.State.Audio.PcmFormat.Data.BitDepth / 8; //bytes per sample (data for one channel only)
 
-            var samplesPerStep = (int)Math.Floor((BytesPerPixel * ViewModel.WaveStepX) / byteDepth);
-            samplesPerStep += (samplesPerStep % ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
+            var samplesPerStep = (int)Math.Floor((BytesPerPixel * m_ViewModel.WaveStepX) / byteDepth);
+            samplesPerStep += (samplesPerStep % m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
 
             int bytesPerStep = samplesPerStep * byteDepth;
 
             var estimatedCapacity = (int)(widthMagnified / (bytesPerStep / BytesPerPixel)) + 1;
 
-            if (estimatedCapacity * ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 501)
+            if (estimatedCapacity * m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 501)
             {
                 bool vertical = WaveFormProgress.Orientation == Orientation.Vertical;
                 double sizeProgress = (vertical ? WaveFormScroll.Height : WaveFormScroll.Width);
@@ -84,7 +84,7 @@ namespace Tobi.Plugin.AudioPane
                 WaveFormProgress.Minimum = 0;
                 WaveFormProgress.Maximum = estimatedCapacity;
 
-                ViewModel.IsWaveFormLoading = true;
+                m_ViewModel.IsWaveFormLoading = true;
 
                 var fileWorker = new BackgroundWorker();
                 fileWorker.DoWork += (sender, e) => loadWaveForm(true, widthMagnified, heightMagnified, wasPlaying, play, realBytesPerPixel);
@@ -92,19 +92,19 @@ namespace Tobi.Plugin.AudioPane
                 {
                     WaveFormProgress.IsIndeterminate = true;
 
-                    BytesPerPixel = ViewModel.State.Audio.DataLength / widthReal;
+                    BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
 
-                    ViewModel.IsWaveFormLoading = false;
+                    m_ViewModel.IsWaveFormLoading = false;
                 };
                 fileWorker.RunWorkerAsync();
             }
             else
             {
-                ViewModel.IsWaveFormLoading = true;
+                m_ViewModel.IsWaveFormLoading = true;
 
                 loadWaveForm(false, widthMagnified, heightMagnified, wasPlaying, play, realBytesPerPixel);
 
-                ViewModel.IsWaveFormLoading = false;
+                m_ViewModel.IsWaveFormLoading = false;
             }
         }
 
@@ -114,10 +114,10 @@ namespace Tobi.Plugin.AudioPane
         {
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
-            int byteDepth = ViewModel.State.Audio.PcmFormat.Data.BitDepth / 8; //bytes per sample (data for one channel only)
+            int byteDepth = m_ViewModel.State.Audio.PcmFormat.Data.BitDepth / 8; //bytes per sample (data for one channel only)
 
-            var samplesPerStep = (int)Math.Floor((BytesPerPixel * ViewModel.WaveStepX) / byteDepth);
-            samplesPerStep += (samplesPerStep % ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
+            var samplesPerStep = (int)Math.Floor((BytesPerPixel * m_ViewModel.WaveStepX) / byteDepth);
+            samplesPerStep += (samplesPerStep % m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
 
             int bytesPerStep = samplesPerStep * byteDepth;
 
@@ -130,11 +130,11 @@ namespace Tobi.Plugin.AudioPane
             List<Point> listTopPointsCh2 = null;
             List<Point> listBottomPointsCh1 = null;
             List<Point> listBottomPointsCh2 = null;
-            if (ViewModel.IsEnvelopeVisible)
+            if (m_ViewModel.IsEnvelopeVisible)
             {
                 listTopPointsCh1 = new List<Point>(estimatedCapacity);
                 listBottomPointsCh1 = new List<Point>(estimatedCapacity);
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
                     listTopPointsCh2 = new List<Point>(estimatedCapacity);
                     listBottomPointsCh2 = new List<Point>(estimatedCapacity);
@@ -152,7 +152,7 @@ namespace Tobi.Plugin.AudioPane
             const int tolerance = 5;
             try
             {
-                var audioStream = ViewModel.AudioPlayer_GetPlayStream();
+                var audioStream = m_ViewModel.AudioPlayer_GetPlayStream();
 
                 audioStream.Position = 0;
                 audioStream.Seek(0, SeekOrigin.Begin);
@@ -163,7 +163,7 @@ namespace Tobi.Plugin.AudioPane
                 }*/
                 double dBMinReached = double.PositiveInfinity;
                 double dBMaxReached = double.NegativeInfinity;
-                double decibelDrawDelta = (ViewModel.IsUseDecibelsNoAverage ? 0 : 2);
+                double decibelDrawDelta = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : 2);
 
                 //Amplitude ratio (or Sound Pressure Level):
                 //decibels = 20 * log10(ratio);
@@ -179,7 +179,7 @@ namespace Tobi.Plugin.AudioPane
 #pragma warning restore 162
 
                 double reference = short.MaxValue; // Int 16 signed 32767 (0 dB reference value)
-                double adjustFactor = ViewModel.DecibelResolution;
+                double adjustFactor = m_ViewModel.DecibelResolution;
                 if (adjustFactor != 0)
                 {
                     reference *= adjustFactor;
@@ -193,7 +193,7 @@ namespace Tobi.Plugin.AudioPane
 
                 double dBMinHardCoded = dbMinValue;
 
-                double dbMaxValue = (ViewModel.IsUseDecibelsNoAverage ? -dbMinValue : 0);
+                double dbMaxValue = (m_ViewModel.IsUseDecibelsNoAverage ? -dbMinValue : 0);
 
                 bool firstY1 = true;
                 bool firstY1_ = true;
@@ -204,7 +204,7 @@ namespace Tobi.Plugin.AudioPane
                 StreamGeometry geometryCh2 = null;
                 StreamGeometryContext sgcCh2 = null;
 
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
                     geometryCh2 = new StreamGeometry();
                     sgcCh2 = geometryCh2.Open();
@@ -220,7 +220,7 @@ namespace Tobi.Plugin.AudioPane
                     // converts Int 8 unsigned to Int 16 signed
                     Buffer.BlockCopy(bytes, 0, samples, 0, Math.Min(read, samples.Length));
 
-                    for (int channel = 0; channel < ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels; channel++)
+                    for (int channel = 0; channel < m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels; channel++)
                     {
                         int limit = samples.Length;
 
@@ -229,8 +229,8 @@ namespace Tobi.Plugin.AudioPane
                             // ReSharper disable SuggestUseVarKeywordEvident
                             int nSamples = (int)Math.Floor((double)read / byteDepth);
                             // ReSharper restore SuggestUseVarKeywordEvident
-                            nSamples = ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels *
-                                       (int)Math.Floor((double)nSamples / ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
+                            nSamples = m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels *
+                                       (int)Math.Floor((double)nSamples / m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
                             limit = nSamples;
                             limit = Math.Min(limit, samples.Length);
                         }
@@ -241,7 +241,7 @@ namespace Tobi.Plugin.AudioPane
                         double min = short.MaxValue; // Int 16 signed 32767
                         double max = short.MinValue; // Int 16 signed -32768
 
-                        for (int i = channel; i < limit; i += ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels)
+                        for (int i = channel; i < limit; i += m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels)
                         {
                             nSamplesRead++;
 
@@ -268,7 +268,7 @@ namespace Tobi.Plugin.AudioPane
                         double avg = total / nSamplesRead;
 
                         double hh = heightMagnified;
-                        if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                        if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                         {
                             hh /= 2;
                         }
@@ -278,10 +278,10 @@ namespace Tobi.Plugin.AudioPane
                         double y2 = 0.0;
                         // ReSharper restore RedundantAssignment
 
-                        if (ViewModel.IsUseDecibels)
+                        if (m_ViewModel.IsUseDecibels)
                         {
 
-                            if (!ViewModel.IsUseDecibelsNoAverage)
+                            if (!m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 min = avg;
                                 max = avg;
@@ -291,13 +291,13 @@ namespace Tobi.Plugin.AudioPane
                             double minAbs = Math.Abs(min);
                             if (minAbs == 0)
                             {
-                                min = (ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                min = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
                             }
                             else
                             {
                                 min = logFactor * Math.Log10(minAbs / reference);
                                 dBMinReached = Math.Min(dBMinReached, min);
-                                if (ViewModel.IsUseDecibelsNoAverage && !minIsNegative)
+                                if (m_ViewModel.IsUseDecibelsNoAverage && !minIsNegative)
                                 {
                                     min = -min;
                                 }
@@ -307,13 +307,13 @@ namespace Tobi.Plugin.AudioPane
                             double maxAbs = Math.Abs(max);
                             if (maxAbs == 0)
                             {
-                                max = (ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                max = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
                             }
                             else
                             {
                                 max = logFactor * Math.Log10(maxAbs / reference);
                                 dBMaxReached = Math.Max(dBMaxReached, max);
-                                if (ViewModel.IsUseDecibelsNoAverage && !maxIsNegative)
+                                if (m_ViewModel.IsUseDecibelsNoAverage && !maxIsNegative)
                                 {
                                     max = -max;
                                 }
@@ -322,21 +322,21 @@ namespace Tobi.Plugin.AudioPane
                             double totalDbRange = dbMaxValue - dbMinValue;
                             double pixPerDbUnit = hh / totalDbRange;
 
-                            if (ViewModel.IsUseDecibelsNoAverage)
+                            if (m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 min = dbMinValue - min;
                             }
                             y1 = pixPerDbUnit * (min - dbMinValue) + decibelDrawDelta;
-                            if (!ViewModel.IsUseDecibelsNoAverage)
+                            if (!m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 y1 = hh - y1;
                             }
-                            if (ViewModel.IsUseDecibelsNoAverage)
+                            if (m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 max = dbMaxValue - max;
                             }
                             y2 = pixPerDbUnit * (max - dbMinValue) - decibelDrawDelta;
-                            if (!ViewModel.IsUseDecibelsNoAverage)
+                            if (!m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 y2 = hh - y2;
                             }
@@ -355,7 +355,7 @@ namespace Tobi.Plugin.AudioPane
                             y2 = hh - y2;
                         }
 
-                        if (!(ViewModel.IsUseDecibels && ViewModel.IsUseDecibelsAdjust))
+                        if (!(m_ViewModel.IsUseDecibels && m_ViewModel.IsUseDecibelsAdjust))
                         {
                             if (y1 > hh - tolerance)
                             {
@@ -378,11 +378,11 @@ namespace Tobi.Plugin.AudioPane
 
                         if (channel == 0)
                         {
-                            if (ViewModel.IsEnvelopeVisible && listTopPointsCh1 != null)
+                            if (m_ViewModel.IsEnvelopeVisible && listTopPointsCh1 != null)
                             {
                                 listTopPointsCh1.Add(new Point(x, y1));
                             }
-                            if (ViewModel.IsWaveFillVisible)
+                            if (m_ViewModel.IsWaveFillVisible)
                             {
                                 if (firstY1)
                                 {
@@ -398,11 +398,11 @@ namespace Tobi.Plugin.AudioPane
                         else if (sgcCh2 != null)
                         {
                             y1 += hh;
-                            if (ViewModel.IsEnvelopeVisible && listTopPointsCh2 != null)
+                            if (m_ViewModel.IsEnvelopeVisible && listTopPointsCh2 != null)
                             {
                                 listTopPointsCh2.Add(new Point(x, y1));
                             }
-                            if (ViewModel.IsWaveFillVisible)
+                            if (m_ViewModel.IsWaveFillVisible)
                             {
                                 if (firstY1_)
                                 {
@@ -418,11 +418,11 @@ namespace Tobi.Plugin.AudioPane
 
                         if (channel == 0)
                         {
-                            if (ViewModel.IsWaveFillVisible)
+                            if (m_ViewModel.IsWaveFillVisible)
                             {
                                 sgcCh1.LineTo(new Point(x, y2), true, false);
                             }
-                            if (ViewModel.IsEnvelopeVisible && listBottomPointsCh1 != null)
+                            if (m_ViewModel.IsEnvelopeVisible && listBottomPointsCh1 != null)
                             {
                                 listBottomPointsCh1.Add(new Point(x, y2));
                             }
@@ -431,11 +431,11 @@ namespace Tobi.Plugin.AudioPane
                         {
                             y2 += hh;
 
-                            if (ViewModel.IsWaveFillVisible)
+                            if (m_ViewModel.IsWaveFillVisible)
                             {
                                 sgcCh2.LineTo(new Point(x, y2), true, false);
                             }
-                            if (ViewModel.IsEnvelopeVisible && listBottomPointsCh2 != null)
+                            if (m_ViewModel.IsEnvelopeVisible && listBottomPointsCh2 != null)
                             {
                                 listBottomPointsCh2.Add(new Point(x, y2));
                             }
@@ -476,10 +476,10 @@ namespace Tobi.Plugin.AudioPane
                 }
 
                 //
-                Brush brushColorBars = new SolidColorBrush(ViewModel.ColorWaveBars);
+                Brush brushColorBars = new SolidColorBrush(m_ViewModel.ColorWaveBars);
 
                 sgcCh1.Close();
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2 != null)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2 != null)
                 {
                     sgcCh2.Close();
                 }
@@ -489,7 +489,7 @@ namespace Tobi.Plugin.AudioPane
                 geoDraw1.Freeze();
 
                 GeometryDrawing geoDraw2 = null;
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && geometryCh2 != null)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && geometryCh2 != null)
                 {
                     geometryCh2.Freeze();
                     geoDraw2 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh2);
@@ -498,7 +498,7 @@ namespace Tobi.Plugin.AudioPane
                 //
                 GeometryDrawing geoDraw1_envelope = null;
                 GeometryDrawing geoDraw2_envelope = null;
-                if (ViewModel.IsEnvelopeVisible)
+                if (m_ViewModel.IsEnvelopeVisible)
                 {
                     createGeometry_envelope(out geoDraw1_envelope, out geoDraw2_envelope,
                                             ref listTopPointsCh1, ref listTopPointsCh2,
@@ -508,7 +508,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 //
                 GeometryDrawing geoDrawMarkers = null;
-                if (ViewModel.State.CurrentTreeNode != null)
+                if (m_ViewModel.State.CurrentTreeNode != null)
                 {
                     geoDrawMarkers = createGeometry_Markers(heightMagnified);
                 }
@@ -518,26 +518,26 @@ namespace Tobi.Plugin.AudioPane
                 //
                 var drawGrp = new DrawingGroup();
 
-                if (ViewModel.IsBackgroundVisible)
+                if (m_ViewModel.IsBackgroundVisible)
                 {
                     drawGrp.Children.Add(geoDrawBack);
                 }
-                if (ViewModel.IsEnvelopeVisible)
+                if (m_ViewModel.IsEnvelopeVisible)
                 {
-                    if (ViewModel.IsEnvelopeFilled)
+                    if (m_ViewModel.IsEnvelopeFilled)
                     {
                         if (geoDraw1_envelope != null)
                         {
                             drawGrp.Children.Add(geoDraw1_envelope);
                         }
-                        if (ViewModel.IsWaveFillVisible)
+                        if (m_ViewModel.IsWaveFillVisible)
                         {
                             drawGrp.Children.Add(geoDraw1);
                         }
                     }
                     else
                     {
-                        if (ViewModel.IsWaveFillVisible)
+                        if (m_ViewModel.IsWaveFillVisible)
                         {
                             drawGrp.Children.Add(geoDraw1);
                         }
@@ -547,28 +547,28 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 }
-                else if (ViewModel.IsWaveFillVisible)
+                else if (m_ViewModel.IsWaveFillVisible)
                 {
                     drawGrp.Children.Add(geoDraw1);
                 }
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
-                    if (ViewModel.IsEnvelopeVisible)
+                    if (m_ViewModel.IsEnvelopeVisible)
                     {
-                        if (ViewModel.IsEnvelopeFilled)
+                        if (m_ViewModel.IsEnvelopeFilled)
                         {
                             if (geoDraw2_envelope != null)
                             {
                                 drawGrp.Children.Add(geoDraw2_envelope);
                             }
-                            if (ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                            if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null)
                             {
                                 drawGrp.Children.Add(geoDraw2);
                             }
                         }
                         else
                         {
-                            if (ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                            if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null)
                             {
                                 drawGrp.Children.Add(geoDraw2);
                             }
@@ -578,12 +578,12 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
                     }
-                    else if (ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                    else if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null)
                     {
                         drawGrp.Children.Add(geoDraw2);
                     }
                 }
-                if (ViewModel.State.CurrentTreeNode != null && geoDrawMarkers != null)
+                if (m_ViewModel.State.CurrentTreeNode != null && geoDrawMarkers != null)
                 {
                     drawGrp.Children.Add(geoDrawMarkers);
                 }
@@ -647,18 +647,18 @@ namespace Tobi.Plugin.AudioPane
                 {
                     //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                        (Action)(() => ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
+                        (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
                 }
                 else
                 {
-                    ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
+                    m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
                 }
             }
         }
 
         private GeometryDrawing createGeometry_Markers(double heightMagnified)
         {
-            Brush brushColorMarkers = new SolidColorBrush(ViewModel.ColorMarkers);
+            Brush brushColorMarkers = new SolidColorBrush(m_ViewModel.ColorMarkers);
 
             var geometryMarkers = new StreamGeometry();
             using (StreamGeometryContext sgcMarkers = geometryMarkers.Open())
@@ -667,7 +667,7 @@ namespace Tobi.Plugin.AudioPane
                 sgcMarkers.LineTo(new Point(0.5, heightMagnified), true, false);
 
                 long bytesLeft = 0;
-                foreach (TreeNodeAndStreamDataLength marker in ViewModel.State.Audio.PlayStreamMarkers)
+                foreach (TreeNodeAndStreamDataLength marker in m_ViewModel.State.Audio.PlayStreamMarkers)
                 {
                     double pixels = (bytesLeft + marker.m_LocalStreamDataLength) / BytesPerPixel;
 
@@ -700,7 +700,7 @@ namespace Tobi.Plugin.AudioPane
                 sgcBack.Close();
             }
             geometryBack.Freeze();
-            Brush brushColorBack = new SolidColorBrush(ViewModel.ColorWaveBackground);
+            Brush brushColorBack = new SolidColorBrush(m_ViewModel.ColorWaveBackground);
             var geoDrawBack = new GeometryDrawing(brushColorBack, null, geometryBack); //new Pen(brushColorBack, 1.0)
             geoDrawBack.Freeze();
 
@@ -721,7 +721,7 @@ namespace Tobi.Plugin.AudioPane
             StreamGeometry geometryCh2_envelope = null;
             StreamGeometryContext sgcCh2_envelope = null;
 
-            if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
             {
                 geometryCh2_envelope = new StreamGeometry();
                 sgcCh2_envelope = geometryCh2_envelope.Open();
@@ -730,13 +730,13 @@ namespace Tobi.Plugin.AudioPane
             int bottomIndexStartCh1 = listTopPointsCh1.Count;
             int bottomIndexStartCh2 = listTopPointsCh2.Count;
 
-            if (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage)
+            if (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
             {
                 listBottomPointsCh1.Reverse();
                 listTopPointsCh1.AddRange(listBottomPointsCh1);
                 listBottomPointsCh1.Clear();
 
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
                     listBottomPointsCh2.Reverse();
                     listTopPointsCh2.AddRange(listBottomPointsCh2);
@@ -744,20 +744,20 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            if (ViewModel.IsUseDecibels && ViewModel.IsUseDecibelsAdjust &&
+            if (m_ViewModel.IsUseDecibels && m_ViewModel.IsUseDecibelsAdjust &&
                 (dBMinHardCoded != dBMinReached ||
-                (ViewModel.IsUseDecibelsNoAverage && (-dBMinHardCoded) != dBMaxReached)))
+                (m_ViewModel.IsUseDecibelsNoAverage && (-dBMinHardCoded) != dBMaxReached)))
             {
                 var listNewCh1 = new List<Point>(listTopPointsCh1.Count);
                 var listNewCh2 = new List<Point>(listTopPointsCh2.Count);
 
                 double hh = heightMagnified;
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
                     hh /= 2;
                 }
 
-                double range = ((ViewModel.IsUseDecibelsNoAverage ? -dBMinHardCoded : 0) - dBMinHardCoded);
+                double range = ((m_ViewModel.IsUseDecibelsNoAverage ? -dBMinHardCoded : 0) - dBMinHardCoded);
                 double pixPerDbUnit = hh / range;
 
                 int index = -1;
@@ -791,11 +791,11 @@ namespace Tobi.Plugin.AudioPane
                      */
 
 
-                    double newRange = ((ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
+                    double newRange = ((m_ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
                     double pixPerDbUnit_new = hh / newRange;
 
                     double dB;
-                    if (ViewModel.IsUseDecibelsNoAverage)
+                    if (m_ViewModel.IsUseDecibelsNoAverage)
                     {
                         if (index >= bottomIndexStartCh1)
                         {
@@ -821,7 +821,7 @@ namespace Tobi.Plugin.AudioPane
                 listTopPointsCh1.AddRange(listNewCh1);
                 listNewCh1.Clear();
 
-                if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
                     index = -1;
 
@@ -832,11 +832,11 @@ namespace Tobi.Plugin.AudioPane
                         p2.X = p.X;
                         p2.Y = p.Y;
 
-                        double newRange = ((ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
+                        double newRange = ((m_ViewModel.IsUseDecibelsNoAverage ? dBMaxReached : 0) - dBMinReached);
                         double pixPerDbUnit_new = hh / newRange;
 
                         double dB;
-                        if (ViewModel.IsUseDecibelsNoAverage)
+                        if (m_ViewModel.IsUseDecibelsNoAverage)
                         {
                             if (index >= bottomIndexStartCh2)
                             {
@@ -889,7 +889,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 if (count == 0)
                 {
-                    sgcCh1_envelope.BeginFigure(pp, ViewModel.IsEnvelopeFilled && (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage), false);
+                    sgcCh1_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                 }
                 else
                 {
@@ -897,7 +897,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 count++;
             }
-            if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
+            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
             {
                 count = 0;
 
@@ -924,7 +924,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     if (count == 0)
                     {
-                        sgcCh2_envelope.BeginFigure(pp, ViewModel.IsEnvelopeFilled && (!ViewModel.IsUseDecibels || ViewModel.IsUseDecibelsNoAverage), false);
+                        sgcCh2_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
                     {
@@ -935,20 +935,20 @@ namespace Tobi.Plugin.AudioPane
             }
 
             sgcCh1_envelope.Close();
-            if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
+            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
             {
                 sgcCh2_envelope.Close();
             }
 
-            Brush brushColorEnvelopeOutline = new SolidColorBrush(ViewModel.ColorEnvelopeOutline);
-            Brush brushColorEnvelopeFill = new SolidColorBrush(ViewModel.ColorEnvelopeFill);
+            Brush brushColorEnvelopeOutline = new SolidColorBrush(m_ViewModel.ColorEnvelopeOutline);
+            Brush brushColorEnvelopeFill = new SolidColorBrush(m_ViewModel.ColorEnvelopeFill);
 
             geometryCh1_envelope.Freeze();
             geoDraw1_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh1_envelope);
             geoDraw1_envelope.Freeze();
 
             geoDraw2_envelope = null;
-            if (ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && geometryCh2_envelope != null)
+            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && geometryCh2_envelope != null)
             {
                 geometryCh2_envelope.Freeze();
                 geoDraw2_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh2_envelope);

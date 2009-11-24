@@ -14,7 +14,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void SelectAll()
         {
-            ViewModel.Logger.Log("AudioPaneView.SelectAll", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.SelectAll", Category.Debug, Priority.Medium);
 
             m_TimeSelectionLeftX = 0;
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
@@ -24,12 +24,12 @@ namespace Tobi.Plugin.AudioPane
 
         public void SetSelectionTime(double begin, double end)
         {
-            ViewModel.Logger.Log("AudioPaneView.SetSelectionTime", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.SetSelectionTime", Category.Debug, Priority.Medium);
 
-            if (ViewModel.State.Audio.HasContent)
+            if (m_ViewModel.State.Audio.HasContent)
             {
-                long beginBytes = ViewModel.State.Audio.ConvertMillisecondsToBytes(begin);
-                long endBytes = ViewModel.State.Audio.ConvertMillisecondsToBytes(end);
+                long beginBytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(begin);
+                long endBytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(end);
 
                 m_TimeSelectionLeftX = beginBytes / BytesPerPixel;
                 WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
@@ -40,7 +40,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void SetSelectionBytes(long begin, long end)
         {
-            ViewModel.Logger.Log("AudioPaneView.SetSelectionBytes", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.SetSelectionBytes", Category.Debug, Priority.Medium);
 
             m_TimeSelectionLeftX = begin / BytesPerPixel;
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
@@ -50,7 +50,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void ClearSelection()
         {
-            ViewModel.Logger.Log("AudioPaneView.ClearSelection", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.ClearSelection", Category.Debug, Priority.Medium);
 
             m_TimeSelectionLeftX = -1;
             WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;
@@ -65,7 +65,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void ZoomSelection()
         {
-            ViewModel.Logger.Log("AudioPaneView.OnZoomSelection", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.OnZoomSelection", Category.Debug, Priority.Medium);
 
             if (m_TimeSelectionLeftX < 0)
             {
@@ -96,14 +96,14 @@ namespace Tobi.Plugin.AudioPane
                 ZoomSlider.Maximum = newSliderValue;
             }
 
-            if (ViewModel.State.Audio.HasContent)
+            if (m_ViewModel.State.Audio.HasContent)
             {
-                double selectionTimeLeft = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel));
-                double selectionTimeRight = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
+                double selectionTimeLeft = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel));
+                double selectionTimeRight = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
 
-                if (ViewModel.LastPlayHeadTime < selectionTimeLeft || ViewModel.LastPlayHeadTime > selectionTimeRight)
+                if (m_ViewModel.LastPlayHeadTime < selectionTimeLeft || m_ViewModel.LastPlayHeadTime > selectionTimeRight)
                 {
-                    ViewModel.LastPlayHeadTime = selectionTimeLeft;
+                    m_ViewModel.LastPlayHeadTime = selectionTimeLeft;
                 }
             }
 
@@ -133,12 +133,12 @@ namespace Tobi.Plugin.AudioPane
             {
                 restoreSelection();
 
-                if (!ViewModel.State.Audio.HasContent)
+                if (!m_ViewModel.State.Audio.HasContent)
                 {
                     return;
                 }
 
-                ViewModel.LastPlayHeadTime = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(x * BytesPerPixel));
+                m_ViewModel.LastPlayHeadTime = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(x * BytesPerPixel));
 
                 return;
             }
@@ -155,24 +155,24 @@ namespace Tobi.Plugin.AudioPane
             WaveFormTimeSelectionRect.Width = right - m_TimeSelectionLeftX;
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
 
-            if (!ViewModel.State.Audio.HasContent)
+            if (!m_ViewModel.State.Audio.HasContent)
             {
                 return;
             }
 
-            ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
+            m_ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
 
-            if (ViewModel.IsAutoPlay)
+            if (m_ViewModel.IsAutoPlay)
             {
                 long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
 
-                ViewModel.IsAutoPlay = false;
-                ViewModel.LastPlayHeadTime = ViewModel.State.Audio.ConvertBytesToMilliseconds(bytesFrom);
-                ViewModel.IsAutoPlay = true;
+                m_ViewModel.IsAutoPlay = false;
+                m_ViewModel.LastPlayHeadTime = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(bytesFrom);
+                m_ViewModel.IsAutoPlay = true;
 
                 long bytesTo = Convert.ToInt64(right * BytesPerPixel);
 
-                ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
+                m_ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
             }
         }
 
@@ -185,11 +185,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_TimeSelectionLeftX < 0)
             {
-                ViewModel.State.Selection.ClearSelection();
+                m_ViewModel.State.Selection.ClearSelection();
             }
-            else if (ViewModel.State.Audio.HasContent)
+            else if (m_ViewModel.State.Audio.HasContent)
             {
-                ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
+                m_ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
             }
         }
 

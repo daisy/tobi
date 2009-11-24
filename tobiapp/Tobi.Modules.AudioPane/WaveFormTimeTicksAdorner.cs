@@ -11,10 +11,11 @@ namespace Tobi.Plugin.AudioPane
     public class WaveFormTimeTicksAdorner : Adorner
     {
         private AudioPaneView m_AudioPaneView;
+        private AudioPaneViewModel m_AudioPaneViewModel;
 
         private double m_standardTextHeight;
 
-        public WaveFormTimeTicksAdorner(FrameworkElement adornedElement, AudioPaneView view)
+        public WaveFormTimeTicksAdorner(FrameworkElement adornedElement, AudioPaneView view, AudioPaneViewModel viewModel)
             : base(adornedElement)
         {
             m_standardTextHeight = -1;
@@ -22,6 +23,7 @@ namespace Tobi.Plugin.AudioPane
             IsHitTestVisible = false;
             ClipToBounds = true;
             m_AudioPaneView = view;
+            m_AudioPaneViewModel = viewModel;
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
 
@@ -67,7 +69,7 @@ namespace Tobi.Plugin.AudioPane
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (!m_AudioPaneView.ViewModel.IsAudioLoaded)
+            if (!m_AudioPaneViewModel.IsAudioLoaded)
             {
                 return;
             }
@@ -105,7 +107,7 @@ namespace Tobi.Plugin.AudioPane
 
             double minorTickInterval_milliseconds = 1000; //1s minor ticks
             double minorTickInterval_pixels =
-                m_AudioPaneView.ViewModel.State.Audio.ConvertMillisecondsToBytes(minorTickInterval_milliseconds)
+                m_AudioPaneViewModel.State.Audio.ConvertMillisecondsToBytes(minorTickInterval_milliseconds)
                     / m_AudioPaneView.BytesPerPixel;
 
             const double idealTickInterval = 20;
@@ -119,7 +121,7 @@ namespace Tobi.Plugin.AudioPane
                 minorTickInterval_pixels = idealTickInterval;
 
                 minorTickInterval_milliseconds =Math.Round(
-                    m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
+                    m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
 
                 if (minorTickInterval_milliseconds > 0)
                 {
@@ -129,7 +131,7 @@ namespace Tobi.Plugin.AudioPane
                         if (minorTickInterval_milliseconds > 0)
                         {
                             minorTickInterval_pixels =
-                                m_AudioPaneView.ViewModel.State.Audio.ConvertMillisecondsToBytes(
+                                m_AudioPaneViewModel.State.Audio.ConvertMillisecondsToBytes(
                                         minorTickInterval_milliseconds)
                                                 / m_AudioPaneView.BytesPerPixel;
                         }
@@ -172,7 +174,7 @@ namespace Tobi.Plugin.AudioPane
 
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
-                    double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX)));
+                    double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX)));
 
                     var formattedText = new FormattedText(
                         AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
@@ -224,7 +226,7 @@ namespace Tobi.Plugin.AudioPane
                 currentTickX += minorTickInterval_pixels;
             }
 
-            if (m_AudioPaneView.ViewModel.State.CurrentTreeNode != null)
+            if (m_AudioPaneViewModel.State.CurrentTreeNode != null)
             {
                 //drawingContext.Pop(); //PushOpacity
 
@@ -232,14 +234,14 @@ namespace Tobi.Plugin.AudioPane
                 double pixelsLeft = 0;
                 double pixelsRight = 0;
                 double widthChunk = 0;
-                foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneView.ViewModel.State.Audio.PlayStreamMarkers)
+                foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
                 {
                     pixelsRight = (sumData + marker.m_LocalStreamDataLength) / m_AudioPaneView.BytesPerPixel;
 
                     widthChunk = pixelsRight - pixelsLeft;
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
                     {
-                        double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
+                        double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
 
                         var formattedTextDuration = new FormattedText(
                                                 AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
@@ -383,7 +385,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_MousePosX >= 0)
             {
-                double ms = m_AudioPaneView.ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX)));
+                double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX)));
 
                 var formattedText = new FormattedText(
                     AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),

@@ -29,12 +29,11 @@ namespace Tobi.Plugin.AudioPane
 
         private void initializeCommands_Player()
         {
-            var shellView = Container.Resolve<IShellView>();
             CommandAutoPlay = new RichDelegateCommand(
                UserInterfaceStrings.Audio_AutoPlay,
                UserInterfaceStrings.Audio_AutoPlay_,
                UserInterfaceStrings.Audio_AutoPlay_KEYS,
-               shellView.LoadGnomeNeuIcon("Neu_go-last"),
+               m_ShellView.LoadGnomeNeuIcon("Neu_go-last"),
                ()=>
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
@@ -43,14 +42,14 @@ namespace Tobi.Plugin.AudioPane
                },
                ()=> !IsWaveFormLoading);
 
-            shellView.RegisterRichCommand(CommandAutoPlay);
+            m_ShellView.RegisterRichCommand(CommandAutoPlay);
             //
             //
             CommandPause = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Pause,
                 UserInterfaceStrings.Audio_Pause_,
                 UserInterfaceStrings.Audio_Pause_KEYS,
-                shellView.LoadTangoIcon("media-playback-pause"),
+                m_ShellView.LoadTangoIcon("media-playback-pause"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
@@ -59,13 +58,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && IsPlaying);
 
-            shellView.RegisterRichCommand(CommandPause);
+            m_ShellView.RegisterRichCommand(CommandPause);
             //
             CommandPlay = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Play,
                 UserInterfaceStrings.Audio_Play_,
                 UserInterfaceStrings.Audio_Play_KEYS,
-                shellView.LoadTangoIcon("media-playback-start"),
+                m_ShellView.LoadTangoIcon("media-playback-start"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
@@ -112,7 +111,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording);
 
-            shellView.RegisterRichCommand(CommandPlay);
+            m_ShellView.RegisterRichCommand(CommandPlay);
             //
             CommandPlayPreviewLeft = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewLeft,
@@ -122,7 +121,7 @@ namespace Tobi.Plugin.AudioPane
                 ()=> PlayPreviewLeftRight(true),
                 ()=> CommandPlay.CanExecute());
 
-            shellView.RegisterRichCommand(CommandPlayPreviewLeft);
+            m_ShellView.RegisterRichCommand(CommandPlayPreviewLeft);
             //
             CommandPlayPreviewRight = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewRight,
@@ -132,13 +131,13 @@ namespace Tobi.Plugin.AudioPane
                 () => PlayPreviewLeftRight(false),
                 ()=> CommandPlay.CanExecute());
 
-            shellView.RegisterRichCommand(CommandPlayPreviewRight);
+            m_ShellView.RegisterRichCommand(CommandPlayPreviewRight);
             //
             CommandGotoBegining = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
                 UserInterfaceStrings.Audio_GotoBegin_KEYS,
-                shellView.LoadTangoIcon("go-first"),
+                m_ShellView.LoadTangoIcon("go-first"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoBegining", Category.Debug, Priority.Medium);
@@ -164,13 +163,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandGotoBegining);
+            m_ShellView.RegisterRichCommand(CommandGotoBegining);
             //
             CommandGotoEnd = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoEnd,
                 UserInterfaceStrings.Audio_GotoEnd_,
                 UserInterfaceStrings.Audio_GotoEnd_KEYS,
-                shellView.LoadTangoIcon("go-last"),
+                m_ShellView.LoadTangoIcon("go-last"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoEnd", Category.Debug, Priority.Medium);
@@ -198,13 +197,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandGotoEnd);
+            m_ShellView.RegisterRichCommand(CommandGotoEnd);
             //
             CommandStepBack = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepBack,
                  UserInterfaceStrings.Audio_StepBack_,
                  UserInterfaceStrings.Audio_StepBack_KEYS,
-                shellView.LoadTangoIcon("media-skip-backward"),
+                m_ShellView.LoadTangoIcon("media-skip-backward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepBack", Category.Debug, Priority.Medium);
@@ -260,13 +259,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandStepBack);
+            m_ShellView.RegisterRichCommand(CommandStepBack);
             //
             CommandStepForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepForward,
                 UserInterfaceStrings.Audio_StepForward_,
                 UserInterfaceStrings.Audio_StepForward_KEYS,
-                shellView.LoadTangoIcon("media-skip-forward"),
+                m_ShellView.LoadTangoIcon("media-skip-forward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepForward", Category.Debug, Priority.Medium);
@@ -320,13 +319,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> CommandStepBack.CanExecute());
 
-            shellView.RegisterRichCommand(CommandStepForward);
+            m_ShellView.RegisterRichCommand(CommandStepForward);
             //
             CommandFastForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FastForward,
                 UserInterfaceStrings.Audio_FastForward_,
                 UserInterfaceStrings.Audio_FastForward_KEYS,
-                shellView.LoadTangoIcon("media-seek-forward"),
+                m_ShellView.LoadTangoIcon("media-seek-forward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFastForward", Category.Debug, Priority.Medium);
@@ -353,13 +352,13 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandFastForward);
+            m_ShellView.RegisterRichCommand(CommandFastForward);
             //
             CommandRewind = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Rewind,
                 UserInterfaceStrings.Audio_Rewind_,
                 UserInterfaceStrings.Audio_Rewind_KEYS,
-                shellView.LoadTangoIcon("media-seek-backward"),
+                m_ShellView.LoadTangoIcon("media-seek-backward"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandRewind", Category.Debug, Priority.Medium);
@@ -385,7 +384,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
 
-            shellView.RegisterRichCommand(CommandRewind);
+            m_ShellView.RegisterRichCommand(CommandRewind);
             //
         }
 

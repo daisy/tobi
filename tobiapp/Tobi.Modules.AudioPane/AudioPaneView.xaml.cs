@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -7,7 +8,9 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Regions;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
@@ -15,41 +18,72 @@ using urakawa.media.data.audio;
 
 namespace Tobi.Plugin.AudioPane
 {
-    /// <summary>
-    /// Interaction logic for the AudioPaneView.xaml view.
-    /// The backing ViewModel is injected in the constructor ("passive" view design pattern)
-    /// </summary>
-    public partial class AudioPaneView : IAudioPaneView
+    ///<summary>
+    /// Single shared instance (singleton) of the audio view
+    ///</summary>
+    [Export(typeof(IAudioPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
+    public partial class AudioPaneView : IAudioPaneView, IPartImportsSatisfiedNotification
     {
-        #region Construction
-
-        public AudioPaneViewModel ViewModel { get; private set; }
-
-        ///<summary>
-        /// Dependency-Injected constructor
-        ///</summary>
-        public AudioPaneView(AudioPaneViewModel viewModel)
+#pragma warning disable 1591 // non-documented method
+        public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
-            ViewModel = viewModel;
-            ViewModel.SetView(this);
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
 
-            ViewModel.Logger.Log("AudioPaneView.ctor", Category.Debug, Priority.Medium);
+        private readonly ILoggerFacade m_Logger;
+        private readonly IEventAggregator m_EventAggregator;
 
-            DataContext = ViewModel;
+        private readonly IShellView m_ShellView;
+        private readonly AudioPaneViewModel m_ViewModel;
+        
+        ///<summary>
+        /// We inject a few dependencies in this constructor.
+        /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
+        ///</summary>
+        ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="eventAggregator">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="viewModel">normally obtained from the Unity container, it's a Tobi built-in type</param>
+        ///<param name="shellView">normally obtained from the Unity container, it's a Tobi built-in type</param>
+        [ImportingConstructor]
+        public AudioPaneView(
+            ILoggerFacade logger,
+            IEventAggregator eventAggregator,
+            [Import(typeof(AudioPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            AudioPaneViewModel viewModel,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView)
+        {
+            m_Logger = logger;
+            m_EventAggregator = eventAggregator;
+            
+            m_ViewModel = viewModel;
+            m_ViewModel.SetView(this);
+
+            m_ShellView = shellView;
+
+            m_Logger.Log(@"AudioPaneView.ctor", Category.Debug, Priority.Medium);
+
+            DataContext = m_ViewModel;
 
             InitializeComponent();
 
-            WinFormHost.Child = ViewModel.GetWindowsFormsHookControl();
+            WinFormHost.Child = m_ViewModel.GetWindowsFormsHookControl();
 
             ZoomSlider.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.Audio_ZoomSlider);
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
         }
 
+        #region Construction
+
+
         public void InitGraphicalCommandBindings()
         {
             var mouseGest = new MouseGesture { MouseAction = MouseAction.LeftDoubleClick };
 
-            var mouseBind = new MouseBinding { Gesture = mouseGest, Command = ViewModel.CommandSelectAll };
+            var mouseBind = new MouseBinding { Gesture = mouseGest, Command = m_ViewModel.CommandSelectAll };
 
             WaveFormCanvas.InputBindings.Add(mouseBind);
 
@@ -59,7 +93,7 @@ namespace Tobi.Plugin.AudioPane
                 Modifiers = ModifierKeys.Control
             };
 
-            var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = ViewModel.CommandClearSelection };
+            var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = m_ViewModel.CommandClearSelection };
 
             WaveFormCanvas.InputBindings.Add(mouseBind2);
         }
@@ -67,7 +101,7 @@ namespace Tobi.Plugin.AudioPane
         ~AudioPaneView()
         {
 #if DEBUG
-            ViewModel.Logger.Log("AudioPaneView garbage collected.", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView garbage collected.", Category.Debug, Priority.Medium);
 #endif
         }
 
@@ -93,23 +127,23 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnPeakMeterCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ViewModel.UpdatePeakMeter();
+            m_ViewModel.UpdatePeakMeter();
         }
 
         private bool m_ZoomSliderDrag = false;
 
         private void OnZoomSliderDragStarted(object sender, DragStartedEventArgs e1)
         {
-            ViewModel.Logger.Log("AudioPaneView.OnZoomSliderDragStarted", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.OnZoomSliderDragStarted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = true;
         }
 
         private void OnZoomSliderDragCompleted(object sender, DragCompletedEventArgs e)
         {
-            ViewModel.Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = false;
 
-            ViewModel.CommandRefresh.Execute();
+            m_ViewModel.CommandRefresh.Execute();
         }
 
         private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -138,33 +172,33 @@ namespace Tobi.Plugin.AudioPane
                 WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
             }
 
-            if (ViewModel.State.Audio.HasContent)
+            if (m_ViewModel.State.Audio.HasContent)
             {
-                BytesPerPixel = ViewModel.State.Audio.DataLength/width;
+                BytesPerPixel = m_ViewModel.State.Audio.DataLength/width;
             }
             else
             {
                 BytesPerPixel = -1;
             }
 
-            ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
-            ViewModel.RefreshWaveFormChunkMarkers();
+            m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+            m_ViewModel.RefreshWaveFormChunkMarkers();
 
-            if (!ViewModel.State.Audio.HasContent)
+            if (!m_ViewModel.State.Audio.HasContent)
             {
                 return;
             }
 
             if (m_WaveFormImageSourceDrawingImage != null && !(WaveFormImage.Source is DrawingImage))
             {
-                ViewModel.Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug, Priority.Medium);
+                m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug, Priority.Medium);
 
                 //RenderTargetBitmap source = (RenderTargetBitmap)WaveFormImage.Source;
                 WaveFormImage.Source = null;
                 WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
             }
 
-            if (m_ZoomSliderDrag || ViewModel.ResizeDrag)
+            if (m_ZoomSliderDrag || m_ViewModel.ResizeDrag)
             {
                 return;
             }
@@ -174,7 +208,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            ViewModel.CommandRefresh.Execute();
+            m_ViewModel.CommandRefresh.Execute();
         }
 
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
@@ -210,7 +244,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (p.X == m_TimeSelectionLeftX)
             {
-                ViewModel.CommandClearSelection.Execute();
+                m_ViewModel.CommandClearSelection.Execute();
                 m_TimeSelectionLeftX = p.X;
 
                 WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
@@ -276,21 +310,21 @@ namespace Tobi.Plugin.AudioPane
                 Point p = e.GetPosition(WaveFormCanvas);
                 if (m_MouseClicks == 2)
                 {
-                    if (!ViewModel.State.Audio.HasContent || ViewModel.State.CurrentTreeNode == null)
+                    if (!m_ViewModel.State.Audio.HasContent || m_ViewModel.State.CurrentTreeNode == null)
                     {
-                        ViewModel.CommandClearSelection.Execute();
-                        ViewModel.CommandSelectAll.Execute();
+                        m_ViewModel.CommandClearSelection.Execute();
+                        m_ViewModel.CommandSelectAll.Execute();
                     }
                     else
                     {
-                        ViewModel.CommandClearSelection.Execute();
-                        ViewModel.SelectChunk(Convert.ToInt64(p.X*BytesPerPixel));
+                        m_ViewModel.CommandClearSelection.Execute();
+                        m_ViewModel.SelectChunk(Convert.ToInt64(p.X*BytesPerPixel));
                     }
                 }
                 else if (m_MouseClicks == 3)
                 {
-                    ViewModel.CommandClearSelection.Execute();
-                    ViewModel.CommandSelectAll.Execute();
+                    m_ViewModel.CommandClearSelection.Execute();
+                    m_ViewModel.CommandSelectAll.Execute();
                 }
                 else
                 {
@@ -307,7 +341,7 @@ namespace Tobi.Plugin.AudioPane
         {
             Point p = e.GetPosition(WaveFormCanvas);
 
-            ViewModel.AudioPlayer_Stop();
+            m_ViewModel.AudioPlayer_Stop();
 
             if (e.ClickCount == 2)
             {
@@ -335,19 +369,19 @@ namespace Tobi.Plugin.AudioPane
             else
             {
                 backupSelection();
-                ViewModel.CommandClearSelection.Execute();
+                m_ViewModel.CommandClearSelection.Execute();
                 m_TimeSelectionLeftX = p.X;
             }
         }
 
         private void OnResetPeakOverloadCountCh1(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.PeakOverloadCountCh1 = 0;
+            m_ViewModel.PeakOverloadCountCh1 = 0;
         }
 
         private void OnResetPeakOverloadCountCh2(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.PeakOverloadCountCh2 = 0;
+            m_ViewModel.PeakOverloadCountCh2 = 0;
         }
 
         /// <summary>
@@ -357,7 +391,7 @@ namespace Tobi.Plugin.AudioPane
         /// <param name="e"></param>
         private void OnPaneLoaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.Logger.Log("AudioPaneView.OnPaneLoaded", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.OnPaneLoaded", Category.Debug, Priority.Medium);
 
             AdornerLayer layer = AdornerLayer.GetAdornerLayer(WaveFormScroll);
             if (layer == null)
@@ -368,15 +402,15 @@ namespace Tobi.Plugin.AudioPane
             }
             layer.ClipToBounds = true;
 
-            m_WaveFormTimeTicksAdorner = new WaveFormTimeTicksAdorner(WaveFormScroll, this);
+            m_WaveFormTimeTicksAdorner = new WaveFormTimeTicksAdorner(WaveFormScroll, this, m_ViewModel);
             layer.Add(m_WaveFormTimeTicksAdorner);
             m_WaveFormTimeTicksAdorner.Visibility = Visibility.Visible;
 
-            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll, this);
+            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll, m_ViewModel);
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
 
-            ViewModel.EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");
+            m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");
         }
 
         #endregion Event / Callbacks
@@ -385,7 +419,7 @@ namespace Tobi.Plugin.AudioPane
 
         public string OpenFileDialog()
         {
-            ViewModel.Logger.Log("AudioPaneView.OpenFileDialog", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.OpenFileDialog", Category.Debug, Priority.Medium);
 
             var dlg = new OpenFileDialog
             {
@@ -399,11 +433,9 @@ namespace Tobi.Plugin.AudioPane
                 Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_OpenFile)
             };
 
-            var shellView = ViewModel.Container.Resolve<IShellView>();
-
             bool? result = false;
 
-            shellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+            m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
 
             if (result == false)
             {
@@ -425,7 +457,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            ViewModel.Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
             if (double.IsNaN(height) || height == 0)
@@ -452,7 +484,7 @@ namespace Tobi.Plugin.AudioPane
 
             geometry.Freeze();
 
-            Brush brushColorBack = new SolidColorBrush(ViewModel.ColorWaveBackground);
+            Brush brushColorBack = new SolidColorBrush(m_ViewModel.ColorWaveBackground);
             var geoDraw = new GeometryDrawing(brushColorBack, new Pen(brushColorBack, 1.0), geometry);
             geoDraw.Freeze();
             var drawGrp = new DrawingGroup();
@@ -475,7 +507,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            ViewModel.Logger.Log("AudioPaneView.ResetAll", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.ResetAll", Category.Debug, Priority.Medium);
 
             ClearSelection();
 
@@ -535,7 +567,7 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight)));
                 return;
             }
-            ViewModel.Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
             if (double.IsNaN(height) || height == 0)
@@ -594,7 +626,7 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
                 return;
             }
-            PCMFormatInfo pcmInfo = ViewModel.State.Audio.GetCurrentPcmFormat();
+            PCMFormatInfo pcmInfo = m_ViewModel.State.Audio.GetCurrentPcmFormat();
 
             double barWidth = PeakMeterCanvas.ActualWidth;
             if (pcmInfo.Data.NumberOfChannels > 1)
@@ -615,7 +647,7 @@ namespace Tobi.Plugin.AudioPane
             }
             using (StreamGeometryContext sgc = geometry1.Open())
             {
-                double pixels = ViewModel.PeakMeterBarDataCh1.DbToPixels(availableHeight);
+                double pixels = m_ViewModel.PeakMeterBarDataCh1.DbToPixels(availableHeight);
 
                 m_PointPeakMeter.X = 0;
                 m_PointPeakMeter.Y = 0;
@@ -650,7 +682,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 using (StreamGeometryContext sgc = geometry2.Open())
                 {
-                    double pixels = ViewModel.PeakMeterBarDataCh2.DbToPixels(availableHeight);
+                    double pixels = m_ViewModel.PeakMeterBarDataCh2.DbToPixels(availableHeight);
 
                     m_PointPeakMeter.X = barWidth;
                     m_PointPeakMeter.Y = 0;
@@ -820,7 +852,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void ZoomFitFull()
         {
-            ViewModel.Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
+            m_Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
 
             double widthToUse = WaveFormScroll.ViewportWidth;
             if (double.IsNaN(Double.NaN) || widthToUse == 0)
@@ -847,7 +879,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_PlaybackTimer != null && m_PlaybackTimer.IsEnabled)
             {
-                ViewModel.Logger.Log("m_PlaybackTimer.Stop()", Category.Debug, Priority.Medium);
+                m_Logger.Log("m_PlaybackTimer.Stop()", Category.Debug, Priority.Medium);
 
                 m_PlaybackTimer.Stop();
             }
@@ -861,13 +893,13 @@ namespace Tobi.Plugin.AudioPane
                 m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
                 m_PlaybackTimer.Tick += OnPlaybackTimerTick;
 
-                double interval = ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
+                double interval = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
 
-                ViewModel.Logger.Log("WaveFormTimer REFRESH interval: " + interval, Category.Debug, Priority.Medium);
+                m_Logger.Log("WaveFormTimer REFRESH interval: " + interval, Category.Debug, Priority.Medium);
 
-                if (interval < ViewModel.AudioPlayer_RefreshInterval)
+                if (interval < m_ViewModel.AudioPlayer_RefreshInterval)
                 {
-                    interval = ViewModel.AudioPlayer_RefreshInterval;
+                    interval = m_ViewModel.AudioPlayer_RefreshInterval;
                 }
                 m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
             }
@@ -876,14 +908,14 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            ViewModel.Logger.Log("m_PlaybackTimer.Start()", Category.Debug, Priority.Medium);
+            m_Logger.Log("m_PlaybackTimer.Start()", Category.Debug, Priority.Medium);
 
             m_PlaybackTimer.Start();
         }
 
         private void OnPlaybackTimerTick(object sender, EventArgs e)
         {
-            ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+            m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
         }
 
         //private DispatcherTimer m_PeakMeterTimer;
@@ -979,7 +1011,7 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         private void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
         {
-            if (!ViewModel.State.Audio.HasContent)
+            if (!m_ViewModel.State.Audio.HasContent)
             {
                 if (m_TimeSelectionLeftX >= 0)
                 {
@@ -995,7 +1027,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = ViewModel.State.Audio.ConvertMillisecondsToBytes(ViewModel.LastPlayHeadTime);
+            long bytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime);
 
             double pixels = bytes / BytesPerPixel;
 

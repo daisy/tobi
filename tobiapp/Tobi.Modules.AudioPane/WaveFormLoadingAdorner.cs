@@ -9,7 +9,7 @@ namespace Tobi.Plugin.AudioPane
 {
     public class WaveFormLoadingAdorner : Adorner
     {
-        private AudioPaneView m_AudioPaneView;
+        private AudioPaneViewModel m_AudioPaneViewModel;
         private Pen m_pen;
         private SolidColorBrush m_renderBrush;
         private Typeface m_typeFace;
@@ -18,12 +18,12 @@ namespace Tobi.Plugin.AudioPane
         private Point m_pointText;
         private Rect m_rectRect;
 
-        public WaveFormLoadingAdorner(FrameworkElement adornedElement, AudioPaneView view)
+        public WaveFormLoadingAdorner(FrameworkElement adornedElement, AudioPaneViewModel view)
             : base(adornedElement)
         {
             IsHitTestVisible = false;
             ClipToBounds = true;
-            m_AudioPaneView = view;
+            m_AudioPaneViewModel = view;
 
             m_renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.6 };
             m_renderBrush.Freeze();
@@ -50,7 +50,7 @@ namespace Tobi.Plugin.AudioPane
         protected override void OnRender(DrawingContext drawingContext)
         {
             var formattedText = new FormattedText(
-                (DisplayRecorderTime ? m_AudioPaneView.ViewModel.TimeStringCurrent : UserInterfaceStrings.Loading),
+                (DisplayRecorderTime ? m_AudioPaneViewModel.TimeStringCurrent : UserInterfaceStrings.Loading),
                 m_culture,
                 FlowDirection.LeftToRight,
                 m_typeFace,

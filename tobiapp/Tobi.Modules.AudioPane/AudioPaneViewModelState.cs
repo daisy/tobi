@@ -61,17 +61,15 @@ namespace Tobi.Plugin.AudioPane
                         m_PlayStream.Position = 0;
                         m_PlayStream.Seek(0, SeekOrigin.Begin);
 
-                        var session = m_viewModel.Container.Resolve<IUrakawaSession>();
-
                         if (m_viewModel.State.CurrentTreeNode != null)
                         {
                             Debug.Assert(m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.EnforceSinglePCMFormat);
                             PcmFormat = m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                         }
-                        else if (session != null && session.DocumentProject != null)
+                        else if (m_viewModel.m_UrakawaSession != null && m_viewModel.m_UrakawaSession.DocumentProject != null)
                         {
-                            Debug.Assert(session.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                            PcmFormat = session.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                            Debug.Assert(m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                            PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                         }
                         else
                         {

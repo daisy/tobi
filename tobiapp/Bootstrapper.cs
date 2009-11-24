@@ -13,6 +13,7 @@ using System.Windows;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common._UnusedCode;
+using Tobi.Plugin.AudioPane;
 using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
@@ -211,7 +212,11 @@ namespace Tobi
             //MessageBox.Show(@"Just before resolving Urakawa session (take a look at the window title 'waiting...')");
 
             // TODO: for debugging only: we're loading selectively to avoid interference (and weird part dependencies)
-            Container.RegisterCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))));
+            Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+            {
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin)))
+            }));
 
             //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");
 
