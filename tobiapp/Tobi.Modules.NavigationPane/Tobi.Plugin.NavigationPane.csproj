@@ -8,8 +8,8 @@
     <ProjectGuid>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.NavigationPane</RootNamespace>
-    <AssemblyName>Tobi.Modules.NavigationPane</AssemblyName>
+    <RootNamespace>Tobi.Plugin.NavigationPane</RootNamespace>
+    <AssemblyName>Tobi.Plugin.NavigationPane</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.NavigationPane.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.NavigationPane.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

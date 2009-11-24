@@ -9,39 +9,41 @@ using Microsoft.Practices.Composite.Regions;
 namespace Tobi.Common._UnusedCode
 {
     /// <summary>
-    /// Inspired/copied from http://msdn.microsoft.com/en-us/library/cc707884.aspx
+    /// See DanielVaughan.Calcium.Client.Modularity.RegionAdapters
+    /// See http://msdn.microsoft.com/en-us/library/cc707884.aspx
     /// </summary>
     public class ToolBarTrayRegionAdapter : RegionAdapterBase<ToolBarTray>
     {
         public ToolBarTrayRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)
             : base(regionBehaviorFactory)
         {
-            // Nothing else to do here.
+            /* Intentionally left blank. */
         }
 
         protected override void Adapt(IRegion region, ToolBarTray regionTarget)
         {
-            addItems(regionTarget, region.ActiveViews.ToList());
+            AddItems(regionTarget, region.ActiveViews.ToList());
 
             region.ActiveViews.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)
-                                                        {
-                                                            if (e.Action == NotifyCollectionChangedAction.Add)
-                                                            {
-                                                                addItems(regionTarget, e.NewItems);
-                                                            }
-                                                            if (e.Action == NotifyCollectionChangedAction.Remove)
-                                                            {
-                                                                removeItems(regionTarget, e.OldItems);
-                                                            }
-                                                        };
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    AddItems(regionTarget, e.NewItems);
+                }
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    RemoveItems(regionTarget, e.OldItems);
+                }
+            };
         }
 
         protected override IRegion CreateRegion()
         {
-            return new AllActiveRegion();
+            IRegion region = new AllActiveRegion();
+            return region;
         }
 
-        private static void addItems(ToolBarTray control, IEnumerable newItems)
+        static void AddItems(ToolBarTray control, IList newItems)
         {
             if (newItems == null)
             {
@@ -58,11 +60,10 @@ namespace Tobi.Common._UnusedCode
             {
                 return;
             }
-
             RegionManager.SetRegionName(dependencyItem, RegionManager.GetRegionName(dependencyItem));
         }
 
-        private static void removeItems(ToolBarTray control, IEnumerable oldItems)
+        static void RemoveItems(ToolBarTray control, IList oldItems)
         {
             if (oldItems == null)
             {

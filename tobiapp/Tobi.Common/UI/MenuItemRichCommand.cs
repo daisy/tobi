@@ -8,8 +8,60 @@ using Tobi.Common.MVVM.Command;
 
 namespace Tobi.Common.UI
 {
+    //[StyleTypedProperty(Property = "ItemContainerStyle", StyleTargetType = typeof(MenuItemRichCommand))]
     public class MenuItemRichCommand : MenuItem
     {
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+            if (item is RichDelegateCommand)
+            {
+                ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
+            }
+            else if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
+            {
+                var data = (TwoStateMenuItemRichCommand_DataContextWrapper)item;
+                TwoStateMenuItemRichCommand.ConfigureTwoStateMenuItemRichCommand((TwoStateMenuItemRichCommand)element, data.RichCommandActive);
+            }
+
+            base.PrepareContainerForItemOverride(element, item);
+        }
+
+        private object m_Item;
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
+            bool own = item is RichDelegateCommand
+                || item is MenuItemRichCommand
+                || item is Separator
+                || item is TwoStateMenuItemRichCommand_DataContextWrapper;
+            m_Item = (own ? item : null);
+            return false;
+        }
+
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            if (m_Item == null)
+            {
+                return new MenuItem();
+            }
+            if (m_Item is MenuItemRichCommand)
+            {
+                return (MenuItemRichCommand)m_Item;
+            }
+            if (m_Item is RichDelegateCommand)
+            {
+                var container = new MenuItemRichCommand();
+                //ConfigureMenuItemFromCommand(container, (RichDelegateCommand)m_Item);
+                return container;
+            }
+            if (m_Item is TwoStateMenuItemRichCommand_DataContextWrapper)
+            {
+                var container = new TwoStateMenuItemRichCommand();
+                //TwoStateMenuItemRichCommand.ConfigureTwoStateMenuItemRichCommand(container, ((TwoStateMenuItemRichCommand_DataContextWrapper)m_Item).RichCommandActive);
+                return container;
+            }
+            return (DependencyObject)m_Item;
+        }
+
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
                                         typeof(RichDelegateCommand),
@@ -171,6 +223,11 @@ namespace Tobi.Common.UI
             }
             var choice = (Boolean)e.NewValue;
 
+            ConfigureTwoStateMenuItemRichCommand(menuItem, choice);
+        }
+        
+        public static void ConfigureTwoStateMenuItemRichCommand(TwoStateMenuItemRichCommand menuItem, bool choice)
+        {
             RichDelegateCommand command = menuItem.RichCommandOne;
 
             if (command.KeyGesture == null && menuItem.RichCommandTwo.KeyGesture != null)
@@ -220,6 +277,57 @@ namespace Tobi.Common.UI
             set
             {
                 SetValue(RichCommandActiveProperty, value);
+            }
+        }
+    }
+
+    public class TwoStateMenuItemRichCommand_DataContextWrapper : PropertyChangedNotifyBase
+    {
+        private IInputBindingManager m_InputBindingManager;
+        public IInputBindingManager InputBindingManager
+        {
+            get { return m_InputBindingManager; }
+            set
+            {
+                if (value == m_InputBindingManager) { return; }
+                m_InputBindingManager = value;
+                RaisePropertyChanged(() => InputBindingManager);
+            }
+        }
+
+        private RichDelegateCommand m_RichCommandOne;
+        public RichDelegateCommand RichCommandOne
+        {
+            get { return m_RichCommandOne; }
+            set
+            {
+                if (value == m_RichCommandOne) { return; }
+                m_RichCommandOne = value;
+                RaisePropertyChanged(() => RichCommandOne);
+            }
+        }
+
+        private RichDelegateCommand m_RichCommandTwo;
+        public RichDelegateCommand RichCommandTwo
+        {
+            get { return m_RichCommandTwo; }
+            set
+            {
+                if (value == m_RichCommandTwo) { return; }
+                m_RichCommandTwo = value;
+                RaisePropertyChanged(() => RichCommandTwo);
+            }
+        }
+
+        private Boolean m_RichCommandActive;
+        public Boolean RichCommandActive
+        {
+            get { return m_RichCommandActive; }
+            set
+            {
+                if (value == m_RichCommandActive) { return; }
+                m_RichCommandActive = value;
+                RaisePropertyChanged(() => RichCommandActive);
             }
         }
     }

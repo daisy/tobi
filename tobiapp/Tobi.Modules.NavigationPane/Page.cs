@@ -5,7 +5,7 @@ using urakawa.core;
 
 namespace Tobi.Plugin.NavigationPane
 {
-    public class Page:PropertyChangedNotifyBase
+    public class Page : PropertyChangedNotifyBase
     {
         private bool m_isMatch;
         private bool m_isSelected;

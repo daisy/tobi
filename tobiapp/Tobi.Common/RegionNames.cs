@@ -6,6 +6,14 @@ namespace Tobi.Common
     public static class RegionNames
     {
         public const string MenuBar = "MenuBar";
+
+
+        public const string MenuBar_File = "MenuBar_File";
+        public const string MenuBar_Edit = "MenuBar_Edit";
+        public const string MenuBar_Audio = "MenuBar_Audio";
+        public const string MenuBar_Tools = "MenuBar_Tools";
+        public const string MenuBar_View = "MenuBar_View";
+
         public const string StatusBar = "StatusBar";
         public const string ToolBars = "ToolBars";
         public const string DocumentPane = "DocumentPane";

@@ -1,153 +1,67 @@
-﻿using Microsoft.Practices.Composite.Events;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Presentation.Regions;
+using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using Tobi.Plugin.AudioPane;
+using System.Linq;
 
 namespace Tobi.Plugin.MenuBar
 {
-    /// <summary>
-    /// Interaction logic for MenuBarView.xaml
-    /// </summary>
-    // [Export]
-    public partial class MenuBarView // : IPartImportsSatisfiedNotification
+    ///<summary>
+    /// Single shared instance (singleton) of the toolbar view
+    ///</summary>
+    [Export(typeof(IMenuBarView)), PartCreationPolicy(CreationPolicy.Shared)]
+    public partial class MenuBarView : IMenuBarView, IPartImportsSatisfiedNotification
     {
-        //public void OnImportsSatisfied()
-        //{
-        //    Debugger.Break();
-        //}
-
-        //[Import(typeof(ILoggerFacade), AllowRecomposition = true, AllowDefault = false)]
-        //protected ILoggerFacade LoggerFromMEF { get; set; }
-
-        //[Import]
-        //protected Lazy<ILoggerFacade> LoggerFromMEF { get; set; }
-
-        //[ImportMany(typeof(ILoggerFacade), AllowRecomposition = true, AllowDefault = false)]
-        //public IEnumerable<ILoggerFacade> LoggersFromMEF { get; set; }
-
-
-        public AudioPaneViewModel AudioPaneViewModel
+#pragma warning disable 1591 // non-documented method
+        public void OnImportsSatisfied()
+#pragma warning restore 1591
         {
-            get
-            {
-                var viewModel = Container.Resolve<AudioPaneViewModel>();
-
-                return viewModel;
-            }
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
         }
 
-        public IInputBindingManager InputBindingManager
-        {
-            get
-            {
-                var shellView = Container.Resolve<IShellView>();
-
-                return shellView;
-            }
-        }
-
-        protected IUnityContainer Container { get; private set; }
-        protected IEventAggregator EventAggregator { get; private set; }
-        protected ILoggerFacade Logger { get; private set; }
-
-        public RichDelegateCommand ExitCommand { get; private set; }
-
-        public RichDelegateCommand MagnifyUiIncreaseCommand { get; private set; }
-        public RichDelegateCommand MagnifyUiDecreaseCommand { get; private set; }
-
-        public RichDelegateCommand ManageShortcutsCommand { get; private set; }
-
-        //public RichDelegateCommand UndoCommand { get; private set; }
-        //public RichDelegateCommand RedoCommand { get; private set; }
-
-        public RichDelegateCommand CopyCommand { get; private set; }
-        public RichDelegateCommand CutCommand { get; private set; }
-        public RichDelegateCommand PasteCommand { get; private set; }
-
-        public RichDelegateCommand HelpCommand { get; private set; }
-        public RichDelegateCommand PreferencesCommand { get; private set; }
-        //public RichDelegateCommand WebHomeCommand { get; private set; }
-
-        //public RichDelegateCommand NavNextCommand { get; private set; }
-        //public RichDelegateCommand NavPreviousCommand { get; private set; }
-
-        //public RichDelegateCommand ExportCommand { get; private set; }
-
-        //public RichDelegateCommand SaveCommand { get; private set; }
-        //public RichDelegateCommand SaveAsCommand { get; private set; }
-
-        ////public RichDelegateCommand NewCommand { get; private set; }
-        //public RichDelegateCommand OpenCommand { get; private set; }
-        //public RichDelegateCommand CloseCommand { get; private set; }
-
-        public RichDelegateCommand CommandShowMetadataPane { get; private set; }
-        
-        public RichDelegateCommand AudioCommandInsertFile { get; private set; }
-        public RichDelegateCommand AudioCommandGotoBegining { get; private set; }
-        public RichDelegateCommand AudioCommandGotoEnd { get; private set; }
-        public RichDelegateCommand AudioCommandStepBack { get; private set; }
-        public RichDelegateCommand AudioCommandStepForward { get; private set; }
-        public RichDelegateCommand AudioCommandRewind { get; private set; }
-        public RichDelegateCommand AudioCommandFastForward { get; private set; }
-        public RichDelegateCommand AudioCommandSelectAll { get; private set; }
-        public RichDelegateCommand AudioCommandClearSelection { get; private set; }
-        public RichDelegateCommand AudioCommandZoomSelection { get; private set; }
-        public RichDelegateCommand AudioCommandZoomFitFull { get; private set; }
-        public RichDelegateCommand AudioCommandPlay { get; private set; }
-        public RichDelegateCommand AudioCommandPlayPreviewLeft { get; private set; }
-        public RichDelegateCommand AudioCommandPlayPreviewRight { get; private set; }
-        public RichDelegateCommand AudioCommandPause { get; private set; }
-        public RichDelegateCommand AudioCommandStartRecord { get; private set; }
-        public RichDelegateCommand AudioCommandStopRecord { get; private set; }
-        public RichDelegateCommand AudioCommandStartMonitor { get; private set; }
-        public RichDelegateCommand AudioCommandStopMonitor { get; private set; }
-        public RichDelegateCommand AudioCommandBeginSelection { get; private set; }
-        public RichDelegateCommand AudioCommandEndSelection { get; private set; }
-        public RichDelegateCommand AudioCommandSelectNextChunk { get; private set; }
-        public RichDelegateCommand AudioCommandSelectPreviousChunk { get; private set; }
-        public RichDelegateCommand AudioCommandDeleteAudioSelection { get; private set; }
-        
+        private readonly ILoggerFacade m_Logger;
+        private readonly IRegionManager m_RegionManager;
+        private readonly IShellView m_ShellView;
 
 
         ///<summary>
-        /// Dependency-injected constructor
+        /// We inject a few dependencies in this constructor.
+        /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
         ///</summary>
-        //[ImportingConstructor]
-        public MenuBarView(IUnityContainer container, ILoggerFacade logger, IEventAggregator eventAggregator)
+        ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="regionManager">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="shellView">normally obtained from the Unity container, it's a Tobi-specific entity</param>
+        [ImportingConstructor]
+        public MenuBarView(
+            ILoggerFacade logger,
+            IRegionManager regionManager,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView)
         {
-            //LoggerFromMEF.Value.Log(
-            //    "MenuBarView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
-            //    Category.Info, Priority.Low);
+            m_Logger = logger;
+            m_RegionManager = regionManager;
+            m_ShellView = shellView;
 
-            //foreach (ILoggerFacade log in LoggersFromMEF)
-            //{
-            //    log.Log(
-            //        "MenuBarView: using logger from the CAG/Prism/CompositeWPF (well, actually: from the Unity Ddependency Injection Container), obtained via MEF",
-            //        Category.Info, Priority.Low);
-            //}
+            m_Logger.Log(@"MenuBarView.ctor", Category.Debug, Priority.Medium);
 
-            Container = container;
-            Logger = logger;
-            EventAggregator = eventAggregator;
+            InitializeComponent();
 
-            Logger.Log("MenuBarView.ctor", Category.Debug, Priority.Medium);
+            RegionManager.SetRegionManager(this, m_RegionManager);
+            RegionManager.UpdateRegions();
 
-            //var session = Container.Resolve<IUrakawaSession>();
-            //if (session != null)
-            //{
-            //    SaveCommand = session.SaveCommand;
-            //    ExportCommand = session.ExportCommand;
-            //    SaveAsCommand = session.SaveAsCommand;
-            //    OpenCommand = session.OpenCommand;
-            //    //NewCommand = session.NewCommand;
-            //    CloseCommand = session.CloseCommand;
-
-            //    UndoCommand = session.UndoCommand;
-            //    RedoCommand = session.RedoCommand;
-
-            //}
 
             //var metadata = Container.Resolve<MetadataPaneViewModel>();
             //if (metadata != null)
@@ -155,64 +69,234 @@ namespace Tobi.Plugin.MenuBar
             //    CommandShowMetadataPane = metadata.CommandShowMetadataPane;
             //}
 
-            var shellView = Container.Resolve<IShellView>();
-            if (shellView != null)
-            {
-                ExitCommand = shellView.ExitCommand;
+            //var shellView = Container.Resolve<IShellView>();
+            //if (shellView != null)
+            //{
+            //    ExitCommand = shellView.ExitCommand;
 
-                MagnifyUiIncreaseCommand = shellView.MagnifyUiIncreaseCommand;
-                MagnifyUiDecreaseCommand = shellView.MagnifyUiDecreaseCommand;
-                ManageShortcutsCommand = shellView.ManageShortcutsCommand;
-               
-                CopyCommand = shellView.CopyCommand;
-                CutCommand = shellView.CutCommand;
-                PasteCommand = shellView.PasteCommand;
+            //    MagnifyUiIncreaseCommand = shellView.MagnifyUiIncreaseCommand;
+            //    MagnifyUiDecreaseCommand = shellView.MagnifyUiDecreaseCommand;
+            //    ManageShortcutsCommand = shellView.ManageShortcutsCommand;
 
-                HelpCommand = shellView.HelpCommand;
-                PreferencesCommand = shellView.PreferencesCommand;
-                //WebHomeCommand = shellView.WebHomeCommand;
+            //    CopyCommand = shellView.CopyCommand;
+            //    CutCommand = shellView.CutCommand;
+            //    PasteCommand = shellView.PasteCommand;
 
-                //NavNextCommand = shellView.NavNextCommand;
-                //NavPreviousCommand = shellView.NavPreviousCommand;
-            }
+            //    HelpCommand = shellView.HelpCommand;
+            //    PreferencesCommand = shellView.PreferencesCommand;
+            //    //WebHomeCommand = shellView.WebHomeCommand;
 
-            var audioModule = Container.Resolve<AudioPaneViewModel>();
-            if (audioModule != null)
-            {
+            //    //NavNextCommand = shellView.NavNextCommand;
+            //    //NavPreviousCommand = shellView.NavPreviousCommand;
+            //}
 
-                AudioCommandInsertFile = audioModule.CommandInsertFile;
-                AudioCommandGotoBegining = audioModule.CommandGotoBegining;
-                AudioCommandGotoEnd = audioModule.CommandGotoEnd;
-                AudioCommandStepBack = audioModule.CommandStepBack;
-                AudioCommandStepForward = audioModule.CommandStepForward;
-                AudioCommandRewind = audioModule.CommandRewind;
-                AudioCommandFastForward = audioModule.CommandFastForward;
-                AudioCommandSelectAll = audioModule.CommandSelectAll;
-                AudioCommandClearSelection = audioModule.CommandClearSelection;
-                AudioCommandZoomSelection = audioModule.CommandZoomSelection;
-                AudioCommandZoomFitFull = audioModule.CommandZoomFitFull;
-                AudioCommandPlay = audioModule.CommandPlay;
-                AudioCommandPlayPreviewLeft = audioModule.CommandPlayPreviewLeft;
-                AudioCommandPlayPreviewRight = audioModule.CommandPlayPreviewRight;
-                AudioCommandPause = audioModule.CommandPause;
-                AudioCommandStartRecord = audioModule.CommandStartRecord;
-                AudioCommandStopRecord = audioModule.CommandStopRecord;
-                AudioCommandStartMonitor = audioModule.CommandStartMonitor;
-                AudioCommandStopMonitor = audioModule.CommandStopMonitor;
-                AudioCommandBeginSelection = audioModule.CommandBeginSelection;
-                AudioCommandEndSelection = audioModule.CommandEndSelection;
-                AudioCommandSelectNextChunk = audioModule.CommandSelectNextChunk;
-                AudioCommandSelectPreviousChunk = audioModule.CommandSelectPreviousChunk;
-                AudioCommandDeleteAudioSelection = audioModule.CommandDeleteAudioSelection;
-            }
+            //var audioModule = Container.Resolve<AudioPaneViewModel>();
+            //if (audioModule != null)
+            //{
 
-            InitializeComponent();
+            //    AudioCommandInsertFile = audioModule.CommandInsertFile;
+            //    AudioCommandGotoBegining = audioModule.CommandGotoBegining;
+            //    AudioCommandGotoEnd = audioModule.CommandGotoEnd;
+            //    AudioCommandStepBack = audioModule.CommandStepBack;
+            //    AudioCommandStepForward = audioModule.CommandStepForward;
+            //    AudioCommandRewind = audioModule.CommandRewind;
+            //    AudioCommandFastForward = audioModule.CommandFastForward;
+            //    AudioCommandSelectAll = audioModule.CommandSelectAll;
+            //    AudioCommandClearSelection = audioModule.CommandClearSelection;
+            //    AudioCommandZoomSelection = audioModule.CommandZoomSelection;
+            //    AudioCommandZoomFitFull = audioModule.CommandZoomFitFull;
+            //    AudioCommandPlay = audioModule.CommandPlay;
+            //    AudioCommandPlayPreviewLeft = audioModule.CommandPlayPreviewLeft;
+            //    AudioCommandPlayPreviewRight = audioModule.CommandPlayPreviewRight;
+            //    AudioCommandPause = audioModule.CommandPause;
+            //    AudioCommandStartRecord = audioModule.CommandStartRecord;
+            //    AudioCommandStopRecord = audioModule.CommandStopRecord;
+            //    AudioCommandStartMonitor = audioModule.CommandStartMonitor;
+            //    AudioCommandStopMonitor = audioModule.CommandStopMonitor;
+            //    AudioCommandBeginSelection = audioModule.CommandBeginSelection;
+            //    AudioCommandEndSelection = audioModule.CommandEndSelection;
+            //    AudioCommandSelectNextChunk = audioModule.CommandSelectNextChunk;
+            //    AudioCommandSelectPreviousChunk = audioModule.CommandSelectPreviousChunk;
+            //    AudioCommandDeleteAudioSelection = audioModule.CommandDeleteAudioSelection;
+            //}
         }
 
-        public void EnsureViewMenuCheckState(string regionName, bool visible)
+
+        public int AddMenuBarGroup(string region, object[] commands, string rootHeader)
         {
-            //TODO make this generic using a mapping between RegionName and an actual menu trigger check box thing
-            //if (ZoomMenuItem.IsChecked != visible) ZoomMenuItem.IsChecked = visible;
+            m_Logger.Log(@"AddMenuBarGroup", Category.Debug, Priority.Medium);
+
+#if DEBUG
+            if (!Dispatcher.CheckAccess())
+            {
+                Debugger.Break();
+            }
+#endif
+            int uid = getNewUid();
+
+            IRegion targetRegion;
+            try
+            {
+                targetRegion = m_RegionManager.Regions[region];
+            }
+            catch
+            {
+                return -1;
+            }
+
+            if (targetRegion == null)
+            {
+                return -1;
+            }
+
+            int count = 0;
+
+            MenuItemRichCommand menuRoot = null;
+            if (!string.IsNullOrEmpty(rootHeader))
+            {
+                var subRegionName = @"SubMenuRegion_" + uid;
+
+                menuRoot = new MenuItemRichCommand { Header = rootHeader };
+
+                //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
+                RegionManager.SetRegionName(menuRoot, subRegionName);
+                //RegionManager.UpdateRegions();
+
+                targetRegion.Add(menuRoot, uid + @"_" + count++);
+                targetRegion.Activate(menuRoot);
+
+                targetRegion = m_RegionManager.Regions[subRegionName];
+            }
+            else
+            {
+                if (targetRegion.Views.Count() > 0)
+                {
+                    var sep = new Separator();
+                    targetRegion.Add(sep, uid + @"_" + count++);
+                    targetRegion.Activate(sep);
+                }
+            }
+
+            foreach (var command in commands)
+            {
+                if (command is RichDelegateCommand)
+                {
+                    //var menuItem = new MenuItemRichCommand { RichCommand = (RichDelegateCommand)command };
+                    targetRegion.Add(command, uid + @"_" + count++);
+                    targetRegion.Activate(command);
+                }
+                else if (command is TwoStateMenuItemRichCommand_DataContextWrapper)
+                {
+                    //var cmdX = (TwoStateMenuItemRichCommand_DataContextWrapper)command;
+                    //var menuItem = new TwoStateMenuItemRichCommand { InputBindingManager = m_ShellView, RichCommandOne = cmdX.RichCommandOne, RichCommandTwo = cmdX.RichCommandTwo, RichCommandActive = cmdX.RichCommandActive };
+                    targetRegion.Add(command, uid + @"_" + count++);
+                    targetRegion.Activate(command);
+                }
+            }
+
+            return uid;
+        }
+
+        public void RemoveMenuBarGroup(string region, int uid)
+        {
+            m_Logger.Log(@"RemoveMenuBarGroup", Category.Debug, Priority.Medium);
+
+#if DEBUG
+            if (!Dispatcher.CheckAccess())
+            {
+                Debugger.Break();
+            }
+#endif
+            IRegion targetRegion;
+            try
+            {
+                targetRegion = m_RegionManager.Regions[region];
+            }
+            catch
+            {
+                return;
+            }
+
+            if (targetRegion == null)
+            {
+                return;
+            }
+
+            var viewsToRemove = new List<object>();
+
+            int count = 0;
+            object view;
+            while ((view = targetRegion.GetView(uid + @"_" + count++)) != null)
+            {
+                viewsToRemove.Add(view);
+            }
+
+            foreach (var obj in viewsToRemove)
+            {
+                targetRegion.Remove(obj);
+            }
+        }
+
+        private int m_Uid;
+        private int getNewUid()
+        {
+            return m_Uid++;
+        }
+
+        //public AudioPaneViewModel AudioPaneViewModel
+        //{
+        //    get
+        //    {
+        //        var viewModel = Container.Resolve<AudioPaneViewModel>();
+
+        //        return viewModel;
+        //    }
+        //}
+
+        //public IInputBindingManager InputBindingManager
+        //{
+        //    get
+        //    {
+        //        var shellView = Container.Resolve<IShellView>();
+
+        //        return shellView;
+        //    }
+        //}
+    }
+
+    /// <summary>
+    /// Multiple choice of DataTemplate for the MenuItems based on the DataContext type
+    /// </summary>
+    public class MenuItemDataTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate MenuItemSeparatorDataTemplate { get; set; }
+        public DataTemplate MenuItemSimpleDataTemplate { get; set; }
+        public DataTemplate MenuItemToggleDataTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item,
+                   DependencyObject container)
+        {
+            if (item == null)
+            {
+                return MenuItemSeparatorDataTemplate;
+            }
+
+            if (item is RichDelegateCommand)
+            {
+                //RichDelegateCommand cmd = item as RichDelegateCommand;
+
+                //Window window = Application.Current.MainWindow;
+                //window.FindResource("MenuItemSimpleDataTemplate") as DataTemplate;
+
+                return MenuItemSimpleDataTemplate;
+            }
+
+            if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
+            {
+                return MenuItemToggleDataTemplate;
+            }
+
+            return MenuItemSeparatorDataTemplate;
         }
     }
 }

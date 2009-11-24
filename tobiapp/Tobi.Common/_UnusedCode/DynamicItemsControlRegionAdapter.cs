@@ -9,14 +9,15 @@ using Microsoft.Practices.Composite.Regions;
 namespace Tobi.Common._UnusedCode
 {
     /// <summary>
-    /// See Microsoft.Practices.Composite.Presentation.Regions.ItemsControlRegionAdapter
+    /// See DanielVaughan.Calcium.Client.Modularity.RegionAdapters
+    /// See http://msdn.microsoft.com/en-us/library/cc707884.aspx
     /// </summary>
     public class DynamicItemsControlRegionAdapter : RegionAdapterBase<ItemsControl>
     {
         public DynamicItemsControlRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)
             : base(regionBehaviorFactory)
         {
-            // Nothing else to do here.
+            /* Intentionally left blank. */
         }
 
         protected override void Adapt(IRegion region, ItemsControl regionTarget)
@@ -24,24 +25,25 @@ namespace Tobi.Common._UnusedCode
             AddItems(regionTarget, region.ActiveViews.ToList());
 
             region.ActiveViews.CollectionChanged += delegate(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-                                                        {
-                                                            if (e.Action == NotifyCollectionChangedAction.Add)
-                                                            {
-                                                                AddItems(regionTarget, e.NewItems);
-                                                            }
-                                                            if (e.Action == NotifyCollectionChangedAction.Remove)
-                                                            {
-                                                                RemoveItems(regionTarget, e.OldItems);
-                                                            }
-                                                        };
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    AddItems(regionTarget, e.NewItems);
+                }
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    RemoveItems(regionTarget, e.OldItems);
+                }
+            };
         }
 
         protected override IRegion CreateRegion()
         {
-            return new AllActiveRegion();
+            IRegion region = new AllActiveRegion();
+            return region;
         }
 
-        private static void AddItems(ItemsControl control, IList newItems)
+        void AddItems(ItemsControl control, IList newItems)
         {
             if (newItems == null)
             {
@@ -58,11 +60,10 @@ namespace Tobi.Common._UnusedCode
             {
                 return;
             }
-
             RegionManager.SetRegionName(dependencyItem, RegionManager.GetRegionName(dependencyItem));
         }
 
-        private static void RemoveItems(ItemsControl control, IList oldItems)
+        void RemoveItems(ItemsControl control, IList oldItems)
         {
             if (oldItems == null)
             {

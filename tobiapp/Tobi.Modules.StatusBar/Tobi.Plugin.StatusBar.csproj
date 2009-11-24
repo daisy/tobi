@@ -8,8 +8,8 @@
     <ProjectGuid>{9E582F82-E3C9-45CD-B189-4DFEDDF030FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Modules.StatusBar</RootNamespace>
-    <AssemblyName>Tobi.Modules.StatusBar</AssemblyName>
+    <RootNamespace>Tobi.Plugin.StatusBar</RootNamespace>
+    <AssemblyName>Tobi.Plugin.StatusBar</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tobi.Modules.StatusBar.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi.Plugin.StatusBar.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

@@ -3,6 +3,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Controls;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -11,6 +12,8 @@ using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
+using Tobi.Common._UnusedCode;
+using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
 
@@ -19,7 +22,8 @@ namespace Tobi
     ///<summary>
     /// Empty CAG module (Prism/CompositeWPF/Composite Application Guidance)
     ///</summary>
-    public class DummyModule : IModule{
+    public class DummyModule : IModule
+    {
         public void Initialize()
         {
         }
@@ -152,12 +156,12 @@ namespace Tobi
         protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
         {
             var mappings = base.ConfigureRegionAdapterMappings();
-            //if (mappings != null)
-            //{
-            //    mappings.RegisterMapping(typeof(Menu), Container.Resolve<DynamicItemsControlRegionAdapter>());
-            //    mappings.RegisterMapping(typeof(MenuItem), Container.Resolve<DynamicItemsControlRegionAdapter>());
-            //    mappings.RegisterMapping(typeof(ToolBarTray), Container.Resolve<ToolBarTrayRegionAdapter>());
-            //}
+            if (mappings != null)
+            {
+                //mappings.RegisterMapping(typeof(Menu), Container.Resolve<DynamicItemsControlRegionAdapter>());
+                //mappings.RegisterMapping(typeof(MenuItem), Container.Resolve<DynamicItemsControlRegionAdapter>());
+                //mappings.RegisterMapping(typeof(ToolBarTray), Container.Resolve<ToolBarTrayRegionAdapter>());
+            }
             return mappings;
         }
 
@@ -193,7 +197,7 @@ namespace Tobi
             // TODO: save the catalog in the MEF container,
             // so we can call dirCatalog.Refresh(); when needed (which triggers re-composition)
             var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.*.dll");
-            
+
             // TODO: deactivated for debugging only ! (to avoid scanning DLLs other than the below explicit ones)
             //Container.RegisterCatalog(dirCatalog);
 
@@ -219,9 +223,13 @@ namespace Tobi
 
             //MessageBox.Show(@"Urakawa module is loaded but it 'waits' for a toolbar to push its commands: press ok to get the toolbar view to load (but not to display yet)");
 
-            // This artificially emulates the dynamic loading of the Toolbar plugin:
-            // the container gets composed again and the modules dependent on the toolbar gets satisified
-            Container.RegisterCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))));
+            // This artificially emulates the dynamic loading of the Toolbar and Menubar plugina:
+            // the container gets composed again and the modules dependent on the toolbar/menubar gets satisified
+            Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+            {
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(MenuBarPlugin)))
+            }));
 
 
             //MessageBox.Show(@"After pressing ok the toolbar module will load to integrate the view into the window");

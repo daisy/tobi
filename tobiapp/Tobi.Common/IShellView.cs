@@ -14,17 +14,17 @@ namespace Tobi.Common
 
         double MagnificationLevel { get; set; }
 
-        RichDelegateCommand ExitCommand { get; }
-        RichDelegateCommand MagnifyUiIncreaseCommand { get; }
-        RichDelegateCommand MagnifyUiDecreaseCommand { get; }
-        RichDelegateCommand ManageShortcutsCommand { get; }
+        //RichDelegateCommand ExitCommand { get; }
+        //RichDelegateCommand MagnifyUiIncreaseCommand { get; }
+        //RichDelegateCommand MagnifyUiDecreaseCommand { get; }
+        //RichDelegateCommand ManageShortcutsCommand { get; }
 
-        RichDelegateCommand CopyCommand { get; }
-        RichDelegateCommand CutCommand { get; }
-        RichDelegateCommand PasteCommand { get; }
+        //RichDelegateCommand CopyCommand { get; }
+        //RichDelegateCommand CutCommand { get; }
+        //RichDelegateCommand PasteCommand { get; }
 
-        RichDelegateCommand HelpCommand { get; }
-        RichDelegateCommand PreferencesCommand { get; }
+        //RichDelegateCommand HelpCommand { get; }
+        //RichDelegateCommand PreferencesCommand { get; }
         //RichDelegateCommand WebHomeCommand { get; }
 
         //RichDelegateCommand NavNextCommand { get; }
