@@ -14,6 +14,7 @@ using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common._UnusedCode;
 using Tobi.Plugin.AudioPane;
+using Tobi.Plugin.DocumentPane;
 using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.MetadataPane;
 using Tobi.Plugin.ToolBars;
@@ -221,7 +222,8 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin)))
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin)))
             }));
 
             //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");
