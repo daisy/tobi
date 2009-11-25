@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.UI;
@@ -11,6 +13,7 @@ namespace Tobi.Plugin.NavigationPane
     /// <summary>
     /// Interaction logic for HeadingPanelView.xaml
     /// </summary>
+    [Export(typeof(IHeadingPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class HeadingPanelView : IHeadingPaneView
     {
         private TreeViewItem m_SelectedTreeViewItem;
@@ -18,12 +21,22 @@ namespace Tobi.Plugin.NavigationPane
         private bool m_ignoreTreeNodeSelectedEvent;
         private bool m_ignoreHeadingSelected;
 
-        public HeadingPaneViewModel ViewModel { get; private set; }
+        private readonly HeadingPaneViewModel m_ViewModel;
+        private readonly IEventAggregator m_EventAggregator;
+        private readonly ILoggerFacade m_Logger;
 
-        public HeadingPanelView(HeadingPaneViewModel viewModel)
+        [ImportingConstructor]
+        public HeadingPanelView(
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger,
+            [Import(typeof(HeadingPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            HeadingPaneViewModel viewModel)
         {
-            ViewModel = viewModel;
-            ViewModel.SetView(this);
+            m_EventAggregator = eventAggregator;
+            m_Logger = logger;
+
+            m_ViewModel = viewModel;
+            m_ViewModel.SetView(this);
 
             m_ignoreTreeNodeSelectedEvent = false;
             m_ignoreHeadingSelected = false;
@@ -46,7 +59,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            HeadingTreeNodeWrapper nodeTOC = ViewModel.HeadingsNavigator.GetAncestorContainer(node);
+            HeadingTreeNodeWrapper nodeTOC = m_ViewModel.HeadingsNavigator.GetAncestorContainer(node);
             if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
             m_ignoreHeadingSelected = true;
 
@@ -56,7 +69,7 @@ namespace Tobi.Plugin.NavigationPane
         public void LoadProject()
         {
             m_SelectedTreeViewItem = null;
-            TreeView.DataContext = ViewModel.HeadingsNavigator;
+            TreeView.DataContext = m_ViewModel.HeadingsNavigator;
 //            TreeView.ContextMenu = (ContextMenu)TreeView.Resources["TreeViewContext"];
         }
 
@@ -103,9 +116,9 @@ namespace Tobi.Plugin.NavigationPane
 
             m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
 
-            ViewModel.Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
+            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
 
-            ViewModel.EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 
         private void OnKeyDown_TreeViewItem(object sender, KeyEventArgs e)
@@ -128,8 +141,8 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ViewModel.HeadingsNavigator == null) { return; }
-            ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
+            if (m_ViewModel.HeadingsNavigator == null) { return; }
+            m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
     }
 }

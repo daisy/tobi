@@ -12,6 +12,7 @@ namespace Tobi.Common
         public const string MenuBar_Edit = "MenuBar_Edit";
         public const string MenuBar_Audio = "MenuBar_Audio";
         public const string MenuBar_Tools = "MenuBar_Tools";
+        public const string MenuBar_Focus = "MenuBar_Focus";
         public const string MenuBar_View = "MenuBar_View";
 
         public const string StatusBar = "StatusBar";

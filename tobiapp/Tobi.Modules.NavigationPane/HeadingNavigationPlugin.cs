@@ -3,13 +3,10 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
 
-namespace Tobi.Plugin.DocumentPane
+namespace Tobi.Plugin.NavigationPane
 {
-    ///<summary>
-    /// The document pane contains the text part of the multimedia presentation.
-    ///</summary>
     [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class DocumentPanePlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class HeadingNavigationPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -36,68 +33,67 @@ namespace Tobi.Plugin.DocumentPane
 
 #pragma warning restore 649
 
+
         private readonly ILoggerFacade m_Logger;
         private readonly IRegionManager m_RegionManager;
 
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
 
-        private readonly DocumentPaneView m_DocView;
+        private readonly HeadingPanelView m_TocPane;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
         ///</summary>
         [ImportingConstructor]
-        public DocumentPanePlugin(
+        public HeadingNavigationPlugin(
             ILoggerFacade logger,
             IRegionManager regionManager,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession session,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
-            [Import(typeof(DocumentPaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            DocumentPaneView docView)
+            [Import(typeof(IHeadingPaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            HeadingPanelView pane) //HeadingPaneViewModel
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
 
             m_UrakawaSession = session;
             m_ShellView = shellView;
-            m_DocView = docView;
-            
-            m_RegionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
+            m_TocPane = pane;
 
-            m_Logger.Log(@"Document pane plugin initializing...", Category.Debug, Priority.Medium);
+            m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IHeadingPaneView));
+
+            m_Logger.Log(@"Navigation pane plugin initializing...", Category.Debug, Priority.Medium);
         }
 
-        private int m_ToolBarId_1;
+        //private int m_ToolBarId_1;
         private bool m_ToolBarCommandsDone;
         private void tryToolbarCommands()
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
+                //m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_TocPane.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
 
                 m_ToolBarCommandsDone = true;
 
-                m_Logger.Log(@"Document commands pushed to toolbar", Category.Debug, Priority.Medium);
+                m_Logger.Log(@"Navigation commands pushed to toolbar", Category.Debug, Priority.Medium);
             }
         }
 
-        private int m_MenuBarId_1;
-        private int m_MenuBarId_2;
+        //private int m_MenuBarId_1;
         private bool m_MenuBarCommandsDone;
         private void tryMenubarCommands()
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, UserInterfaceStrings.Menu_Navigation);
-                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_DocView.CommandFocus }, null);
+                //m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { m_TocPane.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, UserInterfaceStrings.Menu_Navigation);
 
                 m_MenuBarCommandsDone = true;
 
-                m_Logger.Log(@"Document commands pushed to menubar", Category.Debug, Priority.Medium);
+                m_Logger.Log(@"Navigation commands pushed to menubar", Category.Debug, Priority.Medium);
             }
         }
 
@@ -105,32 +101,31 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (m_ToolBarCommandsDone)
             {
-                m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
+                //m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
 
                 m_ToolBarCommandsDone = false;
 
-                m_Logger.Log(@"Document commands removed from toolbar", Category.Debug, Priority.Medium);
+                m_Logger.Log(@"Navigation commands removed from toolbar", Category.Debug, Priority.Medium);
             }
 
             if (m_MenuBarCommandsDone)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_2);
+                //m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
 
                 m_MenuBarCommandsDone = false;
 
-                m_Logger.Log(@"Document commands removed from menubar", Category.Debug, Priority.Medium);
+                m_Logger.Log(@"Navigation commands removed from menubar", Category.Debug, Priority.Medium);
             }
         }
 
         public override string Name
         {
-            get { return @"Document pane."; }
+            get { return @"Navigation pane."; }
         }
 
         public override string Description
         {
-            get { return @"The publication document viewer"; }
+            get { return @"The Navigation panel"; }
         }
     }
 }

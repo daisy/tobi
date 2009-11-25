@@ -19,7 +19,17 @@ namespace Tobi.Plugin.ToolBars
             //#if DEBUG
             //            Debugger.Break();
             //#endif
+
+            // If the menubar has been resolved, we can push our commands into it.
+            tryMenubarCommands();
         }
+
+#pragma warning disable 649 // non-initialized fields
+
+        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IMenuBarView m_MenuBarView;
+
+#pragma warning restore 649
 
         private readonly ILoggerFacade m_Logger;
         private readonly IRegionManager m_RegionManager;
@@ -54,8 +64,31 @@ namespace Tobi.Plugin.ToolBars
             m_Logger.Log(@"Toolbar pushed to region", Category.Debug, Priority.Medium);
         }
 
+        private int m_MenuBarId_1;
+        private bool m_MenuBarCommandsDone;
+        private void tryMenubarCommands()
+        {
+            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
+            {
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_ToolBarsView.CommandFocus }, null);
+
+                m_MenuBarCommandsDone = true;
+
+                m_Logger.Log(@"Toolbar commands pushed to menubar", Category.Debug, Priority.Medium);
+            }
+        }
+
         public override void Dispose()
         {
+            if (m_MenuBarCommandsDone)
+            {
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_1);
+
+                m_MenuBarCommandsDone = false;
+
+                m_Logger.Log(@"Toolbar commands removed from menubar", Category.Debug, Priority.Medium);
+            }
+
             m_RegionManager.Regions[RegionNames.ToolBars].Deactivate(m_ToolBarsView);
             m_RegionManager.Regions[RegionNames.ToolBars].Remove(m_ToolBarsView);
 

@@ -176,10 +176,17 @@
       <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Logging}"/>-->
     </UI:MenuItemRichCommand>
 
+
+<!-- TODO: Put this region (i.e. sub-menu) into the "View" root menu ... problems with RegionManager though (cannot find nested region) -->
+    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Focus}"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Focus}"
+              />
+    
     <!-- View Menu -->
     <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_View}"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_View}"
               >
+      
       <!-- -->
 
      <!-- <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_ToolBars}"

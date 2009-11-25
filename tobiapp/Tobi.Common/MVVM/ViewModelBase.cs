@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
-using Microsoft.Practices.Unity;
 
 namespace Tobi.Common.MVVM
 {
@@ -12,11 +11,9 @@ namespace Tobi.Common.MVVM
     public class ViewModelBase : PropertyChangedNotifyBase, IDisposable
     {
         protected Dispatcher Dispatcher { get; private set; }
-        public IUnityContainer Container { get; private set; }
 
-        protected ViewModelBase(IUnityContainer container)
+        protected ViewModelBase()
         {
-            Container = container;
             Dispatcher = Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher;
         }
 

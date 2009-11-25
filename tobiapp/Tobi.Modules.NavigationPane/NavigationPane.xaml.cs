@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
+using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
@@ -10,15 +12,35 @@ namespace Tobi.Plugin.NavigationPane
     /// <summary>
     /// Interaction logic for NavigationPane.xaml
     /// </summary>
+    [Export(typeof(NavigationPane)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class NavigationPane // : INotifyPropertyChanged
     {
         public RichDelegateCommand CommandFocus { get; private set; }
 
-        public NavigationPane(IUnityContainer container)
+        private readonly IRegionManager m_RegionManager;
+        private readonly IShellView m_ShellView;
+        private readonly PagePanelView m_PagePaneView;
+        private readonly HeadingPanelView m_HeadingPaneView;
+
+        [ImportingConstructor]
+        public NavigationPane(
+            IRegionManager regionManager,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView,
+            [Import(typeof(IPagePaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            PagePanelView pagesView,
+            [Import(typeof(IHeadingPaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            HeadingPanelView tocView)
         {
+            m_RegionManager = regionManager;
+            m_ShellView = shellView;
+            m_PagePaneView = pagesView;
+            m_HeadingPaneView = tocView;
+
             InitializeComponent();
 
-            var shellView = container.Resolve<IShellView>();
+            RegionManager.SetRegionManager(this, m_RegionManager);
+            RegionManager.UpdateRegions();
 
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Navigation_Focus,
@@ -27,25 +49,24 @@ namespace Tobi.Plugin.NavigationPane
                                     null,
                                     () =>
                                     {
-
-                                        var regionManager = container.Resolve<IRegionManager>();
-                                        IRegion tabRegion = regionManager.Regions[RegionNames.NavigationPaneTabs];
+                                        IRegion tabRegion = m_RegionManager.Regions[RegionNames.NavigationPaneTabs];
                                         
                                         UIElement ui = null;
-                                        var pageView = container.Resolve<IPagePaneView>();
-                                        var headingView = container.Resolve<IHeadingPaneView>();
+                                        
                                         foreach (var view in tabRegion.ActiveViews)
                                         {
-                                            if (view == pageView.ViewControl)
+                                            if (view == m_PagePaneView.ViewControl)
                                             {
-                                                ui = pageView.ViewFocusStart;
+                                                ui = m_PagePaneView.ViewFocusStart;
                                                 break;
                                             }
-                                            if (view == headingView.ViewControl)
+                                            if (view == m_HeadingPaneView.ViewControl)
                                             {
-                                                ui = headingView.ViewFocusStart;
+                                                ui = m_HeadingPaneView.ViewFocusStart;
                                                 break;
                                             }
+                                            //TODO: what about extensions ??
+                                            // ViewFocusStart should be a common denominator implemented by every single tab content
                                         }
 
                                         if (ui != null)
@@ -55,7 +76,7 @@ namespace Tobi.Plugin.NavigationPane
                                     },
                                     () => true);
 
-            shellView.RegisterRichCommand(CommandFocus);
+            m_ShellView.RegisterRichCommand(CommandFocus);
         }
 
         //public event PropertyChangedEventHandler PropertyChanged;

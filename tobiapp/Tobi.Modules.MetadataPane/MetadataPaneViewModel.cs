@@ -48,7 +48,6 @@ namespace Tobi.Plugin.MetadataPane
             [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             IEnumerable<IValidator> validators
             )
-            : base(container)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
@@ -211,8 +210,8 @@ namespace Tobi.Plugin.MetadataPane
         public string GetDataModelDebugStringForMetaData()
         {
             string data = "";
-            var session = Container.Resolve<IUrakawaSession>();
-            List<Metadata> list = session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
+
+            List<Metadata> list = m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
             //iterate through the SDK metadata
             foreach (Metadata m in list)
             {

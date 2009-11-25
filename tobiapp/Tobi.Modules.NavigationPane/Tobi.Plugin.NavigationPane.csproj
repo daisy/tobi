@@ -69,14 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ListViewItemBehavior.cs" />
-    <Compile Include="PagePaneViewModelCommands.cs" />
     <Compile Include="TreeViewItemBehavior.cs" />
     <Compile Include="HeadingPanelView.xaml.cs">
       <DependentUpon>HeadingPanelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HeadingPaneModule.cs" />
+    <Compile Include="HeadingNavigationPlugin.cs" />
     <Compile Include="HeadingPaneViewModel.cs" />
-    <Compile Include="HeadingPaneViewModelCommands.cs" />
     <Compile Include="HeadingsNavigator.cs" />
     <Compile Include="IHeadingPaneView.cs" />
     <Compile Include="InputBox.xaml.cs">
@@ -90,10 +88,10 @@
     <Compile Include="PagePanelView.xaml.cs">
       <DependentUpon>PagePanelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PagePaneModule.cs" />
+    <Compile Include="PageNavigationPlugin.cs" />
     <Compile Include="PagesPaneViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NavigationPaneModule.cs" />
+    <Compile Include="NavigationPanePlugin.cs" />
     <Compile Include="Search.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +128,10 @@
     <ProjectReference Include="..\ExternalLibs\CAL\Unity\Lib.Unity.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
       <Name>Lib.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF.csproj">
+      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
+      <Name>Lib.MEF</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
