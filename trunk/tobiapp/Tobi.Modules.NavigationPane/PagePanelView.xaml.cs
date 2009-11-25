@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.core;
@@ -13,16 +15,28 @@ namespace Tobi.Plugin.NavigationPane
     /// <summary>
     /// Interaction logic for PagePanelView.xaml
     /// </summary>
+    [Export(typeof(IPagePaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class PagePanelView : IPagePaneView
     {
         private bool _ignorePageSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
 
-        public PagesPaneViewModel ViewModel { get; private set; }
-        public PagePanelView(PagesPaneViewModel viewModel)
+        private readonly PagesPaneViewModel m_ViewModel;
+        private readonly IEventAggregator m_EventAggregator;
+        private readonly ILoggerFacade m_Logger;
+
+        [ImportingConstructor]
+        public PagePanelView(
+            IEventAggregator eventAggregator,
+            ILoggerFacade logger,
+            [Import(typeof(PagesPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            PagesPaneViewModel viewModel)
         {
-            ViewModel = viewModel;
-            ViewModel.SetView(this);
+            m_EventAggregator = eventAggregator;
+            m_Logger = logger;
+
+            m_ViewModel = viewModel;
+            m_ViewModel.SetView(this);
             InitializeComponent();
         }
         private void onPageSelected(object sender, SelectionChangedEventArgs e)
@@ -37,7 +51,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
             Page prevPage = null;
-            foreach (Page page in ViewModel.Pages)
+            foreach (Page page in m_ViewModel.Pages)
             {
                 TextElement textElement = page.TextElement;
                 TreeNode treeNode = textElement.Tag as TreeNode;
@@ -65,7 +79,7 @@ namespace Tobi.Plugin.NavigationPane
 
         public void LoadProject()
         {
-            ListView.DataContext = ViewModel;
+            ListView.DataContext = m_ViewModel;
         }
 
         public UIElement ViewControl
@@ -93,9 +107,9 @@ namespace Tobi.Plugin.NavigationPane
 
             _ignoreTreeNodeSelectedEvent = true;
 
-            ViewModel.Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
+            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
 
-            ViewModel.EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 
         private void OnKeyUp_ListItem(object sender, KeyEventArgs e)
@@ -113,7 +127,7 @@ namespace Tobi.Plugin.NavigationPane
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ViewModel.SearchTerm = SearchBox.Text;
+            m_ViewModel.SearchTerm = SearchBox.Text;
         }
 
         //private void OnMouseDoubleClick_List(object sender, MouseButtonEventArgs e)

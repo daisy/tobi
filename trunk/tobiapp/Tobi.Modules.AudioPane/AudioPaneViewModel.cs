@@ -61,7 +61,6 @@ namespace Tobi.Plugin.AudioPane
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession session
             )
-            : base(null) // TODO: remove this init !
         {
             EventAggregator = eventAggregator;
             Logger = logger;

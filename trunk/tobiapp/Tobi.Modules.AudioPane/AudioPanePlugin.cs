@@ -83,6 +83,8 @@ namespace Tobi.Plugin.AudioPane
         private int m_MenuBarId_3;
         private int m_MenuBarId_4;
         private int m_MenuBarId_5;
+        private int m_MenuBarId_6;
+        private int m_MenuBarId_7;
         private bool m_MenuBarCommandsDone;
         private void tryMenubarCommands()
         {
@@ -146,6 +148,11 @@ namespace Tobi.Plugin.AudioPane
                                                                                                  m_AudioPaneViewModel.CommandZoomFitFull
                                                                                              }, null);
 
+
+                m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_AudioPaneViewModel.CommandFocus }, null);
+                m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_AudioPaneViewModel.CommandFocusStatusBar }, null);
+
+
                 m_MenuBarCommandsDone = true;
 
                 m_Logger.Log(@"Audio commands pushed to menubar", Category.Debug, Priority.Medium);
@@ -160,7 +167,9 @@ namespace Tobi.Plugin.AudioPane
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_2);
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_3);
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_4);
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_5);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_5); ;
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_6); ;
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_7);
 
 
                 m_MenuBarCommandsDone = false;

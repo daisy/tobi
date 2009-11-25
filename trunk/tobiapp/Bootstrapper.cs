@@ -17,6 +17,7 @@ using Tobi.Plugin.AudioPane;
 using Tobi.Plugin.DocumentPane;
 using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.MetadataPane;
+using Tobi.Plugin.NavigationPane;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
 using Tobi.Plugin.Validator;
@@ -223,7 +224,10 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin)))
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
+                //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))),
+                //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
             }));
 
             //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");

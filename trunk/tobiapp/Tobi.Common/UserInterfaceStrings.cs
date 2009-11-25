@@ -172,7 +172,8 @@ namespace Tobi.Common
         public const string Menu_Addins = "_Add-in manager";
         public const string Menu_Logging = "_Log window";
 
-        public const string Menu_View = "_View"; // This is a top-menu that is empty by default and gets filled dynamically by modules that register GUI views
+        public const string Menu_Focus = "_Focus"; 
+        public const string Menu_View = "_View";
         public const string Menu_Magnification = "Ma_gnification";
 
         public const string Menu_ToolBars = "_Tool bars"; // TODO: move this language resource in its own module (ToolBarsModule)
