@@ -100,16 +100,18 @@ namespace Tobi.Plugin.ToolBars
 #endif
             int uid = getNewUid();
 
-            IRegion targetRegion = m_RegionManager.Regions[RegionNames.MainToolbar];
+            //IRegion targetRegion = m_RegionManager.Regions[RegionNames.MainToolbar];
 
             int count = 0;
 
             foreach (var command in commands)
             {
-                //targetRegion.Add(new ButtonRichCommand(){RichCommand = command}, uid + "_" + count++);
-                targetRegion.Add(command, uid + @"_" + count++);
-                targetRegion.Activate(command);
-                //command.IconProvider.IconDrawScale
+                string viewname = uid + @"_" + count++;
+                var cmd = command;
+                m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar, () => new NamedView { m_viewName = viewname, m_viewProvider = () => cmd });
+                //m_RegionManager.RegisterViewWithRegion(RegionNames.MainToolbar, () => cmd);
+                //targetRegion.Add(command, viewname);
+                //targetRegion.Activate(command);
             }
 #if DEBUG
             if (count == 0)
@@ -117,9 +119,12 @@ namespace Tobi.Plugin.ToolBars
                 Debugger.Break();
             }
 #endif
+            string name = uid + @"_" + count++;
             var sep = new Separator();
-            targetRegion.Add(sep, uid + @"_" + count++);
-            targetRegion.Activate(sep);
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar, () => new NamedView { m_viewName = name, m_viewProvider = () => sep });
+            //m_RegionManager.RegisterViewWithRegion(RegionNames.MainToolbar, () => sep);
+            //targetRegion.Add(sep, name);
+            //targetRegion.Activate(sep);
 
             return uid;
         }

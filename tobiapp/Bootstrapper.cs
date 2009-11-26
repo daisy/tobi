@@ -1,18 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using MefContrib.Integration.Unity;
+using Microsoft.Practices.Composite;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
+using Microsoft.Practices.Composite.Presentation.Regions.Behaviors;
+using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
+using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common._UnusedCode;
+using Tobi.Common.UI;
 using Tobi.Plugin.AudioPane;
 using Tobi.Plugin.DocumentPane;
 using Tobi.Plugin.MenuBar;
@@ -125,6 +134,7 @@ namespace Tobi
             // We make the MEF composition container available through the Unity Dependency Injection container
             // (just in case we need a reference to MEF in order to manipulate catalogs, exports, etc. from a plugin)
             Container.RegisterInstance(typeof(CompositionContainer), MefContainer);
+            RegisterTypeIfMissing(typeof(IRegionNamedViewRegistry), typeof(RegionNamedViewRegistry), true);
 
             //Container.RegisterInstance(Dispatcher.CurrentDispatcher);
 
@@ -157,6 +167,18 @@ namespace Tobi
                 //.AddModule(typeof(MetadataPaneModule), @"ToolBarsModule")
                 //.AddModule(typeof(ValidatorModule), @"ToolBarsModule")
                 ;
+        }
+
+        protected override IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()
+        {
+            var defaultRegionBehaviorTypesDictionary = base.ConfigureDefaultRegionBehaviors();
+
+            if (defaultRegionBehaviorTypesDictionary != null)
+            {
+                defaultRegionBehaviorTypesDictionary.AddIfMissing(AutoPopulateRegionBehaviorNamedViews.BehaviorKey, typeof(AutoPopulateRegionBehaviorNamedViews));
+            }
+
+            return defaultRegionBehaviorTypesDictionary;
         }
 
         protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
