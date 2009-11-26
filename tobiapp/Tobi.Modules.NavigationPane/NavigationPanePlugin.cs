@@ -93,7 +93,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_NavPane.CommandFocus }, null);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { m_NavPane.CommandFocus }, RegionNames.MenuBar_Focus, false);
 
                 m_MenuBarCommandsDone = true;
 
@@ -114,12 +114,15 @@ namespace Tobi.Plugin.NavigationPane
 
             if (m_MenuBarCommandsDone)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_1);
 
                 m_MenuBarCommandsDone = false;
 
                 m_Logger.Log(@"Navigation commands removed from menubar", Category.Debug, Priority.Medium);
             }
+
+            m_RegionManager.Regions[RegionNames.NavigationPane].Deactivate(m_NavPane);
+            m_RegionManager.Regions[RegionNames.NavigationPane].Remove(m_NavPane);
         }
 
         public override string Name

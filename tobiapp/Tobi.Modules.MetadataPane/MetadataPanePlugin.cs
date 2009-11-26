@@ -103,7 +103,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { CommandShowMetadataPane }, null);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { CommandShowMetadataPane }, null, false);
                 
                 m_MenuBarCommandsDone = true;
 

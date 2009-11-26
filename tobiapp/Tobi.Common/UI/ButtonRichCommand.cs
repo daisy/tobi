@@ -65,7 +65,7 @@ namespace Tobi.Common.UI
             button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
-            if (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription))
+            if (command.IconProvider != null && (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription)))
             {
                 //button.Content = image;
                 command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
@@ -74,7 +74,7 @@ namespace Tobi.Common.UI
                                   {
                                       Mode = BindingMode.OneWay,
                                       Source = command.IconProvider,
-                                      Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconMedium))
+                                      Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconLarge))
                                   };
 
                 var expr = button.SetBinding(Button.ContentProperty, binding);
@@ -83,13 +83,21 @@ namespace Tobi.Common.UI
             {
                 if (button.Tag is ImageAndTextPlaceholder)
                 {
-                    var binding = new Binding
-                                      {
-                                          Mode = BindingMode.OneWay,
-                                          Source = command.IconProvider,
-                                          Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconMedium))
-                                      };
-                    var bindingExpressionBase_ = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(ContentControl.ContentProperty, binding);
+                    if (command.IconProvider != null)
+                    {
+                        var binding = new Binding
+                                          {
+                                              Mode = BindingMode.OneWay,
+                                              Source = command.IconProvider,
+                                              Path =
+                                                  new PropertyPath(
+                                                  PropertyChangedNotifyBase.GetMemberName(
+                                                      () => command.IconProvider.IconLarge))
+                                          };
+                        var bindingExpressionBase_ =
+                            ((ImageAndTextPlaceholder) button.Tag).m_ImageHost.SetBinding(
+                                ContentControl.ContentProperty, binding);
+                    }
 
                     ((ImageAndTextPlaceholder)button.Tag).m_TextHost.Content = command.ShortDescription;
                     button.ToolTip = command.LongDescription;
@@ -101,9 +109,6 @@ namespace Tobi.Common.UI
                 {
                     button.Content = null;
 
-                    //Image image = command.IconProvider.IconMedium;
-                    command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
-
                     var panel = new StackPanel
                                     {
                                         Orientation = Orientation.Horizontal
@@ -111,14 +116,23 @@ namespace Tobi.Common.UI
 
                     var imageHost = new ContentControl { Focusable = false };
 
-                    var binding = new Binding
-                                      {
-                                          Mode = BindingMode.OneWay,
-                                          Source = command.IconProvider,
-                                          Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconMedium))
-                                      };
+                    if (command.IconProvider != null)
+                    {
+                        //Image image = command.IconProvider.IconMedium;
+                        command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
 
-                    var bindingExpressionBase = imageHost.SetBinding(ContentControl.ContentProperty, binding);
+                        var binding = new Binding
+                                          {
+                                              Mode = BindingMode.OneWay,
+                                              Source = command.IconProvider,
+                                              Path =
+                                                  new PropertyPath(
+                                                  PropertyChangedNotifyBase.GetMemberName(
+                                                      () => command.IconProvider.IconLarge))
+                                          };
+
+                        var bindingExpressionBase = imageHost.SetBinding(ContentControl.ContentProperty, binding);
+                    }
 
                     panel.Children.Add(imageHost);
 

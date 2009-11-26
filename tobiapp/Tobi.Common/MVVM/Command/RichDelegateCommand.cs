@@ -33,7 +33,10 @@ namespace Tobi.Common.MVVM.Command
             ShortDescription = (String.IsNullOrEmpty(shortDescription) ? "" : shortDescription);
             LongDescription = (String.IsNullOrEmpty(longDescription) ? "" : longDescription);
             KeyGesture = keyGesture;
-            IconProvider = new ScalableGreyableImageProvider(icon);
+            if (icon != null)
+            {
+                IconProvider = new ScalableGreyableImageProvider(icon);
+            }
         }
 
         public String ShortDescription

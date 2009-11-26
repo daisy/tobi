@@ -111,7 +111,12 @@ namespace Tobi.Plugin.ToolBars
                 targetRegion.Activate(command);
                 //command.IconProvider.IconDrawScale
             }
-
+#if DEBUG
+            if (count == 0)
+            {
+                Debugger.Break();
+            }
+#endif
             var sep = new Separator();
             targetRegion.Add(sep, uid + @"_" + count++);
             targetRegion.Activate(sep);
@@ -143,6 +148,7 @@ namespace Tobi.Plugin.ToolBars
 
             foreach (var obj in viewsToRemove)
             {
+                targetRegion.Deactivate(obj);
                 targetRegion.Remove(obj);
             }
         }

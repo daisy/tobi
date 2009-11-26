@@ -51,47 +51,10 @@ namespace Tobi.Plugin.MenuBar
 
             RegionManager.SetRegionManager(this, m_RegionManager);
             RegionManager.UpdateRegions();
-
-
-            //var metadata = Container.Resolve<MetadataPaneViewModel>();
-            //if (metadata != null)
-            //{
-            //    CommandShowMetadataPane = metadata.CommandShowMetadataPane;
-            //}
-
-            //var audioModule = Container.Resolve<AudioPaneViewModel>();
-            //if (audioModule != null)
-            //{
-
-            //    AudioCommandInsertFile = audioModule.CommandInsertFile;
-            //    AudioCommandGotoBegining = audioModule.CommandGotoBegining;
-            //    AudioCommandGotoEnd = audioModule.CommandGotoEnd;
-            //    AudioCommandStepBack = audioModule.CommandStepBack;
-            //    AudioCommandStepForward = audioModule.CommandStepForward;
-            //    AudioCommandRewind = audioModule.CommandRewind;
-            //    AudioCommandFastForward = audioModule.CommandFastForward;
-            //    AudioCommandSelectAll = audioModule.CommandSelectAll;
-            //    AudioCommandClearSelection = audioModule.CommandClearSelection;
-            //    AudioCommandZoomSelection = audioModule.CommandZoomSelection;
-            //    AudioCommandZoomFitFull = audioModule.CommandZoomFitFull;
-            //    AudioCommandPlay = audioModule.CommandPlay;
-            //    AudioCommandPlayPreviewLeft = audioModule.CommandPlayPreviewLeft;
-            //    AudioCommandPlayPreviewRight = audioModule.CommandPlayPreviewRight;
-            //    AudioCommandPause = audioModule.CommandPause;
-            //    AudioCommandStartRecord = audioModule.CommandStartRecord;
-            //    AudioCommandStopRecord = audioModule.CommandStopRecord;
-            //    AudioCommandStartMonitor = audioModule.CommandStartMonitor;
-            //    AudioCommandStopMonitor = audioModule.CommandStopMonitor;
-            //    AudioCommandBeginSelection = audioModule.CommandBeginSelection;
-            //    AudioCommandEndSelection = audioModule.CommandEndSelection;
-            //    AudioCommandSelectNextChunk = audioModule.CommandSelectNextChunk;
-            //    AudioCommandSelectPreviousChunk = audioModule.CommandSelectPreviousChunk;
-            //    AudioCommandDeleteAudioSelection = audioModule.CommandDeleteAudioSelection;
-            //}
         }
 
 
-        public int AddMenuBarGroup(string region, object[] commands, string rootHeader)
+        public int AddMenuBarGroup(string region, object[] commands, string rootHeader, bool addSeparator)
         {
             m_Logger.Log(@"AddMenuBarGroup", Category.Debug, Priority.Medium);
 
@@ -110,39 +73,47 @@ namespace Tobi.Plugin.MenuBar
             }
             catch
             {
-                return -1;
-            }
+                var menuRoot = new MenuItemRichCommand { Header = region };
 
-            if (targetRegion == null)
-            {
-                return -1;
+                //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
+                RegionManager.SetRegionName(menuRoot, region);
+                //RegionManager.UpdateRegions();
+
+                MenuBarAnchor.Items.Add(menuRoot);
+
+                targetRegion = m_RegionManager.Regions[region];
             }
 
             int count = 0;
+            
+            if (addSeparator && targetRegion.Views.Count() > 0)
+            {
+                var sep = new Separator();
+                targetRegion.Add(sep, uid + @"_" + count++);
+                targetRegion.Activate(sep);
+            }
 
-            MenuItemRichCommand menuRoot = null;
             if (!string.IsNullOrEmpty(rootHeader))
             {
-                var subRegionName = @"SubMenuRegion_" + uid;
+                var subRegionName = rootHeader; // @"SubMenuRegion_" + uid;
 
-                menuRoot = new MenuItemRichCommand { Header = rootHeader };
-
-                //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
-                RegionManager.SetRegionName(menuRoot, subRegionName);
-                //RegionManager.UpdateRegions();
-
-                targetRegion.Add(menuRoot, uid + @"_" + count++);
-                targetRegion.Activate(menuRoot);
-
-                targetRegion = m_RegionManager.Regions[subRegionName];
-            }
-            else
-            {
-                if (targetRegion.Views.Count() > 0)
+                try
                 {
-                    var sep = new Separator();
-                    targetRegion.Add(sep, uid + @"_" + count++);
-                    targetRegion.Activate(sep);
+                    IRegion targetRegionTry = m_RegionManager.Regions[subRegionName];
+                    targetRegion = targetRegionTry;
+                }
+                catch
+                {
+                    var menuRoot = new MenuItemRichCommand { Header = rootHeader };
+
+                    //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
+                    RegionManager.SetRegionName(menuRoot, subRegionName);
+                    //RegionManager.UpdateRegions();
+
+                    targetRegion.Add(menuRoot); //, uid + @"_" + count++);
+                    targetRegion.Activate(menuRoot);
+
+                    targetRegion = m_RegionManager.Regions[subRegionName];
                 }
             }
 
@@ -186,11 +157,6 @@ namespace Tobi.Plugin.MenuBar
                 return;
             }
 
-            if (targetRegion == null)
-            {
-                return;
-            }
-
             var viewsToRemove = new List<object>();
 
             int count = 0;
@@ -202,6 +168,7 @@ namespace Tobi.Plugin.MenuBar
 
             foreach (var obj in viewsToRemove)
             {
+                targetRegion.Deactivate(obj);
                 targetRegion.Remove(obj);
             }
         }
@@ -211,26 +178,6 @@ namespace Tobi.Plugin.MenuBar
         {
             return m_Uid++;
         }
-
-        //public AudioPaneViewModel AudioPaneViewModel
-        //{
-        //    get
-        //    {
-        //        var viewModel = Container.Resolve<AudioPaneViewModel>();
-
-        //        return viewModel;
-        //    }
-        //}
-
-        //public IInputBindingManager InputBindingManager
-        //{
-        //    get
-        //    {
-        //        var shellView = Container.Resolve<IShellView>();
-
-        //        return shellView;
-        //    }
-        //}
     }
 
     ///// <summary>

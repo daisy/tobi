@@ -108,7 +108,7 @@ namespace Tobi.Plugin.AudioPane
                     RichCommandActive_BindingSource = m_AudioPaneViewModel,
                     RichCommandActive_BindingPropertyPathLambdaExpr = () => m_AudioPaneViewModel.IsRecording
                 };
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new[] { dataMonitor, dataRecord }, null);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new[] { dataMonitor, dataRecord }, null, true);
 
 
                 var dataPlay = new TwoStateMenuItemRichCommand_DataContextWrapper
@@ -120,7 +120,7 @@ namespace Tobi.Plugin.AudioPane
                     RichCommandActive_BindingSource = m_AudioPaneViewModel,
                     RichCommandActive_BindingPropertyPathLambdaExpr = () => m_AudioPaneViewModel.IsPlaying
                 };
-                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new object[] { m_AudioPaneViewModel.CommandPlayPreviewLeft, dataPlay, m_AudioPaneViewModel.CommandPlayPreviewRight }, null);
+                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new object[] { m_AudioPaneViewModel.CommandPlayPreviewLeft, dataPlay, m_AudioPaneViewModel.CommandPlayPreviewRight }, null, true);
 
                 m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new[]
                                                                                              {
@@ -130,7 +130,7 @@ namespace Tobi.Plugin.AudioPane
                                                                                                  m_AudioPaneViewModel.CommandFastForward,
                                                                                                  m_AudioPaneViewModel.CommandStepForward,
                                                                                                  m_AudioPaneViewModel.CommandGotoEnd
-                                                                                             }, null);
+                                                                                             }, RegionNames.MenuBar_AudioTransport, true);
                 
                 m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new[]
                                                                                              {
@@ -140,17 +140,17 @@ namespace Tobi.Plugin.AudioPane
                                                                                                  m_AudioPaneViewModel.CommandBeginSelection,
                                                                                                  m_AudioPaneViewModel.CommandEndSelection,
                                                                                                  m_AudioPaneViewModel.CommandClearSelection
-                                                                                             }, null);
+                                                                                             }, RegionNames.MenuBar_AudioSelection, true);
 
                 m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new[]
                                                                                              {
                                                                                                  m_AudioPaneViewModel.CommandZoomSelection,
                                                                                                  m_AudioPaneViewModel.CommandZoomFitFull
-                                                                                             }, null);
+                                                                                             }, RegionNames.MenuBar_AudioZoom, true);
 
 
-                m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_AudioPaneViewModel.CommandFocus }, null);
-                m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_AudioPaneViewModel.CommandFocusStatusBar }, null);
+                m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { m_AudioPaneViewModel.CommandFocus }, RegionNames.MenuBar_Focus, false);
+                m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { m_AudioPaneViewModel.CommandFocusStatusBar }, RegionNames.MenuBar_Focus, false);
 
 
                 m_MenuBarCommandsDone = true;
@@ -167,9 +167,10 @@ namespace Tobi.Plugin.AudioPane
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_2);
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_3);
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_4);
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_5); ;
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_6); ;
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_7);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_5);
+
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_6);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_7);
 
 
                 m_MenuBarCommandsDone = false;
