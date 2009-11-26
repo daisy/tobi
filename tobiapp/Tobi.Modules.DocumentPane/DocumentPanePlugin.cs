@@ -2,6 +2,7 @@
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -65,8 +66,15 @@ namespace Tobi.Plugin.DocumentPane
             m_UrakawaSession = session;
             m_ShellView = shellView;
             m_DocView = docView;
-            
-            m_RegionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
+
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.DocumentPane,
+                new PreferredPositionNamedView { m_viewInstance = m_DocView, m_viewName = @"ViewOf_" + RegionNames.DocumentPane });
+
+            //m_RegionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
+
+            //IRegion targetRegion = m_RegionManager.Regions[RegionNames.DocumentPane];
+            //targetRegion.Add(m_DocView);
+            //targetRegion.Activate(m_DocView);
 
             m_Logger.Log(@"Document pane plugin initializing...", Category.Debug, Priority.Medium);
         }
@@ -77,7 +85,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
+                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Last);
 
                 m_ToolBarCommandsDone = true;
 

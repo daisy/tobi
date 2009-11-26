@@ -2,6 +2,7 @@
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.ToolBars
 {
@@ -55,7 +56,10 @@ namespace Tobi.Plugin.ToolBars
 
             m_ToolBarsView = toolBarsView;
 
-            m_RegionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(IToolBarsView));
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.ToolBars,
+                new PreferredPositionNamedView { m_viewInstance = m_ToolBarsView, m_viewName = @"ViewOf_" + RegionNames.ToolBars });
+
+            //m_RegionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(IToolBarsView));
 
             //IRegion targetRegion = m_RegionManager.Regions[RegionNames.ToolBars];
             //targetRegion.Add(m_ToolBarsView);

@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -67,8 +68,8 @@ namespace Tobi.Plugin.Urakawa
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_UrakawaSession.OpenCommand, m_UrakawaSession.SaveCommand });
-                m_ToolBarId_2 = m_ToolBarsView.AddToolBarGroup(new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand });
+                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_UrakawaSession.OpenCommand, m_UrakawaSession.SaveCommand }, PreferredPosition.First);
+                m_ToolBarId_2 = m_ToolBarsView.AddToolBarGroup(new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand }, PreferredPosition.First);
 
                 m_ToolBarCommandsDone = true;
 

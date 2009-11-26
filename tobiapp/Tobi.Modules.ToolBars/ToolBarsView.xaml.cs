@@ -48,7 +48,7 @@ namespace Tobi.Plugin.ToolBars
             m_Logger = logger;
             m_RegionManager = regionManager;
             m_ShellView = shellView;
-        
+
             //m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             //m_PropertyChangeHandler.InitializeDependentProperties(this);
 
@@ -89,7 +89,7 @@ namespace Tobi.Plugin.ToolBars
         //}
 
 
-        public int AddToolBarGroup(RichDelegateCommand[] commands)
+        public int AddToolBarGroup(RichDelegateCommand[] commands, PreferredPosition position)
         {
             m_Logger.Log(@"AddToolBarGroup", Category.Debug, Priority.Medium);
 #if DEBUG
@@ -107,8 +107,11 @@ namespace Tobi.Plugin.ToolBars
             foreach (var command in commands)
             {
                 string viewname = uid + @"_" + count++;
-                var cmd = command;
-                m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar, () => new NamedView { m_viewName = viewname, m_viewProvider = () => cmd });
+
+                m_Logger.Log(@"}}}}}}}}}}}}}> AddToolBar: " + position + " (" + viewname + ") " + command.ShortDescription, Category.Debug, Priority.Medium);
+
+                m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar,
+                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = position });
                 //m_RegionManager.RegisterViewWithRegion(RegionNames.MainToolbar, () => cmd);
                 //targetRegion.Add(command, viewname);
                 //targetRegion.Activate(command);
@@ -121,7 +124,8 @@ namespace Tobi.Plugin.ToolBars
 #endif
             string name = uid + @"_" + count++;
             var sep = new Separator();
-            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar, () => new NamedView { m_viewName = name, m_viewProvider = () => sep });
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar,
+                new PreferredPositionNamedView { m_viewName = name, m_viewInstance = sep, m_viewPreferredPosition = position });
             //m_RegionManager.RegisterViewWithRegion(RegionNames.MainToolbar, () => sep);
             //targetRegion.Add(sep, name);
             //targetRegion.Activate(sep);

@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
@@ -183,14 +184,27 @@ namespace Tobi
 
         protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
         {
-            var mappings = base.ConfigureRegionAdapterMappings();
-            if (mappings != null)
+            RegionAdapterMappings regionAdapterMappings = Container.TryResolve<RegionAdapterMappings>();
+            if (regionAdapterMappings != null)
             {
-                //mappings.RegisterMapping(typeof(Menu), Container.Resolve<DynamicItemsControlRegionAdapter>());
-                //mappings.RegisterMapping(typeof(MenuItem), Container.Resolve<DynamicItemsControlRegionAdapter>());
-                //mappings.RegisterMapping(typeof(ToolBarTray), Container.Resolve<ToolBarTrayRegionAdapter>());
+#if SILVERLIGHT
+                regionAdapterMappings.RegisterMapping(typeof(TabControl), this.Container.Resolve<TabControlRegionAdapter>());
+#endif
+                regionAdapterMappings.RegisterMapping(typeof(Selector), this.Container.Resolve<SelectorRegionAdapter>());
+                regionAdapterMappings.RegisterMapping(typeof(ItemsControl), this.Container.Resolve<PreferredPositionItemsControlRegionAdapter>());
+                regionAdapterMappings.RegisterMapping(typeof(ContentControl), this.Container.Resolve<ContentControlRegionAdapter>());
             }
-            return mappings;
+
+            return regionAdapterMappings;
+        
+            //var mappings = base.ConfigureRegionAdapterMappings();
+            //if (mappings != null)
+            //{
+            //    //mappings.RegisterMapping(typeof(Menu), Container.Resolve<DynamicItemsControlRegionAdapter>());
+            //    //mappings.RegisterMapping(typeof(MenuItem), Container.Resolve<DynamicItemsControlRegionAdapter>());
+            //    //mappings.RegisterMapping(typeof(ToolBarTray), Container.Resolve<ToolBarTrayRegionAdapter>());
+            //}
+            //return mappings;
         }
 
         /// <summary>

@@ -89,7 +89,7 @@ namespace Tobi.Plugin.Validator
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowValidator });
+                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowValidator }, PreferredPosition.Any);
 
                 m_ToolBarCommandsDone = true;
 
