@@ -53,17 +53,17 @@
   </Menu -->
 
 
-  <Menu
+  <Menu x:Name="MenuBarAnchor"
   xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
   
   Width="Auto" Height="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
      >
 
     <!-- File Menu -->
-    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_File}"
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_File}"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_File}"
+              -->
     
-              >
 <!-- ItemTemplateSelector="{StaticResource templateSelector}" -->
       <!-- MenuItem.ItemTemplate>
         <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
@@ -87,12 +87,12 @@
         />
       <Separator/>
       <UI:MenuItemRichCommand RichCommand="{Binding ExitCommand}"/  -->
-    </UI:MenuItemRichCommand>
+    <!-- /UI:MenuItemRichCommand -->
 
     <!-- Edit Menu -->
-    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Edit}"
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Edit}"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Edit}"
-              >
+              -->
       <!-- -->
       <!-- UI:MenuItemRichCommand RichCommand="{Binding UndoCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding RedoCommand}"/ -->
@@ -100,12 +100,12 @@
       <!--<UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
       <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>-->
-    </UI:MenuItemRichCommand>
+    <!-- /UI:MenuItemRichCommand -->
 
       <!-- Audio Menu -->
-    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Audio}"
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Audio}"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Audio}"
-                  >
+                  -->
           <!-- -->
 
           <!-- UI:TwoStateMenuItemRichCommand
@@ -161,11 +161,11 @@
             
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandZoomFitFull}"/>
             <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandZoomSelection}"/ -->
-        </UI:MenuItemRichCommand>
+    <!-- /UI:MenuItemRichCommand -->
             <!-- Tools Menu -->
-    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Tools}"
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Tools}"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Tools}"
-              >
+              -->
       <!-- -->
 
       <!-- UI:MenuItemRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
@@ -174,19 +174,21 @@
       <!--<Separator/>-->
       <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Addins}"/>-->
       <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Logging}"/>-->
-    </UI:MenuItemRichCommand>
+    <!-- /UI:MenuItemRichCommand -->
 
-
-<!-- TODO: Put this region (i.e. sub-menu) into the "View" root menu ... problems with RegionManager though (cannot find nested region) -->
-    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Focus}"
-   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Focus}"
-              />
     
     <!-- View Menu -->
-    <UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_View}"
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_View}"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_View}"
-              >
+              -->
       
+      <!-- UNFORTUNATELY this sub-menu must be configured from the constructor in the code behind,
+                        due to a problem in the RegionManager.
+      
+      UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Focus}"
+      prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Focus}"
+   x:Name="MenuBar_Focus"
+              / -->
       <!-- -->
 
      <!-- <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_ToolBars}"
@@ -212,7 +214,7 @@
                 InputGestureText="{Binding ZoomToggleCommand.KeyGestureText}"
                 Command="{Binding ZoomToggleCommand}"
                 CommandParameter="{Binding ElementName=ZoomMenuItem, Path=IsChecked}"/ -->
-    </UI:MenuItemRichCommand>
+    <!-- /UI:MenuItemRichCommand -->
 
     <!-- Help Menu -->
 

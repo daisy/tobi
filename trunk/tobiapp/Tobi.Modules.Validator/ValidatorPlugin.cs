@@ -103,7 +103,7 @@ namespace Tobi.Plugin.Validator
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { CommandShowValidator }, null);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { CommandShowValidator }, null, false);
                 
                 m_MenuBarCommandsDone = true;
 

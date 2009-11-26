@@ -181,7 +181,7 @@ namespace Tobi
                 UserInterfaceStrings.ShowLogFilePath,
                 UserInterfaceStrings.ShowLogFilePath_,
                 UserInterfaceStrings.ShowLogFilePath_KEYS,
-                LoadTangoIcon(@"help-browser"),
+                null, //LoadTangoIcon(@"help-browser"),
                 () =>
                 {
                     m_Logger.Log(@"ShellView.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
@@ -399,7 +399,10 @@ namespace Tobi
 
             foreach (var command in m_listOfRegisteredRichCommands)
             {
-                command.IconProvider.IconDrawScale = value;
+                if (command.IconProvider != null)
+                {
+                    command.IconProvider.IconDrawScale = value;
+                }
             }
 #if ICONS
             foreach (var command in m_listOfIconRichCommands)

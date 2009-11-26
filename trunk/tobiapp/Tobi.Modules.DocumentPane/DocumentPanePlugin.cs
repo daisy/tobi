@@ -92,8 +92,8 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, UserInterfaceStrings.Menu_Navigation);
-                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Focus, new[] { m_DocView.CommandFocus }, null);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, RegionNames.MenuBar_Navigation, true);
+                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { m_DocView.CommandFocus }, RegionNames.MenuBar_Focus, false);
 
                 m_MenuBarCommandsDone = true;
 
@@ -121,6 +121,9 @@ namespace Tobi.Plugin.DocumentPane
 
                 m_Logger.Log(@"Document commands removed from menubar", Category.Debug, Priority.Medium);
             }
+
+            m_RegionManager.Regions[RegionNames.DocumentPane].Deactivate(m_DocView);
+            m_RegionManager.Regions[RegionNames.DocumentPane].Remove(m_DocView);
         }
 
         public override string Name

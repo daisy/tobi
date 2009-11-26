@@ -189,6 +189,10 @@ namespace Tobi.Common
         public const string Menu_About = "_About";
         public const string Menu_Audio = "_Audio";
 
+        public const string Menu_AudioTransport = "_Transport";
+        public const string Menu_AudioSelection = "_Selection";
+        public const string Menu_AudioZoom = "_Zoom";
+
         public const string Audio_InsertFile = "_Insert audio file";
         public const string Audio_InsertFile_ = "Inserts a local WAV file (PCM 16 bits)";
         public static KeyGesture Audio_InsertFile_KEYS = new KeyGesture(Key.O,

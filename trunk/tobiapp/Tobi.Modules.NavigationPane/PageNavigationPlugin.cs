@@ -64,6 +64,9 @@ namespace Tobi.Plugin.NavigationPane
             m_ShellView = shellView;
             m_PagesPane = pane;
 
+            // Remark: using direct access instead of delayed lookup (via the region registry)
+            // generates an exception, because the region does not exist yet (see "parent" plugin constructor, RegionManager.SetRegionManager(), etc.)
+            //IRegion region = m_RegionManager.Regions[RegionNames.NavigationPaneTabs];
             m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IPagePaneView));
 
             m_Logger.Log(@"Navigation pane plugin initializing...", Category.Debug, Priority.Medium);
@@ -116,6 +119,9 @@ namespace Tobi.Plugin.NavigationPane
 
                 m_Logger.Log(@"Navigation commands removed from menubar", Category.Debug, Priority.Medium);
             }
+
+            m_RegionManager.Regions[RegionNames.NavigationPaneTabs].Deactivate(m_PagesPane);
+            m_RegionManager.Regions[RegionNames.NavigationPaneTabs].Remove(m_PagesPane);
         }
 
         public override string Name

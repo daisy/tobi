@@ -114,6 +114,13 @@ namespace Tobi
                 int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
                 int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand });
 
+#if DEBUG
+                int uidX = m_ToolBarsView.AddToolBarGroup(new[] { ShowLogFilePathCommand });
+#endif
+
+#if ICONS
+                int uidXX = m_ToolBarsView.AddToolBarGroup(new[] { DisplayPreviewIconsDebugCommand });
+#endif
                 m_ToolBarCommandsDone = true;
 
                 m_Logger.Log(@"Shell commands pushed to toolbar", Category.Debug, Priority.Medium);
@@ -125,12 +132,16 @@ namespace Tobi
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, new[] { ExitCommand }, null);
-                int uid2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, UserInterfaceStrings.Menu_Magnification);
-                int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ManageShortcutsCommand }, null);
+                int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, new[] { ExitCommand }, null, true);
+                int uid2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, RegionNames.MenuBar_Magnification, true);
+                int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { ManageShortcutsCommand }, null, true);
 
 #if DEBUG
-                int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null);
+                int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);
+#endif
+
+#if ICONS
+                int uidXX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { DisplayPreviewIconsDebugCommand }, null, false);
 #endif
 
                 m_MenuBarCommandsDone = true;
