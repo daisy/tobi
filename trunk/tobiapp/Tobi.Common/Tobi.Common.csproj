@@ -49,6 +49,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\CAL\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -126,6 +130,7 @@
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="TypeConstructedEvent.cs" />
     <Compile Include="UI\AutoGreyableImage.cs" />
+    <Compile Include="UI\AutoPopulateNamedViews.cs" />
     <Compile Include="UI\ButtonRichCommand.cs" />
     <Compile Include="UI\FocusOutlineAdorner.cs" />
     <Compile Include="UI\DimAdorner.cs" />
