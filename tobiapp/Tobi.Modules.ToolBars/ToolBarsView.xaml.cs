@@ -72,7 +72,7 @@ namespace Tobi.Plugin.ToolBars
                 null,
                 UserInterfaceStrings.Toolbar_Focus_KEYS,
                 null,
-                () => FocusHelper.Focus(this, FocusStart),
+                () => FocusHelper.FocusBeginInvoke(this, FocusStart),
                 () => true);
             m_ShellView.RegisterRichCommand(CommandFocus);
         }

@@ -358,10 +358,8 @@ namespace Tobi.Plugin.Urakawa
                 TextWrapping = TextWrapping.Wrap
             };
 
-            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon(@"dialog-warning"))
-                                   {
-                                       IconDrawScale = m_ShellView.MagnificationLevel
-                                   };
+            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon(@"dialog-warning"),
+                                                                 m_ShellView.MagnificationLevel);
             //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
             var panel = new StackPanel

@@ -54,19 +54,19 @@ namespace Tobi.Common
         public const string No_Document = "No document.";
         public const string Feature_Not_Available = "This feature is not available.";
 
-        public const string Navigation_Focus = "Bring focus to the navigation pane";
+        public const string Navigation_Focus = "Navigation pane focus";
         public static KeyGesture Navigation_Focus_KEYS = new KeyGesture(Key.F6, ModifierKeys.None);
 
-        public const string Document_Focus = "Bring focus to the document pane";
+        public const string Document_Focus = "Document pane focus";
         public static KeyGesture Document_Focus_KEYS = new KeyGesture(Key.F8, ModifierKeys.None);
 
-        public const string Toolbar_Focus = "Bring focus to the toolbar";
+        public const string Toolbar_Focus = "Toolbar focus";
         public static KeyGesture Toolbar_Focus_KEYS = new KeyGesture(Key.F9, ModifierKeys.None);
 
-        public const string Audio_Focus = "Bring focus to the audio panel";
+        public const string Audio_Focus = "Audio pane focus";
         public static KeyGesture Audio_Focus_KEYS = new KeyGesture(Key.F7, ModifierKeys.None);
 
-        public const string Audio_FocusStatusBar = "Bring focus to the audio status bar";
+        public const string Audio_FocusStatusBar = "Status bar focus";
         public static KeyGesture Audio_FocusStatusBar_KEYS = new KeyGesture(Key.F4, ModifierKeys.None);
 
 
@@ -250,7 +250,7 @@ namespace Tobi.Common
         public static KeyGesture Paste_KEYS = new KeyGesture(Key.V, ModifierKeys.Control);
 
 
-        public const string ShowLogFilePath = "_Where is ["+ LOG_FILE_NAME+ "] ?";
+        public const string ShowLogFilePath = "DEBUG: _Where is ["+ LOG_FILE_NAME+ "] ?";
         public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
         public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 

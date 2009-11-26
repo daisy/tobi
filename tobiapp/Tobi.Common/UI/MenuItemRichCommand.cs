@@ -138,19 +138,21 @@ namespace Tobi.Common.UI
             //image.VerticalAlignment = VerticalAlignment.Center;
 
 
-            if (command.IconProvider != null)
+            if (command.HasIcon)
             {
-                command.IconProvider.IconMargin_Small = new Thickness(0, 2, 0, 2);
+                var iconProvider = command.IconProviderNotShared;
+
+                iconProvider.IconMargin_Small = new Thickness(0, 2, 0, 2);
 
                 //menuItem.Icon = image;
 
                 var binding = new Binding
                                   {
                                       Mode = BindingMode.OneWay,
-                                      Source = command.IconProvider,
+                                      Source = iconProvider,
                                       Path =
                                           new PropertyPath(
-                                          PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconSmall))
+                                          PropertyChangedNotifyBase.GetMemberName(() => iconProvider.IconSmall))
                                   };
 
                 var expr = menuItem.SetBinding(MenuItem.IconProperty, binding);

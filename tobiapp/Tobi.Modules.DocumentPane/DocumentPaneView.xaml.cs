@@ -215,7 +215,7 @@ namespace Tobi.Plugin.DocumentPane
                 null,
                 UserInterfaceStrings.Document_Focus_KEYS,
                 null,
-                ()=> FocusHelper.Focus(this, m_FocusStartElement),
+                () => FocusHelper.FocusBeginInvoke(this, m_FocusStartElement),
                 ()=> true);
 
             m_ShellView.RegisterRichCommand(CommandFocus);

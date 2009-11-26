@@ -71,7 +71,7 @@ namespace Tobi.Plugin.NavigationPane
 
                                         if (ui != null)
                                         {
-                                            FocusHelper.Focus(this, ui);
+                                            FocusHelper.FocusBeginInvoke(this, ui);
                                         }
                                     },
                                     () => true);
