@@ -191,7 +191,7 @@ namespace Tobi.Common.UI
         {
             if (Region is PreferredPositionRegion)
             {
-                ((PreferredPositionRegion) Region).Add(viewToAdd, false);
+                ((PreferredPositionRegion)Region).Add(viewToAdd, false);
             }
             else
             {
@@ -245,7 +245,8 @@ namespace Tobi.Common.UI
             set { SetValue(PreferredPositionProperty, value); }
         }
 
-        public PreferredPositionItemMetadata(object item) : base(item)
+        public PreferredPositionItemMetadata(object item)
+            : base(item)
         {
         }
     }
@@ -310,7 +311,18 @@ namespace Tobi.Common.UI
                             }
                             else
                             {
-                                ItemMetadataCollection.Insert(0, itemMetadata);
+                                //ItemMetadataCollection.Insert(0, itemMetadata);
+
+                                var backup = new List<ItemMetadata>(ItemMetadataCollection.Count);
+                                while (ItemMetadataCollection.Count > 0)
+                                {
+                                    var toRemove = ItemMetadataCollection.First();
+                                    ItemMetadataCollection.Remove(toRemove);
+                                    backup.Add(toRemove);
+                                }
+
+                                ItemMetadataCollection.Add(itemMetadata);
+                                ItemMetadataCollection.AddRange(backup);
                             }
                         }
                         else
@@ -322,7 +334,20 @@ namespace Tobi.Common.UI
                             }
                             else
                             {
-                                ItemMetadataCollection.Insert(index + 1, itemMetadata);
+                                //ItemMetadataCollection.Insert(index + 1, itemMetadata);
+
+                                var nToKeep = index + 1;
+                                var nToRemove = ItemMetadataCollection.Count - nToKeep;
+                                var backup = new List<ItemMetadata>(nToRemove);
+                                backup.AddRange(ItemMetadataCollection.Skip(nToKeep));
+
+                                for (int i = 1; i <= nToRemove; i++)
+                                {
+                                    ItemMetadataCollection.RemoveAt(ItemMetadataCollection.Count - 1);
+                                }
+
+                                ItemMetadataCollection.Add(itemMetadata);
+                                ItemMetadataCollection.AddRange(backup);
                             }
                         }
 
@@ -354,7 +379,20 @@ namespace Tobi.Common.UI
                             }
                             else
                             {
-                                ItemMetadataCollection.Insert(index + 1, itemMetadata);
+                                //ItemMetadataCollection.Insert(index + 1, itemMetadata);
+
+                                var nToKeep = index + 1;
+                                var nToRemove = ItemMetadataCollection.Count - nToKeep;
+                                var backup = new List<ItemMetadata>(nToRemove);
+                                backup.AddRange(ItemMetadataCollection.Skip(nToKeep));
+
+                                for (int i = 1; i <= nToRemove; i++)
+                                {
+                                    ItemMetadataCollection.RemoveAt(ItemMetadataCollection.Count - 1);
+                                }
+
+                                ItemMetadataCollection.Add(itemMetadata);
+                                ItemMetadataCollection.AddRange(backup);
                             }
                         }
 
