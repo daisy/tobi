@@ -2,6 +2,7 @@
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.MetadataPane
 {
@@ -89,7 +90,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowMetadataPane });
+                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowMetadataPane }, PreferredPosition.Any);
 
                 m_ToolBarCommandsDone = true;
 

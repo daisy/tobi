@@ -2,6 +2,7 @@
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -66,8 +67,15 @@ namespace Tobi.Plugin.NavigationPane
 
             // Remark: using direct access instead of delayed lookup (via the region registry)
             // generates an exception, because the region does not exist yet (see "parent" plugin constructor, RegionManager.SetRegionManager(), etc.)
-            //IRegion region = m_RegionManager.Regions[RegionNames.NavigationPaneTabs];
-            m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IHeadingPaneView));
+
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.NavigationPaneTabs,
+                new PreferredPositionNamedView { m_viewInstance = m_TocPane, m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Headings" });
+
+            //m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IHeadingPaneView));
+
+            //IRegion targetRegion = m_RegionManager.Regions[RegionNames.NavigationPaneTabs];
+            //targetRegion.Add(m_TocPane);
+            //targetRegion.Activate(m_TocPane);
 
             m_Logger.Log(@"Navigation pane plugin initializing...", Category.Debug, Priority.Medium);
         }

@@ -69,7 +69,10 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView = shellView;
 
-            m_RegionManager.RegisterViewWithRegion(RegionNames.AudioPane, typeof(IAudioPaneView));
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.AudioPane,
+                new PreferredPositionNamedView { m_viewInstance = m_AudioPaneView, m_viewName = @"ViewOf_" + RegionNames.AudioPane });
+
+            //m_RegionManager.RegisterViewWithRegion(RegionNames.AudioPane, typeof(IAudioPaneView));
 
             //IRegion targetRegion = m_RegionManager.Regions[RegionNames.AudioPane];
             //targetRegion.Add(m_AudioPaneView);
@@ -131,7 +134,7 @@ namespace Tobi.Plugin.AudioPane
                                                                                                  m_AudioPaneViewModel.CommandStepForward,
                                                                                                  m_AudioPaneViewModel.CommandGotoEnd
                                                                                              }, RegionNames.MenuBar_AudioTransport, true);
-                
+
                 m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, new[]
                                                                                              {
                                                                                                  m_AudioPaneViewModel.CommandSelectAll,

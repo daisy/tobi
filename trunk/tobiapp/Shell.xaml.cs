@@ -110,12 +110,12 @@ namespace Tobi
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand });
-                int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
-                int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand });
+                int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand }, PreferredPosition.Any);
+                int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Last);
+                //int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand }, PreferredPosition.First);
 
 #if DEBUG
-                int uidX = m_ToolBarsView.AddToolBarGroup(new[] { ShowLogFilePathCommand });
+                int uidX = m_ToolBarsView.AddToolBarGroup(new[] { ShowLogFilePathCommand }, PreferredPosition.Last);
 #endif
 
 #if ICONS

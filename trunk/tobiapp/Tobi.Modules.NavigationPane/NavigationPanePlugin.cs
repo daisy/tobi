@@ -2,6 +2,7 @@
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -68,7 +69,14 @@ namespace Tobi.Plugin.NavigationPane
             m_ShellView = shellView;
             m_NavPane = pane;
             
-            m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPane, typeof(NavigationPane));
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.NavigationPane,
+                new PreferredPositionNamedView { m_viewInstance = m_NavPane, m_viewName = @"ViewOf_" + RegionNames.NavigationPane });
+
+            //m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPane, typeof(NavigationPane));
+
+            //IRegion targetRegion = m_RegionManager.Regions[RegionNames.NavigationPane];
+            //targetRegion.Add(m_NavPane);
+            //targetRegion.Activate(m_NavPane);
 
             m_Logger.Log(@"Navigation pane plugin initializing...", Category.Debug, Priority.Medium);
         }

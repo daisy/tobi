@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -14,34 +20,38 @@ namespace Tobi.Common.UI
 {
     public static class RegionManagerExtensionsAutoPopulateNamedViews
     {
-        public static IRegionManager RegisterNamedViewWithRegion(this IRegionManager regionManager, string regionName, Func<NamedView> getContentDelegate)
+        public static IRegionManager RegisterNamedViewWithRegion(this IRegionManager regionManager, string regionName, PreferredPositionNamedView content)
         {
             var regionViewRegistry = ServiceLocator.Current.GetInstance<IRegionNamedViewRegistry>();
 
-            regionViewRegistry.RegisterNamedViewWithRegion(regionName, getContentDelegate);
+            regionViewRegistry.RegisterNamedViewWithRegion(regionName, content);
 
             return regionManager;
         }
     }
 
-    public struct NamedView
+    public struct PreferredPositionNamedView
     {
         public string m_viewName;
-        public Func<object> m_viewProvider;
+
+        public object m_viewInstance;
+        public Func<object> m_viewInstanceProvider;
+
+        public PreferredPosition m_viewPreferredPosition;
     }
 
     public class WeakDelegatesManager
     {
-        private readonly List<DelegateReference> listeners = new List<DelegateReference>();
+        private readonly List<DelegateReference> m_Listeners = new List<DelegateReference>();
 
         public void AddListener(Delegate listener)
         {
-            this.listeners.Add(new DelegateReference(listener, false));
+            m_Listeners.Add(new DelegateReference(listener, false));
         }
 
         public void RemoveListener(Delegate listener)
         {
-            this.listeners.RemoveAll(reference =>
+            m_Listeners.RemoveAll(reference =>
             {
                 //Remove the listener, and prune collected listeners
                 Delegate target = reference.Target;
@@ -51,9 +61,9 @@ namespace Tobi.Common.UI
 
         public void Raise(params object[] args)
         {
-            this.listeners.RemoveAll(listener => listener.Target == null);
+            m_Listeners.RemoveAll(listener => listener.Target == null);
 
-            foreach (Delegate handler in this.listeners.ToList().Select(listener => listener.Target).Where(listener => listener != null))
+            foreach (Delegate handler in m_Listeners.ToList().Select(listener => listener.Target).Where(listener => listener != null))
             {
                 handler.DynamicInvoke(args);
             }
@@ -65,55 +75,55 @@ namespace Tobi.Common.UI
     {
         event EventHandler<NamedViewRegisteredEventArgs> ContentRegistered;
 
-        IEnumerable<NamedView> GetContents(string regionName);
+        IEnumerable<PreferredPositionNamedView> PullContents(string regionName);
 
-        void RegisterNamedViewWithRegion(string regionName, Func<NamedView> getContentDelegate);
+        void RegisterNamedViewWithRegion(string regionName, PreferredPositionNamedView content);
     }
 
     public class RegionNamedViewRegistry : IRegionNamedViewRegistry
     {
         private readonly IServiceLocator locator;
-        private readonly ListDictionary<string, Func<NamedView>> registeredContent = new ListDictionary<string, Func<NamedView>>();
-        private readonly WeakDelegatesManager contentRegisteredListeners = new WeakDelegatesManager();
+        private readonly ListDictionary<string, PreferredPositionNamedView> m_RegisteredContent = new ListDictionary<string, PreferredPositionNamedView>();
+        private readonly WeakDelegatesManager m_ContentRegisteredListeners = new WeakDelegatesManager();
 
-        public RegionNamedViewRegistry(IServiceLocator locator)
+        public RegionNamedViewRegistry(IServiceLocator m_Locator)
         {
-            this.locator = locator;
+            m_Locator = m_Locator;
         }
 
         public event EventHandler<NamedViewRegisteredEventArgs> ContentRegistered
         {
-            add { this.contentRegisteredListeners.AddListener(value); }
-            remove { this.contentRegisteredListeners.RemoveListener(value); }
+            add { m_ContentRegisteredListeners.AddListener(value); }
+            remove { m_ContentRegisteredListeners.RemoveListener(value); }
         }
 
-        public IEnumerable<NamedView> GetContents(string regionName)
+        public IEnumerable<PreferredPositionNamedView> PullContents(string regionName)
         {
-            List<NamedView> items = new List<NamedView>();
-            foreach (Func<NamedView> getContentDelegate in this.registeredContent[regionName])
+            //List<NamedView> items = new List<NamedView>();
+
+            foreach (PreferredPositionNamedView content in m_RegisteredContent[regionName])
             {
-                items.Add(getContentDelegate());
+                yield return content;
+                //items.Add(getContentDelegate());
             }
 
-            return items;
+            m_RegisteredContent.Remove(regionName);
+
+            //return items;
+            yield break;
         }
 
-        public void RegisterNamedViewWithRegion(string regionName, Func<NamedView> getContentDelegate)
+        public void RegisterNamedViewWithRegion(string regionName, PreferredPositionNamedView content)
         {
-            this.registeredContent.Add(regionName, getContentDelegate);
-            this.OnContentRegistered(new NamedViewRegisteredEventArgs(regionName, getContentDelegate));
-        }
-
-        protected virtual object CreateInstance(Type type)
-        {
-            return this.locator.GetInstance(type);
+            m_RegisteredContent.Add(regionName, content);
+            OnContentRegistered(new NamedViewRegisteredEventArgs(regionName));
         }
 
         private void OnContentRegistered(NamedViewRegisteredEventArgs e)
         {
             try
             {
-                this.contentRegisteredListeners.Raise(this, e);
+                m_ContentRegisteredListeners.Raise(this, e);
             }
             catch (TargetInvocationException ex)
             {
@@ -128,7 +138,7 @@ namespace Tobi.Common.UI
                 }
 
                 throw new ViewRegistrationException(string.Format(CultureInfo.CurrentCulture,
-                    "Problem trying to register named view !", e.RegionName, rootException), ex.InnerException);
+                    "Problem trying to register named view ! {0}, {1}", e.RegionName, rootException), ex.InnerException);
             }
         }
     }
@@ -141,70 +151,267 @@ namespace Tobi.Common.UI
 
         public AutoPopulateRegionBehaviorNamedViews(IRegionNamedViewRegistry regionViewRegistry)
         {
-            this.m_RegionNamedViewRegistry = regionViewRegistry;
+            m_RegionNamedViewRegistry = regionViewRegistry;
         }
 
         protected override void OnAttach()
         {
-            if (string.IsNullOrEmpty(this.Region.Name))
+            if (string.IsNullOrEmpty(Region.Name))
             {
-                this.Region.PropertyChanged += this.Region_PropertyChanged;
+                Region.PropertyChanged += Region_PropertyChanged;
             }
             else
             {
-                this.StartPopulatingContent();
+                StartPopulatingContent();
+            }
+        }
+
+        private void Region_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Name" && !string.IsNullOrEmpty(Region.Name))
+            {
+                Region.PropertyChanged -= Region_PropertyChanged;
+                StartPopulatingContent();
             }
         }
 
         private void StartPopulatingContent()
         {
-            foreach (NamedView view in this.CreateNamedViewsToAutoPopulate())
+            Debug.Assert(!string.IsNullOrEmpty(Region.Name));
+
+            foreach (PreferredPositionNamedView view in m_RegionNamedViewRegistry.PullContents(Region.Name))
             {
                 AddNamedViewIntoRegion(view);
             }
 
-            this.m_RegionNamedViewRegistry.ContentRegistered += this.OnNamedViewRegistered;
+            m_RegionNamedViewRegistry.ContentRegistered += OnNamedViewRegistered;
         }
 
-        protected virtual IEnumerable<NamedView> CreateNamedViewsToAutoPopulate()
+        protected virtual void AddNamedViewIntoRegion(PreferredPositionNamedView viewToAdd)
         {
-            return this.m_RegionNamedViewRegistry.GetContents(this.Region.Name);
-        }
-
-        protected virtual void AddNamedViewIntoRegion(NamedView viewToAdd)
-        {
-            this.Region.Add(viewToAdd.m_viewProvider(), viewToAdd.m_viewName);
-        }
-
-        private void Region_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Name" && !string.IsNullOrEmpty(this.Region.Name))
+            if (Region is PreferredPositionRegion)
             {
-                this.Region.PropertyChanged -= this.Region_PropertyChanged;
-                this.StartPopulatingContent();
+                ((PreferredPositionRegion) Region).Add(viewToAdd, false);
             }
+            else
+            {
+                Region.Add((viewToAdd.m_viewInstance ?? viewToAdd.m_viewInstanceProvider()), viewToAdd.m_viewName);
+            }
+
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers", Justification = "This has to be public in order to work with weak references in partial trust or Silverlight environments.")]
         public virtual void OnNamedViewRegistered(object sender, NamedViewRegisteredEventArgs e)
         {
-            if (e.RegionName == this.Region.Name)
+            if (e.RegionName == Region.Name)
             {
-                AddNamedViewIntoRegion(e.GetNamedView());
+                foreach (PreferredPositionNamedView view in m_RegionNamedViewRegistry.PullContents(Region.Name))
+                {
+                    AddNamedViewIntoRegion(view);
+                }
+
+                //AddNamedViewIntoRegion(e.Content);
             }
         }
     }
 
     public class NamedViewRegisteredEventArgs : EventArgs
     {
-        public NamedViewRegisteredEventArgs(string regionName, Func<NamedView> getViewDelegate)
+        public NamedViewRegisteredEventArgs(string regionName) //, NamedView content)
         {
-            this.GetNamedView = getViewDelegate;
-            this.RegionName = regionName;
+            //Content = content;
+            RegionName = regionName;
         }
 
-        public string RegionName { get; private set; }
+        public readonly string RegionName;
+        //public readonly NamedView Content;
+    }
 
-        public Func<NamedView> GetNamedView { get; private set; }
+    public enum PreferredPosition
+    {
+        Any = -1,
+        First = 0, // DEFAULT
+        Last = 100
+    }
+
+    public class PreferredPositionItemMetadata : ItemMetadata
+    {
+        public static readonly DependencyProperty PreferredPositionProperty =
+               DependencyProperty.Register("PreferredPosition", typeof(PreferredPosition), typeof(PreferredPositionItemMetadata), null);
+
+        public PreferredPosition PreferredPosition
+        {
+            get { return (PreferredPosition)GetValue(PreferredPositionProperty); }
+            set { SetValue(PreferredPositionProperty, value); }
+        }
+
+        public PreferredPositionItemMetadata(object item) : base(item)
+        {
+        }
+    }
+
+    public class PreferredPositionRegion : Region
+    {
+        public virtual IRegionManager Add(PreferredPositionNamedView namedview, bool createRegionManagerScope)
+        {
+            IRegionManager manager = createRegionManagerScope ? this.RegionManager.CreateRegionManager() : this.RegionManager;
+            this.InnerAdd(namedview, manager);
+            return manager;
+        }
+
+        private void InnerAdd(PreferredPositionNamedView namedview, IRegionManager scopedRegionManager)
+        {
+            object view = (namedview.m_viewInstance ?? namedview.m_viewInstanceProvider());
+
+            if (this.ItemMetadataCollection.FirstOrDefault(x => x.Item == view) != null)
+            {
+                throw new InvalidOperationException("RegionViewExistsException");
+            }
+
+            PreferredPositionItemMetadata itemMetadata = new PreferredPositionItemMetadata(view);
+            if (!string.IsNullOrEmpty(namedview.m_viewName))
+            {
+                if (this.ItemMetadataCollection.FirstOrDefault(x => x.Name == namedview.m_viewName) != null)
+                {
+                    throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "RegionViewNameExistsException: {0}", namedview.m_viewName));
+                }
+                itemMetadata.Name = namedview.m_viewName;
+            }
+
+            itemMetadata.PreferredPosition = namedview.m_viewPreferredPosition;
+
+            DependencyObject dependencyObject = view as DependencyObject;
+
+            if (dependencyObject != null)
+            {
+                Microsoft.Practices.Composite.Presentation.Regions.RegionManager.SetRegionManager(dependencyObject, scopedRegionManager);
+            }
+
+            switch (itemMetadata.PreferredPosition)
+            {
+                case PreferredPosition.First:
+                    {
+                        var lastItemWithFirstPreferredPosition = ItemMetadataCollection.LastOrDefault(item =>
+                        {
+                            var positionedItem = item as PreferredPositionItemMetadata;
+                            if (positionedItem == null)
+                            {
+                                Debug.Fail(@"This should never happen !! (not a PreferredPositionItemMetadata in PreferredPositionRegion)");
+                                return false;
+                            }
+                            return positionedItem.PreferredPosition == PreferredPosition.First;
+                        });
+
+                        if (lastItemWithFirstPreferredPosition == null)
+                        {
+                            if (ItemMetadataCollection.Count == 0)
+                            {
+                                ItemMetadataCollection.Add(itemMetadata);
+                            }
+                            else
+                            {
+                                ItemMetadataCollection.Insert(0, itemMetadata);
+                            }
+                        }
+                        else
+                        {
+                            int index = ItemMetadataCollection.IndexOf(lastItemWithFirstPreferredPosition);
+                            if (index == ItemMetadataCollection.Count - 1)
+                            {
+                                ItemMetadataCollection.Add(itemMetadata);
+                            }
+                            else
+                            {
+                                ItemMetadataCollection.Insert(index + 1, itemMetadata);
+                            }
+                        }
+
+                        break;
+                    }
+                case PreferredPosition.Last:
+                    {
+                        var lastItemWithLastPreferredPosition = ItemMetadataCollection.LastOrDefault(item =>
+                        {
+                            var positionedItem = item as PreferredPositionItemMetadata;
+                            if (positionedItem == null)
+                            {
+                                Debug.Fail(@"This should never happen !! (not a PreferredPositionItemMetadata in PreferredPositionRegion)");
+                                return false;
+                            }
+                            return positionedItem.PreferredPosition == PreferredPosition.Last;
+                        });
+
+                        if (lastItemWithLastPreferredPosition == null)
+                        {
+                            ItemMetadataCollection.Add(itemMetadata);
+                        }
+                        else
+                        {
+                            int index = ItemMetadataCollection.IndexOf(lastItemWithLastPreferredPosition);
+                            if (index == ItemMetadataCollection.Count - 1)
+                            {
+                                ItemMetadataCollection.Add(itemMetadata);
+                            }
+                            else
+                            {
+                                ItemMetadataCollection.Insert(index + 1, itemMetadata);
+                            }
+                        }
+
+                        break;
+                    }
+                case PreferredPosition.Any:
+                    {
+                        var firstItemWithLastPreferredPosition = ItemMetadataCollection.FirstOrDefault(item =>
+                        {
+                            var positionedItem = item as PreferredPositionItemMetadata;
+                            if (positionedItem == null)
+                            {
+                                Debug.Fail(@"This should never happen !! (not a PreferredPositionItemMetadata in PreferredPositionRegion)");
+                                return false;
+                            }
+                            return positionedItem.PreferredPosition == PreferredPosition.Last;
+                        });
+
+                        if (firstItemWithLastPreferredPosition == null)
+                        {
+                            ItemMetadataCollection.Add(itemMetadata);
+                        }
+                        else
+                        {
+                            int index = ItemMetadataCollection.IndexOf(firstItemWithLastPreferredPosition);
+                            ItemMetadataCollection.Insert(index, itemMetadata);
+                        }
+
+                        break;
+                    }
+            }
+        }
+    }
+
+    public class PreferredPositionAllActiveRegion : PreferredPositionRegion
+    {
+        public override IViewsCollection ActiveViews
+        {
+            get { return Views; }
+        }
+
+        public override void Deactivate(object view)
+        {
+            throw new InvalidOperationException("DeactiveNotPossibleException");
+        }
+    }
+
+    public class PreferredPositionItemsControlRegionAdapter : ItemsControlRegionAdapter
+    {
+        public PreferredPositionItemsControlRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)
+            : base(regionBehaviorFactory)
+        {
+        }
+
+        protected override IRegion CreateRegion()
+        {
+            return new PreferredPositionAllActiveRegion();
+        }
     }
 }
