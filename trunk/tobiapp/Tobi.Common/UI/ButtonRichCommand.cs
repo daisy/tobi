@@ -65,16 +65,18 @@ namespace Tobi.Common.UI
             button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
-            if (command.IconProvider != null && (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription)))
+            if (command.HasIcon && (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription)))
             {
+                var iconProvider = command.IconProviderNotShared;
+
                 //button.Content = image;
-                command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
+                iconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
 
                 var binding = new Binding
                                   {
                                       Mode = BindingMode.OneWay,
-                                      Source = command.IconProvider,
-                                      Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => command.IconProvider.IconLarge))
+                                      Source = iconProvider,
+                                      Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => iconProvider.IconMedium))
                                   };
 
                 var expr = button.SetBinding(Button.ContentProperty, binding);
@@ -83,16 +85,25 @@ namespace Tobi.Common.UI
             {
                 if (button.Tag is ImageAndTextPlaceholder)
                 {
-                    if (command.IconProvider != null)
+                    object currentImageContent = ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.Content;
+                    if (currentImageContent is Image)
                     {
+                        var image = currentImageContent as Image;
+                        ((ImageAndTextPlaceholder)button.Tag).m_Command.IconProviderDispose(image);
+                    }
+
+                    if (command.HasIcon)
+                    {
+                        var iconProvider = command.IconProviderNotShared;
+
                         var binding = new Binding
                                           {
                                               Mode = BindingMode.OneWay,
-                                              Source = command.IconProvider,
+                                              Source = iconProvider,
                                               Path =
                                                   new PropertyPath(
                                                   PropertyChangedNotifyBase.GetMemberName(
-                                                      () => command.IconProvider.IconLarge))
+                                                      () => iconProvider.IconMedium))
                                           };
                         var bindingExpressionBase_ =
                             ((ImageAndTextPlaceholder) button.Tag).m_ImageHost.SetBinding(
@@ -104,6 +115,8 @@ namespace Tobi.Common.UI
 
                     button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
                     //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
+
+                    ((ImageAndTextPlaceholder) button.Tag).m_Command = command;
                 }
                 else
                 {
@@ -116,19 +129,21 @@ namespace Tobi.Common.UI
 
                     var imageHost = new ContentControl { Focusable = false };
 
-                    if (command.IconProvider != null)
+                    if (command.HasIcon)
                     {
+                        var iconProvider = command.IconProviderNotShared;
+
                         //Image image = command.IconProvider.IconMedium;
-                        command.IconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
+                        iconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
 
                         var binding = new Binding
                                           {
                                               Mode = BindingMode.OneWay,
-                                              Source = command.IconProvider,
+                                              Source = iconProvider,
                                               Path =
                                                   new PropertyPath(
                                                   PropertyChangedNotifyBase.GetMemberName(
-                                                      () => command.IconProvider.IconLarge))
+                                                      () => iconProvider.IconMedium))
                                           };
 
                         var bindingExpressionBase = imageHost.SetBinding(ContentControl.ContentProperty, binding);
@@ -153,19 +168,26 @@ namespace Tobi.Common.UI
                     button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
                     //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
-                    button.Tag = new ImageAndTextPlaceholder
+                    button.Tag = new ImageAndTextPlaceholder(imageHost, tb)
                                      {
-                                         m_ImageHost = imageHost,
-                                         m_TextHost = tb
+                                         m_Command = command
                                      };
                 }
             }
         }
 
-        private struct ImageAndTextPlaceholder
+        private sealed class ImageAndTextPlaceholder
         {
-            public ContentControl m_ImageHost;
-            public Label m_TextHost;
+            public ImageAndTextPlaceholder(ContentControl imageHost, Label textHost)
+            {
+                m_ImageHost = imageHost;
+                m_TextHost = textHost;
+            }
+
+            public readonly ContentControl m_ImageHost;
+            public readonly Label m_TextHost;
+
+            public RichDelegateCommand m_Command;
         }
 
         public RichDelegateCommand RichCommand

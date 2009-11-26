@@ -15,9 +15,10 @@ namespace Tobi.Common.UI
             return new VisualBrush(image);
         }
 
-        public ScalableGreyableImageProvider(VisualBrush icon)
+        public ScalableGreyableImageProvider(VisualBrush icon, double iconDrawScale)
         {
             IconVisualBrush = icon;
+            IconDrawScale = iconDrawScale;
         }
 
         private double m_IconDrawScale = 1;
@@ -94,7 +95,7 @@ namespace Tobi.Common.UI
                          : (size == 1
                                 ? IconMargin_Medium
                                 : (size == 2 ? IconMargin_Large : IconMargin_XLarge))),
-                
+
                 Width =
                     (size == 0
                          ? Sizes.IconWidth_Small
@@ -246,6 +247,12 @@ namespace Tobi.Common.UI
         {
             get { return Sizes.IconWidth_Small * IconDrawScale; }
         }
+
+        public bool HasIconSmall { get { return m_IconSmall != null; } }
+        public bool HasIconMedium { get { return m_IconMedium != null; } }
+        public bool HasIconLarge { get { return m_IconLarge != null; } }
+        public bool HasIconXLarge { get { return m_IconXLarge != null; } }
+
 
         [NotifyDependsOn("IconWidth_Small")]
         [NotifyDependsOn("IconHeight_Small")]

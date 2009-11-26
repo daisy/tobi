@@ -137,7 +137,7 @@ namespace Tobi
                 int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { ManageShortcutsCommand }, null, true);
 
 #if DEBUG
-                int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);
+                //int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);
 #endif
 
 #if ICONS
@@ -209,7 +209,7 @@ namespace Tobi
                 TextWrapping = TextWrapping.Wrap
             };
 
-            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser")) { IconDrawScale = MagnificationLevel };
+            var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser"), MagnificationLevel);
             //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
             var panel = new StackPanel

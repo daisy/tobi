@@ -165,8 +165,8 @@ namespace Tobi.Plugin.DocumentPane
 
             popup.Child = scroll;
             popup.IsOpen = true;
-            
-            FocusHelper.Focus(this, listOfNodes);
+
+            FocusHelper.FocusBeginInvoke(this, listOfNodes);
         }
 
         private void OnPopupLostFocus(object sender, RoutedEventArgs e)

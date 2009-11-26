@@ -229,15 +229,8 @@ namespace Tobi.Common.UI
 
             DetailsHeight = zoom * detailsHeight;
 
-            if (CommandDetailsCollapse.IconProvider != null)
-            {
-                CommandDetailsCollapse.IconProvider.IconDrawScale = zoom;
-            }
-            
-            if (CommandDetailsExpand.IconProvider != null)
-            {
-                CommandDetailsExpand.IconProvider.IconDrawScale = zoom;
-            }
+            CommandDetailsCollapse.SetIconProviderDrawScale(zoom);
+            CommandDetailsExpand.SetIconProviderDrawScale(zoom);
 
             Title = "Tobi: " + title;
             Icon = null;

@@ -197,7 +197,7 @@ namespace Tobi
                         TextWrapping = TextWrapping.Wrap
                     };
 
-                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find")) { IconDrawScale = MagnificationLevel };
+                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find"), MagnificationLevel);
                     //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
                     var panel = new StackPanel
@@ -399,27 +399,24 @@ namespace Tobi
 
             foreach (var command in m_listOfRegisteredRichCommands)
             {
-                if (command.IconProvider != null)
-                {
-                    command.IconProvider.IconDrawScale = value;
-                }
+                command.SetIconProviderDrawScale(value);
             }
 #if ICONS
             foreach (var command in m_listOfIconRichCommands)
             {
-                command.IconProvider.IconDrawScale = value;
+                command.SetIconProviderDrawScale(value);
             }
             foreach (var command in m_listOfIconRichCommands2)
             {
-                command.IconProvider.IconDrawScale = value;
+                command.SetIconProviderDrawScale(value);
             }
             foreach (var command in m_listOfIconRichCommands3)
             {
-                command.IconProvider.IconDrawScale = value;
+                command.SetIconProviderDrawScale(value);
             }
             foreach (var command in m_listOfIconRichCommands4)
             {
-                command.IconProvider.IconDrawScale = value;
+                command.SetIconProviderDrawScale(value);
             }
 #endif
         }
@@ -970,7 +967,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands.Add(command);
 
-                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
                 }
             }
 
@@ -985,7 +982,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands2.Add(command);
 
-                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
                 }
             }
 
@@ -1002,7 +999,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands3.Add(command);
 
-                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
                 }
             }
 
@@ -1017,7 +1014,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands4.Add(command);
 
-                    command.IconProvider.IconDrawScale = (double)Application.Current.Resources["MagnificationLevel"];
+                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
                 }
             }
 

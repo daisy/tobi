@@ -19,7 +19,7 @@ namespace Tobi.Common.UI
 
         public static void FocusBeginInvoke(DependencyObject obj, UIElement ui)
         {
-            ui.Dispatcher.BeginInvoke(new Action(() => Focus(obj, ui)), DispatcherPriority.Render);
+            ui.Dispatcher.BeginInvoke(new Action(() => Focus(obj, ui)), DispatcherPriority.Normal);
         }
 
         public static void FocusThreadAndInvoke(DependencyObject obj, UIElement ui)
