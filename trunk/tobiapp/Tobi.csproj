@@ -23,6 +23,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <TargetFrameworkSubset>Client</TargetFrameworkSubset>
     <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.1.3.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>

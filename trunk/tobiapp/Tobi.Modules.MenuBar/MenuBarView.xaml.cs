@@ -54,7 +54,7 @@ namespace Tobi.Plugin.MenuBar
         }
 
 
-        public int AddMenuBarGroup(string region, object[] commands, string rootHeader, bool addSeparator)
+        public int AddMenuBarGroup(string topLevelMenuItemId, string subMenuItemId, object[] commands, PreferredPosition position, bool addSeparator)
         {
             m_Logger.Log(@"AddMenuBarGroup", Category.Debug, Priority.Medium);
 
@@ -69,33 +69,40 @@ namespace Tobi.Plugin.MenuBar
             IRegion targetRegion;
             try
             {
-                targetRegion = m_RegionManager.Regions[region];
+                targetRegion = m_RegionManager.Regions[topLevelMenuItemId];
             }
             catch
             {
-                var menuRoot = new MenuItemRichCommand { Header = region };
+                var menuRoot = new MenuItemRichCommand { Header = topLevelMenuItemId };
 
                 //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
-                RegionManager.SetRegionName(menuRoot, region);
+                RegionManager.SetRegionName(menuRoot, topLevelMenuItemId);
                 //RegionManager.UpdateRegions();
 
                 MenuBarAnchor.Items.Add(menuRoot);
 
-                targetRegion = m_RegionManager.Regions[region];
+                targetRegion = m_RegionManager.Regions[topLevelMenuItemId];
             }
 
             int count = 0;
-            
+
             if (addSeparator && targetRegion.Views.Count() > 0)
             {
                 var sep = new Separator();
-                targetRegion.Add(sep, uid + @"_" + count++);
-                targetRegion.Activate(sep);
+
+                string viewname = (!string.IsNullOrEmpty(subMenuItemId) ? @"SUB_" : "")
+                                   + uid + @"_" + count++;
+
+                m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
+                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = sep, m_viewPreferredPosition = position });
+                //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => sep);
+                //targetRegion.Add(sep, viewname);
+                //targetRegion.Activate(sep);
             }
 
-            if (!string.IsNullOrEmpty(rootHeader))
+            if (!string.IsNullOrEmpty(subMenuItemId))
             {
-                var subRegionName = rootHeader; // @"SubMenuRegion_" + uid;
+                var subRegionName = subMenuItemId; // @"SubMenuRegion_" + uid;
 
                 try
                 {
@@ -104,14 +111,19 @@ namespace Tobi.Plugin.MenuBar
                 }
                 catch
                 {
-                    var menuRoot = new MenuItemRichCommand { Header = rootHeader };
+                    var subMenuRoot = new MenuItemRichCommand { Header = subMenuItemId };
 
                     //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
-                    RegionManager.SetRegionName(menuRoot, subRegionName);
+                    RegionManager.SetRegionName(subMenuRoot, subRegionName);
                     //RegionManager.UpdateRegions();
 
-                    targetRegion.Add(menuRoot); //, uid + @"_" + count++);
-                    targetRegion.Activate(menuRoot);
+                    string viewname = @"SUB_" + uid + @"_" + count++;
+
+                    m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = position });
+                    //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => menuRoot);
+                    //targetRegion.Add(menuRoot); //, viewname);
+                    //targetRegion.Activate(menuRoot);
 
                     targetRegion = m_RegionManager.Regions[subRegionName];
                 }
@@ -121,16 +133,23 @@ namespace Tobi.Plugin.MenuBar
             {
                 if (command is RichDelegateCommand)
                 {
-                    //var menuItem = new MenuItemRichCommand { RichCommand = (RichDelegateCommand)command };
-                    targetRegion.Add(command, uid + @"_" + count++);
-                    targetRegion.Activate(command);
+                    string viewname = uid + @"_" + count++;
+
+                    m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = position });
+                    //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => command);
+                    //targetRegion.Add(command, viewname);
+                    //targetRegion.Activate(command);
                 }
                 else if (command is TwoStateMenuItemRichCommand_DataContextWrapper)
                 {
-                    //var cmdX = (TwoStateMenuItemRichCommand_DataContextWrapper)command;
-                    //var menuItem = new TwoStateMenuItemRichCommand { InputBindingManager = m_ShellView, RichCommandOne = cmdX.RichCommandOne, RichCommandTwo = cmdX.RichCommandTwo, RichCommandActive = cmdX.RichCommandActive };
-                    targetRegion.Add(command, uid + @"_" + count++);
-                    targetRegion.Activate(command);
+                    string viewname = uid + @"_" + count++;
+
+                    m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = position });
+                    //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => command);
+                    //targetRegion.Add(command, viewname);
+                    //targetRegion.Activate(command);
                 }
             }
 
@@ -139,6 +158,8 @@ namespace Tobi.Plugin.MenuBar
 
         public void RemoveMenuBarGroup(string region, int uid)
         {
+            //TODO: the removal logic is broken since we have introduced PreferredPosition !
+
             m_Logger.Log(@"RemoveMenuBarGroup", Category.Debug, Priority.Medium);
 
 #if DEBUG
