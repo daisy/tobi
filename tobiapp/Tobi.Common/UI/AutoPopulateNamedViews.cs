@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -307,7 +308,10 @@ namespace Tobi.Common.UI
                         {
                             if (ItemMetadataCollection.Count == 0)
                             {
-                                ItemMetadataCollection.Add(itemMetadata);
+                                if (!(itemMetadata.Item is Separator))
+                                {
+                                    ItemMetadataCollection.Add(itemMetadata);
+                                }
                             }
                             else
                             {
@@ -320,8 +324,10 @@ namespace Tobi.Common.UI
                                     ItemMetadataCollection.Remove(toRemove);
                                     backup.Add(toRemove);
                                 }
-
-                                ItemMetadataCollection.Add(itemMetadata);
+                                if (!(itemMetadata.Item is Separator))
+                                {
+                                    ItemMetadataCollection.Add(itemMetadata);
+                                }
                                 ItemMetadataCollection.AddRange(backup);
                             }
                         }

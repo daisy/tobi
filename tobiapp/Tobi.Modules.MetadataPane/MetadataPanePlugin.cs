@@ -27,9 +27,9 @@ namespace Tobi.Plugin.MetadataPane
             // If the menubar has been resolved, we can push our commands into it.
             tryMenubarCommands();
         }
-        
+
 #pragma warning disable 649 // non-initialized fields
-        
+
         [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IToolBarsView m_ToolBarsView;
 
@@ -43,7 +43,7 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
         private readonly MetadataPaneView m_MetadataPaneView;
-        
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -104,8 +104,8 @@ namespace Tobi.Plugin.MetadataPane
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { CommandShowMetadataPane }, null, false);
-                
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { CommandShowMetadataPane }, PreferredPosition.Last, true);
+
                 m_MenuBarCommandsDone = true;
 
                 m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);

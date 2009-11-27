@@ -9,7 +9,7 @@ namespace Tobi.Common
         /// Appends a command group of icons
         ///</summary>
         ///<param name="commands">an ordered list of commands</param>
-        ///<param name="position">a hint for the preferred positionin the toolbar</param>
+        ///<param name="position">a hint for the preferred position within the toolbar strip</param>
         ///<returns>a unique identifier for the submitted group</returns>
         int AddToolBarGroup(RichDelegateCommand[] commands, PreferredPosition position);
 

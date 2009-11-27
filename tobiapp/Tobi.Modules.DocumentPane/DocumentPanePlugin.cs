@@ -100,8 +100,8 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, RegionNames.MenuBar_Navigation, true);
-                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { m_DocView.CommandFocus }, RegionNames.MenuBar_Focus, false);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_Navigation, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Last, true);
+                m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_DocView.CommandFocus }, PreferredPosition.Last, false);
 
                 m_MenuBarCommandsDone = true;
 

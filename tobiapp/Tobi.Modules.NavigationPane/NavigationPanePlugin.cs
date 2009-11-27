@@ -101,7 +101,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, new[] { m_NavPane.CommandFocus }, RegionNames.MenuBar_Focus, false);
+                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_NavPane.CommandFocus }, PreferredPosition.Last, false);
 
                 m_MenuBarCommandsDone = true;
 
