@@ -46,7 +46,14 @@ namespace Tobi
         ///</summary>
         ///<param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
-        { // Ignore 0 index:
+        {
+#if DEBUG
+            //System.Diagnostics.Debugger.Launch();
+#endif
+
+            //TODO: See Mono.Options for managing command line parameters.
+
+            // Ignore 0 index:
             //Environment.GetCommandLineArgs()
 
             //Tobi.exe -verbose -debuglevel:3

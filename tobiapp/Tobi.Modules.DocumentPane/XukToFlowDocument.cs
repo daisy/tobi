@@ -1053,7 +1053,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     //image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
 
-                    string imagePath = new Uri(srcAttr.Value, UriKind.Absolute).AbsolutePath;
+                    string imagePath = new Uri(srcAttr.Value, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
                     imagePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(imagePath));
 
                     //string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
