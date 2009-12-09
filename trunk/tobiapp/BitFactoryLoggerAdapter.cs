@@ -14,8 +14,9 @@ namespace Tobi
 
         public BitFactoryLoggerAdapter()
         {
-			//PresentationTraceSources.TraceLevel=High;
-
+#if (DEBUG)
+            //PresentationTraceSources.TraceLevel = High;
+#endif
             PresentationTraceSources.ResourceDictionarySource.Listeners.Add(new BitFactoryLoggerTraceListener(this));
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
 
@@ -41,9 +42,7 @@ namespace Tobi
             Logger consoleLogger = TextWriterLogger.NewConsoleLogger();
             m_Logger.AddLogger("console", consoleLogger);
 
-#if (DEBUG)
-            consoleLogger.Formatter = new LogEntryFormatterCodeLocation();
-#endif
+            consoleLogger.Formatter = new BitFactoryLoggerLogEntryFormatter();
 
             if (File.Exists(UserInterfaceStrings.LOG_FILE_PATH))
             {
@@ -51,15 +50,13 @@ namespace Tobi
                 File.Delete(UserInterfaceStrings.LOG_FILE_PATH);
                 Log("File deleted [" + UserInterfaceStrings.LOG_FILE_PATH + "].", Category.Debug, Priority.Medium);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
 
             Logger fileLogger = new FileLogger(UserInterfaceStrings.LOG_FILE_PATH);
             m_Logger.AddLogger("file", fileLogger);
 
-#if (DEBUG)
-            fileLogger.Formatter = new LogEntryFormatterCodeLocation();
-#endif
+            fileLogger.Formatter = new BitFactoryLoggerLogEntryFormatter();
         }
 
         #region ILoggerFacade Members
@@ -186,7 +183,7 @@ namespace Tobi
         }
     }
 
-    public class LogEntryFormatterCodeLocation : LogEntryFormatter
+    public class BitFactoryLoggerLogEntryFormatter : LogEntryFormatter
     {
         protected override string AsString(LogEntry aLogEntry)
         {

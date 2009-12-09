@@ -12,6 +12,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;

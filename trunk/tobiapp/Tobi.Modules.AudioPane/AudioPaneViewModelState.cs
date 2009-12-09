@@ -6,6 +6,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
 

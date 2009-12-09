@@ -1,27 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using MefContrib.Integration.Unity;
-using Microsoft.Practices.Composite;
-using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
-using Microsoft.Practices.Composite.Presentation.Regions.Behaviors;
-using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
-using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
-using Tobi.Common._UnusedCode;
 using Tobi.Common.UI;
 using Tobi.Plugin.AudioPane;
 using Tobi.Plugin.DocumentPane;
@@ -261,8 +252,8 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
-                //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))),
-                //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))),
+                //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
+                //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
             }));
 
@@ -293,6 +284,27 @@ namespace Tobi
             {
                 LoggerFacade.Log(@"Loaded plugins: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
             }
+
+            // In ClickOnce application manifest:
+            //<fileAssociation xmlns="urn:schemas-microsoft-com:clickonce.v1" extension=".text" description="Text  Document (ClickOnce)" progid="Text.Document" defaultIcon="text.ico" />
+            //
+            // Arguments for ClickOnce-actived application are passed here (including file path due to file extension association):
+            //string[] args = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+            //if (args != null && args.Length != 0)
+            //{
+            //    try
+            //    {
+            //        Uri uri = new Uri(args[0]);
+            //        if (!uri.IsFile)
+            //            throw new UriFormatException("The URI " + uri + " is not a file.");
+
+            //        OpenFile(uri.AbsolutePath);
+            //    }
+            //    catch (UriFormatException)
+            //    {
+            //        MessageBox.Show("Invalid file specified.", Program.Name);
+            //    }
+            //}
 
             // The code below is totally obsolete, as we are not using CAG modules.
             //var name = typeof (UrakawaModule).Name;
