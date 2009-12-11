@@ -25,10 +25,10 @@ namespace Tobi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("700")]
-        public int m_width {
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public double m_width {
             get {
-                return ((int)(this["m_width"]));
+                return ((double)(this["m_width"]));
             }
             set {
                 this["m_width"] = value;
@@ -37,13 +37,25 @@ namespace Tobi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("800")]
-        public int m_height {
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public double m_height {
             get {
-                return ((int)(this["m_height"]));
+                return ((double)(this["m_height"]));
             }
             set {
                 this["m_height"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool m_state {
+            get {
+                return ((bool)(this["m_state"]));
+            }
+            set {
+                this["m_state"] = value;
             }
         }
     }

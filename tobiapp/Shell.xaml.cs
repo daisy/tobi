@@ -80,6 +80,13 @@ namespace Tobi
 
             m_InConstructor = false;
 
+            this.Height = Properties.Settings.Default.m_height;
+            this.Width = Properties.Settings.Default.m_width;
+            if (Properties.Settings.Default.m_state)
+            {
+                WindowState = WindowState.Maximized;
+            }
+
             //IRegionManager regionManager = Container.Resolve<IRegionManager>();
             //string regionName = "AvalonDockRegion_1";
             //regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
@@ -168,7 +175,21 @@ namespace Tobi
 
         protected void OnClosing(object sender, CancelEventArgs e)
         {
-            Tobi.Properties.Settings.Default.Save();
+            if (WindowState == WindowState.Maximized)
+            {
+                // Use the RestoreBounds as the current values will be 0, 0 and the size of the screen
+                Properties.Settings.Default.m_height = RestoreBounds.Height;
+                Properties.Settings.Default.m_width = RestoreBounds.Width;
+                Properties.Settings.Default.m_state = true;
+            }
+            else
+            {
+                Properties.Settings.Default.m_height = this.Height;
+                Properties.Settings.Default.m_width = this.Width;
+                Properties.Settings.Default.m_state = false;
+            }
+
+           Tobi.Properties.Settings.Default.Save();
             /*
             e.Cancel = true;
             // Workaround for not being able to hide a window during closing.
