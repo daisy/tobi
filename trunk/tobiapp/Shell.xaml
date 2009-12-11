@@ -4,17 +4,17 @@
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:Tobi="clr-namespace:Tobi" ResizeMode="CanResizeWithGrip"
         
-    Title="{Binding Path=WindowTitle}"
+     Title ="{Binding Path=WindowTitle}"
     Closing="OnClosing"
     Topmost="False"
-    Width="{x:Static Common:Sizes.DefaultWindowWidth}"
-    Height="{x:Static Common:Sizes.DefaultWindowHeight}"
+    Height="{Binding Source={StaticResource  settings}, Path=Default.m_height, Mode=TwoWay}"
+    Width="{Binding Source={StaticResource settings},Path=Default.m_width, Mode=TwoWay}"
     WindowStartupLocation="CenterScreen"
     Loaded="OnWindowLoaded"
         x:Name="MainWindow"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-   >
+   ><!-- Width="{x:Static Common:Sizes.DefaultWindowWidth}"--><!-- Height="{x:Static Common:Sizes.DefaultWindowHeight}" --><!--Title="{Binding Path=WindowTitle}" -->
   <!-- huddled:NativeBehaviors.Behaviors>
     <huddled:SnapToBehavior SnapDistance="20,20,20,20" />
     <huddled:HotkeysBehavior>

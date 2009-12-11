@@ -8,7 +8,8 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/IconResources.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Common;component/Resources.xaml"/>
-      </ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="SettingsRes.xaml"/>
+       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
 </Application>
