@@ -168,6 +168,7 @@ namespace Tobi
 
         protected void OnClosing(object sender, CancelEventArgs e)
         {
+            Tobi.Properties.Settings.Default.Save();
             /*
             e.Cancel = true;
             // Workaround for not being able to hide a window during closing.
@@ -397,6 +398,16 @@ namespace Tobi
         {
             if (((TextBox)sender).SelectionLength == 0)
                 ((TextBox)sender).SelectAll();
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainWindow_Closed_1(object sender, EventArgs e)
+        {
+
         }
 
         //private static void UIElement_LostKeyboardFocus(object sender, RoutedEventArgs e)
