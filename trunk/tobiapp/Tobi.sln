@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTDs", "..\..\..\urakawa-sd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.daisy", "..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj", "{69E083B4-AC97-4416-B7D4-61DEBA8A910D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Settings", "Tobi.Modules.Settings\Tobi.Plugin.Settings.csproj", "{5D599BFC-AA17-4D94-9BE6-6D369E214167}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -338,6 +340,16 @@ Global
 		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.test|Any CPU.Build.0 = Release|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{5D599BFC-AA17-4D94-9BE6-6D369E214167}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

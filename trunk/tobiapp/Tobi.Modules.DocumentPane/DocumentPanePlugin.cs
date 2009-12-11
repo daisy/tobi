@@ -85,7 +85,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Last);
+                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Any);
 
                 m_ToolBarCommandsDone = true;
 
