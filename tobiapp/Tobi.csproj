@@ -162,6 +162,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RequiredAttribute.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Shell_Commands.cs" />
     <Compile Include="Shell_Magnification.cs" />
     <Compile Include="Shell_SplitterDrag.cs" />
@@ -229,6 +230,10 @@
     <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.csproj">
       <Project>{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}</Project>
       <Name>Tobi.Plugin.NavigationPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Settings\Tobi.Plugin.Settings.csproj">
+      <Project>{5D599BFC-AA17-4D94-9BE6-6D369E214167}</Project>
+      <Name>Tobi.Plugin.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>

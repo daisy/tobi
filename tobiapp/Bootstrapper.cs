@@ -19,6 +19,7 @@ using Tobi.Plugin.DocumentPane;
 using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.MetadataPane;
 using Tobi.Plugin.NavigationPane;
+using Tobi.Plugin.Settings;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
 using Tobi.Plugin.Validator;
@@ -252,6 +253,7 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(SettingsPlugin))),
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
