@@ -2,11 +2,14 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="m_width" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">700</Value>
-    </Setting>
-    <Setting Name="m_height" Type="System.Int32" Scope="User">
+    <Setting Name="m_width" Type="System.Double" Scope="User">
       <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="m_height" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">600</Value>
+    </Setting>
+    <Setting Name="m_state" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
