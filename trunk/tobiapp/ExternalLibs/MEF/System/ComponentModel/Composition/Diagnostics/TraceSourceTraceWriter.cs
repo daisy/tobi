@@ -10,9 +10,9 @@ using Microsoft.Internal;
 namespace System.ComponentModel.Composition.Diagnostics
 {
     // Represents a trace writer that writes to a System.Diagnostics TraceSource
-    internal sealed class TraceSourceTraceWriter : TraceWriter
+    public sealed class TraceSourceTraceWriter : TraceWriter
     {
-        internal static readonly TraceSource Source = new TraceSource("System.ComponentModel.Composition", SourceLevels.Warning);
+        public static readonly TraceSource Source = new TraceSource("System.ComponentModel.Composition", SourceLevels.Warning);
 
         public override bool CanWriteInformation
         {

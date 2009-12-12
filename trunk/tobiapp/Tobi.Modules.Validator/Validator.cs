@@ -3,7 +3,6 @@ using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa;

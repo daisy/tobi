@@ -10,6 +10,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
+using Tobi.Properties;
 using Application = System.Windows.Application;
 
 namespace Tobi
@@ -36,6 +37,9 @@ namespace Tobi
 
             // If the Urakawa Session has been resolved, we can bind the window title.
             trySessionWindowTitle();
+
+            // If the Settings has been resolved, we can update the window state.
+            trySettings();
         }
 
 #pragma warning disable 649 // non-initialized fields
@@ -48,6 +52,9 @@ namespace Tobi
 
         [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IUrakawaSession m_UrakawaSession;
+
+        [Import(typeof(ISettings), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private ISettings m_Settings;
 
 #pragma warning restore 649
 
@@ -80,17 +87,33 @@ namespace Tobi
 
             m_InConstructor = false;
 
-            this.Height = Properties.Settings.Default.m_height;
-            this.Width = Properties.Settings.Default.m_width;
-            if (Properties.Settings.Default.m_state)
-            {
-                WindowState = WindowState.Maximized;
-            }
-
             //IRegionManager regionManager = Container.Resolve<IRegionManager>();
             //string regionName = "AvalonDockRegion_1";
             //regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
             //((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
+        }
+
+        private bool m_SettingsDone;
+        private void trySettings()
+        {
+            if (!m_SettingsDone && m_Settings != null)
+            {
+                //TODO: override local defaults specified in XAML (immutable application settings) using values provided by the loaded plugins, or by user settings.
+                //Height = Settings.Default.WindowShellHeight;
+                //Width = Settings.Default.WindowShellWidth;
+
+                //Left = Settings.Default.WindowShellLeft;
+                //Top = Settings.Default.WindowShellTop;
+
+                //if (Settings.Default.WindowShellFullScreen)
+                //{
+                //    WindowState = WindowState.Maximized;
+                //}
+
+                m_SettingsDone = true;
+
+                m_Logger.Log(@"setings applied to Shell Window", Category.Debug, Priority.Medium);
+            }
         }
 
         private bool m_SessionTitleDone;
@@ -173,24 +196,30 @@ namespace Tobi
             Application.Current.Shutdown();
         }
 
+        private void saveSettings()
+        {
+            // NOTE: not needed because of TwoWay Data Binding in the XAML
+            //if (WindowState == WindowState.Maximized)
+            //{
+            //    // Use the RestoreBounds as the current values will be 0, 0 and the size of the screen
+            //    Settings.Default.WindowShellHeight = RestoreBounds.Height;
+            //    Settings.Default.WindowShellWidth = RestoreBounds.Width;
+            //    Settings.Default.WindowShellFullScreen = true;
+            //}
+            //else
+            //{
+            //    Settings.Default.WindowShellHeight = Height;
+            //    Settings.Default.WindowShellWidth = Width;
+            //    Settings.Default.WindowShellFullScreen = false;
+            //}
+
+            Settings.Default.Save();
+        }
 
         protected void OnClosing(object sender, CancelEventArgs e)
         {
-            if (WindowState == WindowState.Maximized)
-            {
-                // Use the RestoreBounds as the current values will be 0, 0 and the size of the screen
-                Properties.Settings.Default.m_height = RestoreBounds.Height;
-                Properties.Settings.Default.m_width = RestoreBounds.Width;
-                Properties.Settings.Default.m_state = true;
-            }
-            else
-            {
-                Properties.Settings.Default.m_height = this.Height;
-                Properties.Settings.Default.m_width = this.Width;
-                Properties.Settings.Default.m_state = false;
-            }
+            saveSettings();
 
-           Tobi.Properties.Settings.Default.Save();
             /*
             e.Cancel = true;
             // Workaround for not being able to hide a window during closing.
@@ -321,7 +350,7 @@ namespace Tobi
                 }
                 catch (Exception splashEx)
                 {
-                    Console.Write(@"SplashScreen.Close() Exception: " + splashEx.Message);
+                    Console.WriteLine(@"SplashScreen.Close() Exception: " + splashEx.Message);
                 }
                 //app.Dispatcher.BeginInvoke((Action)(() => app.SplashScreen.Close(TimeSpan.Zero)), DispatcherPriority.Loaded);
             }

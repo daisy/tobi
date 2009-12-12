@@ -64,19 +64,21 @@ namespace Tobi
         /// </summary>
         public Bootstrapper()
         {
-            m_Logger = new BitFactoryLoggerAdapter();
+            m_Logger = new TobiLoggerFacade();
 
-            // Reminder of the logging syntax:
-            //m_Logger.Log(@"blabla", Category.Debug, Priority.Low);
+            Console.WriteLine(@"CONSOLE -- Testing redirection from System.Console.WriteLine() to the application logger.");
+            Debug.WriteLine(@"DEBUG -- Testing redirection from System.Diagnostics.Debug.WriteLine() to the application logger. This message should not appear in RELEASE mode (only when DEBUG flag is set).");
+            Trace.WriteLine(@"TRACE -- Testing redirection from System.Diagnostics.Trace.WriteLine() to the application logger. This message should not appear in RELEASE mode (and in DEBUG mode only when TRACE flag is set).");
 
-            Console.WriteLine(@"Testing redirection from System.Console.WriteLine() to the application logger.");
-            Debug.WriteLine(@"Testing redirection from System.Diagnostics.Debug.WriteLine() to the application logger. This message should not appear in RELEASE mode.");
+            m_Logger.Log(@"[" + DateTime.Now + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[" + UserInterfaceStrings.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[Tobi version: " + UserInterfaceStrings.APP_VERSION + @"]", Category.Info, Priority.High);
         }
 
         /// <summary>
         /// We implement ILoggerFacade using a custom BitFactory logger
         /// </summary>
-        private readonly BitFactoryLoggerAdapter m_Logger;
+        private readonly TobiLoggerFacade m_Logger;
 
         ///<summary>
         /// We override the default logger (singleton) supplied through the Unity Dependency Injection container

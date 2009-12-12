@@ -68,10 +68,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BitFactory.Logging, Version=1.4.1.0, Culture=neutral, PublicKeyToken=de68848483a294a9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ExternalLibs\BitFactory.Logging.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ExternalLibs\CAL\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -116,10 +112,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsRes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,7 +126,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitFactoryLoggerAdapter.cs" />
+    <Compile Include="TobiLoggerFacade.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandLineDictionary.cs" />

@@ -6,7 +6,7 @@ using System;
 
 namespace System.ComponentModel.Composition.Diagnostics
 {
-    internal abstract class TraceWriter
+    public abstract class TraceWriter
     {
         public abstract bool CanWriteInformation
         {

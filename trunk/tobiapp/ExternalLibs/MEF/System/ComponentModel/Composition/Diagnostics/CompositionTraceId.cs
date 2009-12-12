@@ -8,7 +8,7 @@ namespace System.ComponentModel.Composition.Diagnostics
     // NOTE: Do not change the trace ids of values that have already shipped, 
     // these leak out to TraceListerners which could take a dependency on them.
     // This enum is a ushort deliberately, the maximum value of a trace id is 65535.
-    internal enum CompositionTraceId : ushort
+    public enum CompositionTraceId : ushort
     {
         // Rejection
 

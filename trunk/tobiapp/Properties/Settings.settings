@@ -2,14 +2,20 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="m_width" Type="System.Double" Scope="User">
+    <Setting Name="WindowShellWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">800</Value>
     </Setting>
-    <Setting Name="m_height" Type="System.Double" Scope="User">
+    <Setting Name="WindowShellHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">600</Value>
     </Setting>
-    <Setting Name="m_state" Type="System.Boolean" Scope="User">
+    <Setting Name="WindowShellFullScreen" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="WindowShellLeft" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="WindowShellTop" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -143,11 +143,22 @@ namespace Tobi.Common.UI
             // For some reason, WindowStartupLocation.CenterOwner doesn't work in non-modal display mode.
             WindowStartupLocation = WindowStartupLocation.Manual;
 
+            if (Owner != null && Owner.WindowState == WindowState.Minimized)
+            {
+                Owner.WindowState = WindowState.Normal;
+            }
+
             double finalLeft = Math.Max(0, (Owner == null ? 10 : Owner.Left) + ((Owner == null ? 800 : Owner.Width) - Width) / 2);
             double finalTop = Math.Max(0, (Owner == null ? 10 : Owner.Top) + ((Owner == null ? 600 : Owner.Height) - Height) / 2);
 
             double availableWidth = SystemParameters.WorkArea.Width; //Screen.PrimaryScreen.Bounds.Width
             double availableHeight = SystemParameters.WorkArea.Height; //Screen.PrimaryScreen.Bounds.Height
+
+            if (Owner != null && Owner.WindowState == WindowState.Maximized)
+            {
+                finalLeft = Math.Max(0, (availableWidth - Width) / 2);
+                finalTop = Math.Max(0, (availableHeight - Height) / 2);
+            }
 
             double finalWidth = Math.Min(availableWidth, Width);
             double finalHeight = Math.Min(availableHeight, Height);

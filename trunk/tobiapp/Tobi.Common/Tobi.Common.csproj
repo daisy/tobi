@@ -108,6 +108,7 @@
     <Compile Include="Colors.cs" />
     <Compile Include="IFileDialogService.cs" />
     <Compile Include="IMenuBarView.cs" />
+    <Compile Include="ISettings.cs" />
     <Compile Include="ITobiPlugin.cs" />
     <Compile Include="IShellView.cs" />
     <Compile Include="IToolbarsView.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
     <Compile Include="UI\XAML\RenderTargetBitmapImageSourceConverter.cs" />
+    <Compile Include="UI\XAML\WindowStateFullScreenConverter.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="Validation\IValidator.cs" />
     <Compile Include="Validation\ValidationEvents.cs" />

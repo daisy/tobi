@@ -26,36 +26,60 @@ namespace Tobi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("800")]
-        public double m_width {
+        public double WindowShellWidth {
             get {
-                return ((double)(this["m_width"]));
+                return ((double)(this["WindowShellWidth"]));
             }
             set {
-                this["m_width"] = value;
+                this["WindowShellWidth"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("600")]
-        public double m_height {
+        public double WindowShellHeight {
             get {
-                return ((double)(this["m_height"]));
+                return ((double)(this["WindowShellHeight"]));
             }
             set {
-                this["m_height"] = value;
+                this["WindowShellHeight"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool m_state {
+        public bool WindowShellFullScreen {
             get {
-                return ((bool)(this["m_state"]));
+                return ((bool)(this["WindowShellFullScreen"]));
             }
             set {
-                this["m_state"] = value;
+                this["WindowShellFullScreen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double WindowShellLeft {
+            get {
+                return ((double)(this["WindowShellLeft"]));
+            }
+            set {
+                this["WindowShellLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double WindowShellTop {
+            get {
+                return ((double)(this["WindowShellTop"]));
+            }
+            set {
+                this["WindowShellTop"] = value;
             }
         }
     }
