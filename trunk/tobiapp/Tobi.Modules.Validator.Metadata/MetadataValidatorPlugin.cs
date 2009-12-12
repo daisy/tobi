@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.Validation;
 
 namespace Tobi.Plugin.Validator.Metadata
 {
@@ -20,22 +21,22 @@ namespace Tobi.Plugin.Validator.Metadata
         }
 
         private readonly ILoggerFacade m_Logger;
-        private readonly MetadataValidator m_Validator;
+        //private readonly MetadataValidator m_Validator;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
         ///</summary>
         ///<param name="logger">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
-        ///<param name="validator">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
         public MetadataValidatorPlugin(
-            ILoggerFacade logger,
-            [Import(typeof(MetadataValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            MetadataValidator validator)
+            ILoggerFacade logger
+            //[Import(typeof(MetadataValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            //MetadataValidator validator
+            )
         {
             m_Logger = logger;
-            m_Validator = validator;
+            //m_Validator = validator;
 
             m_Logger.Log(@"MetadataValidator loaded", Category.Debug, Priority.Medium);
         }
