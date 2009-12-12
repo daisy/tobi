@@ -22,19 +22,19 @@ namespace Tobi.Plugin.Settings
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
 
-        public readonly IEnumerable<ISettingsProvider> m_SettingsProvider;
+        public readonly IEnumerable<ISettingsProvider> m_SettingsProviders;
 
         [ImportingConstructor]
         public Settings(
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
             [ImportMany(typeof(ISettingsProvider), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
-            IEnumerable<ISettingsProvider> settingsProvider)
+            IEnumerable<ISettingsProvider> settingsProviders)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
-            m_SettingsProvider = settingsProvider;
+            m_SettingsProviders = settingsProviders;
         }
     }
 }

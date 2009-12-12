@@ -255,7 +255,6 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(SettingsPlugin))),
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
@@ -276,7 +275,8 @@ namespace Tobi
             Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
             {
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(MenuBarPlugin)))
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(MenuBarPlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(SettingsPlugin)))
             }));
 
 
