@@ -10,14 +10,14 @@
   <!-- ALL RESOURCES -->
   <DockPanel.Resources>
     <!-- CONVERTERS -->
-    <local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/>
+    <!-- local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/ -->
     <!-- local:ErrorsToListConverter x:Key="errorsToListConverter"/ -->
-    <local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/>
-    <local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/>
-    <local:LowerCaseConverter x:Key="lowerCaseConverter"/>
-    <local:AvailableMetadataNamesConverter x:Key="availableMetadataNamesConverter"/>
-    <local:FullDescriptionConverter x:Key="fullDescriptionConverter"/>
-    <local:PrimaryIdentifierConverter x:Key="primaryIdentifierConverter"/>
+    <!-- local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/ -->
+    <!-- local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/ -->
+    <!-- local:LowerCaseConverter x:Key="lowerCaseConverter"/ -->
+    <!-- local:AvailableMetadataNamesConverter x:Key="availableMetadataNamesConverter"/ -->
+    <!-- local:FullDescriptionConverter x:Key="fullDescriptionConverter"/ -->
+    <!-- local:PrimaryIdentifierConverter x:Key="primaryIdentifierConverter"/ -->
 
 
     <!-- COLLECTION VIEW SOURCE for Metadata objects-->
@@ -63,10 +63,10 @@
 
     <Style x:Key="OccurrenceStyle" TargetType="{x:Type TextBlock}">
       <Setter Property="AutomationProperties.Name" Value="{Binding Definition,
-                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
+                                      Converter={local:OccurrenceDescriptionConverter}}"/>
       <Setter Property="Focusable" Value="True"/>
       <Setter Property="ToolTip" Value="{Binding Definition,
-                                      Converter={StaticResource occurrenceDescriptionConverter}}"/>
+                                      Converter={local:OccurrenceDescriptionConverter}}"/>
     </Style>
 
     <!-- details view: errors -->
@@ -74,7 +74,7 @@
       <Setter Property="Focusable" Value="True"/>
       <Setter Property="AutomationProperties.Name">
         <Setter.Value>
-          <MultiBinding Converter="{StaticResource descriptiveErrorTextConverter}">
+          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
             <Binding Source="{StaticResource MetadatasCVS}"
                Path="/"/>
             <Binding RelativeSource="{RelativeSource FindAncestor,
@@ -85,7 +85,7 @@
       </Setter>
       <Setter Property="ToolTip">
         <Setter.Value>
-          <MultiBinding Converter="{StaticResource descriptiveErrorTextConverter}">
+          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
             <Binding Source="{StaticResource MetadatasCVS}"
                Path="/"/>
             <Binding RelativeSource="{RelativeSource FindAncestor,
@@ -118,7 +118,7 @@
       <Setter>
         <Setter.Property>AutomationProperties.Name</Setter.Property>
         <Setter.Value>
-          <MultiBinding Converter="{StaticResource fullDescriptionConverter}">
+          <MultiBinding Converter="{local:FullDescriptionConverter}">
             <Binding Path="Name"/>
             <Binding Path="Content"/>
           </MultiBinding>
@@ -204,7 +204,7 @@
         <Button.IsEnabled>
           <Binding Source="{StaticResource MetadatasCVS}"
          Path="/"
-         Converter="{StaticResource isNotRequiredOccurrenceConverter}"/>
+         Converter="{local:IsNotRequiredOccurrenceConverter}"/>
         </Button.IsEnabled>
       </Button>
 
@@ -297,7 +297,7 @@
            Focusable="True"
            Text="{Binding Source={StaticResource MetadatasCVS}, 
                                       Path=Definition,
-                                      Converter={StaticResource occurrenceDescriptionConverter}}"
+                                      Converter={local:OccurrenceDescriptionConverter}}"
            TextWrapping="Wrap" />
 
       <!-- NAME DROP DOWN -->
@@ -311,10 +311,10 @@
           HorizontalContentAlignment="Stretch"
           SelectedItem="{Binding Source={StaticResource MetadatasCVS}, 
                                              Path=Name, 
-                                             Converter={StaticResource lowerCaseConverter}}"
+                                             Converter={local:LowerCaseConverter}}"
           SelectionChanged="ComboBox_SelectionChanged">
         <ComboBox.ItemsSource>
-          <MultiBinding Converter="{StaticResource availableMetadataNamesConverter}"
+          <MultiBinding Converter="{local:AvailableMetadataNamesConverter}"
               UpdateSourceTrigger="PropertyChanged">
             <Binding RelativeSource="{RelativeSource FindAncestor,
                                                   AncestorType={x:Type local:MetadataPaneView}}"
@@ -347,7 +347,7 @@
            TextWrapping="Wrap"
            Style="{StaticResource ValidationTextDetailsViewStyle}">
         <TextBlock.Text>
-          <MultiBinding Converter="{StaticResource descriptiveErrorTextConverter}">
+          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
             <Binding Source="{StaticResource MetadatasCVS}"
                Path="/"/>
             <Binding RelativeSource="{RelativeSource FindAncestor,
@@ -362,7 +362,7 @@
         <CheckBox.Visibility>
           <Binding Source="{StaticResource MetadatasCVS}"
          Path="/"
-         Converter="{StaticResource primaryIdentifierConverter}"/>
+         Converter="{local:PrimaryIdentifierConverter}"/>
         </CheckBox.Visibility>
         <CheckBox.IsChecked>
           <Binding Source="{StaticResource MetadatasCVS}"

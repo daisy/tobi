@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace Tobi.Plugin.NavigationPane.Search
 {
@@ -40,7 +41,7 @@ namespace Tobi.Plugin.NavigationPane.Search
         public static readonly DependencyProperty IsMatchProperty =
             DependencyProperty.RegisterAttached("IsMatch", typeof(bool), typeof(SearchOperations), new UIPropertyMetadata(false));
     }
-    public class SearchTermConverter : IMultiValueConverter
+    public class SearchTermConverter : MarkupExtension, IMultiValueConverter
     {
         #region IMultiValueConverter Members
 
@@ -60,5 +61,10 @@ namespace Tobi.Plugin.NavigationPane.Search
         }
 
         #endregion
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 }

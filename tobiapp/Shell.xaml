@@ -9,15 +9,15 @@
     
     Topmost="False"
     
-    Height="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellHeight, Mode=TwoWay}"
-    Width="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellWidth, Mode=TwoWay}"
+    WindowStartupLocation="Manual"
     
-    Left="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellLeft, Mode=TwoWay}"
-    Top="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellTop, Mode=TwoWay}"
+    Height="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellSize.Height, Mode=TwoWay}"
+    Width="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellSize.Width, Mode=TwoWay}"
+    
+    Left="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellPosition.X, Mode=TwoWay}"
+    Top="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellPosition.Y, Mode=TwoWay}"
     
     WindowState="{Binding Source={x:Static Properties:Settings.Default}, Path=WindowShellFullScreen, Converter={XAML:WindowStateFullScreenConverter}, Mode=TwoWay}"
-    
-    WindowStartupLocation="CenterScreen"
     
     Closing="OnClosing"
     Loaded="OnWindowLoaded"

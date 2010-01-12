@@ -22,7 +22,7 @@
              http://msdn2.microsoft.com/en-us/library/ms742173(VS.85).aspx
              for the default Stles that the ScrollViewer has out of the box
          -->
-    <XAML:BoolToOppositeBoolConverter x:Key="oppositeConverter" />
+    <!-- XAML:BoolToOppositeBoolConverter x:Key="oppositeConverter" / -->
     <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
 
     <SolidColorBrush x:Key="HorizontalNormalBrush" Color="blue" />
@@ -422,7 +422,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   VerticalAlignment="Stretch"
                   ScrollChanged="OnWaveFormScrollChanged"
                   
-            IsEnabled="{Binding IsWaveFormLoading, Converter={StaticResource oppositeConverter}}">
+            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}">
 
       <Canvas x:Name="WaveFormCanvas"
               SizeChanged="OnWaveFormCanvasSizeChanged"
@@ -437,7 +437,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   HorizontalAlignment="Left"
               SnapsToDevicePixels="True"
               
-            IsEnabled="{Binding IsWaveFormLoading, Converter={StaticResource oppositeConverter}}">
+            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}">
 
 
         <Image x:Name="WaveFormImage"
@@ -751,7 +751,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             LargeChange="500"
             SmallChange="200"
             Margin="3"
-            IsEnabled="{Binding IsWaveFormLoading, Converter={StaticResource oppositeConverter}}"/>
+            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"/>
 
   </UI:WrapPanelLastChildFill>
 

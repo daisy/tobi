@@ -12,6 +12,8 @@ using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using Tobi.Properties;
 using Application = System.Windows.Application;
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 namespace Tobi
 {
@@ -53,8 +55,8 @@ namespace Tobi
         [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IUrakawaSession m_UrakawaSession;
 
-        [Import(typeof(ISettings), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        private ISettings m_Settings;
+        [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private ISettingsAggregator m_SettingsAggregator;
 
 #pragma warning restore 649
 
@@ -96,7 +98,7 @@ namespace Tobi
         private bool m_SettingsDone;
         private void trySettings()
         {
-            if (!m_SettingsDone && m_Settings != null)
+            if (!m_SettingsDone && m_SettingsAggregator != null)
             {
                 //TODO: override local defaults specified in XAML (immutable application settings) using values provided by the loaded plugins, or by user settings.
                 //Height = Settings.Default.WindowShellHeight;
@@ -213,7 +215,9 @@ namespace Tobi
             //    Settings.Default.WindowShellFullScreen = false;
             //}
 
-            Settings.Default.Save();
+            //Settings.Default.Save();
+
+            m_SettingsAggregator.SaveAll();
         }
 
         protected void OnClosing(object sender, CancelEventArgs e)

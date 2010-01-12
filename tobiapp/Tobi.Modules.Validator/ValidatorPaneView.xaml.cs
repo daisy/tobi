@@ -2,6 +2,7 @@
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Windows.Markup;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
 using Tobi.Common.Validation;
@@ -72,7 +73,7 @@ namespace Tobi.Plugin.Validator
         }
     }
 
-    public class SeverityConverter : IValueConverter
+    public class SeverityConverter : MarkupExtension, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -85,6 +86,11 @@ namespace Tobi.Plugin.Validator
         {
             throw new NotImplementedException
                 ("NO !");
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 }

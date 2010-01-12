@@ -3,9 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:Validator="clr-namespace:Tobi.Plugin.Validator">
-  <DockPanel.Resources>
+  <!-- DockPanel.Resources>
     <Validator:SeverityConverter x:Key="SeverityConverter"/>
-  </DockPanel.Resources>
+  </DockPanel.Resources -->
   <!--<Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>-->
   <ListBox
     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -24,7 +24,7 @@
         <Setter Property="FontWeight" Value="Normal" />
 
         <Style.Triggers>
-          <DataTrigger Binding="{Binding Severity, Converter={StaticResource SeverityConverter}}" Value="True">
+          <DataTrigger Binding="{Binding Severity, Converter={Validator:SeverityConverter}}" Value="True">
             <Setter Property="FontWeight" Value="Bold" />
           </DataTrigger>
         </Style.Triggers>
