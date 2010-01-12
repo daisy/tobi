@@ -25,25 +25,13 @@ namespace Tobi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("800")]
-        public double WindowShellWidth {
+        [global::System.Configuration.DefaultSettingValueAttribute("800, 600")]
+        public global::System.Drawing.Size WindowShellSize {
             get {
-                return ((double)(this["WindowShellWidth"]));
+                return ((global::System.Drawing.Size)(this["WindowShellSize"]));
             }
             set {
-                this["WindowShellWidth"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("600")]
-        public double WindowShellHeight {
-            get {
-                return ((double)(this["WindowShellHeight"]));
-            }
-            set {
-                this["WindowShellHeight"] = value;
+                this["WindowShellSize"] = value;
             }
         }
         
@@ -61,25 +49,13 @@ namespace Tobi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public double WindowShellLeft {
+        [global::System.Configuration.DefaultSettingValueAttribute("10, 10")]
+        public global::System.Drawing.Point WindowShellPosition {
             get {
-                return ((double)(this["WindowShellLeft"]));
+                return ((global::System.Drawing.Point)(this["WindowShellPosition"]));
             }
             set {
-                this["WindowShellLeft"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public double WindowShellTop {
-            get {
-                return ((double)(this["WindowShellTop"]));
-            }
-            set {
-                this["WindowShellTop"] = value;
+                this["WindowShellPosition"] = value;
             }
         }
     }

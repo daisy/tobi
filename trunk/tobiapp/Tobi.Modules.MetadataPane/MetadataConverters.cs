@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Markup;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa.metadata;
 using System.Collections.ObjectModel;
@@ -11,7 +12,7 @@ namespace Tobi.Plugin.MetadataPane
 {
     //all classes here represent value converters used by XAML
 
-    public class IsNotRequiredOccurrenceConverter : IValueConverter
+    public class IsNotRequiredOccurrenceConverter : MarkupExtension, IValueConverter
     {
         //return false if required
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -39,9 +40,14 @@ namespace Tobi.Plugin.MetadataPane
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
-    
-    public class OccurrenceDescriptionConverter : IValueConverter
+
+    public class OccurrenceDescriptionConverter : MarkupExtension, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -58,6 +64,11 @@ namespace Tobi.Plugin.MetadataPane
         {
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 
@@ -87,7 +98,7 @@ namespace Tobi.Plugin.MetadataPane
     //    }
     //}
 
-    public class DescriptiveErrorTextConverter : IMultiValueConverter
+    public class DescriptiveErrorTextConverter : MarkupExtension, IMultiValueConverter
     {
         private const string NoErrors = "None";
         //Expected: NotifyingMetadataItem and list of ValidationItems
@@ -117,9 +128,14 @@ namespace Tobi.Plugin.MetadataPane
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
-    
-    public class LowerCaseConverter : IValueConverter
+
+    public class LowerCaseConverter : MarkupExtension, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -132,9 +148,14 @@ namespace Tobi.Plugin.MetadataPane
             return !(value is string) ? null : ((string) value).ToLower();
         
         }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 
-    public class AvailableMetadataNamesConverter : IMultiValueConverter
+    public class AvailableMetadataNamesConverter : MarkupExtension, IMultiValueConverter
     {
         //append values[1] to the list in values[0]
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -158,9 +179,14 @@ namespace Tobi.Plugin.MetadataPane
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 
-    public class FullDescriptionConverter : IMultiValueConverter
+    public class FullDescriptionConverter : MarkupExtension, IMultiValueConverter
     {
         //concatenate values[0] and values[1]
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -177,9 +203,14 @@ namespace Tobi.Plugin.MetadataPane
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
         }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 
-    public class PrimaryIdentifierConverter : IValueConverter
+    public class PrimaryIdentifierConverter : MarkupExtension, IValueConverter
     {
         //return Visible if the item is a candidate for being the primary identifier
         //else return Hidden
@@ -201,6 +232,11 @@ namespace Tobi.Plugin.MetadataPane
         {
             throw new NotImplementedException
                 ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
     

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -6,8 +7,8 @@ using Tobi.Common;
 
 namespace Tobi.Plugin.Settings
 {
-    [Export(typeof(ISettings)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class Settings : ISettings
+    [Export(typeof(ISettingsAggregator)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class SettingsAggregator : ISettingsAggregator
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -25,7 +26,7 @@ namespace Tobi.Plugin.Settings
         public readonly IEnumerable<ISettingsProvider> m_SettingsProviders;
 
         [ImportingConstructor]
-        public Settings(
+        public SettingsAggregator(
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
             [ImportMany(typeof(ISettingsProvider), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
@@ -35,6 +36,14 @@ namespace Tobi.Plugin.Settings
             m_Logger = logger;
 
             m_SettingsProviders = settingsProviders;
+        }
+
+        public void SaveAll()
+        {
+            foreach (var settingsProvider in m_SettingsProviders)
+            {
+                settingsProvider.Settings.Save();
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Configuration;
 using Tobi.Common;
 
@@ -31,20 +33,15 @@ namespace Tobi.Properties {
     internal sealed partial class Settings {
         
         public Settings() {
-            // // To add event handlers for saving and changing settings, uncomment the lines below:
-            //
-            // this.SettingChanging += this.SettingChangingEventHandler;
-            //
-            // this.SettingsSaving += this.SettingsSavingEventHandler;
-            //
+            PropertyChanged +=new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
         }
-        
-        private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e) {
-            // Add code to handle the SettingChangingEvent event here.
-        }
-        
-        private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e) {
-            // Add code to handle the SettingsSaving event here.
+        //~Settings()
+        //{
+        //    Save();
+        //}
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //TODO: 
         }
     }
 }

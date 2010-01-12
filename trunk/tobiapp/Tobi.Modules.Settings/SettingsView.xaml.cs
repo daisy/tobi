@@ -68,6 +68,7 @@ namespace Tobi.Plugin.Settings
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            int debug = 1;
             //e.PropertyName
         }
     }

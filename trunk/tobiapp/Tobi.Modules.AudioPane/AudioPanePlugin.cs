@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Modularity;
 using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.UI;
 

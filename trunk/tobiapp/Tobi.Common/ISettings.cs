@@ -7,8 +7,9 @@ namespace Tobi.Common
         ApplicationSettingsBase Settings { get; }
     }
 
-    public interface ISettings
+    public interface ISettingsAggregator
     {
         //IEnumerable<ApplicationSettingsBase> Settings { get; }
+        void SaveAll();
     }
 }
