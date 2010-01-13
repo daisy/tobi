@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Tobi.Properties {
+namespace Tobi {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
