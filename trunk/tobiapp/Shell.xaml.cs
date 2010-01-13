@@ -100,23 +100,6 @@ namespace Tobi
         {
             if (!m_SettingsDone && m_SettingsAggregator != null)
             {
-                Point size1 = Settings.Default.WindowShellPosition;
-                Point size2 = (Point)Settings.Default.GetPreviousVersion("WindowShellPosition");
-                Settings.Default.Upgrade();
-                Point size3 = Settings.Default.WindowShellPosition;
-
-                //TODO: override local defaults specified in XAML (immutable application settings) using values provided by the loaded plugins, or by user settings.
-                //Height = Settings.Default.WindowShellHeight;
-                //Width = Settings.Default.WindowShellWidth;
-
-                //Left = Settings.Default.WindowShellLeft;
-                //Top = Settings.Default.WindowShellTop;
-
-                //if (Settings.Default.WindowShellFullScreen)
-                //{
-                //    WindowState = WindowState.Maximized;
-                //}
-
                 m_SettingsDone = true;
 
                 m_Logger.Log(@"setings applied to Shell Window", Category.Debug, Priority.Medium);

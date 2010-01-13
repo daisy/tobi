@@ -43,23 +43,23 @@ namespace Tobi.Plugin.Settings
 
             foreach (var settingsProvider in SettingsProviders)
             {
-                //SettingsPropertyCollection col = settingsProvider.Settings.Properties;
-                //IEnumerator enume = col.GetEnumerator();
-                //while (enume.MoveNext())
-                //{
-                //    var current = (SettingsProperty)enume.Current;
-                //    SettingsExpanded.Add(current.Name + " = " + current.DefaultValue);
-                //}
+                SettingsPropertyCollection col1 = settingsProvider.Settings.Properties;
+                IEnumerator enume1 = col1.GetEnumerator();
+                while (enume1.MoveNext())
+                {
+                    var current = (SettingsProperty)enume1.Current;
+                    SettingsExpanded.Add((current.IsReadOnly ? "[readonly] " : "") + current.Name + " = " + settingsProvider.Settings[current.Name] + "(" + current.DefaultValue + ") [" + current.PropertyType + "] ");
+                }
 
                 settingsProvider.Settings.PropertyChanged += Settings_PropertyChanged;
 
-                SettingsPropertyValueCollection col2 = settingsProvider.Settings.PropertyValues;
-                IEnumerator enume2 = col2.GetEnumerator();
-                while (enume2.MoveNext())
-                {
-                    var current = (SettingsPropertyValue)enume2.Current;
-                    SettingsExpanded.Add(current.Name + " = " + current.PropertyValue);
-                }
+                //SettingsPropertyValueCollection col2 = settingsProvider.Settings.PropertyValues;
+                //IEnumerator enume2 = col2.GetEnumerator();
+                //while (enume2.MoveNext())
+                //{
+                //    var current = (SettingsPropertyValue)enume2.Current;
+                //    SettingsExpanded.Add(current.Name + " = " + current.PropertyValue);
+                //}
             }
 
             DataContext = SettingsExpanded;

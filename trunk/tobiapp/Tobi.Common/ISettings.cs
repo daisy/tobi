@@ -10,6 +10,9 @@ namespace Tobi.Common
     public interface ISettingsAggregator
     {
         //IEnumerable<ApplicationSettingsBase> Settings { get; }
+
+        //void UpgradeAll();
+
         void SaveAll();
     }
 }
