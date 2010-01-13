@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using Tobi.Common;
 
-namespace Tobi.Properties {
+namespace Tobi {
 
     [Export(typeof(ISettingsProvider)), PartCreationPolicy(CreationPolicy.Shared)]
     public class SettingsProvider : ISettingsProvider, IPartImportsSatisfiedNotification
@@ -21,7 +20,7 @@ namespace Tobi.Properties {
 
         public ApplicationSettingsBase Settings
         {
-            get { return Properties.Settings.Default; }
+            get { return Tobi.Settings.Default; }
         }
     }
     

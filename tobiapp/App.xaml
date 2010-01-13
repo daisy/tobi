@@ -1,11 +1,11 @@
 ﻿<Application x:Class="Tobi.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Properties="clr-namespace:Tobi.Properties" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" Startup="OnApplicationStartup"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Properties="clr-namespace:Tobi.Properties" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:Tobi="clr-namespace:Tobi" Startup="OnApplicationStartup"
              ShutdownMode="OnExplicitShutdown">
 
   <Application.Resources>
     <ResourceDictionary>
-      <Properties:Settings x:Key="Settings"/>
+      <Tobi:Settings x:Key="Settings"/>
       <!-- XAML:WindowStateFullScreenConverter x:Key="WindowStateFullScreenConverter" / -->
       
       <ResourceDictionary.MergedDictionaries>
