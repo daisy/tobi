@@ -5,17 +5,19 @@
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:Properties="clr-namespace:Tobi.Properties" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:Tobi="clr-namespace:Tobi" ResizeMode="CanResizeWithGrip"
         
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    
     Title="{Binding Path=WindowTitle}"
     
     Topmost="False"
     
     WindowStartupLocation="Manual"
     
-    Height="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Height, Mode=TwoWay}"
-    Width="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Width, Mode=TwoWay}"
+    Height="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellHeight, Mode=TwoWay}"
+    Width="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellWidth, Mode=TwoWay}"
     
-    Left="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellPosition.X, Mode=TwoWay}"
-    Top="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellPosition.Y, Mode=TwoWay}"
+    Left="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellLeft, Mode=TwoWay}"
+    Top="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellTop, Mode=TwoWay}"
     
     WindowState="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellFullScreen, Converter={XAML:WindowStateFullScreenConverter}, Mode=TwoWay}"
     
@@ -24,11 +26,15 @@
         
     x:Name="MainWindow"
         
-    DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
    >
-
+<!-- 
+    Height="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Height, Mode=TwoWay}"
+    Width="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Width, Mode=TwoWay}"
+    
+    Left="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellPosition.X, Mode=TwoWay}"
+    Top="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellPosition.Y, Mode=TwoWay}"
+    -->
   <!-- Width="{x:Static Common:Sizes.DefaultWindowWidth}"-->
   <!-- Height="{x:Static Common:Sizes.DefaultWindowHeight}" -->
   <!--Title="{Binding Path=WindowTitle}" -->
