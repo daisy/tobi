@@ -21,6 +21,8 @@ namespace Tobi.Common
         public const string MenuBar_Navigation = UserInterfaceStrings.Menu_Navigation;
         public const string MenuBar_Magnification = UserInterfaceStrings.Menu_Magnification;
 
+        public const string MenuBar_System = UserInterfaceStrings.Menu_System;
+
         public const string StatusBar = "StatusBar";
         public const string ToolBars = "ToolBars";
         public const string DocumentPane = "DocumentPane";

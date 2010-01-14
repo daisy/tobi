@@ -41,7 +41,7 @@ AlternationCount="2"
       </ToolTip -->
 
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
-        <TextBox Text="{Binding Value, Converter={Settings:TextToDoubleConverter}, Mode=TwoWay}"/>
+        <TextBox Text="{Binding Value, Converter={Settings:TextToDoubleConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=False, ValidatesOnExceptions=True}"/>
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
@@ -49,7 +49,7 @@ AlternationCount="2"
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
-        <TextBox Text="{Binding Value, Mode=OneWay}"/>
+        <TextBlock Text="{Binding Value, Mode=OneWay}"/>
       </DataTemplate>
       
       <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>

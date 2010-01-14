@@ -172,9 +172,10 @@ namespace Tobi.Common
         public const string Menu_Addins = "_Add-in manager";
         public const string Menu_Logging = "_Log window";
 
-        public const string Menu_Focus = "_Focus"; 
+        public const string Menu_Focus = "_Focus";
         public const string Menu_View = "_View";
         public const string Menu_Magnification = "Ma_gnification";
+        public const string Menu_System = "_System";
 
         public const string Menu_ToolBars = "_Tool bars"; // TODO: move this language resource in its own module (ToolBarsModule)
         public const string Menu_StatusBar = "_Status bar"; // TODO: move this language resource in its own module (StatusBarModule)
@@ -253,6 +254,15 @@ namespace Tobi.Common
         public const string ShowLogFilePath = "DEBUG: _Where is ["+ LOG_FILE_NAME+ "] ?";
         public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
         public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
+
+        public const string OpenTobiFolder = "Browse application folder";
+        public const string OpenTobiFolder_ = "Open a file browser where the Tobi.exe application is run from.";
+        public static KeyGesture OpenTobiFolder_KEYS = new KeyGesture(Key.F2, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
+
+        public const string OpenTobiSettingsFolder = "Browse settings folder";
+        public const string OpenTobiSettingsFolder_ = "Open a file browser where the Tobi user settings are stored.";
+        public static KeyGesture OpenTobiSettingsFolder_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
+        
 
         public const string Help = "_Help";
         public const string Help_ = "Get help";
