@@ -14,16 +14,16 @@ namespace Tobi.Common._UnusedCode
                                                      new FrameworkPropertyMetadata(typeof(WatermarkTextBox)));
         }
 
-        public object Watermark
+        public string Watermark
         {
-            get { return (object)GetValue(WatermarkProperty); }
+            get { return (string)GetValue(WatermarkProperty); }
             set { SetValue(WatermarkProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Watermark.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WatermarkProperty = DependencyProperty.Register(
             "Watermark",
-            typeof(object),
+            typeof(string),
             typeof(WatermarkTextBox),
             new UIPropertyMetadata(null));
     }

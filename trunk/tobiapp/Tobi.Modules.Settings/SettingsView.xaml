@@ -2,10 +2,14 @@
            x:Class="Tobi.Plugin.Settings.SettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-  <TextBox Text="search" DockPanel.Dock="Top"/>
-  
+  <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,4">
+    <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+    <_UnusedCode:WatermarkTextBox Watermark="search keywords"
+                                  HorizontalAlignment="Stretch"/>
+  </DockPanel>
+
   <UI:SortableListView
     
            ScrollViewer.CanContentScroll="True"
@@ -50,7 +54,7 @@ AlternationCount="2"
             <Style TargetType="{x:Type TextBox}">
               <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="true">
-                  
+
                   <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
                   <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
                           Path=(Validation.Errors).CurrentItem, 
@@ -73,7 +77,7 @@ AlternationCount="2"
       <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
         <TextBlock Text="{Binding Value, Mode=OneWay}"/>
       </DataTemplate>
-      
+
       <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>
     </ListView.Resources>
 
@@ -131,7 +135,7 @@ AlternationCount="2"
       <Style TargetType="{x:Type ListViewItem}">
 
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        
+
         <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
 
         <Style.Triggers>
@@ -153,13 +157,13 @@ AlternationCount="2"
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
   ItemsSource="{Binding Path=., Mode=OneWay}"
   -->
-    <!--DisplayMemberPath="Message"   Source=., Path=SettingsExpanded, Mode=OneWay  -->
+  <!--DisplayMemberPath="Message"   Source=., Path=SettingsExpanded, Mode=OneWay  -->
   <!-- ListBox.ItemTemplate>
       <DataTemplate>
         <TextBlock Text="{Binding Path=., Mode=OneWay}"/>
       </DataTemplate>
     </ListBox.ItemTemplate -->
-    <!-- ListBox.ItemContainerStyle>
+  <!-- ListBox.ItemContainerStyle>
       <Style TargetType="{x:Type ListBoxItem}">
 
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
