@@ -193,6 +193,20 @@ c.Execute();
             {
                 logException(ex.InnerException);
             }
+
+            var compEx = ex as CompositionException;
+            if (compEx != null)
+            {
+                foreach (var error in compEx.Errors)
+                {
+                    LOGGER.Log(error.Description, Category.Exception, Priority.High);
+
+                    if (error.Exception != null)
+                    {
+                        logException(error.Exception);
+                    }
+                }
+            }
         }
 
         public static void handleException(Exception ex, bool doExit)
