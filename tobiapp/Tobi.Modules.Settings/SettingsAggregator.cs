@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
@@ -45,6 +46,18 @@ namespace Tobi.Plugin.Settings
             MarkAllAsChanged();
 
             SaveAll();
+        }
+
+        public IEnumerable<ApplicationSettingsBase> Settings
+        {
+            get
+            {
+                foreach (var settingsProvider in m_SettingsProviders)
+                {
+                    yield return settingsProvider.Settings;
+                }
+                yield break;
+            }
         }
 
         public void SaveAll()

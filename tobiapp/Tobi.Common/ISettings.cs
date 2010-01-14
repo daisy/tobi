@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
 
 namespace Tobi.Common
 {
@@ -9,7 +10,7 @@ namespace Tobi.Common
 
     public interface ISettingsAggregator
     {
-        //IEnumerable<ApplicationSettingsBase> Settings { get; }
+        IEnumerable<ApplicationSettingsBase> Settings { get; }
 
         //void UpgradeAll();
 
