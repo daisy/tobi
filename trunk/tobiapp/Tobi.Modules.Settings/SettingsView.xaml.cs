@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using System.Configuration;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 
 namespace Tobi.Plugin.Settings
 {
@@ -24,33 +25,42 @@ namespace Tobi.Plugin.Settings
         private readonly ILoggerFacade m_Logger;
         private readonly IShellView m_ShellView;
 
-        public readonly IEnumerable<ISettingsProvider> SettingsProviders;
+        public readonly ISettingsAggregator m_SettingsAggregator;
 
-        public List<string> SettingsExpanded = new List<string>();
+        private List<SettingWrapper> m_AggregatedSettings = new List<SettingWrapper>();
+        public List<SettingWrapper> AggregatedSettings
+        {
+            get { return m_AggregatedSettings; }
+        }
 
         [ImportingConstructor]
         public SettingsView(
             ILoggerFacade logger,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
-            [ImportMany(typeof(ISettingsProvider), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
-            IEnumerable<ISettingsProvider> settingsProviders)
+            [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            ISettingsAggregator settingsAggregator)
         {
             m_Logger = logger;
             m_ShellView = shellView;
 
-            SettingsProviders = settingsProviders;
+            m_SettingsAggregator = settingsAggregator;
 
-            foreach (var settingsProvider in SettingsProviders)
+            foreach (var settingsProvider in m_SettingsAggregator.Settings)
             {
-                settingsProvider.Settings.PropertyChanged += Settings_PropertyChanged;
+                settingsProvider.PropertyChanged += Settings_PropertyChanged;
 
-                SettingsPropertyCollection col1 = settingsProvider.Settings.Properties;
+                SettingsPropertyCollection col1 = settingsProvider.Properties;
                 IEnumerator enume1 = col1.GetEnumerator();
                 while (enume1.MoveNext())
                 {
                     var current = (SettingsProperty)enume1.Current;
-                    SettingsExpanded.Add((current.IsReadOnly ? "[readonly] " : "") + current.Name + " = " + settingsProvider.Settings[current.Name] + "(" + current.DefaultValue + ") [" + current.PropertyType + "] ");
+                    AggregatedSettings.Add(new SettingWrapper(settingsProvider, current));
+
+                    //(current.IsReadOnly ? "[readonly] " : "")
+                    //+ current.Name + " = " + settingsProvider.Settings[current.Name]
+                    // + "(" + current.DefaultValue + ")
+                    // [" + current.PropertyType + "] ");
                 }
             }
 
@@ -67,14 +77,93 @@ namespace Tobi.Plugin.Settings
             //    }
             //}
 
-            DataContext = SettingsExpanded;
+            //DataContext = AggregatedSettings;
+
             InitializeComponent();
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            int debug = 1;
-            //e.PropertyName
+            var settingBase = (ApplicationSettingsBase) sender;
+            string name = e.PropertyName;
+
+            foreach (var aggregatedSetting in AggregatedSettings)
+            {
+                if (aggregatedSetting.Name == name
+                    && aggregatedSetting.m_settingBase == settingBase)
+                {
+                    aggregatedSetting.NotifyValueChanged();
+                }
+            }
+        }
+    }
+
+    public class SettingWrapper : INotifyPropertyChangedEx
+    {
+        public readonly ApplicationSettingsBase m_settingBase;
+        public readonly SettingsProperty m_settingProperty;
+
+        public SettingWrapper(ApplicationSettingsBase settingBase, SettingsProperty settingProperty)
+        {
+            m_settingBase = settingBase;
+            m_settingProperty = settingProperty;
+
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
+        }
+
+        public string Name
+        {
+            get
+            {
+                return m_settingProperty.Name;
+            }
+        }
+
+        public object DefaultValue
+        {
+            get
+            {
+                return m_settingProperty.DefaultValue;
+            }
+        }
+
+        public Type ValueType
+        {
+            get
+            {
+                return m_settingProperty.PropertyType;
+            }
+        }
+
+        public object Value
+        {
+            get
+            {
+                return m_settingBase[Name];
+            }
+            set
+            {
+                m_settingBase[Name] = value;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        public void NotifyValueChanged()
+        {
+            m_PropertyChangeHandler.RaisePropertyChanged(() => Value);
         }
     }
 }

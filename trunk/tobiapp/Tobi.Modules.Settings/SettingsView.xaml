@@ -1,17 +1,117 @@
 ﻿<DockPanel LastChildFill="True"
            x:Class="Tobi.Plugin.Settings.SettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <ListBox
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <TextBox Text="search" DockPanel.Dock="Top"/>
+  
+  <UI:SortableListView
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+    ItemsSource="{Binding Path=AggregatedSettings, Mode=OneWay}"
+           
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+AlternationCount="2"
+            >
+
+    <!-- ListView.Resources>
+      <ToolTip x:Key="imageIconTooltipp"
+         DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               
+               >
+        <ContentControl
+                          Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
+                            
+                            Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
+                            
+                Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
+
+      </ToolTip>
+
+    </ListView.Resources -->
+
+    <ListView.View>
+      <GridView AllowsColumnReorder="true">
+
+        <!-- GridViewColumn Header="Icon">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+
+              <ContentControl Focusable="False"
+                                Width="{Binding Path=IconProvider.IconWidth_Large}"
+                            
+                                  Height="{Binding Path=IconProvider.IconHeight_Large}"
+                            
+                                  Content="{Binding Path=IconProvider.IconLarge}"
+                                                     
+                      ToolTip="{StaticResource imageIconTooltipp}"
+                              Margin="2, 4, 2, 4">
+              </ContentControl>
+            </DataTemplate>
+
+          </GridViewColumn.CellTemplate>
+
+        </GridViewColumn -->
+
+
+        <GridViewColumn Header="Name"
+                        UI:SortableListView.SortPropertyName="Name"
+                        DisplayMemberBinding="{Binding Name}"/>
+
+        <GridViewColumn Header="Value"
+                        DisplayMemberBinding="{Binding Value}"/>
+        
+        <GridViewColumn Header="Default"
+                        DisplayMemberBinding="{Binding DefaultValue}"/>
+
+      </GridView>
+    </ListView.View>
+
+    <ListView.ItemContainerStyle>
+
+      <Style TargetType="{x:Type ListViewItem}">
+
+        <!-- Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription}"/ -->
+
+        <Style.Triggers>
+          <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+    </ListView.ItemContainerStyle>
+  </UI:SortableListView>
+
+
+
+
+
+
+  <!-- ListBox
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
   ItemsSource="{Binding Path=., Mode=OneWay}"
-  >
-    <!--DisplayMemberPath="Message"   Source=., Path=SettingsExpanded, Mode=OneWay  --> 
-    <ListBox.ItemTemplate>
+  -->
+    <!--DisplayMemberPath="Message"   Source=., Path=SettingsExpanded, Mode=OneWay  -->
+  <!-- ListBox.ItemTemplate>
       <DataTemplate>
         <TextBlock Text="{Binding Path=., Mode=OneWay}"/>
       </DataTemplate>
-    </ListBox.ItemTemplate>
+    </ListBox.ItemTemplate -->
     <!-- ListBox.ItemContainerStyle>
       <Style TargetType="{x:Type ListBoxItem}">
 
@@ -25,5 +125,5 @@
         </Style.Triggers>
       </Style>
     </ListBox.ItemContainerStyle  -->
-  </ListBox>
+  <!-- /ListBox -->
 </DockPanel>
