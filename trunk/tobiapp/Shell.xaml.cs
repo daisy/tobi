@@ -10,10 +10,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
-using Tobi.Properties;
 using Application = System.Windows.Application;
-using Point = System.Drawing.Point;
-using Size = System.Drawing.Size;
 
 namespace Tobi
 {

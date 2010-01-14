@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Deployment.Application;
 using System.Diagnostics;
 using System.Globalization;
@@ -198,9 +199,9 @@ c.Execute();
         {
             if (ex == null)
                 return;
-#if DEBUG
-            Debugger.Break();
-#endif
+//#if DEBUG
+//            Debugger.Break();
+//#endif
 
             logException(ex);
 
@@ -237,6 +238,10 @@ c.Execute();
             panel.Children.Add(labelMsg);
 
 
+            //var exMessage = UserInterfaceStrings.UnhandledException;
+            //exMessage += Environment.NewLine;
+            //exMessage += @"===============";
+            //exMessage += Environment.NewLine;
             var exMessage = ex.Message;
             Exception exinnerd = ex;
             while (exinnerd.InnerException != null)
@@ -252,8 +257,46 @@ c.Execute();
                 exinnerd = exinnerd.InnerException;
             }
 
+            var compEx = ex as CompositionException;
+
+            if (compEx != null)
+            {
+                foreach (var error in compEx.Errors)
+                {
+                    exMessage += Environment.NewLine;
+                    exMessage += @"======";
+                    exMessage += Environment.NewLine;
+                    exMessage += error.Description;
+
+                    if (error.Exception != null)
+                    {
+                        exMessage += Environment.NewLine;
+                        exMessage += @"======";
+                        exMessage += Environment.NewLine;
+                        exMessage += error.Exception.Message;
+
+                        exinnerd = error.Exception;
+                        while (exinnerd.InnerException != null)
+                        {
+                            if (!String.IsNullOrEmpty(exinnerd.InnerException.Message))
+                            {
+                                exMessage += Environment.NewLine;
+                                exMessage += @"======";
+                                exMessage += Environment.NewLine;
+                                exMessage += exinnerd.InnerException.Message;
+                            }
+
+                            exinnerd = exinnerd.InnerException;
+                        }
+                    }
+                }
+            }
+
             var labelSummary = new TextBoxReadOnlyCaretVisible(exMessage)
             {
+                FontWeight = FontWeights.ExtraBlack,
+                //Margin = margin,
+
                 BorderBrush = null,
                 BorderThickness = new Thickness(0)
             };
@@ -261,8 +304,11 @@ c.Execute();
             var scroll = new ScrollViewer
             {
                 Content = labelSummary,
-                Margin = margin,
+                //Margin = margin,
+
                 BorderBrush = SystemColors.ControlDarkBrush,
+                //BorderBrush = Brushes.Red,
+
                 BorderThickness = new Thickness(1),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
@@ -288,6 +334,38 @@ c.Execute();
                 }
 
                 exinner = exinner.InnerException;
+            }
+
+            if (compEx != null)
+            {
+                foreach (var error in compEx.Errors)
+                {
+                    if (error.Exception != null)
+                    {
+                        exStackTrace += Environment.NewLine;
+                        exStackTrace += "=========================";
+                        exStackTrace += Environment.NewLine;
+                        exStackTrace += "-------------------------";
+                        exStackTrace += Environment.NewLine;
+                        exStackTrace += error.Exception.StackTrace;
+
+                        exinner = error.Exception;
+                        while (exinner.InnerException != null)
+                        {
+                            if (!String.IsNullOrEmpty(exinner.InnerException.StackTrace))
+                            {
+                                exStackTrace += Environment.NewLine;
+                                exStackTrace += "=========================";
+                                exStackTrace += Environment.NewLine;
+                                exStackTrace += "-------------------------";
+                                exStackTrace += Environment.NewLine;
+                                exStackTrace += exinner.InnerException.StackTrace;
+                            }
+
+                            exinner = exinner.InnerException;
+                        }
+                    }
+                }
             }
 
             var stackTrace = new TextBoxReadOnlyCaretVisible(exStackTrace)
@@ -341,8 +419,8 @@ c.Execute();
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 500, 200,
-                                                   details, 130);
+                                                   false, 500, 250,
+                                                   (String.IsNullOrEmpty(exStackTrace) ? null : details), 130);
 
             SystemSounds.Exclamation.Play();
             windowPopup.ShowModal();
