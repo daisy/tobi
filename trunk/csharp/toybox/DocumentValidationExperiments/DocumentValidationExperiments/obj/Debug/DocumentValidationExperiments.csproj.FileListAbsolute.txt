@@ -1,5 +1,0 @@
-Z:\Devel\tobi\trunk\csharp\toybox\DocumentValidationExperiments\DocumentValidationExperiments\obj\Debug\ResolveAssemblyReference.cache
-Z:\Devel\tobi\trunk\csharp\toybox\DocumentValidationExperiments\DocumentValidationExperiments\bin\Debug\DocumentValidationExperiments.exe
-Z:\Devel\tobi\trunk\csharp\toybox\DocumentValidationExperiments\DocumentValidationExperiments\bin\Debug\DocumentValidationExperiments.pdb
-Z:\Devel\tobi\trunk\csharp\toybox\DocumentValidationExperiments\DocumentValidationExperiments\obj\Debug\DocumentValidationExperiments.exe
-Z:\Devel\tobi\trunk\csharp\toybox\DocumentValidationExperiments\DocumentValidationExperiments\obj\Debug\DocumentValidationExperiments.pdb
