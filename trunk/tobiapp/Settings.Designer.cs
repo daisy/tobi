@@ -25,13 +25,49 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("800, 600")]
-        public global::System.Drawing.Size WindowShellSize {
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public double WindowShellWidth {
             get {
-                return ((global::System.Drawing.Size)(this["WindowShellSize"]));
+                return ((double)(this["WindowShellWidth"]));
             }
             set {
-                this["WindowShellSize"] = value;
+                this["WindowShellWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public double WindowShellHeight {
+            get {
+                return ((double)(this["WindowShellHeight"]));
+            }
+            set {
+                this["WindowShellHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double WindowShellTop {
+            get {
+                return ((double)(this["WindowShellTop"]));
+            }
+            set {
+                this["WindowShellTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double WindowShellLeft {
+            get {
+                return ((double)(this["WindowShellLeft"]));
+            }
+            set {
+                this["WindowShellLeft"] = value;
             }
         }
         
@@ -44,18 +80,6 @@ namespace Tobi {
             }
             set {
                 this["WindowShellFullScreen"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10, 10")]
-        public global::System.Drawing.Point WindowShellPosition {
-            get {
-                return ((global::System.Drawing.Point)(this["WindowShellPosition"]));
-            }
-            set {
-                this["WindowShellPosition"] = value;
             }
         }
     }

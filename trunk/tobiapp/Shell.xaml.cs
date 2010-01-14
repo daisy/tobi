@@ -92,17 +92,6 @@ namespace Tobi
             //((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
         }
 
-        private bool m_SettingsDone;
-        private void trySettings()
-        {
-            if (!m_SettingsDone && m_SettingsAggregator != null)
-            {
-                m_SettingsDone = true;
-
-                m_Logger.Log(@"setings applied to Shell Window", Category.Debug, Priority.Medium);
-            }
-        }
-
         private bool m_SessionTitleDone;
         private void trySessionWindowTitle()
         {
@@ -181,29 +170,6 @@ namespace Tobi
                 TaskDialogIcon.Information);*/
             m_Exiting = true;
             Application.Current.Shutdown();
-        }
-
-        private void saveSettings()
-        {
-            // NOTE: not needed because of TwoWay Data Binding in the XAML
-            //if (WindowState == WindowState.Maximized)
-            //{
-            //    // Use the RestoreBounds as the current values will be 0, 0 and the size of the screen
-            //    Settings.Default.WindowShellHeight = RestoreBounds.Height;
-            //    Settings.Default.WindowShellWidth = RestoreBounds.Width;
-            //    Settings.Default.WindowShellFullScreen = true;
-            //}
-            //else
-            //{
-            //    Settings.Default.WindowShellHeight = Height;
-            //    Settings.Default.WindowShellWidth = Width;
-            //    Settings.Default.WindowShellFullScreen = false;
-            //}
-
-            if (m_SettingsAggregator != null)
-            {
-                m_SettingsAggregator.SaveAll();
-            }
         }
 
         protected void OnClosing(object sender, CancelEventArgs e)

@@ -126,6 +126,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Shell_Settings.cs" />
     <Compile Include="TobiLoggerFacade.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Command.cs" />
