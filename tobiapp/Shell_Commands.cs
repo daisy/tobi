@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -38,6 +41,8 @@ namespace Tobi
         //public RichDelegateCommand NavPreviousCommand { get; private set; }
 
         public RichDelegateCommand ShowLogFilePathCommand { get; private set; }
+        public RichDelegateCommand OpenTobiFolderCommand { get; private set; }
+        public RichDelegateCommand OpenTobiSettingsFolderCommand { get; private set; }
 
         private void initCommands()
         {
@@ -229,6 +234,49 @@ namespace Tobi
                  () => true);
 
             RegisterRichCommand(ShowLogFilePathCommand);
+            //
+            //
+            OpenTobiFolderCommand = new RichDelegateCommand(
+                UserInterfaceStrings.OpenTobiFolder,
+                UserInterfaceStrings.OpenTobiFolder_,
+                UserInterfaceStrings.OpenTobiFolder_KEYS,
+                null, //LoadTangoIcon(@"help-browser"),
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenTobiFolderCommand", Category.Debug, Priority.Medium);
+
+                    var p = new Process
+                                {
+                                    StartInfo =
+                                        {FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}
+                                };
+                    p.Start();
+                },
+                 () => true);
+
+            RegisterRichCommand(OpenTobiFolderCommand);
+            //
+            OpenTobiSettingsFolderCommand = new RichDelegateCommand(
+                UserInterfaceStrings.OpenTobiSettingsFolder,
+                UserInterfaceStrings.OpenTobiSettingsFolder_,
+                UserInterfaceStrings.OpenTobiSettingsFolder_KEYS,
+                null, //LoadTangoIcon(@"help-browser"),
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenTobiSettingsFolderCommand", Category.Debug, Priority.Medium);
+                    
+                    Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                    string settingsPath = Path.GetDirectoryName(config.FilePath);
+
+                    var p = new Process
+                    {
+                        StartInfo = { FileName = settingsPath }
+                    };
+                    p.Start();
+                },
+                 () => true);
+
+            RegisterRichCommand(OpenTobiSettingsFolderCommand);
             //
             HelpCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Help,
