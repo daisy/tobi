@@ -68,6 +68,14 @@ namespace Tobi.Plugin.Settings
             }
         }
 
+        public void ReloadAll()
+        {
+            foreach (var settingsProvider in m_SettingsProviders)
+            {
+                settingsProvider.Settings.Reload();
+            }
+        }
+
         public void UpgradeAll()
         {
             foreach (var settingsProvider in m_SettingsProviders)

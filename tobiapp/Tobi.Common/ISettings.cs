@@ -15,5 +15,6 @@ namespace Tobi.Common
         //void UpgradeAll();
 
         void SaveAll();
+        void ReloadAll();
     }
 }

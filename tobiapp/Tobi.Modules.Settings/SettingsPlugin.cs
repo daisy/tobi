@@ -43,6 +43,9 @@ namespace Tobi.Plugin.Settings
 
         private readonly SettingsView m_SettingsView;
 
+        public readonly ISettingsAggregator m_SettingsAggregator;
+
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -56,12 +59,16 @@ namespace Tobi.Plugin.Settings
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
             [Import(typeof(SettingsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            SettingsView view)
+            SettingsView view,
+            [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            ISettingsAggregator settingsAggregator)
         {
             m_Logger = logger;
             m_ShellView = shellView;
 
             m_SettingsView = view;
+
+            m_SettingsAggregator = settingsAggregator;
 
             CommandShowSettings = new RichDelegateCommand(
                 "Application preferences",
@@ -149,11 +156,14 @@ namespace Tobi.Plugin.Settings
             m_Logger.Log("SettingsPlugin.ShowDialog", Category.Debug, Priority.Medium);
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic("Application preferences"),
+                                                   UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Preferences),
                                                    m_SettingsView,
-                                                   PopupModalWindow.DialogButtonsSet.Close,
-                                                   PopupModalWindow.DialogButton.Close,
-                                                   true, 700, 400);
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Cancel,
+                                                   false, 300, 400);
+
+            m_SettingsAggregator.SaveAll(); // Not strictly necessary..but just to make double-sure we've got the current settings in persistent storage.
+
             windowPopup.ShowFloating(null);
 
             windowPopup.Closed += (o, args) =>
@@ -162,6 +172,15 @@ namespace Tobi.Plugin.Settings
 
                                           // This line is not strictly necessary, but this way we make sure the CanShowDialog method (CanExecute) is called to refresh the command visual enabled/disabled status.
                                           CommandManager.InvalidateRequerySuggested();
+
+                                          if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+                                          {
+                                              m_SettingsAggregator.SaveAll();
+                                          }
+                                          else
+                                          {
+                                              m_SettingsAggregator.ReloadAll();
+                                          }
                                       };
 
             m_DialogIsShowing = true;
