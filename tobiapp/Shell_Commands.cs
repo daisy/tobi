@@ -241,7 +241,7 @@ namespace Tobi
 
                     throw new NotImplementedException("Functionality not implemented, sorry :(",
                         new ArgumentOutOfRangeException("First Inner exception",
-                            new FileNotFoundException("Third inner exception !")));
+                            new FileNotFoundException("Second inner exception !")));
                 },
                  () => true);
 

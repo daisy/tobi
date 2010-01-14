@@ -30,7 +30,7 @@ namespace Tobi.Common
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
             APP_VERSION = GetVersion();
 
-            UnhandledException = "An unhandled exception occurred, the application is now closing. For more information, see the '" + LOG_FILE_NAME + "' file: [ " + LOG_FILE_PATH + " ].";
+            UnhandledException = "A fatal problem occurred, the application must now close.\nThe full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
         }
         public static readonly string APP_VERSION;
         private static string GetVersion()

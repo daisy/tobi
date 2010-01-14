@@ -16,14 +16,81 @@
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
   </Window.Resources>
+  <!-- LastChildFill="True" -->
   
-    <DockPanel Style="{StaticResource ScaleTransformed}"  LastChildFill="True">
+    <Grid Style="{StaticResource ScaleTransformed}">
 
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <!-- Height="{Binding ElementName=ContentPlaceHolder, Path=Content, Converter={UI:ContentToGridDimConverter}, Mode=OneWay}" -->
+        <RowDefinition>
+          <RowDefinition.Height>
+            <MultiBinding Converter="{UI:ContentToGridDimMultiConverter}" Mode="OneWay">
+              <Binding ElementName="ContentPlaceHolder"
+                       Path="Content" Mode="OneWay"/>
+              <Binding ElementName="DetailsPlaceHolder"
+                       Path="Visibility" Mode="OneWay"/>
+            </MultiBinding>
+          </RowDefinition.Height>
+        </RowDefinition>
+        <RowDefinition>
+          <RowDefinition.Height>
+            <MultiBinding Converter="{UI:ContentToGridDimMultiConverter}" Mode="OneWay">
+              <Binding ElementName="DetailsPlaceHolder"
+                       Path="Content" Mode="OneWay"/>
+              <Binding Path="IsDetailsExpanded" Mode="OneWay"/>
+            </MultiBinding>
+          </RowDefinition.Height>
+      </RowDefinition>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <ContentControl x:Name="ContentPlaceHolder"
+                      Grid.Row="0"
+                    Grid.Column="0"
+                        
+                        
+    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                  AncestorType={x:Type Window}}, Path=.}"
+                        
+                      SnapsToDevicePixels="True"
+                    Margin="8, 8, 8, 0"
+                      
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                    Focusable="False"/>
+
+      <ContentControl x:Name="DetailsPlaceHolder"
+                        
+      Grid.Row="1"
+                    Grid.Column="0"
+                        
+    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                  AncestorType={x:Type Window}}, Path=.}"
+                        
+                      SnapsToDevicePixels="True"
+                  Margin="8, 8, 8, 0"
+                      
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                    Focusable="False"
+                    Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"/>
+
+      <!-- 
+        DockPanel.Dock="Bottom" -->
       <DockPanel
+        
+        Grid.Row="2"
+                      Grid.Column="0"
+        
+                   HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+        
         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                   AncestorType={x:Type Window}}, Path=.}"
         LastChildFill="True"
-        DockPanel.Dock="Bottom"
                  Margin="8, 0, 8, 8"
         >
 
@@ -113,37 +180,8 @@
       
       </StackPanel>
     </DockPanel>
-      <DockPanel 
-        LastChildFill="True"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
-                  AncestorType={x:Type Window}}, Path=.}">
-        <!-- Grid.ColumnDefinitions>
-          <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition Height=".5*"/>
-          <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions -->
+      <!-- LastChildFill="True" -->
+    
 
-        <ContentControl x:Name="ContentPlaceHolder"
-                        SnapsToDevicePixels="True"
-                      Margin="8, 8, 8, 0"
-                         DockPanel.Dock="Top"
-                      Grid.Row="0"
-                      Grid.Column="0"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                      Focusable="False"/>
-
-        <ContentControl x:Name="DetailsPlaceHolder"
-                        SnapsToDevicePixels="True"
-                    Margin="8, 8, 8, 0"
-                      Grid.Row="1"
-                      Grid.Column="0"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                      Focusable="False"
-                      Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"/>
-      </DockPanel>
-    </DockPanel>
+    </Grid>
 </Window>

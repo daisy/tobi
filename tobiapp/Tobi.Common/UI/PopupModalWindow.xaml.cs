@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Media;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -575,6 +579,105 @@ namespace Tobi.Common.UI
         public void RemoveInputBinding(InputBinding inputBinding)
         {
             InputBindings.Remove(inputBinding);
+        }
+    }
+    public class ContentToGridDimMultiConverter : MarkupExtension, IMultiValueConverter
+    {
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (targetType != typeof(GridLength))
+                throw new InvalidOperationException("The target must be a GridLength !");
+
+            if (values.Length < 2)
+            {
+                return null;
+            }
+
+            if (values[0] != null) // && values[0].GetType() == typeof(ScrollViewer)
+            {
+                if (values[1].GetType() == typeof(Boolean))
+                {
+                    if ((Boolean)values[1])
+                        return new GridLength(1.5, GridUnitType.Star);
+                    
+                    return new GridLength(0.0, GridUnitType.Pixel);
+                }
+                if (values[1].GetType() == typeof(Visibility))
+                {
+                    if ((Visibility)values[1] == Visibility.Visible)
+                        return new GridLength(1.0, GridUnitType.Star);
+
+                    return new GridLength(1.0, GridUnitType.Star);
+                }
+            }
+            return GridLength.Auto;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ContentToGridDimConverter : MarkupExtension, IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(GridLength))
+                throw new InvalidOperationException("The target must be a GridLength !");
+
+            if (value.GetType() == typeof(ScrollViewer)) return "*";
+            return "Auto";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException("Convert-back not implemented !");
+        }
+
+        #endregion
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
+    }
+
+    public class NoGridResizePanel : Panel
+    {
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            Size measureSize = new Size(
+                availableSize.Width ==
+                    Double.PositiveInfinity ? 0.0 : availableSize.Width,
+                availableSize.Height ==
+                    Double.PositiveInfinity ? 0.0 : availableSize.Height);
+
+            foreach (UIElement child in Children)
+            {
+                child.Measure(measureSize);
+            }
+            //always return Size(0.0,0.0) so grid will not expand
+            //the cell we are in based on our size
+            return new Size(0.0, 0.0);
+        }
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            //overlay all children on top of each other
+            foreach (UIElement child in Children)
+            {
+                child.Arrange(new Rect(new Point(0.0, 0.0), finalSize));
+            }
+            return finalSize;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Tobi.Common.UI.XAML
             System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(WindowState))
-                throw new InvalidOperationException("The target must be a boolean !");
+                throw new InvalidOperationException("The target must be a WindowState !");
 
             return ((bool)value ? WindowState.Maximized : WindowState.Normal);
         }
