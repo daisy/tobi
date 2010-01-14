@@ -34,11 +34,14 @@
                             <ScrollViewer x:Name="PART_ContentHost"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Microsoft_Windows_Themes:ListBoxChrome>
+                      
                         <TextBlock x:Name="textBlock"
                                    Opacity="0.345"
                                    Text="{TemplateBinding Watermark}"
+                                   Margin="4,0,0,0"
                                    TextWrapping="Wrap"
-                                   Visibility="Hidden" />
+                                   Visibility="Hidden"
+                                   VerticalAlignment="Center"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>
