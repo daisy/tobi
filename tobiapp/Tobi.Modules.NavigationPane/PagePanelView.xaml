@@ -34,15 +34,26 @@
                     xmlns:pres="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
-                    xmlns:search="clr-namespace:Tobi.Plugin.NavigationPane.Search">
+                    xmlns:search="clr-namespace:Tobi.Plugin.NavigationPane.Search" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common">
   <!-- DockPanel.Resources>
         <search:SearchTermConverter x:Key="SearchTermConverter" />
     </DockPanel.Resources -->
-    <TextBox x:Name="SearchBox"
+
+  <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,2">
+    <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+    <_UnusedCode:WatermarkTextBox  x:Name="SearchBox"
+                                   TextChanged="SearchBox_TextChanged"
+                                   Watermark="search keywords"
+                                  HorizontalAlignment="Stretch"/>
+  </DockPanel>
+
+
+  <!-- TextBox x:Name="SearchBox"
              BorderThickness="0"
              HorizontalAlignment="Stretch"
              TextChanged="SearchBox_TextChanged"
-             DockPanel.Dock="Top" />
+             DockPanel.Dock="Top" / -->
+  
 <!--    <ListBox x:Name="ListView" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              DataContext="{Binding Path=ViewModel,
