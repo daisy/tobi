@@ -89,7 +89,7 @@ namespace Tobi.Plugin.Settings
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var settingBase = (ApplicationSettingsBase) sender;
+            var settingBase = (ApplicationSettingsBase)sender;
             string name = e.PropertyName;
 
             foreach (var aggregatedSetting in AggregatedSettings)
@@ -103,7 +103,7 @@ namespace Tobi.Plugin.Settings
         }
     }
 
-    public class SettingWrapper : INotifyPropertyChangedEx
+    public class SettingWrapper : INotifyPropertyChangedEx //, IDataErrorInfo
     {
         public readonly ApplicationSettingsBase m_settingBase;
         public readonly SettingsProperty m_settingProperty;
@@ -153,6 +153,14 @@ namespace Tobi.Plugin.Settings
             }
         }
 
+        public string FullDescription
+        {
+            get
+            {
+                return Name + "=" + Value + " (default: " + DefaultValue + ")";
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {
@@ -170,7 +178,81 @@ namespace Tobi.Plugin.Settings
         {
             m_PropertyChangeHandler.RaisePropertyChanged(() => Value);
         }
+
+        //public string this[string propertyName]
+        //{
+        //    get
+        //    {
+        //        if (propertyName == PropertyChangedNotifyBase.GetMemberName(() => Value))
+        //        {
+        //            if (Value.GetType() == typeof(Double))
+        //            {
+        //                if ((Double)Value < 0.0
+        //                    || (Double)Value > 10000.0)
+        //                return "Invalid screen pixel value";
+        //            }
+        //        }
+
+        //        return null; // no error
+        //    }
+        //}
+
+        //public string Error
+        //{
+        //    get { throw new NotImplementedException(); }
+        //}
     }
+
+    public class DoubleValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var str = value as string;
+            if (String.IsNullOrEmpty(str))
+            {
+                return new ValidationResult(false,
+                  "Value cannot be empty.");
+            }
+
+            double val;
+            if (!Double.TryParse(str, out val))
+            {
+                return new ValidationResult(false,
+                  "Invalid numeric value.");
+            }
+            if (val < 0 || val > 9999)
+            {
+                return new ValidationResult(false,
+                  "Numeric value is out of range [0, 9999].");
+            }
+
+            return new ValidationResult(true, null);
+        }
+    }
+
+    public class ValidationErrorConverter : MarkupExtension, IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var error = value as ValidationError;
+
+            if (error != null)
+                return error.ErrorContent;
+
+            return "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
+    }
+
     public class TextToDoubleConverter : MarkupExtension, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -180,7 +262,14 @@ namespace Tobi.Plugin.Settings
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Double.Parse((string)value);
+            try
+            {
+                return Double.Parse((string)value);
+            }
+            catch
+            {
+                return String.Empty;
+            }
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
@@ -197,7 +286,7 @@ namespace Tobi.Plugin.Settings
             {
                 if (((SettingWrapper)item).ValueType == typeof(Boolean))
                 {
-                    var t1 =  ((ContentPresenter)container).FindResource("SettingEditTemplate_Boolean") as DataTemplate;
+                    var t1 = ((ContentPresenter)container).FindResource("SettingEditTemplate_Boolean") as DataTemplate;
                     return t1;
                 }
                 if (((SettingWrapper)item).ValueType == typeof(Double))

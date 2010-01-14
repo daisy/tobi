@@ -26,22 +26,44 @@ AlternationCount="2"
             >
 
     <ListView.Resources>
-      <!-- ToolTip x:Key="imageIconTooltipp"
+      <ToolTip x:Key="settingTooltip"
          DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
-               
                >
-        <ContentControl
-                          Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
-                            
-                            Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
-                            
-                Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
+        <TextBlock Text="{Binding Path=DataContext.FullDescription, Mode=OneWay}"/>
 
-      </ToolTip -->
+      </ToolTip>
 
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
-        <TextBox Text="{Binding Value, Converter={Settings:TextToDoubleConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=False, ValidatesOnExceptions=True}"/>
+        <TextBox>
+          <TextBox.Text>
+            <Binding Path="Value" Converter="{Settings:TextToDoubleConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
+              <Binding.ValidationRules>
+                <Settings:DoubleValidationRule/>
+              </Binding.ValidationRules>
+            </Binding>
+          </TextBox.Text>
+
+          <TextBox.Style>
+            <Style TargetType="{x:Type TextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                  
+                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
+                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
+                          Path=(Validation.Errors).CurrentItem, 
+                          Converter={Settings:ValidationErrorConverter}}" -->
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </TextBox.Style>
+        </TextBox>
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
@@ -80,20 +102,26 @@ AlternationCount="2"
 
 
         <GridViewColumn Header="Name"
-                        UI:SortableListView.SortPropertyName="Name"
-                        DisplayMemberBinding="{Binding Name, Mode=OneWay}"/>
+                        UI:SortableListView.SortPropertyName="Name">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name, Mode=OneWay}"
+                         ToolTip="{StaticResource settingTooltip}"
+                         FontWeight="Bold">
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+        <GridViewColumn Header="Value" CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
         <GridViewColumn Header="Default"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
-
-        <GridViewColumn Header="Value" CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}">
-          <!--
-          GridViewColumn.CellTemplate>
-            <DataTemplate>
-              <TextBox Text="{Binding Value, Mode=TwoWay}"></TextBox>
-            </DataTemplate>
-          </GridViewColumn.CellTemplate -->
-        </GridViewColumn>
 
       </GridView>
     </ListView.View>
@@ -102,7 +130,9 @@ AlternationCount="2"
 
       <Style TargetType="{x:Type ListViewItem}">
 
-        <!-- Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription}"/ -->
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        
+        <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
 
         <Style.Triggers>
           <Trigger Property="ItemsControl.AlternationIndex" Value="0">
