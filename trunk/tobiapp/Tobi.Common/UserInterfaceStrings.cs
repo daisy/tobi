@@ -269,7 +269,7 @@ namespace Tobi.Common
         public static KeyGesture Help_KEYS = new KeyGesture(Key.F1, ModifierKeys.None);
 
         public const string Preferences = "_Preferences";
-        public const string Preferences_ = "Application configuration";
+        public const string Preferences_ = "Application configurable options";
         public static KeyGesture Preferences_KEYS = new KeyGesture(Key.F2, ModifierKeys.None);
 
         //public const string WebHome = "Tobi-_web";
