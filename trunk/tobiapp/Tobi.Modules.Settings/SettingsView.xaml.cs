@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Configuration;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -164,6 +169,45 @@ namespace Tobi.Plugin.Settings
         public void NotifyValueChanged()
         {
             m_PropertyChangeHandler.RaisePropertyChanged(() => Value);
+        }
+    }
+    public class TextToDoubleConverter : MarkupExtension, IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Double.Parse((string)value);
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
+    }
+
+    public class SettingsValueTemplateSelector : DataTemplateSelector
+    {
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            if (item != null && item is SettingWrapper)
+            {
+                if (((SettingWrapper)item).ValueType == typeof(Boolean))
+                {
+                    var t1 =  ((ContentPresenter)container).FindResource("SettingEditTemplate_Boolean") as DataTemplate;
+                    return t1;
+                }
+                if (((SettingWrapper)item).ValueType == typeof(Double))
+                {
+                    var t2 = ((ContentPresenter)container).FindResource("SettingEditTemplate_Double") as DataTemplate;
+                    return t2;
+                }
+            }
+            var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;
+            return defaultTemplate;
         }
     }
 }

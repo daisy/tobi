@@ -2,9 +2,7 @@
            x:Class="Tobi.Plugin.Settings.SettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-           
-    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <TextBox Text="search" DockPanel.Dock="Top"/>
   
@@ -18,7 +16,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
 
-    ItemsSource="{Binding Path=AggregatedSettings, Mode=OneWay}"
+    ItemsSource="{Binding AggregatedSettings, Mode=OneWay}"
            
               SelectionMode="Single"
 
@@ -27,8 +25,8 @@
 AlternationCount="2"
             >
 
-    <!-- ListView.Resources>
-      <ToolTip x:Key="imageIconTooltipp"
+    <ListView.Resources>
+      <!-- ToolTip x:Key="imageIconTooltipp"
          DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
                
@@ -40,9 +38,22 @@ AlternationCount="2"
                             
                 Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
 
-      </ToolTip>
+      </ToolTip -->
 
-    </ListView.Resources -->
+      <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
+        <TextBox Text="{Binding Value, Converter={Settings:TextToDoubleConverter}, Mode=TwoWay}"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
+        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
+        <TextBox Text="{Binding Value, Mode=OneWay}"/>
+      </DataTemplate>
+      
+      <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>
+    </ListView.Resources>
 
     <ListView.View>
       <GridView AllowsColumnReorder="true">
@@ -70,13 +81,19 @@ AlternationCount="2"
 
         <GridViewColumn Header="Name"
                         UI:SortableListView.SortPropertyName="Name"
-                        DisplayMemberBinding="{Binding Name}"/>
+                        DisplayMemberBinding="{Binding Name, Mode=OneWay}"/>
 
-        <GridViewColumn Header="Value"
-                        DisplayMemberBinding="{Binding Value}"/>
-        
         <GridViewColumn Header="Default"
-                        DisplayMemberBinding="{Binding DefaultValue}"/>
+                        DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
+
+        <GridViewColumn Header="Value" CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}">
+          <!--
+          GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <TextBox Text="{Binding Value, Mode=TwoWay}"></TextBox>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate -->
+        </GridViewColumn>
 
       </GridView>
     </ListView.View>
