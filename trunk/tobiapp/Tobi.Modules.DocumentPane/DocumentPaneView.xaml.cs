@@ -240,9 +240,10 @@ namespace Tobi.Plugin.DocumentPane
             };
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
+            BreadcrumbPanel.Children.Add(new TextBlock(new Run(UserInterfaceStrings.No_Document)));
 
             resetFlowDocument();
-            TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
+            //TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
 
             m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);

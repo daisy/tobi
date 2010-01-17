@@ -424,7 +424,7 @@ namespace Tobi
             {
                 m_Logger.Log(
                     "KeyBinding (" +
-                    ((KeyGesture)(inputBinding.Gesture)).GetDisplayStringForCulture(CultureInfo.CurrentCulture) + ")",
+                    KeyGestureSinkBox.GetDisplayString(((KeyGesture)(inputBinding.Gesture)))+ ")",
                     Category.Debug, Priority.Medium);
             }
             else

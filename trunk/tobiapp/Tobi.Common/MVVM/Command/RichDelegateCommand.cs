@@ -163,11 +163,7 @@ namespace Tobi.Common.MVVM.Command
             {
                 //CultureInfo.InvariantCulture
                 //return KeyGesture.DisplayString;
-                return (KeyGesture == null ? m_KeyGestureText :
-                                                                  KeyGesture.GetDisplayStringForCulture(CultureInfo.CurrentCulture)
-                                                                      .Replace("Oem4", "[")
-                                                                      .Replace("Oem6", "]")
-                       );
+                return (KeyGesture == null ? m_KeyGestureText : KeyGestureSinkBox.GetDisplayString(KeyGesture));
             }
         }
     }
