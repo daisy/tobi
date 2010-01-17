@@ -5,10 +5,17 @@
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,4">
-    <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+    <TextBlock
+      Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+
     <_UnusedCode:WatermarkTextBox Watermark="search keywords"
                                   HorizontalAlignment="Stretch"/>
   </DockPanel>
+  
+  <UI:KeyGestureSinkBox DockPanel.Dock="Top" HorizontalAlignment="Stretch"
+      FontWeight="Bold"
+      Margin="4,4,4,4" Padding="2,2,2,2"
+       />
 
   <UI:SortableListView
     

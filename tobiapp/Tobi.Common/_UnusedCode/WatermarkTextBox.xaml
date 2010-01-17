@@ -5,6 +5,7 @@
     xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode">
 
   
+  <!-- x:Key="WatermarkTextBoxStyle"  -->
     <Style TargetType="{x:Type _UnusedCode:WatermarkTextBox}">
         <Setter Property="Foreground"
                 Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
