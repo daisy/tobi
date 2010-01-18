@@ -139,6 +139,8 @@
     <Compile Include="UI\KeyGestureSinkBox.xaml.cs">
       <DependentUpon>KeyGestureSinkBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\KeyGestureString.cs" />
+    <Compile Include="UI\KeyGestureStringConverter.cs" />
     <Compile Include="UI\LazyKeepAliveTabControl.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\PopupModalWindow.xaml.cs">

@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Tobi.Common.UI;
+
 namespace Tobi {
     
     
@@ -80,6 +82,42 @@ namespace Tobi {
             }
             set {
                 this["WindowShellFullScreen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[CTRL ] Q")]
+        public KeyGestureString KeyGesture_MenuExit {
+            get {
+                return ((KeyGestureString)(this["KeyGesture_MenuExit"]));
+            }
+            set {
+                this["KeyGesture_MenuExit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[CTRL ] O")]
+        public KeyGestureString KeyGesture_MenuOpen {
+            get {
+                return ((KeyGestureString)(this["KeyGesture_MenuOpen"]));
+            }
+            set {
+                this["KeyGesture_MenuOpen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[CTRL ] C")]
+        public KeyGestureString KeyGesture_MenuCopy {
+            get {
+                return ((KeyGestureString)(this["KeyGesture_MenuCopy"]));
+            }
+            set {
+                this["KeyGesture_MenuCopy"] = value;
             }
         }
     }

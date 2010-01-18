@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Globalization;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
