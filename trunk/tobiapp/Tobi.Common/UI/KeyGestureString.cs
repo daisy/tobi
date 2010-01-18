@@ -22,5 +22,10 @@ namespace Tobi.Common.UI
             : base(key, modifiers, displayString)
         {
         }
+
+        public override string ToString()
+        {
+            return KeyGestureStringConverter.Convert(this);
+        }
     }
 }

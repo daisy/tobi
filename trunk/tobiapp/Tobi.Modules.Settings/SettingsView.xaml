@@ -28,11 +28,6 @@
     <_UnusedCode:WatermarkTextBox Watermark="search keywords"
                                   HorizontalAlignment="Stretch"/>
   </DockPanel>
-  
-  <UI:KeyGestureSinkBox DockPanel.Dock="Top" HorizontalAlignment="Stretch"
-      FontWeight="Bold"
-      Margin="4,4,4,4" Padding="2,2,2,2"
-       />
 
   <UI:SortableListView
     
@@ -62,6 +57,13 @@ AlternationCount="2"
         <TextBlock Text="{Binding Path=DataContext.FullDescription, Mode=OneWay}"/>
 
       </ToolTip>
+      <ToolTip x:Key="messageTooltip"
+         DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+        <TextBlock Text="{Binding Path=DataContext.Message, Mode=OneWay}"/>
+
+      </ToolTip>
 
       <DataTemplate x:Key="SettingEditTemplate_KeyGesture" DataType="{x:Type UI:KeyGestureString}">
         <UI:KeyGestureSinkBox>
@@ -87,6 +89,27 @@ AlternationCount="2"
           <UI:KeyGestureSinkBox.Style>
             <Style TargetType="{x:Type UI:KeyGestureSinkBox}">
               <Style.Triggers>
+
+                <!-- EventTrigger RoutedEvent="Control.LostFocus">
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                                     Storyboard.TargetProperty="(UI:KeyGestureSinkBox.Text)">
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Value}"/>
+                      </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </BeginStoryboard>
+                </EventTrigger -->
+                
+                <!-- MultiTrigger>
+                  <MultiTrigger.Conditions>
+                    <Condition Property="IsFocused" Value="false" />
+                    <Condition Property="Validation.HasError" Value="true" />
+                  </MultiTrigger.Conditions>
+                  <Setter Property="Text"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Value}"/>
+                </MultiTrigger -->
+
                 <Trigger Property="Validation.HasError" Value="true">
 
                   <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
@@ -107,13 +130,18 @@ AlternationCount="2"
 
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
         <TextBox>
+          <TextBox.Resources>
+            <Settings:DataContextSpy x:Key="dataContextSpy" />
+          </TextBox.Resources>
           <TextBox.Text>
             <Binding Path="Value" Converter="{Settings:TextToDoubleConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
                      ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
               <Binding.ValidationRules>
                 <!-- DataErrorValidationRule/ --> <!-- IDataErrorInfo -->
-                <Settings:DoubleValidationRule/>
+                <Settings:DoubleValidationRule
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
               </Binding.ValidationRules>
             </Binding>
           </TextBox.Text>
@@ -190,13 +218,29 @@ AlternationCount="2"
           </GridViewColumn.CellTemplate>
         </GridViewColumn>
 
+        <GridViewColumn Header="Default"
+                        DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
+
         <GridViewColumn Header="Value"
                         Width="150"
                         CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
-        <GridViewColumn Header="Default"
-                        DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
-
+        <GridViewColumn Header="Message"
+                        Width="400">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Message, Mode=OneWay}"
+                         ToolTip="{StaticResource messageTooltip}"
+                         FontStyle="Italic">
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
       </GridView>
     </ListView.View>
 

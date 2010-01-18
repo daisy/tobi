@@ -177,6 +177,20 @@ namespace Tobi.Plugin.Settings
             m_PropertyChangeHandler.InitializeDependentProperties(this);
         }
 
+        private string m_Message;
+        public string Message
+        {
+            get { return m_Message; }
+            set
+            {
+                if (value != m_Message)
+                {
+                    m_Message = value;
+                    m_PropertyChangeHandler.RaisePropertyChanged(() => Message);
+                }
+            }
+        }
+
         public string Name
         {
             get
@@ -217,7 +231,7 @@ namespace Tobi.Plugin.Settings
         {
             get
             {
-                return Name + "=" + Value + " (default: " + DefaultValue + ")";
+                return Name + "=" + Value.ToString() + " (default: " + DefaultValue.ToString() + ")";
             }
         }
 
@@ -263,7 +277,7 @@ namespace Tobi.Plugin.Settings
         //}
     }
 
-    public class KeyGestureValidationRule : ValidationRule
+    public abstract class DataContextValidationRuleBase : ValidationRule
     {
         public FrameworkElement DataContextBridge
         {
@@ -277,22 +291,37 @@ namespace Tobi.Plugin.Settings
             set;
         }
 
+        protected ValidationResult NotValid(string msg)
+        {
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            currentSetting.Message = msg;
+            return new ValidationResult(false, msg);
+        }
+
+        protected ValidationResult Valid()
+        {
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            currentSetting.Message = "";
+            return new ValidationResult(true, null);
+        }
+    }
+
+    public class KeyGestureValidationRule : DataContextValidationRuleBase
+    {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var str = value as string;
             if (String.IsNullOrEmpty(str))
             {
-                return new ValidationResult(false,
-                  "Value cannot be empty.");
+                return NotValid("Value cannot be empty.");
             }
 
             KeyGesture val = KeyGestureStringConverter.Convert(str);
             if (val == null)
             {
-                return new ValidationResult(false,
-                  "Invalid keyboard shortcut.");
+                return NotValid("Invalid keyboard shortcut.");
             }
-            
+
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
 
             string strSettingsAlreadyUsingKeyG = "";
@@ -317,38 +346,51 @@ namespace Tobi.Plugin.Settings
             }
             if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
             {
-                return new ValidationResult(false,
-                  "Keyboard shortcut already in use: " + strSettingsAlreadyUsingKeyG);
+                return NotValid("Keyboard shortcut already in use by: " + strSettingsAlreadyUsingKeyG);
             }
 
-            return new ValidationResult(true, null);
+            return Valid();
         }
     }
 
-    public class DoubleValidationRule : ValidationRule
+    public class DoubleValidationRule : DataContextValidationRuleBase
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var str = value as string;
             if (String.IsNullOrEmpty(str))
             {
-                return new ValidationResult(false,
-                  "Value cannot be empty.");
+                return NotValid("Value cannot be empty.");
             }
 
             double val;
             if (!Double.TryParse(str, out val))
             {
-                return new ValidationResult(false,
-                  "Invalid numeric value.");
-            }
-            if (val < 0 || val > 9999)
-            {
-                return new ValidationResult(false,
-                  "Numeric value is out of range [0, 9999].");
+                return NotValid("Invalid numeric value.");
             }
 
-            return new ValidationResult(true, null);
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            string lowName = currentSetting.Name.ToLower();
+
+            // Super-master hack ! :)
+            bool mustBePositive = lowName.Contains("width") || lowName.Contains("height");
+
+            if (mustBePositive)
+            {
+                if (val < 0 || val > 9999)
+                {
+                    return NotValid("Numeric value is out of range [0, 9999].");
+                }
+            }
+            else
+            {
+                if (val < -9999 || val > 9999)
+                {
+                    return NotValid("Numeric value is out of range [-9999, 9999].");
+                }
+            }
+
+            return Valid();
         }
     }
 
