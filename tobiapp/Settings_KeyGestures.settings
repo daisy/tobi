@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="KeyGesture_MenuExit" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[CTRL ] Q</Value>
+    </Setting>
+    <Setting Name="KeyGesture_MenuOpen" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[CTRL ] O</Value>
+    </Setting>
+    <Setting Name="KeyGesture_MenuCopy" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[CTRL ] C</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -130,6 +130,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Settings_KeyGestures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
+    </Compile>
     <Compile Include="Shell_Settings.cs" />
     <Compile Include="TobiLoggerFacade.cs" />
     <Compile Include="Bootstrapper.cs" />
@@ -171,6 +176,10 @@
     <None Include="Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Settings_KeyGestures.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
     </None>
     <None Include="Tobi_TemporaryKey.pfx" />
     <AppDesigner Include="Properties\" />
