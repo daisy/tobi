@@ -17,14 +17,5 @@
     <Setting Name="WindowShellFullScreen" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="KeyGesture_MenuExit" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[CTRL ] Q</Value>
-    </Setting>
-    <Setting Name="KeyGesture_MenuOpen" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[CTRL ] O</Value>
-    </Setting>
-    <Setting Name="KeyGesture_MenuCopy" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[CTRL ] C</Value>
-    </Setting>
   </Settings>
 </SettingsFile>
