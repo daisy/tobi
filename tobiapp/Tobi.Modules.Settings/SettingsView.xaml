@@ -2,7 +2,24 @@
            x:Class="Tobi.Plugin.Settings.SettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:System="clr-namespace:System;assembly=mscorlib"
+           xmlns:Settings="clr-namespace:Tobi.Plugin.Settings"
+           xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
+           >
+  <!-- 
+           DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
+
+  <DockPanel.Resources>
+    <FrameworkElement x:Key="dataContextBridge" />
+  </DockPanel.Resources>
+  <DockPanel.DataContext>
+    <Binding
+      Mode="OneWayToSource"
+      Path="DataContext"
+      Source="{StaticResource dataContextBridge}"/>
+  </DockPanel.DataContext>
+
 
   <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,4">
     <TextBlock
@@ -37,6 +54,7 @@ AlternationCount="2"
             >
 
     <ListView.Resources>
+
       <ToolTip x:Key="settingTooltip"
          DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
@@ -45,6 +63,48 @@ AlternationCount="2"
 
       </ToolTip>
 
+      <DataTemplate x:Key="SettingEditTemplate_KeyGesture" DataType="{x:Type UI:KeyGestureString}">
+        <UI:KeyGestureSinkBox>
+
+          <UI:KeyGestureSinkBox.Resources>
+            <Settings:DataContextSpy x:Key="dataContextSpy" />
+          </UI:KeyGestureSinkBox.Resources>
+
+            <UI:KeyGestureSinkBox.Text>
+            <Binding Path="Value" Converter="{Settings:TextToKeyGestureConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
+              <Binding.ValidationRules>
+                <!-- DataErrorValidationRule/ --> <!-- IDataErrorInfo -->
+                <Settings:KeyGestureValidationRule
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"
+                  />
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:KeyGestureSinkBox.Text>
+
+          <UI:KeyGestureSinkBox.Style>
+            <Style TargetType="{x:Type UI:KeyGestureSinkBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
+                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
+                          Path=(Validation.Errors).CurrentItem, 
+                          Converter={Settings:ValidationErrorConverter}}" -->
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </UI:KeyGestureSinkBox.Style>
+        </UI:KeyGestureSinkBox>
+      
+    </DataTemplate>
+
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
         <TextBox>
           <TextBox.Text>
@@ -52,6 +112,7 @@ AlternationCount="2"
                      UpdateSourceTrigger="PropertyChanged"
                      ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
               <Binding.ValidationRules>
+                <!-- DataErrorValidationRule/ --> <!-- IDataErrorInfo -->
                 <Settings:DoubleValidationRule/>
               </Binding.ValidationRules>
             </Binding>
@@ -129,7 +190,9 @@ AlternationCount="2"
           </GridViewColumn.CellTemplate>
         </GridViewColumn>
 
-        <GridViewColumn Header="Value" CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
+        <GridViewColumn Header="Value"
+                        Width="150"
+                        CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
         <GridViewColumn Header="Default"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>

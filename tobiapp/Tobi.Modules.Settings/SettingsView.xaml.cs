@@ -8,13 +8,70 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Markup;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Settings
 {
+    public class DataContextSpy
+       : Freezable // Enable ElementName and DataContext bindings
+    {
+        public DataContextSpy()
+        {
+            // This binding allows the spy to inherit a DataContext.
+            BindingOperations.SetBinding(this, DataContextProperty, new Binding());
+
+            this.IsSynchronizedWithCurrentItem = true;
+        }
+
+        /// <summary>
+        /// Gets/sets whether the spy will return the CurrentItem of the 
+        /// ICollectionView that wraps the data context, assuming it is
+        /// a collection of some sort. If the data context is not a 
+        /// collection, this property has no effect. 
+        /// The default value is true.
+        /// </summary>
+        public bool IsSynchronizedWithCurrentItem { get; set; }
+
+        public object DataContext
+        {
+            get { return (object)GetValue(DataContextProperty); }
+            set { SetValue(DataContextProperty, value); }
+        }
+
+        // Borrow the DataContext dependency property from FrameworkElement.
+        public static readonly DependencyProperty DataContextProperty =
+            FrameworkElement.DataContextProperty.AddOwner(
+            typeof(DataContextSpy),
+            new PropertyMetadata(null, null, OnCoerceDataContext));
+
+        static object OnCoerceDataContext(DependencyObject depObj, object value)
+        {
+            DataContextSpy spy = depObj as DataContextSpy;
+            if (spy == null)
+                return value;
+
+            if (spy.IsSynchronizedWithCurrentItem)
+            {
+                ICollectionView view = CollectionViewSource.GetDefaultView(value);
+                if (view != null)
+                    return view.CurrentItem;
+            }
+
+            return value;
+        }
+
+        protected override Freezable CreateInstanceCore()
+        {
+            // We are required to override this abstract method.
+            throw new NotImplementedException();
+        }
+    }
+
     [Export(typeof(SettingsView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class SettingsView : IPartImportsSatisfiedNotification
     {
@@ -85,6 +142,9 @@ namespace Tobi.Plugin.Settings
             //DataContext = AggregatedSettings;
 
             InitializeComponent();
+
+            // NEEDS to be after InitializeComponent() in order for the DataContext bridge to work.
+            DataContext = this;
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -203,6 +263,68 @@ namespace Tobi.Plugin.Settings
         //}
     }
 
+    public class KeyGestureValidationRule : ValidationRule
+    {
+        public FrameworkElement DataContextBridge
+        {
+            get;
+            set;
+        }
+
+        public DataContextSpy DataContextSpy
+        {
+            get;
+            set;
+        }
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var str = value as string;
+            if (String.IsNullOrEmpty(str))
+            {
+                return new ValidationResult(false,
+                  "Value cannot be empty.");
+            }
+
+            KeyGesture val = KeyGestureStringConverter.Convert(str);
+            if (val == null)
+            {
+                return new ValidationResult(false,
+                  "Invalid keyboard shortcut.");
+            }
+            
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+
+            string strSettingsAlreadyUsingKeyG = "";
+            foreach (var aggregatedSetting in ((SettingsView)DataContextBridge.DataContext).AggregatedSettings)
+            {
+                if (currentSetting == aggregatedSetting)
+                {
+                    continue;
+                }
+
+                if (aggregatedSetting.ValueType == typeof(KeyGestureString))
+                {
+                    if (val.Key == ((KeyGesture)aggregatedSetting.Value).Key)
+                    {
+                        if (val.Modifiers.Equals(((KeyGesture) aggregatedSetting.Value).Modifiers))
+                        {
+                            strSettingsAlreadyUsingKeyG += aggregatedSetting.Name;
+                            strSettingsAlreadyUsingKeyG += " ";
+                        }
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
+            {
+                return new ValidationResult(false,
+                  "Keyboard shortcut already in use: " + strSettingsAlreadyUsingKeyG);
+            }
+
+            return new ValidationResult(true, null);
+        }
+    }
+
     public class DoubleValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
@@ -253,6 +375,24 @@ namespace Tobi.Plugin.Settings
         }
     }
 
+    public class TextToKeyGestureConverter : MarkupExtension, IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return KeyGestureStringConverter.Convert((KeyGesture)value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return KeyGestureStringConverter.Convert((string)value);
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
+    }
+
     public class TextToDoubleConverter : MarkupExtension, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -293,6 +433,11 @@ namespace Tobi.Plugin.Settings
                 {
                     var t2 = ((ContentPresenter)container).FindResource("SettingEditTemplate_Double") as DataTemplate;
                     return t2;
+                }
+                if (((SettingWrapper)item).ValueType == typeof(KeyGestureString))
+                {
+                    var t3 = ((ContentPresenter)container).FindResource("SettingEditTemplate_KeyGesture") as DataTemplate;
+                    return t3;
                 }
             }
             var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;

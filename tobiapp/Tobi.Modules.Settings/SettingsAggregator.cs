@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
+using System.Deployment.Application;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -78,6 +78,12 @@ namespace Tobi.Plugin.Settings
 
         public void UpgradeAll()
         {
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                // ClickOnce automatically Upgrades.
+                return;
+            }
+
             foreach (var settingsProvider in m_SettingsProviders)
             {
                 settingsProvider.Settings.Upgrade();
