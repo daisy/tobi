@@ -6,7 +6,7 @@ namespace DtdParser
     public abstract class DTDItem : IDTDOutput
     {
         /** Indicates how often the item may occur */
-        public DTDCardinal cardinal { get; set}
+        public DTDCardinal cardinal { get; set; }
 
         public DTDItem()
         {

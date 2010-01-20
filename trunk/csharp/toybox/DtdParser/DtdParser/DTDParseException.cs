@@ -29,7 +29,7 @@ namespace DtdParser
             column = col;
         }
 
-        public DTDParseException(string id, string message, int line, int col): base(((null != id && id.length() > 0) ? "URI " + id + " at " : "At ")
+        public DTDParseException(string id, string message, int line, int col): base(((null != id && id.Length > 0) ? "URI " + id + " at " : "At ")
                     + "line " + line + ", column " + col + ": " + message)
         {
             uriID = "";

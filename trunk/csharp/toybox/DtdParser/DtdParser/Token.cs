@@ -1,24 +1,17 @@
-package com.wutka.dtd;
-
-/** Token returned by the lexical scanner
- *
- * @author Mark Wutka
- * @version $Revision: 1.16 $ $Date: 2002/07/19 01:20:11 $ by $Author: wutka $
- */
-class Token
+public class Token
 {
-	public TokenType type;
-	public string value;
+	public TokenType Type { get; set;}
+    public string Value { get; set; }
 
 	public Token(TokenType aType)
 	{
-		type = aType;
-		value = null;
+		Type = aType;
+		Value = null;
 	}
 
 	public Token(TokenType aType, string aValue)
 	{
-		type = aType;
-		value = aValue;
+		Type = aType;
+		Value = aValue;
 	}
 }

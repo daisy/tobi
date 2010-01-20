@@ -12,7 +12,7 @@ namespace DtdParser
         
     {
         writer.Write("EMPTY");
-        cardinal.write(out);
+        cardinal.write(writer);
     }
 
         public bool equals(object ob)
