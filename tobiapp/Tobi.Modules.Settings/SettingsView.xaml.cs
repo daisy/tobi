@@ -17,63 +17,8 @@ using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Settings
 {
-    public class DataContextSpy
-       : Freezable // Enable ElementName and DataContext bindings
-    {
-        public DataContextSpy()
-        {
-            // This binding allows the spy to inherit a DataContext.
-            BindingOperations.SetBinding(this, DataContextProperty, new Binding());
-
-            this.IsSynchronizedWithCurrentItem = true;
-        }
-
-        /// <summary>
-        /// Gets/sets whether the spy will return the CurrentItem of the 
-        /// ICollectionView that wraps the data context, assuming it is
-        /// a collection of some sort. If the data context is not a 
-        /// collection, this property has no effect. 
-        /// The default value is true.
-        /// </summary>
-        public bool IsSynchronizedWithCurrentItem { get; set; }
-
-        public object DataContext
-        {
-            get { return (object)GetValue(DataContextProperty); }
-            set { SetValue(DataContextProperty, value); }
-        }
-
-        // Borrow the DataContext dependency property from FrameworkElement.
-        public static readonly DependencyProperty DataContextProperty =
-            FrameworkElement.DataContextProperty.AddOwner(
-            typeof(DataContextSpy),
-            new PropertyMetadata(null, null, OnCoerceDataContext));
-
-        static object OnCoerceDataContext(DependencyObject depObj, object value)
-        {
-            DataContextSpy spy = depObj as DataContextSpy;
-            if (spy == null)
-                return value;
-
-            if (spy.IsSynchronizedWithCurrentItem)
-            {
-                ICollectionView view = CollectionViewSource.GetDefaultView(value);
-                if (view != null)
-                    return view.CurrentItem;
-            }
-
-            return value;
-        }
-
-        protected override Freezable CreateInstanceCore()
-        {
-            // We are required to override this abstract method.
-            throw new NotImplementedException();
-        }
-    }
-
-    [Export(typeof(SettingsView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class SettingsView : IPartImportsSatisfiedNotification
+    [Export(typeof(SettingsView)), PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class SettingsView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -89,10 +34,9 @@ namespace Tobi.Plugin.Settings
 
         public readonly ISettingsAggregator m_SettingsAggregator;
 
-        private List<SettingWrapper> m_AggregatedSettings = new List<SettingWrapper>();
         public List<SettingWrapper> AggregatedSettings
         {
-            get { return m_AggregatedSettings; }
+            get; private set;
         }
 
         [ImportingConstructor]
@@ -103,10 +47,70 @@ namespace Tobi.Plugin.Settings
             [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             ISettingsAggregator settingsAggregator)
         {
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
+
             m_Logger = logger;
             m_ShellView = shellView;
 
             m_SettingsAggregator = settingsAggregator;
+
+            resetList();
+
+            InitializeComponent();
+
+            // NEEDS to be after InitializeComponent() in order for the DataContext bridge to work.
+            DataContext = this;
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var settingBase = (ApplicationSettingsBase)sender;
+            string name = e.PropertyName;
+
+            foreach (var aggregatedSetting in AggregatedSettings)
+            {
+                if (aggregatedSetting.Name == name
+                    && aggregatedSetting.m_settingBase == settingBase)
+                {
+                    aggregatedSetting.NotifyValueChanged();
+                }
+            }
+        }
+
+        public bool HasValidationErrors
+        {
+            get { return m_nErrors > 0; }
+        }
+
+        private int m_nErrors = 0;
+
+        private void OnError(object sender, ValidationErrorEventArgs e)
+        {
+            if (e.Action == ValidationErrorEventAction.Added)
+                m_nErrors++;
+            else
+                m_nErrors--;
+
+            m_PropertyChangeHandler.RaisePropertyChanged(() => HasValidationErrors);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        private void resetList()
+        {
+            AggregatedSettings = new List<SettingWrapper>();
 
             foreach (var settingsProvider in m_SettingsAggregator.Settings)
             {
@@ -138,28 +142,6 @@ namespace Tobi.Plugin.Settings
             //        SettingsExpanded.Add(current.Name + " = " + current.PropertyValue + "---" + current.SerializedValue + " (" + (current.UsingDefaultValue ? "default" : "user") + ")");
             //    }
             //}
-
-            //DataContext = AggregatedSettings;
-
-            InitializeComponent();
-
-            // NEEDS to be after InitializeComponent() in order for the DataContext bridge to work.
-            DataContext = this;
-        }
-
-        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var settingBase = (ApplicationSettingsBase)sender;
-            string name = e.PropertyName;
-
-            foreach (var aggregatedSetting in AggregatedSettings)
-            {
-                if (aggregatedSetting.Name == name
-                    && aggregatedSetting.m_settingBase == settingBase)
-                {
-                    aggregatedSetting.NotifyValueChanged();
-                }
-            }
         }
     }
 
@@ -175,6 +157,8 @@ namespace Tobi.Plugin.Settings
 
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
+
+            m_OriginalValue = Value;
         }
 
         private string m_Message;
@@ -227,12 +211,50 @@ namespace Tobi.Plugin.Settings
             }
         }
 
+        [NotifyDependsOn("Name")]
+        [NotifyDependsOn("Value")]
+        [NotifyDependsOn("DefaultValue")]
+        [NotifyDependsOn("Message")]
         public string FullDescription
         {
             get
             {
-                return Name + "=" + Value.ToString() + " (default: " + DefaultValue.ToString() + ")";
+                return Name + "=" + Value + " '" + Message + "' (default: " + DefaultValue + ") ";
             }
+        }
+
+        private object m_OriginalValue = null;
+
+        [NotifyDependsOn("Value")]
+        public bool IsChanged
+        {
+            get
+            {
+                return !m_OriginalValue.Equals(Value);
+            }
+        }
+
+        //private bool m_IsChanged;
+        //public bool IsChanged
+        //{
+        //    get { return m_IsChanged; }
+        //    set
+        //    {
+        //        if (value != m_IsChanged)
+        //        {
+        //            m_IsChanged = value;
+        //            m_PropertyChangeHandler.RaisePropertyChanged(() => IsChanged);
+        //        }
+        //    }
+        //}
+
+        public void NotifyValueChanged()
+        {
+            m_PropertyChangeHandler.RaisePropertyChanged(() => Value);
+
+            //IsChanged = Value != m_OriginalValue;
+
+            Message = IsChanged ? "Modified (" + m_OriginalValue +")" : null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -248,10 +270,6 @@ namespace Tobi.Plugin.Settings
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
-        public void NotifyValueChanged()
-        {
-            m_PropertyChangeHandler.RaisePropertyChanged(() => Value);
-        }
 
         //public string this[string propertyName]
         //{
@@ -336,7 +354,7 @@ namespace Tobi.Plugin.Settings
                 {
                     if (val.Key == ((KeyGesture)aggregatedSetting.Value).Key)
                     {
-                        if (val.Modifiers.Equals(((KeyGesture) aggregatedSetting.Value).Modifiers))
+                        if (val.Modifiers.Equals(((KeyGesture)aggregatedSetting.Value).Modifiers))
                         {
                             strSettingsAlreadyUsingKeyG += aggregatedSetting.Name;
                             strSettingsAlreadyUsingKeyG += " ";
@@ -346,7 +364,7 @@ namespace Tobi.Plugin.Settings
             }
             if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
             {
-                return NotValid("Keyboard shortcut already in use by: " + strSettingsAlreadyUsingKeyG);
+                return NotValid("Shortcut already used by: " + strSettingsAlreadyUsingKeyG);
             }
 
             return Valid();
@@ -384,7 +402,7 @@ namespace Tobi.Plugin.Settings
             }
             else
             {
-                if (val < -9999 || val > 9999)
+                if (val < -1 || val > 9999)
                 {
                     return NotValid("Numeric value is out of range [-9999, 9999].");
                 }
@@ -484,6 +502,61 @@ namespace Tobi.Plugin.Settings
             }
             var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;
             return defaultTemplate;
+        }
+    }
+
+    public class DataContextSpy
+       : Freezable // Enable ElementName and DataContext bindings
+    {
+        public DataContextSpy()
+        {
+            // This binding allows the spy to inherit a DataContext.
+            BindingOperations.SetBinding(this, DataContextProperty, new Binding());
+
+            this.IsSynchronizedWithCurrentItem = true;
+        }
+
+        /// <summary>
+        /// Gets/sets whether the spy will return the CurrentItem of the 
+        /// ICollectionView that wraps the data context, assuming it is
+        /// a collection of some sort. If the data context is not a 
+        /// collection, this property has no effect. 
+        /// The default value is true.
+        /// </summary>
+        public bool IsSynchronizedWithCurrentItem { get; set; }
+
+        public object DataContext
+        {
+            get { return (object)GetValue(DataContextProperty); }
+            set { SetValue(DataContextProperty, value); }
+        }
+
+        // Borrow the DataContext dependency property from FrameworkElement.
+        public static readonly DependencyProperty DataContextProperty =
+            FrameworkElement.DataContextProperty.AddOwner(
+            typeof(DataContextSpy),
+            new PropertyMetadata(null, null, OnCoerceDataContext));
+
+        static object OnCoerceDataContext(DependencyObject depObj, object value)
+        {
+            DataContextSpy spy = depObj as DataContextSpy;
+            if (spy == null)
+                return value;
+
+            if (spy.IsSynchronizedWithCurrentItem)
+            {
+                ICollectionView view = CollectionViewSource.GetDefaultView(value);
+                if (view != null)
+                    return view.CurrentItem;
+            }
+
+            return value;
+        }
+
+        protected override Freezable CreateInstanceCore()
+        {
+            // We are required to override this abstract method.
+            throw new NotImplementedException();
         }
     }
 }

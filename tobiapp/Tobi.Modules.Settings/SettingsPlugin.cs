@@ -1,6 +1,9 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
@@ -39,12 +42,12 @@ namespace Tobi.Plugin.Settings
 #pragma warning restore 649
 
         private readonly ILoggerFacade m_Logger;
+        private readonly IUnityContainer m_Container;
         private readonly IShellView m_ShellView;
 
-        private readonly SettingsView m_SettingsView;
+        //private readonly SettingsView m_SettingsView;
 
         public readonly ISettingsAggregator m_SettingsAggregator;
-
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -56,17 +59,19 @@ namespace Tobi.Plugin.Settings
         [ImportingConstructor]
         public SettingsPlugin(
             ILoggerFacade logger,
+            IUnityContainer container,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
-            [Import(typeof(SettingsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            SettingsView view,
+            //[Import(typeof(SettingsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            //SettingsView view,
             [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             ISettingsAggregator settingsAggregator)
         {
             m_Logger = logger;
+            m_Container = container;
             m_ShellView = shellView;
 
-            m_SettingsView = view;
+            //m_SettingsView = view;
 
             m_SettingsAggregator = settingsAggregator;
 
@@ -157,7 +162,7 @@ namespace Tobi.Plugin.Settings
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Preferences),
-                                                   m_SettingsView,
+                                                   m_Container.Resolve<SettingsView>(),
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Cancel,
                                                    true, 650, 500);

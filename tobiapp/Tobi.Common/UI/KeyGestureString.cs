@@ -27,5 +27,12 @@ namespace Tobi.Common.UI
         {
             return KeyGestureStringConverter.Convert(this);
         }
+
+        public override bool Equals(object obj)
+        {
+            var otherKG = obj as KeyGestureString;
+            if (otherKG == null) return false;
+            return otherKG.Key == Key && otherKG.Modifiers == Modifiers;
+        }
     }
 }

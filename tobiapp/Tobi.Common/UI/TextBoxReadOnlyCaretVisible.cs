@@ -22,22 +22,9 @@ namespace Tobi.Common.UI
             return m_AutomationPeer;
         }
 
-        public TextBoxReadOnlyCaretVisible(string txt)
+        public TextBoxReadOnlyCaretVisible(string txt) : this()
         {
             Text = txt;
-
-            AcceptsTab = false;
-            AcceptsReturn = true;
-            IsReadOnly = false;
-
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-            VerticalAlignment = VerticalAlignment.Stretch;
-            TextWrapping = TextWrapping.Wrap;
-            Background = SystemColors.ControlLightLightBrush;
-            BorderBrush = SystemColors.ControlDarkDarkBrush;
-            BorderThickness = new Thickness(1);
-            Padding = new Thickness(6);
-            SnapsToDevicePixels = true;
 
             var tbSel = new TextBoxSelection();
 
@@ -62,6 +49,26 @@ namespace Tobi.Common.UI
                 Text = txt;
                 Select(start, length);
             });
+        }
+
+        public TextBoxReadOnlyCaretVisible()
+        {
+            AcceptsTab = false;
+            AcceptsReturn = true;
+            IsReadOnly = false;
+
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Stretch;
+            TextWrapping = TextWrapping.Wrap;
+            
+            SetResourceReference(Control.BackgroundProperty, SystemColors.ControlLightLightBrushKey);
+            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkDarkBrush);
+            //Background = SystemColors.ControlLightLightBrush;
+            //BorderBrush = SystemColors.ControlDarkDarkBrush;
+
+            BorderThickness = new Thickness(1);
+            Padding = new Thickness(6);
+            SnapsToDevicePixels = true;
         }
     }
 }
