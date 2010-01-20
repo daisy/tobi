@@ -85,15 +85,15 @@
     <Compile Include="AudioPaneViewModelUndoRedo.cs" />
     <Compile Include="AudioPaneView_WaveFormLoader.cs" />
     <Compile Include="AudioPaneView_WaveFormSelection.cs" />
-    <Compile Include="AudioPluginSettings.Designer.cs">
+    <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>AudioPluginSettings.settings</DependentUpon>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="AudioPlugin_KeyGestures.Designer.cs">
+    <Compile Include="Settings_KeyGestures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>AudioPlugin_KeyGestures.settings</DependentUpon>
+      <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
     <Compile Include="AudioSettings.xaml.cs">
       <DependentUpon>AudioSettings.xaml</DependentUpon>
@@ -180,13 +180,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AudioPluginSettings.settings">
+    <None Include="Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>AudioPluginSettings.Designer.cs</LastGenOutput>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="AudioPlugin_KeyGestures.settings">
+    <None Include="Settings_KeyGestures.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>AudioPlugin_KeyGestures.Designer.cs</LastGenOutput>
+      <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
