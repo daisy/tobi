@@ -64,7 +64,7 @@ namespace Tobi.Common.UI
             return str;
         }
 
-        public static KeyGesture Convert(string str)
+        public static KeyGestureString Convert(string str)
         {
             if (String.IsNullOrEmpty(str))
             {

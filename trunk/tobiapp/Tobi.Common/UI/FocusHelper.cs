@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -24,10 +25,11 @@ namespace Tobi.Common.UI
 
         public static void FocusThreadAndInvoke(DependencyObject obj, UIElement ui)
         {
-            ThreadPool.QueueUserWorkItem(delegate(Object foo)
+            ThreadPool.QueueUserWorkItem(delegate(Object foo) // or: (foo) => {} (LAMBDA)
             {
                 var elem = (UIElement)foo;
-                elem.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)(() => Focus(obj, elem)));
+                Debug.Assert(elem == ui);
+                elem.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)(() => Focus(obj, elem))); // new Action(LAMBDA)
             },ui);
         }
     }

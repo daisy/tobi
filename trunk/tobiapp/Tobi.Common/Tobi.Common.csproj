@@ -150,8 +150,12 @@
     <Compile Include="UI\SortableListView.cs" />
     <Compile Include="UI\TextBoxReadOnlyCaretVisible.cs" />
     <Compile Include="UI\TreeViewExtensions.cs" />
+    <Compile Include="UI\WatermarkTextBox.xaml.cs">
+      <DependentUpon>WatermarkTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
+    <Compile Include="UI\XAML\DataContextSpy.cs" />
     <Compile Include="UI\XAML\RenderTargetBitmapImageSourceConverter.cs" />
     <Compile Include="UI\XAML\WindowStateFullScreenConverter.cs" />
     <Compile Include="UserInterfaceStrings.cs" />
@@ -216,7 +220,6 @@
     <Compile Include="_UnusedCode\TriggerTracing.cs" />
     <Compile Include="_UnusedCode\UiClipboardImageHelper.cs" />
     <Compile Include="_UnusedCode\VisualExtensions.cs" />
-    <Compile Include="_UnusedCode\WatermarkTextBox.cs" />
     <Compile Include="_UnusedCode\WeakReferenceCollection.cs" />
     <Compile Include="_UnusedCode\WpfTreeHelper.cs" />
     <Compile Include="_UnusedCode\XamlToPngConverter.cs" />
@@ -234,11 +237,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="_UnusedCode\ComboColorPicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="UI\WatermarkTextBox.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="_UnusedCode\WatermarkTextBox.xaml">
+    <Page Include="_UnusedCode\ComboColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

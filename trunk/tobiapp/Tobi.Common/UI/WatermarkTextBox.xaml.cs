@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Tobi.Common._UnusedCode
+namespace Tobi.Common.UI
 {
     /// <summary>
     /// Taken from here: http://joyfulwpf.blogspot.com/2009/05/watermarktextbox-by-inheriting-textbox.html
