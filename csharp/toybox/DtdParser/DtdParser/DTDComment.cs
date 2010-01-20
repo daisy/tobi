@@ -5,7 +5,7 @@ namespace DtdParser
     public class DTDComment : IDTDOutput
     {
         /** The comment text */
-        public string text { get; set;};
+        public string text { get; set;}
 
         public DTDComment()
         {

@@ -1,6 +1,7 @@
-package com.wutka.dtd;
-
-public interface EntityExpansion
+namespace DtdParser
 {
-    public DTDEntity expandEntity(string name);
+    public interface IEntityExpansion
+    {
+        DTDEntity expandEntity(string name);
+    }
 }

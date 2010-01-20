@@ -84,11 +84,10 @@ namespace DtdParser
                     {
                         string loc = (string) defaultLocation;
 
-                        StreamReader reader = new StreamReader(loc);
-
-                        return reader;
+                        return new StreamReader(loc);
                     }
-                    else if (defaultLocation is Uri)
+                   /* TODO: URI support
+                    if (defaultLocation is Uri)
                     {
                         // MAW Version 1.17
                         // Changed to construct new URL based on default
@@ -98,19 +97,17 @@ namespace DtdParser
                         // relatively or absolutely.
                         Uri url = new Uri((Uri) defaultLocation, entityName);
 
-                        StreamReader reader = new StreamReader(url);
+                        return new StreamReader(url);
 
-                        return reader;
-                    }
+                    }*/
                 }
-                StreamReader reader = new StreamReader(entityName);
-
-                return reader;
+                return  new StreamReader(entityName);
             }
             catch (Exception ignore)
             {
             }
 
+            /*TODO: URL support
             try
             {
                 Uri url = new Uri(entityName);
@@ -121,7 +118,7 @@ namespace DtdParser
             }
             catch (Exception ignore)
             {
-            }
+            }*/
 
             return null;
         }

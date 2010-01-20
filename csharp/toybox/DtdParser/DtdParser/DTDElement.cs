@@ -37,7 +37,7 @@ namespace DtdParser
             writer.Write(" ");
             if (content != null)
             {
-                content.write(out);
+                content.write(writer);
             }
             else
             {

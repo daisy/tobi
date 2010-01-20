@@ -1,46 +1,38 @@
-package com.wutka.dtd;
+using System.IO;
 
-import java.io.*;
-import java.util.*;
-
-/** Represents a sequence in an element's content.
- * A sequence is declared in the DTD as (value1,value2,value3,etc.)
- *
- * @author Mark Wutka
- * @version $Revision: 1.16 $ $Date: 2002/07/19 01:20:11 $ by $Author: wutka $
- */
-namespace DtdParser{ public class DTDSequence : DTDContainer
+namespace DtdParser
 {
-    public DTDSequence()
+    public class DTDSequence : DTDContainer
     {
-    }
-
-/** Writes out a declaration for this sequence */
-    public void write(StreamWriter writer)
-        
-    {
-        writer.Write("(");
-
-        Enumeration e = getItemsVec().elements();
-        bool isFirst = true;
-
-        while (e.hasMoreElements())
+        public DTDSequence()
         {
-            if (!isFirst) writer.Write(",");
-            isFirst = false;
-
-            DTDItem item = (DTDItem) e.nextElement();
-            item.write(out);
         }
-        writer.Write(")");
-        cardinal.write(out);
-    }
 
-    public bool equals(object ob)
-    {
-        if (ob == this) return true;
-        if (!(ob instanceof DTDSequence)) return false;
+        /** Writes out a declaration for this sequence */
+        public override void write(StreamWriter writer)
+            
+        {
+            writer.Write("(");
 
-        return super.equals(ob);
+            bool isFirst = true;
+
+            foreach (DTDItem item in items)
+            {
+                if (!isFirst) writer.Write(",");
+                isFirst = false;
+
+                item.write(writer);
+            }
+            writer.Write(")");
+            cardinal.write(writer);
+        }
+
+        public bool equals(object ob)
+        {
+            if (ob == this) return true;
+            if (!(ob is DTDSequence)) return false;
+
+            return base.equals(ob);
+        }
     }
 }
