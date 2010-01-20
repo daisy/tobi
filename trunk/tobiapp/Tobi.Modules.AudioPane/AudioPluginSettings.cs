@@ -26,7 +26,7 @@ namespace Tobi.Plugin.AudioPane
             {
             get
                 {
-                return AudioPluginSettings.Default;
+                return AudioPane.Settings.Default;
                 }
             }
         }
@@ -47,14 +47,14 @@ namespace Tobi.Plugin.AudioPane
 
         public ApplicationSettingsBase Settings
             {
-            get { return AudioPlugin_KeyGestures.Default; }
+            get { return AudioPane.Settings_KeyGestures.Default; }
             }
         }
 
-    internal sealed partial class AudioPluginSettings
+    internal sealed partial class Settings
         {
 
-        public AudioPluginSettings ()
+        public Settings ()
             {
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler ( Settings_PropertyChanged );
             }
@@ -69,10 +69,10 @@ namespace Tobi.Plugin.AudioPane
 
         }
 
-    internal sealed partial class AudioPlugin_KeyGestures
+    internal sealed partial class Settings_KeyGestures
         {
 
-        public AudioPlugin_KeyGestures ()
+        public Settings_KeyGestures  ()
             {
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler ( Settings_PropertyChanged );
             }
