@@ -6,12 +6,12 @@ namespace DtdParser
 {
     public class DTDEnumeration : IDTDOutput
     {
-        public List<object> items { get; set;}
+        public List<string> items { get; set;}
 
         /** Creates a new enumeration */
         public DTDEnumeration()
         {
-            items = new List<object>();
+            items = new List<string>();
         }
 
         /** Writes out a declaration for this enumeration */
