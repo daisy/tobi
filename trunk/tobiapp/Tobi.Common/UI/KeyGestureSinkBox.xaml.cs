@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -14,6 +15,10 @@ namespace Tobi.Common.UI
         public KeyGestureSinkBox()
         {
             InitializeComponent();
+
+            //AddHandler(MouseLeftButtonUpEvent,
+            //    new MouseButtonEventHandler((s, e) => FocusHelper.Focus(this, this)),
+            //    true);
         }
 
         public string KeyGestureSerializedEncoded { get; private set; }
@@ -162,7 +167,7 @@ namespace Tobi.Common.UI
                             ;
 
             KeyGestureSerializedEncoded = "[ " + common + "] " + (key != Key.None ? key.ToString() : "");
-            
+
             //if (Text != KeyGestureSerializedEncoded)
             //{
             //    Text = KeyGestureSerializedEncoded;
@@ -184,7 +189,7 @@ namespace Tobi.Common.UI
             Console.WriteLine("\n" + @"=====> "
                 + (keyG == null ? "INVALID" : displayStr)
                 + @" <==> "
-                + (keyG == null ? "INVALID" : KeyGestureStringConverter.Convert((KeyGesture) keyG)));
+                + (keyG == null ? "INVALID" : KeyGestureStringConverter.Convert((KeyGesture)keyG)));
 
             e.Handled = true;
         }
@@ -205,6 +210,27 @@ namespace Tobi.Common.UI
             {
                 e.Handled = true;
             }
+
+            if (key == Key.Escape && m_previousText != null)
+            {
+                Text = m_previousText;
+            }
+        }
+
+        private string m_previousText;
+
+        private void OnLostFocus_TextBox(object sender, RoutedEventArgs e)
+        {
+            if (System.Windows.Controls.Validation.GetHasError(this)
+                && m_previousText != null)
+            {
+                Text = m_previousText;
+            }
+        }
+
+        private void OnGotFocus_TextBox(object sender, RoutedEventArgs e)
+        {
+            m_previousText = (System.Windows.Controls.Validation.GetHasError(this) ? null : Text);
         }
     }
 }

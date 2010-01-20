@@ -6,5 +6,10 @@
                                   PreviewKeyDown="OnPreviewKeyDown_TextBox"
                                   KeyUp="OnKeyUp_TextBox"
                                   PreviewKeyUp="OnPreviewKeyUp_TextBox"
-                              >
+           
+           LostFocus="OnLostFocus_TextBox"
+           GotFocus="OnGotFocus_TextBox"
+         >
+  <!-- 
+         Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" -->
 </TextBlock>

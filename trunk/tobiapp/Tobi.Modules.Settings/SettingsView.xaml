@@ -6,6 +6,7 @@
            xmlns:System="clr-namespace:System;assembly=mscorlib"
            xmlns:Settings="clr-namespace:Tobi.Plugin.Settings"
            xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
+           
            >
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
@@ -66,18 +67,20 @@ AlternationCount="2"
       </ToolTip>
 
       <DataTemplate x:Key="SettingEditTemplate_KeyGesture" DataType="{x:Type UI:KeyGestureString}">
-        <UI:KeyGestureSinkBox>
+        <UI:KeyGestureSinkBox  Validation.Error="OnError">
 
           <UI:KeyGestureSinkBox.Resources>
             <Settings:DataContextSpy x:Key="dataContextSpy" />
           </UI:KeyGestureSinkBox.Resources>
 
-            <UI:KeyGestureSinkBox.Text>
+          <UI:KeyGestureSinkBox.Text>
             <Binding Path="Value" Converter="{Settings:TextToKeyGestureConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
-                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
               <Binding.ValidationRules>
-                <!-- DataErrorValidationRule/ --> <!-- IDataErrorInfo -->
+                <!-- DataErrorValidationRule/ -->
+                <!-- IDataErrorInfo -->
                 <Settings:KeyGestureValidationRule
                   DataContextBridge="{StaticResource dataContextBridge}"
                   DataContextSpy="{StaticResource dataContextSpy}"
@@ -100,7 +103,7 @@ AlternationCount="2"
                     </Storyboard>
                   </BeginStoryboard>
                 </EventTrigger -->
-                
+
                 <!-- MultiTrigger>
                   <MultiTrigger.Conditions>
                     <Condition Property="IsFocused" Value="false" />
@@ -122,23 +125,28 @@ AlternationCount="2"
 
                 </Trigger>
               </Style.Triggers>
+              <Style.Setters>
+              <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                </Style.Setters>
             </Style>
           </UI:KeyGestureSinkBox.Style>
         </UI:KeyGestureSinkBox>
-      
-    </DataTemplate>
+
+      </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
-        <TextBox>
+        <TextBox Validation.Error="OnError">
           <TextBox.Resources>
             <Settings:DataContextSpy x:Key="dataContextSpy" />
           </TextBox.Resources>
           <TextBox.Text>
             <Binding Path="Value" Converter="{Settings:TextToDoubleConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
-                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
               <Binding.ValidationRules>
-                <!-- DataErrorValidationRule/ --> <!-- IDataErrorInfo -->
+                <!-- DataErrorValidationRule/ -->
+                <!-- IDataErrorInfo -->
                 <Settings:DoubleValidationRule
                   DataContextBridge="{StaticResource dataContextBridge}"
                   DataContextSpy="{StaticResource dataContextSpy}"/>
@@ -161,17 +169,36 @@ AlternationCount="2"
 
                 </Trigger>
               </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                </Style.Setters>
             </Style>
           </TextBox.Style>
         </TextBox>
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}"/>
+        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}">
+          <CheckBox.Style>
+            <Style TargetType="{x:Type CheckBox}">
+              <Style.Setters>
+              <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                </Style.Setters>
+            </Style>
+          </CheckBox.Style>
+        </CheckBox>
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
-        <TextBlock Text="{Binding Value, Mode=OneWay}"/>
+        <TextBlock Text="{Binding Value, Mode=OneWay}">
+          <TextBlock.Style>
+            <Style TargetType="{x:Type TextBlock}">
+            <Style.Setters>
+              <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
       </DataTemplate>
 
       <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>
@@ -207,10 +234,25 @@ AlternationCount="2"
             <DataTemplate>
               <TextBlock Text="{Binding Name, Mode=OneWay}"
                          ToolTip="{StaticResource settingTooltip}"
-                         FontWeight="Bold">
+                         Margin="2,2,2,2">
+
                 <TextBlock.Style>
                   <Style TargetType="{x:Type TextBlock}">
-                    <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
+                    <Style.Setters>
+                      <Setter Property="FontWeight" Value="Bold" />
+                    </Style.Setters>
+
+                    <Style.Triggers>
+                      <!--
+                      DOESN't work for some strange reason... :(
+                      DataTrigger Binding="{Binding Path=IsChanged, Mode=OneWay}" Value="False">
+                        <Setter Property="FontWeight" Value="Normal"/>
+                      </DataTrigger -->
+                      <DataTrigger Binding="{Binding Path=Message, Mode=OneWay}" Value="{x:Null}">
+                        <Setter Property="FontWeight" Value="Normal"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                    
                   </Style>
                 </TextBlock.Style>
               </TextBlock>
@@ -221,12 +263,14 @@ AlternationCount="2"
         <GridViewColumn Header="Default"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
 
-        <GridViewColumn Header="Value"
+        <GridViewColumn Header="Current"
                         Width="150"
                         CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
-        <GridViewColumn Header="Message"
+        <GridViewColumn Header="Info"
+                        UI:SortableListView.SortPropertyName="Message"
                         Width="400">
+
           <GridViewColumn.CellTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Message, Mode=OneWay}"
@@ -234,7 +278,9 @@ AlternationCount="2"
                          FontStyle="Italic">
                 <TextBlock.Style>
                   <Style TargetType="{x:Type TextBlock}">
+                    <Style.Setters>
                     <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
+                      </Style.Setters>
                   </Style>
                 </TextBlock.Style>
               </TextBlock>

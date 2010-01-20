@@ -115,8 +115,8 @@ namespace Tobi.Common.MVVM
         /// a public property with the specified name. This 
         /// method does not exist in a Release build.
         /// </summary>
+        //[DebuggerStepThrough]
         [Conditional("DEBUG")]
-        [DebuggerStepThrough]
         public void VerifyPropertyName(string propertyName)
         {
             if (m_missingClassProperties.Contains(propertyName))
@@ -133,8 +133,9 @@ namespace Tobi.Common.MVVM
                 m_missingClassProperties.Add(propertyName);
 
                 string msg = String.Format(@"=== Invalid property name: ({0} / {1}) on {2}", propertyName, Reflect.GetField(() => propertyName).Name, m_ClassInstancePropertyHost.GetType().FullName);
+
+                Console.WriteLine(msg); 
                 //Debug.Fail(msg);
-                Console.WriteLine(msg);
             }
         }
 

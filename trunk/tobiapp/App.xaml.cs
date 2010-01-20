@@ -9,6 +9,7 @@ using System.Media;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
@@ -23,6 +24,12 @@ namespace Tobi
     /// </summary>
     public partial class App
     {
+        public App()
+        {
+            // Apparently fixes memory leaks...
+            new HwndSource(new HwndSourceParameters());
+        }
+
         public SplashScreen SplashScreen
         {
             get;
