@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace Tobi.Common.UI
@@ -14,8 +13,10 @@ namespace Tobi.Common.UI
         {
             ui.Focusable = true;
             ui.Focus();
-            FocusManager.SetFocusedElement(obj, ui);
-            Keyboard.Focus(ui);
+
+            // The method call above does all of the below:
+            //FocusManager.SetFocusedElement(obj, ui);
+            //Keyboard.Focus(ui);
         }
 
         public static void FocusBeginInvoke(DependencyObject obj, UIElement ui)
