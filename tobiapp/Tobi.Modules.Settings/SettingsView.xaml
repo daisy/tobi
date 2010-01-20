@@ -148,34 +148,38 @@ AlternationCount="2"
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
-        <TextBox Validation.Error="OnError">
-          <TextBox.Resources>
+        <UI:ValidationAwareTextBox Validation.Error="OnError">
+          
+          <UI:ValidationAwareTextBox.Resources>
             <XAML:DataContextSpy x:Key="dataContextSpy" />
-          </TextBox.Resources>
-          <TextBox.Text>
+          </UI:ValidationAwareTextBox.Resources>
+          
+          <!-- DataErrorValidationRule/ -->
+          <!-- IDataErrorInfo -->
+          
+          <UI:ValidationAwareTextBox.Text>
             <Binding Path="Value" Converter="{Settings:TextToDoubleConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
                      ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
                      NotifyOnValidationError="True">
               <Binding.ValidationRules>
-                <!-- DataErrorValidationRule/ -->
-                <!-- IDataErrorInfo -->
+
                 <Settings:DoubleValidationRule
                   DataContextBridge="{StaticResource dataContextBridge}"
                   DataContextSpy="{StaticResource dataContextSpy}"/>
               </Binding.ValidationRules>
             </Binding>
-          </TextBox.Text>
+          </UI:ValidationAwareTextBox.Text>
 
-          <TextBox.Style>
-            <Style TargetType="{x:Type TextBox}">
+          <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
+          <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
+                          Path=(Validation.Errors).CurrentItem, 
+                          Converter={Settings:ValidationErrorConverter}}" -->
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
               <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="true">
 
-                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
-                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
-                          Path=(Validation.Errors).CurrentItem, 
-                          Converter={Settings:ValidationErrorConverter}}" -->
                   <Setter Property="ToolTip"
                           Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                           />
@@ -186,9 +190,10 @@ AlternationCount="2"
                 <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
                 </Style.Setters>
             </Style>
-          </TextBox.Style>
-        </TextBox>
-      </DataTemplate>
+          </UI:ValidationAwareTextBox.Style>
+        </UI:ValidationAwareTextBox>
+      
+    </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
         <CheckBox IsChecked="{Binding Value, Mode=TwoWay}">

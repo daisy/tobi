@@ -6,7 +6,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Threading;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Tobi.Common.UI
@@ -191,7 +190,7 @@ namespace Tobi.Common.UI
 
             if (key == Key.Escape)
             {
-                if (m_previousValidText != null)
+                if (!string.IsNullOrEmpty(m_previousValidText))
                 {
                     Text = m_previousValidText;
                 }
@@ -241,7 +240,7 @@ namespace Tobi.Common.UI
             //Focused = false;
 
             if (System.Windows.Controls.Validation.GetHasError(this)
-                && m_previousValidText != null)
+                && !string.IsNullOrEmpty(m_previousValidText))
             {
                 Text = m_previousValidText;
             }
