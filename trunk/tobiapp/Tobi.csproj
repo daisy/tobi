@@ -24,7 +24,7 @@
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
     <TargetFrameworkSubset>Full</TargetFrameworkSubset>
-    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.1.4.0\</PublishUrl>
+    <PublishUrl>C:\Users\Rachana Singh\Documents\Publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,7 +34,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.digitaltalkingbook.com/projects/tobi/install/alpha/</InstallUrl>
+    <InstallUrl>http://www.digitaltalkingbook.com/projects/tobi/test_folder/</InstallUrl>
     <SupportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Help.html</SupportUrl>
     <ErrorReportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
     <ProductName>Tobi</ProductName>
@@ -43,7 +43,7 @@
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.1.4.0</ApplicationVersion>
+    <ApplicationVersion>0.1.10.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
