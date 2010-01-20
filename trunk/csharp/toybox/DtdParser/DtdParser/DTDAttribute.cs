@@ -24,7 +24,7 @@ namespace DtdParser
                     "Must be string, DTDEnumeration or DTDNotationList");
             }
 
-            type = value;
+            m_Type = value;
             } 
         }
 
@@ -74,7 +74,7 @@ namespace DtdParser
                 writer.Write(defaultValue);
                 writer.Write("\"");
             }
-            //writer.WriteLine(">");                            Bug!
+            //writer.WriteLine(">");                           original java comment: "Bug!"
         }
 
         public bool equals(object ob)

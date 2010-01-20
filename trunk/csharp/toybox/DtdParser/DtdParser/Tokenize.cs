@@ -24,7 +24,8 @@ namespace DtdParser
                     parser = new DTDParser(new File(args[0]), true);
                 }
                 * */
-                StreamReader reader = new StreamReader(args[0]);
+                //StreamReader reader = new StreamReader(args[0]);
+		        StreamReader reader = new StreamReader(@"..\..\..\dtbook-2005-3-mod.dtd");
                 parser = new DTDParser(reader, true);
 
     // Parse the DTD and ask the parser to guess the root element
@@ -125,11 +126,11 @@ namespace DtdParser
 		    }
 		    catch (Exception exc)
 		    {
-			    //exc.printStackTrace(System.out);
-                
-                //TODO: can't access Trace ... ??!!
-		        //Trace(exc.Message);
+			    Trace.WriteLine(exc.StackTrace);
+                Console.WriteLine(exc.Message);
 		    }
+
+            Console.ReadKey(); //keep the console open
 	    }
 
         public static void dumpDTDItem(DTDItem item)
@@ -164,7 +165,7 @@ namespace DtdParser
             else if (item is DTDSequence)
             {
                 System.Console.Write("(");
-                List<DTDItem> items = ((DTDChoice) item).items;
+                List<DTDItem> items = ((DTDSequence) item).items;
                 bool isFirst = true;
                 foreach (DTDItem dtditem in items)
                 {
@@ -177,7 +178,7 @@ namespace DtdParser
             else if (item is DTDMixed)
             {
                 System.Console.Write("(");
-                List<DTDItem> items = ((DTDChoice) item).items;
+                List<DTDItem> items = ((DTDMixed) item).items;
                 bool isFirst = true;
                 foreach (DTDItem dtditem in items)
                 {
@@ -217,14 +218,14 @@ namespace DtdParser
             else if (attr.type is DTDEnumeration)
             {
                 System.Console.Write("(");
-                
-                List<DTDItem> items = ((DTDChoice) attr.type).items;
+
+                List<string> items = ((DTDEnumeration) attr.type).items;
                 bool isFirst = true;
-                foreach (DTDItem dtditem in items)
+                foreach (string dtditem in items)
                 {
                     if (!isFirst) System.Console.Write(",");
                     isFirst = false;
-                    dumpDTDItem(dtditem);
+                    System.Console.Write(dtditem);
                 }
                 System.Console.Write(")");
                 
@@ -233,13 +234,13 @@ namespace DtdParser
             {
                 System.Console.Write("Notation (");
                 
-                List<DTDItem> items = ((DTDChoice)attr.type).items;
+                List<string> items = ((DTDNotationList)attr.type).items;
                 bool isFirst = true;
-                foreach (DTDItem dtditem in items)
+                foreach (string dtditem in items)
                 {
                     if (!isFirst) System.Console.Write(",");
                     isFirst = false;
-                    dumpDTDItem(dtditem);
+                    System.Console.Write(dtditem);
                 }
                 System.Console.Write(")");
             }

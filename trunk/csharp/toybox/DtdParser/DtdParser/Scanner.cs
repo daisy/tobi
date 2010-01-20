@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 
 namespace DtdParser
@@ -147,8 +148,7 @@ namespace DtdParser
                 }
                 if (trace)
                 {   
-                    //TODO: trace isn't working ??!
-                    //System.Diagnostics.Trace.Write((char) expNextChar);
+                    Trace.Write((char) expNextChar);
                 }
                 return expNextChar;
             }
@@ -162,8 +162,7 @@ namespace DtdParser
 
             if (trace)
             {
-                //TODO: Trace not working.. 
-                //System.Diagnostics.Trace.Write((char) retval);
+                Trace.Write((char) retval);
             }
 		    return retval;
 	    }
@@ -391,7 +390,9 @@ namespace DtdParser
 			    }
 			    else if ((ch == '&') || (ch == '%'))
 			    {
-			        if ((ch == '%') && string.IsNullOrEmpty(chstr.Trim()))//Character.isWhitespace((char)peekChar()))
+			        string peekstr = "";
+			        peekstr += (char) peekChar();
+			        if ((ch == '%') && string.IsNullOrEmpty(peekstr.Trim()))
                     {
                         return new Token(PERCENT);
                     }
@@ -414,7 +415,7 @@ namespace DtdParser
 				    {
                         throw new DTDParseException(getUriId(),
                                     "Expected ';' after reference "+
-                                    buff +", found '"+ch+"'",
+                                    buff +", found '" + (char)ch + "'",
                                     getLineNumber(), getColumn());
 				    }
                     buff+= (';');
@@ -584,7 +585,7 @@ namespace DtdParser
 
         public bool isBaseChar(char ch)
         {
-            for (int i=0; i < letterRanges.Length; i++)
+            for (int i=0; i < letterRanges.GetLength(0); i++)
             {
                 if (ch < (char)letterRanges[i,0]) return false;
                 if ((ch >= (char)letterRanges[i,0]) &&

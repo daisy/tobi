@@ -72,4 +72,7 @@
     <Compile Include="Tokenize.cs" />
     <Compile Include="TokenType.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
 </Project>

@@ -110,7 +110,6 @@ namespace DtdParser
                 token = scanner.peek();
 
                 if (token.Type == Scanner.EOF) break;
-
                 parseTopLevelElement();
             }
 
@@ -140,7 +139,7 @@ namespace DtdParser
                 {
                     IDictionaryEnumerator enumerator = roots.GetEnumerator();
                     enumerator.MoveNext();
-                    dtd.rootElement = (DTDElement)enumerator.Current;
+                    dtd.rootElement = (DTDElement)((DictionaryEntry)enumerator.Current).Value;
                 }
                 else
                 {
@@ -170,8 +169,7 @@ namespace DtdParser
             }
         }
 
-        protected void parseTopLevelElement()
-            
+        protected void parseTopLevelElement()    
         {
             Token token = scanner.get();
 

@@ -5,12 +5,12 @@ namespace DtdParser
 {
     public class DTDNotationList : IDTDOutput
     {
-        public List<object> items { get; set; }
+        public List<string> items { get; set; }
 
         /** Creates a new notation */
         public DTDNotationList()
         {
-            items = new List<object>();
+            items = new List<string>();
         }
 
         /** Writes a declaration for this notation */
