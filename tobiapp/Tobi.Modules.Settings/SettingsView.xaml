@@ -89,19 +89,7 @@ AlternationCount="2"
           <UI:KeyGestureSinkBox.Style>
             <Style TargetType="{x:Type UI:KeyGestureSinkBox}">
               <Style.Triggers>
-                <!-- DataTrigger Binding="{Binding IsDuplicated}" Value="True">
-                  <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                      <Storyboard>
-                        <ColorAnimation AutoReverse="True"
-                                        RepeatBehavior="2x"
-                                        Completed="OnColorAnimationCompleted"
-                                        Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)"
-                                        To="Orange" Duration="0:0:0.3"/>
-                      </Storyboard>
-                    </BeginStoryboard>
-                  </DataTrigger.EnterActions>
-                </DataTrigger -->
+                
 
                 <!-- Storyboard.Target="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:KeyGestureSinkBox}}}" -->
                 <!-- EventTrigger RoutedEvent="UI:KeyGestureSinkBox.Escaped">
@@ -196,12 +184,29 @@ AlternationCount="2"
     </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}">
+        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" Content="False"
+                  IsThreeState="False">
           <CheckBox.Style>
             <Style TargetType="{x:Type CheckBox}">
               <Style.Setters>
               <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
                 </Style.Setters>
+              <Style.Triggers>
+              <DataTrigger Binding="{Binding Value}" Value="True">
+                  <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                                     Storyboard.TargetProperty="Content">
+
+                          <DiscreteObjectKeyFrame KeyTime="00:00:00"
+                                                  Value="True"/>
+                        </ObjectAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.EnterActions>
+                </DataTrigger>
+              </Style.Triggers>
             </Style>
           </CheckBox.Style>
         </CheckBox>
