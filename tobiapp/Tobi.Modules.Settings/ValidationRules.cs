@@ -1,0 +1,127 @@
+﻿using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Tobi.Common.UI;
+using Tobi.Common.UI.XAML;
+
+namespace Tobi.Plugin.Settings
+{
+    public abstract class DataContextValidationRuleBase : ValidationRule
+    {
+        public FrameworkElement DataContextBridge
+        {
+            get;
+            set;
+        }
+
+        public DataContextSpy DataContextSpy
+        {
+            get;
+            set;
+        }
+
+        protected ValidationResult NotValid(string msg)
+        {
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            currentSetting.Message = msg;
+            return new ValidationResult(false, msg);
+        }
+
+        protected ValidationResult Valid()
+        {
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            currentSetting.Message = "";
+            return new ValidationResult(true, null);
+        }
+    }
+
+    public class KeyGestureValidationRule : DataContextValidationRuleBase
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var str = value as string;
+            if (String.IsNullOrEmpty(str))
+            {
+                return NotValid("Value cannot be empty.");
+            }
+
+            KeyGesture val = KeyGestureStringConverter.Convert(str);
+            if (val == null)
+            {
+                return NotValid("Invalid keyboard shortcut.");
+            }
+
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+
+            string strSettingsAlreadyUsingKeyG = "";
+            foreach (var aggregatedSetting in ((SettingsView)DataContextBridge.DataContext).AggregatedSettings)
+            {
+                if (currentSetting == aggregatedSetting)
+                {
+                    continue;
+                }
+
+                if (aggregatedSetting.ValueType == typeof(KeyGestureString))
+                {
+                    if (val.Key == ((KeyGesture)aggregatedSetting.Value).Key)
+                    {
+                        if (val.Modifiers.Equals(((KeyGesture)aggregatedSetting.Value).Modifiers))
+                        {
+                            strSettingsAlreadyUsingKeyG += aggregatedSetting.Name;
+                            strSettingsAlreadyUsingKeyG += " ";
+                        }
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
+            {
+                return NotValid("Shortcut already used by: " + strSettingsAlreadyUsingKeyG);
+            }
+
+            return Valid();
+        }
+    }
+
+    public class DoubleValidationRule : DataContextValidationRuleBase
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var str = value as string;
+            if (String.IsNullOrEmpty(str))
+            {
+                return NotValid("Value cannot be empty.");
+            }
+
+            double val;
+            if (!Double.TryParse(str, out val))
+            {
+                return NotValid("Invalid numeric value.");
+            }
+
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            string lowName = currentSetting.Name.ToLower();
+
+            // Super-master hack ! :)
+            bool mustBePositive = lowName.Contains("width") || lowName.Contains("height");
+
+            if (mustBePositive)
+            {
+                if (val < 0 || val > 9999)
+                {
+                    return NotValid("Numeric value is out of range [0, 9999].");
+                }
+            }
+            else
+            {
+                if (val < -1 || val > 9999)
+                {
+                    return NotValid("Numeric value is out of range [-9999, 9999].");
+                }
+            }
+
+            return Valid();
+        }
+    }
+}

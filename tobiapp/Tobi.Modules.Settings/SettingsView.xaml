@@ -4,10 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
            xmlns:System="clr-namespace:System;assembly=mscorlib"
-           xmlns:Settings="clr-namespace:Tobi.Plugin.Settings"
-           xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
-           
-           >
+           xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
@@ -26,7 +23,7 @@
     <TextBlock
       Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
 
-    <_UnusedCode:WatermarkTextBox Watermark="search keywords"
+    <UI:WatermarkTextBox Watermark="search keywords"
                                   HorizontalAlignment="Stretch"/>
   </DockPanel>
 
@@ -70,7 +67,7 @@ AlternationCount="2"
         <UI:KeyGestureSinkBox  Validation.Error="OnError">
 
           <UI:KeyGestureSinkBox.Resources>
-            <Settings:DataContextSpy x:Key="dataContextSpy" />
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
           </UI:KeyGestureSinkBox.Resources>
 
           <UI:KeyGestureSinkBox.Text>
@@ -92,13 +89,29 @@ AlternationCount="2"
           <UI:KeyGestureSinkBox.Style>
             <Style TargetType="{x:Type UI:KeyGestureSinkBox}">
               <Style.Triggers>
+                <!-- DataTrigger Binding="{Binding IsDuplicated}" Value="True">
+                  <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <ColorAnimation AutoReverse="True"
+                                        RepeatBehavior="2x"
+                                        Completed="OnColorAnimationCompleted"
+                                        Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)"
+                                        To="Orange" Duration="0:0:0.3"/>
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.EnterActions>
+                </DataTrigger -->
 
-                <!-- EventTrigger RoutedEvent="Control.LostFocus">
+                <!-- Storyboard.Target="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:KeyGestureSinkBox}}}" -->
+                <!-- EventTrigger RoutedEvent="UI:KeyGestureSinkBox.Escaped">
                   <BeginStoryboard>
-                    <Storyboard>
+                    <Storyboard Timeline.Completed="OnCompleted_EscapedKeyGestureSinkBox">
                       <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
-                                                     Storyboard.TargetProperty="(UI:KeyGestureSinkBox.Text)">
-                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Value}"/>
+                                                     Storyboard.TargetProperty="(FrameworkElement.Tooltip)">
+                        
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00"
+                                                Value="Escaped"/>
                       </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                   </BeginStoryboard>
@@ -137,7 +150,7 @@ AlternationCount="2"
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
         <TextBox Validation.Error="OnError">
           <TextBox.Resources>
-            <Settings:DataContextSpy x:Key="dataContextSpy" />
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
           </TextBox.Resources>
           <TextBox.Text>
             <Binding Path="Value" Converter="{Settings:TextToDoubleConverter}" Mode="TwoWay"
@@ -264,6 +277,9 @@ AlternationCount="2"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
 
         <GridViewColumn Header="Current"
+                        DisplayMemberBinding="{Binding OriginalValue, Mode=OneWay}"/>
+
+        <GridViewColumn Header="Edit"
                         Width="150"
                         CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
@@ -294,10 +310,15 @@ AlternationCount="2"
 
       <Style TargetType="{x:Type ListViewItem}">
 
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Style.Setters>
+          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
-        <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+          <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
 
+          <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
+          <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
+        </Style.Setters>
+        
         <Style.Triggers>
           <Trigger Property="ItemsControl.AlternationIndex" Value="0">
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
