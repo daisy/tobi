@@ -85,6 +85,16 @@
     <Compile Include="AudioPaneViewModelUndoRedo.cs" />
     <Compile Include="AudioPaneView_WaveFormLoader.cs" />
     <Compile Include="AudioPaneView_WaveFormSelection.cs" />
+    <Compile Include="AudioPluginSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>AudioPluginSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="AudioPlugin_KeyGestures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>AudioPlugin_KeyGestures.settings</DependentUpon>
+    </Compile>
     <Compile Include="AudioSettings.xaml.cs">
       <DependentUpon>AudioSettings.xaml</DependentUpon>
     </Compile>
@@ -95,6 +105,7 @@
     <Compile Include="AudioPaneView.xaml.cs">
       <DependentUpon>AudioPaneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AudioPluginSettings.cs" />
     <Compile Include="WaveFormLoadingAdorner.cs" />
     <Compile Include="WaveFormTimeTicksAdorner.cs" />
   </ItemGroup>
@@ -167,6 +178,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AudioPluginSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>AudioPluginSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="AudioPlugin_KeyGestures.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>AudioPlugin_KeyGestures.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
