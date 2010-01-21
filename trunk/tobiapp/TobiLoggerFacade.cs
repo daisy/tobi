@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.UI;
 
 #if (BITFACTORY) // We're not using BitFactory anymore ( http://dotnetlog.theobjectguy.com/ )
 using BitFactory.Logging;
@@ -32,6 +33,9 @@ namespace Tobi
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
 
             PresentationTraceSources.DataBindingSource.Listeners.Add(new LoggerFacadeTraceListener(this));
+#if (DEBUG)
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new BindingErrorAdornerTraceListener());
+#endif
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
 
             PresentationTraceSources.DependencyPropertySource.Listeners.Add(new LoggerFacadeTraceListener(this));
