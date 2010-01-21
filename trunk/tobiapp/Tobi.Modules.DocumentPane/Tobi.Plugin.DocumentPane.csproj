@@ -74,6 +74,17 @@
     <Compile Include="DocumentPaneView.xaml.cs">
       <DependentUpon>DocumentPaneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings_KeyGestures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
+    </Compile>
     <Compile Include="XukToFlowDocument.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -83,8 +94,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
-      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
@@ -129,6 +140,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Settings_KeyGestures.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

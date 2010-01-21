@@ -76,6 +76,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Settings_KeyGestures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
+    </Compile>
     <Compile Include="ToolBarsPlugin.cs" />
     <Compile Include="ToolBarsView.xaml.cs">
       <DependentUpon>ToolBarsView.xaml</DependentUpon>
@@ -136,6 +141,10 @@
     <None Include="Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Settings_KeyGestures.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
