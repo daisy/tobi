@@ -2,23 +2,42 @@
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace Tobi.Common._UnusedCode
+
+namespace Tobi.Common.UI
 {
     /// <summary>
-    /// ComboColorPicker user control
-    /// This code is open source published with the Code Project Open License (CPOL).
-    ///
-    /// Originally written by Øystein Bjørke, March 2009.
-    /// 
-    /// The code and accompanying article can be found at http://www.codeproject.com
+    /// Originally written by Øystein Bjørke, March 2009. Code Project Open License (CPOL)
     /// </summary>
-    
-    public partial class ComboColorPicker : UserControl
+    public partial class ComboBoxColor
     {
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Escape)
+            {
+                SelectedColor = m_previousColor;
+            }
+        }
+
+        private Color m_previousColor;
+
+        private void OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            FontWeight = FontWeights.Normal;
+        }
+
+        private void OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            m_previousColor = SelectedColor;
+            FontWeight = FontWeights.UltraBold;
+        }
+
         #region Dependency properties
         public Color SelectedColor
         {
@@ -27,13 +46,13 @@ namespace Tobi.Common._UnusedCode
         }
 
         public static readonly DependencyProperty SelectedColorProperty =
-            DependencyProperty.Register("SelectedColor", typeof(Color), typeof(ComboColorPicker),
+            DependencyProperty.Register("SelectedColor", typeof(Color), typeof(ComboBoxColor),
                                         new FrameworkPropertyMetadata(OnSelectedColorChanged));
 
         private static void OnSelectedColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
 
-            ComboColorPicker cp = obj as ComboColorPicker;
+            ComboBoxColor cp = obj as ComboBoxColor;
             Debug.Assert(cp != null);
 
             Color newColor = (Color)args.NewValue;
@@ -77,13 +96,13 @@ namespace Tobi.Common._UnusedCode
 
         // Using a DependencyProperty as the backing store for SelectedBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedBrushProperty =
-            DependencyProperty.Register("SelectedBrush", typeof(Brush), typeof(ComboColorPicker),
+            DependencyProperty.Register("SelectedBrush", typeof(Brush), typeof(ComboBoxColor),
                                         new FrameworkPropertyMetadata(OnSelectedBrushChanged));
 
         private static void OnSelectedBrushChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             // Debug.WriteLine("OnSelectedBrushChanged");
-            ComboColorPicker cp = (ComboColorPicker)obj;
+            ComboBoxColor cp = (ComboBoxColor)obj;
             SolidColorBrush newBrush = (SolidColorBrush)args.NewValue;
             // SolidColorBrush oldBrush = (SolidColorBrush)args.OldValue;
 
@@ -95,7 +114,7 @@ namespace Tobi.Common._UnusedCode
         #region Events
         public static readonly RoutedEvent ColorChangedEvent =
             EventManager.RegisterRoutedEvent("ColorChanged", RoutingStrategy.Bubble,
-                                             typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ComboColorPicker));
+                                             typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ComboBoxColor));
 
         public event RoutedPropertyChangedEventHandler<Color> ColorChanged
         {
@@ -106,23 +125,24 @@ namespace Tobi.Common._UnusedCode
         protected virtual void OnColorChanged(Color oldValue, Color newValue)
         {
             RoutedPropertyChangedEventArgs<Color> args = new RoutedPropertyChangedEventArgs<Color>(oldValue, newValue);
-            args.RoutedEvent = ComboColorPicker.ColorChangedEvent;
+            args.RoutedEvent = ComboBoxColor.ColorChangedEvent;
             RaiseEvent(args);
         }
         #endregion
 
         static Brush _CheckerBrush = CreateCheckerBrush();
-        public static Brush CheckerBrush { get { return _CheckerBrush;  } }
+        public static Brush CheckerBrush { get { return _CheckerBrush; } }
         // Todo: should this be disposed somewhere?
 
-        public ComboColorPicker()
+        public ComboBoxColor()
         {
             InitializeComponent();
 
             InitializeColors();
         }
 
-        public  void InitializeColors() {
+        public void InitializeColors()
+        {
             ColorList1.Items.Clear();
 
             /*
@@ -158,7 +178,7 @@ namespace Tobi.Common._UnusedCode
             PropertyInfo[] pis = colorsType.GetProperties();
             foreach (PropertyInfo pi in pis)
                 AddColor((Color)pi.GetValue(null, null), pi.Name);
-            
+
             // todo: does this work?
             ColorList1.SelectedValuePath = "Color";
         }
@@ -166,7 +186,7 @@ namespace Tobi.Common._UnusedCode
 
         private void AddColor(Color color, string name)
         {
-            if (!name.StartsWith("#",StringComparison.Ordinal))
+            if (!name.StartsWith("#", StringComparison.Ordinal))
                 name = NiceName(name);
             ColorViewModel cvm = new ColorViewModel() { Color = color, Name = name };
             ColorList1.Items.Add(cvm);

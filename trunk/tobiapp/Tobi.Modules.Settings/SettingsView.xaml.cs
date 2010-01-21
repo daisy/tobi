@@ -112,7 +112,7 @@ namespace Tobi.Plugin.Settings
                 e.OriginalSource is KeyGestureSinkBox
                 || e.OriginalSource is CheckBox
                 || e.OriginalSource is TextBox
-                || e.OriginalSource is ComboColorPicker)
+                || e.OriginalSource is ComboBoxColor)
             {
                 FocusHelper.Focus(((UIElement)sender), ((UIElement)sender));
 
@@ -162,7 +162,7 @@ namespace Tobi.Plugin.Settings
                 e.OriginalSource is KeyGestureSinkBox
                 || e.OriginalSource is CheckBox
                 || e.OriginalSource is TextBox
-                || e.OriginalSource is ComboColorPicker)
+                || e.OriginalSource is ComboBoxColor)
             {
                 FocusHelper.Focus(((UIElement)sender), ((UIElement)sender));
 

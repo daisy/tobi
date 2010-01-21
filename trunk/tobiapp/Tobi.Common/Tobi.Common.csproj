@@ -150,6 +150,9 @@
     <Compile Include="UI\SortableListView.cs" />
     <Compile Include="UI\TextBoxReadOnlyCaretVisible.cs" />
     <Compile Include="UI\TreeViewExtensions.cs" />
+    <Compile Include="UI\ComboBoxColor.xaml.cs">
+      <DependentUpon>ComboBoxColor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ValidationAwareTextBox.xaml.cs">
       <DependentUpon>ValidationAwareTextBox.xaml</DependentUpon>
     </Compile>
@@ -167,9 +170,6 @@
     <Compile Include="_UnusedCode\BindableRun.cs" />
     <Compile Include="_UnusedCode\BindableRunTextMedia.cs" />
     <Compile Include="_UnusedCode\CollapsibleGridSplitter.cs" />
-    <Compile Include="_UnusedCode\ComboColorPicker.xaml.cs">
-      <DependentUpon>ComboColorPicker.xaml</DependentUpon>
-    </Compile>
     <Compile Include="_UnusedCode\CommandExtension.cs" />
     <Compile Include="_UnusedCode\CommandParameter.cs" />
     <Compile Include="_UnusedCode\CommandSource.cs" />
@@ -240,6 +240,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\ComboBoxColor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\ValidationAwareTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -247,10 +251,6 @@
     <Page Include="UI\WatermarkTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="_UnusedCode\ComboColorPicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="_UnusedCode\LoadingUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

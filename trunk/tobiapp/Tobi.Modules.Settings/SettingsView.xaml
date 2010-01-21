@@ -213,15 +213,15 @@ AlternationCount="2"
       </DataTemplate>
       
       <DataTemplate x:Key="SettingEditTemplate_Color" DataType="{x:Type Color}">
-        <_UnusedCode:ComboColorPicker SelectedColor="{Binding Value, Mode=TwoWay}">
-          <_UnusedCode:ComboColorPicker.Style>
-            <Style TargetType="{x:Type _UnusedCode:ComboColorPicker}">
+        <UI:ComboBoxColor SelectedColor="{Binding Value, Mode=TwoWay}">
+          <UI:ComboBoxColor.Style>
+            <Style TargetType="{x:Type UI:ComboBoxColor}">
               <Style.Setters>
                 <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
-          </_UnusedCode:ComboColorPicker.Style>
-        </_UnusedCode:ComboColorPicker>
+          </UI:ComboBoxColor.Style>
+        </UI:ComboBoxColor>
     </DataTemplate>
       
       <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
