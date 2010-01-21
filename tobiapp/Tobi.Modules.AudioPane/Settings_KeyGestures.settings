@@ -2,88 +2,88 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
-    <Setting Name="Audio_Focus_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_FocusStatusBar_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_FocusStatusBar" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_BeginSelection_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_BeginSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_EndSelection_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_EndSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_Delete_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_Delete" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_InsertFile_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_InsertFile" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_OpenFile_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_OpenFile" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_GotoBegin_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_GotoBegin" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_GotoEnd_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_GotoEnd" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_SelectPreviousChunk_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_SelectPreviousChunk" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_SelectNextChunk_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_SelectNextChunk" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_StepBack_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_StepBack" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_StepForward_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_StepForward" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_FastForward_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_FastForward" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_Rewind_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_Rewind" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_ClearSelection_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_ClearSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_ZoomSelection_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_ZoomSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_FitFull_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_FitFull" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_AutoPlay_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_AutoPlay" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_StartRecord_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_StartRecord" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_StopRecord_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_StopRecord" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_StartMonitor_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_StartMonitor" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_StopMonitor_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_StopMonitor" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_Play_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_Play" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_PlayPreviewLeft_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_PlayPreviewLeft" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_PlayPreviewRight_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_PlayPreviewRight" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_Pause_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_Pause" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Audio_ShowOptions_KEYS" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="KeyGesture_ShowOptions" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>
