@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -35,6 +36,8 @@ namespace Tobi.Common.UI
             }
 
             ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
+
+            command.DataChanged += (sender, ev) => ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
         public static readonly DependencyProperty ShowTextLabelProperty =
@@ -57,6 +60,17 @@ namespace Tobi.Common.UI
 
         public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand command, bool showTextLabel)
         {
+            if (button.Command != null
+                && button.Command != command
+                && button.Command is RichDelegateCommand
+                && ((RichDelegateCommand)button.Command).DataChangedHasHandlers)
+            {
+                //TODO: remove DataChanged event handlers...
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+
             button.Command = command;
 
             button.ToolTip = command.LongDescription +
@@ -106,7 +120,7 @@ namespace Tobi.Common.UI
                                                       () => iconProvider.IconMedium))
                                           };
                         var bindingExpressionBase_ =
-                            ((ImageAndTextPlaceholder) button.Tag).m_ImageHost.SetBinding(
+                            ((ImageAndTextPlaceholder)button.Tag).m_ImageHost.SetBinding(
                                 ContentControl.ContentProperty, binding);
                     }
 
@@ -116,7 +130,7 @@ namespace Tobi.Common.UI
                     button.SetValue(AutomationProperties.NameProperty, button.ToolTip);
                     //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
-                    ((ImageAndTextPlaceholder) button.Tag).m_Command = command;
+                    ((ImageAndTextPlaceholder)button.Tag).m_Command = command;
                 }
                 else
                 {

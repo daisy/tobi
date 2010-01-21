@@ -51,7 +51,7 @@ namespace Tobi {
     internal sealed partial class Settings {
         
         public Settings() {
-            PropertyChanged +=new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
+            //PropertyChanged +=new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
         }
         //~Settings()
         //{
@@ -68,7 +68,7 @@ namespace Tobi {
 
         public Settings_KeyGestures()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
+            //PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
         }
         //~Settings_KeyGestures()
         //{

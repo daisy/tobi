@@ -35,7 +35,7 @@ namespace Tobi.Common.MVVM.Command
 
             IconProvider.IconDrawScale = scale;
 
-            foreach(var iconProvider in m_IconProviders)
+            foreach (var iconProvider in m_IconProviders)
             {
                 iconProvider.IconDrawScale = scale;
             }
@@ -146,10 +146,19 @@ namespace Tobi.Common.MVVM.Command
             }
         }
 
+        private KeyGesture m_KeyGesture;
         public KeyGesture KeyGesture
         {
-            get;
-            private set;
+            get { return m_KeyGesture; }
+            set
+            {
+                m_KeyGesture = value;
+                if (KeyBinding != null)
+                {
+                    KeyBinding.Gesture = m_KeyGesture;
+                }
+                FireDataChanged();
+            }
         }
 
         private string m_KeyGestureText = "";
@@ -158,12 +167,28 @@ namespace Tobi.Common.MVVM.Command
             set
             {
                 m_KeyGestureText = value;
+                FireDataChanged();
             }
             get
             {
                 //CultureInfo.InvariantCulture
                 //return KeyGesture.DisplayString;
                 return (KeyGesture == null ? m_KeyGestureText : KeyGestureSinkBox.GetDisplayString(KeyGesture));
+            }
+        }
+
+        public event EventHandler DataChanged;
+        private void FireDataChanged()
+        {
+            EventHandler d = DataChanged;
+            if (d != null) d(this, EventArgs.Empty);
+        }
+        public bool DataChangedHasHandlers
+        {
+            get
+            {
+                EventHandler d = DataChanged;
+                return d != null;
             }
         }
     }

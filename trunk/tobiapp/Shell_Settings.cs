@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using Microsoft.Practices.Composite.Logging;
+using Tobi.Common.MVVM;
 
 namespace Tobi
 {
@@ -25,7 +27,18 @@ namespace Tobi
             {
                 m_SettingsDone = true;
 
-                m_Logger.Log(@"setings applied to Shell Window", Category.Debug, Priority.Medium);
+                m_Logger.Log(@"settings applied to Shell Window", Category.Debug, Priority.Medium);
+            }
+        }
+
+        private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName ==
+                PropertyChangedNotifyBase.GetMemberName(() =>
+                    Settings_KeyGestures.Default.KeyGesture_MenuExit))
+            {
+                //ExitCommand.KeyBinding.Gesture = Settings_KeyGestures.Default.KeyGesture_MenuExit;
+                ExitCommand.KeyGesture = Settings_KeyGestures.Default.KeyGesture_MenuExit;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Reflection;
 using System.Windows;
@@ -10,6 +11,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using System.Diagnostics;
 using System.IO;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using Application = System.Windows.Application;
@@ -46,11 +48,14 @@ namespace Tobi
         {
             m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
 
+            Settings_KeyGestures.Default.PropertyChanged += SettingsPropertyChanged;
+
             //
             ExitCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Menu_Exit,
                 UserInterfaceStrings.Menu_Exit_,
-                UserInterfaceStrings.Menu_Exit_KEYS,
+                Settings_KeyGestures.Default.KeyGesture_MenuExit,
+                //UserInterfaceStrings.Menu_Exit_KEYS,
                 LoadTangoIcon(@"system-log-out"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
                 //LoadTangoIcon("document-save"),
@@ -245,8 +250,7 @@ namespace Tobi
 
                     var p = new Process
                                 {
-                                    StartInfo =
-                                        {FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}
+                                    StartInfo = { FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) }
                                 };
                     p.Start();
                 },
@@ -262,7 +266,7 @@ namespace Tobi
                 () =>
                 {
                     m_Logger.Log(@"ShellView.OpenTobiSettingsFolderCommand", Category.Debug, Priority.Medium);
-                    
+
                     Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
                     string settingsPath = Path.GetDirectoryName(config.FilePath);
 
@@ -422,7 +426,7 @@ namespace Tobi
             {
                 m_Logger.Log(
                     "KeyBinding (" +
-                    KeyGestureSinkBox.GetDisplayString(((KeyGesture)(inputBinding.Gesture)))+ ")",
+                    KeyGestureSinkBox.GetDisplayString(((KeyGesture)(inputBinding.Gesture))) + ")",
                     Category.Debug, Priority.Medium);
             }
             else
