@@ -3,6 +3,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class StreamInfo
@@ -45,135 +48,135 @@ namespace DtdParser
 	    public static TokenType ENDCONDITIONAL = new TokenType(19, "ENDCONDITIONAL");
         public static TokenType NMTOKEN = new TokenType(20, "NMTOKEN");
 
-        protected StreamInfo streamInfo;
-        protected Stack inputStreams;
-	    protected Token nextToken;
-	    protected int nextChar;
-        protected bool atEOF;
-        protected bool trace;
-        protected char[] expandBuffer;
-        protected int expandPos;
-        protected Hashtable entityExpansion;
-        protected IEntityExpansion expander;
+        protected StreamInfo StreamInfo;
+        protected Stack InputStreams;
+	    protected Token NextToken;
+	    protected int NextChar;
+        protected bool AtEof;
+        protected bool Trace;
+        protected char[] ExpandBuffer;
+        protected int ExpandPos;
+        protected Hashtable EntityExpansion;
+        protected IEntityExpansion Expander;
 
 	    public Scanner(StreamReader inReader, IEntityExpansion anExpander)
 	    {
-            streamInfo = new StreamInfo("", inReader);
-            atEOF = false;
-            trace = false;
-            expandBuffer = null;
-            entityExpansion = new Hashtable();
-            expander = anExpander;
+            StreamInfo = new StreamInfo("", inReader);
+            AtEof = false;
+            Trace = false;
+            ExpandBuffer = null;
+            EntityExpansion = new Hashtable();
+            Expander = anExpander;
 	    }
 
 	    public Scanner(StreamReader inReader, bool doTrace, IEntityExpansion anExpander)
         {
-            streamInfo = new StreamInfo("", inReader);
-            atEOF = false;
-            trace = doTrace;
-            expandBuffer = null;
-            entityExpansion = new Hashtable();
-            expander = anExpander;
+            StreamInfo = new StreamInfo("", inReader);
+            AtEof = false;
+            Trace = doTrace;
+            ExpandBuffer = null;
+            EntityExpansion = new Hashtable();
+            Expander = anExpander;
         }
 
-	    public Token peek()
+	    public Token Peek()
 	    {
-		    if (nextToken == null)
+		    if (NextToken == null)
 		    {
-			    nextToken = readNextToken();
+			    NextToken = ReadNextToken();
 		    }
 
-		    return nextToken;
+		    return NextToken;
 	    }
 
-	    public Token get()	
+	    public Token Get()	
 	    {
-		    if (nextToken == null)
+		    if (NextToken == null)
 		    {
-			    nextToken = readNextToken();
+			    NextToken = ReadNextToken();
 		    }
 
-		    Token retval = nextToken;
-		    nextToken = null;
+		    Token retval = NextToken;
+		    NextToken = null;
 
 		    return retval;
 	    }
 
-        protected int readNextChar()
+        protected int ReadNextChar()
         {
-            int ch = streamInfo.Reader.Read();
+            int ch = StreamInfo.Reader.Read();
 
             if (ch < 0)
             {
-                if ((inputStreams != null) && (inputStreams.Count > 0))
+                if ((InputStreams != null) && (InputStreams.Count > 0))
                 {
-                    streamInfo.Reader.Close();
-                    streamInfo = (StreamInfo)inputStreams.Pop();
-                    return readNextChar();
+                    StreamInfo.Reader.Close();
+                    StreamInfo = (StreamInfo)InputStreams.Pop();
+                    return ReadNextChar();
                 }
             }
             return ch;
         }
 
-	    protected int peekChar()
+	    protected int PeekChar()
 	    {
-            if (expandBuffer != null)
+            if (ExpandBuffer != null)
             {
-                return (int) expandBuffer[expandPos];
+                return (int) ExpandBuffer[ExpandPos];
             }
 
-		    if (nextChar == 0)
+		    if (NextChar == 0)
 		    {
-			    nextChar = readNextChar();
-                streamInfo.Column++;
-                if (nextChar == '\n')
+			    NextChar = ReadNextChar();
+                StreamInfo.Column++;
+                if (NextChar == '\n')
                 {
-                    streamInfo.LineNumber++;
-                    streamInfo.Column=1;
+                    StreamInfo.LineNumber++;
+                    StreamInfo.Column=1;
                 }
 		    }
 
-		    return nextChar;
+		    return NextChar;
 	    }
 
-	    protected int read()
+	    protected int Read()
 	    {
-            if (expandBuffer != null)
+            if (ExpandBuffer != null)
             {
-                int expNextChar = expandBuffer[expandPos++];
-                if (expandPos >= expandBuffer.Length)
+                int expNextChar = ExpandBuffer[ExpandPos++];
+                if (ExpandPos >= ExpandBuffer.Length)
                 {
-                    expandPos = -1;
-                    expandBuffer = null;
+                    ExpandPos = -1;
+                    ExpandBuffer = null;
                 }
-                if (trace)
+                if (Trace)
                 {   
-                    Trace.Write((char) expNextChar);
+                    System.Diagnostics.Trace.Write((char) expNextChar);
                 }
                 return expNextChar;
             }
-		    if (nextChar == 0)
+		    if (NextChar == 0)
 		    {
-			    peekChar();
+			    PeekChar();
 		    }
 
-		    int retval = nextChar;
-		    nextChar = 0;
+		    int retval = NextChar;
+		    NextChar = 0;
 
-            if (trace)
+            if (Trace)
             {
-                Trace.Write((char) retval);
+                System.Diagnostics.Trace.Write((char) retval);
             }
 		    return retval;
 	    }
 
-        public string getUntil(char stopChar)
+        public string GetUntil(char stopChar)
         {
             string buff = "";
 
             int ch;
 
-            while ((ch = read()) >= 0)
+            while ((ch = Read()) >= 0)
             {
                 if (ch == stopChar)
                 {
@@ -184,11 +187,11 @@ namespace DtdParser
             return buff;
         }
 
-        public void skipUntil(char stopChar)
+        public void SkipUntil(char stopChar)
         {
             int ch;
 
-            while ((ch = read()) >= 0)
+            while ((ch = Read()) >= 0)
             {
                 if (ch == stopChar)
                 {
@@ -198,103 +201,94 @@ namespace DtdParser
             return;
         }
 
-	    protected Token readNextToken()
+	    protected Token ReadNextToken()
 	    {
 		    for (;;)
 		    {
-			    int ch = read();
+			    int ch = Read();
 		        string chstr = "";
 		        chstr += (char)ch;
 
 			    if (ch == '<')
 			    {
-				    ch = peekChar();
+				    ch = PeekChar();
 				    if (ch == '!')
 				    {
-					    read();
+					    Read();
 
-                        if (peekChar() == '[')
+                        if (PeekChar() == '[')
                         {
-                            read();
+                            Read();
 
                             return new Token(CONDITIONAL);
                         }
 
-					    if (peekChar() != '-')
+					    if (PeekChar() != '-')
 					    {
 						    return new Token(LTBANG);
 					    }
-					    else
-					    {
-						    read();
-						    if (peekChar() != '-')
-						    {
-                                throw new DTDParseException(getUriId(),
-								    "Invalid character sequence <!-"+read(),
-                                    getLineNumber(), getColumn());
-						    }
-						    read();
+				        Read();
+				        if (PeekChar() != '-')
+				        {
+				            throw new DTDParseException(GetUriId(),
+				                                        "Invalid character sequence <!-"+Read(),
+				                                        GetLineNumber(), GetColumn());
+				        }
+				        Read();
 
-						    string buff = "";
-						    for (;;)
-						    {
-                                if (peekChar() < 0)
-                                {
-                                    throw new DTDParseException(getUriId(),
-                                        "Unterminated comment: <!--"+
-                                        buff,
-                                        getLineNumber(), getColumn());
-                                }
+				        string buff = "";
+				        for (;;)
+				        {
+				            if (PeekChar() < 0)
+				            {
+				                throw new DTDParseException(GetUriId(),
+				                                            "Unterminated comment: <!--"+
+				                                            buff,
+				                                            GetLineNumber(), GetColumn());
+				            }
 
-							    if (peekChar() != '-')
-							    {
-								    buff += (char) read();
-							    }
-							    else
-							    {
-								    read();
-                                    if (peekChar() < 0)
-                                    {
-                                        throw new DTDParseException(getUriId(),
-                                            "Unterminated comment: <!--"+
-                                            buff,
-                                            getLineNumber(), getColumn());
-                                    }
-								    if (peekChar() == '-')
-								    {
-									    read();
-									    if (peekChar() != '>')
-									    {
-                                            throw new DTDParseException(getUriId(),
-											    "Invalid character sequence --"+
-											    read(), getLineNumber(), getColumn());
-									    }
-									    read();
-									    return new Token(COMMENT, buff);
-								    }
-								    else
-								    {
-									    buff += '-';
-								    }
-							    }
-						    }
-					    }
+				            if (PeekChar() != '-')
+				            {
+				                buff += (char) Read();
+				            }
+				            else
+				            {
+				                Read();
+				                if (PeekChar() < 0)
+				                {
+				                    throw new DTDParseException(GetUriId(),
+				                                                "Unterminated comment: <!--"+
+				                                                buff,
+				                                                GetLineNumber(), GetColumn());
+				                }
+				                if (PeekChar() == '-')
+				                {
+				                    Read();
+				                    if (PeekChar() != '>')
+				                    {
+				                        throw new DTDParseException(GetUriId(),
+				                                                    "Invalid character sequence --"+
+				                                                    Read(), GetLineNumber(), GetColumn());
+				                    }
+				                    Read();
+				                    return new Token(COMMENT, buff);
+				                }
+				                buff += '-';
+				            }
+				        }
 				    }
-				    else if (ch == '?')
-				    {
-					    read();
-					    return new Token(LTQUES);
-				    }
-				    else
-				    {
-					    return new Token(LT);
-				    }
+			        if (ch == '?')
+			        {
+			            Read();
+			            return new Token(LTQUES);
+			        }
+			        return new Token(LT);
 			    }
-			    else if (ch == '?')
-			    {
-    // Need to treat ?> as two separate tokens because
-    // <!ELEMENT blah (foo)?> needs the ? as a QUES, not QUESGT
-    /*				ch = peekChar();
+		        if (ch == '?')
+		        {
+		            // Need to treat ?> as two separate tokens because
+		            // <!ELEMENT blah (foo)?> needs the ? as a QUES, not QUESGT
+		            /*				ch = peekChar();
 
 				    if (ch == '>')
 				    {
@@ -305,217 +299,211 @@ namespace DtdParser
 				    {
 					    return new Token(QUES);
 				    }*/
-				    return new Token(QUES);
-			    }
-			    else if ((ch == '"') || (ch == '\''))
-			    {
-				    int quoteChar = ch;
+		            return new Token(QUES);
+		        }
+		        if ((ch == '"') || (ch == '\''))
+		        {
+		            int quoteChar = ch;
 
-				    string buff = "";
-				    while (peekChar() != quoteChar)
-				    {
-					    ch = read();
-					    if (ch == '\\')
-					    {
-						    buff += (char) read();
-					    }
-                        else if (ch < 0)
-                        {
-                            break;  // IF EOF before getting end quote
-                        }
-					    else
-					    {
-						    buff += (char) ch;
-					    }
-				    }
-				    read();
-				    return new Token(STRING, buff);
-			    }
-			    else if (ch == '(')
-			    {
-				    return new Token(LPAREN);
-			    }
-			    else if (ch == ')')
-			    {
-				    return new Token(RPAREN);
-			    }
-			    else if (ch == '|')
-			    {
-				    return new Token(PIPE);
-			    }
-			    else if (ch == '>')
-			    {
-				    return new Token(GT);
-			    }
-			    else if (ch == '=')
-			    {
-				    return new Token(EQUAL);
-			    }
-			    else if (ch == '*')
-			    {
-				    return new Token(ASTERISK);
-			    }
-                else if (ch == ']')
-                {
-                    if (read() != ']')
-                    {
-                        throw new DTDParseException(getUriId(),
-                            "Illegal character in input stream: "+ch,
-                            getLineNumber(), getColumn());
-                    }
-                    if (read() != '>')
-                    {
-                        throw new DTDParseException(getUriId(),
-                            "Illegal character in input stream: "+ch,
-                            getLineNumber(), getColumn());
-                    }
+		            string buff = "";
+		            while (PeekChar() != quoteChar)
+		            {
+		                ch = Read();
+		                if (ch == '\\')
+		                {
+		                    buff += (char) Read();
+		                }
+		                else if (ch < 0)
+		                {
+		                    break;  // IF EOF before getting end quote
+		                }
+		                else
+		                {
+		                    buff += (char) ch;
+		                }
+		            }
+		            Read();
+		            return new Token(STRING, buff);
+		        }
+		        if (ch == '(')
+		        {
+		            return new Token(LPAREN);
+		        }
+		        if (ch == ')')
+		        {
+		            return new Token(RPAREN);
+		        }
+		        if (ch == '|')
+		        {
+		            return new Token(PIPE);
+		        }
+		        if (ch == '>')
+		        {
+		            return new Token(GT);
+		        }
+		        if (ch == '=')
+		        {
+		            return new Token(EQUAL);
+		        }
+		        if (ch == '*')
+		        {
+		            return new Token(ASTERISK);
+		        }
+		        if (ch == ']')
+		        {
+		            if (Read() != ']')
+		            {
+		                throw new DTDParseException(GetUriId(),
+		                                            "Illegal character in input stream: "+ch,
+		                                            GetLineNumber(), GetColumn());
+		            }
+		            if (Read() != '>')
+		            {
+		                throw new DTDParseException(GetUriId(),
+		                                            "Illegal character in input stream: "+ch,
+		                                            GetLineNumber(), GetColumn());
+		            }
 
-                    return new Token(ENDCONDITIONAL);
-                }
-			    else if (ch == '#')
-			    {
-				    string buff = "";
-				    buff += (char) ch;
+		            return new Token(ENDCONDITIONAL);
+		        }
+		        if (ch == '#')
+		        {
+		            string buff = "";
+		            buff += (char) ch;
 
-                    if (isIdentifierChar((char) peekChar()))
-                    {
-                        buff += (char) read();
+		            if (IsIdentifierChar((char) PeekChar()))
+		            {
+		                buff += (char) Read();
 
-				        while (isNameChar((char) peekChar()))
-				        {
-					        buff += (char) read();
-				        }
-                    }
-				    return new Token(IDENTIFIER, buff);
-			    }
-			    else if ((ch == '&') || (ch == '%'))
-			    {
-			        string peekstr = "";
-			        peekstr += (char) peekChar();
-			        if ((ch == '%') && string.IsNullOrEmpty(peekstr.Trim()))
-                    {
-                        return new Token(PERCENT);
-                    }
+		                while (IsNameChar((char) PeekChar()))
+		                {
+		                    buff += (char) Read();
+		                }
+		            }
+		            return new Token(IDENTIFIER, buff);
+		        }
+		        if ((ch == '&') || (ch == '%'))
+		        {
+		            string peekstr = "";
+		            peekstr += (char) PeekChar();
+		            if ((ch == '%') && string.IsNullOrEmpty(peekstr.Trim()))
+		            {
+		                return new Token(PERCENT);
+		            }
 
-                    bool peRef = (ch == '%');
+		            bool peRef = (ch == '%');
 
-				    string buff = "";
-				    buff += (char) ch;
+		            string buff = "";
+		            buff += (char) ch;
 
-                    if (isIdentifierChar((char) peekChar()))
-                    {
-                        buff += ((char) read());
-				        while (isNameChar((char) peekChar()))
-				        {
-					        buff +=((char) read());
-				        }
-                    }
+		            if (IsIdentifierChar((char) PeekChar()))
+		            {
+		                buff += ((char) Read());
+		                while (IsNameChar((char) PeekChar()))
+		                {
+		                    buff +=((char) Read());
+		                }
+		            }
 
-				    if (read() != ';')
-				    {
-                        throw new DTDParseException(getUriId(),
-                                    "Expected ';' after reference "+
-                                    buff +", found '" + (char)ch + "'",
-                                    getLineNumber(), getColumn());
-				    }
-                    buff+= (';');
+		            if (Read() != ';')
+		            {
+		                throw new DTDParseException(GetUriId(),
+		                                            "Expected ';' after reference "+
+		                                            buff +", found '" + (char)ch + "'",
+		                                            GetLineNumber(), GetColumn());
+		            }
+		            buff+= (';');
 
-                    if (peRef)
-                    {
-                        if (expandEntity(buff))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            // MAW: Added version 1.17
-                            // If the entity can't be expanded, don't return it, skip it
-                            continue;
-                        }
-                    }
-				    return new Token(IDENTIFIER, buff);
-			    }
-			    else if (ch == '+')
-			    {
-				    return new Token(PLUS);
-			    }
-			    else if (ch == ',')
-			    {
-				    return new Token(COMMA);
-			    }
-			    else if (isIdentifierChar((char) ch))
-			    {
-				    string buff = "";
-				    buff += (char) ch;
+		            if (peRef)
+		            {
+		                if (ExpandEntity(buff))
+		                {
+		                    continue;
+		                }
+		                // MAW: Added version 1.17
+		                // If the entity can't be expanded, don't return it, skip it
+		                continue;
+		            }
+		            return new Token(IDENTIFIER, buff);
+		        }
+		        if (ch == '+')
+		        {
+		            return new Token(PLUS);
+		        }
+		        if (ch == ',')
+		        {
+		            return new Token(COMMA);
+		        }
+		        if (IsIdentifierChar((char) ch))
+		        {
+		            string buff = "";
+		            buff += (char) ch;
 
-				    while (isNameChar((char) peekChar()))
-				    {
-					    buff += ((char) read());
-				    }
-				    return new Token(IDENTIFIER, buff);
-			    }
-			    else if (isNameChar((char) ch))
-			    {
-				    string buff = "";
-				    buff += (char) ch;
+		            while (IsNameChar((char) PeekChar()))
+		            {
+		                buff += ((char) Read());
+		            }
+		            return new Token(IDENTIFIER, buff);
+		        }
+		        if (IsNameChar((char) ch))
+		        {
+		            string buff = "";
+		            buff += (char) ch;
 
-				    while (isNameChar((char) peekChar()))
-				    {
-					    buff += ((char) read());
-				    }
-				    return new Token(NMTOKEN, buff);
-			    }
-			    else if (ch < 0)
-			    {
-                    if (atEOF)
-                    {
-                        throw new IOException("Read past EOF");
-                    }
-                    atEOF = true;
-				    return new Token(EOF);
-			    }
-			    else if (string.IsNullOrEmpty(chstr.Trim()))
-			    {
-				    continue;
-			    }
-			    else
-			    {
-                    throw new DTDParseException(getUriId(),
-                                    "Illegal character in input stream: "+ch,
-                                    getLineNumber(), getColumn());
-			    }
+		            while (IsNameChar((char) PeekChar()))
+		            {
+		                buff += ((char) Read());
+		            }
+		            return new Token(NMTOKEN, buff);
+		        }
+		        if (ch < 0)
+		        {
+		            if (AtEof)
+		            {
+		                throw new IOException("Read past EOF");
+		            }
+		            AtEof = true;
+		            return new Token(EOF);
+		        }
+		        if (string.IsNullOrEmpty(chstr.Trim()))
+		        {
+		            continue;
+		        }
+		        throw new DTDParseException(GetUriId(),
+		                                    "Illegal character in input stream: "+ch,
+		                                    GetLineNumber(), GetColumn());
 		    }
 	    }
 
-        public void skipConditional()   
+        public void SkipConditional()   
         {
-    // 070401 MAW: Fix for nested conditionals provided by Noah Fike
+            // 070401 MAW: Fix for nested conditionals provided by Noah Fike
             // BEGIN CHANGE
             int ch = 0;
             int nestingDepth = 0; // Add nestingDepth parameter
 
-    //    Everything is ignored within an ignored section, except the
-    //    sub-section delimiters '<![' and ']]>'. These must be balanced,
-    //    but no section keyword is required:
-    //    Conditional Section
-    //[61] conditionalSect ::=  includeSect | ignoreSect
-    //[62] includeSect ::=  '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'
-    //[63] ignoreSect ::=  '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>'
-    //[64] ignoreSectContents ::=  Ignore ('<![' ignoreSectContents ']]>' Ignore)*
-    //[65] Ignore ::=  Char* - (Char* ('<![' | ']]>') Char*)
+            //    Everything is ignored within an ignored section, except the
+            //    sub-section delimiters '<![' and ']]>'. These must be balanced,
+            //    but no section keyword is required:
+            //    Conditional Section
+            //[61] conditionalSect ::=  includeSect | ignoreSect
+            //[62] includeSect ::=  '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'
+            //[63] ignoreSect ::=  '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>'
+            //[64] ignoreSectContents ::=  Ignore ('<![' ignoreSectContents ']]>' Ignore)*
+            //[65] Ignore ::=  Char* - (Char* ('<![' | ']]>') Char*)
 
             for (;;)
             {
                 if ( ch != ']' )
                 {
-                    ch = read();
+                    ch = Read();
                 }
                 if (ch == ']')
                 {
-                    ch = read();
+                    ch = Read();
                     if (ch == ']')
                     {
-                        ch = read();
+                        ch = Read();
                         if (ch == '>')
                         {
                             if ( nestingDepth == 0)
@@ -524,23 +512,20 @@ namespace DtdParser
                                 // has been found.  Break out of for loop.
                                 break;
                             }
-                            else
-                            {
-                                // We are within an ignoreSectContents section.  Decrement
-                                // the nesting depth to represent that this section has
-                                // been ended.
-                                nestingDepth--;
-                            }
+                            // We are within an ignoreSectContents section.  Decrement
+                            // the nesting depth to represent that this section has
+                            // been ended.
+                            nestingDepth--;
                         }
                     }
                 }
                 // See if this is the first character of the beginning of a new section.
                 if (ch == '<')
                 {
-                    ch = read();
+                    ch = Read();
                     if ( ch == '!' )
                     {
-                        ch = read();
+                        ch = Read();
                         if ( ch == '[' )
                         {
                             // The beginning of a new ignoreSectContents section
@@ -550,16 +535,16 @@ namespace DtdParser
                     }
                 }
             }
-    // END CHANGE
+            // END CHANGE
         }
 
-        public string getUriId() { return(streamInfo.Id); }
-        public int getLineNumber() { return streamInfo.LineNumber; }
-        public int getColumn() { return streamInfo.Column; }
+        public string GetUriId() { return(StreamInfo.Id); }
+        public int GetLineNumber() { return StreamInfo.LineNumber; }
+        public int GetColumn() { return StreamInfo.Column; }
 
-	    public bool isIdentifierChar(char ch)
+	    public bool IsIdentifierChar(char ch)
 	    {
-		    if (isLetter(ch) ||
+		    if (IsLetter(ch) ||
 			    (ch == '_') || (ch == ':'))
 		    {
 			    return true;
@@ -567,34 +552,34 @@ namespace DtdParser
 		    return false;
 	    }
 
-	    public bool isNameChar(char ch)
+	    public bool IsNameChar(char ch)
 	    {
-		    if (isLetter(ch) || isDigit(ch) ||
+		    if (IsLetter(ch) || IsDigit(ch) ||
 			    (ch == '-') || (ch == '_') || (ch == '.') || (ch == ':')
-			    || isCombiningChar(ch) || isExtender(ch))
+			    || IsCombiningChar(ch) || IsExtender(ch))
 		    {
 			    return true;
 		    }
 		    return false;
 	    }
 
-        public bool isLetter(char ch)
+        public bool IsLetter(char ch)
         {
-            return isBaseChar(ch) || isIdeographic(ch);
+            return IsBaseChar(ch) || IsIdeographic(ch);
         }
 
-        public bool isBaseChar(char ch)
+        public bool IsBaseChar(char ch)
         {
-            for (int i=0; i < letterRanges.GetLength(0); i++)
+            for (int i=0; i < LetterRanges.GetLength(0); i++)
             {
-                if (ch < (char)letterRanges[i,0]) return false;
-                if ((ch >= (char)letterRanges[i,0]) &&
-                    (ch <= letterRanges[i,1])) return true;
+                if (ch < (char)LetterRanges[i,0]) return false;
+                if ((ch >= (char)LetterRanges[i,0]) &&
+                    (ch <= LetterRanges[i,1])) return true;
             }
             return false;
         }
 
-        public bool isIdeographic(char ch)
+        public bool IsIdeographic(char ch)
         {
             if (ch < 0x4e00) return false;
             if ((ch >= 0x4e00) && (ch <= 0x9fa5)) return true;
@@ -603,7 +588,7 @@ namespace DtdParser
             return false;
         }
 
-        public bool isDigit(char ch)
+        public bool IsDigit(char ch)
         {
             if ((ch >= 0x0030) && (ch <= 0x0039)) return true;
             if (ch < 0x0660) return false;
@@ -637,7 +622,7 @@ namespace DtdParser
             return false;
         }
 
-	    public bool isCombiningChar(char ch)
+	    public bool IsCombiningChar(char ch)
 	    {
 		    if (ch < 0x0300) return false;
 		    if ((ch >= 0x0300) && (ch <= 0x0345)) return true;
@@ -739,7 +724,7 @@ namespace DtdParser
 		    return false;
 	    }
 
-	    public bool isExtender(char ch)
+	    public bool IsExtender(char ch)
 	    {
 		    if (ch < 0x00b7) return false;
 
@@ -752,33 +737,32 @@ namespace DtdParser
 		    return false;
 	    }
 
-        public bool expandEntity(string entityName)
-            
+        public bool ExpandEntity(string entityName)   
         {
-            string entity = (string) entityExpansion[entityName];
+            string entity = (string) EntityExpansion[entityName];
             if (entity != null)
             {
-                expand(entity.ToCharArray());
+                Expand(entity.ToCharArray());
                 return true;
             }
 
             entityName = entityName.Substring(1, entityName.Length-1);
 
             //System.writer.WriteLine("Trying to expand: "+entityName);
-            DTDEntity realEntity = expander.expandEntity(entityName);
+            DTDEntity realEntity = Expander.ExpandEntity(entityName);
             if (realEntity != null)
             {
                 //System.writer.WriteLine("Expanded: "+entityName);
-                StreamReader entityIn = realEntity.getReader();
+                StreamReader entityIn = realEntity.GetReader();
                 if (entityIn != null)
                 {
-                    if (inputStreams == null)
+                    if (InputStreams == null)
                     {
-                        inputStreams = new Stack();
+                        InputStreams = new Stack();
                     }
 
-                    inputStreams.Push(streamInfo);
-                    streamInfo = new StreamInfo(realEntity.getExternalId(), entityIn);
+                    InputStreams.Push(StreamInfo);
+                    StreamInfo = new StreamInfo(realEntity.GetExternalId(), entityIn);
 
                     return true;
                 }
@@ -787,42 +771,42 @@ namespace DtdParser
             return false;
         }
 
-        public void expand(char[] expandChars)
+        public void Expand(char[] expandChars)
         {
-            if (expandBuffer != null)
+            if (ExpandBuffer != null)
             {
-                int oldCharsLeft = expandBuffer.Length - expandPos;
+                int oldCharsLeft = ExpandBuffer.Length - ExpandPos;
 
                 char[] newExp = new char[oldCharsLeft + expandChars.Length];
                 Array.Copy(expandChars, newExp, expandChars.Length);
-                Array.Copy(expandBuffer, expandPos, newExp, expandChars.Length, oldCharsLeft);
-                expandPos = 0;
-                expandBuffer = newExp;
-                if (expandBuffer.Length == 0)
+                Array.Copy(ExpandBuffer, ExpandPos, newExp, expandChars.Length, oldCharsLeft);
+                ExpandPos = 0;
+                ExpandBuffer = newExp;
+                if (ExpandBuffer.Length == 0)
                 {
-                    expandBuffer = null;
-                    expandPos = -1;
+                    ExpandBuffer = null;
+                    ExpandPos = -1;
                 }
             }
             else
             {
-                expandBuffer = expandChars;
-                expandPos = 0;
-                if (expandBuffer.Length == 0)
+                ExpandBuffer = expandChars;
+                ExpandPos = 0;
+                if (ExpandBuffer.Length == 0)
                 {
-                    expandBuffer = null;
-                    expandPos = -1;
+                    ExpandBuffer = null;
+                    ExpandPos = -1;
                 }
             }
         }
 
-        public void addEntity(string entityName, string entityValue)
+        public void AddEntity(string entityName, string entityValue)
         {
             string name = string.Format("%{0};", entityName);
-            entityExpansion[name] = entityValue;
+            EntityExpansion[name] = entityValue;
         }
 
-        public static int[,] letterRanges = {
+        public static int[,] LetterRanges = {
                                                 {0x0041, 0x005A}, {0x0061, 0x007A}, {0x00C0, 0x00D6},
                                                 {0x00D8, 0x00F6}, {0x00F8, 0x00FF}, {0x0100, 0x0131},
                                                 {0x0134, 0x013E}, {0x0141, 0x0148}, {0x014A, 0x017E},

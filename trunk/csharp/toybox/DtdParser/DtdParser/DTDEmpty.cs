@@ -1,25 +1,24 @@
 using System.IO;
+
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDEmpty : DTDItem
     {
-        public DTDEmpty()
+        /** Writes out the keyword "EMPTY" */
+        public override void Write(StreamWriter writer)   
         {
+            writer.Write("EMPTY");
+            Cardinal.Write(writer);
         }
 
-        /** Writes out the keyword "EMPTY" */
-        public override void write(StreamWriter writer)
-        
-    {
-        writer.Write("EMPTY");
-        cardinal.write(writer);
-    }
-
-        public bool equals(object ob)
-    {
-        if (ob == this) return true;
-        if (!(ob is DTDEmpty)) return false;
-        return base.equals(ob);
-    }
+        public override bool Equals(object ob)
+        {
+            if (ob == this) return true;
+            if (!(ob is DTDEmpty)) return false;
+            return base.Equals(ob);
+        }
     }
 }

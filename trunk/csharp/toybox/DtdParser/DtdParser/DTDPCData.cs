@@ -1,24 +1,25 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDPCData : DTDItem
     {
-
         /** Writes out the #PCDATA keyword */
-        public override void write(StreamWriter writer)
-            
+        public override void Write(StreamWriter writer)
         {
             writer.Write("#PCDATA");
-            cardinal.write(writer);
+            Cardinal.Write(writer);
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDPCData)) return false;
 
-            return base.equals(ob);
+            return base.Equals(ob);
         }
     }
 }

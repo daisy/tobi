@@ -1,6 +1,9 @@
 
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDPublic : DTDExternalID
@@ -8,25 +11,25 @@ namespace DtdParser
         public string Pub { get; set;}
 
         /** Writes out a public external ID declaration */
-        public override void write(StreamWriter writer)
+        public override void Write(StreamWriter writer)
         {
             writer.Write("PUBLIC \"");
             writer.Write(Pub);
             writer.Write("\"");
-            if (system != null)
+            if (System != null)
             {
                 writer.Write(" \"");
-                writer.Write(system);
+                writer.Write(System);
                 writer.Write("\"");
             }
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDPublic)) return false;
 
-            if (!base.equals(ob)) return false;
+            if (!base.Equals(ob)) return false;
 
             DTDPublic other = (DTDPublic) ob;
 

@@ -1,11 +1,14 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDComment : IDTDOutput
     {
         /** The comment text */
-        public string text { get; set;}
+        public string Text { get; set;}
 
         public DTDComment()
         {
@@ -13,29 +16,29 @@ namespace DtdParser
 
         public DTDComment(string theText)
         {
-            text = theText;
+            Text = theText;
         }
        
         public override string ToString()
         {
-            return text;
+            return Text;
         }
 
-        public void write(StreamWriter writer)
+        public void Write(StreamWriter writer)
         {
             writer.Write("<!--");
-            writer.Write(text);
+            writer.Write(Text);
             writer.WriteLine("-->");
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDComment)) return false;
 
             DTDComment other = (DTDComment) ob;
-            if ((text == null) && (other.text != null)) return false;
-            if ((text != null) && !text.Equals(other.text)) return false;
+            if ((Text == null) && (other.Text != null)) return false;
+            if ((Text != null) && !Text.Equals(other.Text)) return false;
 
             return true;
         }

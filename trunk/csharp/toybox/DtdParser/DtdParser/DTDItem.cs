@@ -1,40 +1,42 @@
-using System;
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public abstract class DTDItem : IDTDOutput
     {
         /** Indicates how often the item may occur */
-        public DTDCardinal cardinal { get; set; }
+        public DTDCardinal Cardinal { get; set; }
 
         public DTDItem()
         {
-            cardinal = DTDCardinal.NONE;
+            Cardinal = DTDCardinal.NONE;
         }
 
         public DTDItem(DTDCardinal aCardinal)
         {
-            cardinal = aCardinal;
+            Cardinal = aCardinal;
         }
 
         /** Writes out a declaration for this item */
-        public abstract void write(StreamWriter writer);
+        public abstract void Write(StreamWriter writer);
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDItem)) return false;
 
             DTDItem other = (DTDItem)ob;
 
-            if (cardinal == null)
+            if (Cardinal == null)
             {
-                if (other.cardinal != null) return false;
+                if (other.Cardinal != null) return false;
             }
             else
             {
-                if (!cardinal.equals(other.cardinal)) return false;
+                if (!Cardinal.Equals(other.Cardinal)) return false;
             }
 
             return true;

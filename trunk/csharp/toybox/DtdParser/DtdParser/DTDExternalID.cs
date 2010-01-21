@@ -1,29 +1,31 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
-
     public abstract class DTDExternalID : IDTDOutput
     {
-        public string system { get; set;}
+        public string System { get; set;}
 
         /** Writes out a declaration for this external ID */
-        public abstract void write(StreamWriter writer);
+        public abstract void Write(StreamWriter writer);
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDExternalID)) return false;
 
             DTDExternalID other = (DTDExternalID) ob;
 
-            if (system == null)
+            if (System == null)
             {
-                if (other.system != null) return false;
+                if (other.System != null) return false;
             }
             else
             {
-                if (!system.Equals(other.system)) return false;
+                if (!System.Equals(other.System)) return false;
             }
 
             return true;

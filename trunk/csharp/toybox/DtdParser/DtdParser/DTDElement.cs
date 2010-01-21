@@ -2,42 +2,43 @@
 using System.Collections;
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDElement : IDTDOutput
     {
         /** The name of the element */
-        public string name { get; set;}
+        public string Name { get; set;}
 
         /** The element's attributes */
-        public Hashtable attributes { get; set;}
+        public Hashtable Attributes { get; set;}
         
         /** The element's content */
-        public DTDItem content { get; set;}
+        public DTDItem Content { get; set;}
 
         public DTDElement()
         {
-            attributes = new Hashtable();
+            Attributes = new Hashtable();
         }
 
         public DTDElement(string aName)
         {
-            name = aName;
-
-            attributes = new Hashtable();
+            Name = aName;
+            Attributes = new Hashtable();
         }
 
         /** Writes out an element declaration and an attlist declaration (if necessary)
             for this element */
-        public void write(StreamWriter writer)
-            
+        public void Write(StreamWriter writer)     
         {
             writer.Write("<!ELEMENT ");
-            writer.Write(name);
+            writer.Write(Name);
             writer.Write(" ");
-            if (content != null)
+            if (Content != null)
             {
-                content.write(writer);
+                Content.Write(writer);
             }
             else
             {
@@ -69,38 +70,38 @@ namespace DtdParser
     */
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDElement)) return false;
 
             DTDElement other = (DTDElement) ob;
 
-            if (name == null)
+            if (Name == null)
             {
-                if (other.name != null) return false;
+                if (other.Name != null) return false;
             }
             else
             {
-                if (!name.Equals(other.name)) return false;
+                if (!Name.Equals(other.Name)) return false;
             }
 
-            if (attributes == null)
+            if (Attributes == null)
             {
-                if (other.attributes != null) return false;
+                if (other.Attributes != null) return false;
             }
             else
             {
-                if (!attributes.Equals(other.attributes)) return false;
+                if (!Attributes.Equals(other.Attributes)) return false;
             }
 
-            if (content == null)
+            if (Content == null)
             {
-                if (other.content != null) return false;
+                if (other.Content != null) return false;
             }
             else
             {
-                if (!content.equals(other.content)) return false;
+                if (!Content.Equals(other.Content)) return false;
             }
 
             return true;

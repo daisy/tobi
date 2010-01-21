@@ -1,261 +1,283 @@
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+
+#endregion
+
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 
 namespace DtdParser
 {
     public class Tokenize
     {
         public static void Main(string[] args)
-	    {
-		    try
-		    {
+        {
+            try
+            {
                 DTDParser parser = null;
-    // MAW Version 1.17
-    // If it looks like the filename may be a URL, use the URL class
-               /* if (args[0].IndexOf("://") > 0)
+                if (args.Length > 0)
                 {
-                    parser = new DTDParser(new URL(args[0]), true);
+                    // MAW Version 1.17
+                    // If it looks like the filename may be a URL, use the URL class
+                    if (args[0].IndexOf("://") > 0)
+                    {
+                        parser = new DTDParser(new Uri(args[0]), true);
+                    }
+                    else
+                    {
+                        parser = new DTDParser(args[0], true);
+                    }
                 }
                 else
                 {
-                    parser = new DTDParser(new File(args[0]), true);
+                    //StreamReader reader = new StreamReader(@"..\..\..\dtbook-2005-3-mod.dtd");
+                    //parser = new DTDParser(reader, true);
+                    Uri uri = new Uri("http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd");
+                    parser = new DTDParser(uri, true);
                 }
-                * */
-                //StreamReader reader = new StreamReader(args[0]);
-		        StreamReader reader = new StreamReader(@"..\..\..\dtbook-2005-3-mod.dtd");
-                parser = new DTDParser(reader, true);
 
-    // Parse the DTD and ask the parser to guess the root element
-                DTD dtd = parser.parse(true);
+                // Parse the DTD and ask the parser to guess the root element
+                DTD dtd = parser.Parse(true);
 
-                if (dtd.rootElement != null)
+                FileStream ostrm;
+                StreamWriter writer;
+                TextWriter oldOut = Console.Out;
+                ostrm = new FileStream("./log.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                writer = new StreamWriter(ostrm);
+                Console.SetOut(writer);
+                
+                if (dtd.RootElement != null)
                 {
-                    System.Console.WriteLine("Root element is probably: "+
-                        dtd.rootElement.name);
+                    Console.WriteLine("Root element is probably: " +
+                                      dtd.RootElement.Name);
                 }
 
-                foreach (DictionaryEntry de in dtd.elements)
+                foreach (DictionaryEntry de in dtd.Elements)
                 {
                     DTDElement elem = (DTDElement) de.Value;
 
-                    System.Console.WriteLine("Element: "+elem.name);
-                    System.Console.Write("   Content: ");
-                    dumpDTDItem(elem.content);
-                    System.Console.WriteLine();
+                    Console.WriteLine("Element: " + elem.Name);
+                    Console.Write("   Content: ");
+                    DumpDtdItem(elem.Content);
+                    Console.WriteLine();
 
-                    if (elem.attributes.Count > 0)
+                    if (elem.Attributes.Count > 0)
                     {
-                        System.Console.WriteLine("   Attributes: ");
-                        foreach (DictionaryEntry attr_de in elem.attributes)
+                        Console.WriteLine("   Attributes: ");
+                        foreach (DictionaryEntry attr_de in elem.Attributes)
                         {
-                            System.Console.Write("        ");
+                            Console.Write("        ");
                             DTDAttribute attr = (DTDAttribute) attr_de.Value;
-                            dumpAttribute(attr);
+                            DumpAttribute(attr);
                         }
-                        System.Console.WriteLine();
+                        Console.WriteLine();
                     }
                 }
 
-                foreach(DictionaryEntry de in dtd.entities)
+                foreach (DictionaryEntry de in dtd.Entities)
                 {
                     DTDEntity entity = (DTDEntity) de.Value;
 
-                    if (entity.isParsed) System.Console.Write("Parsed ");
+                    if (entity.IsParsed) Console.Write("Parsed ");
 
-                    System.Console.WriteLine("Entity: "+entity.name);
-                    
-                    if (entity.value != null)
+                    Console.WriteLine("Entity: " + entity.Name);
+
+                    if (entity.Value != null)
                     {
-                        System.Console.WriteLine("    Value: "+entity.value);
+                        Console.WriteLine("    Value: " + entity.Value);
                     }
 
-                    if (entity.externalID != null)
+                    if (entity.ExternalId != null)
                     {
-                        if (entity.externalID is DTDSystem)
+                        if (entity.ExternalId is DTDSystem)
                         {
-                            System.Console.WriteLine("    System: "+
-                                entity.externalID.system);
+                            Console.WriteLine("    System: " + entity.ExternalId.System);
                         }
                         else
                         {
-                            DTDPublic pub = (DTDPublic) entity.externalID;
-
-                            System.Console.WriteLine("    Public: "+
-                                pub.Pub+" "+pub.system);
+                            DTDPublic pub = (DTDPublic) entity.ExternalId;
+                            Console.WriteLine("    Public: " + pub.Pub + " " + pub.System);
                         }
                     }
 
-                    if (entity.ndata != null)
+                    if (entity.Ndata != null)
                     {
-                        System.Console.WriteLine("    NDATA "+entity.ndata);
+                        Console.WriteLine("    NDATA " + entity.Ndata);
                     }
                 }
-                foreach (DictionaryEntry de in dtd.notations)
+                foreach (DictionaryEntry de in dtd.Notations)
                 {
                     DTDNotation notation = (DTDNotation) de.Value;
 
-                    System.Console.WriteLine("Notation: "+notation.name);
-                    
-                    if (notation.externalID != null)
+                    Console.WriteLine("Notation: " + notation.Name);
+
+                    if (notation.ExternalId != null)
                     {
-                        if (notation.externalID is DTDSystem)
+                        if (notation.ExternalId is DTDSystem)
                         {
-                            System.Console.WriteLine("    System: "+
-                                notation.externalID.system);
+                            Console.WriteLine("    System: " +
+                                              notation.ExternalId.System);
                         }
                         else
                         {
-                            DTDPublic pub = (DTDPublic) notation.externalID;
+                            DTDPublic pub = (DTDPublic) notation.ExternalId;
 
-                            System.Console.Write("    Public: "+
-                                pub.Pub+" ");
-                            if (pub.system != null)
+                            Console.Write("    Public: " +
+                                          pub.Pub + " ");
+                            if (pub.System != null)
                             {
-                                System.Console.WriteLine(pub.system);
+                                Console.WriteLine(pub.System);
                             }
                             else
                             {
-                                System.Console.WriteLine();
+                                Console.WriteLine();
                             }
                         }
                     }
                 }
-		    }
-		    catch (Exception exc)
-		    {
-			    Trace.WriteLine(exc.StackTrace);
+                Console.SetOut(oldOut);
+                writer.Close();
+                ostrm.Close();
+
+            }
+            catch (Exception exc)
+            {
+                Trace.WriteLine(exc.StackTrace);
                 Console.WriteLine(exc.Message);
-		    }
+            }
 
+
+            Console.WriteLine("Done");
             Console.ReadKey(); //keep the console open
-	    }
+        }
 
-        public static void dumpDTDItem(DTDItem item)
+        public static void DumpDtdItem(DTDItem item)
         {
             if (item == null) return;
 
             if (item is DTDAny)
             {
-                System.Console.Write("Any");
+                Console.Write("Any");
             }
             else if (item is DTDEmpty)
             {
-                System.Console.Write("Empty");
+                Console.Write("Empty");
             }
             else if (item is DTDName)
             {
-                System.Console.Write(((DTDName) item).value);
+                Console.Write(((DTDName) item).Value);
             }
             else if (item is DTDChoice)
             {
-                System.Console.Write("(");
-                List<DTDItem> items = ((DTDChoice) item).items;
+                Console.Write("(");
+                List<DTDItem> items = ((DTDChoice) item).Items;
                 bool isFirst = true;
                 foreach (DTDItem dtditem in items)
                 {
-                    if (!isFirst) System.Console.Write("|");
+                    if (!isFirst) Console.Write("|");
                     isFirst = false;
-                    dumpDTDItem(dtditem);
+                    DumpDtdItem(dtditem);
                 }
-                System.Console.Write(")");
+                Console.Write(")");
             }
             else if (item is DTDSequence)
             {
-                System.Console.Write("(");
-                List<DTDItem> items = ((DTDSequence) item).items;
+                Console.Write("(");
+                List<DTDItem> items = ((DTDSequence) item).Items;
                 bool isFirst = true;
                 foreach (DTDItem dtditem in items)
                 {
-                    if (!isFirst) System.Console.Write(",");
+                    if (!isFirst) Console.Write(",");
                     isFirst = false;
-                    dumpDTDItem(dtditem);
+                    DumpDtdItem(dtditem);
                 }
-                System.Console.Write(")");
+                Console.Write(")");
             }
             else if (item is DTDMixed)
             {
-                System.Console.Write("(");
-                List<DTDItem> items = ((DTDMixed) item).items;
+                Console.Write("(");
+                List<DTDItem> items = ((DTDMixed) item).Items;
                 bool isFirst = true;
                 foreach (DTDItem dtditem in items)
                 {
-                    if (!isFirst) System.Console.Write(",");
+                    if (!isFirst) Console.Write(",");
                     isFirst = false;
-                    dumpDTDItem(dtditem);
+                    DumpDtdItem(dtditem);
                 }
-                System.Console.Write(")");
-                
+                Console.Write(")");
             }
             else if (item is DTDPCData)
             {
-                System.Console.Write("#PCDATA");
+                Console.Write("#PCDATA");
             }
 
-            if (item.cardinal == DTDCardinal.OPTIONAL)
+            if (item.Cardinal == DTDCardinal.OPTIONAL)
             {
-                System.Console.Write("?");
+                Console.Write("?");
             }
-            else if (item.cardinal == DTDCardinal.ZEROMANY)
+            else if (item.Cardinal == DTDCardinal.ZEROMANY)
             {
-                System.Console.Write("*");
+                Console.Write("*");
             }
-            else if (item.cardinal == DTDCardinal.ONEMANY)
+            else if (item.Cardinal == DTDCardinal.ONEMANY)
             {
-                System.Console.Write("+");
+                Console.Write("+");
             }
         }
 
-        public static void dumpAttribute(DTDAttribute attr)
+        public static void DumpAttribute(DTDAttribute attr)
         {
-            System.Console.Write(attr.name+" ");
-            if (attr.type is string)
+            Console.Write(attr.Name + " ");
+            if (attr.Type is string)
             {
-                System.Console.Write(attr.type);
+                Console.Write(attr.Type);
             }
-            else if (attr.type is DTDEnumeration)
+            else if (attr.Type is DTDEnumeration)
             {
-                System.Console.Write("(");
+                Console.Write("(");
 
-                List<string> items = ((DTDEnumeration) attr.type).items;
+                List<string> items = ((DTDEnumeration) attr.Type).Items;
                 bool isFirst = true;
                 foreach (string dtditem in items)
                 {
-                    if (!isFirst) System.Console.Write(",");
+                    if (!isFirst) Console.Write(",");
                     isFirst = false;
-                    System.Console.Write(dtditem);
+                    Console.Write(dtditem);
                 }
-                System.Console.Write(")");
-                
+                Console.Write(")");
             }
-            else if (attr.type is DTDNotationList)
+            else if (attr.Type is DTDNotationList)
             {
-                System.Console.Write("Notation (");
-                
-                List<string> items = ((DTDNotationList)attr.type).items;
+                Console.Write("Notation (");
+
+                List<string> items = ((DTDNotationList) attr.Type).Items;
                 bool isFirst = true;
                 foreach (string dtditem in items)
                 {
-                    if (!isFirst) System.Console.Write(",");
+                    if (!isFirst) Console.Write(",");
                     isFirst = false;
-                    System.Console.Write(dtditem);
+                    Console.Write(dtditem);
                 }
-                System.Console.Write(")");
+                Console.Write(")");
             }
 
-            if (attr.decl != null)
+            if (attr.Decl != null)
             {
-                System.Console.Write(" "+attr.decl.name);
+                Console.Write(" " + attr.Decl.Name);
             }
 
-            if (attr.defaultValue != null)
+            if (attr.DefaultValue != null)
             {
-                System.Console.Write(" "+attr.defaultValue);
+                Console.Write(" " + attr.DefaultValue);
             }
 
-            System.Console.WriteLine();
+            Console.WriteLine();
         }
     }
 }

@@ -1,88 +1,89 @@
 using System;
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDEntity : IDTDOutput
     {
-        public string name { get; set;}
-        public bool isParsed { get; set; }
-        public string value { get; set; }
-        public DTDExternalID externalID { get; set; }
-        public string ndata { get; set; }
-        public object defaultLocation { get; set; }
-
+        public string Name { get; set;}
+        public bool IsParsed { get; set; }
+        public string Value { get; set; }
+        public DTDExternalID ExternalId { get; set; }
+        public string Ndata { get; set; }
+        public object DefaultLocation { get; set; }
         
         public DTDEntity(string aName)
         {
-            name = aName;
+            Name = aName;
         }
 
         public DTDEntity(string aName, object aDefaultLocation)
         {
-            name = aName;
-            defaultLocation = aDefaultLocation;
+            Name = aName;
+            DefaultLocation = aDefaultLocation;
         }
 
         /** Writes out an entity declaration for this entity */
-        public void write(StreamWriter writer)
+        public void Write(StreamWriter writer)
         {
             writer.Write("<!ENTITY ");
-            if (isParsed)
+            if (IsParsed)
             {
                 writer.Write(" % ");
             }
-            writer.Write(name);
+            writer.Write(Name);
 
-            if (value != null)
+            if (Value != null)
             {
                 char quoteChar = '"';
-                if (value.IndexOf(quoteChar) >= 0) quoteChar='\'';
+                if (Value.IndexOf(quoteChar) >= 0) quoteChar='\'';
                 writer.Write(quoteChar);
-                writer.Write(value);
+                writer.Write(Value);
                 writer.Write(quoteChar);
             }
             else
             {
-                externalID.write(writer);
-                if (ndata != null)
+                ExternalId.Write(writer);
+                if (Ndata != null)
                 {
                     writer.Write(" NDATA ");
-                    writer.Write(ndata);
+                    writer.Write(Ndata);
                 }
             }
             writer.WriteLine(">");
         }
 
-        public string getExternalId()
+        public string GetExternalId()
         {
-            return (externalID.system);
+            return (ExternalId.System);
         }
 
-        public StreamReader getReader()
+        public StreamReader GetReader()
         {
             // MAW Ver 1.19 - Added check for externalID == null
-            if (externalID == null)
+            if (ExternalId == null)
             {
                 return null;
             }
 
-            StreamReader rd = getReader(externalID.system);
-
+            StreamReader rd = GetReader(ExternalId.System);
             return rd;
         }
 
         //TODO: what's going on here? 
         //there's a fallback chain of defaultLocation (string/Uri/null) then entityName
-        public StreamReader getReader(string entityName)
+        public StreamReader GetReader(string entityName)
         {
             try
             {
-                if (defaultLocation != null)
+                if (DefaultLocation != null)
                 {
-                    if (defaultLocation is string)
+                    if (DefaultLocation is string)
                     {
-                        string loc = (string) defaultLocation;
+                        string loc = (string) DefaultLocation;
 
                         return new StreamReader(loc);
                     }
@@ -123,50 +124,50 @@ namespace DtdParser
             return null;
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDEntity)) return false;
 
             DTDEntity other = (DTDEntity) ob;
 
-            if (name == null)
+            if (Name == null)
             {
-                if (other.name != null) return false;
+                if (other.Name != null) return false;
             }
             else
             {
-                if (!name.Equals(other.name)) return false;
+                if (!Name.Equals(other.Name)) return false;
             }
 
-            if (isParsed != other.isParsed) return false;
+            if (IsParsed != other.IsParsed) return false;
 
 
-            if (value == null)
+            if (Value == null)
             {
-                if (other.value != null) return false;
+                if (other.Value != null) return false;
             }
             else
             {
-                if (!value.Equals(other.value)) return false;
+                if (!Value.Equals(other.Value)) return false;
             }
 
-            if (externalID == null)
+            if (ExternalId == null)
             {
-                if (other.externalID != null) return false;
+                if (other.ExternalId != null) return false;
             }
             else
             {
-                if (!externalID.equals(other.externalID)) return false;
+                if (!ExternalId.Equals(other.ExternalId)) return false;
             }
 
-            if (ndata == null)
+            if (Ndata == null)
             {
-                if (other.ndata != null) return false;
+                if (other.Ndata != null) return false;
             }
             else
             {
-                if (!ndata.Equals(other.ndata)) return false;
+                if (!Ndata.Equals(other.Ndata)) return false;
             }
 
             return true;

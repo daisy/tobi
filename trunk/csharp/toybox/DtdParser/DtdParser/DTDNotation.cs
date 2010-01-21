@@ -1,51 +1,53 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDNotation : IDTDOutput
     {
-        public string name { get; set;}
-        public DTDExternalID externalID { get; set;}
+        public string Name { get; set;}
+        public DTDExternalID ExternalId { get; set;}
 
         public DTDNotation(string aName)
         {
-            name = aName;
+            Name = aName;
         }
 
         /** Writes out a declaration for this notation */
-        public void write(StreamWriter writer)
-            
+        public void Write(StreamWriter writer)
         {
             writer.Write("<!NOTATION ");
-            writer.Write(name);
+            writer.Write(Name);
             writer.Write(" ");
-            externalID.write(writer);
+            ExternalId.Write(writer);
             writer.WriteLine(">");
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDNotation)) return false;
 
             DTDNotation other = (DTDNotation) ob;
 
-            if (name == null)
+            if (Name == null)
             {
-                if (other.name != null) return false;
+                if (other.Name != null) return false;
             }
             else
             {
-                if (!name.Equals(other.name)) return false;
+                if (!Name.Equals(other.Name)) return false;
             }
 
-            if (externalID == null)
+            if (ExternalId == null)
             {
-                if (other.externalID != null) return false;
+                if (other.ExternalId != null) return false;
             }
             else
             {
-                if (!externalID.equals(other.externalID)) return false;
+                if (!ExternalId.Equals(other.ExternalId)) return false;
             }
 
             return true;
