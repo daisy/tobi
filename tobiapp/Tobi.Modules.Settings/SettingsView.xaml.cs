@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common._UnusedCode;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 
@@ -107,9 +108,11 @@ namespace Tobi.Plugin.Settings
 
             // We re-focus on the ListItem,
             // only if the Key press happened within one of the known editors
-            if ((e.OriginalSource is KeyGestureSinkBox)
-                || (e.OriginalSource is CheckBox)
-                || (e.OriginalSource is TextBox))
+            if (true || // Let's do it all the time !
+                e.OriginalSource is KeyGestureSinkBox
+                || e.OriginalSource is CheckBox
+                || e.OriginalSource is TextBox
+                || e.OriginalSource is ComboColorPicker)
             {
                 FocusHelper.Focus(((UIElement)sender), ((UIElement)sender));
 
@@ -155,9 +158,11 @@ namespace Tobi.Plugin.Settings
             }
             // If RETURN was pressed on one of the editors,
             // then we re-focus on the ListItem
-            else if ((e.OriginalSource is KeyGestureSinkBox)
-                || (e.OriginalSource is CheckBox)
-                || (e.OriginalSource is TextBox))
+            else if (true || // Let's do it all the time !
+                e.OriginalSource is KeyGestureSinkBox
+                || e.OriginalSource is CheckBox
+                || e.OriginalSource is TextBox
+                || e.OriginalSource is ComboColorPicker)
             {
                 FocusHelper.Focus(((UIElement)sender), ((UIElement)sender));
 

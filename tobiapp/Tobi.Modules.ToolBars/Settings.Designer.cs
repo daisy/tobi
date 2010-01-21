@@ -34,5 +34,53 @@ namespace Tobi.Plugin.ToolBars {
                 this["ToolBarVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color ToolBarColor1 {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ToolBarColor1"]));
+            }
+            set {
+                this["ToolBarColor1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF00")]
+        public global::System.Windows.Media.Color ToolBarColor2 {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ToolBarColor2"]));
+            }
+            set {
+                this["ToolBarColor2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF00FF")]
+        public global::System.Windows.Media.Color ToolBarColor3 {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ToolBarColor3"]));
+            }
+            set {
+                this["ToolBarColor3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color ToolBarColor4 {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ToolBarColor4"]));
+            }
+            set {
+                this["ToolBarColor4"] = value;
+            }
+        }
     }
 }

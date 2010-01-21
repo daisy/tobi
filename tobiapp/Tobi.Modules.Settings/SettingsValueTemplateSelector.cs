@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Settings
@@ -25,6 +26,11 @@ namespace Tobi.Plugin.Settings
                 {
                     var t3 = ((ContentPresenter)container).FindResource("SettingEditTemplate_KeyGesture") as DataTemplate;
                     return t3;
+                }
+                if (((SettingWrapper)item).ValueType == typeof(Color))
+                {
+                    var t4 = ((ContentPresenter)container).FindResource("SettingEditTemplate_Color") as DataTemplate;
+                    return t4;
                 }
             }
             var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;

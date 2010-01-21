@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
            xmlns:System="clr-namespace:System;assembly=mscorlib"
-           xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
+           xmlns:Settings="clr-namespace:Tobi.Plugin.Settings" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
@@ -211,7 +211,19 @@ AlternationCount="2"
           </CheckBox.Style>
         </CheckBox>
       </DataTemplate>
-
+      
+      <DataTemplate x:Key="SettingEditTemplate_Color" DataType="{x:Type Color}">
+        <_UnusedCode:ComboColorPicker SelectedColor="{Binding Value, Mode=TwoWay}">
+          <_UnusedCode:ComboColorPicker.Style>
+            <Style TargetType="{x:Type _UnusedCode:ComboColorPicker}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </_UnusedCode:ComboColorPicker.Style>
+        </_UnusedCode:ComboColorPicker>
+    </DataTemplate>
+      
       <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
         <TextBlock Text="{Binding Value, Mode=OneWay}">
           <TextBlock.Style>
