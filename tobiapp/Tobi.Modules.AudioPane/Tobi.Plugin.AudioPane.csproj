@@ -105,7 +105,7 @@
     <Compile Include="AudioPaneView.xaml.cs">
       <DependentUpon>AudioPaneView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AudioPluginSettings.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="WaveFormLoadingAdorner.cs" />
     <Compile Include="WaveFormTimeTicksAdorner.cs" />
   </ItemGroup>
