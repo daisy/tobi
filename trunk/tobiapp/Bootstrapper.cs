@@ -171,6 +171,7 @@ namespace Tobi
             if (defaultRegionBehaviorTypesDictionary != null)
             {
                 defaultRegionBehaviorTypesDictionary.AddIfMissing(AutoPopulateRegionBehaviorNamedViews.BehaviorKey, typeof(AutoPopulateRegionBehaviorNamedViews));
+                defaultRegionBehaviorTypesDictionary.AddIfMissing(ClearChildViewsRegionBehavior.BehaviorKey, typeof(ClearChildViewsRegionBehavior));
             }
 
             return defaultRegionBehaviorTypesDictionary;
