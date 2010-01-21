@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Automation;
@@ -17,11 +18,14 @@ namespace Tobi.Common.UI
             if (item is RichDelegateCommand)
             {
                 ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
+
+                ((RichDelegateCommand)item).DataChanged +=
+                    (sender, ev) => ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
             }
             else if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
             {
                 var data = (TwoStateMenuItemRichCommand_DataContextWrapper)item;
-                var menuItem = (TwoStateMenuItemRichCommand) element;
+                var menuItem = (TwoStateMenuItemRichCommand)element;
 
                 menuItem.RichCommandOne = data.RichCommandOne;
                 menuItem.RichCommandTwo = data.RichCommandTwo;
@@ -123,6 +127,17 @@ namespace Tobi.Common.UI
 
         public static void ConfigureMenuItemFromCommand(MenuItem menuItem, RichDelegateCommand command)
         {
+            if (menuItem.Command != null
+                && menuItem.Command != command
+                && menuItem.Command is RichDelegateCommand
+                && ((RichDelegateCommand)menuItem.Command).DataChangedHasHandlers)
+            {
+                //TODO: remove DataChanged event handlers...
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+
             menuItem.Command = command;
 
             menuItem.Header = command.ShortDescription;
@@ -249,7 +264,7 @@ namespace Tobi.Common.UI
 
             ConfigureTwoStateMenuItemRichCommand(menuItem, choice);
         }
-        
+
         public static void ConfigureTwoStateMenuItemRichCommand(TwoStateMenuItemRichCommand menuItem, bool choice)
         {
             RichDelegateCommand command = menuItem.RichCommandOne;

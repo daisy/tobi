@@ -27,7 +27,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[CTRL ] Q")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Q")]
         public KeyGestureString KeyGesture_MenuExit {
             get {
                 return ((KeyGestureString)(this["KeyGesture_MenuExit"]));
@@ -39,7 +39,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[CTRL ] O")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] O")]
         public KeyGestureString KeyGesture_MenuOpen {
             get {
                 return ((KeyGestureString)(this["KeyGesture_MenuOpen"]));
@@ -51,7 +51,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[CTRL ] C")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] C")]
         public KeyGestureString KeyGesture_MenuCopy {
             get {
                 return ((KeyGestureString)(this["KeyGesture_MenuCopy"]));

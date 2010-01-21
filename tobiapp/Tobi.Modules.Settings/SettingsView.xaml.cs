@@ -185,6 +185,16 @@ namespace Tobi.Plugin.Settings
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
+
+
+        private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
+        {
+            foreach (var settingsProvider in m_SettingsAggregator.Settings)
+            {
+                settingsProvider.PropertyChanged -= Settings_PropertyChanged;
+            }
+        }
+
         private void resetList()
         {
             AggregatedSettings = new List<SettingWrapper>();

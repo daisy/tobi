@@ -162,7 +162,7 @@ namespace Tobi.Common
 
         public const string Menu_Exit = "_Quit";
         public const string Menu_Exit_ = "Exit the application";
-        public static KeyGesture Menu_Exit_KEYS = new KeyGesture(Key.Q, ModifierKeys.Control);
+        //public static KeyGesture Menu_Exit_KEYS = new KeyGesture(Key.Q, ModifierKeys.Control);
 
         public const string Menu_Close = "_Close";
 

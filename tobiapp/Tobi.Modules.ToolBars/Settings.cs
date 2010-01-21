@@ -33,7 +33,7 @@ namespace Tobi.Plugin.ToolBars
 
         public Settings()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
+            //PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
         }
         //~Settings()
         //{

@@ -116,6 +116,9 @@ namespace Tobi
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
+                // TODO: remove this ! (just for debug)
+                int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { ExitCommand }, PreferredPosition.First);
+
                 int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Any);
                 int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand }, PreferredPosition.Any);
                 
