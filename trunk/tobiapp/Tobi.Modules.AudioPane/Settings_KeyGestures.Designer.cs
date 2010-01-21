@@ -25,10 +25,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_Focus_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_Focus_KEYS {
             get {
-                return ((string)(this["Audio_Focus_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_Focus_KEYS"]));
             }
             set {
                 this["Audio_Focus_KEYS"] = value;
@@ -37,10 +36,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_FocusStatusBar_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_FocusStatusBar_KEYS {
             get {
-                return ((string)(this["Audio_FocusStatusBar_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_FocusStatusBar_KEYS"]));
             }
             set {
                 this["Audio_FocusStatusBar_KEYS"] = value;
@@ -49,10 +47,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_BeginSelection_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_BeginSelection_KEYS {
             get {
-                return ((string)(this["Audio_BeginSelection_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_BeginSelection_KEYS"]));
             }
             set {
                 this["Audio_BeginSelection_KEYS"] = value;
@@ -61,10 +58,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_EndSelection_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_EndSelection_KEYS {
             get {
-                return ((string)(this["Audio_EndSelection_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_EndSelection_KEYS"]));
             }
             set {
                 this["Audio_EndSelection_KEYS"] = value;
@@ -73,10 +69,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_Delete_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_Delete_KEYS {
             get {
-                return ((string)(this["Audio_Delete_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_Delete_KEYS"]));
             }
             set {
                 this["Audio_Delete_KEYS"] = value;
@@ -85,10 +80,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_InsertFile_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_InsertFile_KEYS {
             get {
-                return ((string)(this["Audio_InsertFile_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_InsertFile_KEYS"]));
             }
             set {
                 this["Audio_InsertFile_KEYS"] = value;
@@ -97,10 +91,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_OpenFile_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_OpenFile_KEYS {
             get {
-                return ((string)(this["Audio_OpenFile_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_OpenFile_KEYS"]));
             }
             set {
                 this["Audio_OpenFile_KEYS"] = value;
@@ -109,10 +102,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_GotoBegin_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_GotoBegin_KEYS {
             get {
-                return ((string)(this["Audio_GotoBegin_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_GotoBegin_KEYS"]));
             }
             set {
                 this["Audio_GotoBegin_KEYS"] = value;
@@ -121,10 +113,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_GotoEnd_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_GotoEnd_KEYS {
             get {
-                return ((string)(this["Audio_GotoEnd_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_GotoEnd_KEYS"]));
             }
             set {
                 this["Audio_GotoEnd_KEYS"] = value;
@@ -133,10 +124,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_SelectPreviousChunk_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_SelectPreviousChunk_KEYS {
             get {
-                return ((string)(this["Audio_SelectPreviousChunk_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_SelectPreviousChunk_KEYS"]));
             }
             set {
                 this["Audio_SelectPreviousChunk_KEYS"] = value;
@@ -145,10 +135,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_SelectNextChunk_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_SelectNextChunk_KEYS {
             get {
-                return ((string)(this["Audio_SelectNextChunk_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_SelectNextChunk_KEYS"]));
             }
             set {
                 this["Audio_SelectNextChunk_KEYS"] = value;
@@ -157,10 +146,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_StepBack_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_StepBack_KEYS {
             get {
-                return ((string)(this["Audio_StepBack_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_StepBack_KEYS"]));
             }
             set {
                 this["Audio_StepBack_KEYS"] = value;
@@ -169,10 +157,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_StepForward_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_StepForward_KEYS {
             get {
-                return ((string)(this["Audio_StepForward_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_StepForward_KEYS"]));
             }
             set {
                 this["Audio_StepForward_KEYS"] = value;
@@ -181,10 +168,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_FastForward_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_FastForward_KEYS {
             get {
-                return ((string)(this["Audio_FastForward_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_FastForward_KEYS"]));
             }
             set {
                 this["Audio_FastForward_KEYS"] = value;
@@ -193,10 +179,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_Rewind_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_Rewind_KEYS {
             get {
-                return ((string)(this["Audio_Rewind_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_Rewind_KEYS"]));
             }
             set {
                 this["Audio_Rewind_KEYS"] = value;
@@ -205,10 +190,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_ClearSelection_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_ClearSelection_KEYS {
             get {
-                return ((string)(this["Audio_ClearSelection_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_ClearSelection_KEYS"]));
             }
             set {
                 this["Audio_ClearSelection_KEYS"] = value;
@@ -217,10 +201,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_ZoomSelection_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_ZoomSelection_KEYS {
             get {
-                return ((string)(this["Audio_ZoomSelection_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_ZoomSelection_KEYS"]));
             }
             set {
                 this["Audio_ZoomSelection_KEYS"] = value;
@@ -229,10 +212,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_FitFull_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_FitFull_KEYS {
             get {
-                return ((string)(this["Audio_FitFull_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_FitFull_KEYS"]));
             }
             set {
                 this["Audio_FitFull_KEYS"] = value;
@@ -241,10 +223,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_AutoPlay_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_AutoPlay_KEYS {
             get {
-                return ((string)(this["Audio_AutoPlay_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_AutoPlay_KEYS"]));
             }
             set {
                 this["Audio_AutoPlay_KEYS"] = value;
@@ -253,10 +234,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_StartRecord_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_StartRecord_KEYS {
             get {
-                return ((string)(this["Audio_StartRecord_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_StartRecord_KEYS"]));
             }
             set {
                 this["Audio_StartRecord_KEYS"] = value;
@@ -265,10 +245,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_StopRecord_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_StopRecord_KEYS {
             get {
-                return ((string)(this["Audio_StopRecord_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_StopRecord_KEYS"]));
             }
             set {
                 this["Audio_StopRecord_KEYS"] = value;
@@ -277,10 +256,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_StartMonitor_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_StartMonitor_KEYS {
             get {
-                return ((string)(this["Audio_StartMonitor_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_StartMonitor_KEYS"]));
             }
             set {
                 this["Audio_StartMonitor_KEYS"] = value;
@@ -289,10 +267,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_StopMonitor_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_StopMonitor_KEYS {
             get {
-                return ((string)(this["Audio_StopMonitor_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_StopMonitor_KEYS"]));
             }
             set {
                 this["Audio_StopMonitor_KEYS"] = value;
@@ -301,10 +278,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_Play_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_Play_KEYS {
             get {
-                return ((string)(this["Audio_Play_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_Play_KEYS"]));
             }
             set {
                 this["Audio_Play_KEYS"] = value;
@@ -313,10 +289,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_PlayPreviewLeft_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_PlayPreviewLeft_KEYS {
             get {
-                return ((string)(this["Audio_PlayPreviewLeft_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_PlayPreviewLeft_KEYS"]));
             }
             set {
                 this["Audio_PlayPreviewLeft_KEYS"] = value;
@@ -325,10 +300,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_PlayPreviewRight_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_PlayPreviewRight_KEYS {
             get {
-                return ((string)(this["Audio_PlayPreviewRight_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_PlayPreviewRight_KEYS"]));
             }
             set {
                 this["Audio_PlayPreviewRight_KEYS"] = value;
@@ -337,10 +311,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_Pause_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_Pause_KEYS {
             get {
-                return ((string)(this["Audio_Pause_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_Pause_KEYS"]));
             }
             set {
                 this["Audio_Pause_KEYS"] = value;
@@ -349,10 +322,9 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Audio_ShowOptions_KEYS {
+        public global::Tobi.Common.UI.KeyGestureString Audio_ShowOptions_KEYS {
             get {
-                return ((string)(this["Audio_ShowOptions_KEYS"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Audio_ShowOptions_KEYS"]));
             }
             set {
                 this["Audio_ShowOptions_KEYS"] = value;
