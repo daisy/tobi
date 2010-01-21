@@ -1,43 +1,46 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDProcessingInstruction : IDTDOutput
     {
         /** The processing instruction text */
-        public string text { get; set; }
+        public string Text { get; set; }
 
         public DTDProcessingInstruction(string theText)
         {
-            text = theText;
+            Text = theText;
         }
 
         public override string ToString()
         {
-            return text;
+            return Text;
         }
 
-        public void write(StreamWriter writer)
+        public void Write(StreamWriter writer)
         {
             writer.Write("<?");
-            writer.Write(text);
+            writer.Write(Text);
             writer.WriteLine("?>");
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDProcessingInstruction)) return false;
 
             DTDProcessingInstruction other = (DTDProcessingInstruction) ob;
 
-            if (text == null)
+            if (Text == null)
             {
-                if (other.text != null) return false;
+                if (other.Text != null) return false;
             }
             else
             {
-                if (!text.Equals(other.text)) return false;
+                if (!Text.Equals(other.Text)) return false;
             }
 
             return true;

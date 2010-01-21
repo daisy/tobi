@@ -1,33 +1,31 @@
 using System.Collections.Generic;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public abstract class DTDContainer : DTDItem
     {
-        public List<DTDItem> items{ get; set;}
+        public List<DTDItem> Items{ get; set;}
 
     /** Creates a new DTDContainer */
         public DTDContainer()
         {
-            items = new List<DTDItem>();
+            Items = new List<DTDItem>();
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
            if (ob == this) return true;
             if (!(ob is DTDContainer)) return false;
 
-            if (!base.equals(ob)) return false;
+            if (!base.Equals(ob)) return false;
 
             DTDContainer other = (DTDContainer) ob;
 
-            return items.Equals(other.items);
+            return Items.Equals(other.Items);
         }
-
-   
-        /*public override void write(StreamWriter writer)
-        {
-        }*/
 
     }
 }

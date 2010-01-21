@@ -1,19 +1,24 @@
+using System;
 using System.Collections;
 using System.IO;
+using System.Net;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 { 
     public class DTDParser : IEntityExpansion
     {
-        protected Scanner scanner;
-        protected DTD dtd;
-        protected object defaultLocation;
+        protected Scanner Scanner;
+        protected DTD Dtd;
+        protected object DefaultLocation;
 
     /** Creates a parser that will read from the specified Reader object */
         public DTDParser(StreamReader reader)
         {
-            scanner = new Scanner(reader, false, this);
-            dtd = new DTD();
+            Scanner = new Scanner(reader, false, this);
+            Dtd = new DTD();
         }
 
     /** Creates a parser that will read from the specified Reader object
@@ -23,115 +28,122 @@ namespace DtdParser
      */
         public DTDParser(StreamReader reader, bool trace)
         {
-            scanner = new Scanner(reader, trace, this);
-            dtd = new DTD();
+            Scanner = new Scanner(reader, trace, this);
+            Dtd = new DTD();
+            
         }
  
-
-    /** Creates a parser that will read from the specified File object */
-     /*   public DTDParser(File in)
-            
+        /** Creates a parser that will read from the specified filename */
+        public DTDParser(string filename)
         {
-            defaultLocation = in.getParentFile();
-
-            scanner = new Scanner(new BufferedReader(new FileReader(in)),
-                false, this);
-            dtd = new DTD();
+            if (!File.Exists(filename))
+            {
+                throw new DTDParseException(string.Format("File not found: {0}", filename));
+            }
+            DefaultLocation = Directory.GetParent(filename);
+            Scanner = new Scanner(new StreamReader(filename), false, this);
+            Dtd = new DTD();
         }
-    */
-    /** Creates a parser that will read from the specified File object
-     * @param in The file to read
+
+    /** Creates a parser that will read from the specified filename
+     * @param filename The file to read
      * @param trace True if the parser should print out tokens as it reads them
      *  (used for debugging the parser)
      */
-     /*   public DTDParser(File in, bool trace)
-            
+        public DTDParser(string filename, bool trace)
         {
-            defaultLocation = in.getParentFile();
-
-            scanner = new Scanner(new BufferedReader(new FileReader(in)),
-                trace, this);
-            dtd = new DTD();
+            if (!File.Exists(filename))
+            {
+                throw new DTDParseException(string.Format("File not found: {0}", filename));
+            }
+            DefaultLocation = Directory.GetParent(filename);
+            Scanner = new Scanner(new StreamReader(filename), trace, this);
+            Dtd = new DTD();
         }
-    */
+    
     /** Creates a parser that will read from the specified URL object */
-     /*   public DTDParser(URL in)
-            
+        public DTDParser(Uri uri)
         {
-        //LAM: we need to set the defaultLocation to the directory where
-        //the dtd is found so that we don't run into problems parsing any
-        //relative external files referenced by the dtd.
-            string file = in.getFile();
-            defaultLocation = new URL(in.getProtocol(), in.getHost(), in.getPort(), file.substring(0, file.lastIndexOf('/') + 1));
-
-            scanner = new Scanner(new BufferedReader(
-                new InputStreamReader(in.openStream())), false, this);
-            dtd = new DTD();
+            //LAM: we need to set the defaultLocation to the directory where
+            //the dtd is found so that we don't run into problems parsing any
+            //relative external files referenced by the dtd.
+            string file = uri.ToString();
+            DefaultLocation = file.Substring(0, file.LastIndexOf('/') + 1);
+            
+            WebRequest req = WebRequest.Create(uri);
+            WebResponse resp = req.GetResponse();
+            Stream stream = resp.GetResponseStream();
+            StreamReader sr = new StreamReader(stream);
+            
+            Scanner = new Scanner(sr, false, this);
+            Dtd = new DTD();
         }
-    */
+    
     /** Creates a parser that will read from the specified URL object
-     * @param in The URL to read
+     * @param uri The URL to read
      * @param trace True if the parser should print out tokens as it reads them
      *  (used for debugging the parser)
      */
-     /*   public DTDParser(URL in, bool trace)
-            
+        public DTDParser(Uri uri, bool trace)
         {
         //LAM: we need to set the defaultLocation to the directory where
         //the dtd is found so that we don't run into problems parsing any
         //relative external files referenced by the dtd.
-            string file = in.getFile();
-            defaultLocation = new URL(in.getProtocol(), in.getHost(), in.getPort(), file.substring(0, file.lastIndexOf('/') + 1));
-
-
-            scanner = new Scanner(new BufferedReader(
-                new InputStreamReader(in.openStream())), trace, this);
-            dtd = new DTD();
+            string file = uri.ToString();
+            DefaultLocation = file.Substring(0, file.LastIndexOf('/') + 1);
+            
+            WebRequest req = WebRequest.Create(uri);
+            WebResponse resp = req.GetResponse();
+            Stream stream = resp.GetResponseStream();
+            StreamReader sr = new StreamReader(stream);
+            
+            Scanner = new Scanner(sr, trace, this);
+            Dtd = new DTD();
         }
-    */
+    
     /** Parses the DTD file and returns a DTD object describing the DTD.
         This invocation of parse does not try to guess the root element
         (for efficiency reasons) */
-        public DTD parse()     
+        public DTD Parse()     
         {
-            return parse(false);
+            return Parse(false);
         }
 
     /** Parses the DTD file and returns a DTD object describing the DTD.
      * @param guessRootElement If true, tells the parser to try to guess the
               root element of the document by process of elimination
      */
-        public DTD parse(bool guessRootElement)
+        public DTD Parse(bool guessRootElement)
         {
             Token token;
 
             for (;;)
             {
-                token = scanner.peek();
+                token = Scanner.Peek();
 
                 if (token.Type == Scanner.EOF) break;
-                parseTopLevelElement();
+                ParseTopLevelElement();
             }
 
             if (guessRootElement)
             {
                 Hashtable roots = new Hashtable();
                 
-                foreach (DictionaryEntry de in dtd.elements)
+                foreach (DictionaryEntry de in Dtd.Elements)
                 {
                     DTDElement element = (DTDElement) de.Value;
-                    roots[element.name] = element;
+                    roots[element.Name] = element;
                 }
 
-                foreach (DictionaryEntry de in dtd.elements)
+                foreach (DictionaryEntry de in Dtd.Elements)
                 {
                     DTDElement element = (DTDElement) de.Value;
-                    if (!(element.content is DTDContainer)) continue;
+                    if (!(element.Content is DTDContainer)) continue;
                     
                     //TODO: make sure this loop works.  it used to be based on a java enumeration.
-                    foreach (DTDItem dtditem in ((DTDContainer)element.content).items)                    
+                    foreach (DTDItem dtditem in ((DTDContainer)element.Content).Items)                    
                     {
-                        removeElements(roots, dtd, dtditem);
+                        RemoveElements(roots, Dtd, dtditem);
                     }
                 }
 
@@ -139,54 +151,54 @@ namespace DtdParser
                 {
                     IDictionaryEnumerator enumerator = roots.GetEnumerator();
                     enumerator.MoveNext();
-                    dtd.rootElement = (DTDElement)((DictionaryEntry)enumerator.Current).Value;
+                    Dtd.RootElement = (DTDElement)((DictionaryEntry)enumerator.Current).Value;
                 }
                 else
                 {
-                    dtd.rootElement = null;
+                    Dtd.RootElement = null;
                 }
             }
             else
             {
-                dtd.rootElement = null;
+                Dtd.RootElement = null;
             }
 
-            return dtd;
+            return Dtd;
         }
 
-        protected void removeElements(Hashtable h, DTD dtd, DTDItem item)
+        protected void RemoveElements(Hashtable h, DTD dtd, DTDItem item)
         {
             if (item is DTDName)
             {
-                h.Remove(((DTDName) item).value);
+                h.Remove(((DTDName) item).Value);
             }
             else if (item is DTDContainer)
             {
-                foreach(DTDItem dtditem in ((DTDContainer)item).items)
+                foreach(DTDItem dtditem in ((DTDContainer)item).Items)
                 {
-                    removeElements(h, dtd, dtditem);
+                    RemoveElements(h, dtd, dtditem);
                 }
             }
         }
 
-        protected void parseTopLevelElement()    
+        protected void ParseTopLevelElement()    
         {
-            Token token = scanner.get();
+            Token token = Scanner.Get();
 
-    // Is <? xxx ?> even valid in a DTD?  I'll ignore it just in case it's there
+            // Is <? xxx ?> even valid in a DTD?  I'll ignore it just in case it's there
             if (token.Type == Scanner.LTQUES)
             {
                 string textBuffer = "";
 
                 for (;;)
                 {
-                    string text = scanner.getUntil('?');
+                    string text = Scanner.GetUntil('?');
                     textBuffer+=(text);
 
-                    token = scanner.peek();
+                    token = Scanner.Peek();
                     if (token.Type == Scanner.GT)
                     {
-                        scanner.get();
+                        Scanner.Get();
                         break;
                     }
                     textBuffer+=('?');
@@ -194,29 +206,29 @@ namespace DtdParser
                 DTDProcessingInstruction instruct =
                     new DTDProcessingInstruction(textBuffer);
 
-                dtd.items.Add(instruct);
+                Dtd.Items.Add(instruct);
 
                 return;
             }
-            else if (token.Type == Scanner.CONDITIONAL)
+            if (token.Type == Scanner.CONDITIONAL)
             {
-                token = expect(Scanner.IDENTIFIER);
+                token = Expect(Scanner.IDENTIFIER);
 
                 if (token.Value.Equals("IGNORE"))
                 {
-                    scanner.skipConditional();
+                    Scanner.SkipConditional();
                 }
                 else
                 {
                     if (token.Value.Equals("INCLUDE"))
                     {
-                        scanner.skipUntil('[');
+                        Scanner.SkipUntil('[');
                     }
                     else
                     {
-                        throw new DTDParseException(scanner.getUriId(),
-                            "Invalid token in conditional: "+token.Value,
-                            scanner.getLineNumber(), scanner.getColumn());
+                        throw new DTDParseException(Scanner.GetUriId(),
+                                                    "Invalid token in conditional: "+token.Value,
+                                                    Scanner.GetLineNumber(), Scanner.GetColumn());
                     }
                 }
             }
@@ -226,159 +238,153 @@ namespace DtdParser
             }
             else if (token.Type == Scanner.COMMENT)
             {
-                dtd.items.Add(
-                    new DTDComment(token.Value));
+                Dtd.Items.Add(new DTDComment(token.Value));
             }
             else if (token.Type == Scanner.LTBANG)
             {
 
-                token = expect(Scanner.IDENTIFIER);
+                token = Expect(Scanner.IDENTIFIER);
 
                 if (token.Value.Equals("ELEMENT"))
                 {
-                    parseElement();
+                    ParseElement();
                 }
                 else if (token.Value.Equals("ATTLIST"))
                 {
-                    parseAttlist();
+                    ParseAttlist();
                 }
                 else if (token.Value.Equals("ENTITY"))
                 {
-                    parseEntity();
+                    ParseEntity();
                 }
                 else if (token.Value.Equals("NOTATION"))
                 {
-                    parseNotation();
+                    ParseNotation();
                 }
                 else
                 {
-                    skipUntil(Scanner.GT);
+                    SkipUntil(Scanner.GT);
                 }
             }
             else
             {
-    // MAW Version 1.17
-    // Previously, the parser would skip over unexpected tokens at the
-    // upper level. Some invalid DTDs would still show up as valid.
-                throw new DTDParseException(scanner.getUriId(),
-                            "Unexpected token: "+ token.Type.Name+"("+token.Value+")",
-                            scanner.getLineNumber(), scanner.getColumn());
+                // MAW Version 1.17
+                // Previously, the parser would skip over unexpected tokens at the
+                // upper level. Some invalid DTDs would still show up as valid.
+                throw new DTDParseException(Scanner.GetUriId(),
+                                            "Unexpected token: "+ token.Type.Name+"("+token.Value+")",
+                                            Scanner.GetLineNumber(), Scanner.GetColumn());
             }
-
         }
 
-        protected void skipUntil(TokenType stopToken)
-            
+        protected void SkipUntil(TokenType stopToken)
         {
-            Token token = scanner.get();
+            Token token = Scanner.Get();
 
             while (token.Type != stopToken)
             {
-                token = scanner.get();
+                token = Scanner.Get();
             }
         }
 
-        protected Token expect(TokenType expected)
-            
+        protected Token Expect(TokenType expected)
         {
-            Token token = scanner.get();
+            Token token = Scanner.Get();
 
             if (token.Type != expected)
             {
                 if (token.Value == null)
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(Scanner.GetUriId(),
                                 "Expected "+expected.Name+" instead of "+token.Type.Name,
-                                scanner.getLineNumber(), scanner.getColumn());
+                                Scanner.GetLineNumber(), Scanner.GetColumn());
                 }
                 else
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(Scanner.GetUriId(),
                                 "Expected "+expected.Name+
                                     " instead of "+ token.Type.Name+"("+token.Value+")",
-                                scanner.getLineNumber(), scanner.getColumn());
+                                Scanner.GetLineNumber(), Scanner.GetColumn());
                 }
             }
 
             return token;
         }
 
-        protected void parseElement()
-            
+        protected void ParseElement()
         {
-            Token name = expect(Scanner.IDENTIFIER);
+            Token name = Expect(Scanner.IDENTIFIER);
 
-            DTDElement element = (DTDElement) dtd.elements[name.Value];
+            DTDElement element = (DTDElement) Dtd.Elements[name.Value];
 
             if (element == null)
             {
                 element = new DTDElement(name.Value);
-                dtd.elements[element.name] = element;
+                Dtd.Elements[element.Name] = element;
             }
-            else if (element.content != null)
+            else if (element.Content != null)
             {
-    // 070501 MAW: Since the ATTLIST tag can also cause an element to be created,
-    // only throw this exception if the element has content defined, which
-    // won't happen when you just create an ATTLIST. Thanks to
-    // Jags Krishnamurthy of object Edge for pointing out this problem - 
-    // originally the parser would let you define an element more than once.
-                throw new DTDParseException(scanner.getUriId(),
+                // 070501 MAW: Since the ATTLIST tag can also cause an element to be created,
+                // only throw this exception if the element has content defined, which
+                // won't happen when you just create an ATTLIST. Thanks to
+                // Jags Krishnamurthy of object Edge for pointing out this problem - 
+                // originally the parser would let you define an element more than once.
+                throw new DTDParseException(Scanner.GetUriId(),
                     "Found second definition of element: "+name.Value,
-                            scanner.getLineNumber(), scanner.getColumn());
+                            Scanner.GetLineNumber(), Scanner.GetColumn());
             }
 
-            dtd.items.Add(element);
-            parseContentSpec(scanner, element);
+            Dtd.Items.Add(element);
+            ParseContentSpec(Scanner, element);
 
-            expect(Scanner.GT);
+            Expect(Scanner.GT);
         }
 
-        protected void parseContentSpec(Scanner scanner, DTDElement element)
+        protected void ParseContentSpec(Scanner scanner, DTDElement element)
         {
-            Token token = scanner.get();
+            Token token = scanner.Get();
 
             if (token.Type == Scanner.IDENTIFIER)
             {
                 if (token.Value.Equals("EMPTY"))
                 {
-                    element.content = new DTDEmpty();
+                    element.Content = new DTDEmpty();
                 }
                 else if (token.Value.Equals("ANY"))
                 {
-                    element.content = new DTDAny();
+                    element.Content = new DTDAny();
                 }
                 else
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(scanner.GetUriId(),
                         "Invalid token in entity content spec "+
                             token.Value,
-                            scanner.getLineNumber(), scanner.getColumn());
+                            scanner.GetLineNumber(), scanner.GetColumn());
                 }
             }
             else if (token.Type == Scanner.LPAREN)
             {
-                token = scanner.peek();
+                token = scanner.Peek();
 
                 if (token.Type == Scanner.IDENTIFIER)
                 {
                     if (token.Value.Equals("#PCDATA"))
                     {
-                        parseMixed(element);
+                        ParseMixed(element);
                     }
                     else
                     {
-                        parseChildren(element);
+                        ParseChildren(element);
                     }
                 }
                 else if (token.Type == Scanner.LPAREN)
                 {
-                    parseChildren(element);
+                    ParseChildren(element);
                 }
             }
         }
 
-        protected void parseMixed(DTDElement element)
-            
+        protected void ParseMixed(DTDElement element)   
         {
             // MAW Version 1.19
             // Keep track of whether the mixed is #PCDATA only
@@ -388,88 +394,86 @@ namespace DtdParser
 
             DTDMixed mixed = new DTDMixed();
 
-            mixed.items.Add(new DTDPCData());
+            mixed.Items.Add(new DTDPCData());
             
-            scanner.get();
+            Scanner.Get();
 
-            element.content = mixed;
+            element.Content = mixed;
 
             for (;;)
             {
-                Token token = scanner.get();
+                Token token = Scanner.Get();
 
                 if (token.Type == Scanner.RPAREN)
                 {
-                    token = scanner.peek();
+                    token = Scanner.Peek();
 
                     if (token.Type == Scanner.ASTERISK)
                     {
-                        scanner.get();
-                        mixed.cardinal = DTDCardinal.ZEROMANY;
+                        Scanner.Get();
+                        mixed.Cardinal = DTDCardinal.ZEROMANY;
                     }
                     else
                     {
                         if (!isPcdataOnly)
                         {
-                            throw new DTDParseException(scanner.getUriId(),
+                            throw new DTDParseException(Scanner.GetUriId(),
                                             "Invalid token in Mixed content type, '*' required after (#PCDATA|xx ...): "+
-                                            token.Type.Name, scanner.getLineNumber(), scanner.getColumn());
+                                            token.Type.Name, Scanner.GetLineNumber(), Scanner.GetColumn());
                         }
 
-                        mixed.cardinal = DTDCardinal.NONE;
+                        mixed.Cardinal = DTDCardinal.NONE;
                     }
 
                     return;
                 }
-                else if (token.Type == Scanner.PIPE)
+                if (token.Type == Scanner.PIPE)
                 {
-                    token = scanner.get();
+                    token = Scanner.Get();
 
-                    mixed.items.Add(new DTDName(token.Value));
+                    mixed.Items.Add(new DTDName(token.Value));
 
                     // MAW Ver. 1.19
                     isPcdataOnly = false;
                 }
                 else
                 {
-                    throw new DTDParseException(scanner.getUriId(),
-                                    "Invalid token in Mixed content type: "+
-                                    token.Type.Name, scanner.getLineNumber(), scanner.getColumn());
+                    throw new DTDParseException(Scanner.GetUriId(),
+                                                "Invalid token in Mixed content type: "+
+                                                token.Type.Name, Scanner.GetLineNumber(), Scanner.GetColumn());
                 }
             }
         }
 
-        protected void parseChildren(DTDElement element)
-            
+        protected void ParseChildren(DTDElement element)  
         {
-            DTDContainer choiceSeq = parseChoiceSequence();
+            DTDContainer choiceSeq = ParseChoiceSequence();
 
-            Token token = scanner.peek();
+            Token token = Scanner.Peek();
 
-            choiceSeq.cardinal = parseCardinality();
+            choiceSeq.Cardinal = ParseCardinality();
 
             if (token.Type == Scanner.QUES)
             {
-                choiceSeq.cardinal = DTDCardinal.OPTIONAL;
+                choiceSeq.Cardinal = DTDCardinal.OPTIONAL;
             }
             else if (token.Type == Scanner.ASTERISK)
             {
-                choiceSeq.cardinal = DTDCardinal.ZEROMANY;
+                choiceSeq.Cardinal = DTDCardinal.ZEROMANY;
             }
             else if (token.Type == Scanner.PLUS)
             {
-                choiceSeq.cardinal = DTDCardinal.ONEMANY;
+                choiceSeq.Cardinal = DTDCardinal.ONEMANY;
             }
             else
             {
-                choiceSeq.cardinal = DTDCardinal.NONE;
+                choiceSeq.Cardinal = DTDCardinal.NONE;
             }
 
-            element.content = choiceSeq;
+            element.Content = choiceSeq;
         }
 
-        protected DTDContainer parseChoiceSequence()
-            
+        protected DTDContainer ParseChoiceSequence()
         {
             TokenType separator = null;
 
@@ -477,18 +481,18 @@ namespace DtdParser
 
             for (;;)
             {
-                DTDItem item = parseCP();
+                DTDItem item = ParseCp();
 
-                Token token = scanner.get();
+                Token token = Scanner.Get();
 
                 if ((token.Type == Scanner.PIPE) ||
                     (token.Type == Scanner.COMMA))
                 {
                     if ((separator != null) && (separator != token.Type))
                     {
-                        throw new DTDParseException(scanner.getUriId(),
+                        throw new DTDParseException(Scanner.GetUriId(),
                             "Can't mix separators in a choice/sequence",
-                            scanner.getLineNumber(), scanner.getColumn());
+                            Scanner.GetLineNumber(), Scanner.GetColumn());
                     }
                     separator = token.Type;
 
@@ -503,7 +507,7 @@ namespace DtdParser
                             cs = new DTDSequence();
                         }
                     }
-                    cs.items.Add(item);
+                    cs.Items.Add(item);
                 }
                 else if (token.Type == Scanner.RPAREN)
                 {
@@ -511,24 +515,23 @@ namespace DtdParser
                     {
                         cs = new DTDSequence();
                     }
-                    cs.items.Add(item);
+                    cs.Items.Add(item);
                     return cs;
                 }
                 else
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(Scanner.GetUriId(),
                                     "Found invalid token in sequence: "+
-                        token.Type.Name, scanner.getLineNumber(), scanner.getColumn());
+                        token.Type.Name, Scanner.GetLineNumber(), Scanner.GetColumn());
                 }
             }
         }
 
-        protected DTDItem parseCP()
-            
+        protected DTDItem ParseCp()
         {
-            Token token = scanner.get();
+            Token token = Scanner.Get();
 
-            DTDItem item = null;
+            DTDItem item;
 
             if (token.Type == Scanner.IDENTIFIER)
             {
@@ -536,288 +539,279 @@ namespace DtdParser
             }
             else if (token.Type == Scanner.LPAREN)
             {
-                item = parseChoiceSequence();
+                item = ParseChoiceSequence();
             }
             else
             {
-                throw new DTDParseException(scanner.getUriId(),
+                throw new DTDParseException(Scanner.GetUriId(),
                                 "Found invalid token in sequence: "+
-                                token.Type.Name, scanner.getLineNumber(),
-                                scanner.getColumn());
+                                token.Type.Name, Scanner.GetLineNumber(),
+                                Scanner.GetColumn());
             }
 
-            item.cardinal = parseCardinality();
+            item.Cardinal = ParseCardinality();
 
             return item;
         }
 
-        protected DTDCardinal parseCardinality()
+        protected DTDCardinal ParseCardinality()
         {
-            Token token = scanner.peek();
+            Token token = Scanner.Peek();
 
             if (token.Type == Scanner.QUES)
             {
-                scanner.get();
+                Scanner.Get();
                 return DTDCardinal.OPTIONAL;
             }
-            else if (token.Type == Scanner.ASTERISK)
+            if (token.Type == Scanner.ASTERISK)
             {
-                scanner.get();
+                Scanner.Get();
                 return DTDCardinal.ZEROMANY;
             }
-            else if (token.Type == Scanner.PLUS)
+            if (token.Type == Scanner.PLUS)
             {
-                scanner.get();
+                Scanner.Get();
                 return DTDCardinal.ONEMANY;
             }
-            else
-            {
-                return DTDCardinal.NONE;
-            }
+            return DTDCardinal.NONE;
         }
 
-        protected void parseAttlist()
+        protected void ParseAttlist()
         {
-            Token token = expect(Scanner.IDENTIFIER);
+            Token token = Expect(Scanner.IDENTIFIER);
 
-            DTDElement element = (DTDElement) dtd.elements[token.Value];
+            DTDElement element = (DTDElement) Dtd.Elements[token.Value];
 
             DTDAttlist attlist = new DTDAttlist(token.Value);
 
-            dtd.items.Add(attlist);
+            Dtd.Items.Add(attlist);
 
             if (element == null)
             {
                 element = new DTDElement(token.Value);
-                dtd.elements[token.Value] = element;
+                Dtd.Elements[token.Value] = element;
             }
 
-            token = scanner.peek();
+            token = Scanner.Peek();
 
             while (token.Type != Scanner.GT)
             {
-                parseAttdef(scanner, element, attlist);
-                token = scanner.peek();
+                ParseAttdef(Scanner, element, attlist);
+                token = Scanner.Peek();
             }
-    // MAW Version 1.17
-    // Prior to this version, the parser didn't actually consume the > at the
-    // end of the ATTLIST definition. Because the parser ignored unexpected tokens
-    // at the top level, it was ignoring the >. In parsing DOCBOOK, however, there
-    // were two unexpected tokens, bringing this error to light.
-            expect(Scanner.GT);
+            // MAW Version 1.17
+            // Prior to this version, the parser didn't actually consume the > at the
+            // end of the ATTLIST definition. Because the parser ignored unexpected tokens
+            // at the top level, it was ignoring the >. In parsing DOCBOOK, however, there
+            // were two unexpected tokens, bringing this error to light.
+            Expect(Scanner.GT);
         }
 
-        protected void parseAttdef(Scanner scanner, DTDElement element,
-            DTDAttlist attlist)
-            
+        protected void ParseAttdef(Scanner scanner, DTDElement element, DTDAttlist attlist)
         {
-            Token token = expect(Scanner.IDENTIFIER);
+            Token token = Expect(Scanner.IDENTIFIER);
 
             DTDAttribute attr = new DTDAttribute(token.Value);
 
-            attlist.attributes.Add(attr);
+            attlist.Attributes.Add(attr);
 
-            element.attributes[token.Value] = attr;
+            element.Attributes[token.Value] = attr;
 
-            token = scanner.get();
+            token = scanner.Get();
 
             if (token.Type == Scanner.IDENTIFIER)
             {
                 if (token.Value.Equals("NOTATION"))
                 {
-                    attr.type = parseNotationList();
+                    attr.Type = ParseNotationList();
                 }
                 else
                 {
-                    attr.type = token.Value;
+                    attr.Type = token.Value;
                 }
             }
             else if (token.Type == Scanner.LPAREN)
             {
-                attr.type = parseEnumeration();
+                attr.Type = ParseEnumeration();
             }
 
-            token = scanner.peek();
+            token = scanner.Peek();
 
             if (token.Type == Scanner.IDENTIFIER)
             {
-                scanner.get();
+                scanner.Get();
                 if (token.Value.Equals("#FIXED"))
                 {
-                    attr.decl = DTDDecl.FIXED;
+                    attr.Decl = DTDDecl.FIXED;
 
-                    token = scanner.get();
-                    attr.defaultValue = token.Value;
+                    token = scanner.Get();
+                    attr.DefaultValue = token.Value;
                 }
                 else if (token.Value.Equals("#REQUIRED"))
                 {
-                    attr.decl = DTDDecl.REQUIRED;
+                    attr.Decl = DTDDecl.REQUIRED;
                 }
                 else if (token.Value.Equals("#IMPLIED"))
                 {
-                    attr.decl = DTDDecl.IMPLIED;
+                    attr.Decl = DTDDecl.IMPLIED;
                 }
                 else
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(scanner.GetUriId(),
                         "Invalid token in attribute declaration: "+
-                        token.Value, scanner.getLineNumber(), scanner.getColumn());
+                        token.Value, scanner.GetLineNumber(), scanner.GetColumn());
                 }
             }
             else if (token.Type == Scanner.STRING)
             {
-                scanner.get();
-                attr.decl = DTDDecl.VALUE;
-                attr.defaultValue = token.Value;
+                scanner.Get();
+                attr.Decl = DTDDecl.VALUE;
+                attr.DefaultValue = token.Value;
             }
         }
 
-        protected DTDNotationList parseNotationList()
-            
+        protected DTDNotationList ParseNotationList()
         {
             DTDNotationList notation = new DTDNotationList();
 
-            Token token = scanner.get();
+            Token token = Scanner.Get();
             if (token.Type != Scanner.LPAREN)
             {
-                throw new DTDParseException(scanner.getUriId(),
+                throw new DTDParseException(Scanner.GetUriId(),
                     "Invalid token in notation: "+
-                    token.Type.Name, scanner.getLineNumber(),
-                    scanner.getColumn());
+                    token.Type.Name, Scanner.GetLineNumber(),
+                    Scanner.GetColumn());
             }
 
             for (;;)
             {
-                token = scanner.get();
+                token = Scanner.Get();
 
                 if (token.Type != Scanner.IDENTIFIER)
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(Scanner.GetUriId(),
                                     "Invalid token in notation: "+
-                                    token.Type.Name, scanner.getLineNumber(),
-                                    scanner.getColumn());
+                                    token.Type.Name, Scanner.GetLineNumber(),
+                                    Scanner.GetColumn());
                 }
 
-                notation.items.Add(token.Value);
+                notation.Items.Add(token.Value);
 
-                token = scanner.peek();
+                token = Scanner.Peek();
 
                 if (token.Type == Scanner.RPAREN)
                 {
-                    scanner.get();
+                    Scanner.Get();
                     return notation;
                 }
-                else if (token.Type != Scanner.PIPE)
+                if (token.Type != Scanner.PIPE)
                 {
-                    throw new DTDParseException(scanner.getUriId(),
-                                    "Invalid token in notation: "+
-                                    token.Type.Name, scanner.getLineNumber(),
-                                    scanner.getColumn());
+                    throw new DTDParseException(Scanner.GetUriId(),
+                                                "Invalid token in notation: "+
+                                                token.Type.Name, Scanner.GetLineNumber(),
+                                                Scanner.GetColumn());
                 }
-                scanner.get(); // eat the pipe
+                Scanner.Get(); // eat the pipe
             }
         }
 
-        protected DTDEnumeration parseEnumeration()
-            
+        protected DTDEnumeration ParseEnumeration()   
         {
             DTDEnumeration enumeration = new DTDEnumeration();
 
             for (;;)
             {
-                Token token = scanner.get();
+                Token token = Scanner.Get();
 
                 if ((token.Type != Scanner.IDENTIFIER) &&
                     (token.Type != Scanner.NMTOKEN))
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(Scanner.GetUriId(),
                                     "Invalid token in enumeration: "+
-                                    token.Type.Name, scanner.getLineNumber(),
-                                    scanner.getColumn());
+                                    token.Type.Name, Scanner.GetLineNumber(),
+                                    Scanner.GetColumn());
                 }
 
-                enumeration.items.Add(token.Value);
+                enumeration.Items.Add(token.Value);
 
-                token = scanner.peek();
+                token = Scanner.Peek();
 
                 if (token.Type == Scanner.RPAREN)
                 {
-                    scanner.get();
+                    Scanner.Get();
                     return enumeration;
                 }
-                else if (token.Type != Scanner.PIPE)
+                if (token.Type != Scanner.PIPE)
                 {
-                    throw new DTDParseException(scanner.getUriId(),
-                                    "Invalid token in enumeration: "+
-                                    token.Type.Name, scanner.getLineNumber(),
-                                    scanner.getColumn());
+                    throw new DTDParseException(Scanner.GetUriId(),
+                                                "Invalid token in enumeration: "+
+                                                token.Type.Name, Scanner.GetLineNumber(),
+                                                Scanner.GetColumn());
                 }
-                scanner.get(); // eat the pipe
+                Scanner.Get(); // eat the pipe
             }
         }
 
-        protected void parseEntity()
-            
+        protected void ParseEntity()
         {
             bool isParsed = false;
 
-            Token name = scanner.get();
+            Token name = Scanner.Get();
 
             if (name.Type == Scanner.PERCENT)
             {
                 isParsed = true;
-                name = expect(Scanner.IDENTIFIER);
+                name = Expect(Scanner.IDENTIFIER);
             }
             else if (name.Type != Scanner.IDENTIFIER)
             {
-                throw new DTDParseException(scanner.getUriId(),
+                throw new DTDParseException(Scanner.GetUriId(),
                                 "Invalid entity declaration",
-                                scanner.getLineNumber(), scanner.getColumn());
+                                Scanner.GetLineNumber(), Scanner.GetColumn());
             }
 
-            DTDEntity entity = (DTDEntity) dtd.entities[name.Value];
+            DTDEntity entity = (DTDEntity) Dtd.Entities[name.Value];
 
             bool skip = false;
 
             if (entity == null)
             {
-                entity = new DTDEntity(name.Value, defaultLocation);
-                dtd.entities[entity.name] = entity;
+                entity = new DTDEntity(name.Value, DefaultLocation);
+                Dtd.Entities[entity.Name] = entity;
             }
             else
             {
-    // 070501 MAW: If the entity already exists, create a dummy entity - this way
-    // you keep the original definition.  Thanks to Jags Krishnamurthy of object
-    // Edge for pointing out this problem and for pointing out the solution
-                entity = new DTDEntity(name.Value, defaultLocation);
+                // 070501 MAW: If the entity already exists, create a dummy entity - this way
+                // you keep the original definition.  Thanks to Jags Krishnamurthy of object
+                // Edge for pointing out this problem and for pointing out the solution
+                entity = new DTDEntity(name.Value, DefaultLocation);
                 skip = true;
             }
 
-            dtd.items.Add(entity);
+            Dtd.Items.Add(entity);
 
-            entity.isParsed = isParsed;
+            entity.IsParsed = isParsed;
 
-            parseEntityDef(entity);
+            ParseEntityDef(entity);
 
-            if (entity.isParsed && (entity.value != null) && !skip)
+            if (entity.IsParsed && (entity.Value != null) && !skip)
             {
-                scanner.addEntity(entity.name, entity.value);
+                Scanner.AddEntity(entity.Name, entity.Value);
             }
         }
 
-        protected void parseEntityDef(DTDEntity entity)
-            
+        protected void ParseEntityDef(DTDEntity entity)
         {
-            Token token = scanner.get();
+            Token token = Scanner.Get();
 
             if (token.Type == Scanner.STRING)
             {
                 // Only set the entity value if it hasn't been set yet
                 // XML 1.0 spec says that you use the first value of
                 // an entity, not the most recent.
-                if (entity.value == null)
+                if (entity.Value == null)
                 {
-                    entity.value = token.Value;
+                    entity.Value = token.Value;
                 }
             }
             else if (token.Type == Scanner.IDENTIFIER)
@@ -825,26 +819,26 @@ namespace DtdParser
                 if (token.Value.Equals("SYSTEM"))
                 {
                     DTDSystem sys = new DTDSystem();
-                    token = expect(Scanner.STRING);
+                    token = Expect(Scanner.STRING);
 
-                    sys.system = token.Value;
-                    entity.externalID = sys;
+                    sys.System = token.Value;
+                    entity.ExternalId = sys;
                 }
                 else if (token.Value.Equals("PUBLIC"))
                 {
                     DTDPublic pub = new DTDPublic();
 
-                    token = expect(Scanner.STRING);
+                    token = Expect(Scanner.STRING);
                     pub.Pub = token.Value;
-                    token = expect(Scanner.STRING);
-                    pub.system = token.Value;
-                    entity.externalID = pub;
+                    token = Expect(Scanner.STRING);
+                    pub.System = token.Value;
+                    entity.ExternalId = pub;
                 }
                 else
                 {
-                    throw new DTDParseException(scanner.getUriId(),
+                    throw new DTDParseException(Scanner.GetUriId(),
                                     "Invalid External ID specification",
-                                    scanner.getLineNumber(), scanner.getColumn());
+                                    Scanner.GetLineNumber(), Scanner.GetColumn());
                 }
 
 
@@ -867,82 +861,81 @@ namespace DtdParser
                 //          | 'PUBLIC' S PubidLiteral S SystemLiteral
                 // [76] NDataDecl ::= S 'NDATA' S Name [ VC: Notation Declared ]
 
-                if (!entity.isParsed) // CHANGE 1
+                if (!entity.IsParsed) // CHANGE 1
                 {
-                    token = scanner.peek();
+                    token = Scanner.Peek();
                     if (token.Type == Scanner.IDENTIFIER)
                     {
                         if (!token.Value.Equals("NDATA"))
                         {
-                            throw new DTDParseException(scanner.getUriId(),
+                            throw new DTDParseException(Scanner.GetUriId(),
                                 "Invalid NData declaration",
-                                scanner.getLineNumber(), scanner.getColumn());
+                                Scanner.GetLineNumber(), Scanner.GetColumn());
                         }
                         // CHANGE 2: Add call to scanner.get.
                         //      This gets "NDATA" IDENTIFIER.
-                        token = scanner.get();
+                        token = Scanner.Get();
                         // Get the NDATA "Name" IDENTIFIER.
-                        token = expect(Scanner.IDENTIFIER);
+                        token = Expect(Scanner.IDENTIFIER);
                         // Save the ndata value
-                        entity.ndata = token.Value;
+                        entity.Ndata = token.Value;
                     }
                 }
             }
             else
             {
-                throw new DTDParseException(scanner.getUriId(),
+                throw new DTDParseException(Scanner.GetUriId(),
                                 "Invalid entity definition",
-                                scanner.getLineNumber(), scanner.getColumn());
+                                Scanner.GetLineNumber(), Scanner.GetColumn());
             }
 
-            expect(Scanner.GT);
+            Expect(Scanner.GT);
         }
 
-        protected void parseNotation()
-           // throws java.io.IOException
+        protected void ParseNotation()
         {
             
-            Token token = expect(Scanner.IDENTIFIER);
+            Token token = Expect(Scanner.IDENTIFIER);
             DTDNotation notation = new DTDNotation(token.Value);
 
-            dtd.notations[notation.name] = notation;
-            dtd.items.Add(notation);
+            Dtd.Notations[notation.Name] = notation;
+            Dtd.Items.Add(notation);
 
-            token = expect(Scanner.IDENTIFIER);
+            token = Expect(Scanner.IDENTIFIER);
 
             if (token.Value.Equals("SYSTEM"))
             {
                 DTDSystem sys = new DTDSystem();
-                token = expect(Scanner.STRING);
+                token = Expect(Scanner.STRING);
 
-                sys.system = token.Value;
-                notation.externalID = sys;
+                sys.System = token.Value;
+                notation.ExternalId = sys;
             }
             else if (token.Value.Equals("PUBLIC"))
             {
                 DTDPublic pub = new DTDPublic();
-                token = expect(Scanner.STRING);
+                token = Expect(Scanner.STRING);
 
                 pub.Pub = token.Value;
-                pub.system = null;
+                pub.System = null;
 
-    // For <!NOTATION>, you can have PUBLIC PubidLiteral without
-    // a SystemLiteral
-                token = scanner.peek();
+                // For <!NOTATION>, you can have PUBLIC PubidLiteral without
+                // a SystemLiteral
+                token = Scanner.Peek();
                 if (token.Type == Scanner.STRING)
                 {
-                    token = scanner.get();
-                    pub.system = token.Value;
+                    token = Scanner.Get();
+                    pub.System = token.Value;
                 }
 
-                notation.externalID = pub;
+                notation.ExternalId = pub;
             }
-            expect(Scanner.GT);
+            Expect(Scanner.GT);
         }
 
-        public DTDEntity expandEntity(string name)
+        public DTDEntity ExpandEntity(string name)
         {
-            return (DTDEntity) dtd.entities[name];
+            return (DTDEntity) Dtd.Entities[name];
         }
     }
 }

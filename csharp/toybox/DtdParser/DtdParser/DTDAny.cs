@@ -1,5 +1,8 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     
@@ -7,18 +10,18 @@ namespace DtdParser
     {
 
     /** Writes "ANY" to a print writer */
-        public override void write(StreamWriter writer)
+        public override void Write(StreamWriter writer)
         {
             writer.WriteLine("ANY");
-            cardinal.write(writer);
+            Cardinal.Write(writer);
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDAny)) return false;
 
-            return base.equals(ob);
+            return base.Equals(ob);
         }
     }
 }

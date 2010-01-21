@@ -1,17 +1,20 @@
 using System;
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDAttribute : IDTDOutput
     {
     /** The name of the attribute */
-        public string name;
+        public string Name { get; set;}
 
     /** The type of the attribute (either string, DTDEnumeration or
         DTDNotationList) */
         private object m_Type;
-        public object type 
+        public object Type 
         { 
             get { return m_Type;}
             set
@@ -29,10 +32,10 @@ namespace DtdParser
         }
 
     /** The attribute's declaration (required, fixed, implied) */
-        public DTDDecl decl { get; set;}
+        public DTDDecl Decl { get; set;}
 
     /** The attribute's default value (null if not declared) */
-        public string defaultValue { get; set;}
+        public string DefaultValue { get; set;}
 
         public DTDAttribute()
         {
@@ -40,84 +43,83 @@ namespace DtdParser
 
         public DTDAttribute(string aName)
         {
-            name = aName;
+            Name = aName;
         }
 
     /** Writes this attribute to an output stream */
-        public void write(StreamWriter writer)
-            
+        public void Write(StreamWriter writer)
         {
-            writer.Write(name+" ");
-            if (type is string)
+            writer.Write(Name+" ");
+            if (Type is string)
             {
-                writer.Write(type);
+                writer.Write(Type);
             }
-            else if (type is DTDEnumeration)
+            else if (Type is DTDEnumeration)
             {
-                DTDEnumeration dtdEnum = (DTDEnumeration) type;
-                dtdEnum.write(writer);
+                DTDEnumeration dtdEnum = (DTDEnumeration) Type;
+                dtdEnum.Write(writer);
             }
-            else if (type is DTDNotationList)
+            else if (Type is DTDNotationList)
             {
-                DTDNotationList dtdnl = (DTDNotationList) type;
-                dtdnl.write(writer);
-            }
-
-            if (decl != null)
-            {
-                decl.write(writer);
+                DTDNotationList dtdnl = (DTDNotationList) Type;
+                dtdnl.Write(writer);
             }
 
-            if (defaultValue != null)
+            if (Decl != null)
+            {
+                Decl.Write(writer);
+            }
+
+            if (DefaultValue != null)
             {
                 writer.Write(" \"");
-                writer.Write(defaultValue);
+                writer.Write(DefaultValue);
                 writer.Write("\"");
             }
             //writer.WriteLine(">");                           original java comment: "Bug!"
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDAttribute)) return false;
 
             DTDAttribute other = (DTDAttribute) ob;
 
-            if (name == null)
+            if (Name == null)
             {
-                if (other.name != null) return false;
+                if (other.Name != null) return false;
             }
             else
             {
-                if (!name.Equals(other.name)) return false;
+                if (!Name.Equals(other.Name)) return false;
             }
 
-            if (type == null)
+            if (Type == null)
             {
-                if (other.type != null) return false;
+                if (other.Type != null) return false;
             }
             else
             {
-                if (!type.Equals(other.type)) return false;
+                if (!Type.Equals(other.Type)) return false;
             }
 
-            if (decl == null)
+            if (Decl == null)
             {
-                if (other.decl != null) return false;
+                if (other.Decl != null) return false;
             }
             else
             {
-                if (!decl.equals(other.decl)) return false;
+                if (!Decl.Equals(other.Decl)) return false;
             }
 
-            if (defaultValue == null)
+            if (DefaultValue == null)
             {
-                if (other.defaultValue != null) return false;
+                if (other.DefaultValue != null) return false;
             }
             else
             {
-                if (!defaultValue.Equals(other.defaultValue)) return false;
+                if (!DefaultValue.Equals(other.DefaultValue)) return false;
             }
 
             return true;

@@ -1,39 +1,41 @@
 using System.IO;
 
+/*
+ * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
+ */
 namespace DtdParser
 {
     public class DTDName : DTDItem
     {
-        public string value { get; set; }
+        public string Value { get; set; }
 
         public DTDName(string aValue)
         {
-            value = aValue;
+            Value = aValue;
         }
 
         /** Writes out the value of this name */
-        public override void write(StreamWriter writer)
-            
+        public override void Write(StreamWriter writer)
         {
-            writer.Write(value);
-            cardinal.write(writer);
+            writer.Write(Value);
+            Cardinal.Write(writer);
         }
 
-        public bool equals(object ob)
+        public override bool Equals(object ob)
         {
             if (ob == this) return true;
             if (!(ob is DTDName)) return false;
-            if (!base.equals(ob)) return false;
+            if (!base.Equals(ob)) return false;
 
             DTDName other = (DTDName) ob;
 
-            if (value == null)
+            if (Value == null)
             {
-                if (other.value != null) return false;
+                if (other.Value != null) return false;
             }
             else
             {
-                if (!value.Equals(other.value)) return false;
+                if (!Value.Equals(other.Value)) return false;
             }
             return true;
         }
