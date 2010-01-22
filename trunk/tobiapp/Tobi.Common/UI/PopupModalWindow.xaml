@@ -4,7 +4,7 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI"
     xmlns:Common="clr-namespace:Tobi.Common"
     Height="480" Width="640"
-        ShowInTaskbar="False"
+
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"

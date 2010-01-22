@@ -28,7 +28,10 @@
         
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
    >
-<!-- 
+<!--
+
+    GotFocus="OnWindowGotFocus"
+    
     Height="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Height, Mode=TwoWay}"
     Width="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Width, Mode=TwoWay}"
     
