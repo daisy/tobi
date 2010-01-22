@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="KeyGesture_Audio_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F7</Value>
+      <Value Profile="(Default)">F7</Value>
     </Setting>
     <Setting Name="KeyGesture_Audio_FocusStatusBar" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F4</Value>
+      <Value Profile="(Default)">F4</Value>
     </Setting>
     <Setting Name="KeyGesture_Audio_BeginSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] OemOpenBrackets</Value>
@@ -85,6 +85,9 @@
     </Setting>
     <Setting Name="KeyGesture_Audio_ShowOptions" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL | SHIFT | ALT ] O</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Audio_SelectAll" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] A</Value>
     </Setting>
   </Settings>
 </SettingsFile>

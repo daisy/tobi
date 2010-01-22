@@ -1,6 +1,9 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.MetadataPane" GeneratedClassName="Settings_KeyGestures">
+  <Profiles />
+  <Settings>
+    <Setting Name="KeyGesture_Metadata_ShowMetadata" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] E</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

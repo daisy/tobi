@@ -22,5 +22,41 @@ namespace Tobi.Plugin.DocumentPane {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F8")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Document_Focus {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Document_Focus"]));
+            }
+            set {
+                this["KeyGesture_Document_Focus"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ]  I")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Document_Event_SwitchPrevious {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Document_Event_SwitchPrevious"]));
+            }
+            set {
+                this["KeyGesture_Document_Event_SwitchPrevious"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ]  J")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Document_Event_SwitchNext {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Document_Event_SwitchNext"]));
+            }
+            set {
+                this["KeyGesture_Document_Event_SwitchNext"] = value;
+            }
+        }
     }
 }

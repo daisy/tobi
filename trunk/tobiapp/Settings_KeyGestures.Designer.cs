@@ -61,18 +61,6 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] C")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Copy {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Copy"]));
-            }
-            set {
-                this["KeyGesture_Copy"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] X")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Cut {
             get {

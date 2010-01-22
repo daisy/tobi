@@ -1,6 +1,27 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings_KeyGestures">
+  <Profiles />
+  <Settings>
+    <Setting Name="KeyGesture_Urakawa_Open" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] O</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Urakawa_Close" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] W</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Urakawa_Undo" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ]  Z</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Urakawa_Redo" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL   | SHIFT ]  Z</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Urakawa_Save" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] S</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Urakawa_Export" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL | SHIFT  |  ALT ] S</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Urakawa_SaveAs" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT  | CTRL ] S</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

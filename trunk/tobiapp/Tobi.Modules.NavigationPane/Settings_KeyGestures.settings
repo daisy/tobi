@@ -1,6 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.NavigationPane" GeneratedClassName="Settings_KeyGestures">
+  <Profiles />
+  <Settings>
+    <Setting Name="KeyGesture_Navigation_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">F6</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Navigation_TreeFindNext" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">F3</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Navigation_TreeFindPrev" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT ] F3</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Navigation_PageFindNext" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ ALT ] F3</Value>
+    </Setting>
+    <Setting Name="KeyGesture_Navigation_PageFindPrev" Type="Tobi.Common.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ ALT | SHIFT ] F3</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

@@ -11,9 +11,6 @@
     <Setting Name="KeyGesture_MenuCopy" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] C</Value>
     </Setting>
-    <Setting Name="KeyGesture_Copy" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] C</Value>
-    </Setting>
     <Setting Name="KeyGesture_Cut" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] X</Value>
     </Setting>
