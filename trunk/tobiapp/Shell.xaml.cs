@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -187,6 +188,42 @@ namespace Tobi
                 TaskDialogIcon.Information);*/
             m_Exiting = true;
             Application.Current.Shutdown();
+        }
+
+        [Conditional("DEBUG")]
+        public void CheckParseScanWalkUiTreeThing()
+        {
+            Stopwatch startRecursiveDepth = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, false, false, false);
+            startRecursiveDepth.Stop();
+            TimeSpan timeRecursiveDepth = startRecursiveDepth.Elapsed;
+
+            Stopwatch startRecursiveLeaf = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, false, true, false);
+            startRecursiveLeaf.Stop();
+            TimeSpan timeRecursiveLeaf = startRecursiveLeaf.Elapsed;
+
+            Stopwatch startNonRecursiveDepth = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, true, false, false);
+            startNonRecursiveDepth.Stop();
+            TimeSpan timeNonRecursiveDepth = startNonRecursiveDepth.Elapsed;
+
+            Stopwatch startNonRecursiveLeaf = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, true, true, false);
+            startNonRecursiveLeaf.Stop();
+            TimeSpan timeNonRecursiveLeaf = startNonRecursiveLeaf.Elapsed;
+
+#if DEBUG
+            int nVisualLeafNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, true, false);
+            int nVisualDepthNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, false, false);
+
+            int nLogicalLeafNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, true, true);
+            int nLogicalDepthNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, false, true);
+
+            MessageBox.Show(String.Format(
+                "VisualLeafNoError={0}\nVisualDepthNoError={1}\nLogicalLeafNoError={2}\nLogicalDepthNoError={3}\n\ntimeNonRecursiveDepth={4}\ntimeNonRecursiveLeaf={5}\ntimeRecursiveDepth={6}\ntimeRecursiveLeaf={7}\n"
+                , nVisualLeafNoError, nVisualDepthNoError, nLogicalLeafNoError, nLogicalDepthNoError, timeNonRecursiveDepth, timeNonRecursiveLeaf, timeRecursiveDepth, timeRecursiveLeaf));
+#endif
         }
 
         protected void OnClosing(object sender, CancelEventArgs e)

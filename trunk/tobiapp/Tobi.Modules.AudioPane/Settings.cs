@@ -5,7 +5,7 @@ using Tobi.Common;
 
 namespace Tobi.Plugin.AudioPane
 {
-    [Export(typeof(ISettingsProvider)), PartCreationPolicy(CreationPolicy.Shared)]
+    //[Export(typeof(ISettingsProvider)), PartCreationPolicy(CreationPolicy.Shared)]
     public class SettingsProvider : ISettingsProvider, IPartImportsSatisfiedNotification
     {
 
@@ -28,7 +28,7 @@ namespace Tobi.Plugin.AudioPane
     }
 
 
-    [Export(typeof(ISettingsProvider)), PartCreationPolicy(CreationPolicy.Shared)]
+    //[Export(typeof(ISettingsProvider)), PartCreationPolicy(CreationPolicy.Shared)]
     public class SettingsProvider_KeyGestures : ISettingsProvider, IPartImportsSatisfiedNotification
     {
 

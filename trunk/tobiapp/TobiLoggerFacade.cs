@@ -34,7 +34,7 @@ namespace Tobi
 
             PresentationTraceSources.DataBindingSource.Listeners.Add(new LoggerFacadeTraceListener(this));
 #if (DEBUG)
-            PresentationTraceSources.DataBindingSource.Listeners.Add(new BindingErrorAdornerTraceListener());
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new BindingErrorAdornerTraceListener(false));
 #endif
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
 
