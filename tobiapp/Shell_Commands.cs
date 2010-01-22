@@ -160,7 +160,12 @@ namespace Tobi
                 UserInterfaceStrings.Cut_,
                 UserInterfaceStrings.Cut_KEYS,
                 LoadTangoIcon(@"edit-cut"),
-                () => Debug.Fail(@"Functionality not implemented yet."),
+                () =>
+                    {
+                        CheckParseScanWalkUiTreeThing();
+
+                        Debug.Fail(@"Functionality not implemented yet.");
+                    },
                 () => true);
 
             RegisterRichCommand(CutCommand);

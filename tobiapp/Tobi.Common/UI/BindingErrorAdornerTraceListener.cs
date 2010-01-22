@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Data;
@@ -12,6 +14,13 @@ namespace Tobi.Common.UI
     public class BindingErrorAdornerTraceListener : DefaultTraceListener
     {
         private DispatcherOperation m_DispatcherOperation;
+
+        private readonly bool m_LogicalInsteadOfVisualTreeScan;
+
+        public BindingErrorAdornerTraceListener(bool logicalInsteadOfVisualTreeScan)
+        {
+            m_LogicalInsteadOfVisualTreeScan = logicalInsteadOfVisualTreeScan;
+        }
 
         public override void TraceEvent(TraceEventCache eventCache,
             string source, TraceEventType eventType, int id,
@@ -32,14 +41,18 @@ namespace Tobi.Common.UI
                 {
                     foreach (Window w in Application.Current.Windows)
                     {
-                        CheckForBindingErrors(w);
+                        IEnumerable<DependencyObject> enumeration = VisualLogicalTreeWalkHelper.GetElements(w, false, false, m_LogicalInsteadOfVisualTreeScan);
+                        foreach (var element in enumeration)
+                        {
+                            checkErrors(element);
+                        }
                     }
 
                     m_DispatcherOperation = null;
                 });
         }
 
-        public static void CheckForBindingErrors(DependencyObject parent)
+        private static void checkErrors(DependencyObject parent)
         {
             LocalValueEnumerator localValues = parent.GetLocalValueEnumerator();
             while (localValues.MoveNext())
@@ -50,16 +63,17 @@ namespace Tobi.Common.UI
                     BindingExpression binding =
                         BindingOperations.GetBindingExpression(parent, entry.Property);
 
-                    if (binding.DataItem == null)
+                    if (binding == null // Not possible because of IsDataBound() check, but we leave it here to remove the warning
+                        || binding.DataItem == null)
                         continue;
 
                     if (binding.Status == BindingStatus.PathError)
                     {
-                        // Found binding error
-                        FrameworkElement element = parent as FrameworkElement;
+                        var element = parent as FrameworkElement;
                         if (element != null)
                         {
                             var elementAdornerLayer = AdornerLayer.GetAdornerLayer(element);
+                            if (elementAdornerLayer == null) continue;
 
                             Adorner[] adorners = elementAdornerLayer.GetAdorners(element);
                             if (adorners != null)
@@ -75,12 +89,6 @@ namespace Tobi.Common.UI
                         }
                     }
                 }
-            }
-
-            for (int i = 0; i != VisualTreeHelper.GetChildrenCount(parent); ++i)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                CheckForBindingErrors(child);
             }
         }
     }

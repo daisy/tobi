@@ -158,6 +158,8 @@
     <Compile Include="UI\ValidationAwareTextBox.xaml.cs">
       <DependentUpon>ValidationAwareTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ValidationErrorTreeSearch.cs" />
+    <Compile Include="UI\VisualLogicalTreeWalkHelper.cs" />
     <Compile Include="UI\WatermarkTextBox.xaml.cs">
       <DependentUpon>WatermarkTextBox.xaml</DependentUpon>
     </Compile>
