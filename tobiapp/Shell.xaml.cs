@@ -161,6 +161,19 @@ namespace Tobi
             }
         }
 
+
+        //private void OnWindowGotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    foreach (Window w in Application.Current.Windows)
+        //    {
+        //        if (w != this && !w.ShowInTaskbar)
+        //        {
+        //            w.Focus();
+        //            w.BringIntoView();
+        //        }
+        //    }
+        //}
+
         // To avoid the shutting-down loop in OnShellWindowClosing()
         private bool m_Exiting;
         private void exit()

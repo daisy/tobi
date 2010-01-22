@@ -123,6 +123,8 @@ namespace Tobi.Common.UI
         {
             ensureVisible(true);
 
+            ShowInTaskbar = false;
+
             if (ShellView != null)
             {
                 ShellView.DimBackgroundWhile(() => ShowDialog());
@@ -138,6 +140,8 @@ namespace Tobi.Common.UI
             m_whenDoneAction = whenDoneAction;
 
             ensureVisible(true);
+
+            ShowInTaskbar = true;
 
             Show();
         }

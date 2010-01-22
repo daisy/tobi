@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls.Primitives;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace Tobi
 {
