@@ -219,7 +219,14 @@ namespace Tobi.Common.UI
         {
             if (this != Application.Current.MainWindow)
             {
-                Owner = Application.Current.MainWindow;
+                try
+                {
+                    Owner = Application.Current.MainWindow;
+                }
+                catch
+                {
+                    Console.WriteLine(@"Failed to set Owner of popup dialog window !");
+                }
             }
 
             //if (this != Application.Current.MainWindow)
