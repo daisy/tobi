@@ -22,5 +22,89 @@ namespace Tobi.Plugin.Urakawa {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] O")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_Open {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_Open"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_Open"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] W")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_Close {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_Close"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_Close"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ]  Z")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_Undo {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_Undo"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_Undo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL   | SHIFT ]  Z")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_Redo {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_Redo"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_Redo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] S")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_Save {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_Save"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_Save"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL | SHIFT  |  ALT ] S")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_Export {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_Export"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_Export"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT  | CTRL ] S")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Urakawa_SaveAs {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Urakawa_SaveAs"]));
+            }
+            set {
+                this["KeyGesture_Urakawa_SaveAs"] = value;
+            }
+        }
     }
 }

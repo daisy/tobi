@@ -22,5 +22,17 @@ namespace Tobi.Plugin.MetadataPane {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] E")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Metadata_ShowMetadata {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Metadata_ShowMetadata"]));
+            }
+            set {
+                this["KeyGesture_Metadata_ShowMetadata"] = value;
+            }
+        }
     }
 }

@@ -22,5 +22,65 @@ namespace Tobi.Plugin.NavigationPane {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F6")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_Focus {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_Focus"]));
+            }
+            set {
+                this["KeyGesture_Navigation_Focus"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F3")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_TreeFindNext {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_TreeFindNext"]));
+            }
+            set {
+                this["KeyGesture_Navigation_TreeFindNext"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_TreeFindPrev {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_TreeFindPrev"]));
+            }
+            set {
+                this["KeyGesture_Navigation_TreeFindPrev"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_PageFindNext {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_PageFindNext"]));
+            }
+            set {
+                this["KeyGesture_Navigation_PageFindNext"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT | SHIFT ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_PageFindPrev {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_PageFindPrev"]));
+            }
+            set {
+                this["KeyGesture_Navigation_PageFindPrev"] = value;
+            }
+        }
     }
 }

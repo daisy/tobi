@@ -25,7 +25,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F7")]
+        [global::System.Configuration.DefaultSettingValueAttribute("F7")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Audio_Focus {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Audio_Focus"]));
@@ -37,7 +37,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("F4")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Audio_FocusStatusBar {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Audio_FocusStatusBar"]));
@@ -356,6 +356,18 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["KeyGesture_Audio_ShowOptions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] A")]
+        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Audio_SelectAll {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Audio_SelectAll"]));
+            }
+            set {
+                this["KeyGesture_Audio_SelectAll"] = value;
             }
         }
     }
