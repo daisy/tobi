@@ -9,13 +9,13 @@
       <Value Profile="(Default)">[ NONE ] F4</Value>
     </Setting>
     <Setting Name="KeyGesture_Audio_BeginSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] [</Value>
+      <Value Profile="(Default)">[ CTRL ] OemOpenBrackets</Value>
     </Setting>
     <Setting Name="KeyGesture_Audio_EndSelection" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] ]</Value>
+      <Value Profile="(Default)">[ CTRL ] OemCloseBrackets</Value>
     </Setting>
     <Setting Name="KeyGesture_Audio_Delete" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] F9</Value>
+      <Value Profile="(Default)">[ CTRL ] Back</Value>
     </Setting>
     <Setting Name="KeyGesture_Audio_InsertFile" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL | ALT | SHIFT ] O</Value>

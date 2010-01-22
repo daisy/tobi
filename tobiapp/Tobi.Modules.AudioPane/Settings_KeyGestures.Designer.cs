@@ -49,7 +49,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] [")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemOpenBrackets")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Audio_BeginSelection {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Audio_BeginSelection"]));
@@ -61,7 +61,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] ]")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemCloseBrackets")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Audio_EndSelection {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Audio_EndSelection"]));
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] F9")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Back")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Audio_Delete {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Audio_Delete"]));
