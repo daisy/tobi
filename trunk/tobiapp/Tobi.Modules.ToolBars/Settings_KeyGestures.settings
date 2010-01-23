@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="KeyGesture_Toolbar_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)"> F9</Value>
+      <Value Profile="(Default)">[ NONE ]  F9</Value>
     </Setting>
   </Settings>
 </SettingsFile>

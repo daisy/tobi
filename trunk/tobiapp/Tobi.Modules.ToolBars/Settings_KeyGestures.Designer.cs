@@ -25,7 +25,7 @@ namespace Tobi.Plugin.ToolBars {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(" F9")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ]  F9")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Toolbar_Focus {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Toolbar_Focus"]));

@@ -18,10 +18,10 @@
       <Value Profile="(Default)">[ CTRL ] V</Value>
     </Setting>
     <Setting Name="KeyGesture_Help" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">F1</Value>
+      <Value Profile="(Default)">[ NONE ] F1</Value>
     </Setting>
     <Setting Name="KeyGesture_Preferences" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">F2</Value>
+      <Value Profile="(Default)">[ NONE ] F2</Value>
     </Setting>
     <Setting Name="KeyGesture_UI_ResetMagnification" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL | SHIFT | ALT] Y</Value>
