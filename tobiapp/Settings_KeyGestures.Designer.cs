@@ -85,7 +85,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F1")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Help {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Help"]));
@@ -97,7 +97,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F2")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Preferences {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Preferences"]));

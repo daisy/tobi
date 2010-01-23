@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="KeyGesture_Navigation_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">F6</Value>
+      <Value Profile="(Default)">[ NONE ] F6</Value>
     </Setting>
     <Setting Name="KeyGesture_Navigation_TreeFindNext" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">F3</Value>
+      <Value Profile="(Default)">[ NONE ] F3</Value>
     </Setting>
     <Setting Name="KeyGesture_Navigation_TreeFindPrev" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT ] F3</Value>

@@ -25,7 +25,7 @@ namespace Tobi.Plugin.NavigationPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F6")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_Focus {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_Focus"]));
@@ -37,7 +37,7 @@ namespace Tobi.Plugin.NavigationPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F3")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_TreeFindNext {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_TreeFindNext"]));

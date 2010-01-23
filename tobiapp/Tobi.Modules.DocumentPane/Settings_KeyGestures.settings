@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="KeyGesture_Document_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">F8</Value>
+      <Value Profile="(Default)">[ NONE ] F8</Value>
     </Setting>
     <Setting Name="KeyGesture_Document_Event_SwitchPrevious" Type="Tobi.Common.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ]  I</Value>

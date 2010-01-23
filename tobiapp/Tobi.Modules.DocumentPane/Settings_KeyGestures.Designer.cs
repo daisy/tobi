@@ -25,7 +25,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F8")]
         public global::Tobi.Common.UI.KeyGestureString KeyGesture_Document_Focus {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Document_Focus"]));
