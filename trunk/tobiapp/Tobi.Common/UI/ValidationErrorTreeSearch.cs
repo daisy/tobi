@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Tobi.Common.UI
 {
@@ -94,8 +96,42 @@ namespace Tobi.Common.UI
         public static IEnumerable<DependencyObject> FilterElementsWithErrors(IEnumerable<DependencyObject> allChildren)
         {
             foreach (DependencyObject obj in allChildren)
-                if (System.Windows.Controls.Validation.GetHasError(obj))
+            {
+                if (System.Windows.Controls.Validation.GetHasError(obj)
+                    || checkAllValidationErrors(obj))
                     yield return obj;
+            }
+        }
+
+        private static bool checkAllValidationErrors(DependencyObject dependencyObject)
+        {
+            bool isValid = true;
+
+            LocalValueEnumerator localValues = dependencyObject.GetLocalValueEnumerator();
+            while (localValues.MoveNext())
+            {
+                LocalValueEntry entry = localValues.Current;
+                if (BindingOperations.IsDataBound(dependencyObject, entry.Property))
+                {
+                    Binding binding = BindingOperations.GetBinding(dependencyObject, entry.Property);
+                    if (binding == null) continue;
+
+                    foreach (ValidationRule rule in binding.ValidationRules)
+                    {
+                        ValidationResult result = rule.Validate(dependencyObject.GetValue(entry.Property), null);
+                        if (!result.IsValid)
+                        {
+                            BindingExpression expression = BindingOperations.GetBindingExpression(dependencyObject, entry.Property);
+                            if (expression == null) continue;
+
+                            System.Windows.Controls.Validation.MarkInvalid(expression, new ValidationError(rule, expression, result.ErrorContent, null));
+                            isValid = false;
+                        }
+                    }
+                }
+            }
+
+            return isValid;
         }
     }
 }
