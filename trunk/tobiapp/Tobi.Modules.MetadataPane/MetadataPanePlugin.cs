@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
@@ -71,10 +72,12 @@ namespace Tobi.Plugin.MetadataPane
             CommandShowMetadataPane = new RichDelegateCommand(
                 UserInterfaceStrings.ShowMetadata,
                 UserInterfaceStrings.ShowMetadata_,
-                UserInterfaceStrings.ShowMetadata_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"accessories-text-editor"),
                 ShowDialog,
-                CanShowDialog);
+                CanShowDialog,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Metadata_Edit));
 
             m_ShellView.RegisterRichCommand(CommandShowMetadataPane);
 

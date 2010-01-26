@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.media.data.audio;
 
@@ -20,7 +21,7 @@ namespace Tobi.Plugin.AudioPane
             CommandStopRecord = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StopRecord,
                 UserInterfaceStrings.Audio_StopRecord_,
-                UserInterfaceStrings.Audio_StopRecord_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
                 ()=>
                 {
@@ -31,14 +32,16 @@ namespace Tobi.Plugin.AudioPane
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped.");
                 },
-                ()=> !IsWaveFormLoading && IsRecording);
+                () => !IsWaveFormLoading && IsRecording,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StopRecord));
 
             m_ShellView.RegisterRichCommand(CommandStopRecord);
             //
             CommandStartRecord = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StartRecord,
                 UserInterfaceStrings.Audio_StartRecord_,
-                UserInterfaceStrings.Audio_StartRecord_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-record"),
                 ()=>
                 {
@@ -73,7 +76,9 @@ namespace Tobi.Plugin.AudioPane
                         ||
                         (m_UrakawaSession.DocumentProject == null)
                         );
-                });
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartRecord));
 
             m_ShellView.RegisterRichCommand(CommandStartRecord);
 
@@ -81,7 +86,7 @@ namespace Tobi.Plugin.AudioPane
             CommandStartMonitor = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StartMonitor,
                 UserInterfaceStrings.Audio_StartMonitor_,
-                UserInterfaceStrings.Audio_StartMonitor_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
                 ()=>
                 {
@@ -109,14 +114,16 @@ namespace Tobi.Plugin.AudioPane
                     
                     AudioCues.PlayTock();
                 },
-                ()=> !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring);
+                () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartMonitor));
 
             m_ShellView.RegisterRichCommand(CommandStartMonitor);
             //
             CommandStopMonitor = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StopMonitor,
                 UserInterfaceStrings.Audio_StopMonitor_,
-                UserInterfaceStrings.Audio_StopMonitor_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
                 ()=>
                 {
@@ -131,7 +138,9 @@ namespace Tobi.Plugin.AudioPane
                     
                     AudioCues.PlayTockTock();
                 },
-                ()=> !IsWaveFormLoading && IsMonitoring);
+                () => !IsWaveFormLoading && IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StopMonitor));
 
             m_ShellView.RegisterRichCommand(CommandStopMonitor);
 

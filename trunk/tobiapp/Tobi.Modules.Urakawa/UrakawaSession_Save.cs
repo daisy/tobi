@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using Tobi.Common.MVVM;
 using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -27,7 +28,7 @@ namespace Tobi.Plugin.Urakawa
             ExportCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Export,
                 UserInterfaceStrings.Export_,
-                UserInterfaceStrings.Export_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 ()=>
@@ -67,14 +68,16 @@ namespace Tobi.Plugin.Urakawa
 
                     new Daisy3_Export(DocumentProject.Presentations.Get(0), dlg.SelectedPath, null);
                 },
-                () => DocumentProject != null);
+                () => DocumentProject != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Export));
 
             m_ShellView.RegisterRichCommand(ExportCommand);
             //
             SaveAsCommand = new RichDelegateCommand(
                 UserInterfaceStrings.SaveAs,
                 UserInterfaceStrings.SaveAs_,
-                UserInterfaceStrings.SaveAs_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-save"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 ()=>
@@ -136,18 +139,22 @@ namespace Tobi.Plugin.Urakawa
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
                 },
-                () => DocumentProject != null);
+                () => DocumentProject != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_SaveAs));
 
             m_ShellView.RegisterRichCommand(SaveAsCommand);
             //
             SaveCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Save,
                 UserInterfaceStrings.Save_,
-                UserInterfaceStrings.Save_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"media-floppy"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
                 ()=> save(),
-                ()=> DocumentProject != null);
+                () => DocumentProject != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Save));
 
             m_ShellView.RegisterRichCommand(SaveCommand);
         }

@@ -57,7 +57,8 @@ namespace Tobi.Plugin.NavigationPane
                 null,
                 m_ShellView.LoadTangoIcon("list-add"),
                 () => _headingsNavigator.ExpandAll(),
-                () => _headingsNavigator != null);
+                () => _headingsNavigator != null,
+                null, null);
             /*
                         CommandExpand = new RichDelegateCommand(
                             UserInterfaceStrings.TreeExpand,
@@ -74,23 +75,28 @@ namespace Tobi.Plugin.NavigationPane
                 null,
                 m_ShellView.LoadTangoIcon("list-remove"),
                 () => _headingsNavigator.CollapseAll(),
-                () => _headingsNavigator != null);
+                () => _headingsNavigator != null,
+                null, null);
 
             CommandFindNext = new RichDelegateCommand(
                 UserInterfaceStrings.TreeFindNext,
                 UserInterfaceStrings.TreeFindNext_,
-                UserInterfaceStrings.TreeFindNext_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null,
                 () => _headingsNavigator.FindNext(),
-                () => _headingsNavigator != null);
+                () => _headingsNavigator != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext));
 
             CommandFindPrev = new RichDelegateCommand(
                 UserInterfaceStrings.TreeFindPrev,
                 UserInterfaceStrings.TreeFindPrev_,
-                UserInterfaceStrings.TreeFindPrev_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null,
                 () => _headingsNavigator.FindPrevious(),
-                () => _headingsNavigator != null);
+                () => _headingsNavigator != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev));
             /*
                         CommandCollapse = new RichDelegateCommand(
                             UserInterfaceStrings.TreeCollapse,

@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
@@ -71,10 +72,12 @@ namespace Tobi.Plugin.Validator
             CommandShowValidator = new RichDelegateCommand(
                 "Validation Check",
                 "",
-                new KeyGesture(Key.V, ModifierKeys.Shift | ModifierKeys.Control),
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_preferences-user-information"),
                 ShowDialog,
-                CanShowDialog);
+                CanShowDialog,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayValidator));
 
             m_ShellView.RegisterRichCommand(CommandShowValidator);
 

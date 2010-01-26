@@ -113,7 +113,7 @@ namespace Tobi.Plugin.DocumentPane
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
-                UserInterfaceStrings.Event_SwitchPrevious_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 ()=>
                 {
@@ -156,14 +156,16 @@ namespace Tobi.Plugin.DocumentPane
 
                     SystemSounds.Beep.Play();
                 },
-                ()=> CurrentTreeNode != null);
+                () => CurrentTreeNode != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Doc_Event_SwitchPrevious));
 
             m_ShellView.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
             CommandSwitchPhraseNext = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchNext,
                 UserInterfaceStrings.Event_SwitchNext_,
-                UserInterfaceStrings.Event_SwitchNext_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 ()=>
                 {
@@ -206,17 +208,21 @@ namespace Tobi.Plugin.DocumentPane
 
                     SystemSounds.Beep.Play();
                 },
-                ()=> CurrentTreeNode != null);
+                () => CurrentTreeNode != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Doc_Event_SwitchNext));
 
             m_ShellView.RegisterRichCommand(CommandSwitchPhraseNext);
             //
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Document_Focus,
                 null,
-                UserInterfaceStrings.Document_Focus_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null,
                 () => FocusHelper.FocusBeginInvoke(this, m_FocusStartElement),
-                ()=> true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Doc));
 
             m_ShellView.RegisterRichCommand(CommandFocus);
             //

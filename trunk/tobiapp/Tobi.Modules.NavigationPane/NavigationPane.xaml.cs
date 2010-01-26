@@ -4,6 +4,7 @@ using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
@@ -45,7 +46,7 @@ namespace Tobi.Plugin.NavigationPane
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Navigation_Focus,
                                     null,
-                                    UserInterfaceStrings.Navigation_Focus_KEYS,
+                                    null, // KeyGesture obtained from settings (see last parameters below)
                                     null,
                                     () =>
                                     {
@@ -74,7 +75,9 @@ namespace Tobi.Plugin.NavigationPane
                                             FocusHelper.FocusBeginInvoke(this, ui);
                                         }
                                     },
-                                    () => true);
+                                    () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Nav));
 
             m_ShellView.RegisterRichCommand(CommandFocus);
         }

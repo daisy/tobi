@@ -25,18 +25,6 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] O")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Open_ {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Open_"]));
-            }
-            set {
-                this["Keyboard_Open_"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Q")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_AppExit {
             get {
@@ -97,18 +85,6 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F2")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Preferences {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Preferences"]));
-            }
-            set {
-                this["Keyboard_Preferences"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT] Y")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Reset {
             get {
@@ -145,7 +121,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ] F2")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_DisplayShortcuts {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DisplayShortcuts"]));

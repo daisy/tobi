@@ -42,8 +42,23 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger.Log("PagesPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
             //
-            CommandFindNextPage = new RichDelegateCommand(UserInterfaceStrings.PageFindNext, UserInterfaceStrings.PageFindNext_, UserInterfaceStrings.PageFindNext_KEYS, null, () => FindNext(), () => m_Pages != null);
-            CommandFindPrevPage = new RichDelegateCommand(UserInterfaceStrings.PageFindPrev, UserInterfaceStrings.PageFindPrev_, UserInterfaceStrings.PageFindPrev_KEYS, null, () => FindPrevious(), () => m_Pages != null);
+            CommandFindNextPage = new RichDelegateCommand(
+                UserInterfaceStrings.PageFindNext,
+                UserInterfaceStrings.PageFindNext_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, FindNext,
+                () => m_Pages != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext));
+
+            CommandFindPrevPage = new RichDelegateCommand(
+                UserInterfaceStrings.PageFindPrev,
+                UserInterfaceStrings.PageFindPrev_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, FindPrevious,
+                () => m_Pages != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindPrev));
 
             m_ShellView.RegisterRichCommand(CommandFindNextPage);
             m_ShellView.RegisterRichCommand(CommandFindPrevPage);

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
@@ -35,7 +36,7 @@ namespace Tobi.Plugin.Urakawa
             OpenCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Open,
                 UserInterfaceStrings.Open_,
-                UserInterfaceStrings.Open_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-open"),
                 ()=>
                 {
@@ -66,7 +67,9 @@ namespace Tobi.Plugin.Urakawa
                     
                     openFile(dlg.FileName);
                 },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Open));
 
             m_ShellView.RegisterRichCommand(OpenCommand);
         }

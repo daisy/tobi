@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
-    <Setting Name="Keyboard_Open_" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] O</Value>
-    </Setting>
     <Setting Name="Keyboard_AppExit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] Q</Value>
     </Setting>
@@ -20,9 +17,6 @@
     <Setting Name="Keyboard_Help" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F1</Value>
     </Setting>
-    <Setting Name="Keyboard_Preferences" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F2</Value>
-    </Setting>
     <Setting Name="Keyboard_UI_Zoom_Reset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ALT] Y</Value>
     </Setting>
@@ -33,7 +27,7 @@
       <Value Profile="(Default)">[ CTRL ] Y</Value>
     </Setting>
     <Setting Name="Keyboard_DisplayShortcuts" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F4</Value>
+      <Value Profile="(Default)">[ SHIFT ] F2</Value>
     </Setting>
     <Setting Name="Keyboard_DisplayLogFilePath" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ALT ] F1</Value>

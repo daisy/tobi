@@ -6,6 +6,7 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
@@ -73,10 +74,12 @@ namespace Tobi.Plugin.ToolBars
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Toolbar_Focus,
                 null,
-                UserInterfaceStrings.Toolbar_Focus_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null,
                 () => FocusHelper.FocusBeginInvoke(this, FocusStart),
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Toolbar));
             m_ShellView.RegisterRichCommand(CommandFocus);
         }
 
