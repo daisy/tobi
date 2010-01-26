@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
-using Tobi.Common._UnusedCode;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 
@@ -186,7 +185,55 @@ namespace Tobi.Plugin.Settings
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
+        [Conditional("DEBUG")]
+        public void CheckParseScanWalkUiTreeThing()
+        {
+            Stopwatch startRecursiveDepth = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, false, false, false);
+            startRecursiveDepth.Stop();
+            TimeSpan timeRecursiveDepth = startRecursiveDepth.Elapsed;
 
+            Stopwatch startRecursiveLeaf = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, false, true, false);
+            startRecursiveLeaf.Stop();
+            TimeSpan timeRecursiveLeaf = startRecursiveLeaf.Elapsed;
+
+            Stopwatch startNonRecursiveDepth = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, true, false, false);
+            startNonRecursiveDepth.Stop();
+            TimeSpan timeNonRecursiveDepth = startNonRecursiveDepth.Elapsed;
+
+            Stopwatch startNonRecursiveLeaf = Stopwatch.StartNew();
+            VisualLogicalTreeWalkHelper.GetElements(this, true, true, false);
+            startNonRecursiveLeaf.Stop();
+            TimeSpan timeNonRecursiveLeaf = startNonRecursiveLeaf.Elapsed;
+
+#if DEBUG
+            int nVisualLeafNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, true, false);
+            int nVisualDepthNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, false, false);
+
+            int nLogicalLeafNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, true, true);
+            int nLogicalDepthNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, false, true);
+
+            MessageBox.Show(String.Format(
+                "VisualLeafNoError={0}\nVisualDepthNoError={1}\nLogicalLeafNoError={2}\nLogicalDepthNoError={3}\n\ntimeNonRecursiveDepth={4}\ntimeNonRecursiveLeaf={5}\ntimeRecursiveDepth={6}\ntimeRecursiveLeaf={7}\n"
+                , nVisualLeafNoError, nVisualDepthNoError, nLogicalLeafNoError, nLogicalDepthNoError, timeNonRecursiveDepth, timeNonRecursiveLeaf, timeRecursiveDepth, timeRecursiveLeaf));
+#endif
+        }
+
+        private void OnLoaded_Panel(object sender, RoutedEventArgs e)
+        {
+            CheckParseScanWalkUiTreeThing();
+
+            var dispatcherOperation = Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Normal,
+                   (Action)delegate()
+                   {
+                       IEnumerable<DependencyObject> enm = ValidationErrorTreeSearch.GetElementsWithErrors(SettingsList, false, false, false);
+                       var list = new List<DependencyObject>(enm);
+                       var size = list.Count;
+                   });
+        }
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {

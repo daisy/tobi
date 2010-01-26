@@ -26,24 +26,24 @@ namespace Tobi.Common {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] D")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_DetailsExpand {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_DialogExpand {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_DetailsExpand"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DialogExpand"]));
             }
             set {
-                this["KeyGesture_DetailsExpand"] = value;
+                this["Keyboard_DialogExpand"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] D")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_DetailsCollapse {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_DialogCollapse {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_DetailsCollapse"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DialogCollapse"]));
             }
             set {
-                this["KeyGesture_DetailsCollapse"] = value;
+                this["Keyboard_DialogCollapse"] = value;
             }
         }
     }

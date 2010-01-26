@@ -26,60 +26,60 @@ namespace Tobi.Plugin.NavigationPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_Focus {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Focus_Nav {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_Focus"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Focus_Nav"]));
             }
             set {
-                this["KeyGesture_Navigation_Focus"] = value;
+                this["Keyboard_Focus_Nav"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_TreeFindNext {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_TOCFindNext {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_TreeFindNext"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_TOCFindNext"]));
             }
             set {
-                this["KeyGesture_Navigation_TreeFindNext"] = value;
+                this["Keyboard_Nav_TOCFindNext"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_TreeFindPrev {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_TOCFindPrev {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_TreeFindPrev"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_TOCFindPrev"]));
             }
             set {
-                this["KeyGesture_Navigation_TreeFindPrev"] = value;
+                this["Keyboard_Nav_TOCFindPrev"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_PageFindNext {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_PageFindNext {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_PageFindNext"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_PageFindNext"]));
             }
             set {
-                this["KeyGesture_Navigation_PageFindNext"] = value;
+                this["Keyboard_Nav_PageFindNext"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT | SHIFT ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Navigation_PageFindPrev {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ALT ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_PageFindPrev {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Navigation_PageFindPrev"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_PageFindPrev"]));
             }
             set {
-                this["KeyGesture_Navigation_PageFindPrev"] = value;
+                this["Keyboard_Nav_PageFindPrev"] = value;
             }
         }
     }

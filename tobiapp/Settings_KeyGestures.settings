@@ -2,47 +2,47 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
-    <Setting Name="KeyGesture_MenuExit" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] Q</Value>
-    </Setting>
-    <Setting Name="KeyGesture_MenuOpen" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_Open_" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] O</Value>
     </Setting>
-    <Setting Name="KeyGesture_MenuCopy" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_AppExit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] Q</Value>
+    </Setting>
+    <Setting Name="Keyboard_Copy" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] C</Value>
     </Setting>
-    <Setting Name="KeyGesture_Cut" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_Cut" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] X</Value>
     </Setting>
-    <Setting Name="KeyGesture_Paste" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_Paste" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] V</Value>
     </Setting>
-    <Setting Name="KeyGesture_Help" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_Help" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F1</Value>
     </Setting>
-    <Setting Name="KeyGesture_Preferences" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_Preferences" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F2</Value>
     </Setting>
-    <Setting Name="KeyGesture_UI_ResetMagnification" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL | SHIFT | ALT] Y</Value>
+    <Setting Name="Keyboard_UI_Zoom_Reset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT] Y</Value>
     </Setting>
-    <Setting Name="KeyGesture_UI_IncreaseMagnification" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL | SHIFT ] Y</Value>
+    <Setting Name="Keyboard_UI_Zoom_Increase" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] Y</Value>
     </Setting>
-    <Setting Name="KeyGesture_UI_DecreaseMagnification" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_UI_Zoom_Decrease" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] Y</Value>
     </Setting>
-    <Setting Name="KeyGesture_ManageShortcuts" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] F4</Value>
+    <Setting Name="Keyboard_DisplayShortcuts" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ NONE ] F4</Value>
     </Setting>
-    <Setting Name="KeyGesture_ShowLogFilePath" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL | SHIFT | ALT ] F1</Value>
+    <Setting Name="Keyboard_DisplayLogFilePath" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] F1</Value>
     </Setting>
-    <Setting Name="KeyGesture_OpenTobiFolder" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL | SHIFT | ALT ] F2</Value>
+    <Setting Name="Keyboard_ShowTobiFolder" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] F2</Value>
     </Setting>
-    <Setting Name="KeyGesture_OpenTobiSettingsFolder" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL | SHIFT | ALT ] F3</Value>
+    <Setting Name="Keyboard_ShowTobiSettingsFolder" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] F3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

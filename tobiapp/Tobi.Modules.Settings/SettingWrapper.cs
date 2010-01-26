@@ -97,6 +97,7 @@ namespace Tobi.Plugin.Settings
         {
             get
             {
+                if (OriginalValue == null || Value == null) return false;
                 return !OriginalValue.Equals(Value);
             }
         }

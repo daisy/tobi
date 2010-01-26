@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.MetadataPane" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
-    <Setting Name="KeyGesture_Metadata_ShowMetadata" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_Metadata_Edit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] E</Value>
     </Setting>
   </Settings>

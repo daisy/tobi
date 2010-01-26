@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Input;
 
@@ -35,6 +36,42 @@ namespace Tobi.Common.UI
             return base.ConvertTo(context, culture, value, destinationType);
         }
 
+        public static string Convert(Key key, ModifierKeys modKeys)
+        {
+            string str = "[ ";
+
+            bool hasModKey = false;
+            if ((modKeys & ModifierKeys.Shift) != ModifierKeys.None)
+            {
+                str += "SHIFT ";
+                hasModKey = true;
+            }
+            if ((modKeys & ModifierKeys.Control) != ModifierKeys.None)
+            {
+                str += "CTRL ";
+                hasModKey = true;
+            }
+            if ((modKeys & ModifierKeys.Alt) != ModifierKeys.None)
+            {
+                str += "ALT ";
+                hasModKey = true;
+            }
+            if ((modKeys & ModifierKeys.Windows) != ModifierKeys.None)
+            {
+                str += "WIN ";
+                hasModKey = true;
+            }
+            if (!hasModKey)
+            {
+                str += "NONE ";
+            }
+
+            str += "] ";
+            str += key;
+
+            return str;
+        }
+
         public static string Convert(KeyGesture keyG)
         {
             if (keyG == null)
@@ -42,26 +79,7 @@ namespace Tobi.Common.UI
                 return null;
             }
 
-            string str = "[ ";
-            if ((keyG.Modifiers & ModifierKeys.Shift) != ModifierKeys.None)
-            {
-                str += "SHIFT ";
-            }
-            if ((keyG.Modifiers & ModifierKeys.Control) != ModifierKeys.None)
-            {
-                str += "CTRL ";
-            }
-            if ((keyG.Modifiers & ModifierKeys.Alt) != ModifierKeys.None)
-            {
-                str += "ALT ";
-            }
-            if ((keyG.Modifiers & ModifierKeys.Windows) != ModifierKeys.None)
-            {
-                str += "WIN ";
-            }
-            str += "] ";
-            str += keyG.Key;
-            return str;
+            return Convert(keyG.Key, keyG.Modifiers);
         }
 
         public static KeyGestureString Convert(string str)
@@ -123,7 +141,7 @@ namespace Tobi.Common.UI
 
             if (modKey == ModifierKeys.None)
             {
-                return null;
+                //return null; WORKS for SOME gestures, not all (e.g. F1-F12 work fine, but not alpha keys).
             }
 
             try
@@ -134,8 +152,10 @@ namespace Tobi.Common.UI
             catch
             {
                 Console.WriteLine(@"!! not a valid KeyGesture: " + str);
-                return null;
+                //Debug.Fail(@"Not a valid KeyGesture: " + str);
             }
+
+            return null;
         }
     }
 }

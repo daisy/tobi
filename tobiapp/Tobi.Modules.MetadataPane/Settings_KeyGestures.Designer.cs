@@ -26,12 +26,12 @@ namespace Tobi.Plugin.MetadataPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] E")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Metadata_ShowMetadata {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Metadata_Edit {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Metadata_ShowMetadata"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Metadata_Edit"]));
             }
             set {
-                this["KeyGesture_Metadata_ShowMetadata"] = value;
+                this["Keyboard_Metadata_Edit"] = value;
             }
         }
     }

@@ -103,22 +103,26 @@ namespace Tobi.Common.UI
             e.Handled = true;
 
             string keyStr = key.ToString().ToLower();
-            if (keyStr.Contains("ctrl") || keyStr.Contains("shift") || keyStr.Contains("alt"))
+            if (keyStr.Contains("ctrl") || keyStr.Contains("shift") || keyStr.Contains("alt") || keyStr.Contains("win"))
             {
                 key = Key.None;
             }
 
-            string common =
-                            ((Keyboard.Modifiers & ModifierKeys.Shift) > 0 ? "SHIFT " : "")
-                            +
-                            ((Keyboard.Modifiers & ModifierKeys.Control) > 0 ? "CTRL " : "")
-                            +
-                            ((Keyboard.Modifiers & ModifierKeys.Alt) > 0 ? "ALT " : "")
-                            +
-                            ((Keyboard.Modifiers & ModifierKeys.Windows) > 0 ? "WIN " : "")
-                            ;
+            //////string common =
+            //////                ((Keyboard.Modifiers & ModifierKeys.Shift) > 0 ? "SHIFT " : "")
+            //////                +
+            //////                ((Keyboard.Modifiers & ModifierKeys.Control) > 0 ? "CTRL " : "")
+            //////                +
+            //////                ((Keyboard.Modifiers & ModifierKeys.Alt) > 0 ? "ALT " : "")
+            //////                +
+            //////                ((Keyboard.Modifiers & ModifierKeys.Windows) > 0 ? "WIN " : "")
+            //////                ;
 
-            KeyGestureSerializedEncoded = "[ " + common + "] " + (key != Key.None ? key.ToString() : "");
+            //////if (string.IsNullOrEmpty(common)) common = "NONE ";
+
+            //////KeyGestureSerializedEncoded = "[ " + common + "] " + (key != Key.None ? key.ToString() : "");
+
+            KeyGestureSerializedEncoded = KeyGestureStringConverter.Convert(key, Keyboard.Modifiers);
 
             //if (Text != KeyGestureSerializedEncoded)
             //{

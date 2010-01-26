@@ -2,10 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Common" GeneratedClassName="Settings_KeyGesture">
   <Profiles />
   <Settings>
-    <Setting Name="KeyGesture_DetailsExpand" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_DialogExpand" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] D</Value>
     </Setting>
-    <Setting Name="KeyGesture_DetailsCollapse" Type="Tobi.Common.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_DialogCollapse" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] D</Value>
     </Setting>
   </Settings>

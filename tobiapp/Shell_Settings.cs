@@ -33,12 +33,14 @@ namespace Tobi
 
         private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (!e.PropertyName.StartsWith(@"Keyboard_")) return;
+
             if (e.PropertyName ==
                 PropertyChangedNotifyBase.GetMemberName(() =>
-                    Settings_KeyGestures.Default.KeyGesture_MenuExit))
+                    Settings_KeyGestures.Default.Keyboard_AppExit))
             {
                 //ExitCommand.KeyBinding.Gesture = Settings_KeyGestures.Default.KeyGesture_MenuExit;
-                ExitCommand.KeyGesture = Settings_KeyGestures.Default.KeyGesture_MenuExit;
+                ExitCommand.KeyGesture = Settings_KeyGestures.Default.Keyboard_AppExit;
             }
         }
 

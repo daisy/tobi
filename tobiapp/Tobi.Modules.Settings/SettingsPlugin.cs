@@ -165,7 +165,7 @@ namespace Tobi.Plugin.Settings
                                                    m_Container.Resolve<SettingsView>(),
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Cancel,
-                                                   true, 650, 500);
+                                                   true, 800, 500);
 
             m_SettingsAggregator.SaveAll(); // Not strictly necessary..but just to make double-sure we've got the current settings in persistent storage.
 
