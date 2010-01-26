@@ -32,7 +32,7 @@ namespace Tobi.Plugin.Settings
         protected ValidationResult Valid()
         {
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
-            currentSetting.Message = "";
+            currentSetting.Message = null;
             return new ValidationResult(true, null);
         }
     }
@@ -103,8 +103,9 @@ namespace Tobi.Plugin.Settings
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
             string lowName = currentSetting.Name.ToLower();
 
-            // Super-master hack ! :)
+            //TODO: remove this Super-master hack !
             bool mustBePositive = lowName.Contains("width") || lowName.Contains("height");
+            mustBePositive = true;
 
             if (mustBePositive)
             {
@@ -115,7 +116,7 @@ namespace Tobi.Plugin.Settings
             }
             else
             {
-                if (val < -1 || val > 9999)
+                if (val < -9999 || val > 9999)
                 {
                     return NotValid("Numeric value is out of range [-9999, 9999].");
                 }

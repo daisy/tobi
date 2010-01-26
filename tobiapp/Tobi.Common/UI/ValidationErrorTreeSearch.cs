@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -103,35 +105,113 @@ namespace Tobi.Common.UI
             }
         }
 
-        public static bool CheckAllValidationErrors(DependencyObject dependencyObject)
+        public static bool CheckAllValidationErrors(DependencyObject dependencyObject, DependencyProperty dependencyProperty)
         {
             bool isValid = true;
 
-            LocalValueEnumerator localValues = dependencyObject.GetLocalValueEnumerator();
-            while (localValues.MoveNext())
+            if (BindingOperations.IsDataBound(dependencyObject, dependencyProperty))
             {
-                LocalValueEntry entry = localValues.Current;
-                if (BindingOperations.IsDataBound(dependencyObject, entry.Property))
+                Binding binding = BindingOperations.GetBinding(dependencyObject, dependencyProperty);
+                MultiBinding multiBinding = null;
+                if (binding == null)
                 {
-                    Binding binding = BindingOperations.GetBinding(dependencyObject, entry.Property);
-                    if (binding == null) continue;
+                    multiBinding = BindingOperations.GetMultiBinding(dependencyObject, dependencyProperty);
+                    if (multiBinding == null) return true;
+                }
 
-                    foreach (ValidationRule rule in binding.ValidationRules)
+                if (binding != null && binding.ValidationRules.Count > 0
+                    ||
+                    multiBinding != null && multiBinding.ValidationRules.Count > 0)
+                {
+                    BindingExpression bindingExpression = BindingOperations.GetBindingExpression(dependencyObject, dependencyProperty);
+                    MultiBindingExpression multiBindingExpression = null;
+                    if (bindingExpression == null)
                     {
-                        ValidationResult result = rule.Validate(dependencyObject.GetValue(entry.Property), null);
-                        if (!result.IsValid)
-                        {
-                            BindingExpression expression = BindingOperations.GetBindingExpression(dependencyObject, entry.Property);
-                            if (expression == null) continue;
+                        multiBindingExpression = BindingOperations.GetMultiBindingExpression(dependencyObject, dependencyProperty);
+                        if (multiBindingExpression == null) return true;
+                    }
 
-                            System.Windows.Controls.Validation.MarkInvalid(expression, new ValidationError(rule, expression, result.ErrorContent, null));
-                            isValid = false;
+                    BindingExpressionBase expression = bindingExpression ?? (BindingExpressionBase)multiBindingExpression;
+
+                    switch (binding != null ? binding.Mode : multiBinding.Mode)
+                    {
+                        case BindingMode.OneTime:
+                        case BindingMode.OneWay:
+                            expression.UpdateTarget();
+                            break;
+                        default:
+                            expression.UpdateSource();
+                            break;
+                    }
+
+                    if (expression.HasError)
+                        isValid = false;
+                }
+
+
+                // Another method:
+                foreach (ValidationRule rule in (binding != null ? binding.ValidationRules : multiBinding.ValidationRules))
+                {
+                    ValidationResult result = rule.Validate(dependencyObject.GetValue(dependencyProperty), null);
+                    if (!result.IsValid)
+                    {
+                        BindingExpression bindingExpression = BindingOperations.GetBindingExpression(dependencyObject, dependencyProperty);
+                        MultiBindingExpression multiBindingExpression = null;
+                        if (bindingExpression == null)
+                        {
+                            multiBindingExpression = BindingOperations.GetMultiBindingExpression(dependencyObject, dependencyProperty);
+                            if (multiBindingExpression == null) continue;
                         }
+
+                        BindingExpressionBase expression = bindingExpression ?? (BindingExpressionBase) multiBindingExpression;
+
+                        System.Windows.Controls.Validation.MarkInvalid(expression, new ValidationError(rule, expression, result.ErrorContent, null));
+                        isValid = false;
                     }
                 }
             }
 
             return isValid;
+        }
+
+        public static bool CheckAllValidationErrors(DependencyObject dependencyObject)
+        {
+            bool isValid = true;
+
+            // The local values do not work with DataTemplates (but should show attached properties)...
+            LocalValueEnumerator localValues = dependencyObject.GetLocalValueEnumerator();
+            while (localValues.MoveNext())
+            {
+                LocalValueEntry entry = localValues.Current;
+                isValid = CheckAllValidationErrors(dependencyObject, entry.Property);
+            }
+
+            //...we introspect the type using reflection to figure-out additional DPs that did not surface through the local values.
+            foreach (DependencyProperty dependencyProperty in GetDependencyProperties(dependencyObject.GetType()))
+            {
+                isValid = CheckAllValidationErrors(dependencyObject, dependencyProperty);
+            }
+
+            return isValid;
+        }
+
+        private static Dictionary<Type, List<DependencyProperty>> TypeDependencyPropertiesCache = new Dictionary<Type, List<DependencyProperty>>();
+
+        public static List<DependencyProperty> GetDependencyProperties(Type t)
+        {
+            if (TypeDependencyPropertiesCache.ContainsKey(t))
+                return TypeDependencyPropertiesCache[t];
+
+            FieldInfo[] properties = t.GetFields(
+                BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+            var dps = new List<DependencyProperty>();
+            foreach (FieldInfo field in properties)
+                if (field.FieldType == typeof(DependencyProperty))
+                    dps.Add((DependencyProperty)field.GetValue(null));
+
+            TypeDependencyPropertiesCache.Add(t, dps);
+            return dps;
         }
     }
 }

@@ -93,6 +93,14 @@ namespace Tobi.Plugin.Settings
                 m_nErrors--;
 
             m_PropertyChangeHandler.RaisePropertyChanged(() => HasValidationErrors);
+
+            //var element = sender as FrameworkElement;
+            //if (element == null) return;
+
+            //var settingWrapper = element.DataContext as SettingWrapper;
+            //if (settingWrapper == null) return;
+
+            //settingWrapper.NotifyValueChanged();
         }
 
 
@@ -221,19 +229,24 @@ namespace Tobi.Plugin.Settings
 #endif
         }
 
-        private void OnLoaded_Panel(object sender, RoutedEventArgs e)
-        {
-            CheckParseScanWalkUiTreeThing();
+        //private void OnLoaded_Panel(object sender, RoutedEventArgs e)
+        //{
+        //    //CheckParseScanWalkUiTreeThing();
 
-            var dispatcherOperation = Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Normal,
-                   (Action)delegate()
-                   {
-                       IEnumerable<DependencyObject> enm = ValidationErrorTreeSearch.GetElementsWithErrors(SettingsList, false, false, false);
-                       var list = new List<DependencyObject>(enm);
-                       var size = list.Count;
-                   });
-        }
+        //    //var dispatcherOperation = Application.Current.Dispatcher.BeginInvoke(
+        //    //       DispatcherPriority.Normal,
+        //    //       (Action)delegate()
+        //    //       {
+        //    //           IEnumerable<DependencyObject> enm = ValidationErrorTreeSearch.GetElementsWithErrors(SettingsList, false, false, false);
+        //    //           var list = new List<DependencyObject>(enm);
+        //    //           var size = list.Count;
+        //    //       });
+
+        //    foreach (var settingWrapper in AggregatedSettings)
+        //    {
+        //        settingWrapper.NotifyValueChanged();
+        //    }
+        //}
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
@@ -278,5 +291,16 @@ namespace Tobi.Plugin.Settings
             //    }
             //}
         }
+
+        //private void OnItemEditorLoaded(object sender, RoutedEventArgs e)
+        //{
+        //    var depObj = sender as DependencyObject;
+        //    if (depObj == null)
+        //    {
+        //        return;
+        //    }
+
+        //    ValidationErrorTreeSearch.CheckAllValidationErrors(depObj);
+        //}
     }
 }
