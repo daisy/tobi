@@ -33,7 +33,8 @@ namespace Tobi
             PresentationTraceSources.ResourceDictionarySource.Switch.Level = SourceLevels.All;
 
             PresentationTraceSources.DataBindingSource.Listeners.Add(new LoggerFacadeTraceListener(this));
-#if (DEBUG)
+
+#if (false && DEBUG) // not very useful (misses the TAB control)
             PresentationTraceSources.DataBindingSource.Listeners.Add(new BindingErrorAdornerTraceListener(false));
 #endif
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;

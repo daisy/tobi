@@ -8,6 +8,7 @@
            xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
            xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
            
+           Loaded="OnLoaded_Panel"
            Unloaded="OnUnloaded_Panel">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
@@ -32,7 +33,7 @@
   </DockPanel>
 
   <UI:SortableListView
-    
+    x:Name="SettingsList"
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
              VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -68,7 +69,8 @@ AlternationCount="2"
       </ToolTip>
 
       <DataTemplate x:Key="SettingEditTemplate_KeyGesture" DataType="{x:Type UI:KeyGestureString}">
-        <UI:KeyGestureSinkBox  Validation.Error="OnError">
+        <UI:KeyGestureSinkBox  Validation.Error="OnError"
+                               KeyboardNavigation.IsTabStop="true">
 
           <UI:KeyGestureSinkBox.Resources>
             <XAML:DataContextSpy x:Key="dataContextSpy" />
@@ -140,7 +142,8 @@ AlternationCount="2"
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
-        <UI:ValidationAwareTextBox Validation.Error="OnError">
+        <UI:ValidationAwareTextBox Validation.Error="OnError"
+                                   Control.IsTabStop="true">
           
           <UI:ValidationAwareTextBox.Resources>
             <XAML:DataContextSpy x:Key="dataContextSpy" />
@@ -188,7 +191,8 @@ AlternationCount="2"
     </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" Content="False"
+        <CheckBox Control.IsTabStop="true"
+                  IsChecked="{Binding Value, Mode=TwoWay}" Content="False"
                   IsThreeState="False">
           <CheckBox.Style>
             <Style TargetType="{x:Type CheckBox}">
@@ -217,7 +221,9 @@ AlternationCount="2"
       </DataTemplate>
       
       <DataTemplate x:Key="SettingEditTemplate_Color" DataType="{x:Type Color}">
-        <UI:ComboBoxColor SelectedColor="{Binding Value, Mode=TwoWay}">
+        <UI:ComboBoxColor
+          Control.IsTabStop="true"
+          SelectedColor="{Binding Value, Mode=TwoWay}">
           <UI:ComboBoxColor.Style>
             <Style TargetType="{x:Type UI:ComboBoxColor}">
               <Style.Setters>
@@ -229,7 +235,8 @@ AlternationCount="2"
     </DataTemplate>
       
       <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
-        <TextBlock Text="{Binding Value, Mode=OneWay}">
+        <TextBlock KeyboardNavigation.IsTabStop="true"
+                   Text="{Binding Value, Mode=OneWay}">
           <TextBlock.Style>
             <Style TargetType="{x:Type TextBlock}">
             <Style.Setters>
@@ -300,6 +307,7 @@ AlternationCount="2"
         </GridViewColumn>
 
         <GridViewColumn Header="Default"
+                        UI:SortableListView.SortPropertyName="DefaultValue"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
 
         <GridViewColumn Header="Current"

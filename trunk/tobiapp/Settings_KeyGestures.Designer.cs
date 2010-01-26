@@ -25,169 +25,169 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Q")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_MenuExit {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] O")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Open_ {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_MenuExit"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Open_"]));
             }
             set {
-                this["KeyGesture_MenuExit"] = value;
+                this["Keyboard_Open_"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] O")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_MenuOpen {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Q")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_AppExit {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_MenuOpen"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_AppExit"]));
             }
             set {
-                this["KeyGesture_MenuOpen"] = value;
+                this["Keyboard_AppExit"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] C")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_MenuCopy {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Copy {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_MenuCopy"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Copy"]));
             }
             set {
-                this["KeyGesture_MenuCopy"] = value;
+                this["Keyboard_Copy"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] X")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Cut {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Cut {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Cut"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Cut"]));
             }
             set {
-                this["KeyGesture_Cut"] = value;
+                this["Keyboard_Cut"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] V")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Paste {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Paste {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Paste"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Paste"]));
             }
             set {
-                this["KeyGesture_Paste"] = value;
+                this["Keyboard_Paste"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F1")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Help {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Help {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Help"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Help"]));
             }
             set {
-                this["KeyGesture_Help"] = value;
+                this["Keyboard_Help"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F2")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_Preferences {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Preferences {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_Preferences"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Preferences"]));
             }
             set {
-                this["KeyGesture_Preferences"] = value;
+                this["Keyboard_Preferences"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL | SHIFT | ALT] Y")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_UI_ResetMagnification {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT] Y")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Reset {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_UI_ResetMagnification"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Reset"]));
             }
             set {
-                this["KeyGesture_UI_ResetMagnification"] = value;
+                this["Keyboard_UI_Zoom_Reset"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL | SHIFT ] Y")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_UI_IncreaseMagnification {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] Y")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Increase {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_UI_IncreaseMagnification"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Increase"]));
             }
             set {
-                this["KeyGesture_UI_IncreaseMagnification"] = value;
+                this["Keyboard_UI_Zoom_Increase"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Y")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_UI_DecreaseMagnification {
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Decrease {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_UI_DecreaseMagnification"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Decrease"]));
             }
             set {
-                this["KeyGesture_UI_DecreaseMagnification"] = value;
+                this["Keyboard_UI_Zoom_Decrease"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] F4")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_ManageShortcuts {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F4")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_DisplayShortcuts {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_ManageShortcuts"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DisplayShortcuts"]));
             }
             set {
-                this["KeyGesture_ManageShortcuts"] = value;
+                this["Keyboard_DisplayShortcuts"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL | SHIFT | ALT ] F1")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_ShowLogFilePath {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F1")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_DisplayLogFilePath {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_ShowLogFilePath"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DisplayLogFilePath"]));
             }
             set {
-                this["KeyGesture_ShowLogFilePath"] = value;
+                this["Keyboard_DisplayLogFilePath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL | SHIFT | ALT ] F2")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_OpenTobiFolder {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F2")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_ShowTobiFolder {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_OpenTobiFolder"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ShowTobiFolder"]));
             }
             set {
-                this["KeyGesture_OpenTobiFolder"] = value;
+                this["Keyboard_ShowTobiFolder"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL | SHIFT | ALT ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString KeyGesture_OpenTobiSettingsFolder {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_ShowTobiSettingsFolder {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["KeyGesture_OpenTobiSettingsFolder"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ShowTobiSettingsFolder"]));
             }
             set {
-                this["KeyGesture_OpenTobiSettingsFolder"] = value;
+                this["Keyboard_ShowTobiSettingsFolder"] = value;
             }
         }
     }

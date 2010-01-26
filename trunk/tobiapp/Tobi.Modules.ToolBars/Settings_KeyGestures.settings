@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.ToolBars" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
-    <Setting Name="KeyGesture_Toolbar_Focus" Type="Tobi.Common.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ]  F9</Value>
+    <Setting Name="Keyboard_Focus_Toolbar" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ NONE ] F9</Value>
     </Setting>
   </Settings>
 </SettingsFile>

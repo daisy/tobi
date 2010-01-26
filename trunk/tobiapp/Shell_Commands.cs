@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Reflection;
 using System.Windows;
@@ -11,7 +10,6 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using System.Diagnostics;
 using System.IO;
-using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using Application = System.Windows.Application;
@@ -54,7 +52,7 @@ namespace Tobi
             ExitCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Menu_Exit,
                 UserInterfaceStrings.Menu_Exit_,
-                Settings_KeyGestures.Default.KeyGesture_MenuExit,
+                Settings_KeyGestures.Default.Keyboard_AppExit,
                 //UserInterfaceStrings.Menu_Exit_KEYS,
                 LoadTangoIcon(@"system-log-out"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
@@ -162,6 +160,7 @@ namespace Tobi
                 LoadTangoIcon(@"edit-cut"),
                 () =>
                     {
+                        // TODO: this is for testing only.
                         CheckParseScanWalkUiTreeThing();
 
                         Debug.Fail(@"Functionality not implemented yet.");

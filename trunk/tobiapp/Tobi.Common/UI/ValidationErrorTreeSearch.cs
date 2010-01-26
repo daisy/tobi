@@ -98,12 +98,12 @@ namespace Tobi.Common.UI
             foreach (DependencyObject obj in allChildren)
             {
                 if (System.Windows.Controls.Validation.GetHasError(obj)
-                    || checkAllValidationErrors(obj))
+                    || CheckAllValidationErrors(obj))
                     yield return obj;
             }
         }
 
-        private static bool checkAllValidationErrors(DependencyObject dependencyObject)
+        public static bool CheckAllValidationErrors(DependencyObject dependencyObject)
         {
             bool isValid = true;
 
