@@ -79,7 +79,7 @@ namespace Tobi.Plugin.Settings
         {
             get
             {
-                return Name + "=" + Value + " '" + Message + "' (default: " + DefaultValue + ") ";
+                return Name + "=" + Value ?? "N/A !" + " '" + Message + "' (default: " + DefaultValue + ") ";
             }
         }
 

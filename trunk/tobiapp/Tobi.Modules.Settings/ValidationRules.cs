@@ -65,9 +65,11 @@ namespace Tobi.Plugin.Settings
 
                 if (aggregatedSetting.ValueType == typeof(KeyGestureString))
                 {
-                    if (val.Key == ((KeyGesture)aggregatedSetting.Value).Key)
+                    var keyG = (KeyGesture)aggregatedSetting.Value;
+
+                    if (keyG != null && val.Key == keyG.Key)
                     {
-                        if (val.Modifiers.Equals(((KeyGesture)aggregatedSetting.Value).Modifiers))
+                        if (val.Modifiers.Equals(keyG.Modifiers))
                         {
                             strSettingsAlreadyUsingKeyG += aggregatedSetting.Name;
                             strSettingsAlreadyUsingKeyG += " ";
