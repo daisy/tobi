@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.MVVM;
 
@@ -35,12 +36,12 @@ namespace Tobi
         {
             if (!e.PropertyName.StartsWith(@"Keyboard_")) return;
 
-            if (e.PropertyName ==
-                PropertyChangedNotifyBase.GetMemberName(() =>
-                    Settings_KeyGestures.Default.Keyboard_AppExit))
+            foreach (var command in m_listOfRegisteredRichCommands)
             {
-                //ExitCommand.KeyBinding.Gesture = Settings_KeyGestures.Default.KeyGesture_MenuExit;
-                ExitCommand.KeyGesture = Settings_KeyGestures.Default.Keyboard_AppExit;
+                if (command.KeyGestureSettingName == e.PropertyName)
+                {
+                    command.RefreshKeyGestureSetting();
+                }
             }
         }
 

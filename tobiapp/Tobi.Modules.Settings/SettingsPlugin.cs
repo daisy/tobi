@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
@@ -78,10 +79,12 @@ namespace Tobi.Plugin.Settings
             CommandShowSettings = new RichDelegateCommand(
                 "Application preferences",
                 "Display an editor for application preferences",
-                new KeyGesture(Key.P, ModifierKeys.Shift | ModifierKeys.Control | ModifierKeys.Alt),
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"preferences-system"),
                 ShowDialog,
-                CanShowDialog);
+                CanShowDialog,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditPreferences));
 
             m_ShellView.RegisterRichCommand(CommandShowSettings);
 

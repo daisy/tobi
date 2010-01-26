@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Tobi.Common.MVVM;
+﻿using Tobi.Common.MVVM;
 using System;
 using System.Windows.Media;
 using Tobi.Common.MVVM.Command;

@@ -10,6 +10,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using System.Diagnostics;
 using System.IO;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using Application = System.Windows.Application;
@@ -32,7 +33,7 @@ namespace Tobi
         public RichDelegateCommand PasteCommand { get; private set; }
 
         public RichDelegateCommand HelpCommand { get; private set; }
-        public RichDelegateCommand PreferencesCommand { get; private set; }
+        //public RichDelegateCommand PreferencesCommand { get; private set; }
         //public RichDelegateCommand WebHomeCommand { get; private set; }
 
         //public RichDelegateCommand NavNextCommand { get; private set; }
@@ -46,13 +47,11 @@ namespace Tobi
         {
             m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
 
-            Settings_KeyGestures.Default.PropertyChanged += SettingsPropertyChanged;
-
             //
             ExitCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Menu_Exit,
                 UserInterfaceStrings.Menu_Exit_,
-                Settings_KeyGestures.Default.Keyboard_AppExit,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 //UserInterfaceStrings.Menu_Exit_KEYS,
                 LoadTangoIcon(@"system-log-out"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Exit")),
@@ -66,7 +65,9 @@ namespace Tobi
                         exit();
                     }
                 },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_AppExit));
 
             RegisterRichCommand(ExitCommand);
             //
@@ -74,7 +75,7 @@ namespace Tobi
             MagnifyUiResetCommand = new RichDelegateCommand(
                 UserInterfaceStrings.UI_ResetMagnification,
                 UserInterfaceStrings.UI_ResetMagnification_,
-                UserInterfaceStrings.UI_ResetMagnification_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"weather-clear"),
                 () =>
                 {
@@ -82,14 +83,16 @@ namespace Tobi
 
                     MagnificationLevel = 1;
                 },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UI_Zoom_Reset));
 
             RegisterRichCommand(MagnifyUiResetCommand);
             //
             MagnifyUiIncreaseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.UI_IncreaseMagnification,
                 UserInterfaceStrings.UI_IncreaseMagnification_,
-                UserInterfaceStrings.UI_IncreaseMagnification_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 //LoadTangoIcon("mail-forward"),
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource(@"Horizon_Image_Zoom_In")),
                 () =>
@@ -98,7 +101,9 @@ namespace Tobi
 
                     MagnificationLevel += 0.15;
                 },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UI_Zoom_Increase));
 
             RegisterRichCommand(MagnifyUiIncreaseCommand);
             //
@@ -106,7 +111,7 @@ namespace Tobi
             MagnifyUiDecreaseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.UI_DecreaseMagnification,
                 UserInterfaceStrings.UI_DecreaseMagnification_,
-                UserInterfaceStrings.UI_DecreaseMagnification_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource(@"Horizon_Image_Zoom_out")),
                 () =>
                 {
@@ -114,7 +119,9 @@ namespace Tobi
 
                     MagnificationLevel -= 0.15;
                 },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UI_Zoom_Decrease));
 
             RegisterRichCommand(MagnifyUiDecreaseCommand);
             //
@@ -133,7 +140,7 @@ namespace Tobi
             ManageShortcutsCommand = new RichDelegateCommand(
                 UserInterfaceStrings.ManageShortcuts,
                 UserInterfaceStrings.ManageShortcuts_,
-                UserInterfaceStrings.ManageShortcuts_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"preferences-desktop-keyboard-shortcuts"),
                 () =>
                 {
@@ -149,14 +156,16 @@ namespace Tobi
 
                     windowPopup.ShowFloating(null);
                 },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayShortcuts));
 
             RegisterRichCommand(ManageShortcutsCommand);
             //
             CutCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Cut,
                 UserInterfaceStrings.Cut_,
-                UserInterfaceStrings.Cut_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-cut"),
                 () =>
                     {
@@ -165,34 +174,40 @@ namespace Tobi
 
                         Debug.Fail(@"Functionality not implemented yet.");
                     },
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Cut));
 
             RegisterRichCommand(CutCommand);
             //
             CopyCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Copy,
                 UserInterfaceStrings.Copy_,
-                UserInterfaceStrings.Copy_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-copy"),
                 () => Debug.Fail(@"Functionality not implemented yet."),
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Copy));
 
             RegisterRichCommand(CopyCommand);
             //
             PasteCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Paste,
                 UserInterfaceStrings.Paste_,
-                UserInterfaceStrings.Paste_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-paste"),
                 () => Debug.Fail(@"Functionality not implemented yet."),
-                () => true);
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Paste));
 
             RegisterRichCommand(PasteCommand);
             //
             ShowLogFilePathCommand = new RichDelegateCommand(
                 UserInterfaceStrings.ShowLogFilePath,
                 UserInterfaceStrings.ShowLogFilePath_,
-                UserInterfaceStrings.ShowLogFilePath_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null, //LoadTangoIcon(@"help-browser"),
                 () =>
                 {
@@ -238,7 +253,9 @@ namespace Tobi
                     windowPopup.ShowModal();
 
                 },
-                 () => true);
+                 () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayLogFilePath));
 
             RegisterRichCommand(ShowLogFilePathCommand);
             //
@@ -246,7 +263,7 @@ namespace Tobi
             OpenTobiFolderCommand = new RichDelegateCommand(
                 UserInterfaceStrings.OpenTobiFolder,
                 UserInterfaceStrings.OpenTobiFolder_,
-                UserInterfaceStrings.OpenTobiFolder_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null, //LoadTangoIcon(@"help-browser"),
                 () =>
                 {
@@ -258,14 +275,16 @@ namespace Tobi
                                 };
                     p.Start();
                 },
-                 () => true);
+                 () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder));
 
             RegisterRichCommand(OpenTobiFolderCommand);
             //
             OpenTobiSettingsFolderCommand = new RichDelegateCommand(
                 UserInterfaceStrings.OpenTobiSettingsFolder,
                 UserInterfaceStrings.OpenTobiSettingsFolder_,
-                UserInterfaceStrings.OpenTobiSettingsFolder_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 null, //LoadTangoIcon(@"help-browser"),
                 () =>
                 {
@@ -280,14 +299,16 @@ namespace Tobi
                     };
                     p.Start();
                 },
-                 () => true);
+                 () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiSettingsFolder));
 
             RegisterRichCommand(OpenTobiSettingsFolderCommand);
             //
             HelpCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Help,
                 UserInterfaceStrings.Help_,
-                UserInterfaceStrings.Help_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon("help-browser"),
                 () =>
                 {
@@ -297,19 +318,23 @@ namespace Tobi
                         new ArgumentOutOfRangeException("First Inner exception",
                             new FileNotFoundException("Second inner exception !")));
                 },
-                 () => true);
+                 () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help));
 
             RegisterRichCommand(HelpCommand);
             //
-            PreferencesCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Preferences,
-                UserInterfaceStrings.Preferences_,
-                UserInterfaceStrings.Preferences_KEYS,
-                LoadTangoIcon("preferences-system"),
-                () => Debug.Fail("Functionality not implemented yet."),
-                () => true);
+            //PreferencesCommand = new RichDelegateCommand(
+            //    UserInterfaceStrings.Preferences,
+            //    UserInterfaceStrings.Preferences_,
+            //    null, // KeyGesture obtained from settings (see last parameters below)
+            //    LoadTangoIcon("preferences-system"),
+            //    () => Debug.Fail("Functionality not implemented yet."),
+            //    () => true,
+            //    Settings_KeyGestures.Default,
+            //    PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Preferences));
 
-            RegisterRichCommand(PreferencesCommand);
+            //RegisterRichCommand(PreferencesCommand);
             //
             //WebHomeCommand = new RichDelegateCommand(UserInterfaceStrings.WebHome,
             //    UserInterfaceStrings.WebHome_,
@@ -389,25 +414,50 @@ namespace Tobi
             }
         }
 
+        private List<ApplicationSettingsBase> m_RegisteredSettingsContainers = new List<ApplicationSettingsBase>();
+
         public void RegisterRichCommand(RichDelegateCommand command)
         {
             m_listOfRegisteredRichCommands.Add(command);
             AddInputBinding(command.KeyBinding);
+
+            if (command.KeyGestureSettingContainer != null
+                &&
+                !m_RegisteredSettingsContainers.Contains(command.KeyGestureSettingContainer))
+            {
+                m_RegisteredSettingsContainers.Add(command.KeyGestureSettingContainer);
+                command.KeyGestureSettingContainer.PropertyChanged += SettingsPropertyChanged;
+            }
         }
 
         public void UnRegisterRichCommand(RichDelegateCommand command)
         {
             m_listOfRegisteredRichCommands.Remove(command);
             RemoveInputBinding(command.KeyBinding);
+
+            if (command.KeyGestureSettingContainer != null
+                &&
+                m_RegisteredSettingsContainers.Contains(command.KeyGestureSettingContainer))
+            {
+                foreach (var cmd in m_listOfRegisteredRichCommands)
+                {
+                    if (cmd.KeyGestureSettingContainer == command.KeyGestureSettingContainer)
+                    {
+                        return;
+                    }
+                }
+
+                m_RegisteredSettingsContainers.Remove(command.KeyGestureSettingContainer);
+                command.KeyGestureSettingContainer.PropertyChanged -= SettingsPropertyChanged;
+            }
         }
 
         public bool AddInputBinding(InputBinding inputBinding)
         {
-            var window = this as Window;
-            if (window != null && inputBinding != null)
+            if (inputBinding != null)
             {
                 logInputBinding(inputBinding);
-                window.InputBindings.Add(inputBinding);
+                InputBindings.Add(inputBinding);
                 return true;
             }
 
@@ -416,11 +466,10 @@ namespace Tobi
 
         public void RemoveInputBinding(InputBinding inputBinding)
         {
-            var window = this as Window;
-            if (window != null && inputBinding != null)
+            if (inputBinding != null)
             {
                 logInputBinding(inputBinding);
-                window.InputBindings.Remove(inputBinding);
+                InputBindings.Remove(inputBinding);
             }
         }
 

@@ -217,7 +217,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] W")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] W")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_ZoomSelection {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_ZoomSelection"]));

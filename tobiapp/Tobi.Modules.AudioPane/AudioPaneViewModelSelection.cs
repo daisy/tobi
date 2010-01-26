@@ -16,7 +16,7 @@ namespace Tobi.Plugin.AudioPane
             CommandSelectPreviousChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectPreviousChunk,
                 UserInterfaceStrings.Audio_SelectPreviousChunk_,
-                UserInterfaceStrings.Audio_SelectPreviousChunk_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-previous"),
                 ()=>
                 {
@@ -26,14 +26,16 @@ namespace Tobi.Plugin.AudioPane
 
                     SelectChunk(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
                 },
-                ()=> CommandStepBack.CanExecute());
+                () => CommandStepBack.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectPreviousChunk));
 
             m_ShellView.RegisterRichCommand(CommandSelectPreviousChunk);
             //
             CommandSelectNextChunk = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_SelectNextChunk,
                 UserInterfaceStrings.Audio_SelectNextChunk_,
-                UserInterfaceStrings.Audio_SelectNextChunk_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-next"),
                 ()=>
                 {
@@ -43,7 +45,9 @@ namespace Tobi.Plugin.AudioPane
 
                     SelectChunk(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime));
                 },
-                ()=> CommandStepForward.CanExecute());
+                () => CommandStepForward.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectNextChunk));
 
             m_ShellView.RegisterRichCommand(CommandSelectNextChunk);
             //
@@ -51,7 +55,7 @@ namespace Tobi.Plugin.AudioPane
             CommandEndSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_EndSelection,
                 UserInterfaceStrings.Audio_EndSelection_,
-                UserInterfaceStrings.Audio_EndSelection_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
                 ()=>
                 {
@@ -98,14 +102,16 @@ namespace Tobi.Plugin.AudioPane
                         AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                     }
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0);
+                () => !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_EndSelection));
 
             m_ShellView.RegisterRichCommand(CommandEndSelection);
             //
             CommandBeginSelection = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_BeginSelection,
                 UserInterfaceStrings.Audio_BeginSelection_,
-                UserInterfaceStrings.Audio_BeginSelection_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
                 ()=>
                 {
@@ -115,14 +121,16 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioCues.PlayTock();
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded);
+                () => !IsWaveFormLoading && IsAudioLoaded,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_BeginSelection));
 
             m_ShellView.RegisterRichCommand(CommandBeginSelection);
             //
             CommandSelectAll = new RichDelegateCommand(
                 UserInterfaceStrings.SelectAll,
                 UserInterfaceStrings.SelectAll_,
-                UserInterfaceStrings.SelectAll_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("view-fullscreen"),
                 ()=>
                 {
@@ -141,13 +149,15 @@ namespace Tobi.Plugin.AudioPane
                     
                     AudioCues.PlayTockTock();
                 },
-                ()=> !IsWaveFormLoading);
+                () => !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectAll));
 
             m_ShellView.RegisterRichCommand(CommandSelectAll);
             //
             CommandClearSelection = new RichDelegateCommand(UserInterfaceStrings.Audio_ClearSelection,
                 UserInterfaceStrings.Audio_ClearSelection_,
-                UserInterfaceStrings.Audio_ClearSelection_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-clear"),
                 ()=>
                 {
@@ -155,7 +165,9 @@ namespace Tobi.Plugin.AudioPane
 
                     State.Selection.ClearSelection();
                 },
-                ()=> !IsWaveFormLoading && IsSelectionSet);
+                () => !IsWaveFormLoading && IsSelectionSet,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ClearSelection));
 
             m_ShellView.RegisterRichCommand(CommandClearSelection);
             //

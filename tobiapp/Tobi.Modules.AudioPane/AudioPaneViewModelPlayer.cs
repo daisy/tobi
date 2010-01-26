@@ -32,7 +32,7 @@ namespace Tobi.Plugin.AudioPane
             CommandAutoPlay = new RichDelegateCommand(
                UserInterfaceStrings.Audio_AutoPlay,
                UserInterfaceStrings.Audio_AutoPlay_,
-               UserInterfaceStrings.Audio_AutoPlay_KEYS,
+               null, // KeyGesture obtained from settings (see last parameters below)
                m_ShellView.LoadGnomeNeuIcon("Neu_go-last"),
                ()=>
                {
@@ -40,7 +40,9 @@ namespace Tobi.Plugin.AudioPane
 
                    IsAutoPlay = !IsAutoPlay;
                },
-               ()=> !IsWaveFormLoading);
+               () => !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_AutoPlay));
 
             m_ShellView.RegisterRichCommand(CommandAutoPlay);
             //
@@ -48,7 +50,7 @@ namespace Tobi.Plugin.AudioPane
             CommandPause = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Pause,
                 UserInterfaceStrings.Audio_Pause_,
-                UserInterfaceStrings.Audio_Pause_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-pause"),
                 ()=>
                 {
@@ -56,14 +58,16 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioPlayer_Stop();
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && IsPlaying);
+                () => !IsWaveFormLoading && IsAudioLoaded && IsPlaying,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Pause));
 
             m_ShellView.RegisterRichCommand(CommandPause);
             //
             CommandPlay = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Play,
                 UserInterfaceStrings.Audio_Play_,
-                UserInterfaceStrings.Audio_Play_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-start"),
                 ()=>
                 {
@@ -109,34 +113,40 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording);
+                () => !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Play));
 
             m_ShellView.RegisterRichCommand(CommandPlay);
             //
             CommandPlayPreviewLeft = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewLeft,
                 UserInterfaceStrings.Audio_PlayPreviewLeft_,
-                UserInterfaceStrings.Audio_PlayPreviewLeft_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
                 ()=> PlayPreviewLeftRight(true),
-                ()=> CommandPlay.CanExecute());
+                () => CommandPlay.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPreviewLeft));
 
             m_ShellView.RegisterRichCommand(CommandPlayPreviewLeft);
             //
             CommandPlayPreviewRight = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_PlayPreviewRight,
                 UserInterfaceStrings.Audio_PlayPreviewRight_,
-                UserInterfaceStrings.Audio_PlayPreviewRight_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
                 () => PlayPreviewLeftRight(false),
-                ()=> CommandPlay.CanExecute());
+                () => CommandPlay.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPreviewRight));
 
             m_ShellView.RegisterRichCommand(CommandPlayPreviewRight);
             //
             CommandGotoBegining = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoBegin,
                 UserInterfaceStrings.Audio_GotoBegin_,
-                UserInterfaceStrings.Audio_GotoBegin_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-first"),
                 ()=>
                 {
@@ -161,14 +171,16 @@ namespace Tobi.Plugin.AudioPane
                         LastPlayHeadTime = 0;
                     }
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoBegin));
 
             m_ShellView.RegisterRichCommand(CommandGotoBegining);
             //
             CommandGotoEnd = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_GotoEnd,
                 UserInterfaceStrings.Audio_GotoEnd_,
-                UserInterfaceStrings.Audio_GotoEnd_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-last"),
                 ()=>
                 {
@@ -195,14 +207,16 @@ namespace Tobi.Plugin.AudioPane
                         LastPlayHeadTime = end;
                     }
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoEnd));
 
             m_ShellView.RegisterRichCommand(CommandGotoEnd);
             //
             CommandStepBack = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepBack,
                  UserInterfaceStrings.Audio_StepBack_,
-                 UserInterfaceStrings.Audio_StepBack_KEYS,
+                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-skip-backward"),
                 ()=>
                 {
@@ -257,14 +271,16 @@ namespace Tobi.Plugin.AudioPane
                         bytesLeft += marker.m_LocalStreamDataLength;
                     }
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring);
+                () => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepBack));
 
             m_ShellView.RegisterRichCommand(CommandStepBack);
             //
             CommandStepForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_StepForward,
                 UserInterfaceStrings.Audio_StepForward_,
-                UserInterfaceStrings.Audio_StepForward_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-skip-forward"),
                 ()=>
                 {
@@ -317,14 +333,16 @@ namespace Tobi.Plugin.AudioPane
 
                     SystemSounds.Beep.Play();
                 },
-                ()=> CommandStepBack.CanExecute());
+                () => CommandStepBack.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepForward));
 
             m_ShellView.RegisterRichCommand(CommandStepForward);
             //
             CommandFastForward = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_FastForward,
                 UserInterfaceStrings.Audio_FastForward_,
-                UserInterfaceStrings.Audio_FastForward_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-seek-forward"),
                 ()=>
                 {
@@ -350,14 +368,16 @@ namespace Tobi.Plugin.AudioPane
 
                     LastPlayHeadTime = newTime;
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_FastForward));
 
             m_ShellView.RegisterRichCommand(CommandFastForward);
             //
             CommandRewind = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Rewind,
                 UserInterfaceStrings.Audio_Rewind_,
-                UserInterfaceStrings.Audio_Rewind_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-seek-backward"),
                 ()=>
                 {
@@ -382,7 +402,9 @@ namespace Tobi.Plugin.AudioPane
 
                     LastPlayHeadTime = newTime;
                 },
-                ()=> !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring);
+                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Rewind));
 
             m_ShellView.RegisterRichCommand(CommandRewind);
             //

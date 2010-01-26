@@ -51,7 +51,7 @@
       <Value Profile="(Default)">[ CTRL ] D</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_ZoomSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] W</Value>
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] W</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_FitFull" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] W</Value>

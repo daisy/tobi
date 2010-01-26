@@ -147,30 +147,36 @@ namespace Tobi.Plugin.Urakawa
             UndoCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
-                UserInterfaceStrings.Undo_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-undo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
-                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo);
+                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Undo));
 
             m_ShellView.RegisterRichCommand(UndoCommand);
             //
             RedoCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Redo,
                 UserInterfaceStrings.Redo_,
-                UserInterfaceStrings.Redo_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-redo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
-                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo);
+                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Redo));
 
             m_ShellView.RegisterRichCommand(RedoCommand);
             //
             CloseCommand = new RichDelegateCommand(
                 UserInterfaceStrings.Close,
                 UserInterfaceStrings.Close_,
-                UserInterfaceStrings.Close_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"go-jump"),
                 () => Close(),
-                () => DocumentProject != null);
+                () => DocumentProject != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Close));
 
             m_ShellView.RegisterRichCommand(CloseCommand);
         }

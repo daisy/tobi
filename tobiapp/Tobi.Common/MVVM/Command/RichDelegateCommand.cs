@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -100,12 +101,17 @@ namespace Tobi.Common.MVVM.Command
                                    KeyGesture keyGesture,
                                    VisualBrush icon,
                                    Action executeMethod,
-                                   Func<bool> canExecuteMethod)
+                                   Func<bool> canExecuteMethod,
+                                   ApplicationSettingsBase settingContainer, string settingName)
             : base(executeMethod, canExecuteMethod, false)
         {
+            KeyGestureSettingContainer = settingContainer;
+            KeyGestureSettingName = settingName;
+            KeyGesture = keyGesture ?? RefreshKeyGestureSetting();
+
             ShortDescription = (String.IsNullOrEmpty(shortDescription) ? "" : shortDescription);
             LongDescription = (String.IsNullOrEmpty(longDescription) ? "" : longDescription);
-            KeyGesture = keyGesture;
+            
             m_VisualBrush = icon;
 
             if (HasIcon)
@@ -144,6 +150,19 @@ namespace Tobi.Common.MVVM.Command
                 }
                 return m_KeyBinding;
             }
+        }
+
+        public readonly string KeyGestureSettingName;
+        public readonly ApplicationSettingsBase KeyGestureSettingContainer;
+
+        public KeyGesture RefreshKeyGestureSetting()
+        {
+            if (KeyGestureSettingContainer == null
+                || string.IsNullOrEmpty(KeyGestureSettingName)) return null;
+
+            KeyGesture = (KeyGesture)KeyGestureSettingContainer[KeyGestureSettingName];
+
+            return KeyGesture;
         }
 
         private KeyGesture m_KeyGesture;

@@ -51,20 +51,24 @@ namespace Tobi.Common.UI
             CommandDetailsExpand = new RichDelegateCommand(
                 UserInterfaceStrings.DetailsExpand,
                 UserInterfaceStrings.DetailsExpand_,
-                UserInterfaceStrings.DetailsExpand_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 (ShellView == null ? null : ShellView.LoadTangoIcon("go-down")),
                 () => IsDetailsExpanded = true,
-                () => HasDetails && !IsDetailsExpanded);
+                () => HasDetails && !IsDetailsExpanded,
+                Settings_KeyGesture.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpand));
 
             AddInputBinding(CommandDetailsExpand.KeyBinding);
             //
             CommandDetailsCollapse = new RichDelegateCommand(
                 UserInterfaceStrings.DetailsCollapse,
                 UserInterfaceStrings.DetailsCollapse_,
-                UserInterfaceStrings.DetailsCollapse_KEYS,
+                null, // KeyGesture obtained from settings (see last parameters below)
                 (ShellView == null ? null : ShellView.LoadTangoIcon("go-up")),
                 () => IsDetailsExpanded = false,
-                () => HasDetails && IsDetailsExpanded);
+                () => HasDetails && IsDetailsExpanded,
+                Settings_KeyGesture.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogCollapse));
 
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
