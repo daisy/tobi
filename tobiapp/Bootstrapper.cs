@@ -250,6 +250,7 @@ namespace Tobi
             // TODO: for debugging only: we're loading selectively to avoid interference (and weird part dependencies)
             Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
             {
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(AbstractTobiPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))),

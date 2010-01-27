@@ -11,39 +11,13 @@ namespace Tobi.Plugin.MetadataPane
     /// Metadata editor
     /// This plugin bootstrapper configures 
     ///</summary>
-    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class MetadataPanePlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class MetadataPanePlugin : AbstractTobiPlugin
     {
-#pragma warning disable 1591 // non-documented method
-        public void OnImportsSatisfied()
-#pragma warning restore 1591
-        {
-            //#if DEBUG
-            //            Debugger.Break();
-            //#endif
-
-            // If the toolbar has been resolved, we can push our commands into it.
-            tryToolbarCommands();
-
-            // If the menubar has been resolved, we can push our commands into it.
-            tryMenubarCommands();
-        }
-
-#pragma warning disable 649 // non-initialized fields
-
-        [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        private IToolBarsView m_ToolBarsView;
-
-        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        private IMenuBarView m_MenuBarView;
-
-#pragma warning restore 649
-
-        private readonly ILoggerFacade m_Logger;
-
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
         private readonly MetadataPaneView m_MetadataPaneView;
+
+        private readonly ILoggerFacade m_Logger;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -82,55 +56,39 @@ namespace Tobi.Plugin.MetadataPane
             m_ShellView.RegisterRichCommand(CommandShowMetadataPane);
 
 
-            m_Logger.Log(@"Metadata plugin initializing...", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"Metadata plugin initializing...", Category.Debug, Priority.Medium);
         }
 
         public RichDelegateCommand CommandShowMetadataPane { get; private set; }
 
         private int m_ToolBarId_1;
-        private bool m_ToolBarCommandsDone;
-        private void tryToolbarCommands()
+        protected override void OnToolBarReady()
         {
-            if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
-            {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowMetadataPane }, PreferredPosition.Any);
+            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowMetadataPane }, PreferredPosition.Any);
 
-                m_ToolBarCommandsDone = true;
-
-                m_Logger.Log(@"Urakawa session commands pushed to toolbar", Category.Debug, Priority.Medium);
-            }
+            m_Logger.Log(@"Urakawa session commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
 
         private int m_MenuBarId_1;
-        private bool m_MenuBarCommandsDone;
-        private void tryMenubarCommands()
+        protected override void OnMenuBarReady()
         {
-            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
-            {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { CommandShowMetadataPane }, PreferredPosition.Last, true);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { CommandShowMetadataPane }, PreferredPosition.Last, true);
 
-                m_MenuBarCommandsDone = true;
-
-                m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
-            }
+            m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
         }
 
         public override void Dispose()
         {
-            if (m_ToolBarCommandsDone)
+            if (m_ToolBarsView != null)
             {
                 m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
-
-                m_ToolBarCommandsDone = false;
 
                 m_Logger.Log(@"Urakawa session commands removed from toolbar", Category.Debug, Priority.Medium);
             }
 
-            if (m_MenuBarCommandsDone)
+            if (m_MenuBarView != null)
             {
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
-
-                m_MenuBarCommandsDone = false;
 
                 m_Logger.Log(@"Urakawa session commands removed from menubar", Category.Debug, Priority.Medium);
             }

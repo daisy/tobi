@@ -74,8 +74,8 @@ AlternationCount="2"
                       DisplayMemberBinding="{Binding KeyGestureText}"/>
 
       <GridViewColumn Header="Long Description"
-                    UI:SortableListView.SortPropertyName="KeyGestureText"
-                    DisplayMemberBinding="{Binding KeyGestureText}"/>
+                    UI:SortableListView.SortPropertyName="LongDescription"
+                    DisplayMemberBinding="{Binding LongDescription}"/>
 
     </GridView>
   </ListView.View>

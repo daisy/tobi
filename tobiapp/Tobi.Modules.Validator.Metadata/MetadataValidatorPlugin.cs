@@ -8,20 +8,11 @@ namespace Tobi.Plugin.Validator.Metadata
     ///<summary>
     /// The validation framework includes a top-level UI to display all publication errors as they are detected.
     ///</summary>
-    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class MetadataValidatorPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class MetadataValidatorPlugin : AbstractTobiPlugin
     {
-#pragma warning disable 1591 // non-documented method
-        public void OnImportsSatisfied()
-#pragma warning restore 1591
-        {
-            //#if DEBUG
-            //            Debugger.Break();
-            //#endif
-        }
+        //private readonly MetadataValidator m_Validator;
 
         private readonly ILoggerFacade m_Logger;
-        //private readonly MetadataValidator m_Validator;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -38,7 +29,7 @@ namespace Tobi.Plugin.Validator.Metadata
             m_Logger = logger;
             //m_Validator = validator;
 
-            m_Logger.Log(@"MetadataValidator loaded", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"MetadataValidator loaded", Category.Debug, Priority.Medium);
         }
 
         public override void Dispose()
