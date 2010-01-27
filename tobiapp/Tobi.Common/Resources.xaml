@@ -293,8 +293,8 @@
   <Style TargetType="{x:Type UI:RepeatButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
   
-  <Style TargetType="{x:Type UI:ToggleButtonRichCommand}"
-         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  <!--<Style TargetType="{x:Type UI:ToggleButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>-->
   
   <Style TargetType="{x:Type UI:TwoStateButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>

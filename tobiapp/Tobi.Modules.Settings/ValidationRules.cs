@@ -29,11 +29,16 @@ namespace Tobi.Plugin.Settings
             return new ValidationResult(false, msg);
         }
 
-        protected ValidationResult Valid()
+        protected ValidationResult Valid(string message)
         {
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
-            currentSetting.Message = null;
+            currentSetting.Message = message;
             return new ValidationResult(true, null);
+        }
+
+        protected ValidationResult Valid()
+        {
+            return Valid(null);
         }
     }
 
@@ -79,7 +84,7 @@ namespace Tobi.Plugin.Settings
             }
             if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
             {
-                return NotValid("Shortcut already used by: " + strSettingsAlreadyUsingKeyG);
+                return Valid("Shortcut already used by: " + strSettingsAlreadyUsingKeyG);
             }
 
             return Valid();
