@@ -220,59 +220,59 @@ namespace Tobi.Common.UI
     /// <summary>
     /// //////////////////////////////////////////
     /// </summary>
-    public class ToggleButtonRichCommand : ToggleButton
-    {
-        public static readonly DependencyProperty RichCommandProperty =
-            DependencyProperty.Register("RichCommand",
-                                        typeof(RichDelegateCommand),
-                                        typeof(ToggleButtonRichCommand),
-                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
+    //public class ToggleButtonRichCommand : ToggleButton
+    //{
+    //    public static readonly DependencyProperty RichCommandProperty =
+    //        DependencyProperty.Register("RichCommand",
+    //                                    typeof(RichDelegateCommand),
+    //                                    typeof(ToggleButtonRichCommand),
+    //                                    new PropertyMetadata(new PropertyChangedCallback(OnRichCommandChanged)));
 
-        private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var button = d as ToggleButtonRichCommand;
-            if (button == null)
-            {
-                return;
-            }
-            var command = e.NewValue as RichDelegateCommand;
-            if (command == null)
-            {
-                return;
-            }
+    //    private static void OnRichCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        var button = d as ToggleButtonRichCommand;
+    //        if (button == null)
+    //        {
+    //            return;
+    //        }
+    //        var command = e.NewValue as RichDelegateCommand;
+    //        if (command == null)
+    //        {
+    //            return;
+    //        }
 
-            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
-        }
+    //        ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
+    //    }
 
-        public static readonly DependencyProperty ShowTextLabelProperty =
-            DependencyProperty.Register("ShowTextLabel",
-                                        typeof(bool),
-                                        typeof(ToggleButtonRichCommand),
-                                        new PropertyMetadata(false));
+    //    public static readonly DependencyProperty ShowTextLabelProperty =
+    //        DependencyProperty.Register("ShowTextLabel",
+    //                                    typeof(bool),
+    //                                    typeof(ToggleButtonRichCommand),
+    //                                    new PropertyMetadata(false));
 
-        public bool ShowTextLabel
-        {
-            get
-            {
-                return (bool)GetValue(ShowTextLabelProperty);
-            }
-            set
-            {
-                SetValue(ShowTextLabelProperty, value);
-            }
-        }
-        public RichDelegateCommand RichCommand
-        {
-            get
-            {
-                return (RichDelegateCommand)GetValue(RichCommandProperty);
-            }
-            set
-            {
-                SetValue(RichCommandProperty, value);
-            }
-        }
-    }
+    //    public bool ShowTextLabel
+    //    {
+    //        get
+    //        {
+    //            return (bool)GetValue(ShowTextLabelProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(ShowTextLabelProperty, value);
+    //        }
+    //    }
+    //    public RichDelegateCommand RichCommand
+    //    {
+    //        get
+    //        {
+    //            return (RichDelegateCommand)GetValue(RichCommandProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(RichCommandProperty, value);
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// //////////////////////////////////////////
@@ -334,162 +334,162 @@ namespace Tobi.Common.UI
     /// <summary>
     /// //////////////////////////////////////////
     /// </summary>
-    public class TwoStateToggleButtonRichCommand : ToggleButton
-    {
-        public static readonly DependencyProperty InputBindingManagerProperty =
-            DependencyProperty.Register("InputBindingManager",
-                                        typeof(IInputBindingManager),
-                                        typeof(TwoStateToggleButtonRichCommand),
-                                        new PropertyMetadata(new PropertyChangedCallback(OnInputBindingManagerChanged)));
+    //public class TwoStateToggleButtonRichCommand : ToggleButton
+    //{
+    //    public static readonly DependencyProperty InputBindingManagerProperty =
+    //        DependencyProperty.Register("InputBindingManager",
+    //                                    typeof(IInputBindingManager),
+    //                                    typeof(TwoStateToggleButtonRichCommand),
+    //                                    new PropertyMetadata(new PropertyChangedCallback(OnInputBindingManagerChanged)));
 
-        private static void OnInputBindingManagerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ;
-        }
+    //    private static void OnInputBindingManagerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        ;
+    //    }
 
-        public IInputBindingManager InputBindingManager
-        {
-            get
-            {
-                return (IInputBindingManager)GetValue(InputBindingManagerProperty);
-            }
-            set
-            {
-                SetValue(InputBindingManagerProperty, value);
-            }
-        }
+    //    public IInputBindingManager InputBindingManager
+    //    {
+    //        get
+    //        {
+    //            return (IInputBindingManager)GetValue(InputBindingManagerProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(InputBindingManagerProperty, value);
+    //        }
+    //    }
 
 
-        public static readonly DependencyProperty RichCommandOneProperty =
-            DependencyProperty.Register("RichCommandOne",
-                                        typeof(RichDelegateCommand),
-                                        typeof(TwoStateToggleButtonRichCommand),
-                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandOneChanged)));
+    //    public static readonly DependencyProperty RichCommandOneProperty =
+    //        DependencyProperty.Register("RichCommandOne",
+    //                                    typeof(RichDelegateCommand),
+    //                                    typeof(TwoStateToggleButtonRichCommand),
+    //                                    new PropertyMetadata(new PropertyChangedCallback(OnRichCommandOneChanged)));
 
-        private static void OnRichCommandOneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            //ButtonRichCommand.OnRichCommandChanged(d, e);
-        }
+    //    private static void OnRichCommandOneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        //ButtonRichCommand.OnRichCommandChanged(d, e);
+    //    }
 
-        public RichDelegateCommand RichCommandOne
-        {
-            get
-            {
-                return (RichDelegateCommand)GetValue(RichCommandOneProperty);
-            }
-            set
-            {
-                SetValue(RichCommandOneProperty, value);
-            }
-        }
+    //    public RichDelegateCommand RichCommandOne
+    //    {
+    //        get
+    //        {
+    //            return (RichDelegateCommand)GetValue(RichCommandOneProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(RichCommandOneProperty, value);
+    //        }
+    //    }
 
-        public static readonly DependencyProperty RichCommandTwoProperty =
-            DependencyProperty.Register("RichCommandTwo",
-                                        typeof(RichDelegateCommand),
-                                        typeof(TwoStateToggleButtonRichCommand),
-                                        new PropertyMetadata(new PropertyChangedCallback(OnRichCommandTwoChanged)));
+    //    public static readonly DependencyProperty RichCommandTwoProperty =
+    //        DependencyProperty.Register("RichCommandTwo",
+    //                                    typeof(RichDelegateCommand),
+    //                                    typeof(TwoStateToggleButtonRichCommand),
+    //                                    new PropertyMetadata(new PropertyChangedCallback(OnRichCommandTwoChanged)));
 
-        private static void OnRichCommandTwoChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            //ButtonRichCommand.OnRichCommandChanged(d, e);
-        }
+    //    private static void OnRichCommandTwoChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        //ButtonRichCommand.OnRichCommandChanged(d, e);
+    //    }
 
-        public RichDelegateCommand RichCommandTwo
-        {
-            get
-            {
-                return (RichDelegateCommand)GetValue(RichCommandTwoProperty);
-            }
-            set
-            {
-                SetValue(RichCommandTwoProperty, value);
-            }
-        }
+    //    public RichDelegateCommand RichCommandTwo
+    //    {
+    //        get
+    //        {
+    //            return (RichDelegateCommand)GetValue(RichCommandTwoProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(RichCommandTwoProperty, value);
+    //        }
+    //    }
 
-        public static readonly DependencyProperty ShowTextLabelProperty =
-            DependencyProperty.Register("ShowTextLabel",
-                                        typeof(bool),
-                                        typeof(TwoStateToggleButtonRichCommand),
-                                        new PropertyMetadata(false));
+    //    public static readonly DependencyProperty ShowTextLabelProperty =
+    //        DependencyProperty.Register("ShowTextLabel",
+    //                                    typeof(bool),
+    //                                    typeof(TwoStateToggleButtonRichCommand),
+    //                                    new PropertyMetadata(false));
 
-        public bool ShowTextLabel
-        {
-            get
-            {
-                return (bool)GetValue(ShowTextLabelProperty);
-            }
-            set
-            {
-                SetValue(ShowTextLabelProperty, value);
-            }
-        }
-        public static readonly DependencyProperty RichCommandActiveProperty =
-            DependencyProperty.Register("RichCommandActive",
-                                        typeof(Boolean),
-                                        typeof(TwoStateToggleButtonRichCommand),
-                                        new PropertyMetadata(true, OnRichCommandActiveChanged));
+    //    public bool ShowTextLabel
+    //    {
+    //        get
+    //        {
+    //            return (bool)GetValue(ShowTextLabelProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(ShowTextLabelProperty, value);
+    //        }
+    //    }
+    //    public static readonly DependencyProperty RichCommandActiveProperty =
+    //        DependencyProperty.Register("RichCommandActive",
+    //                                    typeof(Boolean),
+    //                                    typeof(TwoStateToggleButtonRichCommand),
+    //                                    new PropertyMetadata(true, OnRichCommandActiveChanged));
 
-        private static void OnRichCommandActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var button = d as TwoStateToggleButtonRichCommand;
-            if (button == null)
-            {
-                return;
-            }
-            var choice = (Boolean)e.NewValue;
+    //    private static void OnRichCommandActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        var button = d as TwoStateToggleButtonRichCommand;
+    //        if (button == null)
+    //        {
+    //            return;
+    //        }
+    //        var choice = (Boolean)e.NewValue;
 
-            RichDelegateCommand command = button.RichCommandOne;
+    //        RichDelegateCommand command = button.RichCommandOne;
 
-            if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
-            {
-                command.KeyGestureText = button.RichCommandTwo.KeyGestureText;
-            }
+    //        if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
+    //        {
+    //            command.KeyGestureText = button.RichCommandTwo.KeyGestureText;
+    //        }
 
-            if (button.InputBindingManager != null
-                && command.KeyGesture != null
-                    && command.KeyGesture.Equals(button.RichCommandTwo.KeyGesture))
-            {
-                button.InputBindingManager.RemoveInputBinding(button.RichCommandTwo.KeyBinding);
-                button.InputBindingManager.AddInputBinding(command.KeyBinding);
-            }
+    //        if (button.InputBindingManager != null
+    //            && command.KeyGesture != null
+    //                && command.KeyGesture.Equals(button.RichCommandTwo.KeyGesture))
+    //        {
+    //            button.InputBindingManager.RemoveInputBinding(button.RichCommandTwo.KeyBinding);
+    //            button.InputBindingManager.AddInputBinding(command.KeyBinding);
+    //        }
 
-            if (!choice)
-            {
-                command = button.RichCommandTwo;
+    //        if (!choice)
+    //        {
+    //            command = button.RichCommandTwo;
 
-                if (command.KeyGesture == null && button.RichCommandOne.KeyGesture != null)
-                {
-                    command.KeyGestureText = button.RichCommandOne.KeyGestureText;
-                }
+    //            if (command.KeyGesture == null && button.RichCommandOne.KeyGesture != null)
+    //            {
+    //                command.KeyGestureText = button.RichCommandOne.KeyGestureText;
+    //            }
 
-                if (button.InputBindingManager != null
-                   && command.KeyGesture != null
-                   && command.KeyGesture.Equals(button.RichCommandOne.KeyGesture))
-                {
-                    button.InputBindingManager.RemoveInputBinding(button.RichCommandOne.KeyBinding);
-                    button.InputBindingManager.AddInputBinding(command.KeyBinding);
-                }
-            }
+    //            if (button.InputBindingManager != null
+    //               && command.KeyGesture != null
+    //               && command.KeyGesture.Equals(button.RichCommandOne.KeyGesture))
+    //            {
+    //                button.InputBindingManager.RemoveInputBinding(button.RichCommandOne.KeyBinding);
+    //                button.InputBindingManager.AddInputBinding(command.KeyBinding);
+    //            }
+    //        }
 
-            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
-        }
+    //        ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
+    //    }
 
-        /// <summary>
-        /// True => RichCommandOne (default one)
-        /// False => RichCommandTwo (alternative one)
-        /// </summary>
-        public Boolean RichCommandActive
-        {
-            get
-            {
-                return (Boolean)GetValue(RichCommandActiveProperty);
-            }
-            set
-            {
-                SetValue(RichCommandActiveProperty, value);
-            }
-        }
-    }
+    //    /// <summary>
+    //    /// True => RichCommandOne (default one)
+    //    /// False => RichCommandTwo (alternative one)
+    //    /// </summary>
+    //    public Boolean RichCommandActive
+    //    {
+    //        get
+    //        {
+    //            return (Boolean)GetValue(RichCommandActiveProperty);
+    //        }
+    //        set
+    //        {
+    //            SetValue(RichCommandActiveProperty, value);
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// //////////////////////////////////////////
