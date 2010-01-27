@@ -10,32 +10,13 @@ namespace Tobi.Plugin.ToolBars
     /// The tool bar contains groups of buttons (commands actually) from various parts of the application.
     /// (i.e. it is a host service, it doesn't own command data directly)
     ///</summary>
-    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class ToolBarsPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class ToolBarsPlugin : AbstractTobiPlugin
     {
-#pragma warning disable 1591 // non-documented method
-        public void OnImportsSatisfied()
-#pragma warning restore 1591
-        {
-            //#if DEBUG
-            //            Debugger.Break();
-            //#endif
-
-            // If the menubar has been resolved, we can push our commands into it.
-            tryMenubarCommands();
-        }
-
-#pragma warning disable 649 // non-initialized fields
-
-        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        private IMenuBarView m_MenuBarView;
-
-#pragma warning restore 649
-
-        private readonly ILoggerFacade m_Logger;
         private readonly IRegionManager m_RegionManager;
 
         private readonly ToolBarsView m_ToolBarsView;
+
+        private readonly ILoggerFacade m_Logger;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -65,30 +46,22 @@ namespace Tobi.Plugin.ToolBars
             //targetRegion.Add(m_ToolBarsView);
             //targetRegion.Activate(m_ToolBarsView);
 
-            m_Logger.Log(@"Toolbar pushed to region", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"Toolbar pushed to region", Category.Debug, Priority.Medium);
         }
 
         private int m_MenuBarId_1;
-        private bool m_MenuBarCommandsDone;
-        private void tryMenubarCommands()
+        protected override void OnMenuBarReady()
         {
-            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
-            {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_ToolBarsView.CommandFocus }, PreferredPosition.Last, false);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_ToolBarsView.CommandFocus }, PreferredPosition.Last, false);
 
-                m_MenuBarCommandsDone = true;
-
-                m_Logger.Log(@"Toolbar commands pushed to menubar", Category.Debug, Priority.Medium);
-            }
+            m_Logger.Log(@"Toolbar commands pushed to menubar", Category.Debug, Priority.Medium);
         }
 
         public override void Dispose()
         {
-            if (m_MenuBarCommandsDone)
+            if (m_MenuBarView != null)
             {
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_1);
-
-                m_MenuBarCommandsDone = false;
 
                 m_Logger.Log(@"Toolbar commands removed from menubar", Category.Debug, Priority.Medium);
             }

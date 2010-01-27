@@ -10,22 +10,11 @@ namespace Tobi.Plugin.MenuBar
     /// The menu bar contains commands from various parts of the application, organized in predefined regions.
     /// (i.e. it is a host service, it doesn't own command data directly)
     ///</summary>
-    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class MenuBarPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class MenuBarPlugin : AbstractTobiPlugin
     {
-#pragma warning disable 1591 // non-documented method
-        public void OnImportsSatisfied()
-#pragma warning restore 1591
-        {
-            //#if DEBUG
-            //            Debugger.Break();
-            //#endif
-        }
-
-        private readonly ILoggerFacade m_Logger;
         private readonly IRegionManager m_RegionManager;
 
-        private readonly MenuBarView m_MenuBarView;
+        private readonly ILoggerFacade m_Logger;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -55,7 +44,7 @@ namespace Tobi.Plugin.MenuBar
             //targetRegion.Add(m_MenuBarView);
             //targetRegion.Activate(m_MenuBarView);
 
-            m_Logger.Log(@"MenuBar pushed to region", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"MenuBar pushed to region", Category.Debug, Priority.Medium);
         }
 
         public override void Dispose()

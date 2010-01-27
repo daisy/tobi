@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="Keyboard_DialogExpand" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] D</Value>
+      <Value Profile="(Default)">[ SHIFT CTRL ] D</Value>
     </Setting>
     <Setting Name="Keyboard_DialogCollapse" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] D</Value>
+      <Value Profile="(Default)">[ SHIFT CTRL ] D</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -11,39 +11,14 @@ namespace Tobi.Plugin.Validator
     ///<summary>
     /// The validation framework includes a top-level UI to display all publication errors as they are detected.
     ///</summary>
-    [Export(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed class ValidatorPlugin : AbstractTobiPlugin, IPartImportsSatisfiedNotification
+    public sealed class ValidatorPlugin : AbstractTobiPlugin
     {
-#pragma warning disable 1591 // non-documented method
-        public void OnImportsSatisfied()
-#pragma warning restore 1591
-        {
-            //#if DEBUG
-            //            Debugger.Break();
-            //#endif
-
-            // If the toolbar has been resolved, we can push our commands into it.
-            tryToolbarCommands();
-
-            // If the menubar has been resolved, we can push our commands into it.
-            tryMenubarCommands();
-        }
-
-#pragma warning disable 649 // non-initialized fields
-
-        [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        private IToolBarsView m_ToolBarsView;
-
-        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        private IMenuBarView m_MenuBarView;
-
-#pragma warning restore 649
-
-        private readonly ILoggerFacade m_Logger;
         private readonly IShellView m_ShellView;
         private readonly IUrakawaSession m_UrakawaSession;
         
         private readonly ValidatorPaneView m_ValidatorPaneView;
+
+        private readonly ILoggerFacade m_Logger;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -81,55 +56,39 @@ namespace Tobi.Plugin.Validator
 
             m_ShellView.RegisterRichCommand(CommandShowValidator);
 
-            m_Logger.Log(@"ValidatorPlugin init", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"ValidatorPlugin init", Category.Debug, Priority.Medium);
         }
     
         private readonly RichDelegateCommand CommandShowValidator;
 
         private int m_ToolBarId_1;
-        private bool m_ToolBarCommandsDone;
-        private void tryToolbarCommands()
+        protected override void OnToolBarReady()
         {
-            if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
-            {
-                m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowValidator }, PreferredPosition.Any);
+            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowValidator }, PreferredPosition.Any);
 
-                m_ToolBarCommandsDone = true;
-
-                m_Logger.Log(@"ValidatorPlugin commands pushed to toolbar", Category.Debug, Priority.Medium);
-            }
+            m_Logger.Log(@"ValidatorPlugin commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
 
         private int m_MenuBarId_1;
-        private bool m_MenuBarCommandsDone;
-        private void tryMenubarCommands()
+        protected override void OnMenuBarReady()
         {
-            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
-            {
-                m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, null, new[] { CommandShowValidator }, PreferredPosition.First, false);
-                
-                m_MenuBarCommandsDone = true;
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, null, new[] { CommandShowValidator }, PreferredPosition.First, false);
 
-                m_Logger.Log(@"ValidatorPlugin commands pushed to menubar", Category.Debug, Priority.Medium);
-            }
+            m_Logger.Log(@"ValidatorPlugin commands pushed to menubar", Category.Debug, Priority.Medium);
         }
 
         public override void Dispose()
         {
-            if (m_ToolBarCommandsDone)
+            if (m_ToolBarsView != null)
             {
                 m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
-
-                m_ToolBarCommandsDone = false;
 
                 m_Logger.Log(@"ValidatorPlugin commands removed from toolbar", Category.Debug, Priority.Medium);
             }
 
-            if (m_MenuBarCommandsDone)
+            if (m_MenuBarView != null)
             {
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
-
-                m_MenuBarCommandsDone = false;
 
                 m_Logger.Log(@"ValidatorPlugin commands removed from menubar", Category.Debug, Priority.Medium);
             }
