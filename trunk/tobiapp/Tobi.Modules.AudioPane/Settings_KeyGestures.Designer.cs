@@ -49,31 +49,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemOpenBrackets")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_BeginSelection {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_BeginSelection"]));
-            }
-            set {
-                this["Keyboard_Audio_BeginSelection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemCloseBrackets")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_EndSelection {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_EndSelection"]));
-            }
-            set {
-                this["Keyboard_Audio_EndSelection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Back")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] Delete")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Delete {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Delete"]));
@@ -85,7 +61,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] O")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] I")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_InsertFile {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_InsertFile"]));
@@ -109,7 +85,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] K")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] Home")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_GotoBegin {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_GotoBegin"]));
@@ -121,7 +97,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] L")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] End")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_GotoEnd {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_GotoEnd"]));
@@ -133,31 +109,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] OemOpenBrackets")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_SelectPreviousChunk {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_SelectPreviousChunk"]));
-            }
-            set {
-                this["Keyboard_Audio_SelectPreviousChunk"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] OemCloseBrackets")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_SelectNextChunk {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_SelectNextChunk"]));
-            }
-            set {
-                this["Keyboard_Audio_SelectNextChunk"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] K")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Left")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StepBack {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StepBack"]));
@@ -169,7 +121,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] L")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Right")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StepForward {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StepForward"]));
@@ -181,7 +133,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] L")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Decimal")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_FastForward {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_FastForward"]));
@@ -193,7 +145,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] K")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemComma")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Rewind {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Rewind"]));
@@ -205,7 +157,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] D")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Space")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_ClearSelection {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_ClearSelection"]));
@@ -217,7 +169,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] W")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Add")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_ZoomSelection {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_ZoomSelection"]));
@@ -241,7 +193,6 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] G")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_AutoPlay {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_AutoPlay"]));
@@ -253,7 +204,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] R")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] R")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StartRecord {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StartRecord"]));
@@ -265,7 +216,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] R")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Space")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StopRecord {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StopRecord"]));
@@ -277,7 +228,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] M")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] R")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StartMonitor {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StartMonitor"]));
@@ -289,7 +240,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] M")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] R")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StopMonitor {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StopMonitor"]));
@@ -301,7 +252,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] P")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] Space")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Play {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Play"]));
@@ -313,7 +264,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] P")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] Space")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Pause {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Pause"]));
@@ -368,6 +319,54 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["Keyboard_Audio_SelectAll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Oem4")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_BeginSelection {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_BeginSelection"]));
+            }
+            set {
+                this["Keyboard_Audio_BeginSelection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Oem6")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_EndSelection {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_EndSelection"]));
+            }
+            set {
+                this["Keyboard_Audio_EndSelection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] Oem4")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_SelectPreviousChunk {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_SelectPreviousChunk"]));
+            }
+            set {
+                this["Keyboard_Audio_SelectPreviousChunk"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] Oem6")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_SelectNextChunk {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_SelectNextChunk"]));
+            }
+            set {
+                this["Keyboard_Audio_SelectNextChunk"] = value;
             }
         }
     }
