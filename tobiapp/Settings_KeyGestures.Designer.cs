@@ -25,7 +25,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Q")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F4")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_AppExit {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_AppExit"]));
@@ -80,18 +80,6 @@ namespace Tobi {
             }
             set {
                 this["Keyboard_Help"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT] Y")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Reset {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Reset"]));
-            }
-            set {
-                this["Keyboard_UI_Zoom_Reset"] = value;
             }
         }
         
@@ -164,6 +152,18 @@ namespace Tobi {
             }
             set {
                 this["Keyboard_ShowTobiSettingsFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Y")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Reset {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Reset"]));
+            }
+            set {
+                this["Keyboard_UI_Zoom_Reset"] = value;
             }
         }
     }

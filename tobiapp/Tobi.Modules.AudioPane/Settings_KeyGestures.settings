@@ -8,74 +8,62 @@
     <Setting Name="Keyboard_Focus_StatusBar" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F4</Value>
     </Setting>
-    <Setting Name="Keyboard_Audio_BeginSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] OemOpenBrackets</Value>
-    </Setting>
-    <Setting Name="Keyboard_Audio_EndSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] OemCloseBrackets</Value>
-    </Setting>
     <Setting Name="Keyboard_Audio_Delete" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] Back</Value>
+      <Value Profile="(Default)">[ NONE ] Delete</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_InsertFile" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] O</Value>
+      <Value Profile="(Default)">[ CTRL ] I</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_OpenFile" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] O</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_GotoBegin" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] K</Value>
+      <Value Profile="(Default)">[ NONE ] Home</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_GotoEnd" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] L</Value>
-    </Setting>
-    <Setting Name="Keyboard_Audio_SelectPreviousChunk" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] OemOpenBrackets</Value>
-    </Setting>
-    <Setting Name="Keyboard_Audio_SelectNextChunk" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] OemCloseBrackets</Value>
+      <Value Profile="(Default)">[ NONE ] End</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_StepBack" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] K</Value>
+      <Value Profile="(Default)">[ CTRL ] Left</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_StepForward" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] L</Value>
+      <Value Profile="(Default)">[ CTRL ] Right</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_FastForward" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] L</Value>
+      <Value Profile="(Default)">[ CTRL ] Decimal</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_Rewind" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] K</Value>
+      <Value Profile="(Default)">[ CTRL ] OemComma</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_ClearSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] D</Value>
+      <Value Profile="(Default)">[ CTRL ] Space</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_ZoomSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] W</Value>
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Add</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_FitFull" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] W</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_AutoPlay" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] G</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Keyboard_Audio_StartRecord" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] R</Value>
+      <Value Profile="(Default)">[ SHIFT CTRL ] R</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_StopRecord" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] R</Value>
+      <Value Profile="(Default)">[ CTRL ] Space</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_StartMonitor" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] M</Value>
+      <Value Profile="(Default)">[ CTRL ] R</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_StopMonitor" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] M</Value>
+      <Value Profile="(Default)">[ CTRL ] R</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_Play" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] P</Value>
+      <Value Profile="(Default)">[ NONE ] Space</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_Pause" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] P</Value>
+      <Value Profile="(Default)">[ NONE ] Space</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_PlayPreviewLeft" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] P</Value>
@@ -88,6 +76,18 @@
     </Setting>
     <Setting Name="Keyboard_Audio_SelectAll" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] A</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_BeginSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] Oem4</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_EndSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] Oem6</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_SelectPreviousChunk" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] Oem4</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_SelectNextChunk" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] Oem6</Value>
     </Setting>
   </Settings>
 </SettingsFile>

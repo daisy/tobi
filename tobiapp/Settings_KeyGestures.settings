@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Keyboard_AppExit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] Q</Value>
+      <Value Profile="(Default)">[ ALT ] F4</Value>
     </Setting>
     <Setting Name="Keyboard_Copy" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] C</Value>
@@ -16,9 +16,6 @@
     </Setting>
     <Setting Name="Keyboard_Help" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F1</Value>
-    </Setting>
-    <Setting Name="Keyboard_UI_Zoom_Reset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT] Y</Value>
     </Setting>
     <Setting Name="Keyboard_UI_Zoom_Increase" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] Y</Value>
@@ -37,6 +34,9 @@
     </Setting>
     <Setting Name="Keyboard_ShowTobiSettingsFolder" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ALT ] F3</Value>
+    </Setting>
+    <Setting Name="Keyboard_UI_Zoom_Reset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Y</Value>
     </Setting>
   </Settings>
 </SettingsFile>
