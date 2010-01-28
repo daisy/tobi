@@ -210,7 +210,7 @@ namespace Tobi.Common.MVVM
 
             string argzBump = m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
 
-#if DEBUG
+#if false && DEBUG
             if (argzBump != null
                 && (PresentationTraceSources.DataBindingSource.Switch.Level == SourceLevels.All
                     || PresentationTraceSources.DataBindingSource.Switch.Level >= SourceLevels.Error))
