@@ -25,7 +25,7 @@ namespace Tobi.Plugin.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] F")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_EditPreferences {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_EditPreferences"]));

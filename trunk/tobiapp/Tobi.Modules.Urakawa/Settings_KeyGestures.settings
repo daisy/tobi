@@ -12,13 +12,13 @@
       <Value Profile="(Default)">[ CTRL ] Z</Value>
     </Setting>
     <Setting Name="Keyboard_Redo" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] Z</Value>
+      <Value Profile="(Default)">[ CTRL ] Y</Value>
     </Setting>
     <Setting Name="Keyboard_Save" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] S</Value>
     </Setting>
     <Setting Name="Keyboard_Export" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] S</Value>
+      <Value Profile="(Default)">[ CTRL ] E</Value>
     </Setting>
     <Setting Name="Keyboard_SaveAs" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] S</Value>

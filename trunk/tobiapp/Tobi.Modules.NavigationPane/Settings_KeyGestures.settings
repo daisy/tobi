@@ -12,10 +12,10 @@
       <Value Profile="(Default)">[ SHIFT ] F3</Value>
     </Setting>
     <Setting Name="Keyboard_Nav_PageFindNext" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ ALT ] F3</Value>
+      <Value Profile="(Default)">[ CTRL ] F3</Value>
     </Setting>
     <Setting Name="Keyboard_Nav_PageFindPrev" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT ALT ] F3</Value>
+      <Value Profile="(Default)">[ SHIFT CTRL ] F3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

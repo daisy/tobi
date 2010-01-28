@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="Keyboard_Focus_Doc" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F8</Value>
+      <Value Profile="(Default)">[ NONE ] F6</Value>
     </Setting>
     <Setting Name="Keyboard_Doc_Event_SwitchPrevious" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] I</Value>
+      <Value Profile="(Default)">[ CTRL ] J</Value>
     </Setting>
     <Setting Name="Keyboard_Doc_Event_SwitchNext" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] J</Value>
+      <Value Profile="(Default)">[ CTRL ] K</Value>
     </Setting>
   </Settings>
 </SettingsFile>

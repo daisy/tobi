@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Keyboard_EditPreferences" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F2</Value>
+      <Value Profile="(Default)">[ CTRL ALT ] F</Value>
     </Setting>
   </Settings>
 </SettingsFile>

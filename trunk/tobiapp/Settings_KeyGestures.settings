@@ -18,25 +18,25 @@
       <Value Profile="(Default)">[ NONE ] F1</Value>
     </Setting>
     <Setting Name="Keyboard_UI_Zoom_Increase" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] Y</Value>
+      <Value Profile="(Default)">[ CTRL ALT ] Subtract</Value>
     </Setting>
     <Setting Name="Keyboard_UI_Zoom_Decrease" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] Y</Value>
+      <Value Profile="(Default)">[ CTRL ALT ] Add</Value>
     </Setting>
     <Setting Name="Keyboard_DisplayShortcuts" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT ] F2</Value>
+      <Value Profile="(Default)">[ CTRL ] F2</Value>
     </Setting>
     <Setting Name="Keyboard_DisplayLogFilePath" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] F1</Value>
+      <Value Profile="(Default)">[ CTRL ALT ] F1</Value>
     </Setting>
     <Setting Name="Keyboard_ShowTobiFolder" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] F2</Value>
+      <Value Profile="(Default)">[ ALT ] F2</Value>
     </Setting>
     <Setting Name="Keyboard_ShowTobiSettingsFolder" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] F3</Value>
+      <Value Profile="(Default)">[ ALT ] F3</Value>
     </Setting>
     <Setting Name="Keyboard_UI_Zoom_Reset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Y</Value>
+      <Value Profile="(Default)">[ CTRL ALT ] D0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

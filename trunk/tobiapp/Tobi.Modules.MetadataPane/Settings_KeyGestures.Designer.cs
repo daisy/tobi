@@ -25,7 +25,7 @@ namespace Tobi.Plugin.MetadataPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] E")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] M")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Metadata_Edit {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Metadata_Edit"]));
