@@ -1,0 +1,478 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Xuk
+	xsi:noNamespaceSchemaLocation="http://www.daisy.org/urakawa/xuk/2.0/ xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/2.0">
+	<Project>
+		<PresentationFactory>
+			<RegisteredTypes>
+				<Type
+					XukLocalName="Presentation"
+					XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+					AssemblyName="UrakawaSDK.core"
+					AssemblyVersion="2.0.0.0"
+					FullName="urakawa.Presentation" />
+			</RegisteredTypes>
+		</PresentationFactory>
+		<Presentations>
+			<Presentation
+				RootUri="Z:/daisybooks/zed/verysimplebook/z3986/">
+				<TreeNodeFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="TreeNode"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.core.TreeNode" />
+					</RegisteredTypes>
+				</TreeNodeFactory>
+				<PropertyFactory
+					DefaultXmlNamespaceUri="http://www.daisy.org/z3986/2005/dtbook/">
+					<RegisteredTypes>
+						<Type
+							XukLocalName="ChannelsProperty"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.property.channel.ChannelsProperty" />
+						<Type
+							XukLocalName="XmlProperty"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.property.xml.XmlProperty" />
+					</RegisteredTypes>
+				</PropertyFactory>
+				<ChannelFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="Channel"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.property.channel.Channel" />
+						<Type
+							XukLocalName="AudioChannel"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.property.channel.AudioChannel" />
+						<Type
+							XukLocalName="TextChannel"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.property.channel.TextChannel" />
+						<Type
+							XukLocalName="ImageChannel"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.property.channel.ImageChannel" />
+					</RegisteredTypes>
+				</ChannelFactory>
+				<MediaFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="ManagedImageMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.data.image.ManagedImageMedia" />
+						<Type
+							XukLocalName="ManagedAudioMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.data.audio.ManagedAudioMedia" />
+						<Type
+							XukLocalName="ExternalImageMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.ExternalImageMedia" />
+						<Type
+							XukLocalName="ExternalVideoMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.ExternalVideoMedia" />
+						<Type
+							XukLocalName="ExternalTextMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.ExternalTextMedia" />
+						<Type
+							XukLocalName="ExternalAudioMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.ExternalAudioMedia" />
+						<Type
+							XukLocalName="SequenceMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.SequenceMedia" />
+						<Type
+							XukLocalName="TextMedia"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.TextMedia" />
+					</RegisteredTypes>
+				</MediaFactory>
+				<DataProviderFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="FileDataProvider"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.data.FileDataProvider" />
+					</RegisteredTypes>
+				</DataProviderFactory>
+				<MediaDataFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="JpgImageMediaData"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.data.image.codec.JpgImageMediaData" />
+						<Type
+							XukLocalName="WavAudioMediaData"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.media.data.audio.codec.WavAudioMediaData" />
+					</RegisteredTypes>
+				</MediaDataFactory>
+				<CommandFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="CompositeCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.command.CompositeCommand" />
+						<Type
+							XukLocalName="ManagedAudioMediaInsertDataCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.ManagedAudioMediaInsertDataCommand" />
+						<Type
+							XukLocalName="TreeNodeSetManagedAudioMediaCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.TreeNodeSetManagedAudioMediaCommand" />
+						<Type
+							XukLocalName="TreeNodeAudioStreamDeleteCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.TreeNodeAudioStreamDeleteCommand" />
+						<Type
+							XukLocalName="MetadataAddCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.MetadataAddCommand" />
+						<Type
+							XukLocalName="MetadataRemoveCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.MetadataRemoveCommand" />
+						<Type
+							XukLocalName="MetadataSetContentCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.MetadataSetContentCommand" />
+						<Type
+							XukLocalName="MetadataSetNameCommand"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.commands.MetadataSetNameCommand" />
+					</RegisteredTypes>
+				</CommandFactory>
+				<MetadataFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="Metadata"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.metadata.Metadata" />
+					</RegisteredTypes>
+				</MetadataFactory>
+				<ExternalFileDataFactory>
+					<RegisteredTypes>
+						<Type
+							XukLocalName="CssExternalFileData"
+							XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+							AssemblyName="UrakawaSDK.core"
+							AssemblyVersion="2.0.0.0"
+							FullName="urakawa.ExternalFiles.CSSExternalFileData" />
+					</RegisteredTypes>
+				</ExternalFileDataFactory>
+				<ChannelsManager>
+					<Channels>
+						<TextChannel
+							Uid="CH00000"
+							Name="Our Text Channel" />
+						<AudioChannel
+							Uid="CH00001"
+							Name="Our Audio Channel" />
+						<ImageChannel
+							Uid="CH00002"
+							Name="Our Image Channel" />
+					</Channels>
+				</ChannelsManager>
+				<DataProviderManager
+					DataFileDirectoryPath="Data">
+					<DataProviders>
+						<FileDataProvider
+							Uid="DP00000"
+							MimeType="text/css"
+							DataFileRelativePath="uklsqa13.css" />
+						<FileDataProvider
+							Uid="DP00001"
+							MimeType="image/jpeg"
+							DataFileRelativePath="dvm5ukcm.jpg" />
+					</DataProviders>
+				</DataProviderManager>
+				<MediaDataManager
+					enforceSinglePCMFormat="true">
+					<DefaultPCMFormat>
+						<PCMFormatInfo
+							NumberOfChannels="1"
+							SampleRate="44100"
+							BitDepth="16" />
+					</DefaultPCMFormat>
+					<MediaDatas>
+						<JpgImageMediaData
+							Uid="MD00000"
+							OriginalRelativePath="head.jpg"
+							DataProvider="DP00001" />
+					</MediaDatas>
+				</MediaDataManager>
+				<UndoRedoManager>
+					<UndoStack />
+					<RedoStack />
+					<ActiveTransactions />
+				</UndoRedoManager>
+				<ExternalFileDataManager>
+					<ExternalFileDatas>
+						<CssExternalFileData
+							Uid="MEF00000"
+							OriginalRelativePath="dtbook.2005.basic.css"
+							IsPreservedForOutputFile="true"
+							DataProvider="DP00000" />
+					</ExternalFileDatas>
+				</ExternalFileDataManager>
+				<Metadatas>
+					<Metadata>
+						<MetadataAttribute
+							Name="dc:Date"
+							Value="2009-11-04" />
+					</Metadata>
+					<Metadata>
+						<MetadataAttribute
+							Name="dc:Publisher"
+							Value="Unknown" />
+					</Metadata>
+					<Metadata>
+						<MetadataAttribute
+							Name="dc:Language"
+							Value="en" />
+					</Metadata>
+					<Metadata>
+						<MetadataAttribute
+							Name="dtb:uid"
+							Value="verysimplebook" />
+						<MetadataOtherAttributes>
+							<MetadataAttribute
+								Name="id"
+								Value="I'm an Unique Identifier marker !" />
+						</MetadataOtherAttributes>
+					</Metadata>
+					<Metadata>
+						<MetadataAttribute
+							Name="dtb:title"
+							Value="Very Simple Book" />
+					</Metadata>
+					<Metadata>
+						<MetadataAttribute
+							Name="dc:Title"
+							Value="Very Simple Book" />
+					</Metadata>
+				</Metadatas>
+				<RootNode>
+					<TreeNode>
+						<Properties>
+							<XmlProperty
+								LocalName="book" />
+						</Properties>
+						<Children>
+							<TreeNode>
+								<Properties>
+									<XmlProperty
+										LocalName="frontmatter" />
+								</Properties>
+								<Children>
+									<TreeNode>
+										<Properties>
+											<XmlProperty
+												LocalName="doctitle">
+												<XmlAttributes>
+													<XmlAttribute
+														LocalName="id"
+														Value="dtb1" />
+												</XmlAttributes>
+											</XmlProperty>
+											<ChannelsProperty>
+												<ChannelMappings>
+													<ChannelMapping
+														Channel="CH00000">
+														<TextMedia>
+															<Text>Very Simple Book</Text>
+														</TextMedia>
+													</ChannelMapping>
+												</ChannelMappings>
+											</ChannelsProperty>
+										</Properties>
+										<Children />
+									</TreeNode>
+								</Children>
+							</TreeNode>
+							<TreeNode>
+								<Properties>
+									<XmlProperty
+										LocalName="bodymatter" />
+								</Properties>
+								<Children>
+									<TreeNode>
+										<Properties>
+											<XmlProperty
+												LocalName="level1">
+												<XmlAttributes>
+													<XmlAttribute
+														LocalName="class"
+														Value="title" />
+												</XmlAttributes>
+											</XmlProperty>
+										</Properties>
+										<Children>
+											<TreeNode>
+												<Properties>
+													<XmlProperty
+														LocalName="h1">
+														<XmlAttributes>
+															<XmlAttribute
+																LocalName="id"
+																Value="dtb2" />
+														</XmlAttributes>
+													</XmlProperty>
+													<ChannelsProperty>
+														<ChannelMappings>
+															<ChannelMapping
+																Channel="CH00000">
+																<TextMedia>
+																	<Text> A very simple book </Text>
+																</TextMedia>
+															</ChannelMapping>
+														</ChannelMappings>
+													</ChannelsProperty>
+												</Properties>
+												<Children />
+											</TreeNode>
+											<TreeNode>
+												<Properties>
+													<XmlProperty
+														LocalName="p">
+														<XmlAttributes>
+															<XmlAttribute
+																LocalName="id"
+																Value="dtb3" />
+														</XmlAttributes>
+													</XmlProperty>
+													<ChannelsProperty>
+														<ChannelMappings>
+															<ChannelMapping
+																Channel="CH00000">
+																<TextMedia>
+																	<Text>This is a very simple book</Text>
+																</TextMedia>
+															</ChannelMapping>
+														</ChannelMappings>
+													</ChannelsProperty>
+												</Properties>
+												<Children />
+											</TreeNode>
+											<TreeNode>
+												<Properties>
+													<XmlProperty
+														LocalName="img">
+														<XmlAttributes>
+															<XmlAttribute
+																LocalName="id"
+																Value="dtb4" />
+															<XmlAttribute
+																LocalName="src"
+																Value="head.jpg" />
+															<XmlAttribute
+																LocalName="alt"
+																Value="doll's head" />
+														</XmlAttributes>
+													</XmlProperty>
+													<ChannelsProperty>
+														<ChannelMappings>
+															<ChannelMapping
+																Channel="CH00002">
+																<ManagedImageMedia
+																	MediaDataUid="MD00000" />
+															</ChannelMapping>
+														</ChannelMappings>
+													</ChannelsProperty>
+												</Properties>
+												<Children />
+											</TreeNode>
+											<TreeNode>
+												<Properties>
+													<XmlProperty
+														LocalName="p">
+														<XmlAttributes>
+															<XmlAttribute
+																LocalName="id"
+																Value="dtb5" />
+														</XmlAttributes>
+													</XmlProperty>
+													<ChannelsProperty>
+														<ChannelMappings>
+															<ChannelMapping
+																Channel="CH00000">
+																<TextMedia>
+																	<Text>That's all.</Text>
+																</TextMedia>
+															</ChannelMapping>
+														</ChannelMappings>
+													</ChannelsProperty>
+												</Properties>
+												<Children />
+											</TreeNode>
+										</Children>
+									</TreeNode>
+								</Children>
+							</TreeNode>
+						</Children>
+					</TreeNode>
+				</RootNode>
+			</Presentation>
+		</Presentations>
+	</Project>
+</Xuk>

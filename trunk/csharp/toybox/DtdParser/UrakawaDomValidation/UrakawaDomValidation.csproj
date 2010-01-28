@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8C046893-9AB4-4E6D-9823-E394438A61C0}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DtdParser</RootNamespace>
-    <AssemblyName>DtdParser</AssemblyName>
+    <RootNamespace>UrakawaDomValidation</RootNamespace>
+    <AssemblyName>UrakawaDomValidation</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>
-    </StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,40 +39,25 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="DTD.cs" />
-    <Compile Include="DTDAny.cs" />
-    <Compile Include="DTDAttlist.cs" />
-    <Compile Include="DTDAttribute.cs" />
-    <Compile Include="DTDCardinal.cs" />
-    <Compile Include="DTDChoice.cs" />
-    <Compile Include="DTDComment.cs" />
-    <Compile Include="DTDContainer.cs" />
-    <Compile Include="DTDDecl.cs" />
-    <Compile Include="DTDElement.cs" />
-    <Compile Include="DTDEmpty.cs" />
-    <Compile Include="DTDEntity.cs" />
-    <Compile Include="DTDEnumeration.cs" />
-    <Compile Include="DTDExternalID.cs" />
-    <Compile Include="DTDItem.cs" />
-    <Compile Include="DTDMixed.cs" />
-    <Compile Include="DTDName.cs" />
-    <Compile Include="DTDNotation.cs" />
-    <Compile Include="DTDNotationList.cs" />
-    <Compile Include="DTDOutput.cs" />
-    <Compile Include="DTDParseException.cs" />
-    <Compile Include="DTDParser.cs" />
-    <Compile Include="DTDPCData.cs" />
-    <Compile Include="DTDProcessingInstruction.cs" />
-    <Compile Include="DTDPublic.cs" />
-    <Compile Include="DTDSequence.cs" />
-    <Compile Include="DTDSystem.cs" />
-    <Compile Include="EntityExpansion.cs" />
-    <Compile Include="Scanner.cs" />
-    <Compile Include="Token.cs" />
-    <Compile Include="Tokenize.cs" />
-    <Compile Include="TokenType.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
+    <Compile Include="UrakawaDomValidation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
+      <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
+      <Name>UrakawaSDK.daisy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DtdParser\DtdParser.csproj">
+      <Project>{8C046893-9AB4-4E6D-9823-E394438A61C0}</Project>
+      <Name>DtdParser</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
