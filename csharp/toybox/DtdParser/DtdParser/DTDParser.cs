@@ -455,7 +455,7 @@ namespace DtdParser
 
             if (token.Type == Scanner.QUES)
             {
-                choiceSeq.Cardinal = DTDCardinal.OPTIONAL;
+                choiceSeq.Cardinal = DTDCardinal.ZEROONE;
             }
             else if (token.Type == Scanner.ASTERISK)
             {
@@ -561,7 +561,7 @@ namespace DtdParser
             if (token.Type == Scanner.QUES)
             {
                 Scanner.Get();
-                return DTDCardinal.OPTIONAL;
+                return DTDCardinal.ZEROONE;
             }
             if (token.Type == Scanner.ASTERISK)
             {

@@ -3,16 +3,43 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DtdParser", "DtdParser\DtdParser.csproj", "{8C046893-9AB4-4E6D-9823-E394438A61C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaDomValidation", "UrakawaDomValidation\UrakawaDomValidation.csproj", "{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.core", "..\..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj", "{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.daisy", "..\..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj", "{69E083B4-AC97-4416-B7D4-61DEBA8A910D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Minimal Debug|Any CPU = Minimal Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8C046893-9AB4-4E6D-9823-E394438A61C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C046893-9AB4-4E6D-9823-E394438A61C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C046893-9AB4-4E6D-9823-E394438A61C0}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C046893-9AB4-4E6D-9823-E394438A61C0}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C046893-9AB4-4E6D-9823-E394438A61C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C046893-9AB4-4E6D-9823-E394438A61C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1D51D52-787A-44FC-8411-BA0E87A7C2E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E083B4-AC97-4416-B7D4-61DEBA8A910D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

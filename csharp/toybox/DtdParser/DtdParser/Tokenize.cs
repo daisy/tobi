@@ -16,42 +16,37 @@ namespace DtdParser
 {
     public class Tokenize
     {
-        public static void Main(string[] args)
+        public static void TestParseDtd(string file, bool writeToLog)
         {
             try
             {
                 DTDParser parser = null;
-                if (args.Length > 0)
+                // MAW Version 1.17
+                // If it looks like the filename may be a URL, use the URL class
+                if (file.IndexOf("://") > 0)
                 {
-                    // MAW Version 1.17
-                    // If it looks like the filename may be a URL, use the URL class
-                    if (args[0].IndexOf("://") > 0)
-                    {
-                        parser = new DTDParser(new Uri(args[0]), true);
-                    }
-                    else
-                    {
-                        parser = new DTDParser(args[0], true);
-                    }
+                    parser = new DTDParser(new Uri(file), true);
                 }
                 else
                 {
-                    //StreamReader reader = new StreamReader(@"..\..\..\dtbook-2005-3-mod.dtd");
-                    //parser = new DTDParser(reader, true);
-                    Uri uri = new Uri("http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd");
-                    parser = new DTDParser(uri, true);
+                    parser = new DTDParser(file, true);
                 }
+                
 
                 // Parse the DTD and ask the parser to guess the root element
                 DTD dtd = parser.Parse(true);
 
-                FileStream ostrm;
-                StreamWriter writer;
-                TextWriter oldOut = Console.Out;
-                ostrm = new FileStream("./log.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                writer = new StreamWriter(ostrm);
-                Console.SetOut(writer);
+                FileStream ostrm = null;
+                StreamWriter writer = null;
+                TextWriter oldOut = null;
                 
+                if (writeToLog)
+                {
+                    oldOut = Console.Out;
+                    ostrm = new FileStream("./log.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                    writer = new StreamWriter(ostrm);
+                    Console.SetOut(writer);   
+                }
                 if (dtd.RootElement != null)
                 {
                     Console.WriteLine("Root element is probably: " +
@@ -80,12 +75,13 @@ namespace DtdParser
                     }
                 }
 
+                
                 foreach (DictionaryEntry de in dtd.Entities)
                 {
                     DTDEntity entity = (DTDEntity) de.Value;
 
                     if (entity.IsParsed) Console.Write("Parsed ");
-
+                    
                     Console.WriteLine("Entity: " + entity.Name);
 
                     if (entity.Value != null)
@@ -141,10 +137,12 @@ namespace DtdParser
                         }
                     }
                 }
-                Console.SetOut(oldOut);
-                writer.Close();
-                ostrm.Close();
-
+                if (writeToLog)
+                {
+                    Console.SetOut(oldOut);
+                    writer.Close();
+                    ostrm.Close();
+                }
             }
             catch (Exception exc)
             {
@@ -217,7 +215,7 @@ namespace DtdParser
                 Console.Write("#PCDATA");
             }
 
-            if (item.Cardinal == DTDCardinal.OPTIONAL)
+            if (item.Cardinal == DTDCardinal.ZEROONE)
             {
                 Console.Write("?");
             }
