@@ -25,7 +25,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Focus_Doc {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Focus_Doc"]));
@@ -37,7 +37,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] I")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] J")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Doc_Event_SwitchPrevious {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Doc_Event_SwitchPrevious"]));
@@ -49,7 +49,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] J")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] K")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Doc_Event_SwitchNext {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Doc_Event_SwitchNext"]));

@@ -61,7 +61,7 @@ namespace Tobi.Plugin.NavigationPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] F3")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_PageFindNext {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_PageFindNext"]));
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.NavigationPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ALT ] F3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] F3")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_PageFindPrev {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_PageFindPrev"]));

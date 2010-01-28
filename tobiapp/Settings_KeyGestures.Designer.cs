@@ -85,7 +85,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] Y")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] Subtract")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Increase {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Increase"]));
@@ -97,7 +97,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Y")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] Add")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Decrease {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Decrease"]));
@@ -109,7 +109,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ] F2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] F2")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_DisplayShortcuts {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DisplayShortcuts"]));
@@ -121,7 +121,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] F1")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_DisplayLogFilePath {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DisplayLogFilePath"]));
@@ -133,7 +133,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F2")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_ShowTobiFolder {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ShowTobiFolder"]));
@@ -145,7 +145,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F3")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_ShowTobiSettingsFolder {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ShowTobiSettingsFolder"]));
@@ -157,7 +157,7 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Y")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] D0")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Reset {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UI_Zoom_Reset"]));

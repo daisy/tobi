@@ -61,7 +61,7 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] Z")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Y")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Redo {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Redo"]));
@@ -85,7 +85,7 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] S")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] E")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Export {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Export"]));
