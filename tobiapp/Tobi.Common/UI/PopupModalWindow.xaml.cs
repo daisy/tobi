@@ -10,6 +10,7 @@ using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI.XAML;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -596,14 +597,11 @@ namespace Tobi.Common.UI
             InputBindings.Remove(inputBinding);
         }
     }
-    public class ContentToGridDimMultiConverter : MarkupExtension, IMultiValueConverter
-    {
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
 
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    [ValueConversion(typeof(object), typeof(GridLength))]
+    public class ContentToGridDimMultiConverter : ValueConverterMarkupExtensionBase<ContentToGridDimMultiConverter>
+    {
+        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (targetType != typeof(GridLength))
                 throw new InvalidOperationException("The target must be a GridLength !");
@@ -632,18 +630,15 @@ namespace Tobi.Common.UI
             }
             return GridLength.Auto;
         }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
     }
 
-    public class ContentToGridDimConverter : MarkupExtension, IValueConverter
+
+    [ValueConversion(typeof(object), typeof(GridLength))]
+    public class ContentToGridDimConverter : ValueConverterMarkupExtensionBase<ContentToGridDimConverter>
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter,
+        public override object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(GridLength))
@@ -653,18 +648,7 @@ namespace Tobi.Common.UI
             return "Auto";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException("Convert-back not implemented !");
-        }
-
         #endregion
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 
     public class NoGridResizePanel : Panel

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Markup;
+using Tobi.Common.UI.XAML;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa.metadata;
 using System.Collections.ObjectModel;
@@ -12,10 +14,11 @@ namespace Tobi.Plugin.MetadataPane
 {
     //all classes here represent value converters used by XAML
 
-    public class IsNotRequiredOccurrenceConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(NotifyingMetadataItem), typeof(bool))]
+    public class IsNotRequiredOccurrenceConverter : ValueConverterMarkupExtensionBase<IsNotRequiredOccurrenceConverter>
     {
         //return false if required
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return false;
             if (!(value is NotifyingMetadataItem))return false;
@@ -34,22 +37,12 @@ namespace Tobi.Plugin.MetadataPane
             }
             return true;
         }
-        
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 
-    public class OccurrenceDescriptionConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(MetadataDefinition), typeof(string))]
+    public class OccurrenceDescriptionConverter : ValueConverterMarkupExtensionBase<OccurrenceDescriptionConverter>
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return "";
             MetadataDefinition item = (MetadataDefinition)value;
@@ -58,17 +51,6 @@ namespace Tobi.Plugin.MetadataPane
             if (item.Occurrence == MetadataOccurrence.Recommended)
                 return "Recommended. ";
             return "Optional. ";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 
@@ -98,11 +80,13 @@ namespace Tobi.Plugin.MetadataPane
     //    }
     //}
 
-    public class DescriptiveErrorTextConverter : MarkupExtension, IMultiValueConverter
+
+    [ValueConversion(typeof(object), typeof(string))]
+    public class DescriptiveErrorTextConverter : ValueConverterMarkupExtensionBase<DescriptiveErrorTextConverter>
     {
         private const string NoErrors = "None";
         //Expected: NotifyingMetadataItem and list of ValidationItems
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (! (values[0] is NotifyingMetadataItem))
             {
@@ -123,42 +107,30 @@ namespace Tobi.Plugin.MetadataPane
             }
             return error.Message;
         }
-        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 
-    public class LowerCaseConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(string), typeof(string))]
+    public class LowerCaseConverter : ValueConverterMarkupExtensionBase<LowerCaseConverter>
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return !(value is string) ? null : ((string) value).ToLower();
         }
 
         //this isn't converting back .. it's just making it lower case again
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return !(value is string) ? null : ((string) value).ToLower();
         
         }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 
-    public class AvailableMetadataNamesConverter : MarkupExtension, IMultiValueConverter
+
+    [ValueConversion(typeof(object), typeof(IEnumerable))]
+    public class AvailableMetadataNamesConverter : ValueConverterMarkupExtensionBase<AvailableMetadataNamesConverter>
     {
         //append values[1] to the list in values[0]
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values.Length < 2) return null;
             if (values[0] == null || values[1] == null) return null;
@@ -173,23 +145,13 @@ namespace Tobi.Plugin.MetadataPane
 
             return list.OrderBy(s => s.ToLower());
         }
-
-        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 
-    public class FullDescriptionConverter : MarkupExtension, IMultiValueConverter
+    [ValueConversion(typeof(object), typeof(string))]
+    public class FullDescriptionConverter : ValueConverterMarkupExtensionBase<FullDescriptionConverter>
     {
         //concatenate values[0] and values[1]
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values.Length < 2) return null;
             if (values[0] == null || values[1] == null) return null;
@@ -197,25 +159,15 @@ namespace Tobi.Plugin.MetadataPane
 
             return string.Format("{0}: {1}", (string) values[0], (string) values[1]);
         }
-
-        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 
-    public class PrimaryIdentifierConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
+    public class PrimaryIdentifierConverter : ValueConverterMarkupExtensionBase<PrimaryIdentifierConverter>
     {
         //return Visible if the item is a candidate for being the primary identifier
         //else return Hidden
         //value parameters: the metadata object, and the MetadataCollection
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return System.Windows.Visibility.Hidden;
             if (!(value is NotifyingMetadataItem)) return System.Windows.Visibility.Hidden;
@@ -227,17 +179,5 @@ namespace Tobi.Plugin.MetadataPane
                 return System.Windows.Visibility.Visible;
             return System.Windows.Visibility.Hidden;
         }
-
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
-    
 }

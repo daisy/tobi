@@ -5,11 +5,12 @@ using System.Windows.Markup;
 
 namespace Tobi.Common.UI.XAML
 {
-    public class WindowStateFullScreenConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(bool), typeof(WindowState))]
+    public class WindowStateFullScreenConverter : ValueConverterMarkupExtensionBase<WindowStateFullScreenConverter>
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter,
+        public override object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(WindowState))
@@ -18,7 +19,7 @@ namespace Tobi.Common.UI.XAML
             return ((bool)value ? WindowState.Maximized : WindowState.Normal);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
+        public override object ConvertBack(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(bool))
@@ -28,10 +29,5 @@ namespace Tobi.Common.UI.XAML
         }
 
         #endregion
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 }

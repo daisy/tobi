@@ -10,9 +10,11 @@ using System.Windows.Media.Imaging;
 
 namespace Tobi.Common.UI.XAML
 {
-    public class RenderTargetBitmapImageSourceConverter : MarkupExtension, IMultiValueConverter
+
+    [ValueConversion(typeof(object), typeof(BitmapSource))]
+    public class RenderTargetBitmapImageSourceConverter : ValueConverterMarkupExtensionBase<RenderTargetBitmapImageSourceConverter>
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length < 3)
             {
@@ -141,16 +143,6 @@ namespace Tobi.Common.UI.XAML
             }
 
             return renderBitmap; //renderBitmap.GetAsFrozen();
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }

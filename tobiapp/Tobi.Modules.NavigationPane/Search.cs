@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using Tobi.Common.UI.XAML;
 
 namespace Tobi.Plugin.NavigationPane.Search
 {
@@ -41,11 +42,13 @@ namespace Tobi.Plugin.NavigationPane.Search
         public static readonly DependencyProperty IsMatchProperty =
             DependencyProperty.RegisterAttached("IsMatch", typeof(bool), typeof(SearchOperations), new UIPropertyMetadata(false));
     }
-    public class SearchTermConverter : MarkupExtension, IMultiValueConverter
+
+    [ValueConversion(typeof(object), typeof(string))]
+    public class SearchTermConverter : ValueConverterMarkupExtensionBase<SearchTermConverter>
     {
         #region IMultiValueConverter Members
 
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var stringValue = values[0] == null ? string.Empty : values[0].ToString();
             var searchTerm = values[1] as string;
@@ -55,16 +58,6 @@ namespace Tobi.Plugin.NavigationPane.Search
                    stringValue.ToLower().Contains(searchTerm.ToLower());
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-
         #endregion
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 }
