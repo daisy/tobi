@@ -5,7 +5,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using urakawa;
 using urakawa.core;
-using urakawa.daisy.import;
 using urakawa.xuk;
 using DtdParser;
 
@@ -16,8 +15,23 @@ namespace UrakawaDomValidation
         public static void Main(string[] args)
         {
             string dtd = @"..\..\..\dtbook-2005-3.dtd";
+            
+            //valid files
             string simplebook = @"..\..\..\simplebook.xuk";
             string paintersbook = @"..\..\..\greatpainters.xuk";
+
+            //invalid files
+            
+            //TODO: doublefrontmatter is "valid" but should be "invalid"
+            //it has two frontmatter items whereas only zero or one is allowed.
+            string simplebook_invalid_doublefrontmatter = @"..\..\..\simplebook-invalid-doublefrontmatter.xuk";
+
+            //these both register as invalid, and for the right reasons
+            string simplebook_invalid_unrecognized_element = @"..\..\..\simplebook-invalid-element.xuk";
+            string simplebook_invalid_badnesting = @"..\..\..\simplebook-invalid-badnesting.xuk";
+
+            //the dtd cache location (hardcoded in this example.  
+            //eventually, we'll need a table of dtd to cached version)
             string dtdcache = @"..\..\..\dtd.cache";
 
             UrakawaDomValidation validator = new UrakawaDomValidation();
@@ -33,12 +47,25 @@ namespace UrakawaDomValidation
                 validator.SaveCachedDtd(new StreamWriter(Path.GetFullPath(dtdcache)));
             }
 
-            Project project = LoadXuk(paintersbook);
+            Project project = LoadXuk(simplebook_invalid_badnesting);
             TreeNode root = project.Presentations.Get(0).RootNode;
             bool res = validator.Validate(root);
 
-            if (res) Console.WriteLine("VALID!!");
-            else Console.WriteLine("INVALID!!");
+            if (res)
+            {
+                Console.WriteLine("VALID!!");
+            }
+            else
+            {
+                Console.WriteLine("INVALID!!");
+                foreach (UrakawaDomValidationError error in validator.Errors)
+                {
+                    Console.WriteLine("**");
+                    Console.WriteLine(error.Node.GetXmlElementQName().LocalName);
+                    Console.WriteLine(error.Message);
+                    Console.WriteLine("\n\n");
+                }
+            }
 
             Console.WriteLine("Press any key to continue");
             Console.ReadKey(); 
@@ -55,12 +82,26 @@ namespace UrakawaDomValidation
         }
 
     }
+    public class UrakawaDomValidationError
+    {
+        public TreeNode Node {get; private set;}
+        public string Message { get; private set; }
+        public UrakawaDomValidationError(TreeNode node, string message)
+        {
+            Node = node;
+            Message = message;
+        }
+    }
     public class UrakawaDomValidation
     {
         private DTD m_Dtd;
         private Hashtable m_DtdElementRegExp;
-
+        public List<UrakawaDomValidationError> Errors { get; private set; }
         
+        public UrakawaDomValidation()
+        {
+            Errors = new List<UrakawaDomValidationError>();
+        }
         public void UseDtd(string dtd)
         {
             StreamReader reader = new StreamReader(dtd);
@@ -131,7 +172,7 @@ namespace UrakawaDomValidation
 
             if (dtdItem is DTDAny)
             {
-                regExpStr += "Any";
+                regExpStr += "";// "Any";
             }
             else if (dtdItem is DTDEmpty)
             {
@@ -185,7 +226,7 @@ namespace UrakawaDomValidation
             }
             else if (dtdItem is DTDPCData)
             {
-                regExpStr += "#PCDATA";
+                regExpStr += "";// "#PCDATA";
             }
             else
             {
@@ -219,9 +260,35 @@ namespace UrakawaDomValidation
         //check a single node
         private bool ValidateNodeContent(TreeNode node)
         {
-            string childrenNames = GetChildrenNames(node);
-            Regex regExp = (Regex) m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
-            return regExp.IsMatch(childrenNames);
+            if (node.HasXmlProperty)
+            {
+                string childrenNames = GetChildrenNames(node);
+                Regex regExp = (Regex) m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
+                if (regExp == null)
+                {
+                    //TODO: friendlier error message
+                    string msg = string.Format("Definition for {0} not found", node.GetXmlElementQName().LocalName);
+                    UrakawaDomValidationError error = new UrakawaDomValidationError(node, msg);
+                    Errors.Add(error);
+                    return false;
+                }
+                if (regExp.IsMatch(childrenNames))
+                {
+                    return true;
+                }
+                else
+                {
+                    //TODO: friendlier error message
+                    string msg = string.Format("Expected\n{0}\nGot\n{1}", regExp.ToString(), childrenNames);
+                    UrakawaDomValidationError error = new UrakawaDomValidationError(node, msg);
+                    Errors.Add(error);
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private string GetChildrenNames(TreeNode node)
@@ -229,7 +296,10 @@ namespace UrakawaDomValidation
             string names = "";
             foreach (TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
             {
-                names += child.GetXmlElementQName().LocalName + "#";
+                if (child.HasXmlProperty)
+                {
+                    names += child.GetXmlElementQName().LocalName + "#";
+                }
             }
             return names;
         }
