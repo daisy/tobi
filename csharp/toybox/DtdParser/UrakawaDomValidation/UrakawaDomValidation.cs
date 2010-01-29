@@ -34,6 +34,20 @@ namespace UrakawaDomValidation
             //eventually, we'll need a table of dtd to cached version)
             string dtdcache = @"..\..\..\dtd.cache";
 
+            bool writeToLog = true;
+
+            FileStream ostrm = null;
+            StreamWriter writer = null;
+            TextWriter oldOut = null;
+                
+            if (writeToLog)
+            {
+                oldOut = Console.Out;
+                ostrm = new FileStream("./log.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                writer = new StreamWriter(ostrm);
+                Console.SetOut(writer);
+            }
+
             UrakawaDomValidation validator = new UrakawaDomValidation();
             bool readFromCache = false;
 
@@ -47,13 +61,20 @@ namespace UrakawaDomValidation
                 validator.SaveCachedDtd(new StreamWriter(Path.GetFullPath(dtdcache)));
             }
 
-            Project project = LoadXuk(simplebook_invalid_badnesting);
+            Project project = LoadXuk(paintersbook);
             TreeNode root = project.Presentations.Get(0).RootNode;
             bool res = validator.Validate(root);
 
             if (res)
             {
                 Console.WriteLine("VALID!!");
+                foreach (UrakawaDomValidationError error in validator.Errors)
+                {
+                    Console.WriteLine("**");
+                    Console.WriteLine(error.Node.GetXmlElementQName().LocalName);
+                    Console.WriteLine(error.Message);
+                    Console.WriteLine("\n\n");
+                }
             }
             else
             {
@@ -66,7 +87,12 @@ namespace UrakawaDomValidation
                     Console.WriteLine("\n\n");
                 }
             }
-
+            if (writeToLog)
+            {
+                Console.SetOut(oldOut);
+                writer.Close();
+                ostrm.Close();
+            }
             Console.WriteLine("Press any key to continue");
             Console.ReadKey(); 
         }
@@ -272,8 +298,15 @@ namespace UrakawaDomValidation
                     Errors.Add(error);
                     return false;
                 }
-                if (regExp.IsMatch(childrenNames))
+
+                Match match = regExp.Match(childrenNames);
+                if (match.Success && match.ToString() == childrenNames)
                 {
+                    //these aren't errors, just looking for false positives
+                    //string msg = string.Format("Expected\n{0}\nGot\n{1}", regExp.ToString(), childrenNames);
+                    //UrakawaDomValidationError error = new UrakawaDomValidationError(node, msg);
+                    //Errors.Add(error);
+                    
                     return true;
                 }
                 else
