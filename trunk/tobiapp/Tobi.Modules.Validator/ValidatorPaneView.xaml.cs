@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Markup;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
+using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 
 namespace Tobi.Plugin.Validator
@@ -73,24 +74,15 @@ namespace Tobi.Plugin.Validator
         }
     }
 
-    public class SeverityConverter : MarkupExtension, IValueConverter
+
+    [ValueConversion(typeof(ValidationSeverity), typeof(ValidationSeverity))]
+    public class SeverityConverter : ValueConverterMarkupExtensionBase<SeverityConverter>
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return "";
             var severity = (ValidationSeverity)value;
             return severity == ValidationSeverity.Error;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException
-                ("NO !");
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }

@@ -4,11 +4,12 @@ using System.Windows.Markup;
 
 namespace Tobi.Common.UI.XAML
 {
-    public class BoolToOppositeBoolConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public class BoolToOppositeBoolConverter : ValueConverterMarkupExtensionBase<BoolToOppositeBoolConverter>
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter,
+        public override object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(bool))
@@ -17,17 +18,6 @@ namespace Tobi.Common.UI.XAML
             return !(bool)value;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-
         #endregion
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
     }
 }

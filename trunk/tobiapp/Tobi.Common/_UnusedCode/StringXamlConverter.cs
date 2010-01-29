@@ -5,13 +5,14 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Markup;
+using Tobi.Common.UI.XAML;
 
 namespace Tobi.Common._UnusedCode
 {
-    public class StringXamlConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(String), typeof(FlowDocument))]
+    public class StringXamlConverter : ValueConverterMarkupExtensionBase<StringXamlConverter>
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null)
             {
@@ -26,10 +27,10 @@ namespace Tobi.Common._UnusedCode
 
                 return flowDocument;
             }
-            return value;
+            return null;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null)
             {
@@ -49,12 +50,7 @@ namespace Tobi.Common._UnusedCode
 
                 return xaml;
             }
-            return value;
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
+            return null;
         }
     }
 }
