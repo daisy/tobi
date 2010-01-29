@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using urakawa;
 using urakawa.core;
 using urakawa.daisy.import;
@@ -13,13 +15,27 @@ namespace UrakawaDomValidation
     {
         public static void Main(string[] args)
         {
-            UrakawaDomValidation validator = new UrakawaDomValidation();
             string dtd = @"..\..\..\dtbook-2005-3.dtd";
             string simplebook = @"..\..\..\simplebook.xuk";
             string paintersbook = @"..\..\..\greatpainters.xuk";
-            validator.AssignDtd(dtd);
-            validator.LoadXuk(simplebook);
-            bool res = validator.Validate();
+            string dtdcache = @"..\..\..\dtd.cache";
+
+            UrakawaDomValidation validator = new UrakawaDomValidation();
+            bool readFromCache = false;
+
+            if (readFromCache)
+            {
+                validator.UseCachedDtd(new StreamReader(Path.GetFullPath(dtdcache)));
+            }
+            else
+            {
+                validator.UseDtd(dtd);
+                validator.SaveCachedDtd(new StreamWriter(Path.GetFullPath(dtdcache)));
+            }
+
+            Project project = LoadXuk(paintersbook);
+            TreeNode root = project.Presentations.Get(0).RootNode;
+            bool res = validator.Validate(root);
 
             if (res) Console.WriteLine("VALID!!");
             else Console.WriteLine("INVALID!!");
@@ -27,191 +43,195 @@ namespace UrakawaDomValidation
             Console.WriteLine("Press any key to continue");
             Console.ReadKey(); 
         }
+
+        public static Project LoadXuk(string file)
+        {
+            string fullpath = Path.GetFullPath(file);
+            Project project = new Project();
+            var uri = new Uri(fullpath);
+            var action = new OpenXukAction(project, uri);
+            action.Execute();
+            return project;
+        }
+
     }
     public class UrakawaDomValidation
     {
-        private Project m_Project;
         private DTD m_Dtd;
+        private Hashtable m_DtdElementRegExp;
+
         
-        public bool Validate()
-        {
-            TreeNode root = m_Project.Presentations.Get(0).RootNode;
-            return ValidateTree(root);
-        }
-
-        //untested so far
-        public void ImportDtbook(string file)
-        {
-            var converter = new Daisy3_Import(file);
-            m_Project = converter.Project;
-        }
-
-        public void LoadXuk(string file)
-        {
-            string fullpath = Path.GetFullPath(file);
-            m_Project = new Project();
-            var uri = new Uri(fullpath);
-            var action = new OpenXukAction(m_Project, uri);
-            action.Execute();
-        }
-
-        public void AssignDtd(string dtd)
+        public void UseDtd(string dtd)
         {
             StreamReader reader = new StreamReader(dtd);
-            AssignDtd(reader);
+            UseDtd(reader);
         }
-        public void AssignDtd(StreamReader dtd)
+        public void UseDtd(StreamReader dtd)
         {
             DTDParser parser = new DTDParser(dtd);
             m_Dtd = parser.Parse(true);
+            ParseDtdIntoHashmap();
+        }
+        public void UseCachedDtd(StreamReader dtd)
+        {
+            ReadCachedDtdIntoHashmap(dtd);
+        }
+        public void SaveCachedDtd(StreamWriter dtd)
+        {
+            WriteDtdToCache(dtd);
+        }
+        private void ParseDtdIntoHashmap()
+        {
+            m_DtdElementRegExp = new Hashtable();
+
+            foreach(DictionaryEntry entry in m_Dtd.Elements)
+            {
+                DTDElement dtdElement = (DTDElement) entry.Value;
+                string regExpStr = GenerateRegExpForAllowedChildren(dtdElement.Content);
+                Regex regExp = new Regex(regExpStr);
+                m_DtdElementRegExp.Add(dtdElement.Name, regExp);
+            }
         }
 
-        //**********************************************
-        //All the Validate* functions are going to be rewritten... 
-        //******************************************
-
-        //entry point into entire tree validation
-        private bool ValidateTree(TreeNode root)
+        //The cached file format is:
+        //ElementName
+        //Regex of allowed children
+        //...
+        private void ReadCachedDtdIntoHashmap(StreamReader cachedDtd)
         {
-            //this check doesn't work w. urakawa trees, because they represent everything from
-            //<book> onwards; not <dtbook> onwards.
-            //check for root-ness
-            /*DTDElement dtdRoot = m_Dtd.RootElement;
-            if (root.GetXmlElementQName().LocalName != dtdRoot.Name)
-                return false;
-             */
-            return ValidateNode(root);
+            m_DtdElementRegExp = new Hashtable();
+            string name = cachedDtd.ReadLine();
+            string regExpStr = cachedDtd.ReadLine();
+            
+            while (name != null && regExpStr != null)
+            {
+                Regex regEx = new Regex(regExpStr);
+                m_DtdElementRegExp[name] = regEx;
+                name = cachedDtd.ReadLine();
+                regExpStr = cachedDtd.ReadLine();
+            }
+
+            cachedDtd.Close();
+            
+        }
+        private void WriteDtdToCache(StreamWriter cachedDtd)
+        {
+            foreach (DictionaryEntry entry in m_DtdElementRegExp)
+            {
+                string name = (string)entry.Key;
+                string regExpStr = ((Regex)entry.Value).ToString();
+                cachedDtd.WriteLine(name);
+                cachedDtd.WriteLine(regExpStr);
+            }
+            cachedDtd.Close();
+        }
+        private string GenerateRegExpForAllowedChildren(DTDItem dtdItem)
+        {
+            string regExpStr = "";
+
+            if (dtdItem is DTDAny)
+            {
+                regExpStr += "Any";
+            }
+            else if (dtdItem is DTDEmpty)
+            {
+                regExpStr += "";
+            }
+            else if (dtdItem is DTDName)
+            {
+                regExpStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
+            }
+            else if (dtdItem is DTDChoice)
+            {
+                List<DTDItem> items = ((DTDChoice)dtdItem).Items;
+                if (items.Count > 1) regExpStr += "(?:";
+
+                bool isFirst = true;
+                foreach (DTDItem item in items)
+                {
+                    if (!isFirst) regExpStr += "|";
+                    regExpStr += GenerateRegExpForAllowedChildren(item);
+                    isFirst = false;
+                }
+                if (items.Count > 1) regExpStr += ")";
+            }
+            else if (dtdItem is DTDSequence)
+            {
+                List<DTDItem> items = ((DTDSequence)dtdItem).Items;
+                if (items.Count > 1) regExpStr += "(?:";
+
+                bool isFirst = true;
+                foreach (DTDItem item in items)
+                {
+                    if (!isFirst) regExpStr += "";
+                    regExpStr += GenerateRegExpForAllowedChildren(item);
+                    isFirst = false;
+                }
+                if (items.Count > 1) regExpStr += ")";
+            }
+            else if (dtdItem is DTDMixed)
+            {
+                List<DTDItem> items = ((DTDMixed)dtdItem).Items;
+                if (items.Count > 1) regExpStr += "(?:";
+
+                bool isFirst = true;
+                foreach (DTDItem item in items)
+                {
+                    if (!isFirst) regExpStr += "";
+                    regExpStr += GenerateRegExpForAllowedChildren(item);
+                    isFirst = false;
+                }
+                if (items.Count > 1) regExpStr += ")";
+            }
+            else if (dtdItem is DTDPCData)
+            {
+                regExpStr += "#PCDATA";
+            }
+            else
+            {
+                regExpStr += "**UNKNOWN**";
+            }
+            if (dtdItem.Cardinal == DTDCardinal.ZEROONE)
+            {
+                regExpStr += "?";
+            }
+            else if (dtdItem.Cardinal == DTDCardinal.ZEROMANY)
+            {
+                regExpStr += "*";
+            }
+            else if (dtdItem.Cardinal == DTDCardinal.ONEMANY)
+            {
+                regExpStr += "+";
+            }
+            return regExpStr;
         }
         
-        /// <summary>
-        /// a node is valid if its content model conforms to that in the DTD
-        /// and if its children are all valid
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private bool ValidateNode(TreeNode node)
+        //the recursive function
+        public bool Validate(TreeNode node)
         {
-            string nodeName = node.GetXmlElementQName().LocalName;
-            DTDElement dtdElement = (DTDElement)m_Dtd.Elements[nodeName];
-            //first check if this node's content is valid
-            bool isNodeContentValid = ValidateNodeListGeneric(node.Children, dtdElement.Content);
-
-            bool areAllChildrenValid = true;
-            //then find out if all its children are valid
-            foreach(TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
+            bool result = ValidateNodeContent(node);
+            foreach (TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
             {
-                areAllChildrenValid = areAllChildrenValid & ValidateNode(child);
+                result = result & Validate(child);
             }
-
-            return isNodeContentValid & areAllChildrenValid;
+            return result;
         }
-        //validate a single node against 
-        private bool ValidateNodeGeneric(TreeNode node, DTDItem dtdContent)
+        //check a single node
+        private bool ValidateNodeContent(TreeNode node)
         {
-            
-        }
-        //check the node's content model (generically typed as DTDItem)
-        private bool ValidateNodeListGeneric(List<TreeNode> nodes, DTDItem dtdContent)
-        {
-            bool isNodeCardinalityValid = false;
-            bool isNodeContentValid = false;
-
-            //check the content model
-            if (dtdContent is DTDAny)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDAny)dtdContent);
-            }
-            else if (dtdContent is DTDEmpty)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDEmpty)dtdContent);
-            }
-            else if (dtdContent is DTDName)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDName) dtdContent);
-            }
-            else if (dtdContent is DTDChoice)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDChoice)dtdContent);
-            }
-            else if (dtdContent is DTDSequence)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDSequence)dtdContent);
-            }
-            else if (dtdContent is DTDMixed)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDMixed)dtdContent);
-            }
-            else if (dtdContent is DTDPCData)
-            {
-                isNodeContentValid = ValidateNodeList(nodes, (DTDPCData)dtdContent);
-            }
-
-            //just for now ... 
-            return false;
+            string childrenNames = GetChildrenNames(node);
+            Regex regExp = (Regex) m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
+            return regExp.IsMatch(childrenNames);
         }
 
-        // (A | B | C)
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDChoice dtdChoice)
+        private string GetChildrenNames(TreeNode node)
         {
-            bool matches = false;
-            //see if the content model matches any of the items to choose from
-            foreach (DTDItem item in dtdChoice.Items)
+            string names = "";
+            foreach (TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
             {
-                if (ValidateNodeListGeneric(nodes, item))
-                    matches = true;
+                names += child.GetXmlElementQName().LocalName + "#";
             }
-            return matches;
+            return names;
         }
-
-        //do the children follow the sequence A, B, C?
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDSequence dtdSequence)
-        {
-            bool matches = true;
-            int i = 0;
-            //see if the content model matches any of the items to choose from
-            foreach (DTDItem item in dtdSequence.Items)
-            {
-                matches = matches & ValidateNodeListGeneric(nodes[i], item);
-            }
-            return matches;
-            
-        }
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDMixed dtdMixed)
-        {
-            //treat DTDMixed like DTDChoice
-            DTDChoice dtdChoice = new DTDChoice();
-            dtdChoice.Items.AddRange(dtdMixed.Items);
-            dtdChoice.Cardinal = dtdMixed.Cardinal;
-            return ValidateNodeList(nodes, dtdChoice);
-        }
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDPCData dtdPcData)
-        {
-            return nodes == null || nodes.Count == 0;
-        }
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDEmpty dtdEmpty)
-        {
-            return nodes == null || nodes.Count <= 0;
-        }
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDAny dtdAny)
-        {
-            return true;
-        }
-
-        //do any of the nodes in the list match the name?
-        //todo: will we ever need to know if all the nodes match the name?
-        private bool ValidateNodeList(List<TreeNode> nodes, DTDName dtdName)
-        {
-            return nodes.Exists(s => ValidateNode(s, dtdName));
-        }
-        //does the node match the name?
-        private bool ValidateNode(TreeNode node, DTDName dtdName)
-        {
-            return node.GetXmlElementQName().LocalName == dtdName.Value;
-        }
-
-        //**********************************************
-        //End of "All the Validate* functions are going to be rewritten... "
-        //******************************************
-
     }
 }
