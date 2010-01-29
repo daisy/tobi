@@ -12,6 +12,12 @@ namespace UrakawaDomValidation
 {
     public class TestValidation
     {
+        /* at the moment, the validation is too strict, and paintersbook.xuk is listed as invalid.
+         * the problem is that the regular expression generated for a dtd statement like
+         * (a | b | c)*
+         * ends up as (?:(?:a#)(?:b#)(?:c#))*
+         * which matches a#b#c# but not a#
+         */
         public static void Main(string[] args)
         {
             string dtd = @"..\..\..\dtbook-2005-3.dtd";
@@ -21,11 +27,8 @@ namespace UrakawaDomValidation
             string paintersbook = @"..\..\..\greatpainters.xuk";
 
             //invalid files
-            
-            //TODO: doublefrontmatter is "valid" but should be "invalid"
             //it has two frontmatter items whereas only zero or one is allowed.
             string simplebook_invalid_doublefrontmatter = @"..\..\..\simplebook-invalid-doublefrontmatter.xuk";
-
             //these both register as invalid, and for the right reasons
             string simplebook_invalid_unrecognized_element = @"..\..\..\simplebook-invalid-element.xuk";
             string simplebook_invalid_badnesting = @"..\..\..\simplebook-invalid-badnesting.xuk";
@@ -43,7 +46,7 @@ namespace UrakawaDomValidation
             if (writeToLog)
             {
                 oldOut = Console.Out;
-                ostrm = new FileStream("./log.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                ostrm = new FileStream(@"..\..\..\log.txt", FileMode.OpenOrCreate, FileAccess.Write);
                 writer = new StreamWriter(ostrm);
                 Console.SetOut(writer);
             }
