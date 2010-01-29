@@ -17,6 +17,8 @@ namespace UrakawaDomValidation
          * (a | b | c)*
          * ends up as (?:(?:a#)(?:b#)(?:c#))*
          * which matches a#b#c# but not a#
+         * 
+         * the problem is actually how content models of type DTDMixed are handled.
          */
         public static void Main(string[] args)
         {
@@ -220,8 +222,9 @@ namespace UrakawaDomValidation
                 foreach (DTDItem item in items)
                 {
                     if (!isFirst) regExpStr += "|";
-                    regExpStr += GenerateRegExpForAllowedChildren(item);
                     isFirst = false;
+                    regExpStr += GenerateRegExpForAllowedChildren(item);
+                    
                 }
                 if (items.Count > 1) regExpStr += ")";
             }
@@ -247,7 +250,7 @@ namespace UrakawaDomValidation
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regExpStr += "";
+                    if (!isFirst) regExpStr += "|";
                     regExpStr += GenerateRegExpForAllowedChildren(item);
                     isFirst = false;
                 }
@@ -255,7 +258,7 @@ namespace UrakawaDomValidation
             }
             else if (dtdItem is DTDPCData)
             {
-                regExpStr += "";// "#PCDATA";
+                regExpStr +=  "#PCDATA";
             }
             else
             {
