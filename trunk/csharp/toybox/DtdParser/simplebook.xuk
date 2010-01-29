@@ -350,40 +350,6 @@
 									</TreeNode>
 								</Children>
 							</TreeNode>
-							
-							<!--this one should be caught as invalid! -->
-							<TreeNode>
-								<Properties>
-									<XmlProperty
-										LocalName="frontmatter" />
-								</Properties>
-								<Children>
-									<TreeNode>
-										<Properties>
-											<XmlProperty
-												LocalName="doctitle">
-												<XmlAttributes>
-													<XmlAttribute
-														LocalName="id"
-														Value="dtb1" />
-												</XmlAttributes>
-											</XmlProperty>
-											<ChannelsProperty>
-												<ChannelMappings>
-													<ChannelMapping
-														Channel="CH00000">
-														<TextMedia>
-															<Text>Very Simple Book</Text>
-														</TextMedia>
-													</ChannelMapping>
-												</ChannelMappings>
-											</ChannelsProperty>
-										</Properties>
-										<Children />
-									</TreeNode>
-								</Children>
-							</TreeNode>
-						
 							<TreeNode>
 								<Properties>
 									<XmlProperty
