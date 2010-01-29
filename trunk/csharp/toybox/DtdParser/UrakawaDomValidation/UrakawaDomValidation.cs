@@ -12,14 +12,7 @@ namespace UrakawaDomValidation
 {
     public class TestValidation
     {
-        /* at the moment, the validation is too strict, and paintersbook.xuk is listed as invalid.
-         * the problem is that the regular expression generated for a dtd statement like
-         * (a | b | c)*
-         * ends up as (?:(?:a#)(?:b#)(?:c#))*
-         * which matches a#b#c# but not a#
-         * 
-         * the problem is actually how content models of type DTDMixed are handled.
-         */
+       
         public static void Main(string[] args)
         {
             string dtd = @"..\..\..\dtbook-2005-3.dtd";
@@ -73,24 +66,20 @@ namespace UrakawaDomValidation
             if (res)
             {
                 Console.WriteLine("VALID!!");
-                foreach (UrakawaDomValidationError error in validator.Errors)
-                {
-                    Console.WriteLine("**");
-                    Console.WriteLine(error.Node.GetXmlElementQName().LocalName);
-                    Console.WriteLine(error.Message);
-                    Console.WriteLine("\n\n");
-                }
             }
             else
             {
                 Console.WriteLine("INVALID!!");
-                foreach (UrakawaDomValidationError error in validator.Errors)
-                {
-                    Console.WriteLine("**");
-                    Console.WriteLine(error.Node.GetXmlElementQName().LocalName);
-                    Console.WriteLine(error.Message);
-                    Console.WriteLine("\n\n");
-                }
+            }
+
+            foreach (UrakawaDomValidationReportItem item in validator.ValidationReportItems)
+            {
+                string type = item.ItemType == UrakawaDomValidationReportItem.ReportItemType.TRACE ? "TRACE" : "ERROR";
+                Console.WriteLine(string.Format("* {0}", type));
+                Console.WriteLine(string.Format("Node name: {0}", item.Node.GetXmlElementQName().LocalName));
+                Console.WriteLine(string.Format("Reg ex: {0}", validator.GetRegEx(item.Node)));
+                Console.WriteLine(item.Message);
+                Console.WriteLine("\n");
             }
             if (writeToLog)
             {
@@ -113,25 +102,35 @@ namespace UrakawaDomValidation
         }
 
     }
-    public class UrakawaDomValidationError
+    
+    public class UrakawaDomValidationReportItem
     {
+        public enum ReportItemType
+        {
+            TRACE,
+            ERROR
+        } ;
+
         public TreeNode Node {get; private set;}
         public string Message { get; private set; }
-        public UrakawaDomValidationError(TreeNode node, string message)
+        public ReportItemType ItemType { get; private set; }
+        
+        public UrakawaDomValidationReportItem(TreeNode node, string message, ReportItemType type)
         {
             Node = node;
             Message = message;
+            ItemType = type;
         }
     }
     public class UrakawaDomValidation
     {
         private DTD m_Dtd;
         private Hashtable m_DtdElementRegExp;
-        public List<UrakawaDomValidationError> Errors { get; private set; }
+        public List<UrakawaDomValidationReportItem> ValidationReportItems { get; private set; }
         
         public UrakawaDomValidation()
         {
-            Errors = new List<UrakawaDomValidationError>();
+            ValidationReportItems = new List<UrakawaDomValidationReportItem>();
         }
         public void UseDtd(string dtd)
         {
@@ -298,33 +297,29 @@ namespace UrakawaDomValidation
                 Regex regExp = (Regex) m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
                 if (regExp == null)
                 {
-                    //TODO: friendlier error message
                     string msg = string.Format("Definition for {0} not found", node.GetXmlElementQName().LocalName);
-                    UrakawaDomValidationError error = new UrakawaDomValidationError(node, msg);
-                    Errors.Add(error);
+                    UrakawaDomValidationReportItem error = new UrakawaDomValidationReportItem(node, msg, UrakawaDomValidationReportItem.ReportItemType.ERROR);
+                    ValidationReportItems.Add(error);
                     return false;
                 }
 
                 Match match = regExp.Match(childrenNames);
+                string message = string.Format("Children:{0}\nMatch result:{1}", childrenNames, match.ToString());
+                UrakawaDomValidationReportItem.ReportItemType type;
+
                 if (match.Success && match.ToString() == childrenNames)
                 {
-                    //these aren't errors, just looking for false positives
-                    //string msg = string.Format("Expected\n{0}\nGot\n{1}", regExp.ToString(), childrenNames);
-                    //UrakawaDomValidationError error = new UrakawaDomValidationError(node, msg);
-                    //Errors.Add(error);
-                    
-                    return true;
+                    type = UrakawaDomValidationReportItem.ReportItemType.TRACE;
                 }
                 else
                 {
-                    //TODO: friendlier error message
-                    string msg = string.Format("Expected\n{0}\nGot\n{1}", regExp.ToString(), childrenNames);
-                    UrakawaDomValidationError error = new UrakawaDomValidationError(node, msg);
-                    Errors.Add(error);
-                    return false;
+                    type = UrakawaDomValidationReportItem.ReportItemType.ERROR;
                 }
+                UrakawaDomValidationReportItem report = new UrakawaDomValidationReportItem(node, message, type);
+                ValidationReportItems.Add(report);
+                return type != UrakawaDomValidationReportItem.ReportItemType.ERROR;
             }
-            else
+            else //no XML property
             {
                 return true;
             }
@@ -333,14 +328,27 @@ namespace UrakawaDomValidation
         private string GetChildrenNames(TreeNode node)
         {
             string names = "";
+
+            if (node.GetTextMedia() != null)
+            {
+                names += "#PCDATA";
+            }
             foreach (TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
             {
                 if (child.HasXmlProperty)
                 {
                     names += child.GetXmlElementQName().LocalName + "#";
                 }
+                
             }
+           
             return names;
+        }
+
+        internal string GetRegEx(TreeNode node)
+        {
+            Regex regExp = (Regex)m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
+            return regExp != null ? regExp.ToString() : "";
         }
     }
 }
