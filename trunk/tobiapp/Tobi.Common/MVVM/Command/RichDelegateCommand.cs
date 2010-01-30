@@ -192,7 +192,7 @@ namespace Tobi.Common.MVVM.Command
             {
                 //CultureInfo.InvariantCulture
                 //return KeyGesture.DisplayString;
-                return (KeyGesture == null ? m_KeyGestureText : KeyGestureSinkBox.GetDisplayString(KeyGesture));
+                return (KeyGesture == null ? m_KeyGestureText : KeyGestureString.GetDisplayString(KeyGesture));
             }
         }
 

@@ -65,7 +65,7 @@ namespace Tobi
                         exit();
                     }
                 },
-                () => true,
+                () => Application.Current.Windows.Count == 1,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_AppExit));
 
@@ -168,12 +168,12 @@ namespace Tobi
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-cut"),
                 () =>
-                    {
-                        // TODO: this is for testing only.
-                        CheckParseScanWalkUiTreeThing();
+                {
+                    // TODO: this is for testing only.
+                    CheckParseScanWalkUiTreeThing();
 
-                        Debug.Fail(@"Functionality not implemented yet.");
-                    },
+                    Debug.Fail(@"Functionality not implemented yet.");
+                },
                 () => true,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Cut));
@@ -479,7 +479,7 @@ namespace Tobi
             {
                 m_Logger.Log(
                     "KeyBinding (" +
-                    KeyGestureSinkBox.GetDisplayString(((KeyGesture)(inputBinding.Gesture))) + ")",
+                    KeyGestureString.GetDisplayString(((KeyGesture)(inputBinding.Gesture))) + ")",
                     Category.Debug, Priority.Medium);
             }
             else

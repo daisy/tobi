@@ -12,6 +12,9 @@
            GotFocus="OnGotFocus_TextBox"
           
            MouseLeftButtonUp="OnMouseLeftButtonUp_TextBox"
+           
+           Loaded="OnLoaded_TextBox"
+           
          >
   <!-- 
          Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" -->
