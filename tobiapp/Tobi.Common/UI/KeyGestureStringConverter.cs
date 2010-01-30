@@ -35,7 +35,7 @@ namespace Tobi.Common.UI
             return base.ConvertTo(context, culture, value, destinationType);
         }
 
-        public static string Convert(Key key, ModifierKeys modKeys)
+        public static string Convert(Key key, ModifierKeys modKeys, bool useFriendlyKeyDisplayString)
         {
             string str = "[ ";
 
@@ -68,6 +68,11 @@ namespace Tobi.Common.UI
             str += "] ";
             str += key;
 
+            char ch = '\0';
+            if (useFriendlyKeyDisplayString
+                && (ch = KeyGestureString.GetDisplayChar(key)) != '\0')
+                str += " (" + ch + ")";
+
             return str;
         }
 
@@ -78,7 +83,7 @@ namespace Tobi.Common.UI
                 return null;
             }
 
-            return Convert(keyG.Key, keyG.Modifiers);
+            return Convert(keyG.Key, keyG.Modifiers, true);
         }
 
         public static KeyGestureString Convert(string str)
@@ -116,6 +121,12 @@ namespace Tobi.Common.UI
             bool isModWin = modStr.Contains("win");
 
             string keyStr = lowStr.Substring(modEnd + 1).Trim();
+
+            int spaceIndex = keyStr.IndexOf(' ');
+            if (spaceIndex >= 0)
+            {
+                keyStr = keyStr.Substring(0, spaceIndex);
+            }
 
             Key key = Key.None;
             try

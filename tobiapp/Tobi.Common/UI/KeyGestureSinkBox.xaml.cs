@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Input;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
@@ -21,60 +18,18 @@ namespace Tobi.Common.UI
             //    true);
         }
 
-        public string KeyGestureSerializedEncoded { get; private set; }
+        protected string KeyGestureSerializedEncoded { get; set; }
 
-        public KeyGesture KeyGesture
+        public KeyGestureString KeyGesture
         {
             get
             {
+                if (KeyGestureSerializedEncoded == null)
+                {
+                    KeyGestureSerializedEncoded = Text;
+                }
                 return KeyGestureStringConverter.Convert(KeyGestureSerializedEncoded);
             }
-        }
-
-        public static string GetDisplayString(KeyGesture keyG)
-        {
-            if (keyG == null)
-            {
-                return null;
-            }
-
-            string strDisplay = keyG.GetDisplayStringForCulture(CultureInfo.CurrentCulture);
-            if (!strDisplay.ToLower().Contains("oem"))
-            {
-                return strDisplay;
-            }
-
-            //Keys modKey = Keys.None;
-            //if ((keyG.Modifiers & ModifierKeys.Shift) != ModifierKeys.None) modKey |= Keys.Shift;
-            //if ((keyG.Modifiers & ModifierKeys.Control) != ModifierKeys.None) modKey |= Keys.Control;
-            //if ((keyG.Modifiers & ModifierKeys.Alt) != ModifierKeys.None) modKey |= Keys.Alt;
-            //if ((keyG.Modifiers & ModifierKeys.Windows) != ModifierKeys.None) modKey |= Keys.LWin;
-            //modKey = Keys.None;
-
-
-            char c = '\0';
-            try
-            {
-                int vk = KeyInterop.VirtualKeyFromKey(keyG.Key);
-                c = GetChar(vk);
-            }
-            catch
-            {
-                Console.WriteLine(@"!!! Key to char conversion error: " + keyG.Key);
-            }
-
-            var converter = new KeyConverter();
-            string strKey = converter.ConvertToString(keyG.Key);
-            //string strKey = (string)kc.ConvertTo(keyG.Key, typeof(string));
-
-            if (c == '\0')
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-            }
-
-            return strDisplay.Replace(strKey, c + "");
         }
 
         private void OnMouseLeftButtonUp_TextBox(object sender, MouseButtonEventArgs e)
@@ -122,13 +77,14 @@ namespace Tobi.Common.UI
 
             //////KeyGestureSerializedEncoded = "[ " + common + "] " + (key != Key.None ? key.ToString() : "");
 
-            KeyGestureSerializedEncoded = KeyGestureStringConverter.Convert(key, Keyboard.Modifiers);
+            KeyGestureSerializedEncoded = KeyGestureStringConverter.Convert(key, Keyboard.Modifiers, true);
 
             //if (Text != KeyGestureSerializedEncoded)
             //{
             //    Text = KeyGestureSerializedEncoded;
             //}
             Text = KeyGestureSerializedEncoded;
+            updateTooltip();
 
             //var converter = new KeyConverter();
             //string keyDisplayString = converter.ConvertToString(key);
@@ -138,9 +94,9 @@ namespace Tobi.Common.UI
             //    ("" + GetChar(KeyInterop.VirtualKeyFromKey(key))).ToUpper()) :
             //    "");
 
-            var keyG = KeyGestureStringConverter.Convert(KeyGestureSerializedEncoded);
+            var keyG = KeyGesture;
 
-            string displayStr = keyG == null ? null : GetDisplayString(keyG);
+            string displayStr = keyG == null ? null : keyG.GetDisplayString();
 
             Console.WriteLine("\n" + @"=====> "
                 + (keyG == null ? "INVALID" : displayStr)
@@ -194,10 +150,7 @@ namespace Tobi.Common.UI
 
             if (key == Key.Escape)
             {
-                if (!string.IsNullOrEmpty(m_previousValidText))
-                {
-                    Text = m_previousValidText;
-                }
+                restorePreviousValidText();
 
                 //RaiseEvent(new RoutedEventArgs {RoutedEvent = EscapedEvent});
 
@@ -213,6 +166,17 @@ namespace Tobi.Common.UI
 
                 //EventHandler eventHandler = Escaped;
                 //if (eventHandler != null) eventHandler(this, EventArgs.Empty);
+            }
+        }
+
+        private void restorePreviousValidText()
+        {
+            if (!string.IsNullOrEmpty(m_previousValidText))
+            {
+                Text = m_previousValidText;
+                KeyGestureSerializedEncoded = Text;
+
+                updateTooltip();
             }
         }
 
@@ -237,16 +201,43 @@ namespace Tobi.Common.UI
         //    }
         //}
 
+        public AutomationPeer m_AutomationPeer;
+
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            m_AutomationPeer = base.OnCreateAutomationPeer();
+            return m_AutomationPeer;
+        }
+
+        private void updateTooltip()
+        {
+            var keyG = KeyGesture;
+
+            string displayStr = keyG == null ? Text : KeyGestureStringConverter.Convert(keyG.Key, keyG.Modifiers, true); //keyG.GetDisplayString();
+
+            ToolTip = displayStr;
+
+            SetValue(AutomationProperties.NameProperty, displayStr);
+        }
+
+        private void notifyScreenReader()
+        {
+            if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            {
+                m_AutomationPeer.RaiseAutomationEvent(
+                    AutomationEvents.AutomationFocusChanged);
+            }
+        }
+
         private string m_previousValidText;
 
         private void OnLostFocus_TextBox(object sender, RoutedEventArgs e)
         {
             //Focused = false;
 
-            if (System.Windows.Controls.Validation.GetHasError(this)
-                && !string.IsNullOrEmpty(m_previousValidText))
+            if (System.Windows.Controls.Validation.GetHasError(this))
             {
-                Text = m_previousValidText;
+                restorePreviousValidText();
             }
             FontWeight = FontWeights.Normal;
         }
@@ -255,63 +246,13 @@ namespace Tobi.Common.UI
         {
             m_previousValidText = (System.Windows.Controls.Validation.GetHasError(this) ? null : Text);
             FontWeight = FontWeights.UltraBold;
+
+            notifyScreenReader();
         }
 
-
-        [DllImport("user32.dll")]
-        public static extern int ToUnicode(
-            uint wVirtKey,
-            uint wScanCode,
-            byte[] lpKeyState,
-            [Out, MarshalAs(UnmanagedType.LPWStr, SizeParamIndex = 4)] 
-          StringBuilder pwszBuff,
-            int cchBuff,
-            uint wFlags);
-
-        private const byte HighBit = 0x80;
-        private static byte[] GetKeyboardState(Keys modifiers)
+        private void OnLoaded_TextBox(object sender, RoutedEventArgs e)
         {
-            var keyState = new byte[256];
-            foreach (Keys key in Enum.GetValues(typeof(Keys)))
-            {
-                if ((modifiers & key) == key)
-                {
-                    keyState[(int)key] = HighBit;
-                }
-            }
-            return keyState;
-        }
-
-        private static char GetChar(int vk)
-        {
-            //var ks = new byte[256];
-            //GetKeyboardState(ks);
-
-            //var sc = MapVirtualKey((uint)vk, MapType.MAPVK_VK_TO_VSC);
-            var sb = new StringBuilder(2);
-            var ch = (char)0;
-
-            switch (ToUnicode((uint)vk,
-                0,
-                GetKeyboardState(Keys.None),
-                sb,
-                sb.Capacity,
-                0))
-            {
-                case -1: break;
-                case 0: break;
-                case 1:
-                    {
-                        ch = sb[0];
-                        break;
-                    }
-                default:
-                    {
-                        ch = sb[0];
-                        break;
-                    }
-            }
-            return ch;
+            updateTooltip();
         }
     }
 }
