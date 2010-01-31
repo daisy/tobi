@@ -20,7 +20,8 @@ namespace Tobi.Common.UI
                 ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
 
                 ((RichDelegateCommand)item).DataChanged +=
-                    (sender, ev) => ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
+                    (sender, ev) =>
+                        ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
             }
             else if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
             {
@@ -132,7 +133,7 @@ namespace Tobi.Common.UI
                 && menuItem.Command is RichDelegateCommand
                 && ((RichDelegateCommand)menuItem.Command).DataChangedHasHandlers)
             {
-                //TODO: remove DataChanged event handlers...
+                //TODO: remove DataChanged event handlers ? Or is it handled by the WeakReference ? (depends on the DataChanged+= call in the static method using lambda expression...)
 #if DEBUG
                 Debugger.Break();
 #endif
@@ -267,40 +268,54 @@ namespace Tobi.Common.UI
 
         public static void ConfigureTwoStateMenuItemRichCommand(TwoStateMenuItemRichCommand menuItem, bool choice)
         {
-            RichDelegateCommand command = menuItem.RichCommandOne;
+            //RichDelegateCommand command = menuItem.RichCommandOne;
 
-            if (command.KeyGesture == null && menuItem.RichCommandTwo.KeyGesture != null)
+            //if (command.KeyGesture == null && menuItem.RichCommandTwo.KeyGesture != null)
+            //{
+            //    command.KeyGestureText = menuItem.RichCommandTwo.KeyGestureText;
+            //}
+
+            if (menuItem.InputBindingManager != null)
             {
-                command.KeyGestureText = menuItem.RichCommandTwo.KeyGestureText;
-            }
-
-            if (command.KeyGesture != null
-                    && command.KeyGesture.Equals(menuItem.RichCommandTwo.KeyGesture)
-                    && menuItem.InputBindingManager != null)
-            {
-                menuItem.InputBindingManager.RemoveInputBinding(menuItem.RichCommandTwo.KeyBinding);
-                menuItem.InputBindingManager.AddInputBinding(command.KeyBinding);
-            }
-
-            if (!choice)
-            {
-                command = menuItem.RichCommandTwo;
-
-                if (command.KeyGesture == null && menuItem.RichCommandOne.KeyGesture != null)
+                if (choice)
                 {
-                    command.KeyGestureText = menuItem.RichCommandOne.KeyGestureText;
-                }
+                    if (true
+                        //KeyGestureString.AreEqual(command.KeyGesture, menuItem.RichCommandTwo.KeyGesture)
+                        //&& command.KeyGesture.Equals(menuItem.RichCommandTwo.KeyGesture)
+                        )
+                    {
+                        if (menuItem.RichCommandTwo.KeyGesture != null)
+                            menuItem.InputBindingManager.RemoveInputBinding(menuItem.RichCommandTwo.KeyBinding);
 
-                if (command.KeyGesture != null
-                   && command.KeyGesture.Equals(menuItem.RichCommandOne.KeyGesture)
-                   && menuItem.InputBindingManager != null)
+                        if (menuItem.RichCommandOne.KeyGesture != null)
+                            menuItem.InputBindingManager.AddInputBinding(menuItem.RichCommandOne.KeyBinding);
+                    }
+                }
+                else
                 {
-                    menuItem.InputBindingManager.RemoveInputBinding(menuItem.RichCommandOne.KeyBinding);
-                    menuItem.InputBindingManager.AddInputBinding(command.KeyBinding);
+                    //command = menuItem.RichCommandTwo;
+
+                    //if (command.KeyGesture == null && menuItem.RichCommandOne.KeyGesture != null)
+                    //{
+                    //    command.KeyGestureText = menuItem.RichCommandOne.KeyGestureText;
+                    //}
+
+                    if (true
+                        //&& KeyGestureString.AreEqual(command.KeyGesture, menuItem.RichCommandOne.KeyGesture)
+                        //&& command.KeyGesture.Equals(menuItem.RichCommandOne.KeyGesture)
+                        )
+                    {
+                        if (menuItem.RichCommandOne.KeyGesture != null)
+                            menuItem.InputBindingManager.RemoveInputBinding(menuItem.RichCommandOne.KeyBinding);
+
+                        if (menuItem.RichCommandTwo.KeyGesture != null)
+                            menuItem.InputBindingManager.AddInputBinding(menuItem.RichCommandTwo.KeyBinding);
+                    }
                 }
             }
 
-            MenuItemRichCommand.ConfigureMenuItemFromCommand(menuItem, command);
+            MenuItemRichCommand.ConfigureMenuItemFromCommand(menuItem,
+                            choice ? menuItem.RichCommandOne : menuItem.RichCommandTwo);
         }
 
         /// <summary>

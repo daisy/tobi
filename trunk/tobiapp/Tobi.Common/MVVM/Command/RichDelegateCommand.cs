@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Tobi.Common.UI;
 
 namespace Tobi.Common.MVVM.Command
@@ -171,43 +173,103 @@ namespace Tobi.Common.MVVM.Command
             get { return m_KeyGesture; }
             set
             {
+                if (m_KeyGesture == value
+                    || m_KeyGesture != null && value != null
+                    && KeyGestureString.AreEqual(m_KeyGesture, value)) return;
+
                 m_KeyGesture = value;
-                if (KeyBinding != null)
+
+                if (m_KeyBinding != null)
                 {
                     KeyBinding.Gesture = m_KeyGesture;
+                    FireDataChanged();
                 }
-                FireDataChanged();
             }
         }
 
-        private string m_KeyGestureText = "";
+        //private string m_KeyGestureText = "";
         public string KeyGestureText
         {
-            set
-            {
-                m_KeyGestureText = value;
-                FireDataChanged();
-            }
+            //set
+            //{
+            //    m_KeyGestureText = value;
+            //    FireDataChanged();
+            //}
             get
             {
                 //CultureInfo.InvariantCulture
                 //return KeyGesture.DisplayString;
-                return (KeyGesture == null ? m_KeyGestureText : KeyGestureString.GetDisplayString(KeyGesture));
+                
+                //return (KeyGesture == null ? m_KeyGestureText : KeyGestureString.GetDisplayString(KeyGesture));
+                return (KeyGesture == null ? null :
+                    KeyGestureStringConverter.Convert(KeyGesture)
+                    //KeyGestureString.GetDisplayString(KeyGesture)
+                    );
             }
         }
 
-        public event EventHandler DataChanged;
+        //1 [NonSerializable]
+        private EventHandler m_DataChanged;
+        public event EventHandler DataChanged
+        {
+            //[MethodImpl(MethodImplOptions.Synchronized)]
+            add
+            {
+                m_DataChanged = (EventHandler)Delegate.Combine(m_DataChanged, value);
+            }
+
+            //[MethodImpl(MethodImplOptions.Synchronized)]
+            remove
+            {
+                m_DataChanged = (EventHandler)Delegate.Remove(m_DataChanged, value); 
+            }
+        }
+
+        private List<WeakReference> m_DataChangedChangedHandlers;
+        public event EventHandler DataChanged_WEAK
+        {
+            //[MethodImpl(MethodImplOptions.Synchronized)]
+            add
+            {
+                WeakReferencedEventHandlerHelper.AddWeakReferenceHandler(ref m_DataChangedChangedHandlers, value, 2);
+            }
+
+            //[MethodImpl(MethodImplOptions.Synchronized)]
+            remove
+            {
+                WeakReferencedEventHandlerHelper.RemoveWeakReferenceHandler(m_DataChangedChangedHandlers, value);
+            }
+        }
+
         private void FireDataChanged()
         {
-            EventHandler d = DataChanged;
-            if (d != null) d(this, EventArgs.Empty);
+            if (m_DataChanged != null) m_DataChanged(this, EventArgs.Empty);
+
+            //EventHandler d = DataChanged;
+            //if (d != null) d(this, EventArgs.Empty);
         }
+
+        private void FireDataChanged_WEAK()
+        {
+            WeakReferencedEventHandlerHelper.CallWeakReferenceHandlers_WithDispatchCheck(m_DataChangedChangedHandlers);
+        }
+
         public bool DataChangedHasHandlers
         {
             get
             {
-                EventHandler d = DataChanged;
-                return d != null;
+                return m_DataChanged != null;
+
+                //EventHandler d = DataChanged;
+                //return d != null;
+            }
+        }
+
+        public bool DataChangedHasHandlers_WEAK
+        {
+            get
+            {
+                return m_DataChangedChangedHandlers.Count > 0;
             }
         }
     }

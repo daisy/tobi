@@ -176,7 +176,8 @@ namespace Tobi.Plugin.AudioPane
             if (!Dispatcher.CheckAccess())
             {
                 //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => OnAudioRecordingFinished(sender, e)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, AudioRecorder.AudioRecordingFinishEventArgs>)OnAudioRecordingFinished, sender, e);
                 return;
             }
 
