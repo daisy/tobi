@@ -25,25 +25,13 @@ namespace Tobi.Common {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] D")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_DialogExpand {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] I")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_DialogExpandCollapse {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DialogExpand"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DialogExpandCollapse"]));
             }
             set {
-                this["Keyboard_DialogExpand"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] D")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_DialogCollapse {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DialogCollapse"]));
-            }
-            set {
-                this["Keyboard_DialogCollapse"] = value;
+                this["Keyboard_DialogExpandCollapse"] = value;
             }
         }
     }
