@@ -564,7 +564,8 @@ namespace Tobi.Plugin.AudioPane
             if (!Dispatcher.CheckAccess())
             {
                 //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<long, long>)RefreshUI_WaveFormChunkMarkers, bytesLeft, bytesRight);
                 return;
             }
             m_Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);

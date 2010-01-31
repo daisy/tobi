@@ -34,11 +34,17 @@ namespace Tobi.Common.UI
             return KeyGestureStringConverter.Convert(this);
         }
 
+        public static bool AreEqual(KeyGesture keyG1, KeyGesture keyG2)
+        {
+            if (keyG1 == null || keyG2 == null) return false;
+            return keyG1.Key == keyG2.Key
+                && keyG1.Modifiers == keyG2.Modifiers;
+        }
+
         public override bool Equals(object obj)
         {
             var otherKG = obj as KeyGestureString;
-            if (otherKG == null) return false;
-            return otherKG.Key == Key && otherKG.Modifiers == Modifiers;
+            return AreEqual(this, otherKG);
         }
 
         public string GetDisplayString()

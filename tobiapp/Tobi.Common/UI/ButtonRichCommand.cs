@@ -36,8 +36,6 @@ namespace Tobi.Common.UI
             }
 
             ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
-
-            command.DataChanged += (sender, ev) => ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
         }
 
         public static readonly DependencyProperty ShowTextLabelProperty =
@@ -58,20 +56,63 @@ namespace Tobi.Common.UI
             }
         }
 
-        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand command, bool showTextLabel)
+        public void SetRichCommand(RichDelegateCommand command)
         {
-            if (button.Command != null
-                && button.Command != command
-                && button.Command is RichDelegateCommand
-                && ((RichDelegateCommand)button.Command).DataChangedHasHandlers)
+            if (Command == command)
+                return;
+
+            if (Command != null
+                && Command is RichDelegateCommand
+                && ((RichDelegateCommand)Command).DataChangedHasHandlers)
             {
-                //TODO: remove DataChanged event handlers...
+                ((RichDelegateCommand)Command).DataChanged -= OnCommandDataChanged;
+            }
+
+            Command = command;
+            command.DataChanged += OnCommandDataChanged;
+        }
+
+        private void OnCommandDataChanged(object sender, EventArgs e)
+        {
+            var command = sender as RichDelegateCommand;
+            if (command == null)
+                return;
+
+            if (command != Command)
+            {
 #if DEBUG
                 Debugger.Break();
 #endif
+                return;
             }
 
-            button.Command = command;
+            RefreshButtonFromItsRichCommand(this, ShowTextLabel);
+        }
+
+        public static void ConfigureButtonFromCommand(ButtonBase button, RichDelegateCommand command, bool showTextLabel)
+        {
+            if (button is ButtonRichCommand)
+            {
+                ((ButtonRichCommand) button).SetRichCommand(command);
+            }
+            else
+            {
+                button.Command = command;
+            }
+
+            RefreshButtonFromItsRichCommand(button, showTextLabel);
+        }
+
+        public static void RefreshButtonFromItsRichCommand(ButtonBase button, bool showTextLabel)
+        {
+            var command = button.Command as RichDelegateCommand;
+            if (command == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
 
             button.ToolTip = command.LongDescription +
                              (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
@@ -599,40 +640,56 @@ namespace Tobi.Common.UI
             }
             var choice = (Boolean)e.NewValue;
 
-            RichDelegateCommand command = button.RichCommandOne;
+            //RichDelegateCommand command = button.RichCommandOne;
 
-            if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
+            //if (command.KeyGesture == null && button.RichCommandTwo.KeyGesture != null)
+            //{
+            //    command.KeyGestureText = button.RichCommandTwo.KeyGestureText;
+            //}
+
+
+            if (button.InputBindingManager != null)
             {
-                command.KeyGestureText = button.RichCommandTwo.KeyGestureText;
-            }
-
-            if (command.KeyGesture != null
-                    && command.KeyGesture.Equals(button.RichCommandTwo.KeyGesture)
-                    && button.InputBindingManager != null)
-            {
-                button.InputBindingManager.RemoveInputBinding(button.RichCommandTwo.KeyBinding);
-                button.InputBindingManager.AddInputBinding(command.KeyBinding);
-            }
-
-            if (!choice)
-            {
-                command = button.RichCommandTwo;
-
-                if (command.KeyGesture == null && button.RichCommandOne.KeyGesture != null)
+                if (choice)
                 {
-                    command.KeyGestureText = button.RichCommandOne.KeyGestureText;
-                }
+                    if (true
+                        //&& KeyGestureString.AreEqual(command.KeyGesture, button.RichCommandTwo.KeyGesture)
+                        //&& command.KeyGesture.Equals(button.RichCommandTwo.KeyGesture)
+                        )
+                    {
+                        if (button.RichCommandTwo.KeyGesture != null)
+                            button.InputBindingManager.RemoveInputBinding(button.RichCommandTwo.KeyBinding);
 
-                if (command.KeyGesture != null
-                   && command.KeyGesture.Equals(button.RichCommandOne.KeyGesture)
-                   && button.InputBindingManager != null)
+                        if (button.RichCommandOne.KeyGesture != null)
+                            button.InputBindingManager.AddInputBinding(button.RichCommandOne.KeyBinding);
+                    }
+                }
+                else
                 {
-                    button.InputBindingManager.RemoveInputBinding(button.RichCommandOne.KeyBinding);
-                    button.InputBindingManager.AddInputBinding(command.KeyBinding);
+                    //command = button.RichCommandTwo;
+
+                    //if (command.KeyGesture == null && button.RichCommandOne.KeyGesture != null)
+                    //{
+                    //    command.KeyGestureText = button.RichCommandOne.KeyGestureText;
+                    //}
+
+                    if (true
+                        //&& KeyGestureString.AreEqual(command.KeyGesture, button.RichCommandOne.KeyGesture)
+                        //&& command.KeyGesture.Equals(button.RichCommandOne.KeyGesture)
+                        )
+                    {
+                        if (button.RichCommandOne.KeyGesture != null)
+                            button.InputBindingManager.RemoveInputBinding(button.RichCommandOne.KeyBinding);
+
+                        if (button.RichCommandTwo.KeyGesture != null)
+                            button.InputBindingManager.AddInputBinding(button.RichCommandTwo.KeyBinding);
+                    }
                 }
             }
 
-            ButtonRichCommand.ConfigureButtonFromCommand(button, command, button.ShowTextLabel);
+            ButtonRichCommand.ConfigureButtonFromCommand(button,
+                choice ? button.RichCommandOne : button.RichCommandTwo,
+                button.ShowTextLabel);
         }
 
         /// <summary>
