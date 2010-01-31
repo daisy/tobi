@@ -131,7 +131,6 @@ namespace Tobi.Common.UI
             {
                 button.Command = command;
                 RefreshButtonFromItsRichCommand(button, showTextLabel);
-
 #if DEBUG
                 Debugger.Break();
 #endif
