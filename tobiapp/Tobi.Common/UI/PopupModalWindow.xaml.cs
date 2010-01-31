@@ -57,7 +57,7 @@ namespace Tobi.Common.UI
                 () => IsDetailsExpanded = true,
                 () => HasDetails && !IsDetailsExpanded,
                 Settings_KeyGesture.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpand));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpandCollapse));
 
             AddInputBinding(CommandDetailsExpand.KeyBinding);
             //
@@ -69,7 +69,7 @@ namespace Tobi.Common.UI
                 () => IsDetailsExpanded = false,
                 () => HasDetails && IsDetailsExpanded,
                 Settings_KeyGesture.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogCollapse));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpandCollapse));
 
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }

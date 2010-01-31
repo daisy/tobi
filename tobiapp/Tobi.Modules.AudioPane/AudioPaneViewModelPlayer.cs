@@ -60,7 +60,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading && IsAudioLoaded && IsPlaying,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Pause));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPause));
 
             m_ShellView.RegisterRichCommand(CommandPause);
             //
@@ -115,7 +115,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading && IsAudioLoaded && !IsPlaying && !IsMonitoring && !IsRecording,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Play));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPause));
 
             m_ShellView.RegisterRichCommand(CommandPlay);
             //

@@ -34,7 +34,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StopRecord));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopRecord));
 
             m_ShellView.RegisterRichCommand(CommandStopRecord);
             //
@@ -78,7 +78,7 @@ namespace Tobi.Plugin.AudioPane
                         );
                 },
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartRecord));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopRecord));
 
             m_ShellView.RegisterRichCommand(CommandStartRecord);
 
@@ -116,7 +116,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartMonitor));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
 
             m_ShellView.RegisterRichCommand(CommandStartMonitor);
             //
@@ -140,7 +140,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading && IsMonitoring,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StopMonitor));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
 
             m_ShellView.RegisterRichCommand(CommandStopMonitor);
 

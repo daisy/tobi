@@ -25,7 +25,7 @@ namespace Tobi.Plugin.NavigationPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F8")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Focus_Nav {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Focus_Nav"]));
