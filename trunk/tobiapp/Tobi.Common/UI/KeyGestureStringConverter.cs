@@ -70,7 +70,9 @@ namespace Tobi.Common.UI
 
             char ch = '\0';
             if (useFriendlyKeyDisplayString
-                && (ch = KeyGestureString.GetDisplayChar(key)) != '\0')
+                && (ch = KeyGestureString.GetDisplayChar(key)) != '\0'
+                && (key < Key.A || key > Key.Z)
+                && key != Key.Space)
                 str += " (" + ch + ")";
 
             return str;
