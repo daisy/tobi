@@ -34,13 +34,13 @@ namespace Tobi.Common
             // Take a snapshot of the handlers before we call out to them since the handlers
             // could cause the array to me modified while we are reading it.
 
-            EventHandler[] callees = new EventHandler[weakReferencesOfEventHandlers.Count];
+            var callees = new EventHandler[weakReferencesOfEventHandlers.Count];
             int count = 0;
 
             for (int i = weakReferencesOfEventHandlers.Count - 1; i >= 0; i--)
             {
                 WeakReference reference = weakReferencesOfEventHandlers[i];
-                EventHandler handler = reference.Target as EventHandler;
+                var handler = (EventHandler) reference.Target;
                 if (handler == null)
                 {
                     // Clean up old handlers that have been collected
@@ -84,7 +84,7 @@ namespace Tobi.Common
             for (int i = handlers.Count - 1; i >= 0; i--)
             {
                 WeakReference reference = handlers[i];
-                EventHandler existingHandler = reference.Target as EventHandler;
+                var existingHandler = reference.Target as EventHandler;
                 if ((existingHandler == null) || (existingHandler == handler))
                 {
                     // Clean up old handlers that have been collected

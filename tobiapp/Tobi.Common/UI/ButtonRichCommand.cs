@@ -56,20 +56,44 @@ namespace Tobi.Common.UI
             }
         }
 
-        public void SetRichCommand(RichDelegateCommand command)
+        public static void SetRichCommand(RichDelegateCommand command, ButtonBase button, bool showTextLabel, EventHandler dataChangedEventCallback)
         {
-            if (Command == command)
+            if (button.Command == command)
                 return;
 
-            if (Command != null
-                && Command is RichDelegateCommand
-                && ((RichDelegateCommand)Command).DataChangedHasHandlers)
+            if (button.Command != null
+                && button.Command is RichDelegateCommand
+                && ((RichDelegateCommand)button.Command).DataChangedHasHandlers)
             {
-                ((RichDelegateCommand)Command).DataChanged -= OnCommandDataChanged;
+                ((RichDelegateCommand)button.Command).DataChanged -= dataChangedEventCallback;
             }
 
-            Command = command;
-            command.DataChanged += OnCommandDataChanged;
+            button.Command = command;
+
+            RefreshButtonFromItsRichCommand(button, showTextLabel);
+
+            command.DataChanged += dataChangedEventCallback;
+        }
+
+        public void SetRichCommand(RichDelegateCommand command)
+        {
+            SetRichCommand(command, this, ShowTextLabel, OnCommandDataChanged);
+
+            //if (Command == command)
+            //    return;
+
+            //if (Command != null
+            //    && Command is RichDelegateCommand
+            //    && ((RichDelegateCommand)Command).DataChangedHasHandlers)
+            //{
+            //    ((RichDelegateCommand)Command).DataChanged -= OnCommandDataChanged;
+            //}
+
+            //Command = command;
+
+            //RefreshButtonFromItsRichCommand(this, ShowTextLabel);
+
+            //command.DataChanged += OnCommandDataChanged;
         }
 
         private void OnCommandDataChanged(object sender, EventArgs e)
@@ -95,12 +119,23 @@ namespace Tobi.Common.UI
             {
                 ((ButtonRichCommand) button).SetRichCommand(command);
             }
+            else if (button is TwoStateButtonRichCommand)
+            {
+                ((TwoStateButtonRichCommand) button).SetRichCommand(command);
+            }
+            else if (button is RepeatButtonRichCommand)
+            {
+                ((RepeatButtonRichCommand) button).SetRichCommand(command);
+            }
             else
             {
                 button.Command = command;
-            }
+                RefreshButtonFromItsRichCommand(button, showTextLabel);
 
-            RefreshButtonFromItsRichCommand(button, showTextLabel);
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
         }
 
         public static void RefreshButtonFromItsRichCommand(ButtonBase button, bool showTextLabel)
@@ -369,6 +404,28 @@ namespace Tobi.Common.UI
             {
                 SetValue(RichCommandProperty, value);
             }
+        }
+
+        public void SetRichCommand(RichDelegateCommand command)
+        {
+            ButtonRichCommand.SetRichCommand(command, this, ShowTextLabel, OnCommandDataChanged);
+        }
+
+        private void OnCommandDataChanged(object sender, EventArgs e)
+        {
+            var command = sender as RichDelegateCommand;
+            if (command == null)
+                return;
+
+            if (command != Command)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            ButtonRichCommand.RefreshButtonFromItsRichCommand(this, ShowTextLabel);
         }
     }
 
@@ -706,6 +763,28 @@ namespace Tobi.Common.UI
             {
                 SetValue(RichCommandActiveProperty, value);
             }
+        }
+
+        public void SetRichCommand(RichDelegateCommand command)
+        {
+            ButtonRichCommand.SetRichCommand(command, this, ShowTextLabel, OnCommandDataChanged);
+        }
+
+        private void OnCommandDataChanged(object sender, EventArgs e)
+        {
+            var command = sender as RichDelegateCommand;
+            if (command == null)
+                return;
+
+            if (command != Command)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            ButtonRichCommand.RefreshButtonFromItsRichCommand(this, ShowTextLabel);
         }
     }
 }
