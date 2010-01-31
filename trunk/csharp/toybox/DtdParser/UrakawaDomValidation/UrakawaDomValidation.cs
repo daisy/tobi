@@ -1,114 +1,18 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using urakawa;
 using urakawa.core;
-using urakawa.xuk;
 using DtdParser;
 
 namespace UrakawaDomValidation
 {
-    public class TestValidation
-    {
-       
-        public static void Main(string[] args)
-        {
-            string dtd = @"..\..\..\dtbook-2005-3.dtd";
-            
-            //valid files
-            string simplebook = @"..\..\..\simplebook.xuk";
-            string paintersbook = @"..\..\..\greatpainters.xuk";
-
-            //invalid files
-            //it has two frontmatter items whereas only zero or one is allowed.
-            string simplebook_invalid_doublefrontmatter = @"..\..\..\simplebook-invalid-doublefrontmatter.xuk";
-            //these both register as invalid, and for the right reasons
-            string simplebook_invalid_unrecognized_element = @"..\..\..\simplebook-invalid-element.xuk";
-            string simplebook_invalid_badnesting = @"..\..\..\simplebook-invalid-badnesting.xuk";
-
-            //the dtd cache location (hardcoded in this example.  
-            //eventually, we'll need a table of dtd to cached version)
-            string dtdcache = @"..\..\..\dtd.cache";
-
-            bool writeToLog = true;
-
-            FileStream ostrm = null;
-            StreamWriter writer = null;
-            TextWriter oldOut = null;
-                
-            if (writeToLog)
-            {
-                oldOut = Console.Out;
-                ostrm = new FileStream(@"..\..\..\log.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                writer = new StreamWriter(ostrm);
-                Console.SetOut(writer);
-            }
-
-            UrakawaDomValidation validator = new UrakawaDomValidation();
-            bool readFromCache = false;
-
-            if (readFromCache)
-            {
-                validator.UseCachedDtd(new StreamReader(Path.GetFullPath(dtdcache)));
-            }
-            else
-            {
-                validator.UseDtd(dtd);
-                validator.SaveCachedDtd(new StreamWriter(Path.GetFullPath(dtdcache)));
-            }
-
-            Project project = LoadXuk(paintersbook);
-            TreeNode root = project.Presentations.Get(0).RootNode;
-            bool res = validator.Validate(root);
-
-            if (res)
-            {
-                Console.WriteLine("VALID!!");
-            }
-            else
-            {
-                Console.WriteLine("INVALID!!");
-            }
-
-            foreach (UrakawaDomValidationReportItem item in validator.ValidationReportItems)
-            {
-                string type = item.ItemType == UrakawaDomValidationReportItem.ReportItemType.TRACE ? "TRACE" : "ERROR";
-                Console.WriteLine(string.Format("* {0}", type));
-                Console.WriteLine(string.Format("Node name: {0}", item.Node.GetXmlElementQName().LocalName));
-                Console.WriteLine(string.Format("Reg ex: {0}", validator.GetRegEx(item.Node)));
-                Console.WriteLine(item.Message);
-                Console.WriteLine("\n");
-            }
-            if (writeToLog)
-            {
-                Console.SetOut(oldOut);
-                writer.Close();
-                ostrm.Close();
-            }
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey(); 
-        }
-
-        public static Project LoadXuk(string file)
-        {
-            string fullpath = Path.GetFullPath(file);
-            Project project = new Project();
-            var uri = new Uri(fullpath);
-            var action = new OpenXukAction(project, uri);
-            action.Execute();
-            return project;
-        }
-
-    }
-    
     public class UrakawaDomValidationReportItem
     {
         public enum ReportItemType
         {
-            TRACE,
-            ERROR
+            Trace,
+            Error
         } ;
 
         public TreeNode Node {get; private set;}
@@ -125,17 +29,12 @@ namespace UrakawaDomValidation
     public class UrakawaDomValidation
     {
         private DTD m_Dtd;
-        private Hashtable m_DtdElementRegExp;
+        private Hashtable m_DtdElementRegex;
         public List<UrakawaDomValidationReportItem> ValidationReportItems { get; private set; }
         
         public UrakawaDomValidation()
         {
             ValidationReportItems = new List<UrakawaDomValidationReportItem>();
-        }
-        public void UseDtd(string dtd)
-        {
-            StreamReader reader = new StreamReader(dtd);
-            UseDtd(reader);
         }
         public void UseDtd(StreamReader dtd)
         {
@@ -145,137 +44,114 @@ namespace UrakawaDomValidation
         }
         public void UseCachedDtd(StreamReader dtd)
         {
-            ReadCachedDtdIntoHashmap(dtd);
+            DtdCache.ReadFromCache(dtd);
         }
         public void SaveCachedDtd(StreamWriter dtd)
         {
-            WriteDtdToCache(dtd);
+            DtdCache.WriteToCache(m_DtdElementRegex, dtd);
         }
+        //utility function
+        public string GetRegex(TreeNode node)
+        {
+            Regex regex = (Regex)m_DtdElementRegex[node.GetXmlElementQName().LocalName];
+            return regex != null ? regex.ToString() : "";
+        }
+
+        //take a DtdSharp data structure and create a hashmap where 
+        //key: element name
+        //value: regex representing the allowed children
         private void ParseDtdIntoHashmap()
         {
-            m_DtdElementRegExp = new Hashtable();
+            m_DtdElementRegex = new Hashtable();
 
             foreach(DictionaryEntry entry in m_Dtd.Elements)
             {
                 DTDElement dtdElement = (DTDElement) entry.Value;
-                string regExpStr = GenerateRegExpForAllowedChildren(dtdElement.Content);
-                Regex regExp = new Regex(regExpStr);
-                m_DtdElementRegExp.Add(dtdElement.Name, regExp);
+                string regexStr = GenerateRegexForAllowedChildren(dtdElement.Content);
+                Regex regex = new Regex(regexStr);
+                m_DtdElementRegex.Add(dtdElement.Name, regex);
             }
         }
-
-        //The cached file format is:
-        //ElementName
-        //Regex of allowed children
-        //...
-        private void ReadCachedDtdIntoHashmap(StreamReader cachedDtd)
+        
+        private static string GenerateRegexForAllowedChildren(DTDItem dtdItem)
         {
-            m_DtdElementRegExp = new Hashtable();
-            string name = cachedDtd.ReadLine();
-            string regExpStr = cachedDtd.ReadLine();
-            
-            while (name != null && regExpStr != null)
-            {
-                Regex regEx = new Regex(regExpStr);
-                m_DtdElementRegExp[name] = regEx;
-                name = cachedDtd.ReadLine();
-                regExpStr = cachedDtd.ReadLine();
-            }
-
-            cachedDtd.Close();
-            
-        }
-        private void WriteDtdToCache(StreamWriter cachedDtd)
-        {
-            foreach (DictionaryEntry entry in m_DtdElementRegExp)
-            {
-                string name = (string)entry.Key;
-                string regExpStr = ((Regex)entry.Value).ToString();
-                cachedDtd.WriteLine(name);
-                cachedDtd.WriteLine(regExpStr);
-            }
-            cachedDtd.Close();
-        }
-        private string GenerateRegExpForAllowedChildren(DTDItem dtdItem)
-        {
-            string regExpStr = "";
+            string regexStr = "";
 
             if (dtdItem is DTDAny)
             {
-                regExpStr += "";// "Any";
+                regexStr += "";// "Any";
             }
             else if (dtdItem is DTDEmpty)
             {
-                regExpStr += "";
+                regexStr += "";
             }
             else if (dtdItem is DTDName)
             {
-                regExpStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
+                regexStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
             }
             else if (dtdItem is DTDChoice)
             {
                 List<DTDItem> items = ((DTDChoice)dtdItem).Items;
-                if (items.Count > 1) regExpStr += "(?:";
+                if (items.Count > 1) regexStr += "(?:";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regExpStr += "|";
+                    if (!isFirst) regexStr += "|";
                     isFirst = false;
-                    regExpStr += GenerateRegExpForAllowedChildren(item);
-                    
+                    regexStr += GenerateRegexForAllowedChildren(item);
                 }
-                if (items.Count > 1) regExpStr += ")";
+                if (items.Count > 1) regexStr += ")";
             }
             else if (dtdItem is DTDSequence)
             {
                 List<DTDItem> items = ((DTDSequence)dtdItem).Items;
-                if (items.Count > 1) regExpStr += "(?:";
+                if (items.Count > 1) regexStr += "(?:";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regExpStr += "";
-                    regExpStr += GenerateRegExpForAllowedChildren(item);
+                    if (!isFirst) regexStr += "";
+                    regexStr += GenerateRegexForAllowedChildren(item);
                     isFirst = false;
                 }
-                if (items.Count > 1) regExpStr += ")";
+                if (items.Count > 1) regexStr += ")";
             }
             else if (dtdItem is DTDMixed)
             {
                 List<DTDItem> items = ((DTDMixed)dtdItem).Items;
-                if (items.Count > 1) regExpStr += "(?:";
+                if (items.Count > 1) regexStr += "(?:";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regExpStr += "|";
-                    regExpStr += GenerateRegExpForAllowedChildren(item);
+                    if (!isFirst) regexStr += "|";
+                    regexStr += GenerateRegexForAllowedChildren(item);
                     isFirst = false;
                 }
-                if (items.Count > 1) regExpStr += ")";
+                if (items.Count > 1) regexStr += ")";
             }
             else if (dtdItem is DTDPCData)
             {
-                regExpStr +=  "#PCDATA";
+                regexStr +=  "#PCDATA";
             }
             else
             {
-                regExpStr += "**UNKNOWN**";
+                regexStr += "**UNKNOWN**";
             }
             if (dtdItem.Cardinal == DTDCardinal.ZEROONE)
             {
-                regExpStr += "?";
+                regexStr += "?";
             }
             else if (dtdItem.Cardinal == DTDCardinal.ZEROMANY)
             {
-                regExpStr += "*";
+                regexStr += "*";
             }
             else if (dtdItem.Cardinal == DTDCardinal.ONEMANY)
             {
-                regExpStr += "+";
+                regexStr += "+";
             }
-            return regExpStr;
+            return regexStr;
         }
         
         //the recursive function
@@ -294,11 +170,11 @@ namespace UrakawaDomValidation
             if (node.HasXmlProperty)
             {
                 string childrenNames = GetChildrenNames(node);
-                Regex regExp = (Regex) m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
+                Regex regExp = (Regex) m_DtdElementRegex[node.GetXmlElementQName().LocalName];
                 if (regExp == null)
                 {
                     string msg = string.Format("Definition for {0} not found", node.GetXmlElementQName().LocalName);
-                    UrakawaDomValidationReportItem error = new UrakawaDomValidationReportItem(node, msg, UrakawaDomValidationReportItem.ReportItemType.ERROR);
+                    UrakawaDomValidationReportItem error = new UrakawaDomValidationReportItem(node, msg, UrakawaDomValidationReportItem.ReportItemType.Error);
                     ValidationReportItems.Add(error);
                     return false;
                 }
@@ -309,15 +185,15 @@ namespace UrakawaDomValidation
 
                 if (match.Success && match.ToString() == childrenNames)
                 {
-                    type = UrakawaDomValidationReportItem.ReportItemType.TRACE;
+                    type = UrakawaDomValidationReportItem.ReportItemType.Trace;
                 }
                 else
                 {
-                    type = UrakawaDomValidationReportItem.ReportItemType.ERROR;
+                    type = UrakawaDomValidationReportItem.ReportItemType.Error;
                 }
                 UrakawaDomValidationReportItem report = new UrakawaDomValidationReportItem(node, message, type);
                 ValidationReportItems.Add(report);
-                return type != UrakawaDomValidationReportItem.ReportItemType.ERROR;
+                return type != UrakawaDomValidationReportItem.ReportItemType.Error;
             }
             else //no XML property
             {
@@ -325,7 +201,7 @@ namespace UrakawaDomValidation
             }
         }
 
-        private string GetChildrenNames(TreeNode node)
+        private static string GetChildrenNames(TreeNode node)
         {
             string names = "";
 
@@ -339,16 +215,8 @@ namespace UrakawaDomValidation
                 {
                     names += child.GetXmlElementQName().LocalName + "#";
                 }
-                
             }
-           
             return names;
-        }
-
-        internal string GetRegEx(TreeNode node)
-        {
-            Regex regExp = (Regex)m_DtdElementRegExp[node.GetXmlElementQName().LocalName];
-            return regExp != null ? regExp.ToString() : "";
         }
     }
 }
