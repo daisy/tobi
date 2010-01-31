@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DtdCache.cs" />
+    <Compile Include="TestValidation.cs" />
     <Compile Include="UrakawaDomValidation.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -51,13 +53,9 @@
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
-      <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
-      <Name>UrakawaSDK.daisy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DtdParser\DtdParser.csproj">
-      <Project>{8C046893-9AB4-4E6D-9823-E394438A61C0}</Project>
-      <Name>DtdParser</Name>
+    <ProjectReference Include="..\DtdSharp\DtdSharp.csproj">
+      <Project>{85655D56-6C48-4F93-AD3A-D0DEA9A79B1C}</Project>
+      <Name>DtdSharp</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
