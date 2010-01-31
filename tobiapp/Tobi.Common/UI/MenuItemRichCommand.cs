@@ -18,10 +18,6 @@ namespace Tobi.Common.UI
             if (item is RichDelegateCommand)
             {
                 ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
-
-                ((RichDelegateCommand)item).DataChanged +=
-                    (sender, ev) =>
-                        ConfigureMenuItemFromCommand((MenuItemRichCommand)element, (RichDelegateCommand)item);
             }
             else if (item is TwoStateMenuItemRichCommand_DataContextWrapper)
             {
@@ -126,20 +122,80 @@ namespace Tobi.Common.UI
             }
         }
 
+
+        public static void SetRichCommand(RichDelegateCommand command, MenuItemRichCommand menuitem, EventHandler dataChangedEventCallback)
+        {
+            if (menuitem.Command == command)
+                return;
+
+            if (menuitem.Command != null
+                && menuitem.Command is RichDelegateCommand
+                && ((RichDelegateCommand)menuitem.Command).DataChangedHasHandlers)
+            {
+                ((RichDelegateCommand)menuitem.Command).DataChanged -= dataChangedEventCallback;
+            }
+
+            menuitem.Command = command;
+
+            RefreshMenuItemFromItsRichCommand(menuitem);
+
+            command.DataChanged += dataChangedEventCallback;
+        }
+
+        public void SetRichCommand(RichDelegateCommand command)
+        {
+            SetRichCommand(command, this, OnCommandDataChanged);
+        }
+
+        private void OnCommandDataChanged(object sender, EventArgs e)
+        {
+            var command = sender as RichDelegateCommand;
+            if (command == null)
+                return;
+
+            if (command != Command)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            RefreshMenuItemFromItsRichCommand(this);
+        }
+
         public static void ConfigureMenuItemFromCommand(MenuItem menuItem, RichDelegateCommand command)
         {
-            if (menuItem.Command != null
-                && menuItem.Command != command
-                && menuItem.Command is RichDelegateCommand
-                && ((RichDelegateCommand)menuItem.Command).DataChangedHasHandlers)
+            if (menuItem is MenuItemRichCommand)
             {
-                //TODO: remove DataChanged event handlers ? Or is it handled by the WeakReference ? (depends on the DataChanged+= call in the static method using lambda expression...)
+                ((MenuItemRichCommand)menuItem).SetRichCommand(command);
+            }
+            else if (menuItem is TwoStateMenuItemRichCommand)
+            {
+                ((TwoStateMenuItemRichCommand)menuItem).SetRichCommand(command);
+            }
+            else
+            {
+                menuItem.Command = command;
+                RefreshMenuItemFromItsRichCommand(menuItem);
+
 #if DEBUG
                 Debugger.Break();
 #endif
             }
+        }
 
-            menuItem.Command = command;
+        public static void RefreshMenuItemFromItsRichCommand(MenuItem menuItem)
+        {
+            var command = menuItem.Command as RichDelegateCommand;
+            if (command == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
 
             menuItem.Header = command.ShortDescription;
             menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " " + command.KeyGestureText + " " : "");
@@ -332,6 +388,48 @@ namespace Tobi.Common.UI
             {
                 SetValue(RichCommandActiveProperty, value);
             }
+        }
+
+
+        public static void SetRichCommand(RichDelegateCommand command, TwoStateMenuItemRichCommand menuitem, EventHandler dataChangedEventCallback)
+        {
+            if (menuitem.Command == command)
+                return;
+
+            if (menuitem.Command != null
+                && menuitem.Command is RichDelegateCommand
+                && ((RichDelegateCommand)menuitem.Command).DataChangedHasHandlers)
+            {
+                ((RichDelegateCommand)menuitem.Command).DataChanged -= dataChangedEventCallback;
+            }
+
+            menuitem.Command = command;
+
+            MenuItemRichCommand.RefreshMenuItemFromItsRichCommand(menuitem);
+
+            command.DataChanged += dataChangedEventCallback;
+        }
+
+        public void SetRichCommand(RichDelegateCommand command)
+        {
+            SetRichCommand(command, this, OnCommandDataChanged);
+        }
+
+        private void OnCommandDataChanged(object sender, EventArgs e)
+        {
+            var command = sender as RichDelegateCommand;
+            if (command == null)
+                return;
+
+            if (command != Command)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            MenuItemRichCommand.RefreshMenuItemFromItsRichCommand(this);
         }
     }
 
