@@ -4,7 +4,7 @@ using System.IO;
 /*
  * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
  */
-namespace DtdParser
+namespace DtdSharp
 {
     public class DTDPublic : DTDExternalID
     {

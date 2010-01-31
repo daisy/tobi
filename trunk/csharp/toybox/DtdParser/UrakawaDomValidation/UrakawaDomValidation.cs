@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using urakawa.core;
-using DtdParser;
+using DtdSharp;
 
 namespace UrakawaDomValidation
 {

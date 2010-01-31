@@ -8,7 +8,7 @@
     <ProjectGuid>{85655D56-6C48-4F93-AD3A-D0DEA9A79B1C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DtdParser</RootNamespace>
+    <RootNamespace>DtdSharp</RootNamespace>
     <AssemblyName>DtdParser</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

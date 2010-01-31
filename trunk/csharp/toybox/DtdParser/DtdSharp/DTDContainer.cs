@@ -3,7 +3,7 @@ using System.Collections.Generic;
 /*
  * based on the Java Wutka DTD Parser by Mark Wutka (http://www.wutka.com/)
  */
-namespace DtdParser
+namespace DtdSharp
 {
     public abstract class DTDContainer : DTDItem
     {
