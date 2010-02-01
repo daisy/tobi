@@ -6,7 +6,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
     public enum ContentDocumentErrorType
     {
         UndefinedElement,
-        ElementMisuse
+        ElementMisuse,
+        MissingDtd
     }
 
     public class ContentDocumentValidationError : ValidationItem
