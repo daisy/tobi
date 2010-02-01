@@ -128,7 +128,8 @@ namespace Tobi.Plugin.Validator
 
             foreach (IValidator validator in m_Validators)
             {
-                m_IsValid = m_IsValid && validator.Validate();
+                bool result = validator.Validate();
+                m_IsValid = m_IsValid && result;
             }
 
             IsValid = m_IsValid;
