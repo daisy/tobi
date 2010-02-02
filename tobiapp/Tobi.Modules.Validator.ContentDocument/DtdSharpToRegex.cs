@@ -34,9 +34,9 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 Regex regex = new Regex(regexStr);
                 DtdRegexTable.Add(dtdElement.Name, regex);
             }
-
             return DtdRegexTable;
         }
+
         /// <summary>
         ///  Read from cache into a hashtable
         /// 
@@ -85,6 +85,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             }
             writer.Close();
         }
+
         //return a string list of the child node names
         //so that they are compatible with the regular expression 
         //created from the DTD

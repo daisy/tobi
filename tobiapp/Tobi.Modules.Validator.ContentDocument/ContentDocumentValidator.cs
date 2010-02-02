@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Text.RegularExpressions;
 using DtdSharp;
 using Microsoft.Practices.Composite.Logging;
@@ -68,11 +69,9 @@ namespace Tobi.Plugin.Validator.ContentDocument
         
         public override bool Validate()
         {
-            //TODO: detect the DTD dynamically and load from cache if possible; else load from DTDs project resources
-            string dllpath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string dtbook2005 = Path.Combine(dllpath, @"..\..\Tobi.Modules.Validator.ContentDocument/dtbook-2005-3.dtd");
-            StreamReader reader = new StreamReader(dtbook2005);
-            UseDtd(reader);
+            //TODO: un-hardcode this
+            string dtdIdentifier = "DTDs.Resources.dtbook-2005-3.dtd";
+            UseDtd(dtdIdentifier);
 
             if (m_Session.DocumentProject != null &&
                 m_Session.DocumentProject.Presentations.Count > 0)
@@ -94,35 +93,69 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     IsValid = ValidateNode(m_Session.DocumentProject.Presentations.Get(0).RootNode);    
                 }
             }
-
-            if (!IsValid)
-            {
-                //TODO: send an event that there are new validation errors
-                //or: maybe not.  the other plugin doesn't seem to need to do this.
-                //the aggregator probably takes care of it.
-            }
-
             return IsValid;
         }
 
         private DTD m_Dtd;
         private DtdSharpToRegex m_DtdRegex;
 
-        public void UseDtd(StreamReader dtd)
+        public void UseDtd(string dtdIdentifier)
         {
-            DTDParser parser = new DTDParser(dtd);
-            m_Dtd = parser.Parse(true);
-            m_DtdRegex.ParseDtdIntoHashtable(m_Dtd);
+            string dtdCache = dtdIdentifier + ".cache";
+            //check to see if we have a cached version of this file
+            if (ExistsInIsolatedStorage(dtdCache))
+            {
+                IsolatedStorageFileStream isoStream = GetIsolatedStorageFileStream(dtdCache);
+                m_DtdRegex.ReadFromCache(new StreamReader(isoStream));
+            }
+            else
+            {
+                //else read the .dtd file
+                Stream dtdStream = DTDs.DTDs.Fetch(dtdIdentifier);
+                if (dtdStream == null)
+                {
+                    m_Dtd = null;
+                    ContentDocumentValidationError error = new ContentDocumentValidationError
+                                                               {
+                                                                   ErrorType = ContentDocumentErrorType.MissingDtd,
+                                                                   Message =
+                                                                       string.Format("{0} not found.", dtdIdentifier)
+                                                               };
+                    m_ValidationItems.Add(error);
+                    return;
+                }
+                
+                DTDParser parser = new DTDParser(new StreamReader(dtdStream));
+                m_Dtd = parser.Parse(true);
+                m_DtdRegex.ParseDtdIntoHashtable(m_Dtd);
+
+                //cache the dtd and save it as dtdIdenfier + ".cache"
+                IsolatedStorageFileStream isoStream = GetIsolatedStorageFileStream(dtdCache);
+                StreamWriter writer = new StreamWriter(isoStream);
+                m_DtdRegex.WriteToCache(writer);
+            }
+            
         }
-        public void UseCachedDtd(StreamReader dtd)
+
+        private static bool ExistsInIsolatedStorage(string filename)
         {
-            m_DtdRegex.ReadFromCache(dtd);
+            IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore
+                (IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+
+            string[] filenames = isoStore.GetFileNames(filename);
+            return filenames.Length > 0;
         }
-        public void SaveCachedDtd(StreamWriter dtd)
+
+        private static IsolatedStorageFileStream GetIsolatedStorageFileStream(string filename)
         {
-            m_DtdRegex.WriteToCache(dtd);
+            //read it from the cached version in isolated storage
+            IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore
+                (IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+            IsolatedStorageFileStream stream = new IsolatedStorageFileStream
+                (filename, FileMode.OpenOrCreate, isoStore);
+
+            return stream;
         }
-        
         //recursive function to validate the tree
         public bool ValidateNode(TreeNode node)
         {
