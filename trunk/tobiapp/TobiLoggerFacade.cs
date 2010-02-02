@@ -380,7 +380,7 @@ namespace Tobi
             {
                 StackFrame frame = trace.GetFrame(i);
                 MethodBase method = frame.GetMethod();
-                sb.Append("\r\n    at ");
+                sb.Append(Environment.NewLine + Environment.NewLine + "    at ");
                 if (method.ReflectedType != null)
                 {
                     sb.Append(method.ReflectedType.Name);
@@ -413,7 +413,7 @@ namespace Tobi
                     sb.Append(")");
                 }
             }
-            sb.Append("\r\n");
+            sb.Append(Environment.NewLine + Environment.NewLine);
 
             return sb.ToString();
         }

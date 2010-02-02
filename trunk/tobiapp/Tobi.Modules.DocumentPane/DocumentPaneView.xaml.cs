@@ -115,7 +115,7 @@ namespace Tobi.Plugin.DocumentPane
                 UserInterfaceStrings.Event_SwitchPrevious_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
-                ()=>
+                () =>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
                     {
@@ -167,7 +167,7 @@ namespace Tobi.Plugin.DocumentPane
                 UserInterfaceStrings.Event_SwitchNext_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
-                ()=>
+                () =>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
                     {
@@ -232,7 +232,7 @@ namespace Tobi.Plugin.DocumentPane
             var arrow = (Path)Application.Current.FindResource("Arrow");
             m_FocusStartElement = new TextBlockEx
             {
-                Text=" ",
+                Text = " ",
                 //Content = arrow,
                 //BorderBrush = null,
                 //BorderThickness = new Thickness(0.0),
@@ -299,7 +299,7 @@ namespace Tobi.Plugin.DocumentPane
         }*/
 
 
-        
+
         //private FlowDocument m_FlowDoc;
 
 
@@ -329,7 +329,7 @@ namespace Tobi.Plugin.DocumentPane
 
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
-            
+
             PathToCurrentTreeNode = null;
 
             if (m_idLinkTargets != null)
@@ -376,7 +376,7 @@ namespace Tobi.Plugin.DocumentPane
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.Encoding = Encoding.UTF8;
                     settings.NewLineHandling = NewLineHandling.Replace;
-                    settings.NewLineChars = "\n";
+                    settings.NewLineChars = Environment.NewLine;
                     settings.Indent = true;
                     settings.IndentChars = "\t";
                     settings.NewLineOnAttributes = true;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
@@ -197,11 +198,11 @@ namespace Tobi.Plugin.MetadataPane
             //iterate through our observable collection
             foreach (NotifyingMetadataItem m in this.MetadataCollection.Metadatas)
             {
-                data += string.Format("{0} = {1}\n", m.Name, m.Content);
+                data += string.Format("{0} = {1}" + Environment.NewLine, m.Name, m.Content);
 
                 foreach (var optAttr in m.UrakawaMetadata.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
-                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
+                    data += string.Format("-- {0} = {1} (NS: {2})" + Environment.NewLine, optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
                 }
             }
             return data;
@@ -215,11 +216,11 @@ namespace Tobi.Plugin.MetadataPane
             //iterate through the SDK metadata
             foreach (Metadata m in list)
             {
-                data += string.Format("{0} = {1}\n", m.NameContentAttribute.Name, m.NameContentAttribute.Value);
+                data += string.Format("{0} = {1}" + Environment.NewLine, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
 
                 foreach (var optAttr in m.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
-                    data += string.Format("-- {0} = {1} (NS: {2})\n", optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
+                    data += string.Format("-- {0} = {1} (NS: {2})" + Environment.NewLine, optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
                 }
             }
             return data;
