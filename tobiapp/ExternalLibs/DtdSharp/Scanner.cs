@@ -129,7 +129,7 @@ namespace DtdSharp
 		    {
 			    NextChar = ReadNextChar();
                 StreamInfo.Column++;
-                if (NextChar == '\n')
+                if (NextChar == '\n' || NextChar == '\r')
                 {
                     StreamInfo.LineNumber++;
                     StreamInfo.Column=1;

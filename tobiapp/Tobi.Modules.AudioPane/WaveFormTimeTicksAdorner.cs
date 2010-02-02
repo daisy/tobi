@@ -120,7 +120,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 minorTickInterval_pixels = idealTickInterval;
 
-                minorTickInterval_milliseconds =Math.Round(
+                minorTickInterval_milliseconds = Math.Round(
                     m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
 
                 if (minorTickInterval_milliseconds > 0)
@@ -293,6 +293,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             nodeTxt = nodeTxt.Replace("\n", "");
                             nodeTxt = nodeTxt.Replace("\r\n", "");
+                            nodeTxt = nodeTxt.Replace(Environment.NewLine, "");
                             nodeTxt = nodeTxt.Trim();
 
                             if (m_standardTextHeight <= 0)

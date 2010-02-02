@@ -30,7 +30,7 @@ namespace Tobi.Common
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
             APP_VERSION = GetVersion();
 
-            UnhandledException = "A fatal problem occurred, the application must now close.\nThe full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
+            UnhandledException = "A fatal problem occurred, the application must now close." + Environment.NewLine + "The full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
         }
         public static readonly string APP_VERSION;
         private static string GetVersion()
@@ -183,7 +183,7 @@ namespace Tobi.Common
         public const string Menu_NavigationPane = "_Navigation panel"; // TODO: move this language resource in its own module (NavigationModule)
         public const string Menu_DocumentPane = "_Document panel"; // TODO: move this language resource in its own module (DocumentModule)
         public const string Menu_AudioPane = "_Audio panel"; // TODO: move this language resource in its own module (AudioModule)
-        
+
         public const string Menu_Navigation = "Navi_gation";
 
         public const string Menu_Help = "_Help";
@@ -246,7 +246,7 @@ namespace Tobi.Common
         //public static KeyGesture Paste_KEYS = new KeyGesture(Key.V, ModifierKeys.Control);
 
 
-        public const string ShowLogFilePath = "DEBUG: _Where is ["+ LOG_FILE_NAME+ "] ?";
+        public const string ShowLogFilePath = "DEBUG: _Where is [" + LOG_FILE_NAME + "] ?";
         public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
         //public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 
@@ -260,7 +260,7 @@ namespace Tobi.Common
         public const string OpenTobiSettingsFolder = "Browse settings folder";
         public const string OpenTobiSettingsFolder_ = "Open a file browser where the Tobi user settings are stored.";
         //public static KeyGesture OpenTobiSettingsFolder_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
-        
+
 
         public const string Help = "_Help";
         public const string Help_ = "Get help";

@@ -98,7 +98,7 @@ namespace Tobi.Common.UI
 
             string displayStr = keyG == null ? null : keyG.GetDisplayString();
 
-            Console.WriteLine("\n" + @"=====> "
+            Console.WriteLine(Environment.NewLine + @"=====> "
                 + (keyG == null ? "INVALID" : displayStr)
                 + @" <==> "
                 + (keyG == null ? "INVALID" : KeyGestureStringConverter.Convert((KeyGesture)keyG)));

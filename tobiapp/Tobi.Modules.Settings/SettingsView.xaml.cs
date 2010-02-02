@@ -224,7 +224,22 @@ namespace Tobi.Plugin.Settings
             int nLogicalDepthNoError = ValidationErrorTreeSearch.CheckTreeWalking(this, false, false, true);
 
             MessageBox.Show(String.Format(
-                "VisualLeafNoError={0}\nVisualDepthNoError={1}\nLogicalLeafNoError={2}\nLogicalDepthNoError={3}\n\ntimeNonRecursiveDepth={4}\ntimeNonRecursiveLeaf={5}\ntimeRecursiveDepth={6}\ntimeRecursiveLeaf={7}\n"
+                "VisualLeafNoError={0}"
+                + Environment.NewLine
+                + "VisualDepthNoError={1}"
+                + Environment.NewLine
+                + "LogicalLeafNoError={2}"
+                + Environment.NewLine
+                + "LogicalDepthNoError={3}"
+                + Environment.NewLine + Environment.NewLine
+                + "timeNonRecursiveDepth={4}"
+                + Environment.NewLine
+                + "timeNonRecursiveLeaf={5}"
+                + Environment.NewLine
+                + "timeRecursiveDepth={6}"
+                + Environment.NewLine
+                + "timeRecursiveLeaf={7}"
+                + Environment.NewLine
                 , nVisualLeafNoError, nVisualDepthNoError, nLogicalLeafNoError, nLogicalDepthNoError, timeNonRecursiveDepth, timeNonRecursiveLeaf, timeRecursiveDepth, timeRecursiveLeaf));
 #endif
         }

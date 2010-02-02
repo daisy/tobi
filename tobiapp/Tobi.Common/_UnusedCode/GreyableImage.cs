@@ -102,7 +102,7 @@ namespace Tobi.Common._UnusedCode
                 try
                 {
                     // get the string Uri for the original image source first
-                    String stringUri = TypeDescriptor.GetConverter(Source).ConvertTo(Source, typeof (string)) as string;
+                    String stringUri = TypeDescriptor.GetConverter(Source).ConvertTo(Source, typeof(string)) as string;
                     Uri uri = null;
                     // try to resolve it as an absolute Uri (if it is relative and used it as is
                     // it is likely to point in a wrong direction)
@@ -130,7 +130,7 @@ namespace Tobi.Common._UnusedCode
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.Fail("The Image used cannot be greyed out.",
-                                                  "Use BitmapImage or URI as a Source in order to allow greyscaling. Make sure the absolute Uri is used as relative Uri may sometimes resolve incorrectly.\n\nException: " +
+                                                  "Use BitmapImage or URI as a Source in order to allow greyscaling. Make sure the absolute Uri is used as relative Uri may sometimes resolve incorrectly." + Environment.NewLine + Environment.NewLine + "Exception: " +
                                                   e.Message);
                 }
             }
