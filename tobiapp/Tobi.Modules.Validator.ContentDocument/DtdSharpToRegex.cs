@@ -97,7 +97,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 names += "#PCDATA";
             }
-            foreach (TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
             {
                 if (child.HasXmlProperty)
                 {

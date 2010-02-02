@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,11 +39,14 @@ namespace Tobi
 
         //public RichDelegateCommand NavNextCommand { get; private set; }
         //public RichDelegateCommand NavPreviousCommand { get; private set; }
-
+#if DEBUG
         public RichDelegateCommand ShowLogFilePathCommand { get; private set; }
+#endif //DEBUG
+
         public RichDelegateCommand OpenTobiFolderCommand { get; private set; }
         public RichDelegateCommand OpenTobiSettingsFolderCommand { get; private set; }
-
+        public RichDelegateCommand OpenTobiIsolatedStorageCommand { get; private set; }
+        
         private void initCommands()
         {
             m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
@@ -204,6 +208,7 @@ namespace Tobi
 
             RegisterRichCommand(PasteCommand);
             //
+#if DEBUG
             ShowLogFilePathCommand = new RichDelegateCommand(
                 UserInterfaceStrings.ShowLogFilePath,
                 UserInterfaceStrings.ShowLogFilePath_,
@@ -259,6 +264,48 @@ namespace Tobi
 
             RegisterRichCommand(ShowLogFilePathCommand);
             //
+#endif //DEBUG
+            //
+
+            OpenTobiIsolatedStorageCommand = new RichDelegateCommand(
+                UserInterfaceStrings.OpenTobiIsolatedStorage,
+                UserInterfaceStrings.OpenTobiIsolatedStorage_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //LoadTangoIcon(@"help-browser"),
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenTobiIsolatedStorageCommand", Category.Debug, Priority.Medium);
+
+                    string dirpath = null;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        store.GetFileNames("DUMMY");
+
+                        FieldInfo fi = store.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (fi == null) return;
+                        dirpath = (string)fi.GetValue(store);
+                    }
+
+                    //if (iso.GetFileNames("DUMMY").Length <= 0)
+                    //{
+                    //    var stream = new IsolatedStorageFileStream("DUMMY", FileMode.CreateNew, FileAccess.Write, FileShare.None, iso);
+                    //}
+
+                    if (string.IsNullOrEmpty(dirpath)) return;
+
+                    var p = new Process
+                    {
+                        StartInfo = { FileName = dirpath }
+                    };
+                    p.Start();
+                },
+                 () => true,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
+                );
+
+            RegisterRichCommand(OpenTobiIsolatedStorageCommand);
             //
             OpenTobiFolderCommand = new RichDelegateCommand(
                 UserInterfaceStrings.OpenTobiFolder,
@@ -277,7 +324,8 @@ namespace Tobi
                 },
                  () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder));
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
+                );
 
             RegisterRichCommand(OpenTobiFolderCommand);
             //
@@ -301,7 +349,8 @@ namespace Tobi
                 },
                  () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiSettingsFolder));
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiSettingsFolder)
+                );
 
             RegisterRichCommand(OpenTobiSettingsFolderCommand);
             //

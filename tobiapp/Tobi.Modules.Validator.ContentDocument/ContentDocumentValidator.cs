@@ -139,28 +139,26 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         private static bool ExistsInIsolatedStorage(string filename)
         {
-            IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore
-                (IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
-
-            string[] filenames = isoStore.GetFileNames(filename);
-            return filenames.Length > 0;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                string[] filenames = store.GetFileNames(filename);
+                return filenames.Length > 0;
+            }
         }
 
         private static IsolatedStorageFileStream GetIsolatedStorageFileStream(string filename)
         {
-            //read it from the cached version in isolated storage
-            IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore
-                (IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
-            IsolatedStorageFileStream stream = new IsolatedStorageFileStream
-                (filename, FileMode.OpenOrCreate, isoStore);
-
-            return stream;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                var stream = new IsolatedStorageFileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, store);
+                return stream;
+            }
         }
         //recursive function to validate the tree
         public bool ValidateNode(TreeNode node)
         {
             bool result = ValidateNodeContent(node);
-            foreach (TreeNode child in node.Children.ContentsAs_ListAsReadOnly)
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
             {
                 result = result & ValidateNode(child);
             }
