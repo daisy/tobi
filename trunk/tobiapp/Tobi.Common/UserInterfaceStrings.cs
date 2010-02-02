@@ -250,6 +250,9 @@ namespace Tobi.Common
         public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
         //public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 
+        public const string OpenTobiIsolatedStorage = "Browse isolated storage folder";
+        public const string OpenTobiIsolatedStorage_ = "Open a file browser where the system Tobi files are located.";
+
         public const string OpenTobiFolder = "Browse application folder";
         public const string OpenTobiFolder_ = "Open a file browser where the Tobi.exe application is run from.";
         //public static KeyGesture OpenTobiFolder_KEYS = new KeyGesture(Key.F2, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);

@@ -133,30 +133,6 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F2")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_ShowTobiFolder {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ShowTobiFolder"]));
-            }
-            set {
-                this["Keyboard_ShowTobiFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] S")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_ShowTobiSettingsFolder {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ShowTobiSettingsFolder"]));
-            }
-            set {
-                this["Keyboard_ShowTobiSettingsFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] D0")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_UI_Zoom_Reset {
             get {

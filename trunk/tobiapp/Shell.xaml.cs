@@ -146,7 +146,7 @@ namespace Tobi
                 int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { ExitCommand }, PreferredPosition.Last, true);
                 int uid2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Magnification, new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Last, true);
                 int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, null, new[] { ManageShortcutsCommand }, PreferredPosition.First, true);
-                int uid4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_System, new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand }, PreferredPosition.Last, true);
+                int uid4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_System, new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand, OpenTobiIsolatedStorageCommand }, PreferredPosition.Last, true);
 
 #if DEBUG
                 //int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);
