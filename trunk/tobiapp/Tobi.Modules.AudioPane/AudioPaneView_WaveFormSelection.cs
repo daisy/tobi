@@ -50,7 +50,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void ClearSelection()
         {
-            m_Logger.Log("AudioPaneView.ClearSelection", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.ClearSelection", Category.Debug, Priority.Medium);
 
             m_TimeSelectionLeftX = -1;
             WaveFormTimeSelectionRect.Visibility = Visibility.Hidden;

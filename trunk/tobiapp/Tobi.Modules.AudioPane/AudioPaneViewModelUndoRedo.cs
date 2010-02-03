@@ -113,8 +113,7 @@ namespace Tobi.Plugin.AudioPane
 
                 State.CurrentTreeNode = null;
 
-                Logger.Log(
-                    "-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
+                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                     Category.Debug, Priority.Medium);
                 EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
 
@@ -123,8 +122,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (State.CurrentSubTreeNode != command.TreeNode)
             {
-                Logger.Log(
-                    "-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
+                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                     Category.Debug, Priority.Medium);
                 EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.TreeNode);
             }

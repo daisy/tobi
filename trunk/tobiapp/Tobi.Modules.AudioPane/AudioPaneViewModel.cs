@@ -281,7 +281,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnSubTreeNodeSelected(TreeNode node)
         {
-            Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
 
             if (node == null || State.CurrentTreeNode == null)
             {
@@ -343,7 +343,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnTreeNodeSelected(TreeNode node)
         {
-            Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
 
             if (node == null)
             {
@@ -849,7 +849,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void resetPeakMeter()
         {
-            Logger.Log("AudioPaneViewModel.resetPeakMeter", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.resetPeakMeter", Category.Debug, Priority.Medium);
 
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             //PeakMeterBarDataCh1.ForceFullFallback();
