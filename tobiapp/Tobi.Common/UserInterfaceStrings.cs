@@ -1,6 +1,7 @@
 using System;
 using System.Deployment.Application;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -20,6 +21,7 @@ namespace Tobi.Common
 
         public const string LOG_FILE_NAME = "Tobi.log";
         public static readonly string LOG_FILE_PATH;
+
         static UserInterfaceStrings()
         {
             //Directory.GetCurrentDirectory()
@@ -32,6 +34,7 @@ namespace Tobi.Common
 
             UnhandledException = "A fatal problem occurred, the application must now close." + Environment.NewLine + "The full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
         }
+
         public static readonly string APP_VERSION;
         private static string GetVersion()
         {
@@ -250,11 +253,11 @@ namespace Tobi.Common
         public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
         //public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 
-        public const string OpenTobiIsolatedStorage = "Browse isolated storage folder";
-        public const string OpenTobiIsolatedStorage_ = "Open a file browser where the system Tobi files are located.";
+        public const string OpenTobiIsolatedStorage = "Browse system storage folder";
+        public const string OpenTobiIsolatedStorage_ = "Open a file browser where Tobi's system files are located.";
 
         public const string OpenTobiFolder = "Browse application folder";
-        public const string OpenTobiFolder_ = "Open a file browser where the Tobi.exe application is run from.";
+        public const string OpenTobiFolder_ = "Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides).";
         //public static KeyGesture OpenTobiFolder_KEYS = new KeyGesture(Key.F2, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 
         public const string OpenTobiSettingsFolder = "Browse settings folder";

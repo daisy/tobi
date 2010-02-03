@@ -186,6 +186,8 @@ c.Execute();
         {
             if (LOGGER == null) return;
 
+            LOGGER.Log("[" + ex.GetType().FullName + "] ", Category.Exception, Priority.High);
+            
             if (ex.Message != null)
             {
                 LOGGER.Log(ex.Message, Category.Exception, Priority.High);
@@ -263,7 +265,7 @@ c.Execute();
             //exMessage += Environment.NewLine;
             //exMessage += @"===============";
             //exMessage += Environment.NewLine;
-            var exMessage = ex.Message;
+            var exMessage = "[" + ex.GetType().FullName + "] " + ex.Message;
             Exception exinnerd = ex;
             while (exinnerd.InnerException != null)
             {
@@ -272,6 +274,7 @@ c.Execute();
                     exMessage += Environment.NewLine;
                     exMessage += @"======";
                     exMessage += Environment.NewLine;
+                    exMessage += "[" + exinnerd.GetType().FullName + "] ";
                     exMessage += exinnerd.InnerException.Message;
                 }
 
@@ -294,6 +297,7 @@ c.Execute();
                         exMessage += Environment.NewLine;
                         exMessage += @"======";
                         exMessage += Environment.NewLine;
+                        exMessage += "[" + error.Exception.GetType().FullName + "] ";
                         exMessage += error.Exception.Message;
 
                         exinnerd = error.Exception;
@@ -304,6 +308,7 @@ c.Execute();
                                 exMessage += Environment.NewLine;
                                 exMessage += @"======";
                                 exMessage += Environment.NewLine;
+                                exMessage += "[" + exinnerd.InnerException.GetType().FullName + "] ";
                                 exMessage += exinnerd.InnerException.Message;
                             }
 

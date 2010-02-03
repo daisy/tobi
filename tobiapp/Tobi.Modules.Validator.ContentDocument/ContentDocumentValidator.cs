@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Text.RegularExpressions;
 using DtdSharp;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa.core;
+using urakawa.ExternalFiles;
 
+#if USE_ISOLATED_STORAGE
+using System.IO.IsolatedStorage;
+#endif //USE_ISOLATED_STORAGE
 
 namespace Tobi.Plugin.Validator.ContentDocument
 {
@@ -30,7 +32,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         private readonly ILoggerFacade m_Logger;
         protected readonly IUrakawaSession m_Session;
-        
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -47,18 +49,18 @@ namespace Tobi.Plugin.Validator.ContentDocument
             m_Session = session;
             m_ValidationItems = new List<ValidationItem>();
             m_DtdRegex = new DtdSharpToRegex();
-            
+
             m_Logger.Log(@"ContentDocumentValidator initialized", Category.Debug, Priority.Medium);
         }
 
         public override string Name
         {
-            get { return "Content Document Validator";}
+            get { return "Content Document Validator"; }
         }
 
         public override string Description
         {
-            get{ return "A validator that uses data from a DTD to validate elements in a document tree.";}
+            get { return "A validator that uses data from a DTD to validate elements in a document tree."; }
         }
         public override IEnumerable<ValidationItem> ValidationItems
         {
@@ -66,16 +68,15 @@ namespace Tobi.Plugin.Validator.ContentDocument
         }
 
         private List<ValidationItem> m_ValidationItems;
-        
+
         public override bool Validate()
         {
-            //TODO: un-hardcode this
-            string dtdIdentifier = "DTDs.Resources.dtbook-2005-3.dtd";
-            UseDtd(dtdIdentifier);
+            if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
+                UseDtd(DTDs.DTDs.DTBOOK_2005_3);
 
             if (m_Session.DocumentProject != null &&
                 m_Session.DocumentProject.Presentations.Count > 0)
-            {   
+            {
                 m_ValidationItems = new List<ValidationItem>();
 
                 if (m_DtdRegex == null)
@@ -90,7 +91,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
                 else
                 {
-                    IsValid = ValidateNode(m_Session.DocumentProject.Presentations.Get(0).RootNode);    
+                    IsValid = ValidateNode(m_Session.DocumentProject.Presentations.Get(0).RootNode);
                 }
             }
             return IsValid;
@@ -99,15 +100,52 @@ namespace Tobi.Plugin.Validator.ContentDocument
         private DTD m_Dtd;
         private DtdSharpToRegex m_DtdRegex;
 
+        private const string m_DtdStoreDirName = "Cached-DTDs";
+
         public void UseDtd(string dtdIdentifier)
         {
             string dtdCache = dtdIdentifier + ".cache";
+
             //check to see if we have a cached version of this file
-            if (ExistsInIsolatedStorage(dtdCache))
+#if USE_ISOLATED_STORAGE
+            Stream stream = null;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                IsolatedStorageFileStream isoStream = GetIsolatedStorageFileStream(dtdCache);
-                m_DtdRegex.ReadFromCache(new StreamReader(isoStream));
+                string[] filenames = store.GetFileNames(dtdCache);
+                if (filenames.Length > 0)
+                {
+                    stream = new IsolatedStorageFileStream(dtdCache, FileMode.Open, FileAccess.Read, FileShare.None, store);
+                }
             }
+            if (stream != null)
+            {
+                try
+                {
+                    m_DtdRegex.ReadFromCache(new StreamReader(stream));
+                }
+                finally
+                {
+                    stream.Close();
+                }
+            }
+
+                // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
+#else
+            string dirpath = ExternalFilesDataManager.STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + m_DtdStoreDirName;
+            string path = dirpath + Path.DirectorySeparatorChar + dtdCache;
+            if (File.Exists(path))
+            {
+                Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
+                try
+                {
+                    m_DtdRegex.ReadFromCache(new StreamReader(stream));
+                }
+                finally
+                {
+                    stream.Close();
+                }
+            }
+#endif //USE_ISOLATED_STORAGE
             else
             {
                 //else read the .dtd file
@@ -116,44 +154,50 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 {
                     m_Dtd = null;
                     ContentDocumentValidationError error = new ContentDocumentValidationError
-                                                               {
-                                                                   ErrorType = ContentDocumentErrorType.MissingDtd,
-                                                                   Message =
-                                                                       string.Format("{0} not found.", dtdIdentifier)
-                                                               };
+                    {
+                        ErrorType = ContentDocumentErrorType.MissingDtd,
+                        Message =
+                            string.Format("{0} not found.", dtdIdentifier)
+                    };
                     m_ValidationItems.Add(error);
                     return;
                 }
-                
+
+                // NOTE: the Stream is automatically closed by the parser, see Scanner.ReadNextChar()
                 DTDParser parser = new DTDParser(new StreamReader(dtdStream));
                 m_Dtd = parser.Parse(true);
+
                 m_DtdRegex.ParseDtdIntoHashtable(m_Dtd);
 
                 //cache the dtd and save it as dtdIdenfier + ".cache"
-                IsolatedStorageFileStream isoStream = GetIsolatedStorageFileStream(dtdCache);
-                StreamWriter writer = new StreamWriter(isoStream);
-                m_DtdRegex.WriteToCache(writer);
+
+#if USE_ISOLATED_STORAGE
+
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    stream = new IsolatedStorageFileStream(dtdCache, FileMode.Create, FileAccess.Write, FileShare.None, store);
+                }
+
+                // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
+#else
+                if (!Directory.Exists(dirpath))
+                {
+                    Directory.CreateDirectory(dirpath);
+                }
+
+                Stream stream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
+#endif //USE_ISOLATED_STORAGE
+                try
+                {
+                    m_DtdRegex.WriteToCache(new StreamWriter(stream));
+                }
+                finally
+                {
+                    stream.Close();
+                }
             }
-            
         }
 
-        private static bool ExistsInIsolatedStorage(string filename)
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                string[] filenames = store.GetFileNames(filename);
-                return filenames.Length > 0;
-            }
-        }
-
-        private static IsolatedStorageFileStream GetIsolatedStorageFileStream(string filename)
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                var stream = new IsolatedStorageFileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, store);
-                return stream;
-            }
-        }
         //recursive function to validate the tree
         public bool ValidateNode(TreeNode node)
         {

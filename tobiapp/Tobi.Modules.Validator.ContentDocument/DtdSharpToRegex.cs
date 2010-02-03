@@ -49,17 +49,24 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public void ReadFromCache(StreamReader reader)
         {
             DtdRegexTable = new Hashtable();
-            string name = reader.ReadLine();
-            string regExpStr = reader.ReadLine();
 
-            while (name != null && regExpStr != null)
+            try
             {
-                Regex regEx = new Regex(regExpStr);
-                DtdRegexTable[name] = regEx;
-                name = reader.ReadLine();
-                regExpStr = reader.ReadLine();
+                string name = reader.ReadLine();
+                string regExpStr = reader.ReadLine();
+
+                while (name != null && regExpStr != null)
+                {
+                    Regex regEx = new Regex(regExpStr);
+                    DtdRegexTable[name] = regEx;
+                    name = reader.ReadLine();
+                    regExpStr = reader.ReadLine();
+                }
             }
-            reader.Close();
+            finally
+            {
+                DtdRegexTable = null;
+            }
         }
 
         /// <summary>
@@ -76,6 +83,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
         /// <param name="writer"></param>
         public void WriteToCache(StreamWriter writer)
         {
+            if (DtdRegexTable == null) return;
+
             foreach (DictionaryEntry entry in DtdRegexTable)
             {
                 string name = (string)entry.Key;
@@ -83,7 +92,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 writer.WriteLine(name);
                 writer.WriteLine(regExpStr);
             }
-            writer.Close();
         }
 
         //return a string list of the child node names
