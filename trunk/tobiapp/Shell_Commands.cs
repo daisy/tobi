@@ -488,7 +488,7 @@ namespace Tobi
         {
             if (inputBinding != null)
             {
-                logInputBinding(inputBinding);
+                //logInputBinding(inputBinding);
                 InputBindings.Add(inputBinding);
                 return true;
             }
@@ -500,7 +500,7 @@ namespace Tobi
         {
             if (inputBinding != null)
             {
-                logInputBinding(inputBinding);
+                //logInputBinding(inputBinding);
                 InputBindings.Remove(inputBinding);
             }
         }
