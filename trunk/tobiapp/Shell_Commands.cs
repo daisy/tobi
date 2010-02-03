@@ -14,6 +14,7 @@ using System.IO;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using urakawa.ExternalFiles;
 using Application = System.Windows.Application;
 
 namespace Tobi
@@ -46,7 +47,7 @@ namespace Tobi
         public RichDelegateCommand OpenTobiFolderCommand { get; private set; }
         public RichDelegateCommand OpenTobiSettingsFolderCommand { get; private set; }
         public RichDelegateCommand OpenTobiIsolatedStorageCommand { get; private set; }
-        
+
         private void initCommands()
         {
             m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
@@ -276,27 +277,9 @@ namespace Tobi
                 {
                     m_Logger.Log(@"ShellView.OpenTobiIsolatedStorageCommand", Category.Debug, Priority.Medium);
 
-                    string dirpath = null;
-
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
-                        store.GetFileNames("DUMMY");
-
-                        FieldInfo fi = store.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance);
-                        if (fi == null) return;
-                        dirpath = (string)fi.GetValue(store);
-                    }
-
-                    //if (iso.GetFileNames("DUMMY").Length <= 0)
-                    //{
-                    //    var stream = new IsolatedStorageFileStream("DUMMY", FileMode.CreateNew, FileAccess.Write, FileShare.None, iso);
-                    //}
-
-                    if (string.IsNullOrEmpty(dirpath)) return;
-
                     var p = new Process
                     {
-                        StartInfo = { FileName = dirpath }
+                        StartInfo = { FileName = ExternalFilesDataManager.STORAGE_FOLDER_PATH }
                     };
                     p.Start();
                 },
