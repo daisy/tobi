@@ -231,7 +231,7 @@ namespace Tobi.Common.MVVM
 
             PropertyChangedEventArgs argzBump = m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
 
-#if DEBUG
+#if false && DEBUG
             if (argzBump != null)
             {
                 Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (PROP): " + argz.PropertyName + @" --> " + argzBump.PropertyName);
