@@ -568,7 +568,7 @@ namespace Tobi.Plugin.AudioPane
                     (Action<long, long>)RefreshUI_WaveFormChunkMarkers, bytesLeft, bytesRight);
                 return;
             }
-            m_Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
             if (double.IsNaN(height) || height == 0)
