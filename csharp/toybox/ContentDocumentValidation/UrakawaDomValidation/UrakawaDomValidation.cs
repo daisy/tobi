@@ -53,7 +53,11 @@ namespace UrakawaDomValidation
         //utility function
         public string GetRegex(TreeNode node)
         {
-            Regex regex = (Regex)m_DtdElementRegex[node.GetXmlElementQName().LocalName];
+            return GetRegex(node.GetXmlElementQName().LocalName);
+        }
+        public string GetRegex(string nodename)
+        {
+            Regex regex = (Regex)m_DtdElementRegex[nodename];
             return regex != null ? regex.ToString() : "";
         }
 
@@ -87,12 +91,14 @@ namespace UrakawaDomValidation
             }
             else if (dtdItem is DTDName)
             {
-                regexStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
+                //regexStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
+                regexStr += "(" + ((DTDName)dtdItem).Value + "#)";
             }
             else if (dtdItem is DTDChoice)
             {
                 List<DTDItem> items = ((DTDChoice)dtdItem).Items;
-                if (items.Count > 1) regexStr += "(?:";
+                //if (items.Count > 1) regexStr += "(?:";
+                if (items.Count > 1) regexStr += "(";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
@@ -106,7 +112,8 @@ namespace UrakawaDomValidation
             else if (dtdItem is DTDSequence)
             {
                 List<DTDItem> items = ((DTDSequence)dtdItem).Items;
-                if (items.Count > 1) regexStr += "(?:";
+                //if (items.Count > 1) regexStr += "(?:";
+                if (items.Count > 1) regexStr += "(";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
@@ -120,7 +127,8 @@ namespace UrakawaDomValidation
             else if (dtdItem is DTDMixed)
             {
                 List<DTDItem> items = ((DTDMixed)dtdItem).Items;
-                if (items.Count > 1) regexStr += "(?:";
+                //if (items.Count > 1) regexStr += "(?:";
+                if (items.Count > 1) regexStr += "(";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
