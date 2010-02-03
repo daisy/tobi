@@ -191,7 +191,7 @@ namespace Tobi.Plugin.AudioPane
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
         // ReSharper restore MemberCanBeMadeStatic.Local
         {
-            Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
             
             resetPeakMeter();
 

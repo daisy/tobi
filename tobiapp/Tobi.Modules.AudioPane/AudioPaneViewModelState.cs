@@ -388,7 +388,7 @@ namespace Tobi.Plugin.AudioPane
 
             public void ResetAll()
             {
-                m_viewModel.Logger.Log("Audio StateData reset.", Category.Debug, Priority.Medium);
+                //m_viewModel.Logger.Log("Audio StateData reset.", Category.Debug, Priority.Medium);
 
                 FilePath = null;
                 CurrentTreeNode = null;

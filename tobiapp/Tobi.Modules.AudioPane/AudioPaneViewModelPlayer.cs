@@ -412,8 +412,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void PlayPreviewLeftRight(bool left)
         {
-            Logger.Log(
-                String.Format("AudioPaneViewModel.CommandPlayPreview ({0})",
+            Logger.Log(String.Format("AudioPaneViewModel.CommandPlayPreview ({0})",
                               (left ? "before" : "after")), Category.Debug, Priority.Medium);
 
             AudioPlayer_Stop();
@@ -575,7 +574,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void loadAndPlay()
         {
-            Logger.Log("AudioPaneViewModel.loadAndPlay", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.loadAndPlay", Category.Debug, Priority.Medium);
 
             if (View != null)
             {
@@ -734,12 +733,12 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else if (m_WaveFormLoadTimer.IsEnabled)
                 {
-                    Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+                    //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
 
                     m_WaveFormLoadTimer.Stop();
                 }
 
-                Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
+                //Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
 
                 m_WaveFormLoadTimer.Start();
             }
@@ -747,7 +746,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
-            Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+            //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
 
             m_WaveFormLoadTimer.Stop();
 
@@ -761,7 +760,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void AudioPlayer_LoadWaveForm(bool play)
         {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
 
             if (String.IsNullOrEmpty(State.FilePath) && State.CurrentTreeNode == null)
             {
@@ -866,7 +865,7 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void AudioPlayer_TogglePlayPause()
         {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_TogglePlayPause", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.AudioPlayer_TogglePlayPause", Category.Debug, Priority.Medium);
 
             if (!State.Audio.HasContent)
             {
@@ -891,7 +890,7 @@ namespace Tobi.Plugin.AudioPane
         /// <param name="bytesEnd"></param>
         public void AudioPlayer_PlayFromTo(long bytesStart, long bytesEnd)
         {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_PlayFromTo", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.AudioPlayer_PlayFromTo", Category.Debug, Priority.Medium);
 
             if (!State.Audio.HasContent)
             {
@@ -1004,7 +1003,7 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void AudioPlayer_Stop()
         {
-            Logger.Log("AudioPaneViewModel.AudioPlayer_Stop", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.AudioPlayer_Stop", Category.Debug, Priority.Medium);
 
             if (!State.Audio.HasContent)
             {
@@ -1101,7 +1100,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnAudioPlaybackFinished(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
         {
-            Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             RaisePropertyChanged(() => IsPlaying);
 
@@ -1141,7 +1140,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnStateChanged_Player(object sender, AudioPlayer.StateChangedEventArgs e)
         {
-            Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
             
             resetPeakMeter();
             

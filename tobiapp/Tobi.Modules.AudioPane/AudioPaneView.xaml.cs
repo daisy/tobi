@@ -457,7 +457,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            m_Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
             if (double.IsNaN(height) || height == 0)
@@ -507,7 +507,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            m_Logger.Log("AudioPaneView.ResetAll", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.ResetAll", Category.Debug, Priority.Medium);
 
             ClearSelection();
 
@@ -880,7 +880,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_PlaybackTimer != null && m_PlaybackTimer.IsEnabled)
             {
-                m_Logger.Log("m_PlaybackTimer.Stop()", Category.Debug, Priority.Medium);
+                //m_Logger.Log("m_PlaybackTimer.Stop()", Category.Debug, Priority.Medium);
 
                 m_PlaybackTimer.Stop();
             }
@@ -896,7 +896,7 @@ namespace Tobi.Plugin.AudioPane
 
                 double interval = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
 
-                m_Logger.Log("WaveFormTimer REFRESH interval: " + interval, Category.Debug, Priority.Medium);
+                //m_Logger.Log("WaveFormTimer REFRESH interval: " + interval, Category.Debug, Priority.Medium);
 
                 if (interval < m_ViewModel.AudioPlayer_RefreshInterval)
                 {
@@ -909,7 +909,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            m_Logger.Log("m_PlaybackTimer.Start()", Category.Debug, Priority.Medium);
+            //m_Logger.Log("m_PlaybackTimer.Start()", Category.Debug, Priority.Medium);
 
             m_PlaybackTimer.Start();
         }
