@@ -598,7 +598,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            Logger.Log("AudioPaneViewModel.RefreshWaveFormChunkMarkers", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.RefreshWaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
             long byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
