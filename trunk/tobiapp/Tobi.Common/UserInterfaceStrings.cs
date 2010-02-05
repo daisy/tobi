@@ -94,6 +94,7 @@ namespace Tobi.Common
         public const string CloseDialog = "_Close";
 
         public const string RunningTask = "Running task...";
+        public const string CancellingTask = "Cancelling...";
 
         public const string ShowMetadata = "_Edit metadata";
         public const string ShowMetadata_ = "Metadata viewer/editor";

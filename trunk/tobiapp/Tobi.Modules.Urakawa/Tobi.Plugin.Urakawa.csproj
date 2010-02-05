@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="UrakawaPlugin.cs" />
     <Compile Include="UrakawaSession.cs" />
+    <Compile Include="UrakawaSession_Import.cs" />
     <Compile Include="UrakawaSession_Open.cs" />
     <Compile Include="UrakawaSession_Save.cs" />
   </ItemGroup>

@@ -237,11 +237,10 @@ namespace Tobi.Plugin.Urakawa
             }
             else
             {
-                //TODO: progress bar !
-                var converter = new Daisy3_Import(DocumentFilePath);
-
-                DocumentFilePath = converter.XukPath;
-                DocumentProject = converter.Project;
+                if (!doImport())
+                {
+                    return false;
+                }
             }
 
             if (DocumentProject != null)

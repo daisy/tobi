@@ -310,6 +310,7 @@ namespace Tobi.Common.UI
             if (m_ButtonTriggersClose)
             {
                 ContentPlaceHolder.Content = null;
+                DetailsPlaceHolder.Content = null;
                 return;
             }
 
@@ -321,6 +322,7 @@ namespace Tobi.Common.UI
             }
 
             ContentPlaceHolder.Content = null;
+            DetailsPlaceHolder.Content = null;
 
             if (m_whenDoneAction != null)
             {
@@ -394,6 +396,7 @@ namespace Tobi.Common.UI
 
         public enum DialogButtonsSet
         {
+            None,
             Ok,
             OkCancel,
             Cancel,
