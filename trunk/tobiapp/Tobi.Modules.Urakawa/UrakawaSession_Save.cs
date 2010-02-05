@@ -66,7 +66,8 @@ namespace Tobi.Plugin.Urakawa
                         Directory.CreateDirectory(dlg.SelectedPath);
                     }
 
-                    new Daisy3_Export(DocumentProject.Presentations.Get(0), dlg.SelectedPath, null);
+                    Daisy3_Export daisyExport = new Daisy3_Export(DocumentProject.Presentations.Get(0), dlg.SelectedPath, null);
+                    daisyExport.StartExport ();
                 },
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
