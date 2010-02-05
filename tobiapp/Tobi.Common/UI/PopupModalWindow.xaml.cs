@@ -74,9 +74,9 @@ namespace Tobi.Common.UI
             AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
 
-        private PopupModalWindow(IShellView presenter)
+        private PopupModalWindow(IShellView shellView)
         {
-            ShellView = presenter;
+            ShellView = shellView;
 
             ClickedDialogButton = DialogButton.ESC;
 
@@ -219,12 +219,12 @@ namespace Tobi.Common.UI
             Height = finalHeight;
         }
 
-        public PopupModalWindow(IShellView presenter, string title,
+        public PopupModalWindow(IShellView shellView, string title,
             object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
             double width, double height,
             object details, double detailsHeight)
-            : this(presenter)
+            : this(shellView)
         {
             if (this != Application.Current.MainWindow)
             {
@@ -253,7 +253,7 @@ namespace Tobi.Common.UI
 
             //DataContext = Owner;
 
-            var zoom = (Double)Application.Current.Resources["MagnificationLevel"];
+            var zoom = (ShellView != null ? ShellView.MagnificationLevel : (Double)FindResource("MagnificationLevel"));
 
             Width = zoom * width;
             Height = zoom * height;

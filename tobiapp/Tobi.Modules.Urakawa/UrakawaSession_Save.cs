@@ -358,7 +358,6 @@ namespace Tobi.Plugin.Urakawa
 
             var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon(@"dialog-warning"),
                                                                  m_ShellView.MagnificationLevel);
-            //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
             var panel = new StackPanel
             {

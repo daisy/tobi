@@ -231,7 +231,6 @@ namespace Tobi
                     };
 
                     var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find"), MagnificationLevel);
-                    //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
                     var panel = new StackPanel
                     {
@@ -1102,7 +1101,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands.Add(command);
 
-                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
+                    command.SetIconProviderDrawScale(Settings.Default.WindowMagnificationLevel);
                 }
             }
 
@@ -1117,7 +1116,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands2.Add(command);
 
-                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
+                    command.SetIconProviderDrawScale(Settings.Default.WindowMagnificationLevel);
                 }
             }
 
@@ -1134,7 +1133,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands3.Add(command);
 
-                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
+                    command.SetIconProviderDrawScale(Settings.Default.WindowMagnificationLevel);
                 }
             }
 
@@ -1149,7 +1148,7 @@ namespace Tobi
                                                                   null, () => true);
                     m_listOfIconRichCommands4.Add(command);
 
-                    command.SetIconProviderDrawScale((double)Application.Current.Resources["MagnificationLevel"]);
+                    command.SetIconProviderDrawScale(Settings.Default.WindowMagnificationLevel);
                 }
             }
 
