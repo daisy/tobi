@@ -187,13 +187,15 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 Stream stream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
 #endif //USE_ISOLATED_STORAGE
+                var writer = new StreamWriter(stream);
                 try
                 {
-                    m_DtdRegex.WriteToCache(new StreamWriter(stream));
+                    m_DtdRegex.WriteToCache(writer);
                 }
                 finally
                 {
-                    stream.Close();
+                    writer.Flush();
+                    writer.Close();
                 }
             }
         }

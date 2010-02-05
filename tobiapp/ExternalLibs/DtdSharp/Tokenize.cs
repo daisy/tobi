@@ -140,6 +140,7 @@ namespace DtdSharp
                 if (writeToLog)
                 {
                     Console.SetOut(oldOut);
+                    writer.Flush();
                     writer.Close();
                     ostrm.Close();
                 }
