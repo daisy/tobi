@@ -38,7 +38,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Open_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-open"),
-                ()=>
+                () =>
                 {
                     var dlg = new OpenFileDialog
                     {
@@ -64,7 +64,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         return;
                     }
-                    
+
                     openFile(dlg.FileName);
                 },
                 () => true,
@@ -75,43 +75,6 @@ namespace Tobi.Plugin.Urakawa
         }
 
 
-        private BackgroundWorker m_OpenXukActionWorker;
-        private bool m_OpenXukActionCancelFlag;
-        private int m_OpenXukActionCurrentPercentage;
-
-        private void action_cancelled(object sender, CancelledEventArgs e)
-        {
-            DocumentFilePath = null;
-            DocumentProject = null;
-
-            m_OpenXukActionWorker.CancelAsync();
-        }
-
-// ReSharper disable MemberCanBeMadeStatic.Local
-        private void action_finished(object sender, FinishedEventArgs e)
-// ReSharper restore MemberCanBeMadeStatic.Local
-        {
-            //DoClose();
-        }
-
-        private void action_progress(object sender, ProgressEventArgs e)
-        {
-            double val = e.Current;
-            double max = e.Total;
-            var percent = (int)((val / max) * 100);
-
-            if (percent != m_OpenXukActionCurrentPercentage)
-            {
-                m_OpenXukActionCurrentPercentage = percent;
-                m_OpenXukActionWorker.ReportProgress(m_OpenXukActionCurrentPercentage);
-            }
-
-            if (m_OpenXukActionCancelFlag)
-            {
-                e.Cancel();
-            }
-        }
-
         private bool openFile(string filename)
         {
             if (!Close())
@@ -119,13 +82,20 @@ namespace Tobi.Plugin.Urakawa
                 return false;
             }
 
+            var backWorker = new BackgroundWorker
+                {
+                    WorkerSupportsCancellation = true,
+                    WorkerReportsProgress = true
+                };
+
+
             DocumentFilePath = filename;
             if (Path.GetExtension(DocumentFilePath) == @".xuk")
             {
                 m_Logger.Log(String.Format(@"UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
-                m_OpenXukActionCancelFlag = false;
-                m_OpenXukActionCurrentPercentage = 0;
+                int currentPercentage = 0;
+                bool cancelFlag = false;
 
                 var project = new Project();
 
@@ -138,9 +108,31 @@ namespace Tobi.Plugin.Urakawa
                     LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK..."
                 };
 
-                action.Progress += action_progress;
-                action.Finished += action_finished;
-                action.Cancelled += action_cancelled;
+                action.Progress += (sender, e) =>
+                {
+                    double val = e.Current;
+                    double max = e.Total;
+                    var percent = (int)((val / max) * 100);
+
+                    if (percent != currentPercentage)
+                    {
+                        currentPercentage = percent;
+                        backWorker.ReportProgress(currentPercentage);
+                    }
+
+                    if (cancelFlag)
+                    {
+                        e.Cancel();
+                    }
+                };
+                action.Finished += (sender, e) => { };
+                action.Cancelled += (sender, e) =>
+                    {
+                        DocumentFilePath = null;
+                        DocumentProject = null;
+
+                        backWorker.CancelAsync();
+                    };
 
                 var progressBar = new ProgressBar
                 {
@@ -180,17 +172,13 @@ namespace Tobi.Plugin.Urakawa
                                                        PopupModalWindow.DialogButton.Cancel,
                                                        false, 500, 150, details, 80);
 
-                m_OpenXukActionWorker = new BackgroundWorker
-                {
-                    WorkerSupportsCancellation = true,
-                    WorkerReportsProgress = true
-                };
+                
 
-                m_OpenXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+                backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
                 {
                     //var dummy = (string)args.Argument;
 
-                    if (m_OpenXukActionWorker.CancellationPending)
+                    if (backWorker.CancellationPending)
                     {
                         args.Cancel = true;
                         return;
@@ -201,12 +189,12 @@ namespace Tobi.Plugin.Urakawa
                     args.Result = @"dummy result";
                 };
 
-                m_OpenXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+                backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
                 {
                     progressBar.Value = args.ProgressPercentage;
                 };
 
-                m_OpenXukActionWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+                backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
                 {
                     if (args.Cancelled)
                     {
@@ -223,15 +211,15 @@ namespace Tobi.Plugin.Urakawa
 
                     //var result = (string)args.Result;
 
-                    m_OpenXukActionWorker = null;
+                    backWorker = null;
                 };
 
-                m_OpenXukActionWorker.RunWorkerAsync(@"dummy arg");
+                backWorker.RunWorkerAsync(@"dummy arg");
                 windowPopup.ShowModal();
 
                 if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
                 {
-                    m_OpenXukActionCancelFlag = true;
+                    cancelFlag = true;
                     return false;
                 }
             }
