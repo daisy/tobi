@@ -249,6 +249,10 @@
       <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
       <Name>Tobi.Plugin.Urakawa</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.csproj">
+      <Project>{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}</Project>
+      <Name>Tobi.Plugin.Validator.ContentDocument</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.csproj">
       <Project>{341678A8-F3B5-43BF-8505-69B4ED969B53}</Project>
       <Name>Tobi.Plugin.Validator.Metadata</Name>
