@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Tobi.Common.MVVM;
 using Application = System.Windows.Application;
 
 namespace Tobi
@@ -10,11 +11,15 @@ namespace Tobi
             DependencyProperty.Register(@"MagnificationLevel",
             typeof(double),
             typeof(Shell),
-            new PropertyMetadata(1.0, OnMagnificationLevelChanged, OnMagnificationLevelCoerce));
+            new PropertyMetadata(1.0,
+                OnMagnificationLevelChanged, OnMagnificationLevelCoerce));
 
         public double MagnificationLevel
         {
-            get { return (double)GetValue(MagnificationLevelProperty); }
+            get
+            {
+                return (double)GetValue(MagnificationLevelProperty);
+            }
             set
             {
                 // The value will be coerced after this call !
@@ -29,6 +34,7 @@ namespace Tobi
             if (shell == null) return 1.0;
 
             var value = (Double)basevalue;
+
             if (value > shell.ZoomSlider.Maximum)
             {
                 value = shell.ZoomSlider.Maximum;
@@ -43,10 +49,19 @@ namespace Tobi
             return value;
         }
 
+        static void Default_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private static void OnMagnificationLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var shell = d as Shell;
             if (shell == null) return;
+
+            if (Settings.Default.WindowMagnificationLevel != shell.MagnificationLevel)
+                Settings.Default.WindowMagnificationLevel = shell.MagnificationLevel;
+
             shell.NotifyMagnificationLevel();
         }
 

@@ -46,7 +46,8 @@ namespace Tobi.Plugin.AudioPane
 
             double realBytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
 
-            var zoom = (Double)FindResource("MagnificationLevel"); // Resources["MagnificationLevel"]; //Application.Current.
+
+            var zoom = (m_ShellView != null ? m_ShellView.MagnificationLevel : (Double)FindResource("MagnificationLevel"));
 
             double widthMagnified = widthReal * zoom;
             double heightMagnified = heightReal * zoom;

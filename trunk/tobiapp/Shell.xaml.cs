@@ -87,6 +87,15 @@ namespace Tobi
 
             m_InConstructor = false;
 
+            Settings.Default.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.WindowMagnificationLevel))
+                {
+                    if (MagnificationLevel != Settings.Default.WindowMagnificationLevel)
+                        MagnificationLevel = Settings.Default.WindowMagnificationLevel;
+                }
+            };
+
             //IRegionManager regionManager = Container.Resolve<IRegionManager>();
             //string regionName = "AvalonDockRegion_1";
             //regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
@@ -287,7 +296,6 @@ namespace Tobi
             };
 
             var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("help-browser"), MagnificationLevel);
-            //var zoom = (Double)Resources["MagnificationLevel"]; //Application.Current.
 
             var panel = new StackPanel
             {

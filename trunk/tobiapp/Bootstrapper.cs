@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,6 +27,7 @@ using Tobi.Plugin.Urakawa;
 using Tobi.Plugin.Validator;
 using Tobi.Plugin.Validator.ContentDocument;
 using Tobi.Plugin.Validator.Metadata;
+using urakawa.ExternalFiles;
 
 namespace Tobi
 {
@@ -74,6 +77,12 @@ namespace Tobi
             m_Logger.Log(@"[" + DateTime.Now + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[" + UserInterfaceStrings.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[Tobi version: " + UserInterfaceStrings.APP_VERSION + @"]", Category.Info, Priority.High);
+
+            m_Logger.Log(@"[Tobi app data folder: " + ExternalFilesDataManager.STORAGE_FOLDER_PATH + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[Tobi exe/log folder: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"]", Category.Info, Priority.High);
+
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            m_Logger.Log(@"[Tobi user config folder: " + Path.GetDirectoryName(config.FilePath) + @"]", Category.Info, Priority.High);
         }
 
         /// <summary>
