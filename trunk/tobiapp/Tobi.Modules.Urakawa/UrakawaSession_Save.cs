@@ -13,10 +13,10 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.events.progress;
 using urakawa.xuk;
-using HorizontalAlignment=System.Windows.HorizontalAlignment;
-using Orientation=System.Windows.Controls.Orientation;
-using ProgressBar=System.Windows.Controls.ProgressBar;
-using SaveFileDialog=Microsoft.Win32.SaveFileDialog;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Orientation = System.Windows.Controls.Orientation;
+using ProgressBar = System.Windows.Controls.ProgressBar;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -31,7 +31,7 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                ()=>
+                () =>
                 {
                     if (DocumentProject == null)
                     {
@@ -80,7 +80,7 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-save"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
-                ()=>
+                () =>
                 {
                     if (DocumentProject == null)
                     {
@@ -151,71 +151,12 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"media-floppy"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                ()=> save(),
+                () => save(),
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Save));
 
             m_ShellView.RegisterRichCommand(SaveCommand);
-        }
-
-        private BackgroundWorker m_SaveXukActionWorker;
-        private bool m_SaveXukActionCancelFlag;
-        private int m_SaveXukActionCurrentPercentage;
-
-        private void OnSaveXukAction_cancelled(object sender, CancelledEventArgs e)
-        {
-            if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
-            {
-                File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
-            }
-
-            IsDirty = true;
-
-            m_SaveXukActionWorker.CancelAsync();
-        }
-
-        private void OnSaveXukAction_finished(object sender, FinishedEventArgs e)
-        {
-            if (DocumentFilePath == m_SaveAsDocumentFilePath)
-            {
-                File.Delete(DocumentFilePath);
-                File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
-
-                //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
-                //File.Delete(DocumentFilePath + SAVING_EXT);
-            }
-            else
-            {
-                if (File.Exists(m_SaveAsDocumentFilePath))
-                {
-                    File.Delete(m_SaveAsDocumentFilePath);
-                }
-                File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
-                DocumentFilePath = m_SaveAsDocumentFilePath;
-            }
-
-            m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");
-
-            IsDirty = false;
-        }
-
-        private void OnSaveXukAction_progress(object sender, ProgressEventArgs e)
-        {
-            double val = e.Current;
-            double max = e.Total;
-            var percent = (int)((val / max) * 100);
-
-            if (percent != m_SaveXukActionCurrentPercentage)
-            {
-                m_SaveXukActionCurrentPercentage = percent;
-                m_SaveXukActionWorker.ReportProgress(m_SaveXukActionCurrentPercentage);
-            }
-
-            if (m_SaveXukActionCancelFlag)
-            {
-                e.Cancel();
-            }
         }
 
         private const string SAVING_EXT = ".SAVING";
@@ -242,8 +183,14 @@ namespace Tobi.Plugin.Urakawa
 
             m_Logger.Log(String.Format(@"UrakawaSession.saveas() [{0}]", m_SaveAsDocumentFilePath), Category.Debug, Priority.Medium);
 
-            m_SaveXukActionCancelFlag = false;
-            m_SaveXukActionCurrentPercentage = 0;
+            var backWorker = new BackgroundWorker
+                {
+                    WorkerSupportsCancellation = true,
+                    WorkerReportsProgress = true
+                };
+
+            bool cancelFlag = false;
+            int currentPercentage = 0;
 
             var uri = new Uri(m_SaveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
             //DocumentProject.OpenXuk(uri);
@@ -254,9 +201,58 @@ namespace Tobi.Plugin.Urakawa
                 LongDescription = "Serializing the document object model from the Urakawa SDK as XML content into a XUK file..."
             };
 
-            action.Progress += OnSaveXukAction_progress;
-            action.Finished += OnSaveXukAction_finished;
-            action.Cancelled += OnSaveXukAction_cancelled;
+            action.Progress += (sender, e) =>
+            {
+                double val = e.Current;
+                double max = e.Total;
+                var percent = (int)((val / max) * 100);
+
+                if (percent != currentPercentage)
+                {
+                    currentPercentage = percent;
+                    backWorker.ReportProgress(currentPercentage);
+                }
+
+                if (cancelFlag)
+                {
+                    e.Cancel();
+                }
+            };
+            action.Finished += (sender, e) =>
+            {
+                if (DocumentFilePath == m_SaveAsDocumentFilePath)
+                {
+                    File.Delete(DocumentFilePath);
+                    File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+
+                    //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+                    //File.Delete(DocumentFilePath + SAVING_EXT);
+                }
+                else
+                {
+                    if (File.Exists(m_SaveAsDocumentFilePath))
+                    {
+                        File.Delete(m_SaveAsDocumentFilePath);
+                    }
+                    File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
+                    DocumentFilePath = m_SaveAsDocumentFilePath;
+                }
+
+                m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");
+
+                IsDirty = false;
+            };
+            action.Cancelled += (sender, e) =>
+            {
+                if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
+                {
+                    File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
+                }
+
+                IsDirty = true;
+
+                backWorker.CancelAsync();
+            };
 
             var progressBar = new ProgressBar
             {
@@ -296,17 +292,11 @@ namespace Tobi.Plugin.Urakawa
                                                    PopupModalWindow.DialogButton.Cancel,
                                                    false, 500, 150, details, 80);
 
-            m_SaveXukActionWorker = new BackgroundWorker
-            {
-                WorkerSupportsCancellation = true,
-                WorkerReportsProgress = true
-            };
-
-            m_SaveXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+            backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
                 //var dummy = (string)args.Argument;
 
-                if (m_SaveXukActionWorker.CancellationPending)
+                if (backWorker.CancellationPending)
                 {
                     args.Cancel = true;
                     return;
@@ -317,12 +307,12 @@ namespace Tobi.Plugin.Urakawa
                 args.Result = @"dummy result";
             };
 
-            m_SaveXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+            backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
             {
                 progressBar.Value = args.ProgressPercentage;
             };
 
-            m_SaveXukActionWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+            backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
             {
                 if (args.Cancelled)
                 {
@@ -336,15 +326,15 @@ namespace Tobi.Plugin.Urakawa
 
                 //var result = (string)args.Result;
 
-                m_SaveXukActionWorker = null;
+                backWorker = null;
             };
 
-            m_SaveXukActionWorker.RunWorkerAsync(@"dummy arg");
+            backWorker.RunWorkerAsync(@"dummy arg");
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
             {
-                m_SaveXukActionCancelFlag = true;
+                cancelFlag = true;
                 return false;
             }
             return true;

@@ -63,24 +63,31 @@ namespace Tobi.Plugin.Urakawa
 
             panel.Children.Add(label);
             panel.Children.Add(progressBar);
-            panel.Children.Add(new TextBlock(new Run(" ")));
-            panel.Children.Add(label2);
-            panel.Children.Add(progressBar2);
+            //panel.Children.Add(new TextBlock(new Run(" ")));
+            //panel.Children.Add(label2);
+            //panel.Children.Add(progressBar2);
 
             label2.Visibility = Visibility.Collapsed;
             progressBar2.Visibility = Visibility.Collapsed;
 
-            var details = new TextBoxReadOnlyCaretVisible("Converting data and building the in-memory document object model into the Urakawa SDK...");
+            //var details = new TextBoxReadOnlyCaretVisible("Converting data and building the in-memory document object model into the Urakawa SDK...");
+            var details = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            details.Children.Add(label2);
+            details.Children.Add(progressBar2);
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.RunningTask),
+                                                   "Importing ...",
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Cancel,
                                                    PopupModalWindow.DialogButton.Cancel,
-                                                   false, 500, 200, details, 80);
+                                                   false, 500, 150, details, 80);
 
-            m_OpenXukActionWorker = new BackgroundWorker
+            var backWorker = new BackgroundWorker
             {
                 WorkerSupportsCancellation = true,
                 WorkerReportsProgress = true
@@ -88,11 +95,11 @@ namespace Tobi.Plugin.Urakawa
 
             Daisy3_Import converter = null;
 
-            m_OpenXukActionWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+            backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
                 //var dummy = (string)args.Argument;
 
-                if (m_OpenXukActionWorker.CancellationPending)
+                if (backWorker.CancellationPending)
                 {
                     args.Cancel = true;
                     return;
@@ -102,7 +109,7 @@ namespace Tobi.Plugin.Urakawa
 
                 converter.ProgressChangedEvent += (sender, e) =>
                    {
-                       m_OpenXukActionWorker.ReportProgress(e.ProgressPercentage, e.UserState);
+                       backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
                    };
 
                 converter.SubProgressChangedEvent += (sender, e) => Application.Current.Dispatcher.BeginInvoke((Action)(
@@ -141,7 +148,7 @@ namespace Tobi.Plugin.Urakawa
                 args.Result = @"dummy result";
             };
 
-            m_OpenXukActionWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+            backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
             {
                 if (converter.RequestCancellation)
                 {
@@ -161,9 +168,9 @@ namespace Tobi.Plugin.Urakawa
                 label.Text = (string)args.UserState;
             };
 
-            m_OpenXukActionWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+            backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
             {
-                m_OpenXukActionWorker = null;
+                backWorker = null;
 
                 if (converter.RequestCancellation || args.Cancelled)
                 {
@@ -181,12 +188,12 @@ namespace Tobi.Plugin.Urakawa
                 //var result = (string)args.Result;
             };
 
-            m_OpenXukActionWorker.RunWorkerAsync(@"dummy arg");
+            backWorker.RunWorkerAsync(@"dummy arg");
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
             {
-                if (m_OpenXukActionWorker == null) return false;
+                if (backWorker == null) return false;
 
                 progressBar.IsIndeterminate = true;
                 label.Text = "Please wait while cancelling...";
@@ -194,7 +201,7 @@ namespace Tobi.Plugin.Urakawa
                 progressBar2.Visibility = Visibility.Collapsed;
                 label2.Visibility = Visibility.Collapsed;
                 
-                details.Text = "Cancelling the current operation...";
+                //details.Text = "Cancelling the current operation...";
 
                 windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
@@ -202,7 +209,7 @@ namespace Tobi.Plugin.Urakawa
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,
-                                                       false, 500, 150, details, 80);
+                                                       false, 500, 150, null, 80);
 
                 //m_OpenXukActionWorker.CancelAsync();
                 converter.RequestCancellation = true;
