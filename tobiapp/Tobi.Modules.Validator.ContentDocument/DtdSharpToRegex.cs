@@ -17,8 +17,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public Regex GetRegex(TreeNode node)
         {
-            Regex regex = (Regex)DtdRegexTable[node.GetXmlElementQName().LocalName];
-            return regex;
+            if (DtdRegexTable == null) return null;
+            object regexObj = DtdRegexTable[node.GetXmlElementQName().LocalName];
+            if (regexObj == null) return null;
+            return (Regex)regexObj;
         }
 
         //take a DtdSharp data structure and create a hashmap where 
@@ -63,7 +65,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     regExpStr = reader.ReadLine();
                 }
             }
-            finally
+            catch
             {
                 DtdRegexTable = null;
             }
