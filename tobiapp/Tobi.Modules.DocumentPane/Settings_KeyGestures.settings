@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.DocumentPane" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
-    <Setting Name="Keyboard_Focus_Doc" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F6</Value>
-    </Setting>
     <Setting Name="Keyboard_Doc_Event_SwitchPrevious" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] J</Value>
     </Setting>

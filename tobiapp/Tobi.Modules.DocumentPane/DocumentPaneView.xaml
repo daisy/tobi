@@ -9,21 +9,6 @@
            LastChildFill="True"
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
-  <Border DockPanel.Dock="Top"
-          Focusable="False"
-          BorderThickness="1,1,1,1"
-          BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
-    <WrapPanel
-      
-      Focusable="False"
-      
-      KeyboardNavigation.DirectionalNavigation="Cycle"
-             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-             x:Name="BreadcrumbPanel" Orientation="Horizontal"
-             >
-    </WrapPanel>
-    
-  </Border>
 
   <!-- Grid DockPanel.Dock="Top">
     <Grid.ColumnDefinitions>

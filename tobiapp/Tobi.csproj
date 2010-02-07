@@ -241,6 +241,10 @@
       <Project>{5D599BFC-AA17-4D94-9BE6-6D369E214167}</Project>
       <Name>Tobi.Plugin.Settings</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane.csproj">
+      <Project>{620875F9-EE80-4D08-A603-C4347657E561}</Project>
+      <Name>Tobi.Plugin.StructureTrailPane</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.csproj">
       <Project>{2BA3495E-8895-4D67-866C-C60BBA3C08D5}</Project>
       <Name>Tobi.Plugin.ToolBars</Name>

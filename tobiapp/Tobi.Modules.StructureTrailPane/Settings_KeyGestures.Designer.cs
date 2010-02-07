@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Tobi.Plugin.DocumentPane {
+namespace Tobi.Plugin.StructureTrailPane {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -25,25 +25,37 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] J")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Doc_Event_SwitchPrevious {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Focus_Doc {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Doc_Event_SwitchPrevious"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Focus_Doc"]));
             }
             set {
-                this["Keyboard_Doc_Event_SwitchPrevious"] = value;
+                this["Keyboard_Focus_Doc"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] K")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Doc_Event_SwitchNext {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Up")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectUp {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Doc_Event_SwitchNext"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_StructureSelectUp"]));
             }
             set {
-                this["Keyboard_Doc_Event_SwitchNext"] = value;
+                this["Keyboard_StructureSelectUp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Down")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectDown {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_StructureSelectDown"]));
+            }
+            set {
+                this["Keyboard_StructureSelectDown"] = value;
             }
         }
     }

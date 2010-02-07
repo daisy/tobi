@@ -320,6 +320,12 @@ namespace Tobi.Common
         //public static KeyGesture IconsDebug_KEYS = new KeyGesture(Key.F4, ModifierKeys.Control | ModifierKeys.Shift);
 
 
+        public const string StructureUp = "_Expand structure selection";
+        public const string StructureUp_ = "Move the selection up one level in the document tree structure";
+
+        public const string StructureDown = "_Narrow structure selection";
+        public const string StructureDown_ = "Move the selection down one level in the document tree structure";
+
         public const string Event_SwitchPrevious = "_Previous phrase";
         public const string Event_SwitchPrevious_ = "Select the previous phrase";
         //public static KeyGesture Event_SwitchPrevious_KEYS = new KeyGesture(Key.I, ModifierKeys.Control);

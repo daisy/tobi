@@ -240,11 +240,21 @@
                       Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"
                       cal:RegionManager.RegionName="{x:Static Common:RegionNames.AudioPane}"/>
 
-      <ContentControl
+      <DockPanel LastChildFill="True"
+                      Grid.Column="2" Grid.Row="0"
+                 
+        Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+        
+      <ContentControl DockPanel.Dock="Top"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Focusable="False"
-                      Grid.Column="2" Grid.Row="0"
-                      cal:RegionManager.RegionName="{x:Static Common:RegionNames.DocumentPane}"/>
+        cal:RegionManager.RegionName="{x:Static Common:RegionNames.StructureTrailPane}"/>
+
+        <ContentControl
+          Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+          Focusable="False"
+          cal:RegionManager.RegionName="{x:Static Common:RegionNames.DocumentPane}"/>
+      </DockPanel>
     </Grid>
 
   </DockPanel>

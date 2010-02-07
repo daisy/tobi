@@ -64,11 +64,9 @@ namespace Tobi.Plugin.DocumentPane
         }
 
         private int m_MenuBarId_1;
-        private int m_MenuBarId_2;
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_Navigation, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Last, true);
-            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_DocView.CommandFocus }, PreferredPosition.Last, false);
 
             m_Logger.Log(@"Document commands pushed to menubar", Category.Debug, Priority.Medium);
         }
@@ -85,7 +83,6 @@ namespace Tobi.Plugin.DocumentPane
             if (m_MenuBarView != null)
             {
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_2);
 
                 m_Logger.Log(@"Document commands removed from menubar", Category.Debug, Priority.Medium);
             }
