@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -79,7 +80,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 m_ValidationItems = new List<ValidationItem>();
 
-                if (m_DtdRegex == null)
+                if (m_DtdRegex == null || m_DtdRegex.DtdRegexTable == null ||
+                    m_DtdRegex.DtdRegexTable.Count == 0)
                 {
                     ContentDocumentValidationError error = new ContentDocumentValidationError
                                                                {
@@ -237,20 +239,76 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 {
                     return true;
                 }
+
                 error = new ContentDocumentValidationError
                                                            {
                                                                Target = node,
-                                                               ErrorType = ContentDocumentErrorType.ElementMisuse,
+                                                               ErrorType = ContentDocumentErrorType.InvalidChildElements,
                                                                AllowedChildNodes = childrenNames,
                                                                Message =
                                                                    "Unexpected child node or missing child node"
                                                            };
+
+                //look for more details about this error -- which child element is causing problems?
+                RevalidateChildren(regex, childrenNames, error);
+
                 m_ValidationItems.Add(error);
                 return false;
             }
 
             //no XML property for the node: therefore, it is valid.
             return true;
+        }
+
+        //child element names must be formatted like "a#b#c#"
+        private static void RevalidateChildren(Regex regex, string childrenNames, ContentDocumentValidationError error)
+        {
+            Match match = regex.Match(childrenNames);
+
+            if (match.ToString() == childrenNames)
+            {
+                //we can say that the element after the last child element in the sequence
+                //is where the problems start
+                //and childrenNames is known to start at the beginning of the target node's children
+                ArrayList childrenArr = StringToArrayList(childrenNames, '#');
+                if (childrenArr.Count < error.Target.Children.Count)
+                {
+                    error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);    
+                }
+            }
+            else
+            {
+                //test subsets of children -- for a#b#c# test a#b#
+                ArrayList childrenArr = StringToArrayList(childrenNames, '#');
+                if (childrenArr.Count >= 2)
+                {
+                    string subchildren = ArrayListToString(childrenArr.GetRange(0, childrenArr.Count - 1), '#');
+                    RevalidateChildren(regex, subchildren, error);
+                }
+                else
+                {
+                    //there are no smaller subsets to test, so the error begins with the first child
+                    error.BeginningOfError = error.Target.Children.Get(0);
+                }
+            }
+        }
+        private static ArrayList StringToArrayList(string input, char delim)
+        {
+            ArrayList arr = new ArrayList(input.Split(delim));
+            //trim the null item at the end of the array list
+            if (string.IsNullOrEmpty((string)arr[arr.Count - 1]))
+                arr.RemoveAt(arr.Count - 1);
+            return arr;
+        }
+        private static string ArrayListToString(ArrayList arr, char delim)
+        {
+            string str = "";
+            for (int i = 0; i < arr.Count; i++)
+            {
+                str += arr[i].ToString();
+                str += delim;
+            }
+            return str;
         }
     }
 }

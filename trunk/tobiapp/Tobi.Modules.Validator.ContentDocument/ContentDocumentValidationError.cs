@@ -6,7 +6,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
     public enum ContentDocumentErrorType
     {
         UndefinedElement,
-        ElementMisuse,
+        InvalidChildElements,
         MissingDtd
     }
 
@@ -15,7 +15,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public ContentDocumentErrorType ErrorType { get; set; }
         public string AllowedChildNodes { get; set; }
         public TreeNode Target { get; set;}
-
+        public TreeNode BeginningOfError { get; set; }
         public ContentDocumentValidationError()
         {
             Severity = ValidationSeverity.Error;
