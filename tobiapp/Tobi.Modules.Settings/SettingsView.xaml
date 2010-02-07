@@ -183,7 +183,7 @@ AlternationCount="2"
                 </Trigger>
               </Style.Triggers>
               <Style.Setters>
-                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
                 </Style.Setters>
             </Style>
           </UI:ValidationAwareTextBox.Style>

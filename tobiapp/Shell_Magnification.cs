@@ -59,8 +59,8 @@ namespace Tobi
             var shell = d as Shell;
             if (shell == null) return;
 
-            if (Settings.Default.WindowMagnificationLevel != shell.MagnificationLevel)
-                Settings.Default.WindowMagnificationLevel = shell.MagnificationLevel;
+            if (Settings.Default.WindowMagnificationLevel != (double)e.NewValue)
+                Settings.Default.WindowMagnificationLevel = (double)e.NewValue;
 
             shell.NotifyMagnificationLevel();
         }
