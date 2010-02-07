@@ -30,6 +30,7 @@ namespace Tobi.Common
         public const string StatusBar = "StatusBar";
         public const string ToolBars = "ToolBars";
         public const string DocumentPane = "DocumentPane";
+        public const string StructureTrailPane = "StructureTrailPane";
         public const string AudioPane = "AudioPane";
 
         public const string NavigationPane = "NavigationPane";

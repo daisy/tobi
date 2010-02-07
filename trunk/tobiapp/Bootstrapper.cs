@@ -22,6 +22,7 @@ using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.MetadataPane;
 using Tobi.Plugin.NavigationPane;
 using Tobi.Plugin.Settings;
+using Tobi.Plugin.StructureTrailPane;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
 using Tobi.Plugin.Validator;
@@ -257,7 +258,7 @@ namespace Tobi
 
             //MessageBox.Show(@"Just before resolving Urakawa session (take a look at the window title 'waiting...')");
 
-            // TODO: for debugging only: we're loading selectively to avoid interference (and weird part dependencies)
+            // NOTE: we're loading assemblies manually so that they get picked-up by ClickOnce deployment.
             Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
             {
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(AbstractTobiPlugin))),
@@ -267,7 +268,8 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(StructureTrailPanePlugin))),
+                //new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))

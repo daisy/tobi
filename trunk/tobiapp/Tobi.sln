@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DtdSharp", "ExternalLibs\Dt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Validator.ContentDocument", "Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.csproj", "{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.StructureTrailPane", "Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane.csproj", "{620875F9-EE80-4D08-A603-C4347657E561}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -374,6 +376,16 @@ Global
 		{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}.test|Any CPU.Build.0 = Release|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.Release|Any CPU.Build.0 = Release|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{620875F9-EE80-4D08-A603-C4347657E561}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
