@@ -164,7 +164,9 @@
     </Compile>
     <Compile Include="UI\ScalableGreyableImageProvider.cs" />
     <Compile Include="UI\SortableListView.cs" />
+    <Compile Include="UI\TextBlockWithAutomationPeer.cs" />
     <Compile Include="UI\TextBoxReadOnlyCaretVisible.cs" />
+    <Compile Include="UI\TextBoxWithAutomationPeer.cs" />
     <Compile Include="UI\TreeViewExtensions.cs" />
     <Compile Include="UI\ComboBoxColor.xaml.cs">
       <DependentUpon>ComboBoxColor.xaml</DependentUpon>

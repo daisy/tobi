@@ -27,18 +27,6 @@ using System.Diagnostics;
 
 namespace Tobi.Plugin.StructureTrailPane
 {
-    public class TextBlockEx : TextBlock
-    {
-        public AutomationPeer m_AutomationPeer;
-
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            m_AutomationPeer = base.OnCreateAutomationPeer();
-            return m_AutomationPeer;
-        }
-    }
-
-
     internal class TreeNodeWrapper
     {
         public TreeNode TreeNode;
@@ -295,7 +283,7 @@ namespace Tobi.Plugin.StructureTrailPane
             CommandFocus.Execute();
         }
 
-        private TextBlockEx m_FocusStartElement;
+        private TextBlockWithAutomationPeer m_FocusStartElement;
 
         //public event PropertyChangedEventHandler PropertyChanged;
         //public void RaisePropertyChanged(PropertyChangedEventArgs e)
@@ -389,7 +377,7 @@ namespace Tobi.Plugin.StructureTrailPane
             InitializeComponent();
 
             var arrow = (Path)Application.Current.FindResource("Arrow");
-            m_FocusStartElement = new TextBlockEx
+            m_FocusStartElement = new TextBlockWithAutomationPeer
             {
                 Text = " ",
                 //Content = arrow,
@@ -423,8 +411,7 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Children.Add(new TextBlock(new Run(UserInterfaceStrings.No_Document)));
 
             PathToCurrentTreeNode = null;
-
-            m_FocusStartElement.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.No_Document);
+            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(UserInterfaceStrings.No_Document);
         }
 
         private void OnProjectLoaded(Project project)
@@ -436,8 +423,7 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
             PathToCurrentTreeNode = null;
-
-            m_FocusStartElement.SetValue(AutomationProperties.NameProperty, "Nothing selected in document");
+            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("No selection");
         }
 
         private TreeNode m_CurrentTreeNode;
@@ -484,13 +470,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     }
                     string str = strPrepend + m_CurrentSubTreeNode.GetTextMediaFlattened();
 
-                    m_FocusStartElement.SetValue(AutomationProperties.NameProperty, str);
-
-                    if (m_FocusStartElement.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
-                    {
-                        m_FocusStartElement.m_AutomationPeer.RaiseAutomationEvent(
-                            AutomationEvents.AutomationFocusChanged);
-                    }
+                    m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
                 }
                 else
                 {
@@ -501,7 +481,7 @@ namespace Tobi.Plugin.StructureTrailPane
                         {
                             str = str.Substring(0, 100) + ". . .";
                         }
-                        Console.WriteLine("}}}}}" + str);
+                        Console.WriteLine(@"}}}}}" + str);
 
                         var qName = CurrentTreeNode.GetXmlElementQName();
 
@@ -515,13 +495,7 @@ namespace Tobi.Plugin.StructureTrailPane
                             strPrepend = "XML: [" + qName.LocalName + "]. ";
                         }
 
-                        m_FocusStartElement.SetValue(AutomationProperties.NameProperty, strPrepend + str);
-
-                        if (m_FocusStartElement.IsKeyboardFocused && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
-                        {
-                            m_FocusStartElement.m_AutomationPeer.RaiseAutomationEvent(
-                                AutomationEvents.AutomationFocusChanged);
-                        }
+                        m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(strPrepend + str);
                     }
                 }
 

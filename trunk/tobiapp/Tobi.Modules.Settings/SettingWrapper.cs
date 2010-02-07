@@ -79,7 +79,12 @@ namespace Tobi.Plugin.Settings
         {
             get
             {
-                return Name + "=" + Value ?? "N/A !" + " '" + Message + "' (default: " + DefaultValue + ") ";
+                string str = Name
+                    + "="
+                    + (Value ?? "N/A !")
+                    + (string.IsNullOrEmpty(Message) ? "" : " '" + Message + "'")
+                    + " (default: " + DefaultValue + ") ";
+                return str;
             }
         }
 
@@ -122,7 +127,7 @@ namespace Tobi.Plugin.Settings
 
             //IsChanged = Value != m_OriginalValue;
 
-            Message = IsChanged ? "Modified (" + OriginalValue + ")" : null;
+            Message = IsChanged ? "(original: " + OriginalValue + ")" : null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

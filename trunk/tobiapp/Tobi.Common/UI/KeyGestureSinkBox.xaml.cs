@@ -201,14 +201,6 @@ namespace Tobi.Common.UI
         //    }
         //}
 
-        public AutomationPeer m_AutomationPeer;
-
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            m_AutomationPeer = base.OnCreateAutomationPeer();
-            return m_AutomationPeer;
-        }
-
         private void updateTooltip()
         {
             var keyG = KeyGesture;
@@ -217,16 +209,7 @@ namespace Tobi.Common.UI
 
             ToolTip = displayStr;
 
-            SetValue(AutomationProperties.NameProperty, displayStr);
-        }
-
-        private void notifyScreenReader()
-        {
-            if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
-            {
-                m_AutomationPeer.RaiseAutomationEvent(
-                    AutomationEvents.AutomationFocusChanged);
-            }
+            SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(displayStr);
         }
 
         private string m_previousValidText;
@@ -246,8 +229,6 @@ namespace Tobi.Common.UI
         {
             m_previousValidText = (System.Windows.Controls.Validation.GetHasError(this) ? null : Text);
             FontWeight = FontWeights.UltraBold;
-
-            notifyScreenReader();
         }
 
         private void OnLoaded_TextBox(object sender, RoutedEventArgs e)
