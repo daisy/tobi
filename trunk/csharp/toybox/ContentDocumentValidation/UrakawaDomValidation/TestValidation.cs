@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using urakawa;
@@ -84,8 +85,14 @@ namespace UrakawaDomValidation
                 Console.WriteLine(res ? "VALID!!" : "INVALID!!");
             }
 
-            TestRegex(validator);
-
+            string answer = "y";
+            while (answer == "y")
+            {
+                RunCmdLineRegexTest(validator);
+                Console.WriteLine("Test another element? (y/n)");
+                answer = Console.ReadLine();
+            }                
+            
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
         }
@@ -99,63 +106,74 @@ namespace UrakawaDomValidation
             action.Execute();
             return project;
         }
-        public static void TestRegex(UrakawaDomValidation validator)
+        public static bool TestRegex(UrakawaDomValidation validator, string element, string children)
+        {
+            string regexStr = validator.GetRegex(element);
+            
+            if (string.IsNullOrEmpty(regexStr))
+            {
+                //POSSIBLE RESULT #1
+                Console.WriteLine("Element definition not found!");
+                return false;
+            }
+            
+            Regex regex = new Regex(regexStr);
+            Match match = regex.Match(children);
+
+            if (match.Success == true && match.ToString() == children)
+            {
+                //POSSIBLE RESULT #2
+                Console.WriteLine("SUCCESS!");
+                return true;
+            }
+
+            if (match.ToString() != children)
+            {
+                //test subsets of children -- 
+                //for a,b,c test a,b then just a
+                ArrayList childrenArr = new ArrayList(children.Split('#'));
+                if (string.IsNullOrEmpty((string)childrenArr[childrenArr.Count -1]))
+                    childrenArr.RemoveAt(childrenArr.Count - 1);
+                if (childrenArr.Count - 2 >= 0)
+                {
+                    int i = 0;
+                    string subchildren = "";
+                    for (i = 0; i<childrenArr.Count-1; i++)
+                    {
+                        subchildren += childrenArr[i] + "#";
+                    }
+                    Console.WriteLine(string.Format("Testing subset {0}", subchildren));
+                    TestRegex(validator, element, subchildren);
+                }
+                else
+                {
+                    //POSSIBLE RESULT #3
+                    Console.WriteLine("Cannot test any more subsets.  Invalid.");
+                    return false;
+                }
+
+                //POSSIBLE RESULT #4
+                Console.WriteLine(string.Format("{0} is an invalid sequence for {1}", children, element));
+                return false;
+            }
+            Console.WriteLine("Unspecified error.");
+            return false;
+
+        }
+
+        public static void RunCmdLineRegexTest(UrakawaDomValidation validator)
         {
             Console.WriteLine("Enter an element name:");
             string elm = Console.ReadLine();
 
-            string regexStr = validator.GetRegex(elm);
-            if (string.IsNullOrEmpty(regexStr))
-            {
-                Console.WriteLine("Element definition not found!");
-                return;
-            }
-
-            
             Console.WriteLine("Enter the children for this element, separated by a comma:");
             string children = Console.ReadLine();
             children = children.Replace(", ", "#");
             children = children.Replace(",", "#");
             if (!children.EndsWith("#")) children += "#";
-            Console.WriteLine(children);
-            Regex regex = new Regex(regexStr);
 
-            Match match = regex.Match(children);
-            foreach (Group g in match.Groups)
-            {
-                Console.WriteLine(string.Format("Group: {0}", g.ToString()));
-            }
-            if (match.Success == true && match.ToString() == children)
-            {
-                Console.WriteLine("SUCCESS!");
-                return;
-            }
-
-            if (match.Success == false)
-            {
-                Console.WriteLine("No match!");
-                Console.WriteLine(regex.ToString());
-                Console.WriteLine(string.Format("Assume that {0} are not allowed children.", children));
-                return;
-            }
-
-            Console.WriteLine(string.Format("Match: {0}", match.ToString()));
+            TestRegex(validator, elm, children);
             
-            if (match.ToString() != children)
-            {
-                string[] childrenArr = children.Split('#');
-                foreach (string child in childrenArr)
-                {
-                    if (match.ToString().IndexOf(child) == -1)
-                    {
-                        Console.WriteLine(string.Format("{0} not found in match", child));
-                    }
-                    if (regex.ToString().IndexOf(child) == -1)
-                    {
-                        Console.WriteLine(string.Format("{0} not found in regex", child));
-                    }
-                }                
-            }
         }
     }
 }
