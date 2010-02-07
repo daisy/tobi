@@ -91,8 +91,8 @@ namespace UrakawaDomValidation
             }
             else if (dtdItem is DTDName)
             {
-                //regexStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
-                regexStr += "(" + ((DTDName)dtdItem).Value + "#)";
+                regexStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
+                //regexStr += "(" + ((DTDName)dtdItem).Value + "#)";
             }
             else if (dtdItem is DTDChoice)
             {
@@ -112,8 +112,8 @@ namespace UrakawaDomValidation
             else if (dtdItem is DTDSequence)
             {
                 List<DTDItem> items = ((DTDSequence)dtdItem).Items;
-                //if (items.Count > 1) regexStr += "(?:";
-                if (items.Count > 1) regexStr += "(";
+                if (items.Count > 1) regexStr += "(?:";
+                //if (items.Count > 1) regexStr += "(";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
@@ -127,8 +127,8 @@ namespace UrakawaDomValidation
             else if (dtdItem is DTDMixed)
             {
                 List<DTDItem> items = ((DTDMixed)dtdItem).Items;
-                //if (items.Count > 1) regexStr += "(?:";
-                if (items.Count > 1) regexStr += "(";
+                if (items.Count > 1) regexStr += "(?:";
+                //if (items.Count > 1) regexStr += "(";
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
