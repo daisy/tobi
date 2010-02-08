@@ -51,7 +51,6 @@ namespace Tobi.Common.UI
 
         private static void OnSelectedColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-
             ComboBoxColor cp = obj as ComboBoxColor;
             Debug.Assert(cp != null);
 
@@ -63,13 +62,20 @@ namespace Tobi.Common.UI
 
             // When the SelectedColor changes, set the selected value of the combo box
             ColorViewModel selectedColorViewModel = cp.ColorList1.SelectedValue as ColorViewModel;
-            if (selectedColorViewModel == null || selectedColorViewModel.Color != newColor)
+            if (selectedColorViewModel != null && selectedColorViewModel.Color.Equals(newColor))
+            {
+                cp.ColorList1.AutomationPropertiesName = selectedColorViewModel.Name;
+            }
+            
+            if (selectedColorViewModel == null || !selectedColorViewModel.Color.Equals(newColor))
             {
                 // Add the color if not found
-                if (!cp.ListContains(newColor))
+                ColorViewModel cvm = cp.ListContains(newColor);
+                if (cvm == null)
                 {
-                    cp.AddColor(newColor, newColor.ToString());
+                    cvm = cp.AddColor(newColor, newColor.ToString());
                 }
+                cp.ColorList1.AutomationPropertiesName = cvm.Name;
             }
 
             // Also update the brush
@@ -77,15 +83,15 @@ namespace Tobi.Common.UI
             cp.OnColorChanged(oldColor, newColor);
         }
 
-        private bool ListContains(Color newColor)
+        private ColorViewModel ListContains(Color color)
         {
             foreach (object o in ColorList1.Items)
             {
                 ColorViewModel vcm = o as ColorViewModel;
                 if (vcm == null) continue;
-                if (vcm.Color == newColor) return true;
+                if (vcm.Color == color) return vcm;
             }
-            return false;
+            return null;
         }
 
         public Brush SelectedBrush
@@ -184,12 +190,14 @@ namespace Tobi.Common.UI
         }
 
 
-        private void AddColor(Color color, string name)
+        private ColorViewModel AddColor(Color color, string name)
         {
             if (!name.StartsWith("#", StringComparison.Ordinal))
                 name = NiceName(name);
             ColorViewModel cvm = new ColorViewModel() { Color = color, Name = name };
             ColorList1.Items.Add(cvm);
+
+            return cvm;
         }
 
         private static string NiceName(string name)

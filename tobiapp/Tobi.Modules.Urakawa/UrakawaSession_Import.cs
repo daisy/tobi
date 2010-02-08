@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -13,6 +14,8 @@ namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        private const string XUK_DIR = "_XUK"; // prepend with '_' so it appears at the top of the alphabetical sorting in the file explorer window
+
         private bool doImport()
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doImport() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
@@ -105,7 +108,9 @@ namespace Tobi.Plugin.Urakawa
                     return;
                 }
 
-                converter = new Daisy3_Import(DocumentFilePath);
+                converter = new Daisy3_Import(
+                    DocumentFilePath,
+                    Path.Combine(Path.GetDirectoryName(DocumentFilePath), XUK_DIR)); //Directory.GetParent(bookfile).FullName
 
                 converter.ProgressChangedEvent += (sender, e) =>
                    {

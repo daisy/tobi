@@ -1,25 +1,12 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 
 namespace Tobi.Common.UI
 {
-    public class TextBlockWithAutomationPeer : TextBlock
+    public class ComboBoxWithAutomationPeer : ComboBox
     {
-        //public TextBlockWithAutomationPeer()
-        //{
-        //    DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(TextProperty, typeof(TextBlockWithAutomationPeer));
-        //    if (dpd != null)
-        //    {
-        //        dpd.AddValueChanged(this, delegate
-        //        {
-        //            SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Text);
-        //        });
-        //    }
-        //}
-
         public AutomationPeer m_AutomationPeer;
 
         protected override AutomationPeer OnCreateAutomationPeer()
@@ -46,10 +33,11 @@ namespace Tobi.Common.UI
             }
         }
 
+
         public static readonly DependencyProperty AutomationPropertiesNameProperty =
             DependencyProperty.Register(@"AutomationPropertiesName",
             typeof(string),
-            typeof(TextBlockWithAutomationPeer),
+            typeof(ComboBoxWithAutomationPeer),
             new PropertyMetadata("empty accessible name",
                 OnAutomationPropertiesNameChanged, OnAutomationPropertiesNameCoerce));
 
@@ -73,7 +61,7 @@ namespace Tobi.Common.UI
 
         private static void OnAutomationPropertiesNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var tb = d as TextBlockWithAutomationPeer;
+            var tb = d as ComboBoxWithAutomationPeer;
             if (tb == null) return;
 
             tb.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused((string)e.NewValue);
