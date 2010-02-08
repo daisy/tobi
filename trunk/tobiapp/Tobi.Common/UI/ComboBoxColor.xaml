@@ -23,8 +23,8 @@
       </StackPanel>
     </DataTemplate>
   </UserControl.Resources>
-  <ComboBox Name="ColorList1"
+  <UI:ComboBoxWithAutomationPeer x:Name="ColorList1"
             SelectedValue="{Binding ElementName=ThisColorPicker, Path=SelectedColor}"
             SnapsToDevicePixels="True">
-  </ComboBox>
+  </UI:ComboBoxWithAutomationPeer>
 </UserControl>
