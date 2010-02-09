@@ -183,7 +183,9 @@
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
     <Compile Include="UI\XAML\DataContextSpy.cs" />
+    <Compile Include="UI\XAML\DoubleToTextConverter.cs" />
     <Compile Include="UI\XAML\RenderTargetBitmapImageSourceConverter.cs" />
+    <Compile Include="UI\XAML\TextToKeyGestureConverter.cs" />
     <Compile Include="UI\XAML\ValueConverterMarkupExtensionBase.cs" />
     <Compile Include="UI\XAML\WindowStateFullScreenConverter.cs" />
     <Compile Include="UserInterfaceStrings.cs" />

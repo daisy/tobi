@@ -13,6 +13,7 @@ namespace Tobi.Common
         public const string MenuBar_Edit = UserInterfaceStrings.Menu_Edit;
 
         public const string MenuBar_Audio = UserInterfaceStrings.Menu_Audio;
+        public const string MenuBar_AudioPlayback = UserInterfaceStrings.Menu_AudioPlayback;
         public const string MenuBar_AudioTransport = UserInterfaceStrings.Menu_AudioTransport;
         public const string MenuBar_AudioSelection = UserInterfaceStrings.Menu_AudioSelection;
         public const string MenuBar_AudioZoom = UserInterfaceStrings.Menu_AudioZoom;

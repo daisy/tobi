@@ -11,6 +11,13 @@ namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {
+        public RichDelegateCommand CommandSelectAll { get; private set; }
+        public RichDelegateCommand CommandClearSelection { get; private set; }
+        public RichDelegateCommand CommandBeginSelection { get; private set; }
+        public RichDelegateCommand CommandEndSelection { get; private set; }
+        public RichDelegateCommand CommandSelectNextChunk { get; private set; }
+        public RichDelegateCommand CommandSelectPreviousChunk { get; private set; }
+
         private void initializeCommands_Selection()
         {
             CommandSelectPreviousChunk = new RichDelegateCommand(

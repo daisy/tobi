@@ -2,6 +2,12 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings_KeyGestures">
   <Profiles />
   <Settings>
+    <Setting Name="Keyboard_Audio_PlaybackRateUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Up</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_PlaybackRateDown" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Down</Value>
+    </Setting>
     <Setting Name="Keyboard_Focus_Audio" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F7</Value>
     </Setting>

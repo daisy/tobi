@@ -77,6 +77,8 @@
     </Compile>
     <Compile Include="AudioPaneViewModel.cs" />
     <Compile Include="AudioPaneViewModelCommands.cs" />
+    <Compile Include="AudioPaneViewModelEdit.cs" />
+    <Compile Include="AudioPaneViewModelNavigation.cs" />
     <Compile Include="AudioPaneViewModelPartial.cs" />
     <Compile Include="AudioPaneViewModelPlayer.cs" />
     <Compile Include="AudioPaneViewModelRecorder.cs" />

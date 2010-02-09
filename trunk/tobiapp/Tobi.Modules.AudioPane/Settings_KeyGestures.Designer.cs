@@ -25,6 +25,30 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Up")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_PlaybackRateUp {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_PlaybackRateUp"]));
+            }
+            set {
+                this["Keyboard_Audio_PlaybackRateUp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Down")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_PlaybackRateDown {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_PlaybackRateDown"]));
+            }
+            set {
+                this["Keyboard_Audio_PlaybackRateDown"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F7")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Focus_Audio {
             get {
