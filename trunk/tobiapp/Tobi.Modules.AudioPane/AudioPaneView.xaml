@@ -631,7 +631,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Focusable="false">
 
     <StackPanel
-  
+      
+  Focusable="True"
+  x:Name="FocusStart"
            KeyboardNavigation.DirectionalNavigation="Cycle"
         Orientation="Horizontal"
                     HorizontalAlignment="Left"
@@ -639,7 +641,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
 
       <UI:TwoStateButtonRichCommand
-  x:Name="FocusStart"
+  
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
       InputBindingManager="{Binding InputBindingManager}"

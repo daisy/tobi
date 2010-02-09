@@ -5,6 +5,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 
@@ -16,6 +17,22 @@ namespace Tobi.Common.UI
     /// </summary>
     public class ButtonRichCommand : Button
     {
+        //public ButtonRichCommand()
+        //{
+        //    PreviewKeyDown += OnPreviewKeyDownUp_;
+        //    PreviewKeyUp += OnPreviewKeyDownUp_;
+        //}
+
+        //protected void OnPreviewKeyDownUp_(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Space)
+        //    {
+        //        //RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+        //        e.Handled = true;
+        //    }
+        //}
+
         public static readonly DependencyProperty RichCommandProperty =
             DependencyProperty.Register("RichCommand",
                                         typeof(RichDelegateCommand),
