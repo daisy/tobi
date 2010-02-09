@@ -790,6 +790,18 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                     HorizontalAlignment="Right"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
+      <TextBlock
+                 Focusable="True" VerticalAlignment="Center"
+                 Text="{Binding PlaybackRateString, Mode=OneWay}"/>
+
+      <TextBlock
+        
+                 Visibility="{Binding Path=PcmFormatStringVisible,
+                            Converter={StaticResource boolToVisConverter},
+                            Mode=OneWay}"
+        Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        VerticalAlignment="Center" Text=" | "/>
+      
       <TextBlock 
                  Visibility="{Binding Path=PcmFormatStringVisible,
                             Converter={StaticResource boolToVisConverter},

@@ -104,6 +104,11 @@ namespace Tobi.Common
         public const string Audio_BeginSelection_ = "Begin audio waveform selection";
         //public static KeyGesture Audio_BeginSelection_KEYS = new KeyGesture(Key.OemOpenBrackets, ModifierKeys.Control);
 
+        public const string Audio_PlayRateDown = "_Descrease playback rate";
+        public const string Audio_PlayRateDown_ = "Turn the playback speed down";
+        public const string Audio_PlayRateUp = "_Increase playback rate";
+        public const string Audio_PlayRateUp_ = "Turn the playback speed up";
+
         public const string Audio_EndSelection = "_End selection";
         public const string Audio_EndSelection_ = "End audio waveform selection";
         //public static KeyGesture Audio_EndSelection_KEYS = new KeyGesture(Key.OemCloseBrackets, ModifierKeys.Control);
@@ -194,6 +199,7 @@ namespace Tobi.Common
         public const string Menu_About = "_About";
         public const string Menu_Audio = "_Audio";
 
+        public const string Menu_AudioPlayback = "_Playback";
         public const string Menu_AudioTransport = "_Transport";
         public const string Menu_AudioSelection = "_Selection";
         public const string Menu_AudioZoom = "_Zoom";

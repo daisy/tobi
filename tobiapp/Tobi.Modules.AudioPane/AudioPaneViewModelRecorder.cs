@@ -16,6 +16,11 @@ namespace Tobi.Plugin.AudioPane
     {
         #region Audio Recorder
 
+        public RichDelegateCommand CommandStartRecord { get; private set; }
+        public RichDelegateCommand CommandStopRecord { get; private set; }
+        public RichDelegateCommand CommandStartMonitor { get; private set; }
+        public RichDelegateCommand CommandStopMonitor { get; private set; }
+
         private void initializeCommands_Recorder()
         {
             CommandStopRecord = new RichDelegateCommand(

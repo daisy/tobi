@@ -76,7 +76,7 @@ AlternationCount="2"
           </UI:KeyGestureSinkBox.Resources>
 
           <UI:KeyGestureSinkBox.Text>
-            <Binding Path="Value" Converter="{Settings:TextToKeyGestureConverter}" Mode="TwoWay"
+            <Binding Path="Value" Converter="{XAML:TextToKeyGestureConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
                      ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
                      NotifyOnValidationError="True">
@@ -153,7 +153,7 @@ AlternationCount="2"
           <!-- IDataErrorInfo -->
           
           <UI:ValidationAwareTextBox.Text>
-            <Binding Path="Value" Converter="{Settings:TextToDoubleConverter}" Mode="TwoWay"
+            <Binding Path="Value" Converter="{XAML:DoubleToTextConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
                      ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
                      NotifyOnValidationError="True">

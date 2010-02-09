@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -22,19 +21,81 @@ namespace Tobi.Plugin.AudioPane
     {
         #region Audio Player
 
+
+        public RichDelegateCommand CommandAutoPlay { get; private set; }
+        public RichDelegateCommand CommandAudioSettings { get; private set; }
+
+        public RichDelegateCommand CommandPlay { get; private set; }
+        public RichDelegateCommand CommandPlayPreviewLeft { get; private set; }
+        public RichDelegateCommand CommandPlayPreviewRight { get; private set; }
+        public RichDelegateCommand CommandPause { get; private set; }
+
+        public RichDelegateCommand CommandPlaybackRateDown { get; private set; }
+        public RichDelegateCommand CommandPlaybackRateUp { get; private set; }
+
         public int AudioPlayer_RefreshInterval
         {
             get { return m_Player.RefreshInterval; }
         }
 
+        private const float PLAYBACK_RATE_MIN = 1f;
+        private const float PLAYBACK_RATE_MAX = 2.5f;
+        private const float PLAYBACK_RATE_STEP = 0.25f;
+
         private void initializeCommands_Player()
         {
+            CommandPlaybackRateDown = new RichDelegateCommand(
+               UserInterfaceStrings.Audio_PlayRateDown,
+               UserInterfaceStrings.Audio_PlayRateDown_,
+               null, // KeyGesture obtained from settings (see last parameters below)
+               m_ShellView.LoadGnomeGionIcon("Gion_go-previous"),
+               () =>
+               {
+                   Logger.Log("AudioPaneViewModel.CommandPlaybackRateDown", Category.Debug, Priority.Medium);
+
+                   if ((PlaybackRate - PLAYBACK_RATE_STEP) >= PLAYBACK_RATE_MIN)
+                       PlaybackRate -= PLAYBACK_RATE_STEP;
+                   else
+                   {
+                       PlaybackRate = PLAYBACK_RATE_MIN;
+                       Debug.Fail("This should never happen !");
+                   }
+               },
+               () => !IsWaveFormLoading && (PlaybackRate - PLAYBACK_RATE_STEP) >= PLAYBACK_RATE_MIN,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateDown));
+
+            m_ShellView.RegisterRichCommand(CommandPlaybackRateDown);
+            //
+            CommandPlaybackRateUp = new RichDelegateCommand(
+               UserInterfaceStrings.Audio_PlayRateUp,
+               UserInterfaceStrings.Audio_PlayRateUp_,
+               null, // KeyGesture obtained from settings (see last parameters below)
+               m_ShellView.LoadGnomeGionIcon("Gion_go-next"),
+               () =>
+               {
+                   Logger.Log("AudioPaneViewModel.CommandPlaybackRateUp", Category.Debug, Priority.Medium);
+
+                   if ((PlaybackRate + PLAYBACK_RATE_STEP) <= PLAYBACK_RATE_MAX)
+                       PlaybackRate += PLAYBACK_RATE_STEP;
+                   else
+                   {
+                       PlaybackRate = PLAYBACK_RATE_MAX;
+                       Debug.Fail("This should never happen !");
+                   }
+               },
+               () => !IsWaveFormLoading && (PlaybackRate + PLAYBACK_RATE_STEP) <= PLAYBACK_RATE_MAX,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateUp));
+
+            m_ShellView.RegisterRichCommand(CommandPlaybackRateUp);
+            //
             CommandAutoPlay = new RichDelegateCommand(
                UserInterfaceStrings.Audio_AutoPlay,
                UserInterfaceStrings.Audio_AutoPlay_,
                null, // KeyGesture obtained from settings (see last parameters below)
                m_ShellView.LoadGnomeNeuIcon("Neu_go-last"),
-               ()=>
+               () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
 
@@ -52,7 +113,7 @@ namespace Tobi.Plugin.AudioPane
                 UserInterfaceStrings.Audio_Pause_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-pause"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
 
@@ -69,7 +130,7 @@ namespace Tobi.Plugin.AudioPane
                 UserInterfaceStrings.Audio_Play_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-start"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
 
@@ -124,7 +185,7 @@ namespace Tobi.Plugin.AudioPane
                 UserInterfaceStrings.Audio_PlayPreviewLeft_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
-                ()=> PlayPreviewLeftRight(true),
+                () => PlayPreviewLeftRight(true),
                 () => CommandPlay.CanExecute(),
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPreviewLeft));
@@ -142,271 +203,6 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPreviewRight));
 
             m_ShellView.RegisterRichCommand(CommandPlayPreviewRight);
-            //
-            CommandGotoBegining = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_GotoBegin,
-                UserInterfaceStrings.Audio_GotoBegin_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("go-first"),
-                ()=>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandGotoBegining", Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    if (LastPlayHeadTime == 0)
-                    {
-                        SystemSounds.Beep.Play();
-                    }
-                    else
-                    {
-                        if (IsAutoPlay)
-                        {
-                            if (View != null)
-                            {
-                                View.ClearSelection();
-                            }
-                        }
-
-                        LastPlayHeadTime = 0;
-                    }
-                },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoBegin));
-
-            m_ShellView.RegisterRichCommand(CommandGotoBegining);
-            //
-            CommandGotoEnd = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_GotoEnd,
-                UserInterfaceStrings.Audio_GotoEnd_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("go-last"),
-                ()=>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandGotoEnd", Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    double end = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-
-                    if (LastPlayHeadTime == end)
-                    {
-                        SystemSounds.Beep.Play();
-                    }
-                    else
-                    {
-                        if (IsAutoPlay)
-                        {
-                            if (View != null)
-                            {
-                                View.ClearSelection();
-                            }
-                        }
-
-                        LastPlayHeadTime = end;
-                    }
-                },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoEnd));
-
-            m_ShellView.RegisterRichCommand(CommandGotoEnd);
-            //
-            CommandStepBack = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_StepBack,
-                 UserInterfaceStrings.Audio_StepBack_,
-                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("media-skip-backward"),
-                ()=>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandStepBack", Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    long bytesLeftPrevious = -1;
-
-                    long bytesLeft = 0;
-                    long bytesRight = 0;
-
-                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-
-                    int index = -1;
-
-                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-                    {
-                        index++;
-
-                        bytesRight = (bytesLeft + marker.m_LocalStreamDataLength);
-                        if (bytesPlayHead >= bytesLeft && bytesPlayHead < bytesRight
-                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesPlayHead >= bytesRight)
-                        {
-                            if (bytesLeftPrevious == -1)
-                            {
-                                if (IsAutoPlay)
-                                {
-                                    if (View != null)
-                                    {
-                                        View.ClearSelection();
-                                    }
-                                }
-
-                                LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
-                                SystemSounds.Beep.Play();
-                                break;
-                            }
-
-                            if (IsAutoPlay)
-                            {
-                                if (View != null)
-                                {
-                                    View.ClearSelection();
-                                }
-                            }
-
-                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
-                            break;
-                        }
-                        bytesLeftPrevious = bytesLeft;
-                        bytesLeft += marker.m_LocalStreamDataLength;
-                    }
-                },
-                () => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepBack));
-
-            m_ShellView.RegisterRichCommand(CommandStepBack);
-            //
-            CommandStepForward = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_StepForward,
-                UserInterfaceStrings.Audio_StepForward_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("media-skip-forward"),
-                ()=>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandStepForward", Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    long bytesLeft = 0;
-                    long bytesRight = 0;
-
-                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-
-                    bool found = false;
-
-                    int index = -1;
-                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-                    {
-                        index++;
-
-                        if (found)
-                        {
-                            if (IsAutoPlay)
-                            {
-                                if (View != null)
-                                {
-                                    View.ClearSelection();
-                                }
-                            }
-
-                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
-                            return;
-                        }
-
-                        bytesRight = (bytesLeft + marker.m_LocalStreamDataLength);
-                        if (bytesPlayHead >= bytesLeft && bytesPlayHead < bytesRight
-                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesPlayHead >= bytesRight)
-                        {
-                            found = true;
-                        }
-
-                        bytesLeft += marker.m_LocalStreamDataLength;
-                    }
-
-                    if (!found)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                    }
-
-                    SystemSounds.Beep.Play();
-                },
-                () => CommandStepBack.CanExecute(),
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepForward));
-
-            m_ShellView.RegisterRichCommand(CommandStepForward);
-            //
-            CommandFastForward = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_FastForward,
-                UserInterfaceStrings.Audio_FastForward_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("media-seek-forward"),
-                ()=>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandFastForward", Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
-                    double max = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-                    if (newTime > max)
-                    {
-                        newTime = max;
-                        SystemSounds.Beep.Play();
-                    }
-
-                    if (IsAutoPlay)
-                    {
-                        if (View != null)
-                        {
-                            View.ClearSelection();
-                        }
-                    }
-
-                    LastPlayHeadTime = newTime;
-                },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_FastForward));
-
-            m_ShellView.RegisterRichCommand(CommandFastForward);
-            //
-            CommandRewind = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Rewind,
-                UserInterfaceStrings.Audio_Rewind_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("media-seek-backward"),
-                ()=>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandRewind", Category.Debug, Priority.Medium);
-
-                    AudioPlayer_Stop();
-
-                    double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
-                    if (newTime < 0)
-                    {
-                        newTime = 0;
-                        SystemSounds.Beep.Play();
-                    }
-
-                    if (IsAutoPlay)
-                    {
-                        if (View != null)
-                        {
-                            View.ClearSelection();
-                        }
-                    }
-
-                    LastPlayHeadTime = newTime;
-                },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Rewind));
-
-            m_ShellView.RegisterRichCommand(CommandRewind);
             //
         }
 
@@ -521,6 +317,30 @@ namespace Tobi.Plugin.AudioPane
                 Logger.Log("AudioPaneViewModel.checkAndDoAutoPlay", Category.Debug, Priority.Medium);
 
                 CommandPlay.Execute();
+            }
+        }
+
+        [NotifyDependsOn("PlaybackRate")]
+        public string PlaybackRateString
+        {
+            get
+            {
+                return "Playback x" + PlaybackRate;
+            }
+        }
+
+        public float PlaybackRate
+        {
+            get
+            {
+                return m_Player.FastPlayFactor;
+            }
+            set
+            {
+                if (m_Player.FastPlayFactor == value) return;
+                m_Player.FastPlayFactor = value;
+
+                RaisePropertyChanged(() => PlaybackRate);
             }
         }
 
@@ -1048,7 +868,7 @@ namespace Tobi.Plugin.AudioPane
             State.FilePath = path;
 
             m_CurrentAudioStreamProvider = m_AudioStreamProvider_File;
-            
+
             if (m_CurrentAudioStreamProvider() == null)
             {
                 State.ResetAll();
@@ -1141,9 +961,9 @@ namespace Tobi.Plugin.AudioPane
         private void OnStateChanged_Player(object sender, AudioPlayer.StateChangedEventArgs e)
         {
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
-            
+
             resetPeakMeter();
-            
+
             RaisePropertyChanged(() => IsPlaying);
 
             if (e.OldState == AudioPlayer.State.Playing
