@@ -163,7 +163,8 @@ namespace Tobi
                 },
                 () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayShortcuts));
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayShortcuts)
+                );
 
             RegisterRichCommand(ManageShortcutsCommand);
             //

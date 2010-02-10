@@ -153,9 +153,10 @@ namespace Tobi
             string msg = string.Format("Finalized: ({0})", GetType().Name);
             Console.WriteLine(msg);
 
-            Trace.Flush();
-            Debug.Flush();
+            //Trace.Flush();
+            //Debug.Flush();
 
+            m_FileWriter.WriteLine("-- GC --");
             m_FileWriter.Flush();
             m_FileWriter.Close();
         }

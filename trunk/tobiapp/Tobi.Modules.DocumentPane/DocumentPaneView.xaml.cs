@@ -1,29 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Media;
 using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Automation.Peers;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
-using urakawa.xuk;
-using System.Diagnostics;
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -181,11 +170,14 @@ namespace Tobi.Plugin.DocumentPane
 
             m_ShellView.RegisterRichCommand(CommandSwitchPhraseNext);
             //
-            
+
             InitializeComponent();
 
             resetFlowDocument();
-            //TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
+
+            var run = new Run(UserInterfaceStrings.No_Document);
+            setTextDecoration_ErrorUnderline(run);
+            TheFlowDocument.Blocks.Add(new Paragraph(run));
 
             m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
@@ -276,7 +268,9 @@ namespace Tobi.Plugin.DocumentPane
 
             if (project == null)
             {
-                TheFlowDocument.Blocks.Add(new Paragraph(new Run(UserInterfaceStrings.No_Document)));
+                var run = new Run(UserInterfaceStrings.No_Document);
+                setTextDecoration_ErrorUnderline(run);
+                TheFlowDocument.Blocks.Add(new Paragraph(run));
                 return;
             }
 
@@ -800,10 +794,13 @@ namespace Tobi.Plugin.DocumentPane
         public void BringIntoViewAndHighlightSub(TextElement textElement)
         {
             textElement.BringIntoView();
+
             if (m_lastHighlightedSub != null)
             {
                 m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
                 m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
+
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
             }
             else
             {
@@ -816,6 +813,8 @@ namespace Tobi.Plugin.DocumentPane
                         ((Block)m_lastHighlighted).BorderBrush = Brushes.OrangeRed;
                         ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
                     }
+
+                    setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
                 }
             }
             m_lastHighlightedSub = textElement;
@@ -825,6 +824,8 @@ namespace Tobi.Plugin.DocumentPane
 
             m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
             m_lastHighlightedSub.Foreground = Brushes.Black;
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
         }
 
         public void BringIntoViewAndHighlight(TextElement textElement)
@@ -841,11 +842,16 @@ namespace Tobi.Plugin.DocumentPane
                     ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
                     ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
                 }
+
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
             }
+
             if (m_lastHighlighted != null)
             {
                 m_lastHighlighted.Background = m_lastHighlighted_Background;
                 m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
+
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
             }
 
             m_lastHighlighted = textElement;
@@ -856,6 +862,177 @@ namespace Tobi.Plugin.DocumentPane
 
             m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
             m_lastHighlighted.Foreground = Brushes.Black;
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);
+        }
+
+        private void setOrRemoveTextDecoration_SelectUnderline(TextElement textElement, bool remove)
+        {
+            if (textElement is ListItem) // TEXT_ELEMENT
+            {
+                var blocks = ((ListItem)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                }
+            }
+            else if (textElement is TableRowGroup) // TEXT_ELEMENT
+            {
+                var rows = ((TableRowGroup)textElement).Rows;
+                foreach (var row in rows)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(row, remove);
+                }
+            }
+            else if (textElement is TableRow) // TEXT_ELEMENT
+            {
+                var cells = ((TableRow)textElement).Cells;
+                foreach (var cell in cells)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(cell, remove);
+                }
+            }
+            else if (textElement is TableCell) // TEXT_ELEMENT
+            {
+                var blocks = ((TableCell)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                }
+            }
+            else if (textElement is Table) // BLOCK
+            {
+                var rowGs = ((Table)textElement).RowGroups;
+                foreach (var rowG in rowGs)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(rowG, remove);
+                }
+            }
+            else if (textElement is Paragraph) // BLOCK
+            {
+                var inlines = ((Paragraph)textElement).Inlines;
+                foreach (var inline in inlines)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline_(inline, remove);
+                }
+            }
+            else if (textElement is Section) // BLOCK
+            {
+                var blocks = ((Section)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                }
+            }
+            else if (textElement is List) // BLOCK
+            {
+                var lis = ((List)textElement).ListItems;
+                foreach (var li in lis)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(li, remove);
+                }
+            }
+            else if (textElement is BlockUIContainer) // BLOCK
+            {
+                // ((BlockUIContainer)textElement).Child => not to be underlined !
+            }
+            else if (textElement is Span) // INLINE
+            {
+                var inlines = ((Span)textElement).Inlines;
+                foreach (var inline in inlines)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline_(inline, remove);
+                }
+            }
+            else if (textElement is Floater) // INLINE
+            {
+                var blocks = ((Floater)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                }
+            }
+            else if (textElement is Figure) // INLINE
+            {
+                var blocks = ((Figure)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                }
+            }
+            else if (textElement is Inline) // includes InlineUIContainer, LineBreak and Run
+            {
+                setOrRemoveTextDecoration_SelectUnderline_((Inline)textElement, remove);
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+        }
+
+        private void setOrRemoveTextDecoration_SelectUnderline_(Inline inline, bool remove)
+        {
+            if (remove)
+            {
+                inline.TextDecorations = null;
+                return;
+            }
+
+            var decUnder = new TextDecoration(
+                TextDecorationLocation.Underline,
+                new Pen(Brushes.DarkGoldenrod, 1)
+                {
+                    DashStyle = DashStyles.Dot
+                },
+                2,
+                TextDecorationUnit.Pixel,
+                TextDecorationUnit.FontRecommended
+            );
+
+            var decOver = new TextDecoration(
+                TextDecorationLocation.OverLine,
+                new Pen(Brushes.DarkGoldenrod, 1)
+                {
+                    DashStyle = DashStyles.Dot
+                },
+                0,
+                TextDecorationUnit.Pixel,
+                TextDecorationUnit.FontRecommended
+            );
+
+            var decs = new TextDecorationCollection { decUnder, decOver };
+
+            inline.TextDecorations = decs;
+        }
+
+        private void setTextDecoration_ErrorUnderline(Inline inline)
+        {
+            //if (textDecorations == null || !textDecorations.Equals(System.Windows.TextDecorations.Underline))
+            //{
+            //    textDecorations = System.Windows.TextDecorations.Underline;
+            //}
+            //else
+            //{
+            //    textDecorations = new TextDecorationCollection(); // or null
+            //}
+
+            var dec = new TextDecoration(
+                TextDecorationLocation.Underline,
+                new Pen(Brushes.Red, 1)
+                {
+                    DashStyle = DashStyles.Dot
+                },
+                1,
+                TextDecorationUnit.FontRecommended,
+                TextDecorationUnit.FontRecommended
+            );
+
+            //var decs = new TextDecorationCollection { dec };
+            var decs = new TextDecorationCollection(TextDecorations.OverLine) { dec };
+
+            inline.TextDecorations = decs;
         }
     }
 }

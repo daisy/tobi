@@ -23,9 +23,6 @@
     <Setting Name="Keyboard_UI_Zoom_Decrease" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ALT ] Subtract</Value>
     </Setting>
-    <Setting Name="Keyboard_DisplayShortcuts" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] F2</Value>
-    </Setting>
     <Setting Name="Keyboard_DisplayLogFilePath" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ALT ] F1</Value>
     </Setting>

@@ -35,7 +35,7 @@ namespace Tobi.Common
     /// Default implementation for Version and Home.
     ///</summary>
     [InheritedExport(typeof(ITobiPlugin)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class AbstractTobiPlugin : ITobiPlugin, IPartImportsSatisfiedNotification
+    public abstract class AbstractTobiPlugin : ITobiPlugin, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public virtual void OnImportsSatisfied()
@@ -100,12 +100,12 @@ namespace Tobi.Common
             get { return UserInterfaceStrings.TobiHomeUri; }
         }
 
-        public virtual string Name { private set;  get; }
+        public virtual string Name { private set; get; }
         public virtual string Description { private set; get; }
 
         public virtual void Dispose()
         {
-            ;            
+            ;
         }
     }
 }
