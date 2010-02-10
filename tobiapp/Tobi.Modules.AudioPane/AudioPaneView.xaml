@@ -739,6 +739,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
     <Slider x:Name="ZoomSlider"
+            
+Visibility="Collapsed"
+            
             Thumb.DragCompleted="OnZoomSliderDragCompleted"
             Thumb.DragStarted="OnZoomSliderDragStarted"
             IsMoveToPointEnabled="True"
@@ -759,7 +762,11 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
   <StatusBar
     
-      Focusable="True"
+Visibility="Collapsed"
+    
+    
+    
+    Focusable="True"
     Margin="0, 0, 0, 0"
            KeyboardNavigation.DirectionalNavigation="Cycle"
     

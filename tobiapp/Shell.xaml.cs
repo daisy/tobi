@@ -130,7 +130,7 @@ namespace Tobi
                 int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { ExitCommand }, PreferredPosition.First);
 
                 int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Any);
-                int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand }, PreferredPosition.Any);
+                //int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand }, PreferredPosition.Any);
 
                 //int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { CopyCommand, CutCommand, PasteCommand }, PreferredPosition.First);
 
@@ -154,7 +154,9 @@ namespace Tobi
             {
                 int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { ExitCommand }, PreferredPosition.Last, true);
                 int uid2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Magnification, new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Last, true);
+#if DEBUG
                 int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, null, new[] { ManageShortcutsCommand }, PreferredPosition.First, true);
+#endif
                 int uid4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_System, new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand, OpenTobiIsolatedStorageCommand }, PreferredPosition.Last, true);
 
 #if DEBUG

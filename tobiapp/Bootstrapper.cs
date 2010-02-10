@@ -269,7 +269,7 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(StructureTrailPanePlugin))),
-                //new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
@@ -280,6 +280,7 @@ namespace Tobi
             var tobiModules = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModule in tobiModules)
             {
+                Debug.Assert(!string.IsNullOrEmpty(tobiModule.Name) && !string.IsNullOrEmpty(tobiModule.Description));
                 LoggerFacade.Log(@"Loaded plugin: [[" + tobiModule.Name + @"]] [[" + tobiModule.Version + @"]] [[" + tobiModule.Description + @"]]", Category.Debug, Priority.Low);
             }
 
@@ -301,6 +302,7 @@ namespace Tobi
             var tobiModulesAFTER = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModuleAFTER in tobiModulesAFTER)
             {
+                Debug.Assert(!string.IsNullOrEmpty(tobiModuleAFTER.Name) && !string.IsNullOrEmpty(tobiModuleAFTER.Description));
                 LoggerFacade.Log(@"Loaded plugins: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
             }
 
