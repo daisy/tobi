@@ -11,10 +11,11 @@
     <RootNamespace>Tobi.Plugin.MenuBar</RootNamespace>
     <AssemblyName>Tobi.Plugin.MenuBar</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>

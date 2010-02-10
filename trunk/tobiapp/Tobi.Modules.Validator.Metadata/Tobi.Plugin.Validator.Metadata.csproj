@@ -11,10 +11,11 @@
     <RootNamespace>Tobi.Plugin.Validator.Metadata</RootNamespace>
     <AssemblyName>Tobi.Plugin.Validator.Metadata</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
