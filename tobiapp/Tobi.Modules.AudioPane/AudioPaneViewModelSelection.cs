@@ -215,15 +215,15 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        [NotifyDependsOn("SelectionBegin")]
-        [NotifyDependsOn("SelectionEnd")]
+        [NotifyDependsOnEx("SelectionBegin", typeof(SelectionStateData))]
+        [NotifyDependsOnEx("SelectionEnd", typeof(SelectionStateData))]
         public bool IsSelectionSet
         {
             get
             {
                 if (State.Audio.HasContent)
                 {
-                    return State.Selection.IsSelectionSet;
+                    return State.Selection.SelectionBegin >= 0 && State.Selection.SelectionEnd >= 0;
                 }
                 if (View != null)
                 {

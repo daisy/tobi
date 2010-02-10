@@ -547,7 +547,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
-        [NotifyDependsOn("DataLength")]
+        [NotifyDependsOnEx("DataLength", typeof(StreamStateData))]
         public string TimeStringTotalWaveform
         {
             get
@@ -964,7 +964,8 @@ namespace Tobi.Plugin.AudioPane
                         fileStream.Close();
                     }
 
-                    RaisePropertyChanged("PcmFormat");
+                    //RaisePropertyChanged("PcmFormat");
+                    RaisePropertyChanged(() => State.Audio.PcmFormat);
                 }
 
 
@@ -1037,9 +1038,9 @@ namespace Tobi.Plugin.AudioPane
                                 {
                                     if (State.CurrentSubTreeNode != marker.m_TreeNode)
                                     {
-                                        Debug.Fail("This should never happen !!!");
                                         //recordingStream.Close();
                                         State.Audio.PcmFormatAlt = null;
+                                        Debug.Fail("This should never happen !!!");
                                         return;
                                     }
 

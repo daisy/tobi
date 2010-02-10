@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -14,7 +13,6 @@ using Tobi.Common.UI.XAML;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using System.Diagnostics;
 
 namespace Tobi.Common.UI
 {
@@ -57,9 +55,10 @@ namespace Tobi.Common.UI
                 () => IsDetailsExpanded = true,
                 () => HasDetails && !IsDetailsExpanded,
                 Settings_KeyGesture.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpandCollapse));
+                null // PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpandCollapse)
+                );
 
-            AddInputBinding(CommandDetailsExpand.KeyBinding);
+            //AddInputBinding(CommandDetailsExpand.KeyBinding);
             //
             CommandDetailsCollapse = new RichDelegateCommand(
                 UserInterfaceStrings.DetailsCollapse,
@@ -69,9 +68,10 @@ namespace Tobi.Common.UI
                 () => IsDetailsExpanded = false,
                 () => HasDetails && IsDetailsExpanded,
                 Settings_KeyGesture.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpandCollapse));
+                null // PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGesture.Default.Keyboard_DialogExpandCollapse)
+                );
 
-            AddInputBinding(CommandDetailsCollapse.KeyBinding);
+            //AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
 
         private PopupModalWindow(IShellView shellView)
