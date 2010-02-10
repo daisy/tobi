@@ -48,7 +48,7 @@ namespace Tobi.Plugin.AudioPane
                UserInterfaceStrings.Audio_PlayRateDown,
                UserInterfaceStrings.Audio_PlayRateDown_,
                null, // KeyGesture obtained from settings (see last parameters below)
-               m_ShellView.LoadGnomeGionIcon("Gion_go-previous"),
+               m_ShellView.LoadGnomeGionIcon("Gion_go-up"),
                () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandPlaybackRateDown", Category.Debug, Priority.Medium);
@@ -71,7 +71,7 @@ namespace Tobi.Plugin.AudioPane
                UserInterfaceStrings.Audio_PlayRateUp,
                UserInterfaceStrings.Audio_PlayRateUp_,
                null, // KeyGesture obtained from settings (see last parameters below)
-               m_ShellView.LoadGnomeGionIcon("Gion_go-next"),
+               m_ShellView.LoadGnomeGionIcon("Gion_go-down"),
                () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandPlaybackRateUp", Category.Debug, Priority.Medium);
@@ -371,8 +371,8 @@ namespace Tobi.Plugin.AudioPane
         }
 
         [NotifyDependsOn("IsAudioLoaded")]
-        [NotifyDependsOn("CurrentTreeNode")]
-        [NotifyDependsOn("PlayStream")]
+        [NotifyDependsOnEx("CurrentTreeNode", typeof(StateData))]
+        [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         public bool IsAudioLoadedWithSubTreeNodes
         {
             get
@@ -383,7 +383,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        [NotifyDependsOn("PlayStream")]
+        [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         public bool IsAudioLoaded
         {
             get
@@ -883,8 +883,8 @@ namespace Tobi.Plugin.AudioPane
             loadAndPlay();
         }
 
-        [NotifyDependsOn("PcmFormatAlt")]
-        [NotifyDependsOn("PcmFormat")]
+        [NotifyDependsOnEx("PcmFormatAlt", typeof(StreamStateData))]
+        [NotifyDependsOnEx("PcmFormat", typeof(StreamStateData))]
         public bool PcmFormatStringVisible
         {
             get

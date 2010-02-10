@@ -628,16 +628,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
       Orientation="Horizontal"
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-    Focusable="false">
 
-    <StackPanel
-      
+    
   Focusable="True"
   x:Name="FocusStart"
            KeyboardNavigation.DirectionalNavigation="Cycle"
+
+    >
+
+    <!-- StackPanel
+      
         Orientation="Horizontal"
                     HorizontalAlignment="Left"
-        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" -->
 
 
       <UI:TwoStateButtonRichCommand
@@ -728,7 +731,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandZoomSelection}"
                                  />
 
-    </StackPanel>
+    <!-- /StackPanel -->
 
     <!-- DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
              
@@ -739,9 +742,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
     <Slider x:Name="ZoomSlider"
-            
-Visibility="Collapsed"
-            
+              Focusable="False"
             Thumb.DragCompleted="OnZoomSliderDragCompleted"
             Thumb.DragStarted="OnZoomSliderDragStarted"
             IsMoveToPointEnabled="True"
@@ -761,10 +762,6 @@ Visibility="Collapsed"
   </UI:WrapPanelLastChildFill>
 
   <StatusBar
-    
-Visibility="Collapsed"
-    
-    
     
     Focusable="True"
     Margin="0, 0, 0, 0"

@@ -200,7 +200,8 @@ namespace Tobi.Common
         public const string Menu_Audio = "_Audio";
 
         public const string Menu_AudioPlayback = "_Playback";
-        public const string Menu_AudioTransport = "_Transport";
+        public const string Menu_AudioRecording = "_Recording";
+        public const string Menu_AudioTransport = "_Navigation";
         public const string Menu_AudioSelection = "_Selection";
         public const string Menu_AudioZoom = "_Zoom";
 
@@ -340,11 +341,11 @@ namespace Tobi.Common
         public const string Event_SwitchNext_ = "Select the next phrase";
         //public static KeyGesture Event_SwitchNext_KEYS = new KeyGesture(Key.J, ModifierKeys.Control);
 
-        public const string Audio_GotoBegin = "_Rewind to begin";
+        public const string Audio_GotoBegin = "_Go to begin";
         public const string Audio_GotoBegin_ = "Rewind to the begining of the audio stream";
         //public static KeyGesture Audio_GotoBegin_KEYS = new KeyGesture(Key.K, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
-        public const string Audio_GotoEnd = "_Fast Forward to end";
+        public const string Audio_GotoEnd = "_Go to end";
         public const string Audio_GotoEnd_ = "Fast Forward to the end of the audio stream";
         //public static KeyGesture Audio_GotoEnd_KEYS = new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt);
 
@@ -365,12 +366,12 @@ namespace Tobi.Common
         public const string Audio_StepForward_ = "Step forward one phrase";
         //public static KeyGesture Audio_StepForward_KEYS = new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift);
 
-        public const string Audio_FastForward = "_Fast-forward";
-        public const string Audio_FastForward_ = "Fast-forward by a pre-defined time increment";
+        public const string Audio_FastForward = "_Step forward";
+        public const string Audio_FastForward_ = "Jump forward by a pre-defined time increment";
         //public static KeyGesture Audio_FastForward_KEYS = new KeyGesture(Key.L, ModifierKeys.Control);
 
-        public const string Audio_Rewind = "_Rewind";
-        public const string Audio_Rewind_ = "Rewind by a pre-defined time increment";
+        public const string Audio_Rewind = "_Step backwards";
+        public const string Audio_Rewind_ = "Jump back by a pre-defined time increment";
         //public static KeyGesture Audio_Rewind_KEYS = new KeyGesture(Key.K, ModifierKeys.Control);
 
         public const string Audio_ClearSelection = "_Clear selection";

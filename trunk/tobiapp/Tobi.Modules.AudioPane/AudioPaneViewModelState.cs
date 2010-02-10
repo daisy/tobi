@@ -239,14 +239,6 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            public bool IsSelectionSet
-            {
-                get
-                {
-                    return SelectionBegin >= 0 && SelectionEnd >= 0;
-                }
-            }
-
             private double m_SelectionBegin;
             public double SelectionBegin
             {

@@ -24,12 +24,6 @@ namespace Tobi.Common.Onyx.Reflection
         /// </returns>
         public static MemberInfo GetMember(Expression<Action> expression)
         {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(
-                    GetMember(() => expression).Name);
-            }
-
             return GetMemberInfo(expression as LambdaExpression);
         }
 
@@ -43,12 +37,6 @@ namespace Tobi.Common.Onyx.Reflection
         /// </returns>
         public static MemberInfo GetMember<T>(Expression<Func<T>> expression)
         {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(
-                    GetMember(() => expression).Name);
-            }
-
             return GetMemberInfo(expression as LambdaExpression);
         }
 
@@ -62,12 +50,6 @@ namespace Tobi.Common.Onyx.Reflection
         public static MethodInfo GetMethod(Expression<Action> expression)
         {
             MethodInfo method = GetMember(expression) as MethodInfo;
-            if (method == null)
-            {
-                throw new ArgumentException(
-                    "Not a method call expression", GetMember(() => expression).Name);
-            }
-
             return method;
         }
 
@@ -82,12 +64,6 @@ namespace Tobi.Common.Onyx.Reflection
         public static PropertyInfo GetProperty<T>(Expression<Func<T>> expression)
         {
             PropertyInfo property = GetMember(expression) as PropertyInfo;
-            if (property == null)
-            {
-                throw new ArgumentException(
-                    "Not a property expression", GetMember(() => expression).Name);
-            }
-
             return property;
         }
 
@@ -103,12 +79,6 @@ namespace Tobi.Common.Onyx.Reflection
         public static FieldInfo GetField<T>(Expression<Func<T>> expression)
         {
             FieldInfo field = GetMember(expression) as FieldInfo;
-            if (field == null)
-            {
-                throw new ArgumentException(
-                    "Not a field expression", GetMember(() => expression).Name);
-            }
-
             return field;
         }
 
@@ -132,12 +102,6 @@ namespace Tobi.Common.Onyx.Reflection
             else if (lambda.Body.NodeType == ExpressionType.Call)
             {
                 return ((MethodCallExpression)lambda.Body).Method;
-            }
-
-            if (memberExpression == null)
-            {
-                throw new ArgumentException(
-                    "Not a member access", GetMember(() => lambda).Name);
             }
 
             return memberExpression.Member;

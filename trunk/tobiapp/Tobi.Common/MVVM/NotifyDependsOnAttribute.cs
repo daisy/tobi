@@ -1,12 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Tobi.Common.MVVM
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
     public class NotifyDependsOnAttribute : Attribute
     {
-        public string DependsOn { get; set; }
+        public string DependsOn { get; private set; }
 
         public NotifyDependsOnAttribute(string name)
         {
@@ -28,6 +28,25 @@ namespace Tobi.Common.MVVM
         {
             DependsOn = Reflect.GetMember(expression).Name;
         }*/
+    }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+    public class NotifyDependsOnExAttribute : NotifyDependsOnAttribute
+    {
+        public Type DependsOnType { get; private set; }
+
+        public NotifyDependsOnExAttribute(string name, Type typez) : base(name)
+        {
+            DependsOnType = typez;
+
+#if DEBUG
+            var propInfo = DependsOnType.GetProperty(DependsOn);
+            if (propInfo == null)
+            {
+                Debug.Fail(string.Format("Property {0} not found on Type {1} !", DependsOn, DependsOnType.FullName));
+            }
+#endif //DEBUG
+        }
     }
 
 

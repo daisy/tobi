@@ -2,8 +2,5 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Common" GeneratedClassName="Settings_KeyGesture">
   <Profiles />
   <Settings>
-    <Setting Name="Keyboard_DialogExpandCollapse" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] I</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

@@ -59,7 +59,13 @@ namespace Tobi.Common.MVVM
                 {
                     //m_DependentPropertyList.Add(new KeyValuePair<string, string>(attribute.DependsOn, property.Name));
 #if DEBUG
-                    VerifyPropertyName(attribute.DependsOn);
+                    VerifyPropertyName(attribute.DependsOn,
+                        (
+                        attribute.GetType() == typeof(NotifyDependsOnExAttribute)
+                        ? ((NotifyDependsOnExAttribute)attribute).DependsOnType
+                        : m_ClassInstancePropertyHost.GetType()
+                        )
+                        );
 #endif
                     m_DependentPropsCache.Add(attribute.DependsOn, property.Name);
                 }
@@ -97,8 +103,8 @@ namespace Tobi.Common.MVVM
 
                     //m_DependentPropertyList.Add(new KeyValuePair<string, string>(attribute.DependsOn, property.Name));
 #if DEBUG
-                    VerifyPropertyName(dependencyPropertyArgs.PropertyName);
-                    VerifyPropertyName(dependentPropertyArgs.PropertyName);
+                    VerifyPropertyName(dependencyPropertyArgs.PropertyName, m_ClassInstancePropertyHost.GetType());
+                    VerifyPropertyName(dependentPropertyArgs.PropertyName, m_ClassInstancePropertyHost.GetType());
 #endif
                     m_DependentPropsCache.Add(dependencyPropertyArgs, dependentPropertyArgs);
                 }
@@ -117,7 +123,7 @@ namespace Tobi.Common.MVVM
         /// </summary>
         //[DebuggerStepThrough]
         [Conditional("DEBUG")]
-        public void VerifyPropertyName(string propertyName)
+        public void VerifyPropertyName(string propertyName, Type typez)
         {
             if (m_missingClassProperties.Contains(propertyName))
             {
@@ -128,14 +134,16 @@ namespace Tobi.Common.MVVM
 
             //TypeDescriptor.GetProperties(m_ClassInstancePropertyHost)[propertyName] == null
             if (!string.IsNullOrEmpty(propertyName) &&
-                m_ClassInstancePropertyHost.GetType().GetProperty(propertyName) == null)
+                typez.GetProperty(propertyName) == null)
             {
                 m_missingClassProperties.Add(propertyName);
 
-                string msg = String.Format(@"=== Invalid property name: ({0} / {1}) on {2}", propertyName, Reflect.GetField(() => propertyName).Name, m_ClassInstancePropertyHost.GetType().FullName);
+                string msg = String.Format(@"=== Invalid property name: ({0}) on {1}",
+                    propertyName,
+                    typez.FullName);
 
                 Console.WriteLine(msg); 
-                //Debug.Fail(msg);
+                Debug.Fail(msg);
             }
         }
 
@@ -162,7 +170,7 @@ namespace Tobi.Common.MVVM
             }
         }
 
-        public void RaisePropertyChanged(string propertyName)
+        private void RaisePropertyChanged(string propertyName)
         {
             /*
             if (m_cachePropertyChangedEventArgs == null)
@@ -181,9 +189,9 @@ namespace Tobi.Common.MVVM
                 m_cachePropertyChangedEventArgs.Add(propertyName, argz);
             }*/
 
-#if DEBUG
-            VerifyPropertyName(propertyName);
-#endif
+//#if DEBUG
+//            VerifyPropertyName(propertyName);
+//#endif
 
             PropertyChangedEventArgs argz;
             lock (m_EventArgsCache_LOCK)
@@ -247,6 +255,7 @@ namespace Tobi.Common.MVVM
 
         public void RaisePropertyChanged<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
+            //var propertyType = typeof (T);
             string name = GetMemberName(expression);
             RaisePropertyChanged(name);
         }
@@ -299,9 +308,9 @@ namespace Tobi.Common.MVVM
 
         private void add(string propertyName, PropertyChangedEventArgs argz)
         {
-            var item = new CacheItem()
+            var item = new CacheItem
             {
-                data = new CacheData()
+                data = new CacheData
                 {
                     propertyName = propertyName,
                     argz = argz
@@ -444,10 +453,10 @@ namespace Tobi.Common.MVVM
 
         public void Add(string dependency, string dependent)
         {
-            var item = new CacheItem()
-            {
-                data = new CacheData()
-                {
+            var item = new CacheItem
+                           {
+                data = new CacheData
+                           {
                     dependencyPropertyName = dependency,
                     dependentPropertyName = dependent
                 },
@@ -459,10 +468,10 @@ namespace Tobi.Common.MVVM
 
         public void Add(PropertyChangedEventArgs dependency, PropertyChangedEventArgs dependent)
         {
-            var item = new CacheItem()
-            {
-                data = new CacheData()
-                {
+            var item = new CacheItem
+                           {
+                data = new CacheData
+                           {
                     dependencyPropertyChangeEventArgs = dependency,
                     dependentPropertyChangeEventArgs = dependent
                 },
