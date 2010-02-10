@@ -11,8 +11,9 @@
     <RootNamespace>Tobi.Plugin.MetadataPane</RootNamespace>
     <AssemblyName>Tobi.Plugin.MetadataPane</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
