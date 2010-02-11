@@ -12,7 +12,12 @@ namespace Tobi.Plugin.AudioPane
     {
         #region Commands
 
+        public RichDelegateCommand CommandAudioSettings { get; private set; }
+#if DEBUG
+
         public RichDelegateCommand CommandShowOptionsDialog { get; private set; }
+
+#endif //DEBUG
 
         public RichDelegateCommand CommandFocus { get; private set; }
         public RichDelegateCommand CommandFocusStatusBar { get; private set; }
@@ -91,16 +96,18 @@ namespace Tobi.Plugin.AudioPane
                                                            new AudioSettings(this),
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
-                                                           true, 500, 600);
+                                                           true, 500, 150);
 
                     windowPopup.ShowFloating(null);
                 },
                 () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ShowOptions));
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ShowOptions)
+                );
 
             m_ShellView.RegisterRichCommand(CommandAudioSettings);
             //
+#if DEBUG
             CommandShowOptionsDialog = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_ShowOptions,
                 null,
@@ -124,9 +131,11 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ShowOptions));
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ShowOptions)
+                );
 
             m_ShellView.RegisterRichCommand(CommandShowOptionsDialog);
+#endif //DEBUG
             //
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Focus,

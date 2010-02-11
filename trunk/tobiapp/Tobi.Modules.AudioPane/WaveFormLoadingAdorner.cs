@@ -17,6 +17,7 @@ namespace Tobi.Plugin.AudioPane
         private Pen m_textPen;
         private Point m_pointText;
         private Rect m_rectRect;
+        private SolidColorBrush m_textBrush;
 
         public WaveFormLoadingAdorner(FrameworkElement adornedElement, AudioPaneViewModel view)
             : base(adornedElement)
@@ -28,9 +29,6 @@ namespace Tobi.Plugin.AudioPane
             m_renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.6 };
             m_renderBrush.Freeze();
 
-            m_pen = new Pen(Brushes.White, 1);
-            m_pen.Freeze();
-
             m_typeFace = new Typeface("Helvetica");
 
             m_culture = CultureInfo.GetCultureInfo("en-us");
@@ -40,6 +38,17 @@ namespace Tobi.Plugin.AudioPane
 
             m_pointText = new Point(1, 1);
             m_rectRect = new Rect(1, 1, 1, 1);
+            
+            ResetBrushes();
+        }
+
+        public void ResetBrushes()
+        {
+            m_textBrush = new SolidColorBrush(m_AudioPaneViewModel.ColorTimeInfoText);
+            m_textBrush.Freeze();
+
+            m_pen = new Pen(m_textBrush, 1);
+            m_pen.Freeze();
         }
 
         public bool DisplayRecorderTime
@@ -83,7 +92,7 @@ namespace Tobi.Plugin.AudioPane
             m_pointText.Y = topOffset;
             Geometry textGeometry = formattedText.BuildGeometry(m_pointText);
 
-            drawingContext.DrawGeometry(Brushes.White,
+            drawingContext.DrawGeometry(m_textBrush,
                                         m_textPen,
                                         textGeometry);
         }

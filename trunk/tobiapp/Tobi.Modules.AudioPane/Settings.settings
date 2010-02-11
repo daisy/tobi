@@ -1,6 +1,42 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AudioWaveForm_Resolution" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_IsFilled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">true</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_IsBordered" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">true</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_IsStroked" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">false</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Border" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff7fff00</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Fill" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff32cd32</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Stroke" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff00ff00</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_CursorBorder" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffff0000</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_CursorFill" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffffd700</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Selection" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff00bfff</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Phrases" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff4682b4</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_TimeText" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffffffff</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

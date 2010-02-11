@@ -27,11 +27,10 @@ namespace Tobi.Plugin.AudioPane
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
 
-            m_penTick = new Pen(Brushes.White, 1);
-            m_penTick.Freeze();
-
             m_renderBrush = new SolidColorBrush(Colors.Black); // { Opacity = 0.8 };
             m_renderBrush.Freeze();
+            
+            ResetBrushes();
 
             m_point1 = new Point(1, 1);
             m_point2 = new Point(1, 1);
@@ -45,11 +44,27 @@ namespace Tobi.Plugin.AudioPane
             m_rectRect = new Rect(1, 1, 1, 1);
         }
 
+        public void ResetBrushes()
+        {
+            m_phraseBrush = new SolidColorBrush(m_AudioPaneViewModel.ColorMarkers);
+            m_phraseBrush.Freeze();
+
+            m_timeTextBrush = new SolidColorBrush(m_AudioPaneViewModel.ColorTimeInfoText);
+            m_timeTextBrush.Freeze();
+
+            m_penTick = new Pen(m_timeTextBrush, 1);
+            m_penTick.Freeze();
+        }
+
         private Typeface m_typeFace;
         private CultureInfo m_culture;
         private double m_MousePosX = -1;
         private Pen m_penTick;
+
         private SolidColorBrush m_renderBrush;
+        private SolidColorBrush m_phraseBrush;
+        private SolidColorBrush m_timeTextBrush;
+        
         private Point m_point1;
         private Point m_point2;
         private Point m_point3;
@@ -182,7 +197,7 @@ namespace Tobi.Plugin.AudioPane
                         FlowDirection.LeftToRight,
                         m_typeFace,
                         12,
-                        Brushes.WhiteSmoke
+                        m_timeTextBrush
                         );
 
                     double posX = currentTickX - formattedText.Width / 2;
@@ -249,7 +264,7 @@ namespace Tobi.Plugin.AudioPane
                                                               FlowDirection.LeftToRight,
                                                               m_typeFace,
                                                               12,
-                                                              Brushes.LightGray
+                                                              m_timeTextBrush
                             );
 
                         m_point3.X = pixelsLeft - hoffset + horizontalMargin + tickHeight;
@@ -303,7 +318,7 @@ namespace Tobi.Plugin.AudioPane
                                                                       FlowDirection.LeftToRight,
                                                                       m_typeFace,
                                                                       12,
-                                                                      Brushes.Cyan
+                                                                      m_phraseBrush
                                     );
                                 m_standardTextHeight = txt.Height;
                             }
@@ -313,7 +328,7 @@ namespace Tobi.Plugin.AudioPane
                                                                   FlowDirection.LeftToRight,
                                                                   m_typeFace,
                                                                   12,
-                                                                  Brushes.Cyan
+                                                                  m_phraseBrush
                                 );
 
                             FormattedText formattedTextDots = null;
@@ -360,7 +375,7 @@ namespace Tobi.Plugin.AudioPane
                                                                       FlowDirection.LeftToRight,
                                                                       m_typeFace,
                                                                       12,
-                                                                      Brushes.White
+                                                                      m_timeTextBrush
                                     );
                                 }
 
@@ -394,7 +409,7 @@ namespace Tobi.Plugin.AudioPane
                     FlowDirection.LeftToRight,
                     m_typeFace,
                     12,
-                    Brushes.White
+                    m_timeTextBrush
                     );
 
                 m_point1.X = m_MousePosX;

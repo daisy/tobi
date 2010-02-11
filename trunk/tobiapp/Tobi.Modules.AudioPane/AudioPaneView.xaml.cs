@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Regions;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
@@ -532,11 +531,13 @@ namespace Tobi.Plugin.AudioPane
             if (m_WaveFormTimeTicksAdorner != null)
             {
                 m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                m_WaveFormTimeTicksAdorner.ResetBrushes();
             }
 
             if (m_WaveFormLoadingAdorner != null)
             {
                 m_WaveFormLoadingAdorner.InvalidateVisual();
+                m_WaveFormLoadingAdorner.ResetBrushes();
             }
         }
 
@@ -991,6 +992,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_WaveFormLoadingAdorner != null)
             {
+                m_WaveFormLoadingAdorner.ResetBrushes();
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
                 m_WaveFormLoadingAdorner.InvalidateVisual();
             }
