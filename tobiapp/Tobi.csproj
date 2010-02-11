@@ -136,6 +136,11 @@
       <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
     <Compile Include="Shell_Settings.cs" />
+    <Compile Include="Tobi.Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi.Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TobiLoggerFacade.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Command.cs" />
@@ -153,11 +158,6 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -168,10 +168,6 @@
     <Compile Include="Shell_Commands.cs" />
     <Compile Include="Shell_Magnification.cs" />
     <Compile Include="Shell_SplitterDrag.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
@@ -327,6 +323,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi.Resources.fr.resx" />
+    <EmbeddedResource Include="Tobi.Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi.Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
