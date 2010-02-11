@@ -69,7 +69,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         }
 
         private List<ValidationItem> m_ValidationItems;
-
+        
         public override bool Validate()
         {
             if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
@@ -86,7 +86,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     ContentDocumentValidationError error = new ContentDocumentValidationError
                                                                {
                                                                    ErrorType = ContentDocumentErrorType.MissingDtd,
-                                                                   Message = "DTD not assigned."
+                                                                   DtdIdentifier = m_DtdIdentifier
                                                                };
                     m_ValidationItems.Add(error);
                     IsValid = false;
@@ -101,11 +101,13 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         private DTD m_Dtd;
         private DtdSharpToRegex m_DtdRegex;
+        private string m_DtdIdentifier;
 
         private const string m_DtdStoreDirName = "Cached-DTDs";
 
         public void UseDtd(string dtdIdentifier)
         {
+            m_DtdIdentifier = dtdIdentifier;
             string dtdCache = dtdIdentifier + ".cache";
 
             //check to see if we have a cached version of this file
@@ -156,11 +158,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 {
                     m_Dtd = null;
                     ContentDocumentValidationError error = new ContentDocumentValidationError
-                    {
-                        ErrorType = ContentDocumentErrorType.MissingDtd,
-                        Message =
-                            string.Format("{0} not found.", dtdIdentifier)
-                    };
+                                                               {
+                                                                   ErrorType = ContentDocumentErrorType.MissingDtd,
+                                                                   DtdIdentifier = m_DtdIdentifier
+                                                               };
                     m_ValidationItems.Add(error);
                     return;
                 }
@@ -222,12 +223,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 ContentDocumentValidationError error;
                 if (regex == null)
                 {
-                    string msg = string.Format("Definition for {0} not found", node.GetXmlElementQName().LocalName);
                     error = new ContentDocumentValidationError
                                                                {
                                                                    Target = node,
-                                                                   ErrorType = ContentDocumentErrorType.UndefinedElement,
-                                                                   Message = msg
+                                                                   ErrorType = ContentDocumentErrorType.UndefinedElement
                                                                };
                     m_ValidationItems.Add(error);
                     return false;
@@ -245,8 +244,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
                                                                Target = node,
                                                                ErrorType = ContentDocumentErrorType.InvalidChildElements,
                                                                AllowedChildNodes = childrenNames,
-                                                               Message =
-                                                                   "Unexpected child node or missing child node"
                                                            };
 
                 //look for more details about this error -- which child element is causing problems?
