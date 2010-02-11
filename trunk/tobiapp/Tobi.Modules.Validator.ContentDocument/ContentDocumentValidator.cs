@@ -284,8 +284,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
                 else
                 {
-                    //there are no smaller subsets to test, so the error begins with the first child
-                    error.BeginningOfError = error.Target.Children.Get(0);
+                    //there are no smaller subsets to test, so the error could be either with the first child
+                    //or just a general error with the overall sequence
+                    //better not to be specific if we aren't sures
+                    error.BeginningOfError = null;
                 }
             }
         }
