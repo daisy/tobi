@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Tobi {
+namespace Tobi.Plugin.AudioPane {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Tobi {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Tobi_Resources {
+    internal class Tobi_Plugin_AudioPane_Lang {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Tobi_Resources() {
+        internal Tobi_Plugin_AudioPane_Lang() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Tobi {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Tobi.Tobi.Resources", typeof(Tobi_Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Tobi.Plugin.AudioPane.Tobi.Plugin.AudioPane.Lang", typeof(Tobi_Plugin_AudioPane_Lang).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tobi.Resources.ENGLISH.
+        ///   Looks up a localized string similar to Hi.
         /// </summary>
-        internal static string StringTest {
+        internal static string LangStringKey1 {
             get {
-                return ResourceManager.GetString("StringTest", resourceCulture);
+                return ResourceManager.GetString("LangStringKey1", resourceCulture);
             }
         }
     }
