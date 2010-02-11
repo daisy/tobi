@@ -2,20 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.ToolBars" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ToolBarVisible" Type="System.Boolean" Scope="User">
+    <Setting Name="ToolBarVisible_TEST" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="ToolBarColor1" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
-    <Setting Name="ToolBarColor2" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFFFF00</Value>
-    </Setting>
-    <Setting Name="ToolBarColor3" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFF00FF</Value>
-    </Setting>
-    <Setting Name="ToolBarColor4" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFFFFFF</Value>
     </Setting>
   </Settings>
 </SettingsFile>

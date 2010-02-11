@@ -93,7 +93,10 @@ namespace Tobi.Plugin.AudioPane
 
             m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, null, new[]
                                                                                      {
-                                                                                         m_AudioPaneViewModel.CommandAudioSettings
+                                                                                         m_AudioPaneViewModel.CommandAudioSettings,
+#if DEBUG
+                                                                                         m_AudioPaneViewModel.CommandShowOptionsDialog
+#endif //DEBUG
                                                                                      }, PreferredPosition.Last, true);
 
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioRecording, new[]

@@ -630,12 +630,16 @@ namespace Tobi.Plugin.AudioPane
                     {
                         WaveFormImage.Source = renderBitmap;
                         m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                        m_WaveFormTimeTicksAdorner.ResetBrushes();
+                        m_WaveFormLoadingAdorner.ResetBrushes();
                     }));
                 }
                 else
                 {
                     WaveFormImage.Source = renderBitmap;
                     m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                    m_WaveFormTimeTicksAdorner.ResetBrushes();
+                    m_WaveFormLoadingAdorner.ResetBrushes();
                 }
             }
             finally

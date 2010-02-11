@@ -44,7 +44,7 @@ namespace Tobi.Plugin.AudioPane
         private readonly IShellView m_ShellView;
         private readonly IUrakawaSession m_UrakawaSession;
 
-        
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -158,6 +158,62 @@ namespace Tobi.Plugin.AudioPane
 
             EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Subscribe(str => StatusBarMessage = str,
                                                                               ThreadOption.UIThread);
+
+            Settings.Default.PropertyChanged += SettingsPropertyChanged;
+        }
+
+        private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!e.PropertyName.StartsWith(@"AudioWaveForm_")) return;
+
+            if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Resolution))
+            {
+                WaveStepX = Settings.Default.AudioWaveForm_Resolution;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsFilled))
+            {
+                IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered))
+            {
+                IsEnvelopeVisible = Settings.Default.AudioWaveForm_IsBordered;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked))
+            {
+                IsWaveFillVisible = Settings.Default.AudioWaveForm_IsStroked;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Stroke))
+            {
+                ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Border))
+            {
+                ColorEnvelopeOutline = Settings.Default.AudioWaveForm_Color_Border;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Fill))
+            {
+                ColorEnvelopeFill = Settings.Default.AudioWaveForm_Color_Fill;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorBorder))
+            {
+                ColorPlayhead = Settings.Default.AudioWaveForm_Color_CursorBorder;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorFill))
+            {
+                ColorPlayheadFill = Settings.Default.AudioWaveForm_Color_CursorFill;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Phrases))
+            {
+                ColorMarkers = Settings.Default.AudioWaveForm_Color_Phrases;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Selection))
+            {
+                ColorTimeSelection = Settings.Default.AudioWaveForm_Color_Selection;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_TimeText))
+            {
+                ColorTimeInfoText = Settings.Default.AudioWaveForm_Color_TimeText;
+            }
         }
 
         //StatusBarMessageUpdateEvent
@@ -187,6 +243,7 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
             Logger.Log("AudioPaneViewModel garbage collected.", Category.Debug, Priority.Medium);
 #endif
+            Settings.Default.PropertyChanged -= SettingsPropertyChanged;
         }
 
         #endregion Construction
@@ -640,7 +697,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
 
-                    return "Time: " + FormatTimeSpan_Units(timeSpan);
+                    return FormatTimeSpan_Units(timeSpan); //"Time: " + 
                 }
 
                 string strToDisplay = null;

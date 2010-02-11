@@ -23,7 +23,6 @@ namespace Tobi.Plugin.AudioPane
 
 
         public RichDelegateCommand CommandAutoPlay { get; private set; }
-        public RichDelegateCommand CommandAudioSettings { get; private set; }
 
         public RichDelegateCommand CommandPlay { get; private set; }
         public RichDelegateCommand CommandPlayPreviewLeft { get; private set; }

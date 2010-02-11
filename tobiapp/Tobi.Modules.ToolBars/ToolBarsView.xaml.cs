@@ -61,7 +61,7 @@ namespace Tobi.Plugin.ToolBars
             RegionManager.UpdateRegions();
 
             //TODO: just for testing automatic Save()
-            Settings.Default.ToolBarVisible = !Settings.Default.ToolBarVisible;
+            Settings.Default.ToolBarVisible_TEST = !Settings.Default.ToolBarVisible_TEST;
         }
 
         //private readonly PropertyChangedNotifyBase m_PropertyChangeHandler;

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Media;
-using Tobi.Common;
-using Tobi.Common.UI;
 using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.AudioPane
@@ -94,7 +91,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private double m_WaveStepX = 2;
+        private double m_WaveStepX = Settings.Default.AudioWaveForm_Resolution;
         public double WaveStepX
         {
             get
@@ -236,7 +233,7 @@ namespace Tobi.Plugin.AudioPane
         }*/
 
         // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_IsWaveFillVisible = false;
+        private bool m_IsWaveFillVisible = Settings.Default.AudioWaveForm_IsStroked;
         // ReSharper restore RedundantDefaultFieldInitializer
         public bool IsWaveFillVisible
         {
@@ -257,7 +254,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private bool m_IsEnvelopeVisible = true;
+        private bool m_IsEnvelopeVisible = Settings.Default.AudioWaveForm_IsBordered;
         public bool IsEnvelopeVisible
         {
             get
@@ -277,7 +274,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private bool m_IsEnvelopeFilled = true;
+        private bool m_IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
         public bool IsEnvelopeFilled
         {
             get
@@ -297,7 +294,30 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorTimeSelection = Colors.DeepSkyBlue;
+        private Color m_ColorTimeInfoText = Settings.Default.AudioWaveForm_Color_TimeText;
+        public Color ColorTimeInfoText
+        {
+            get
+            {
+                return m_ColorTimeInfoText;
+            }
+            set
+            {
+                if (m_ColorTimeInfoText == value) return;
+                m_ColorTimeInfoText = value;
+
+                if (View != null)
+                {
+                    View.ResetWaveFormEmpty();
+
+                    CommandRefresh.Execute();
+                }
+
+                RaisePropertyChanged(() => ColorTimeInfoText);
+            }
+        }
+
+        private Color m_ColorTimeSelection = Settings.Default.AudioWaveForm_Color_Selection;
         public Color ColorTimeSelection
         {
             get
@@ -312,7 +332,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorPlayhead = Colors.Red;
+        private Color m_ColorPlayhead = Settings.Default.AudioWaveForm_Color_CursorBorder;
         public Color ColorPlayhead
         {
             get
@@ -328,7 +348,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorPlayheadFill = Colors.Gold;
+        private Color m_ColorPlayheadFill = Settings.Default.AudioWaveForm_Color_CursorFill;
         public Color ColorPlayheadFill
         {
             get
@@ -365,7 +385,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorMarkers = Colors.SteelBlue;
+        private Color m_ColorMarkers = Settings.Default.AudioWaveForm_Color_Phrases;
         public Color ColorMarkers
         {
             get
@@ -387,7 +407,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorWaveBars = Colors.Lime;
+        private Color m_ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
         public Color ColorWaveBars
         {
             get
@@ -408,7 +428,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorEnvelopeFill = Colors.LimeGreen;
+        private Color m_ColorEnvelopeFill = Settings.Default.AudioWaveForm_Color_Fill;
         public Color ColorEnvelopeFill
         {
             get
@@ -429,7 +449,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorEnvelopeOutline = Colors.Chartreuse;
+        private Color m_ColorEnvelopeOutline = Settings.Default.AudioWaveForm_Color_Border;
         public Color ColorEnvelopeOutline
         {
             get
