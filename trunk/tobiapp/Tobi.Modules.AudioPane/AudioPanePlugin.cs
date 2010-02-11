@@ -129,6 +129,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioPlayback, new object[]
                                                                                         {
+                                                                                            m_AudioPaneViewModel.CommandPlaybackRateReset,
                                                                                             m_AudioPaneViewModel.CommandPlaybackRateDown,
                                                                                             m_AudioPaneViewModel.CommandPlaybackRateUp
                                                                                         }, PreferredPosition.Last, false);

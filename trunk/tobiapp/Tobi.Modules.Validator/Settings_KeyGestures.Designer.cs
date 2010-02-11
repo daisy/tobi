@@ -13,7 +13,7 @@ namespace Tobi.Plugin.Validator {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "9.0.0.0")]
-    internal sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings_KeyGestures defaultInstance = ((Settings_KeyGestures)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings_KeyGestures())));
         
@@ -25,7 +25,7 @@ namespace Tobi.Plugin.Validator {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] V")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F12")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_DisplayValidator {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DisplayValidator"]));

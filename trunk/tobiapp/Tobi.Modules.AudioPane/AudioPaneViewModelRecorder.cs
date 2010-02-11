@@ -34,7 +34,6 @@ namespace Tobi.Plugin.AudioPane
 
                     m_Recorder.StopRecording();
 
-
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped.");
                 },
                 () => !IsWaveFormLoading && IsRecording,

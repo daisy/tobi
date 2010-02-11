@@ -89,10 +89,10 @@ namespace Tobi
 
             Settings.Default.PropertyChanged += (sender, e) =>
             {
-                if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.WindowMagnificationLevel))
+                if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Window_UI_Zoom))
                 {
-                    if (MagnificationLevel != Settings.Default.WindowMagnificationLevel)
-                        MagnificationLevel = Settings.Default.WindowMagnificationLevel;
+                    if (MagnificationLevel != Settings.Default.Window_UI_Zoom)
+                        MagnificationLevel = Settings.Default.Window_UI_Zoom;
                 }
             };
 

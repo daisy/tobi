@@ -76,7 +76,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => View != null && !IsWaveFormLoading,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_FitFull));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ZoomFitFull));
 
             m_ShellView.RegisterRichCommand(CommandZoomFitFull);
             //

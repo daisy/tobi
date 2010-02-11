@@ -13,7 +13,7 @@ namespace Tobi {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "9.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -86,12 +86,12 @@ namespace Tobi {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public double WindowMagnificationLevel {
+        public double Window_UI_Zoom {
             get {
-                return ((double)(this["WindowMagnificationLevel"]));
+                return ((double)(this["Window_UI_Zoom"]));
             }
             set {
-                this["WindowMagnificationLevel"] = value;
+                this["Window_UI_Zoom"] = value;
             }
         }
     }

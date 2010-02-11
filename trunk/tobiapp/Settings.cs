@@ -48,7 +48,8 @@ namespace Tobi {
     //  The PropertyChanged event is raised after a setting's value is changed.
     //  The SettingsLoaded event is raised after the setting values are loaded.
     //  The SettingsSaving event is raised before the setting values are saved.
-    internal sealed partial class Settings {
+    public sealed partial class Settings
+    {
         
         public Settings() {
             //PropertyChanged +=new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
@@ -63,7 +64,7 @@ namespace Tobi {
         }
     }
 
-    internal sealed partial class Settings_KeyGestures
+    public sealed partial class Settings_KeyGestures
     {
 
         public Settings_KeyGestures()

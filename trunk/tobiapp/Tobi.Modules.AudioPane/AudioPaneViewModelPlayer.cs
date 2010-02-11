@@ -31,6 +31,7 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandPlaybackRateDown { get; private set; }
         public RichDelegateCommand CommandPlaybackRateUp { get; private set; }
+        public RichDelegateCommand CommandPlaybackRateReset { get; private set; }
 
         public int AudioPlayer_RefreshInterval
         {
@@ -43,6 +44,23 @@ namespace Tobi.Plugin.AudioPane
 
         private void initializeCommands_Player()
         {
+            CommandPlaybackRateReset = new RichDelegateCommand(
+                  UserInterfaceStrings.Audio_PlayRateReset,
+                  UserInterfaceStrings.Audio_PlayRateReset_,
+                  null, // KeyGesture obtained from settings (see last parameters below)
+                  m_ShellView.LoadGnomeGionIcon("Gion_go-previous"),
+                  () =>
+                  {
+                      Logger.Log("AudioPaneViewModel.CommandPlaybackRateReset", Category.Debug, Priority.Medium);
+
+                      PlaybackRate = PLAYBACK_RATE_MIN;
+                  },
+                  () => !IsWaveFormLoading,
+                   Settings_KeyGestures.Default,
+                   PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateReset));
+
+            m_ShellView.RegisterRichCommand(CommandPlaybackRateReset);
+            //
             CommandPlaybackRateDown = new RichDelegateCommand(
                UserInterfaceStrings.Audio_PlayRateDown,
                UserInterfaceStrings.Audio_PlayRateDown_,

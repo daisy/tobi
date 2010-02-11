@@ -103,7 +103,7 @@ namespace Tobi
             m_FileWriter = new CodeLocationTextWriter(new StreamWriter(fileStream));
 
 #else
-            m_FileWriter = new StreamWriter(fileStream);
+            m_FileWriter = new StreamWriter(fileStream) { AutoFlush = true };
 #endif
 
             var listener = new TextWriterTraceListener(m_FileWriter)
@@ -148,18 +148,27 @@ namespace Tobi
 #endif
         }
 
-        ~TobiLoggerFacade()
-        {
-            string msg = string.Format("Finalized: ({0})", GetType().Name);
-            Console.WriteLine(msg);
+//        ~TobiLoggerFacade()
+//        {
+//            string msg = string.Format("Finalized: ({0})", GetType().Name);
+//            Console.WriteLine(msg);
 
-            //Trace.Flush();
-            //Debug.Flush();
+//            //Trace.Flush();
+//            //Debug.Flush();
 
-            m_FileWriter.WriteLine("-- GC --");
-            m_FileWriter.Flush();
-            m_FileWriter.Close();
-        }
+//            try
+//            {
+//                m_FileWriter.WriteLine("-- GC --");
+//                m_FileWriter.Flush();
+//                m_FileWriter.Close();
+//            }
+//            catch (Exception ex)
+//            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif //DEBUG
+//            }
+//        }
 
         #region ILoggerFacade Members
 
@@ -735,7 +744,7 @@ namespace Tobi
             // Explicitly pick up a potentially methodimpl'ed Dispose
             if (disposing)
             {
-                    ((IDisposable)m_TextWriter).Dispose();
+                ((IDisposable)m_TextWriter).Dispose();
             }
         }
 

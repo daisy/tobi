@@ -1,10 +1,8 @@
 using System;
 using System.Deployment.Application;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Tobi.Common
 {
@@ -104,6 +102,8 @@ namespace Tobi.Common
         public const string Audio_BeginSelection_ = "Begin audio waveform selection";
         //public static KeyGesture Audio_BeginSelection_KEYS = new KeyGesture(Key.OemOpenBrackets, ModifierKeys.Control);
 
+        public const string Audio_PlayRateReset = "_Reset playback rate";
+        public const string Audio_PlayRateReset_ = "Restore the normal playback speed";
         public const string Audio_PlayRateDown = "_Descrease playback rate";
         public const string Audio_PlayRateDown_ = "Turn the playback speed down";
         public const string Audio_PlayRateUp = "_Increase playback rate";
