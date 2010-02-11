@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -105,6 +106,57 @@ c.Execute();
             base.OnStartup(e);
         }
 
+        private void SetCulture(string str)
+        {
+            Debug.Assert(CultureInfo.CurrentCulture.Equals(Thread.CurrentThread.CurrentCulture));
+            Debug.Assert(CultureInfo.CurrentUICulture.Equals(Thread.CurrentThread.CurrentUICulture));
+
+            var c1 = CultureInfo.CurrentCulture;
+            var c2 = CultureInfo.CurrentUICulture;
+
+            Debug.Assert(c1.Equals(c2));
+
+            if (str == "en") str = "en-GB";
+            if (str == "fr") str = "fr-FR";
+
+            var c3 = CultureInfo.GetCultureInfoByIetfLanguageTag(str);
+
+            var c4 = CultureInfo.GetCultureInfo(str);
+
+            Debug.Assert(c3.Equals(c4));
+
+            var c5 = new CultureInfo(str);
+
+            Debug.Assert(c3.Equals(c5));
+
+            if (!c4.IsNeutralCulture)
+            {
+                Thread.CurrentThread.CurrentCulture = c4;
+            }
+            Thread.CurrentThread.CurrentUICulture = c4;
+
+            Debug.Assert(Thread.CurrentThread.CurrentUICulture.Equals(Thread.CurrentThread.CurrentCulture));
+
+            str = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+            str = CultureInfo.CurrentCulture.ThreeLetterWindowsLanguageName;
+            str = CultureInfo.CurrentCulture.ThreeLetterISOLanguageName;
+            str = CultureInfo.CurrentCulture.NativeName;
+            str = CultureInfo.CurrentCulture.Name;
+            str = CultureInfo.CurrentCulture.IetfLanguageTag;
+            str = CultureInfo.CurrentCulture.EnglishName;
+            str = CultureInfo.CurrentCulture.DisplayName;
+
+            str = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            str = CultureInfo.CurrentUICulture.ThreeLetterWindowsLanguageName;
+            str = CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName;
+            str = CultureInfo.CurrentUICulture.NativeName;
+            str = CultureInfo.CurrentUICulture.Name;
+            str = CultureInfo.CurrentUICulture.IetfLanguageTag;
+            str = CultureInfo.CurrentUICulture.EnglishName;
+            str = CultureInfo.CurrentUICulture.DisplayName;
+
+        }
+
         /// <summary>
         /// Called after OnStartup()
         /// </summary>
@@ -112,12 +164,18 @@ c.Execute();
         /// <param name="e"></param>
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            SetCulture(Settings.Default.Lang);
 
-            SplashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "TobiSplashScreen.png");
-            SplashScreen.Show(false);
+            var str = Tobi_Lang.LangStringKey1;
 
-            ShutdownMode = ShutdownMode.OnMainWindowClose;
+            SetCulture("fr");
+
+            str = Tobi_Lang.LangStringKey1;
+
+            SetCulture("hi");
+
+            str = Tobi_Lang.LangStringKey1;
+
 
             //to use on individual forms: this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             FrameworkElement.LanguageProperty.OverrideMetadata(
@@ -125,6 +183,13 @@ c.Execute();
                   new FrameworkPropertyMetadata(
                      XmlLanguage.GetLanguage(
                      CultureInfo.CurrentCulture.IetfLanguageTag)));
+
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+
+            SplashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "TobiSplashScreen.png");
+            SplashScreen.Show(false);
+
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
 
 
 #if (FALSE && DEBUG && VSTUDIO) // We want the release-mode exception capture dialog, even when debugging in Visual Studio

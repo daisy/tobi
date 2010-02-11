@@ -136,10 +136,10 @@
       <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
     <Compile Include="Shell_Settings.cs" />
-    <Compile Include="Tobi.Resources.Designer.cs">
+    <Compile Include="Tobi.Lang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Tobi.Resources.resx</DependentUpon>
+      <DependentUpon>Tobi.Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="TobiLoggerFacade.cs" />
     <Compile Include="Bootstrapper.cs" />
@@ -325,10 +325,10 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Tobi.Resources.fr.resx" />
-    <EmbeddedResource Include="Tobi.Resources.resx">
+    <EmbeddedResource Include="Tobi.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Lang.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tobi.Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>Tobi.Lang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

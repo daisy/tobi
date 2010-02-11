@@ -117,8 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="StringTest" xml:space="preserve">
-    <value>Tobi.Audio.Resources.FRENCH</value>
-    <comment>Hello in French</comment>
+  <data name="LangStringKey1" xml:space="preserve">
+    <value>Salut</value>
   </data>
 </root>
