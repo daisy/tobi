@@ -13,7 +13,7 @@ namespace Tobi.Plugin.Settings {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "9.0.0.0")]
-    internal sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings_KeyGestures defaultInstance = ((Settings_KeyGestures)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings_KeyGestures())));
         
@@ -25,7 +25,7 @@ namespace Tobi.Plugin.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] F")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] F1")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_EditPreferences {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_EditPreferences"]));

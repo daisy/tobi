@@ -13,7 +13,7 @@ namespace Tobi.Plugin.Urakawa {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "9.0.0.0")]
-    internal sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings_KeyGestures defaultInstance = ((Settings_KeyGestures)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings_KeyGestures())));
         
@@ -37,7 +37,7 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] W")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Q")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Close {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Close"]));
@@ -85,18 +85,6 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] E")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Export {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Export"]));
-            }
-            set {
-                this["Keyboard_Export"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] S")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_SaveAs {
             get {
@@ -104,6 +92,18 @@ namespace Tobi.Plugin.Urakawa {
             }
             set {
                 this["Keyboard_SaveAs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] E")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Export {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Export"]));
+            }
+            set {
+                this["Keyboard_Export"] = value;
             }
         }
     }

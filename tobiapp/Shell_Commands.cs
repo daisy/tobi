@@ -261,7 +261,8 @@ namespace Tobi
                 },
                  () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayLogFilePath));
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayLogFilePath)
+                );
 
             RegisterRichCommand(ShowLogFilePathCommand);
             //

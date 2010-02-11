@@ -13,7 +13,7 @@ namespace Tobi.Plugin.DocumentPane {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "9.0.0.0")]
-    internal sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings_KeyGestures defaultInstance = ((Settings_KeyGestures)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings_KeyGestures())));
         
@@ -25,7 +25,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] J")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemComma (,)")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Doc_Event_SwitchPrevious {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Doc_Event_SwitchPrevious"]));
@@ -37,7 +37,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] K")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] OemPeriod (.)")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Doc_Event_SwitchNext {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Doc_Event_SwitchNext"]));

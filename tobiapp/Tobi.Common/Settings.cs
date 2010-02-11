@@ -47,7 +47,7 @@ namespace Tobi.Common
         }
     }
 
-    internal sealed partial class Settings
+    public sealed partial class Settings
     {
         public Settings()
         {
@@ -64,7 +64,7 @@ namespace Tobi.Common
 
     }
 
-    internal sealed partial class Settings_KeyGestures
+    public sealed partial class Settings_KeyGestures
     {
         public Settings_KeyGestures()
         {

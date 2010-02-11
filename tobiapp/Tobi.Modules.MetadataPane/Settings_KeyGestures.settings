@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Keyboard_Metadata_Edit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ALT ] M</Value>
+      <Value Profile="(Default)">[ NONE ] F11</Value>
     </Setting>
   </Settings>
 </SettingsFile>

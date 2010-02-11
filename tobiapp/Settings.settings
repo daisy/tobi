@@ -17,7 +17,7 @@
     <Setting Name="WindowShellFullScreen" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="WindowMagnificationLevel" Type="System.Double" Scope="User">
+    <Setting Name="Window_UI_Zoom" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
