@@ -186,6 +186,7 @@
       <DependentUpon>WatermarkTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
+    <Compile Include="UI\XAML\BooleanToVisibilityConverter.cs" />
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
     <Compile Include="UI\XAML\DataContextSpy.cs" />
     <Compile Include="UI\XAML\DoubleToTextConverter.cs" />
@@ -315,7 +316,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

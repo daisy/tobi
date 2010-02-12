@@ -96,11 +96,11 @@
     <Compile Include="Urakawa_RecentFilesManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
       <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
       <Name>UrakawaSDK.daisy</Name>
     </ProjectReference>

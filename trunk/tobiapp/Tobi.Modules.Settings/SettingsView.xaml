@@ -69,7 +69,8 @@ AlternationCount="2"
 
       <DataTemplate x:Key="SettingEditTemplate_KeyGesture" DataType="{x:Type UI:KeyGestureString}">
         <UI:KeyGestureSinkBox  Validation.Error="OnError"
-                               KeyboardNavigation.IsTabStop="true">
+                               KeyboardNavigation.IsTabStop="true"
+                               Margin="2">
 
           <UI:KeyGestureSinkBox.Resources>
             <XAML:DataContextSpy x:Key="dataContextSpy" />
@@ -240,7 +241,8 @@ AlternationCount="2"
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
         <CheckBox Control.IsTabStop="true"
                   IsChecked="{Binding Value, Mode=TwoWay}" Content="False"
-                  IsThreeState="False">
+                  IsThreeState="False"
+                  Margin="2">
           <CheckBox.Style>
             <Style TargetType="{x:Type CheckBox}">
               <Style.Setters>

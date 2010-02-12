@@ -1,6 +1,8 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi" GeneratedClassName="Settings">
-  <Profiles />
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
   <Settings>
     <Setting Name="WindowShellWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">800</Value>

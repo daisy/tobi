@@ -1,32 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using Tobi.Common.MVVM;
 using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
-using urakawa.events.progress;
-using urakawa.xuk;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using Orientation = System.Windows.Controls.Orientation;
-using ProgressBar = System.Windows.Controls.ProgressBar;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
-using Microsoft.Practices.Composite.Logging;
-using Tobi.Common;
-using Tobi.Common.UI;
-using urakawa.daisy.import;
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -91,17 +71,23 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", path), Category.Debug, Priority.Medium);
 
-            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null);
+            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null, Settings.Default.AudioExportEncodeToMp3);
 
             DoWorkProgressUI("Exporting ...",
                 converter,
                 () =>
                 {
-                    ;
+                    m_Logger.Log(@"UrakawaSession-Daisy3_Export-CANCELED-ShowFolder", Category.Debug, Priority.Medium);
+
+                    var p = new Process
+                    {
+                        StartInfo = { FileName = path }
+                    };
+                    p.Start();
                 },
                 () =>
                 {
-                    m_Logger.Log(@"UrakawaSession-Daisy3_Export-DONE-OpenFolder", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"UrakawaSession-Daisy3_Export-DONE-ShowFolder", Category.Debug, Priority.Medium);
 
                     var p = new Process
                     {

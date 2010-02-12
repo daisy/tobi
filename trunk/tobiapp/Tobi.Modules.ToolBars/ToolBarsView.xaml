@@ -7,18 +7,19 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="PresentationOptions"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
   
   xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
   
-  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
-     
-  Focusable="True"
+  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation" xmlns:ToolBars="clr-namespace:Tobi.Plugin.ToolBars" Focusable="True"
   x:Name="FocusStart"
    
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}"
    
+   Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
    >
 
   <!-- ItemsControl.Resources>
