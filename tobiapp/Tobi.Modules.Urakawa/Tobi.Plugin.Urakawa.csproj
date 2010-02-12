@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -93,13 +93,14 @@
     <Compile Include="UrakawaSession_Import.cs" />
     <Compile Include="UrakawaSession_Open.cs" />
     <Compile Include="UrakawaSession_Save.cs" />
+    <Compile Include="Urakawa_RecentFilesManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.csproj">
       <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
       <Name>UrakawaSDK.daisy</Name>
     </ProjectReference>
