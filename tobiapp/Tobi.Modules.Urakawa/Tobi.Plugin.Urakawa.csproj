@@ -82,6 +82,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
+    <Compile Include="Tobi.Plugin.Urakawa.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi.Plugin.Urakawa.Lang.resx</DependentUpon>
+    </Compile>
     <Compile Include="UrakawaPlugin.cs" />
     <Compile Include="UrakawaSession.cs" />
     <Compile Include="UrakawaSession_Import.cs" />
@@ -159,6 +164,12 @@
       <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.Urakawa.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi.Plugin.Urakawa.Lang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
