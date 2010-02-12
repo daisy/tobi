@@ -29,6 +29,8 @@
     Loaded="OnWindowLoaded"
         
     x:Name="MainWindow"
+    
+    ToolTip="{x:Static Tobi:Tobi_Lang.LangStringKey1}"
         
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
    >

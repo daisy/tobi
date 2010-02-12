@@ -141,6 +141,52 @@ AlternationCount="2"
 
       </DataTemplate>
 
+      <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
+        <UI:ValidationAwareTextBox
+          Validation.Error="OnError"
+          KeyboardNavigation.IsTabStop="true">
+
+          <UI:ValidationAwareTextBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:ValidationAwareTextBox.Resources>
+
+
+          <UI:ValidationAwareTextBox.Text>
+            <Binding Path="Value" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+
+                <Settings:TextValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:ValidationAwareTextBox.Text>
+
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ValidationAwareTextBox.Style>
+
+        </UI:ValidationAwareTextBox>
+
+      </DataTemplate>
+      
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
         <UI:ValidationAwareTextBox Validation.Error="OnError"
                                    Control.IsTabStop="true">
@@ -235,18 +281,6 @@ AlternationCount="2"
         </UI:ComboBoxColor>
     </DataTemplate>
       
-      <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
-        <TextBlock KeyboardNavigation.IsTabStop="true"
-                   Text="{Binding Value, Mode=OneWay}">
-          <TextBlock.Style>
-            <Style TargetType="{x:Type TextBlock}">
-            <Style.Setters>
-              <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
-              </Style.Setters>
-            </Style>
-          </TextBlock.Style>
-        </TextBlock>
-      </DataTemplate>
 
       <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>
     </ListView.Resources>

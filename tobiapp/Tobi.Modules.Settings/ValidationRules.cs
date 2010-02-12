@@ -91,6 +91,23 @@ namespace Tobi.Plugin.Settings
         }
     }
 
+    public class TextValidationRule : DataContextValidationRuleBase
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var str = value as string;
+            if (String.IsNullOrEmpty(str))
+            {
+                return NotValid("String cannot be empty.");
+            }
+            if (str.Trim().Length == 0)
+            {
+                return NotValid("String cannot just be separators (e.g. space characters).");
+            }
+
+            return Valid();
+        }
+    }
     public class DoubleValidationRule : DataContextValidationRuleBase
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)

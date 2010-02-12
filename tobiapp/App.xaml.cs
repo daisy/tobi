@@ -111,10 +111,9 @@ c.Execute();
             Debug.Assert(CultureInfo.CurrentCulture.Equals(Thread.CurrentThread.CurrentCulture));
             Debug.Assert(CultureInfo.CurrentUICulture.Equals(Thread.CurrentThread.CurrentUICulture));
 
-            var c1 = CultureInfo.CurrentCulture;
-            var c2 = CultureInfo.CurrentUICulture;
-
-            Debug.Assert(c1.Equals(c2));
+            //var c1 = CultureInfo.CurrentCulture;
+            //var c2 = CultureInfo.CurrentUICulture;
+            //Debug.Assert(c1.Equals(c2));
 
             if (str == "en") str = "en-GB";
             if (str == "fr") str = "fr-FR";
@@ -129,13 +128,13 @@ c.Execute();
 
             Debug.Assert(c3.Equals(c5));
 
-            if (!c4.IsNeutralCulture)
-            {
-                Thread.CurrentThread.CurrentCulture = c4;
-            }
+            //if (!c4.IsNeutralCulture)
+            //{
+            //    Thread.CurrentThread.CurrentCulture = c4;
+            //}
             Thread.CurrentThread.CurrentUICulture = c4;
 
-            Debug.Assert(Thread.CurrentThread.CurrentUICulture.Equals(Thread.CurrentThread.CurrentCulture));
+            //Debug.Assert(Thread.CurrentThread.CurrentUICulture.Equals(Thread.CurrentThread.CurrentCulture));
 
             str = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
             str = CultureInfo.CurrentCulture.ThreeLetterWindowsLanguageName;
@@ -164,18 +163,20 @@ c.Execute();
         /// <param name="e"></param>
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
-            SetCulture(Settings.Default.Lang);
-
+#if DEBUG
             var str = Tobi_Lang.LangStringKey1;
 
             SetCulture("fr");
-
             str = Tobi_Lang.LangStringKey1;
 
             SetCulture("hi");
-
             str = Tobi_Lang.LangStringKey1;
 
+            SetCulture(Settings.Default.Lang);
+            str = Tobi_Lang.LangStringKey1;
+#else //DEBUG
+            SetCulture(Settings.Default.Lang);
+#endif //DEBUG
 
             //to use on individual forms: this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             FrameworkElement.LanguageProperty.OverrideMetadata(
@@ -252,7 +253,7 @@ c.Execute();
             if (LOGGER == null) return;
 
             LOGGER.Log("[" + ex.GetType().FullName + "] ", Category.Exception, Priority.High);
-            
+
             if (ex.Message != null)
             {
                 LOGGER.Log(ex.Message, Category.Exception, Priority.High);
@@ -287,9 +288,9 @@ c.Execute();
         {
             if (ex == null)
                 return;
-//#if DEBUG
-//            Debugger.Break();
-//#endif
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
 
             logException(ex);
 
