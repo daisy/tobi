@@ -196,7 +196,12 @@ namespace Tobi.Plugin.Urakawa
 
                 backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
                 {
-                    if (args.Cancelled)
+                    if (cancelFlag)
+                    {
+                        DocumentFilePath = null;
+                        DocumentProject = null;
+                    }
+                    else if (args.Cancelled)
                     {
                         DocumentFilePath = null;
                         DocumentProject = null;
