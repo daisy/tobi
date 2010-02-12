@@ -77,6 +77,11 @@
       <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
     <Compile Include="SettingWrapper.cs" />
+    <Compile Include="Tobi.Plugin.Settings.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi.Plugin.Settings.Lang.resx</DependentUpon>
+    </Compile>
     <Compile Include="ValidationRules.cs" />
     <Compile Include="ValueConverters.cs" />
   </ItemGroup>
@@ -166,5 +171,11 @@
       <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.Settings.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi.Plugin.Settings.Lang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
