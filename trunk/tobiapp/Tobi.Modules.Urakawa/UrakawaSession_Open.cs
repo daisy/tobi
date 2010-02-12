@@ -10,14 +10,14 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
-using urakawa.daisy.import;
-using urakawa.events.progress;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        public RichDelegateCommand OpenCommand { get; private set; }
+
         private void initCommands_Open()
         {
             //NewCommand = new RichDelegateCommand(
