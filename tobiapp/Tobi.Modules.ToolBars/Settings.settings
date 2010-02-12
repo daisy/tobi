@@ -1,8 +1,10 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.ToolBars" GeneratedClassName="Settings">
-  <Profiles />
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
   <Settings>
-    <Setting Name="ToolBarVisible_TEST" Type="System.Boolean" Scope="User">
+    <Setting Name="ToolBarVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

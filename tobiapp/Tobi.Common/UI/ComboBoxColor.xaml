@@ -11,7 +11,7 @@
              >
   <UserControl.Resources>
     <DataTemplate DataType="{x:Type UI:ColorViewModel}">
-      <StackPanel Orientation="Horizontal" Margin="2">
+      <StackPanel Orientation="Horizontal" Margin="0">
         <Grid>
           <!-- Draw a checkboard rectangle first, in case the selected color is transparent -->
           <Rectangle Fill="{Binding ElementName=ThisColorPicker, Path=CheckerBrush}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>

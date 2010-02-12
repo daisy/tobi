@@ -175,8 +175,8 @@ namespace Tobi.Plugin.DocumentPane
 
             resetFlowDocument();
 
-            var run = new Run(UserInterfaceStrings.No_Document);
-            setTextDecoration_ErrorUnderline(run);
+            var run = new Run(" "); //UserInterfaceStrings.No_Document);
+            //setTextDecoration_ErrorUnderline(run);
             TheFlowDocument.Blocks.Add(new Paragraph(run));
 
             m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
@@ -268,8 +268,8 @@ namespace Tobi.Plugin.DocumentPane
 
             if (project == null)
             {
-                var run = new Run(UserInterfaceStrings.No_Document);
-                setTextDecoration_ErrorUnderline(run);
+                var run = new Run(" "); //UserInterfaceStrings.No_Document);
+                //setTextDecoration_ErrorUnderline(run);
                 TheFlowDocument.Blocks.Add(new Paragraph(run));
                 return;
             }

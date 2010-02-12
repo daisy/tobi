@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Data;
-using System.Windows.Markup;
 
 namespace Tobi.Common.UI.XAML
 {

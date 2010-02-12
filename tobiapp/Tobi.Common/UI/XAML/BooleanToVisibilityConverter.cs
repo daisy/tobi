@@ -4,18 +4,18 @@ using System.Windows.Data;
 
 namespace Tobi.Common.UI.XAML
 {
-    [ValueConversion(typeof(bool), typeof(WindowState))]
-    public class WindowStateFullScreenConverter : ValueConverterMarkupExtensionBase<WindowStateFullScreenConverter>
+    [ValueConversion(typeof(bool), typeof(Visibility))]
+    public class BooleanToVisibilityConverter : ValueConverterMarkupExtensionBase<BooleanToVisibilityConverter>
     {
         #region IValueConverter Members
 
         public override object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            if (targetType != typeof(WindowState))
-                throw new InvalidOperationException("The target must be a WindowState !");
+            if (targetType != typeof(Visibility))
+                throw new InvalidOperationException("The target must be a Visibility !");
 
-            return ((bool)value ? WindowState.Maximized : WindowState.Normal);
+            return ((bool)value ? Visibility.Visible : Visibility.Collapsed);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter,
@@ -24,7 +24,7 @@ namespace Tobi.Common.UI.XAML
             if (targetType != typeof(bool))
                 throw new InvalidOperationException("The target must be Boolean !");
 
-            return (WindowState) value == WindowState.Maximized;
+            return (Visibility)value == Visibility.Visible;
         }
 
         #endregion
