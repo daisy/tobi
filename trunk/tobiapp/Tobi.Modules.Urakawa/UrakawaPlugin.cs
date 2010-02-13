@@ -48,6 +48,7 @@ namespace Tobi.Plugin.Urakawa
         private int m_MenuBarId_2;
         private int m_MenuBarId_3;
         private int m_MenuBarId_4;
+        private int m_MenuBarId_5;
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { m_UrakawaSession.OpenCommand }, PreferredPosition.First, true);
@@ -55,6 +56,7 @@ namespace Tobi.Plugin.Urakawa
             m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { m_UrakawaSession.CloseCommand }, PreferredPosition.First, true);
 
             m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand }, PreferredPosition.First, true);
+            m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { m_UrakawaSession.DataCleanupCommand }, PreferredPosition.Last, true);
 
             m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
         }
@@ -76,6 +78,7 @@ namespace Tobi.Plugin.Urakawa
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_File, m_MenuBarId_3);
 
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Edit, m_MenuBarId_4);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Edit, m_MenuBarId_5);
 
                 m_Logger.Log(@"Urakawa session commands removed from menubar", Category.Debug, Priority.Medium);
             }

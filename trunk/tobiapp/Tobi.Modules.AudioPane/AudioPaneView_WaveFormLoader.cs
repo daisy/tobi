@@ -88,10 +88,18 @@ namespace Tobi.Plugin.AudioPane
                 m_ViewModel.IsWaveFormLoading = true;
 
                 var fileWorker = new BackgroundWorker();
+                Exception workException = null;
                 fileWorker.DoWork += (sender, e) => loadWaveForm(true, widthMagnified, heightMagnified, wasPlaying, play, realBytesPerPixel);
                 fileWorker.RunWorkerCompleted += (sender, e) =>
                 {
+                    workException = e.Error;
+
                     WaveFormProgress.IsIndeterminate = true;
+
+                    if (workException != null)
+                    {
+                        throw workException;
+                    }
 
                     BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
 

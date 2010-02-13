@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -12,6 +15,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.daisy;
+using urakawa.data;
 using urakawa.events;
 
 namespace Tobi.Plugin.Urakawa
@@ -58,9 +62,9 @@ namespace Tobi.Plugin.Urakawa
             InitializeCommands();
         }
 
-//#pragma warning disable 1591 // missing comments
+        //#pragma warning disable 1591 // missing comments
 
-//#pragma warning restore 1591
+        //#pragma warning restore 1591
         //public RichDelegateCommand NewCommand { get; private set; }
 
         public RichDelegateCommand CloseCommand { get; private set; }
@@ -68,6 +72,7 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand UndoCommand { get; private set; }
         public RichDelegateCommand RedoCommand { get; private set; }
 
+        public RichDelegateCommand DataCleanupCommand { get; private set; }
 
         private Project m_DocumentProject;
         public Project DocumentProject
@@ -179,6 +184,59 @@ namespace Tobi.Plugin.Urakawa
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Close));
 
             m_ShellView.RegisterRichCommand(CloseCommand);
+            //
+            DataCleanupCommand = new RichDelegateCommand(
+                UserInterfaceStrings.DataCleanup,
+                UserInterfaceStrings.DataCleanup_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon(@"edit-delete"),
+                () => DataCleanup(),
+                () => DocumentProject != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanup));
+
+            m_ShellView.RegisterRichCommand(DataCleanupCommand);
+        }
+
+        public void DataCleanup()
+        {
+            DocumentProject.Presentations.Get(0).Cleanup();
+
+            var listOfDataProviderFiles = new List<string>();
+            foreach (var dataProvider in DocumentProject.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            {
+                var fileDataProvider = dataProvider as FileDataProvider;
+                if (fileDataProvider == null) continue;
+
+                listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
+            }
+
+            var dataFolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+
+            var deletedDataFolderPath = Path.Combine(dataFolderPath, "__DELETED");
+            if (!Directory.Exists(deletedDataFolderPath))
+            {
+                Directory.CreateDirectory(deletedDataFolderPath);
+            }
+            
+
+            foreach (string filePath in Directory.GetFiles(dataFolderPath))
+            {
+                var fileName = Path.GetFileName(filePath);
+                if (!listOfDataProviderFiles.Contains(fileName))
+                {
+                    var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
+                    File.Move(filePath, filePathDest);
+                }
+            }
+
+            if (Directory.GetFiles(deletedDataFolderPath).Length == 0) return;
+
+            var p = new Process
+            {
+                StartInfo = { FileName = deletedDataFolderPath }
+            };
+            p.Start();
         }
 
         public bool Close()
@@ -333,7 +391,7 @@ namespace Tobi.Plugin.Urakawa
                 WorkerReportsProgress = true
             };
 
-
+            Exception workException = null;
             backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
                 //var dummy = (string)args.Argument;
@@ -407,6 +465,8 @@ namespace Tobi.Plugin.Urakawa
 
             backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
             {
+                workException = args.Error;
+
                 backWorker = null;
 
                 if (converter.RequestCancellation || args.Cancelled)
@@ -425,6 +485,11 @@ namespace Tobi.Plugin.Urakawa
 
             backWorker.RunWorkerAsync(@"dummy arg");
             windowPopup.ShowModal();
+
+            if (workException != null)
+            {
+                throw workException;
+            }
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
             {

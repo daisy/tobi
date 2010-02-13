@@ -231,6 +231,9 @@ namespace Tobi.Common
         public const string Open_ = "Open or import a document";
         //public static KeyGesture Open_KEYS = new KeyGesture(Key.O, ModifierKeys.Control);
 
+        public const string DataCleanup = "_Cleanup unused data";
+        public const string DataCleanup_ = "Remove files unused by the document";
+
         public const string Close = "_Close";
         public const string Close_ = "Close document";
         //public static KeyGesture Close_KEYS = new KeyGesture(Key.W, ModifierKeys.Control);
