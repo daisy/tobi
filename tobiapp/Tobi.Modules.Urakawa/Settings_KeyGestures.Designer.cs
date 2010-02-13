@@ -25,6 +25,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] D")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_DataCleanup {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_DataCleanup"]));
+            }
+            set {
+                this["Keyboard_DataCleanup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] O")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Open {
             get {

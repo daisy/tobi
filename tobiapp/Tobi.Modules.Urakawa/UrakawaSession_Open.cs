@@ -172,8 +172,8 @@ namespace Tobi.Plugin.Urakawa
                                                        PopupModalWindow.DialogButton.Cancel,
                                                        false, 500, 150, details, 80);
 
-                
 
+                Exception workException = null;
                 backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
                 {
                     //var dummy = (string)args.Argument;
@@ -196,6 +196,8 @@ namespace Tobi.Plugin.Urakawa
 
                 backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
                 {
+                    workException = args.Error;
+
                     if (cancelFlag)
                     {
                         DocumentFilePath = null;
@@ -221,6 +223,11 @@ namespace Tobi.Plugin.Urakawa
 
                 backWorker.RunWorkerAsync(@"dummy arg");
                 windowPopup.ShowModal();
+
+                if (workException != null)
+                {
+                    throw workException;
+                }
 
                 if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
                 {
