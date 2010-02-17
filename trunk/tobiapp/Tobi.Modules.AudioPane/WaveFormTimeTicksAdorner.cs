@@ -282,7 +282,7 @@ namespace Tobi.Plugin.AudioPane
                             widthChunk -= diff;
                         }
 
-                        double minW = Math.Min(formattedTextDuration.Width + horizontalMargin * 2,
+                        double minW = Math.Min(formattedTextDuration.Width + horizontalMargin + horizontalMargin,
                                                 widthChunk - tickHeight - tickHeight - 1);
                         if (minW > 0)
                         {
@@ -302,12 +302,19 @@ namespace Tobi.Plugin.AudioPane
                             drawingContext.Pop(); //PushClip
                         }
 
+                        double chunkWidthForText = widthChunk - tickHeight - tickHeight - 1;
+                        if (chunkWidthForText <=0)
+                        {
+                            sumData += marker.m_LocalStreamDataLength;
+                            pixelsLeft = pixelsRight;
+                            continue;
+                        }
 
                         string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened();
                         if (!String.IsNullOrEmpty(nodeTxt))
                         {
-                            nodeTxt = nodeTxt.Replace("\n", "");
                             nodeTxt = nodeTxt.Replace("\r\n", "");
+                            nodeTxt = nodeTxt.Replace("\n", "");
                             nodeTxt = nodeTxt.Replace(Environment.NewLine, "");
                             nodeTxt = nodeTxt.Trim();
 
@@ -331,12 +338,16 @@ namespace Tobi.Plugin.AudioPane
                                                                   m_phraseBrush
                                 );
 
-                            FormattedText formattedTextDots = null;
+                            formattedText.Trimming = TextTrimming.CharacterEllipsis;
+                            formattedText.MaxTextWidth = chunkWidthForText;
+                            formattedText.MaxTextHeight = m_standardTextHeight + tickHeight;
+
+                            //FormattedText formattedTextDots = null;
 
                             m_point3.Y = heightAvailable - m_standardTextHeight - tickHeight - tickHeight;
 
-                            minW = Math.Min(formattedText.Width + horizontalMargin * 2,
-                                                widthChunk - tickHeight - tickHeight - 1);
+                            minW = Math.Min(formattedText.Width + horizontalMargin + horizontalMargin,
+                                                chunkWidthForText);
                             if (minW > 0)
                             {
                                 m_rectRect.X = m_point3.X - horizontalMargin;
@@ -368,26 +379,26 @@ namespace Tobi.Plugin.AudioPane
                                     //drawingContext.Pop(); //PushOpacity
                                 }
 
-                                if (false && formattedText.Width >= minW)
-                                {
-                                    formattedTextDots = new FormattedText(" ...",
-                                                                      m_culture,
-                                                                      FlowDirection.LeftToRight,
-                                                                      m_typeFace,
-                                                                      12,
-                                                                      m_timeTextBrush
-                                    );
-                                }
+                                //if (false && formattedText.Width >= minW)
+                                //{
+                                //    formattedTextDots = new FormattedText(" ...",
+                                //                                      m_culture,
+                                //                                      FlowDirection.LeftToRight,
+                                //                                      m_typeFace,
+                                //                                      12,
+                                //                                      m_timeTextBrush
+                                //    );
+                                //}
 
-                                if (formattedTextDots != null && formattedTextDots.Width < minW)
-                                {
-                                    m_point3.X = m_rectRect.X + m_rectRect.Width - formattedTextDots.Width;
-                                    m_rectRect.X = m_point3.X;
-                                    m_rectRect.Width = formattedTextDots.Width;
+                                //if (formattedTextDots != null && formattedTextDots.Width < minW)
+                                //{
+                                //    m_point3.X = m_rectRect.X + m_rectRect.Width - formattedTextDots.Width;
+                                //    m_rectRect.X = m_point3.X;
+                                //    m_rectRect.Width = formattedTextDots.Width;
 
-                                    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
-                                    drawingContext.DrawText(formattedTextDots, m_point3);
-                                }
+                                //    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+                                //    drawingContext.DrawText(formattedTextDots, m_point3);
+                                //}
                             }
                         }
                     }

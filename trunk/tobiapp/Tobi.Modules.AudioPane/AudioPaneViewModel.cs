@@ -630,6 +630,10 @@ namespace Tobi.Plugin.AudioPane
 
         public static string FormatTimeSpan_Units(TimeSpan time)
         {
+            if (time.CompareTo(TimeSpan.Zero) == 0)
+            {
+                return "0s";
+            }
             return
                 (time.Hours != 0 ? time.Hours + "h " : "") +
                 (time.Minutes != 0 ? time.Minutes + "mn " : "") +
@@ -637,27 +641,27 @@ namespace Tobi.Plugin.AudioPane
                 (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
 
-        private static string FormatTimeSpan_Npt(TimeSpan time)
-        {
-            double dTime = Math.Round(time.TotalSeconds, 3, MidpointRounding.ToEven);
-            return "npt=" + dTime.ToString() + "s";
-        }
+        //private static string FormatTimeSpan_Npt(TimeSpan time)
+        //{
+        //    double dTime = Math.Round(time.TotalSeconds, 3, MidpointRounding.ToEven);
+        //    return "npt=" + dTime.ToString() + "s";
+        //}
 
-        public static string FormatTimeSpan_Standard(TimeSpan timeSpan)
-        {
-            if (timeSpan.Hours != 0)
-            {
-                return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.Hours, timeSpan.Minutes,
-                                     timeSpan.Seconds, timeSpan.Milliseconds);
-            }
-            if (timeSpan.Minutes != 0)
-            {
-                return string.Format("{0:00}:{1:00}:{2:000}", timeSpan.Minutes,
-                                     timeSpan.Seconds, timeSpan.Milliseconds);
-            }
-            return string.Format("{0:00}:{1:000}",
-                                     timeSpan.Seconds, timeSpan.Milliseconds);
-        }
+        //public static string FormatTimeSpan_Standard(TimeSpan timeSpan)
+        //{
+        //    if (timeSpan.Hours != 0)
+        //    {
+        //        return string.Format("{0:00}:{1:00}:{2:00}:{3:000}", timeSpan.Hours, timeSpan.Minutes,
+        //                             timeSpan.Seconds, timeSpan.Milliseconds);
+        //    }
+        //    if (timeSpan.Minutes != 0)
+        //    {
+        //        return string.Format("{0:00}:{1:00}:{2:000}", timeSpan.Minutes,
+        //                             timeSpan.Seconds, timeSpan.Milliseconds);
+        //    }
+        //    return string.Format("{0:00}:{1:000}",
+        //                             timeSpan.Seconds, timeSpan.Milliseconds);
+        //}
 
 
         [NotifyDependsOn("TimeStringSelectionEnd")]
