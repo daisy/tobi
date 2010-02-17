@@ -37,8 +37,7 @@ namespace Tobi.Plugin.MetadataPane
         private readonly ILoggerFacade m_Logger;
 
         private readonly IUrakawaSession m_UrakawaSession;
-        private readonly IEnumerable<IValidator> m_Validators;
-
+        
         [ImportingConstructor]
         public MetadataPaneViewModel(
             IUnityContainer container,
@@ -46,33 +45,24 @@ namespace Tobi.Plugin.MetadataPane
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession session,
-            [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
-            IEnumerable<IValidator> validators
+            [Import(typeof(MetadataValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            MetadataValidator validator
             )
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
-            m_Validators = validators;
+            m_Validator = validator;
             m_UrakawaSession = session;
 
             m_MetadataCollection = null;
 
             ValidationItems = new ObservableCollection<ValidationItem>();
-
-            foreach (var validator in m_Validators)
+            
+            if (m_Validator != null)
             {
-                if (validator is MetadataValidator)
-                {
-                    m_LocalValidator = (MetadataValidator)validator;
-                    m_LocalValidator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
-                    break;
-                }
-            }
-
-            if (m_LocalValidator != null)
-            {
-                resetValidationItems(m_LocalValidator);
+                m_Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
+                resetValidationItems(m_Validator);
             }
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
@@ -80,7 +70,7 @@ namespace Tobi.Plugin.MetadataPane
         }
 
         public ObservableCollection<ValidationItem> ValidationItems { get; set; }
-        private MetadataValidator m_LocalValidator;
+        private MetadataValidator m_Validator;
 
         private void resetValidationItems(MetadataValidator metadataValidator)
         {
