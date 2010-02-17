@@ -34,17 +34,15 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 if (Target != null)
                 {
+                    targetText = Target.GetTextMediaFlattened();
                     if (Target.GetXmlElementQName() != null)
                         targetNodeName = Target.GetXmlElementQName().LocalName;
-                    if (Target.GetTextMedia() != null)
-                        targetText = Target.GetTextMedia().Text;
                 }
                 if (BeginningOfError != null)
                 {
+                    problemChildText = BeginningOfError.GetTextMediaFlattened();
                     if (BeginningOfError.GetXmlElementQName() != null)
-                        problemChildNodeName = BeginningOfError.GetXmlElementQName().LocalName;
-                    if (BeginningOfError.GetTextMedia() != null)
-                        problemChildText = BeginningOfError.GetTextMedia().Text;
+                        problemChildNodeName = BeginningOfError.GetXmlElementQName().LocalName;    
                 }
 
                 if (ErrorType == ContentDocumentErrorType.InvalidChildElements)
