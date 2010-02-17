@@ -12,7 +12,9 @@ namespace Tobi.Plugin.Validator.Metadata
     /// <summary>
     /// The main validator class
     /// </summary>
-    [Export(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(IValidator))]
+    [Export(typeof(MetadataValidator))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     public class MetadataValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
