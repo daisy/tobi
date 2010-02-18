@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
@@ -88,6 +89,11 @@ namespace Tobi.Plugin.Validator.Metadata
         public override IEnumerable<ValidationItem> ValidationItems
         {
             get { return m_ValidationItems;}
+        }
+
+        public override ResourceDictionary ValidationItemTemplate
+        {
+            get { throw new NotImplementedException(); }
         }
 
 

@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows;
 using DtdSharp;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -66,6 +68,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public override IEnumerable<ValidationItem> ValidationItems
         {
             get { return m_ValidationItems; }
+        }
+
+        public override ResourceDictionary ValidationItemTemplate
+        {
+            get { throw new NotImplementedException(); }
         }
 
         private List<ValidationItem> m_ValidationItems;

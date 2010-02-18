@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Tobi.Common.Validation
 {
@@ -11,7 +12,8 @@ namespace Tobi.Common.Validation
         public abstract string Description { get; }
         public abstract bool Validate();
         public abstract IEnumerable<ValidationItem> ValidationItems { get; }
-
+        //TODO: export template via MEF
+        public abstract ResourceDictionary ValidationItemTemplate { get; }
         private bool m_IsValid;
         public bool IsValid
         {
@@ -50,6 +52,7 @@ namespace Tobi.Common.Validation
         bool Validate();
         bool IsValid { get; }
         IEnumerable<ValidationItem> ValidationItems { get; }
+        ResourceDictionary ValidationItemTemplate { get; }
     }
 
     public enum ValidationSeverity
