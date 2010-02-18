@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -71,6 +72,11 @@ namespace Tobi.Plugin.Validator
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
             resetValidationItems((Validator)e.Validator);
+        }
+
+        private void ValidationListView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
     }
 
