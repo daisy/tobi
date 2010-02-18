@@ -78,7 +78,7 @@ namespace Tobi.Plugin.Urakawa
 
         private bool openFile(string filename)
         {
-            AddToRecentFilesList(new Uri(filename, UriKind.Absolute).ToString());
+            //AddToRecentFilesList(new Uri(filename, UriKind.Absolute).ToString());
 
             if (!Close())
             {

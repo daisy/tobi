@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Windows;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -28,6 +30,7 @@ namespace Tobi.Plugin.Validator
 
         private readonly IUrakawaSession m_UrakawaSession;
         public readonly IEnumerable<IValidator> m_Validators;
+        private ResourceDictionary m_ValidationItemTemplate;
 
         [ImportingConstructor]
         public Validator(
@@ -53,6 +56,20 @@ namespace Tobi.Plugin.Validator
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+            m_ValidationItemTemplate = new GenericValidationItemTemplate();
+
+            foreach (IValidator validator in m_Validators)
+            {
+                try
+                {
+                    Application.Current.Resources.MergedDictionaries.Add(validator.ValidationItemTemplate);
+            
+                }
+                catch (Exception)
+                {
+                    
+                }
+            }
         }
 
         //EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
@@ -117,6 +134,11 @@ namespace Tobi.Plugin.Validator
 
                 yield break;
             }
+        }
+
+        public override ResourceDictionary ValidationItemTemplate
+        {
+            get { return m_ValidationItemTemplate; }
         }
 
         public override bool Validate()
