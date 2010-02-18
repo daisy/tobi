@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
@@ -77,6 +78,8 @@ namespace Tobi.Plugin.Urakawa
 
         private bool openFile(string filename)
         {
+            AddToRecentFilesList(new Uri(filename, UriKind.Absolute).ToString());
+
             if (!Close())
             {
                 return false;
