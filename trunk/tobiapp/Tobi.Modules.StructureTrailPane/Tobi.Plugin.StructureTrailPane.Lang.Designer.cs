@@ -59,5 +59,59 @@ namespace Tobi.Plugin.StructureTrailPane {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document pane focus.
+        /// </summary>
+        public static string Document_Focus {
+            get {
+                return ResourceManager.GetString("Document_Focus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No document..
+        /// </summary>
+        public static string No_Document {
+            get {
+                return ResourceManager.GetString("No_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Narrow structure selection.
+        /// </summary>
+        public static string StructureDown {
+            get {
+                return ResourceManager.GetString("StructureDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selection down one level in the document tree structure.
+        /// </summary>
+        public static string StructureDown_ {
+            get {
+                return ResourceManager.GetString("StructureDown_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Expand structure selection.
+        /// </summary>
+        public static string StructureUp {
+            get {
+                return ResourceManager.GetString("StructureUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selection up one level in the document tree structure.
+        /// </summary>
+        public static string StructureUp_ {
+            get {
+                return ResourceManager.GetString("StructureUp_", resourceCulture);
+            }
+        }
     }
 }

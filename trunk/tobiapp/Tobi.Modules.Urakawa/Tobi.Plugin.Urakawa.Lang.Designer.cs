@@ -59,5 +59,221 @@ namespace Tobi.Plugin.Urakawa {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling....
+        /// </summary>
+        public static string CancellingTask {
+            get {
+                return ResourceManager.GetString("CancellingTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close document.
+        /// </summary>
+        public static string Close_ {
+            get {
+                return ResourceManager.GetString("Close_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Cleanup unused data.
+        /// </summary>
+        public static string DataCleanup {
+            get {
+                return ResourceManager.GetString("DataCleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove files unused by the document.
+        /// </summary>
+        public static string DataCleanup_ {
+            get {
+                return ResourceManager.GetString("DataCleanup_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export the current document  to DAISY....
+        /// </summary>
+        public static string Export_ {
+            get {
+                return ResourceManager.GetString("Export_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open / import.
+        /// </summary>
+        public static string Open {
+            get {
+                return ResourceManager.GetString("Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open or import a document.
+        /// </summary>
+        public static string Open_ {
+            get {
+                return ResourceManager.GetString("Open_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Overwrite.
+        /// </summary>
+        public static string Overwrite {
+            get {
+                return ResourceManager.GetString("Overwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are about to overwrite a file.\nAre you sure ?.
+        /// </summary>
+        public static string OverwriteConfirm_File {
+            get {
+                return ResourceManager.GetString("OverwriteConfirm_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are about to overwrite a folder.\nAre you sure ?.
+        /// </summary>
+        public static string OverwriteConfirm_Folder {
+            get {
+                return ResourceManager.GetString("OverwriteConfirm_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Redo.
+        /// </summary>
+        public static string Redo {
+            get {
+                return ResourceManager.GetString("Redo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redo last undone action.
+        /// </summary>
+        public static string Redo_ {
+            get {
+                return ResourceManager.GetString("Redo_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Running task....
+        /// </summary>
+        public static string RunningTask {
+            get {
+                return ResourceManager.GetString("RunningTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the current document.
+        /// </summary>
+        public static string Save_ {
+            get {
+                return ResourceManager.GetString("Save_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to S_ave as....
+        /// </summary>
+        public static string SaveAs {
+            get {
+                return ResourceManager.GetString("SaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the current document as....
+        /// </summary>
+        public static string SaveAs_ {
+            get {
+                return ResourceManager.GetString("SaveAs_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Undo.
+        /// </summary>
+        public static string Undo {
+            get {
+                return ResourceManager.GetString("Undo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo last action.
+        /// </summary>
+        public static string Undo_ {
+            get {
+                return ResourceManager.GetString("Undo_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Unsaved changes.
+        /// </summary>
+        public static string UnsavedChanges {
+            get {
+                return ResourceManager.GetString("UnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are unsaved document changes.\nWould you like to save now ?.
+        /// </summary>
+        public static string UnsavedChangesConfirm {
+            get {
+                return ResourceManager.GetString("UnsavedChangesConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you close the document without saving,\nany changes will be lost !.
+        /// </summary>
+        public static string UnsavedChangesDetails {
+            get {
+                return ResourceManager.GetString("UnsavedChangesDetails", resourceCulture);
+            }
+        }
     }
 }

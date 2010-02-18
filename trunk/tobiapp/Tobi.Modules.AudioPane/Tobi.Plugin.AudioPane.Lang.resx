@@ -117,7 +117,184 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LangStringKey1" xml:space="preserve">
-    <value>Hi</value>
+  <data name="Audio_AutoPlay" xml:space="preserve">
+    <value>_Toggle autoplay</value>
+  </data>
+  <data name="Audio_AutoPlay_" xml:space="preserve">
+    <value>Switch autoplay on/off</value>
+  </data>
+  <data name="Audio_BeginSelection" xml:space="preserve">
+    <value>_Begin selection</value>
+  </data>
+  <data name="Audio_BeginSelection_" xml:space="preserve">
+    <value>Begin audio waveform selection</value>
+  </data>
+  <data name="Audio_Delete" xml:space="preserve">
+    <value>_Delete audio selection</value>
+  </data>
+  <data name="Audio_Delete_" xml:space="preserve">
+    <value>Delete the audio in the waveform selection</value>
+  </data>
+  <data name="Audio_EndSelection" xml:space="preserve">
+    <value>_End selection</value>
+  </data>
+  <data name="Audio_EndSelection_" xml:space="preserve">
+    <value>End audio waveform selection</value>
+  </data>
+  <data name="Audio_FitFull" xml:space="preserve">
+    <value>_Fit into view</value>
+  </data>
+  <data name="Audio_FitFull_" xml:space="preserve">
+    <value>Fit the entire audio waveform into view</value>
+  </data>
+  <data name="Audio_Focus" xml:space="preserve">
+    <value>Audio pane focus</value>
+  </data>
+  <data name="Audio_FocusStatusBar" xml:space="preserve">
+    <value>Status bar focus</value>
+  </data>
+  <data name="Audio_GotoBegin" xml:space="preserve">
+    <value>_Go to begin</value>
+  </data>
+  <data name="Audio_GotoBegin_" xml:space="preserve">
+    <value>Rewind to the begining of the audio stream</value>
+  </data>
+  <data name="Audio_GotoEnd" xml:space="preserve">
+    <value>_Go to end</value>
+  </data>
+  <data name="Audio_GotoEnd_" xml:space="preserve">
+    <value>Fast Forward to the end of the audio stream</value>
+  </data>
+  <data name="Audio_InsertFile" xml:space="preserve">
+    <value>_Insert audio file</value>
+  </data>
+  <data name="Audio_InsertFile_" xml:space="preserve">
+    <value>Inserts a local WAV file (PCM 16 bits)</value>
+  </data>
+  <data name="Audio_OpenFile" xml:space="preserve">
+    <value>_Open audio file</value>
+  </data>
+  <data name="Audio_OpenFile_" xml:space="preserve">
+    <value>Open a local WAV file (PCM 16 bits)</value>
+  </data>
+  <data name="Audio_Pause" xml:space="preserve">
+    <value>_Pause</value>
+  </data>
+  <data name="Audio_Pause_" xml:space="preserve">
+    <value>Pause playback</value>
+  </data>
+  <data name="Audio_Play" xml:space="preserve">
+    <value>Pla_y</value>
+  </data>
+  <data name="Audio_PlayPreviewLeft" xml:space="preserve">
+    <value>Preview _before</value>
+  </data>
+  <data name="Audio_PlayPreviewLeft_" xml:space="preserve">
+    <value>Preview the audio just before the current cursor position</value>
+  </data>
+  <data name="Audio_PlayPreviewRight" xml:space="preserve">
+    <value>Preview _after</value>
+  </data>
+  <data name="Audio_PlayPreviewRight_" xml:space="preserve">
+    <value>Preview the audio right after the current cursor position</value>
+  </data>
+  <data name="Audio_PlayRateDown" xml:space="preserve">
+    <value>_Descrease playback rate</value>
+  </data>
+  <data name="Audio_PlayRateDown_" xml:space="preserve">
+    <value>Turn the playback speed down</value>
+  </data>
+  <data name="Audio_PlayRateReset" xml:space="preserve">
+    <value>_Reset playback rate</value>
+  </data>
+  <data name="Audio_PlayRateReset_" xml:space="preserve">
+    <value>Restore the normal playback speed</value>
+  </data>
+  <data name="Audio_PlayRateUp" xml:space="preserve">
+    <value>_Increase playback rate</value>
+  </data>
+  <data name="Audio_PlayRateUp_" xml:space="preserve">
+    <value>Turn the playback speed up</value>
+  </data>
+  <data name="Audio_Play_" xml:space="preserve">
+    <value>Start playback</value>
+  </data>
+  <data name="Audio_Reload" xml:space="preserve">
+    <value>_Reload audio</value>
+  </data>
+  <data name="Audio_Reload_" xml:space="preserve">
+    <value>Reload the audio waveform data</value>
+  </data>
+  <data name="Audio_SelectNextChunk" xml:space="preserve">
+    <value>Select next phrase</value>
+  </data>
+  <data name="Audio_SelectNextChunk_" xml:space="preserve">
+    <value>Select the entire audio phrase following the current one</value>
+  </data>
+  <data name="Audio_SelectPreviousChunk" xml:space="preserve">
+    <value>Select previous phrase</value>
+  </data>
+  <data name="Audio_SelectPreviousChunk_" xml:space="preserve">
+    <value>Select the entire audio phrase preceding the current one</value>
+  </data>
+  <data name="Audio_ShowOptions" xml:space="preserve">
+    <value>Show audio options</value>
+  </data>
+  <data name="Audio_StartMonitor" xml:space="preserve">
+    <value>St_art monitoring</value>
+  </data>
+  <data name="Audio_StartMonitor_" xml:space="preserve">
+    <value>Start monitoring audio input</value>
+  </data>
+  <data name="Audio_StartRecord" xml:space="preserve">
+    <value>St_art recording</value>
+  </data>
+  <data name="Audio_StartRecord_" xml:space="preserve">
+    <value>Start recording audio</value>
+  </data>
+  <data name="Audio_StepBack" xml:space="preserve">
+    <value>_Back one phrase</value>
+  </data>
+  <data name="Audio_StepBack_" xml:space="preserve">
+    <value>Step back one phrase</value>
+  </data>
+  <data name="Audio_StepForward" xml:space="preserve">
+    <value>_Forward one phrase</value>
+  </data>
+  <data name="Audio_StepForward_" xml:space="preserve">
+    <value>Step forward one phrase</value>
+  </data>
+  <data name="Audio_StopMonitor" xml:space="preserve">
+    <value>St_op monitoring</value>
+  </data>
+  <data name="Audio_StopMonitor_" xml:space="preserve">
+    <value>Stop the audio input monitoring</value>
+  </data>
+  <data name="Audio_StopRecord" xml:space="preserve">
+    <value>St_op recording</value>
+  </data>
+  <data name="Audio_StopRecord_" xml:space="preserve">
+    <value>Stop the current recording</value>
+  </data>
+  <data name="Audio_ZoomSlider" xml:space="preserve">
+    <value>Audio waveform zoom</value>
+  </data>
+  <data name="ComboLabel_Playback" xml:space="preserve">
+    <value>Playback:</value>
+  </data>
+  <data name="ComboLabel_Recording" xml:space="preserve">
+    <value>Recording:</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready.</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>_Select all</value>
+  </data>
+  <data name="SelectAll_" xml:space="preserve">
+    <value>Select all content</value>
   </data>
 </root>

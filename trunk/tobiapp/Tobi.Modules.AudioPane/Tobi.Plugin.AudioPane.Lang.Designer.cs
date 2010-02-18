@@ -61,11 +61,542 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi.
+        ///   Looks up a localized string similar to _Toggle autoplay.
         /// </summary>
-        public static string LangStringKey1 {
+        public static string Audio_AutoPlay {
             get {
-                return ResourceManager.GetString("LangStringKey1", resourceCulture);
+                return ResourceManager.GetString("Audio_AutoPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch autoplay on/off.
+        /// </summary>
+        public static string Audio_AutoPlay_ {
+            get {
+                return ResourceManager.GetString("Audio_AutoPlay_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Begin selection.
+        /// </summary>
+        public static string Audio_BeginSelection {
+            get {
+                return ResourceManager.GetString("Audio_BeginSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begin audio waveform selection.
+        /// </summary>
+        public static string Audio_BeginSelection_ {
+            get {
+                return ResourceManager.GetString("Audio_BeginSelection_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Delete audio selection.
+        /// </summary>
+        public static string Audio_Delete {
+            get {
+                return ResourceManager.GetString("Audio_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the audio in the waveform selection.
+        /// </summary>
+        public static string Audio_Delete_ {
+            get {
+                return ResourceManager.GetString("Audio_Delete_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _End selection.
+        /// </summary>
+        public static string Audio_EndSelection {
+            get {
+                return ResourceManager.GetString("Audio_EndSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End audio waveform selection.
+        /// </summary>
+        public static string Audio_EndSelection_ {
+            get {
+                return ResourceManager.GetString("Audio_EndSelection_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Fit into view.
+        /// </summary>
+        public static string Audio_FitFull {
+            get {
+                return ResourceManager.GetString("Audio_FitFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit the entire audio waveform into view.
+        /// </summary>
+        public static string Audio_FitFull_ {
+            get {
+                return ResourceManager.GetString("Audio_FitFull_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio pane focus.
+        /// </summary>
+        public static string Audio_Focus {
+            get {
+                return ResourceManager.GetString("Audio_Focus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status bar focus.
+        /// </summary>
+        public static string Audio_FocusStatusBar {
+            get {
+                return ResourceManager.GetString("Audio_FocusStatusBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Go to begin.
+        /// </summary>
+        public static string Audio_GotoBegin {
+            get {
+                return ResourceManager.GetString("Audio_GotoBegin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rewind to the begining of the audio stream.
+        /// </summary>
+        public static string Audio_GotoBegin_ {
+            get {
+                return ResourceManager.GetString("Audio_GotoBegin_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Go to end.
+        /// </summary>
+        public static string Audio_GotoEnd {
+            get {
+                return ResourceManager.GetString("Audio_GotoEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fast Forward to the end of the audio stream.
+        /// </summary>
+        public static string Audio_GotoEnd_ {
+            get {
+                return ResourceManager.GetString("Audio_GotoEnd_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Insert audio file.
+        /// </summary>
+        public static string Audio_InsertFile {
+            get {
+                return ResourceManager.GetString("Audio_InsertFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inserts a local WAV file (PCM 16 bits).
+        /// </summary>
+        public static string Audio_InsertFile_ {
+            get {
+                return ResourceManager.GetString("Audio_InsertFile_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open audio file.
+        /// </summary>
+        public static string Audio_OpenFile {
+            get {
+                return ResourceManager.GetString("Audio_OpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open a local WAV file (PCM 16 bits).
+        /// </summary>
+        public static string Audio_OpenFile_ {
+            get {
+                return ResourceManager.GetString("Audio_OpenFile_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Pause.
+        /// </summary>
+        public static string Audio_Pause {
+            get {
+                return ResourceManager.GetString("Audio_Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause playback.
+        /// </summary>
+        public static string Audio_Pause_ {
+            get {
+                return ResourceManager.GetString("Audio_Pause_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pla_y.
+        /// </summary>
+        public static string Audio_Play {
+            get {
+                return ResourceManager.GetString("Audio_Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start playback.
+        /// </summary>
+        public static string Audio_Play_ {
+            get {
+                return ResourceManager.GetString("Audio_Play_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview _before.
+        /// </summary>
+        public static string Audio_PlayPreviewLeft {
+            get {
+                return ResourceManager.GetString("Audio_PlayPreviewLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview the audio just before the current cursor position.
+        /// </summary>
+        public static string Audio_PlayPreviewLeft_ {
+            get {
+                return ResourceManager.GetString("Audio_PlayPreviewLeft_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview _after.
+        /// </summary>
+        public static string Audio_PlayPreviewRight {
+            get {
+                return ResourceManager.GetString("Audio_PlayPreviewRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview the audio right after the current cursor position.
+        /// </summary>
+        public static string Audio_PlayPreviewRight_ {
+            get {
+                return ResourceManager.GetString("Audio_PlayPreviewRight_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Descrease playback rate.
+        /// </summary>
+        public static string Audio_PlayRateDown {
+            get {
+                return ResourceManager.GetString("Audio_PlayRateDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn the playback speed down.
+        /// </summary>
+        public static string Audio_PlayRateDown_ {
+            get {
+                return ResourceManager.GetString("Audio_PlayRateDown_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Reset playback rate.
+        /// </summary>
+        public static string Audio_PlayRateReset {
+            get {
+                return ResourceManager.GetString("Audio_PlayRateReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore the normal playback speed.
+        /// </summary>
+        public static string Audio_PlayRateReset_ {
+            get {
+                return ResourceManager.GetString("Audio_PlayRateReset_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Increase playback rate.
+        /// </summary>
+        public static string Audio_PlayRateUp {
+            get {
+                return ResourceManager.GetString("Audio_PlayRateUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn the playback speed up.
+        /// </summary>
+        public static string Audio_PlayRateUp_ {
+            get {
+                return ResourceManager.GetString("Audio_PlayRateUp_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Reload audio.
+        /// </summary>
+        public static string Audio_Reload {
+            get {
+                return ResourceManager.GetString("Audio_Reload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload the audio waveform data.
+        /// </summary>
+        public static string Audio_Reload_ {
+            get {
+                return ResourceManager.GetString("Audio_Reload_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select next phrase.
+        /// </summary>
+        public static string Audio_SelectNextChunk {
+            get {
+                return ResourceManager.GetString("Audio_SelectNextChunk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the entire audio phrase following the current one.
+        /// </summary>
+        public static string Audio_SelectNextChunk_ {
+            get {
+                return ResourceManager.GetString("Audio_SelectNextChunk_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select previous phrase.
+        /// </summary>
+        public static string Audio_SelectPreviousChunk {
+            get {
+                return ResourceManager.GetString("Audio_SelectPreviousChunk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the entire audio phrase preceding the current one.
+        /// </summary>
+        public static string Audio_SelectPreviousChunk_ {
+            get {
+                return ResourceManager.GetString("Audio_SelectPreviousChunk_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show audio options.
+        /// </summary>
+        public static string Audio_ShowOptions {
+            get {
+                return ResourceManager.GetString("Audio_ShowOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to St_art monitoring.
+        /// </summary>
+        public static string Audio_StartMonitor {
+            get {
+                return ResourceManager.GetString("Audio_StartMonitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start monitoring audio input.
+        /// </summary>
+        public static string Audio_StartMonitor_ {
+            get {
+                return ResourceManager.GetString("Audio_StartMonitor_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to St_art recording.
+        /// </summary>
+        public static string Audio_StartRecord {
+            get {
+                return ResourceManager.GetString("Audio_StartRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start recording audio.
+        /// </summary>
+        public static string Audio_StartRecord_ {
+            get {
+                return ResourceManager.GetString("Audio_StartRecord_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Back one phrase.
+        /// </summary>
+        public static string Audio_StepBack {
+            get {
+                return ResourceManager.GetString("Audio_StepBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step back one phrase.
+        /// </summary>
+        public static string Audio_StepBack_ {
+            get {
+                return ResourceManager.GetString("Audio_StepBack_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Forward one phrase.
+        /// </summary>
+        public static string Audio_StepForward {
+            get {
+                return ResourceManager.GetString("Audio_StepForward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step forward one phrase.
+        /// </summary>
+        public static string Audio_StepForward_ {
+            get {
+                return ResourceManager.GetString("Audio_StepForward_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to St_op monitoring.
+        /// </summary>
+        public static string Audio_StopMonitor {
+            get {
+                return ResourceManager.GetString("Audio_StopMonitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop the audio input monitoring.
+        /// </summary>
+        public static string Audio_StopMonitor_ {
+            get {
+                return ResourceManager.GetString("Audio_StopMonitor_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to St_op recording.
+        /// </summary>
+        public static string Audio_StopRecord {
+            get {
+                return ResourceManager.GetString("Audio_StopRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop the current recording.
+        /// </summary>
+        public static string Audio_StopRecord_ {
+            get {
+                return ResourceManager.GetString("Audio_StopRecord_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio waveform zoom.
+        /// </summary>
+        public static string Audio_ZoomSlider {
+            get {
+                return ResourceManager.GetString("Audio_ZoomSlider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playback:.
+        /// </summary>
+        public static string ComboLabel_Playback {
+            get {
+                return ResourceManager.GetString("ComboLabel_Playback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recording:.
+        /// </summary>
+        public static string ComboLabel_Recording {
+            get {
+                return ResourceManager.GetString("ComboLabel_Recording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string Loading {
+            get {
+                return ResourceManager.GetString("Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready..
+        /// </summary>
+        public static string Ready {
+            get {
+                return ResourceManager.GetString("Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Select all.
+        /// </summary>
+        public static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all content.
+        /// </summary>
+        public static string SelectAll_ {
+            get {
+                return ResourceManager.GetString("SelectAll_", resourceCulture);
             }
         }
     }

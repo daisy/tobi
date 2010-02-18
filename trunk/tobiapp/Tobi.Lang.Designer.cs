@@ -61,11 +61,299 @@ namespace Tobi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [0].
+        /// </summary>
+        public static string APP_VERSION {
+            get {
+                return ResourceManager.GetString("APP_VERSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Copy.
+        /// </summary>
+        public static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string Copy_ {
+            get {
+                return ResourceManager.GetString("Copy_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C_ut.
+        /// </summary>
+        public static string Cut {
+            get {
+                return ResourceManager.GetString("Cut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cut to clipboard.
+        /// </summary>
+        public static string Cut_ {
+            get {
+                return ResourceManager.GetString("Cut_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E_xit.
+        /// </summary>
+        public static string Exit {
+            get {
+                return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to exit Tobi ?.
+        /// </summary>
+        public static string ExitConfirm {
+            get {
+                return ResourceManager.GetString("ExitConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Help.
+        /// </summary>
+        public static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get help.
+        /// </summary>
+        public static string Help_ {
+            get {
+                return ResourceManager.GetString("Help_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello.
         /// </summary>
         public static string LangStringKey1 {
             get {
                 return ResourceManager.GetString("LangStringKey1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [0].
+        /// </summary>
+        public static string LOG_FILE_PATH {
+            get {
+                return ResourceManager.GetString("LOG_FILE_PATH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Keyboard shortcuts.
+        /// </summary>
+        public static string ManageShortcuts {
+            get {
+                return ResourceManager.GetString("ManageShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View keyboard shortcuts.
+        /// </summary>
+        public static string ManageShortcuts_ {
+            get {
+                return ResourceManager.GetString("ManageShortcuts_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Quit.
+        /// </summary>
+        public static string Menu_Exit {
+            get {
+                return ResourceManager.GetString("Menu_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit the application.
+        /// </summary>
+        public static string Menu_Exit_ {
+            get {
+                return ResourceManager.GetString("Menu_Exit_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse application folder.
+        /// </summary>
+        public static string OpenTobiFolder {
+            get {
+                return ResourceManager.GetString("OpenTobiFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides)..
+        /// </summary>
+        public static string OpenTobiFolder_ {
+            get {
+                return ResourceManager.GetString("OpenTobiFolder_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse system storage folder.
+        /// </summary>
+        public static string OpenTobiIsolatedStorage {
+            get {
+                return ResourceManager.GetString("OpenTobiIsolatedStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open a file browser where Tobi&apos;s system files are located..
+        /// </summary>
+        public static string OpenTobiIsolatedStorage_ {
+            get {
+                return ResourceManager.GetString("OpenTobiIsolatedStorage_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse settings folder.
+        /// </summary>
+        public static string OpenTobiSettingsFolder {
+            get {
+                return ResourceManager.GetString("OpenTobiSettingsFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open a file browser where the Tobi user settings are stored..
+        /// </summary>
+        public static string OpenTobiSettingsFolder_ {
+            get {
+                return ResourceManager.GetString("OpenTobiSettingsFolder_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Paste.
+        /// </summary>
+        public static string Paste {
+            get {
+                return ResourceManager.GetString("Paste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste from clipboard.
+        /// </summary>
+        public static string Paste_ {
+            get {
+                return ResourceManager.GetString("Paste_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEBUG: _Where is [&quot; + LOG_FILE_NAME + &quot;] ?.
+        /// </summary>
+        public static string ShowLogFilePath {
+            get {
+                return ResourceManager.GetString("ShowLogFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor..
+        /// </summary>
+        public static string ShowLogFilePath_ {
+            get {
+                return ResourceManager.GetString("ShowLogFilePath_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Decrease magnification.
+        /// </summary>
+        public static string UI_DecreaseMagnification {
+            get {
+                return ResourceManager.GetString("UI_DecreaseMagnification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decrease the UI magnification level.
+        /// </summary>
+        public static string UI_DecreaseMagnification_ {
+            get {
+                return ResourceManager.GetString("UI_DecreaseMagnification_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Increase magnification.
+        /// </summary>
+        public static string UI_IncreaseMagnification {
+            get {
+                return ResourceManager.GetString("UI_IncreaseMagnification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Increase the UI magnification level.
+        /// </summary>
+        public static string UI_IncreaseMagnification_ {
+            get {
+                return ResourceManager.GetString("UI_IncreaseMagnification_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Reset magnification.
+        /// </summary>
+        public static string UI_ResetMagnification {
+            get {
+                return ResourceManager.GetString("UI_ResetMagnification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset the UI magnification level.
+        /// </summary>
+        public static string UI_ResetMagnification_ {
+            get {
+                return ResourceManager.GetString("UI_ResetMagnification_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected problem !.
+        /// </summary>
+        public static string Unexpected {
+            get {
+                return ResourceManager.GetString("Unexpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [0].
+        /// </summary>
+        public static string UnhandledException {
+            get {
+                return ResourceManager.GetString("UnhandledException", resourceCulture);
             }
         }
     }
