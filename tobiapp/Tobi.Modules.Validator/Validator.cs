@@ -124,15 +124,15 @@ namespace Tobi.Plugin.Validator
             // Is LINQ really more readble for the average developer ?
             //bool m_IsValid = Validators.Aggregate(true, (current, validator) => current && validator.Validate());
 
-            bool m_IsValid = true;
-
+            bool isValid = true;
+            
             foreach (IValidator validator in m_Validators)
             {
                 bool result = validator.Validate();
-                m_IsValid = m_IsValid && result;
+                isValid = isValid && result;
             }
 
-            IsValid = m_IsValid;
+            IsValid = isValid;
             return IsValid;
         }
     }

@@ -2,22 +2,23 @@
            x:Class="Tobi.Plugin.Validator.ValidatorPaneView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator">
+           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
   <!-- DockPanel.Resources>
     <Validator:SeverityConverter x:Key="SeverityConverter"/>
   </DockPanel.Resources -->
   <!--<Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>-->
+  <!--
   <ListBox
     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
     ItemsSource="{Binding ValidationItems}"
     DisplayMemberPath="Message">
-
+-->
     <!-- ListBox.ItemTemplate>
       <DataTemplate>
         <TextBox Text="{Binding Message}"/>
       </DataTemplate>
     </ListBox.ItemTemplate -->
-    <ListBox.ItemContainerStyle>
+<!--    <ListBox.ItemContainerStyle>
       <Style TargetType="{x:Type ListBoxItem}">
 
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -31,4 +32,39 @@
       </Style>
     </ListBox.ItemContainerStyle>
   </ListBox>
+-->
+
+  <DockPanel.Resources>
+    <CollectionViewSource Source="{Binding Path=ValidationItems}" x:Key="ValidationItemsCVS"/>
+  </DockPanel.Resources>
+  
+  <Grid Height="Auto" Width="Auto">
+    <!-- split the screen into two columns of equal size -->
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+    
+    <!-- Left side: List of all validation items -->
+    <ListBox Grid.Row="0" Grid.Column="0" 
+             ItemsSource="{Binding Source={StaticResource ValidationItemsCVS}}"
+             IsSynchronizedWithCurrentItem="True"
+             DisplayMemberPath="Message"/>
+    <!--
+    <UI:SortableListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1"
+	      ItemsSource="{Binding Source={StaticResource ValidationItemsCVS}}"
+	      IsSynchronizedWithCurrentItem="True"
+	      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+	      HorizontalContentAlignment="Stretch"
+	      x:Name="ValidationListView"
+	      SelectionChanged="ValidationListView_OnSelectionChanged"
+	      DisplayMemberPath="Message"/>
+-->
+    <TextBlock Grid.Column="1" Grid.Row="0" 
+               Text="{Binding Source={StaticResource ValidationItemsCVS}, Path=/}"/>
+    
+  </Grid>
 </DockPanel>

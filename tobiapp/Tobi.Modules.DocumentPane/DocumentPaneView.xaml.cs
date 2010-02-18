@@ -1090,6 +1090,10 @@ namespace Tobi.Plugin.DocumentPane
             else if (obj is ContainerVisual) temp_ContainerVisualCount++;
             else temp_OtherCount++;
 
+            if (obj is ScrollContentPresenter)
+            {
+                object view = ((ScrollContentPresenter) obj).Content;
+            }
             List<object> elms = new List<object>();
 
             int childcount = VisualTreeHelper.GetChildrenCount(obj);
@@ -1144,10 +1148,14 @@ namespace Tobi.Plugin.DocumentPane
             //ParagraphVisual objects are also ContainerVisual
             if (obj is ContainerVisual)
             {
+                ContainerVisual cv = (ContainerVisual) obj;
                 //express the visual object's coordinates in terms of the flow doc reader
                 GeneralTransform paraTransform = obj.TransformToAncestor(m_ScrollViewer);
-                Rect rect = ((ContainerVisual) obj).DescendantBounds;
-
+                Rect rect;
+                if (cv.Children.Count > 0)
+                    rect = cv.DescendantBounds;
+                else
+                    rect = cv.ContentBounds;
                 Rect rectTransformed = paraTransform.TransformBounds(rect);
 
                 //then figure out if these coordinates are in the currently visible document portion))
