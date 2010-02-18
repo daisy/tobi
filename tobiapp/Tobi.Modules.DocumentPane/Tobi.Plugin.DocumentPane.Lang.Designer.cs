@@ -59,5 +59,68 @@ namespace Tobi.Plugin.DocumentPane {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Next phrase.
+        /// </summary>
+        public static string Event_SwitchNext {
+            get {
+                return ResourceManager.GetString("Event_SwitchNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the next phrase.
+        /// </summary>
+        public static string Event_SwitchNext_ {
+            get {
+                return ResourceManager.GetString("Event_SwitchNext_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Previous phrase.
+        /// </summary>
+        public static string Event_SwitchPrevious {
+            get {
+                return ResourceManager.GetString("Event_SwitchPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the previous phrase.
+        /// </summary>
+        public static string Event_SwitchPrevious_ {
+            get {
+                return ResourceManager.GetString("Event_SwitchPrevious_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This feature is not available..
+        /// </summary>
+        public static string Feature_Not_Available {
+            get {
+                return ResourceManager.GetString("Feature_Not_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [0].
+        /// </summary>
+        public static string LOG_FILE_PATH {
+            get {
+                return ResourceManager.GetString("LOG_FILE_PATH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No document..
+        /// </summary>
+        public static string No_Document {
+            get {
+                return ResourceManager.GetString("No_Document", resourceCulture);
+            }
+        }
     }
 }

@@ -59,5 +59,239 @@ namespace Tobi.Common {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [0].
+        /// </summary>
+        public static string APP_VERSION {
+            get {
+                return ResourceManager.GetString("APP_VERSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Apply.
+        /// </summary>
+        public static string Apply {
+            get {
+                return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Close.
+        /// </summary>
+        public static string CloseDialog {
+            get {
+                return ResourceManager.GetString("CloseDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Hide details.
+        /// </summary>
+        public static string DetailsCollapse {
+            get {
+                return ResourceManager.GetString("DetailsCollapse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide detailed information.
+        /// </summary>
+        public static string DetailsCollapse_ {
+            get {
+                return ResourceManager.GetString("DetailsCollapse_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Show details.
+        /// </summary>
+        public static string DetailsExpand {
+            get {
+                return ResourceManager.GetString("DetailsExpand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display detailed information.
+        /// </summary>
+        public static string DetailsExpand_ {
+            get {
+                return ResourceManager.GetString("DetailsExpand_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tobi.log.
+        /// </summary>
+        public static string LOG_FILE_NAME {
+            get {
+                return ResourceManager.GetString("LOG_FILE_NAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Audio.
+        /// </summary>
+        public static string Menu_Audio {
+            get {
+                return ResourceManager.GetString("Menu_Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu_AudioPlayback.
+        /// </summary>
+        public static string Menu_AudioPlayback {
+            get {
+                return ResourceManager.GetString("Menu_AudioPlayback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Recording.
+        /// </summary>
+        public static string Menu_AudioRecording {
+            get {
+                return ResourceManager.GetString("Menu_AudioRecording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Selection.
+        /// </summary>
+        public static string Menu_AudioSelection {
+            get {
+                return ResourceManager.GetString("Menu_AudioSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Navigation.
+        /// </summary>
+        public static string Menu_AudioTransport {
+            get {
+                return ResourceManager.GetString("Menu_AudioTransport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Zoom.
+        /// </summary>
+        public static string Menu_AudioZoom {
+            get {
+                return ResourceManager.GetString("Menu_AudioZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Edit.
+        /// </summary>
+        public static string Menu_Edit {
+            get {
+                return ResourceManager.GetString("Menu_Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _File.
+        /// </summary>
+        public static string Menu_File {
+            get {
+                return ResourceManager.GetString("Menu_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Focus.
+        /// </summary>
+        public static string Menu_Focus {
+            get {
+                return ResourceManager.GetString("Menu_Focus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ma_gnification.
+        /// </summary>
+        public static string Menu_Magnification {
+            get {
+                return ResourceManager.GetString("Menu_Magnification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navi_gation.
+        /// </summary>
+        public static string Menu_Navigation {
+            get {
+                return ResourceManager.GetString("Menu_Navigation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _System.
+        /// </summary>
+        public static string Menu_System {
+            get {
+                return ResourceManager.GetString("Menu_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Tools.
+        /// </summary>
+        public static string Menu_Tools {
+            get {
+                return ResourceManager.GetString("Menu_Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _View.
+        /// </summary>
+        public static string Menu_View {
+            get {
+                return ResourceManager.GetString("Menu_View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _No.
+        /// </summary>
+        public static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Ok.
+        /// </summary>
+        public static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Yes.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
     }
 }

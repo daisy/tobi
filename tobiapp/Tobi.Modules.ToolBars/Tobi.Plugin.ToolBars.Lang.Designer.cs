@@ -59,5 +59,14 @@ namespace Tobi.Plugin.ToolBars {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toolbar focus.
+        /// </summary>
+        public static string Toolbar_Focus {
+            get {
+                return ResourceManager.GetString("Toolbar_Focus", resourceCulture);
+            }
+        }
     }
 }

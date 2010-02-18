@@ -59,5 +59,230 @@ namespace Tobi.Plugin.NavigationPane {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Heading.
+        /// </summary>
+        public static string HeadingEdit {
+            get {
+                return ResourceManager.GetString("HeadingEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please Enter The New Value For This Heading..
+        /// </summary>
+        public static string HeadingEdit_ {
+            get {
+                return ResourceManager.GetString("HeadingEdit_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation pane focus.
+        /// </summary>
+        public static string Navigation_Focus {
+            get {
+                return ResourceManager.GetString("Navigation_Focus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Next.
+        /// </summary>
+        public static string PageFindNext {
+            get {
+                return ResourceManager.GetString("PageFindNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find the next matching item in the page list.
+        /// </summary>
+        public static string PageFindNext_ {
+            get {
+                return ResourceManager.GetString("PageFindNext_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No More Matches Found.
+        /// </summary>
+        public static string PageFindNext_FAILURE {
+            get {
+                return ResourceManager.GetString("PageFindNext_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Previous.
+        /// </summary>
+        public static string PageFindPrev {
+            get {
+                return ResourceManager.GetString("PageFindPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find the previous matching item in the page list.
+        /// </summary>
+        public static string PageFindPrev_ {
+            get {
+                return ResourceManager.GetString("PageFindPrev_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No More Matches Found.
+        /// </summary>
+        public static string PageFindPrev_FAILURE {
+            get {
+                return ResourceManager.GetString("PageFindPrev_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Co_llapse.
+        /// </summary>
+        public static string TreeCollapse {
+            get {
+                return ResourceManager.GetString("TreeCollapse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse the current item in the tree.
+        /// </summary>
+        public static string TreeCollapse_ {
+            get {
+                return ResourceManager.GetString("TreeCollapse_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Collapse all.
+        /// </summary>
+        public static string TreeCollapseAll {
+            get {
+                return ResourceManager.GetString("TreeCollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse all children in the tree.
+        /// </summary>
+        public static string TreeCollapseAll_ {
+            get {
+                return ResourceManager.GetString("TreeCollapseAll_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit _Heading.
+        /// </summary>
+        public static string TreeEdit {
+            get {
+                return ResourceManager.GetString("TreeEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit the current heading.
+        /// </summary>
+        public static string TreeEdit_ {
+            get {
+                return ResourceManager.GetString("TreeEdit_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ex_pand.
+        /// </summary>
+        public static string TreeExpand {
+            get {
+                return ResourceManager.GetString("TreeExpand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand the current item in the tree.
+        /// </summary>
+        public static string TreeExpand_ {
+            get {
+                return ResourceManager.GetString("TreeExpand_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E_xpand all.
+        /// </summary>
+        public static string TreeExpandAll {
+            get {
+                return ResourceManager.GetString("TreeExpandAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all children in the tree.
+        /// </summary>
+        public static string TreeExpandAll_ {
+            get {
+                return ResourceManager.GetString("TreeExpandAll_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Next.
+        /// </summary>
+        public static string TreeFindNext {
+            get {
+                return ResourceManager.GetString("TreeFindNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find the next matching item in the tree.
+        /// </summary>
+        public static string TreeFindNext_ {
+            get {
+                return ResourceManager.GetString("TreeFindNext_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No More Matches Found.
+        /// </summary>
+        public static string TreeFindNext_FAILURE {
+            get {
+                return ResourceManager.GetString("TreeFindNext_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Previous.
+        /// </summary>
+        public static string TreeFindPrev {
+            get {
+                return ResourceManager.GetString("TreeFindPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find the previous matching item in the tree.
+        /// </summary>
+        public static string TreeFindPrev_ {
+            get {
+                return ResourceManager.GetString("TreeFindPrev_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No More Matches Found.
+        /// </summary>
+        public static string TreeFindPrev_FAILURE {
+            get {
+                return ResourceManager.GetString("TreeFindPrev_FAILURE", resourceCulture);
+            }
+        }
     }
 }

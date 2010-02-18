@@ -117,7 +117,103 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="APP_VERSION" xml:space="preserve">
+    <value>[0]</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>_Copy</value>
+  </data>
+  <data name="Copy_" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>C_ut</value>
+  </data>
+  <data name="Cut_" xml:space="preserve">
+    <value>Cut to clipboard</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>E_xit</value>
+  </data>
+  <data name="ExitConfirm" xml:space="preserve">
+    <value>Are you sure you want to exit Tobi ?</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>_Help</value>
+  </data>
+  <data name="Help_" xml:space="preserve">
+    <value>Get help</value>
+  </data>
   <data name="LangStringKey1" xml:space="preserve">
     <value>Hello</value>
+  </data>
+  <data name="LOG_FILE_PATH" xml:space="preserve">
+    <value>[0]</value>
+  </data>
+  <data name="ManageShortcuts" xml:space="preserve">
+    <value>_Keyboard shortcuts</value>
+  </data>
+  <data name="ManageShortcuts_" xml:space="preserve">
+    <value>View keyboard shortcuts</value>
+  </data>
+  <data name="Menu_Exit" xml:space="preserve">
+    <value>_Quit</value>
+  </data>
+  <data name="Menu_Exit_" xml:space="preserve">
+    <value>Exit the application</value>
+  </data>
+  <data name="OpenTobiFolder" xml:space="preserve">
+    <value>Browse application folder</value>
+  </data>
+  <data name="OpenTobiFolder_" xml:space="preserve">
+    <value>Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides).</value>
+  </data>
+  <data name="OpenTobiIsolatedStorage" xml:space="preserve">
+    <value>Browse system storage folder</value>
+  </data>
+  <data name="OpenTobiIsolatedStorage_" xml:space="preserve">
+    <value>Open a file browser where Tobi's system files are located.</value>
+  </data>
+  <data name="OpenTobiSettingsFolder" xml:space="preserve">
+    <value>Browse settings folder</value>
+  </data>
+  <data name="OpenTobiSettingsFolder_" xml:space="preserve">
+    <value>Open a file browser where the Tobi user settings are stored.</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>_Paste</value>
+  </data>
+  <data name="Paste_" xml:space="preserve">
+    <value>Paste from clipboard</value>
+  </data>
+  <data name="ShowLogFilePath" xml:space="preserve">
+    <value>DEBUG: _Where is [" + LOG_FILE_NAME + "] ?</value>
+  </data>
+  <data name="ShowLogFilePath_" xml:space="preserve">
+    <value>Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.</value>
+  </data>
+  <data name="UI_DecreaseMagnification" xml:space="preserve">
+    <value>_Decrease magnification</value>
+  </data>
+  <data name="UI_DecreaseMagnification_" xml:space="preserve">
+    <value>Decrease the UI magnification level</value>
+  </data>
+  <data name="UI_IncreaseMagnification" xml:space="preserve">
+    <value>_Increase magnification</value>
+  </data>
+  <data name="UI_IncreaseMagnification_" xml:space="preserve">
+    <value>Increase the UI magnification level</value>
+  </data>
+  <data name="UI_ResetMagnification" xml:space="preserve">
+    <value>_Reset magnification</value>
+  </data>
+  <data name="UI_ResetMagnification_" xml:space="preserve">
+    <value>Reset the UI magnification level</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Unexpected problem !</value>
+  </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>[0]</value>
   </data>
 </root>

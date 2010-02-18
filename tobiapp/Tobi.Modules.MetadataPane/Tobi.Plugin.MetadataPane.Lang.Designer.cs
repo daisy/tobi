@@ -59,5 +59,23 @@ namespace Tobi.Plugin.MetadataPane {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Edit metadata.
+        /// </summary>
+        public static string ShowMetadata {
+            get {
+                return ResourceManager.GetString("ShowMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata viewer/editor.
+        /// </summary>
+        public static string ShowMetadata_ {
+            get {
+                return ResourceManager.GetString("ShowMetadata_", resourceCulture);
+            }
+        }
     }
 }
