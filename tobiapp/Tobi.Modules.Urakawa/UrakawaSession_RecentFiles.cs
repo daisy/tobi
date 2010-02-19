@@ -11,18 +11,19 @@ namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
-        private string m_RecentFilesListStorageFileName = "Tobi_RecentFiles.txt";
-        private List<string> m_recent_files_list = new List<string>();
+        private const string m_RecentFilesListStorageFileName = "Tobi_RecentFiles.txt";
+        private static readonly List<string> m_recent_files_list = new List<string>();
         private string m_recentFiles_Save_Path = null;
 
         public List<string> RecentFilesList
         {
             get
             {
-                if (m_recent_files_list.Count == 0)
+                //This part has been commented so InitializeRecentFilesList() should be called explicitly .
+               /* if (m_recent_files_list.Count == 0)
                 {
                     InitializeRecentFilesList();
-                }
+                } */
                 return m_recent_files_list;
             }
         }
@@ -42,28 +43,27 @@ namespace Tobi.Plugin.Urakawa
                 if (recentFilesStream != null)
                 {
                     textFileReader = new StreamReader(recentFilesStream);
-                    string fullFilePath = null;
+                    string recentFileURL = null;
 
-                    while ((fullFilePath = textFileReader.ReadLine()) != null)
+                    while ((recentFileURL = textFileReader.ReadLine()) != null)
                     {
-                        if (!m_recent_files_list.Contains(fullFilePath))
-                            m_recent_files_list.Add(fullFilePath);
+                        if (!m_recent_files_list.Contains(recentFileURL))
+                            m_recent_files_list.Add(recentFileURL);
                     }
                 }
             }
             finally
             {
                 if (textFileReader != null) textFileReader.Close();
-                if (recentFilesStream != null) recentFilesStream.Close();
             }
         }
 
 
-        public void AddToRecentFilesList(string file_path)
+        public void AddToRecentFilesList(string fileURL)
         {
-            if (!m_recent_files_list.Contains(file_path))
+            if (!m_recent_files_list.Contains(fileURL))
             {
-                m_recent_files_list.Add(file_path);
+                m_recent_files_list.Add(fileURL);
                 SaveRecentFilesList();
             }
         }
@@ -87,7 +87,6 @@ namespace Tobi.Plugin.Urakawa
             finally
             {
                 if (textFileWriter != null) textFileWriter.Close();
-                if (recentFileStream != null) recentFileStream.Close();
                 if (recentFileStream != null) recentFileStream.Close();
             }
         }
