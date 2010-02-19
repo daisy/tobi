@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 
-
-namespace Tobi.Plugin.Validator.Metadata
+namespace Tobi.Plugin.Validator.ContentDocument
 {
     [Export(typeof(ResourceDictionary)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class MetadataValidationItemTemplate : ResourceDictionary
+    public partial class ContentDocumentValidationItemTemplate : ResourceDictionary
     {
-        public MetadataValidationItemTemplate()
+        public ContentDocumentValidationItemTemplate()
         {
             InitializeComponent();
         }

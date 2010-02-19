@@ -1,0 +1,10 @@
+﻿<ResourceDictionary x:Class="Tobi.Plugin.Validator.ContentDocument.ContentDocumentValidationItemTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ContentDocument="clr-namespace:Tobi.Plugin.Validator.ContentDocument">
+
+  <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
+    <TextBlock Background="Purple" Text="{Binding Message}"/>
+  </DataTemplate>
+
+</ResourceDictionary>
