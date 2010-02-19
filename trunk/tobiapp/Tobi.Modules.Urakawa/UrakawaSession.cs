@@ -60,6 +60,7 @@ namespace Tobi.Plugin.Urakawa
             IsDirty = false;
 
             InitializeCommands();
+            InitializeRecentFilesList();
         }
 
         //#pragma warning disable 1591 // missing comments
