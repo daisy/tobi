@@ -30,7 +30,7 @@ namespace Tobi.Plugin.Validator
 
         private readonly IUrakawaSession m_UrakawaSession;
         public readonly IEnumerable<IValidator> m_Validators;
-        private ResourceDictionary m_ValidationItemTemplate;
+        public readonly IEnumerable<ResourceDictionary> m_ResourceDictionaries;
 
         [ImportingConstructor]
         public Validator(
@@ -39,13 +39,16 @@ namespace Tobi.Plugin.Validator
             [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             IEnumerable<IValidator> validators,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            IUrakawaSession session)
+            IUrakawaSession session,
+            [ImportMany(typeof(ResourceDictionary), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            IEnumerable<ResourceDictionary> resourceDictionaries)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
             m_Validators = validators;
             m_UrakawaSession = session;
+            m_ResourceDictionaries = resourceDictionaries;
 
             IsValid = true;
 
@@ -56,19 +59,10 @@ namespace Tobi.Plugin.Validator
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-            m_ValidationItemTemplate = new GenericValidationItemTemplate();
-
-            foreach (IValidator validator in m_Validators)
-            {
-                try
-                {
-                    Application.Current.Resources.MergedDictionaries.Add(validator.ValidationItemTemplate);
             
-                }
-                catch (Exception)
-                {
-                    
-                }
+            foreach (ResourceDictionary dict in m_ResourceDictionaries)
+            {
+                Application.Current.Resources.MergedDictionaries.Add(dict);
             }
         }
 
@@ -134,11 +128,6 @@ namespace Tobi.Plugin.Validator
 
                 yield break;
             }
-        }
-
-        public override ResourceDictionary ValidationItemTemplate
-        {
-            get { return m_ValidationItemTemplate; }
         }
 
         public override bool Validate()

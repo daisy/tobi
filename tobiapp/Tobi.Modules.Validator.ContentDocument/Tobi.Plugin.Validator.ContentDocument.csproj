@@ -42,12 +42,18 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentDocumentValidationError.cs" />
+    <Compile Include="ContentDocumentValidationItemTemplate.xaml.cs">
+      <DependentUpon>ContentDocumentValidationItemTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ContentDocumentValidator.cs" />
     <Compile Include="ContentDocumentValidatorPlugin.cs" />
     <Compile Include="DtdSharpToRegex.cs" />
@@ -93,6 +99,12 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.ContentDocument.Lang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ContentDocumentValidationItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

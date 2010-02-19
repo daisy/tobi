@@ -87,11 +87,6 @@ namespace Tobi.Plugin.Validator.Metadata
             get { return m_ValidationItems;}
         }
 
-        public override ResourceDictionary ValidationItemTemplate
-        {
-            get { return m_ValidationItemTemplate; }
-        }
-
 
         //TODO: un-hardcode this
         public MetadataDefinitionSet MetadataDefinitions = 

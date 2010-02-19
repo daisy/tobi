@@ -70,11 +70,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
             get { return m_ValidationItems; }
         }
 
-        public override ResourceDictionary ValidationItemTemplate
-        {
-            get { throw new NotImplementedException(); }
-        }
-
         private List<ValidationItem> m_ValidationItems;
         
         public override bool Validate()
