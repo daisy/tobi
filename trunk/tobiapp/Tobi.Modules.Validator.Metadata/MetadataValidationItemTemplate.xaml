@@ -1,0 +1,10 @@
+﻿<ResourceDictionary x:Class="Tobi.Plugin.Validator.MetadataValidationItemTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata">
+
+  <DataTemplate DataType="{x:Type Metadata:MetadataValidationError}">
+    <TextBlock Background="Green" Text="{Binding Message}"/>
+  </DataTemplate>
+  
+</ResourceDictionary>
