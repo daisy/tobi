@@ -1171,7 +1171,33 @@ namespace Tobi.Plugin.DocumentPane
         private bool IsTextObjectInView(TextElement obj)
         {
             //how to find visibility information from a logical object??
+            DependencyObject test = obj;
+            while (test != null)
+            {
+                test = LogicalTreeHelper.GetParent(test);
+                if (test is Visual)
+                {
+                    break;
+                }
+            }
+            if (drillDown(test) != null)
+            {
+                return true;
+            }
             return true;
+        }
+
+        private DependencyObject drillDown(DependencyObject test)
+        {
+            IEnumerable children = LogicalTreeHelper.GetChildren(test);
+            foreach (DependencyObject obj in children)
+            {
+                if (obj is Visual)
+                    return obj;
+                else
+                    return drillDown(obj);
+            }
+            return null;
         }
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {

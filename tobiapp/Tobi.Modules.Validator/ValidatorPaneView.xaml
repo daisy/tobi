@@ -64,10 +64,12 @@
 	      DisplayMemberPath="Message"/>
 -->
     <!-- TODO: how to tell WPF to use a data template from the merged resource dictionary here?-->
-    <StackPanel Grid.Column="1" Grid.Row="0">
+    <!-- StackPanel Grid.Column="1" Grid.Row="0">
       <TextBlock Text="Dummy placeholder"/>
       <TextBlock Text="{Binding Source={StaticResource ValidationItemsCVS}, Path=/}"/>
-    </StackPanel>
+    </StackPanel -->
     
+    <ContentPresenter  Grid.Column="1" Grid.Row="0"
+                       Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />
   </Grid>
 </DockPanel>

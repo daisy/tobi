@@ -59,6 +59,9 @@
   -->
   <ItemGroup>
     <Compile Include="MetadataValidationError.cs" />
+    <Compile Include="MetadataValidationItemTemplate.xaml.cs">
+      <DependentUpon>MetadataValidationItemTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MetadataValidator.cs" />
     <Compile Include="MetadataValidatorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +81,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -133,5 +139,11 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.Metadata.Lang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MetadataValidationItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

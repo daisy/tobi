@@ -29,6 +29,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         private readonly ILoggerFacade m_Logger;
         protected readonly IUrakawaSession m_Session;
+        private ResourceDictionary m_ValidationItemTemplate;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -48,6 +49,7 @@ namespace Tobi.Plugin.Validator.Metadata
             m_DataTypeValidator = new MetadataDataTypeValidator(this);
             m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
             m_ValidationItems = new List<ValidationItem>();
+            m_ValidationItemTemplate = new MetadataValidationItemTemplate();
 
             m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
         }
@@ -76,13 +78,7 @@ namespace Tobi.Plugin.Validator.Metadata
                 isValid = _validate(metadatas);
             }
 
-            if (!isValid)
-            {
-                //TODO: send an event that there are new validation errors
-            }
-
             IsValid = isValid;
-
             return isValid;
         }
 
@@ -93,7 +89,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override ResourceDictionary ValidationItemTemplate
         {
-            get { throw new NotImplementedException(); }
+            get { return m_ValidationItemTemplate; }
         }
 
 
