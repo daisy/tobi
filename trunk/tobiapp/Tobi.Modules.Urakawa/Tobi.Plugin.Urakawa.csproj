@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -92,8 +92,8 @@
     <Compile Include="UrakawaSession_Export.cs" />
     <Compile Include="UrakawaSession_Import.cs" />
     <Compile Include="UrakawaSession_Open.cs" />
+    <Compile Include="UrakawaSession_RecentFiles.cs" />
     <Compile Include="UrakawaSession_Save.cs" />
-    <Compile Include="Urakawa_RecentFilesManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
