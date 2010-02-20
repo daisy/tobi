@@ -57,11 +57,16 @@ namespace Tobi.Common.Validation
         Error,
         Warning
     } 
-
+    
     public class ValidationItem
     {
         public string Message { get; set; }
         public ValidationSeverity Severity { get; set;}
         public IValidator Validator { get; set; }
+    }
+    public static class ValidationDataTemplateProperties
+    {
+        public const string TypeIdentifier = "ValidationItemDataTemplate";
+
     }
 }
