@@ -30,8 +30,7 @@ namespace Tobi.Plugin.Validator
 
         private readonly IUrakawaSession m_UrakawaSession;
         public readonly IEnumerable<IValidator> m_Validators;
-        public readonly IEnumerable<ResourceDictionary> m_ResourceDictionaries;
-
+        
         [ImportingConstructor]
         public Validator(
             ILoggerFacade logger,
@@ -39,31 +38,23 @@ namespace Tobi.Plugin.Validator
             [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             IEnumerable<IValidator> validators,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            IUrakawaSession session,
-            [ImportMany(typeof(ResourceDictionary), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
-            IEnumerable<ResourceDictionary> resourceDictionaries)
+            IUrakawaSession session)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
             m_Validators = validators;
             m_UrakawaSession = session;
-            m_ResourceDictionaries = resourceDictionaries;
-
+            
             IsValid = true;
 
             if (m_UrakawaSession.DocumentProject != null)
             {
                 OnProjectLoaded(m_UrakawaSession.DocumentProject);
             }
-
+            
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
-            
-            foreach (ResourceDictionary dict in m_ResourceDictionaries)
-            {
-                Application.Current.Resources.MergedDictionaries.Add(dict);
-            }
         }
 
         //EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
