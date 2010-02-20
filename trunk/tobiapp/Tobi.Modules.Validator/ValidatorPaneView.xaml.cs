@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Windows.Controls;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Windows.Markup;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
 using Tobi.Common.UI.XAML;
@@ -36,8 +36,9 @@ namespace Tobi.Plugin.Validator
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
             [Import(typeof(Validator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-            Validator validator
-            )
+            Validator validator, 
+            [ImportMany(ValidationDataTemplateProperties.TypeIdentifier, typeof(ResourceDictionary), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            IEnumerable<ResourceDictionary> resourceDictionaries)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
@@ -47,7 +48,12 @@ namespace Tobi.Plugin.Validator
 
             ValidationItems = new ObservableCollection<ValidationItem>();
             resetValidationItems(m_Validator);
-
+            
+            foreach (ResourceDictionary dict in resourceDictionaries)
+            {
+                Application.Current.Resources.MergedDictionaries.Add(dict);
+            }
+            
             DataContext = this;
             InitializeComponent();
         }
@@ -58,7 +64,7 @@ namespace Tobi.Plugin.Validator
         {
             ValidationItems.Clear();
             
-            if (validator.ValidationItems == null) // metadataValidator.IsValid == true
+            if (validator.ValidationItems == null)
             {
                 return;
             }
@@ -72,11 +78,6 @@ namespace Tobi.Plugin.Validator
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
             resetValidationItems((Validator)e.Validator);
-        }
-
-        private void ValidationListView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //throw new NotImplementedException();
         }
     }
 
