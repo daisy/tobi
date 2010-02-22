@@ -442,6 +442,29 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
         }
+        //DependencyObject FindVisualTreeRoot(DependencyObject initial)
+        //{
+        //    DependencyObject current = initial;
+        //    DependencyObject result = initial;
+
+        //    while (current != null)
+        //    {
+        //        result = current;
+        //        if (current is Visual) // || current is Visual3D)
+        //        {
+        //            current = VisualTreeHelper.GetParent(current);
+        //        }
+        //        else
+        //        {
+        //            // If we're in Logical Land then we must walk 
+        //            // up the logical tree until we find a 
+        //            // Visual/Visual3D to get us back to Visual Land.
+        //            current = LogicalTreeHelper.GetParent(current);
+        //        }
+        //    }
+
+        //    return result;
+        //}
 
         private void createFlowDocumentFromXuk(Project project)
         {
@@ -456,6 +479,8 @@ namespace Tobi.Plugin.DocumentPane
                             OnMouseUpFlowDoc,
                             (textElem) =>
                             {
+                                //var obj = FindVisualTreeRoot(textElem);
+
                                 var node = textElem.Tag as TreeNode;
                                 if (node == null)
                                 {

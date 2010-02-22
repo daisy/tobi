@@ -41,6 +41,8 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
+        bool IsUIAutomationDisabled { get; }
+
         void Show();
 
         bool SplitterDrag { get; }

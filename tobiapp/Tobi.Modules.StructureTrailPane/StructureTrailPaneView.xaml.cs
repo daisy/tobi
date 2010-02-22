@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Media;
 using System.Windows;
 using System.Windows.Automation;
-using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -15,7 +13,6 @@ using System.Windows.Shapes;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -23,7 +20,6 @@ using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 using urakawa.xuk;
-using System.Diagnostics;
 
 namespace Tobi.Plugin.StructureTrailPane
 {
@@ -60,7 +56,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             bool firstTime = PathToCurrentTreeNode == null;
 
-            if (PathToCurrentTreeNode == null || !PathToCurrentTreeNode.Contains(node))
+            if (firstTime || !PathToCurrentTreeNode.Contains(node))
             {
                 PathToCurrentTreeNode = new List<TreeNode>();
                 TreeNode treeNode = node;
@@ -232,20 +228,32 @@ namespace Tobi.Plugin.StructureTrailPane
             var wrapper = (TreeNodeWrapper)ui.SelectedItem;
             wrapper.Popup.IsOpen = false;
 
-            selectNode(wrapper.TreeNode);
+            selectNode(wrapper.TreeNode, true);
         }
 
-        private void selectNode(TreeNode node)
+        private void selectNode(TreeNode node, bool toggleIntersection)
         {
-            if (node == CurrentTreeNode)
+            if (node == null) return;
+
+            if (toggleIntersection && node == CurrentTreeNode)
             {
-                var treeNode = node.GetFirstDescendantWithText();
-                if (treeNode != null)
+                if (CurrentSubTreeNode != null)
                 {
-                    m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+                    m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.selectNode",
                                Category.Debug, Priority.Medium);
 
-                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
+                }
+                else
+                {
+                    var treeNode = node.GetFirstDescendantWithText();
+                    if (treeNode != null)
+                    {
+                        m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+                                     Category.Debug, Priority.Medium);
+
+                        m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                    }
                 }
 
                 return;
@@ -255,7 +263,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 && node.IsDescendantOf(CurrentTreeNode))
             {
                 m_Logger.Log(
-                    "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+                    "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.selectNode",
                     Category.Debug, Priority.Medium);
 
                 m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
@@ -263,7 +271,7 @@ namespace Tobi.Plugin.StructureTrailPane
             else
             {
                 m_Logger.Log(
-                    "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+                    "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
                     Category.Debug, Priority.Medium);
 
                 m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
@@ -278,7 +286,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 return;
             }
 
-            selectNode((TreeNode)ui.Tag);
+            selectNode((TreeNode)ui.Tag, true);
 
             CommandFocus.Execute();
         }
@@ -338,9 +346,14 @@ namespace Tobi.Plugin.StructureTrailPane
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 () =>
                 {
-                    SystemSounds.Beep.Play();
+                    int i = PathToCurrentTreeNode.IndexOf(CurrentTreeNode);
+                    if (i == (PathToCurrentTreeNode.Count - 1)) return;
+
+                    selectNode(PathToCurrentTreeNode[i + 1], false);
+
+                    CommandFocus.Execute();
                 },
-                () => CurrentTreeNode != null,
+                () => CurrentTreeNode != null && CurrentSubTreeNode != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectDown));
 
@@ -353,9 +366,18 @@ namespace Tobi.Plugin.StructureTrailPane
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 () =>
                 {
-                    SystemSounds.Beep.Play();
+                    selectNode(CurrentTreeNode.Parent, false);
+
+                    //if (CurrentSubTreeNode != null)
+                    //    selectNode(CurrentSubTreeNode.Parent, false);
+                    //else
+                    //    selectNode(CurrentTreeNode.Parent, false);
+
+                    CommandFocus.Execute();
                 },
-                () => CurrentTreeNode != null,
+                () => CurrentTreeNode != null && CurrentTreeNode.Parent != null
+                //|| CurrentSubTreeNode != null && CurrentSubTreeNode.Parent != null
+                        ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectUp));
 
