@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -14,7 +16,7 @@ namespace Tobi.Plugin.NavigationPane
     /// Interaction logic for HeadingPanelView.xaml
     /// </summary>
     [Export(typeof(IHeadingPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class HeadingPanelView : IHeadingPaneView
+    public partial class HeadingPanelView : IHeadingPaneView, IActiveAware
     {
         private TreeViewItem m_SelectedTreeViewItem;
 
@@ -78,6 +80,7 @@ namespace Tobi.Plugin.NavigationPane
             m_SelectedTreeViewItem = null;
             TreeView.DataContext = null;
             TreeView.ContextMenu = null;
+            SearchBox.Text = "";
         }
 
         public UIElement ViewControl
@@ -144,5 +147,31 @@ namespace Tobi.Plugin.NavigationPane
             if (m_ViewModel.HeadingsNavigator == null) { return; }
             m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
+
+        #region IActiveAware implementation
+        private bool _isActive;
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                if (_isActive == value) { return; }
+                _isActive = value;
+                OnIsActiveChanged(EventArgs.Empty);
+            }
+        }
+
+        event EventHandler isActiveChanged;
+        public event EventHandler IsActiveChanged
+        {
+            add { isActiveChanged += value; }
+            remove { isActiveChanged -= value; }
+        }
+        protected void OnIsActiveChanged(EventArgs e)
+        {
+            if (isActiveChanged != null) { isActiveChanged(this, e); }
+        }
+        
+        #endregion
     }
 }
