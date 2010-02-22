@@ -25,6 +25,18 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool WindowDisableUIAutomation {
+            get {
+                return ((bool)(this["WindowDisableUIAutomation"]));
+            }
+            set {
+                this["WindowDisableUIAutomation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("800")]
         public double WindowShellWidth {
             get {

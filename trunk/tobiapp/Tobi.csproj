@@ -312,6 +312,7 @@
     <Content Include="hi.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="index_ClickOnce.html" />
     <Content Include="Shortcut.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -21,6 +23,24 @@ namespace Tobi
     [Export(typeof(IShellView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class Shell : IShellView, IPartImportsSatisfiedNotification
     {
+        public bool IsUIAutomationDisabled
+        {
+            get { return Settings.Default.WindowDisableUIAutomation; }
+        }
+
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            if (IsUIAutomationDisabled)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return new DisabledUIAutomationWindowAutomationPeer(this);
+            }
+
+            return base.OnCreateAutomationPeer();
+        }
+
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
 #pragma warning restore 1591

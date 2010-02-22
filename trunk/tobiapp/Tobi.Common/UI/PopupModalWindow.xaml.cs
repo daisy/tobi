@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Media;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -21,6 +23,19 @@ namespace Tobi.Common.UI
     /// </summary>
     public partial class PopupModalWindow : IInputBindingManager, INotifyPropertyChangedEx
     {
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            if (ShellView != null && ShellView.IsUIAutomationDisabled)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return new DisabledUIAutomationWindowAutomationPeer(this);
+            }
+
+            return base.OnCreateAutomationPeer();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
         {

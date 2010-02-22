@@ -155,6 +155,7 @@
     <Compile Include="UI\ButtonRichCommand.cs" />
     <Compile Include="UI\ClearChildViewsRegionBehavior.cs" />
     <Compile Include="UI\ComboBoxWithAutomationPeer.cs" />
+    <Compile Include="UI\DisabledUIAutomationWindowAutomationPeer.cs" />
     <Compile Include="UI\FocusOutlineAdorner.cs" />
     <Compile Include="UI\DimAdorner.cs" />
     <Compile Include="UI\FocusHelper.cs" />
