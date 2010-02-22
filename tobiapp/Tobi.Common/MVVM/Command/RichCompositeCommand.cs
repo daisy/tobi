@@ -16,7 +16,7 @@ namespace Tobi.Common.MVVM.Command
         public RichCompositeCommand(String shortDescription, String longDescription,
                                    KeyGesture keyGesture,
                                    VisualBrush icon)
-        : base(shortDescription, longDescription, keyGesture, icon,null, null)
+        : base(shortDescription, longDescription, keyGesture, icon,null, null,null, null)
         {
             m_compCommand = new CompositeCommand();
             //m_compCommand.CanExecuteChanged;  
