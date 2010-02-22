@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -11,7 +13,7 @@ using urakawa.core;
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(HeadingPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class HeadingPaneViewModel : ViewModelBase
+    public class HeadingPaneViewModel : ViewModelBase //, IPartImportsSatisfiedNotification
     {
         private HeadingsNavigator _headingsNavigator;
 
@@ -134,16 +136,40 @@ namespace Tobi.Plugin.NavigationPane
 
         ~HeadingPaneViewModel()
         {
+            //if (m_GlobalSearchCommand != null)
+            //{
+            //    m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
+            //    m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
+            //}
 #if DEBUG
             m_Logger.Log("HeadingPaneViewModel garbage collected.", Category.Debug, Priority.Medium);
 #endif
         }
 
+        //[Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        //private IGlobalSearchCommands m_GlobalSearchCommand;
+
+
+        //private void trySearchCommands()
+        //{
+        //    if (m_GlobalSearchCommand == null) { return; }
+        //    m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
+        //    m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
+        //}
 
         protected IHeadingPaneView View { get; private set; }
         public void SetView(IHeadingPaneView view)
         {
             View = view;
+            IActiveAware activeAware = (IActiveAware)View;
+            if (activeAware != null) { activeAware.IsActiveChanged += ActiveAwareIsActiveChanged; }
+        }
+        private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
+        {
+            IActiveAware activeAware = (sender as IActiveAware);
+            if (activeAware == null) { return; }
+            CommandFindNext.IsActive = activeAware.IsActive;
+            CommandFindPrev.IsActive = activeAware.IsActive;
         }
 
         public HeadingsNavigator HeadingsNavigator
@@ -153,7 +179,6 @@ namespace Tobi.Plugin.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
-//            _headingsNavigator = new HeadingsNavigator(project);
             _headingsNavigator = new HeadingsNavigator(project, m_ShellView);
             View.LoadProject();
         }
@@ -170,6 +195,10 @@ namespace Tobi.Plugin.NavigationPane
         {
             View.SelectTreeNode(node);
         }
+        //public void OnImportsSatisfied()
+        //{
+        //    trySearchCommands();
+        //}
         #endregion
     }
 }
