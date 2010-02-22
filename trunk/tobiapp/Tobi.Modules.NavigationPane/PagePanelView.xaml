@@ -105,6 +105,7 @@
         DockPanel.Dock="Top">
         <pres:ListView      
             x:Name="ListView" 
+            DataContext="{Binding Path=ViewModel.PagesNavigator, RelativeSource={x:Static RelativeSource.Self}}"
             ItemsSource="{Binding Pages}"
             VirtualizingStackPanel.IsVirtualizing="False"
             VirtualizingStackPanel.VirtualizationMode="Recycling"

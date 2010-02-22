@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -16,7 +17,7 @@ namespace Tobi.Plugin.NavigationPane
     /// Interaction logic for PagePanelView.xaml
     /// </summary>
     [Export(typeof(IPagePaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class PagePanelView : IPagePaneView
+    public partial class PagePanelView : IPagePaneView, IActiveAware
     {
         private bool _ignorePageSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
@@ -51,7 +52,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
             Page prevPage = null;
-            foreach (Page page in m_ViewModel.Pages)
+            foreach (Page page in m_ViewModel.PagesNavigator.Pages)
             {
                 TextElement textElement = page.TextElement;
                 TreeNode treeNode = textElement.Tag as TreeNode;
@@ -79,7 +80,12 @@ namespace Tobi.Plugin.NavigationPane
 
         public void LoadProject()
         {
-            ListView.DataContext = m_ViewModel;
+            ListView.DataContext = m_ViewModel.PagesNavigator;
+        }
+        public void UnloadProject()
+        {
+            ListView.DataContext = null;
+            SearchBox.Text = "";
         }
 
         public UIElement ViewControl
@@ -127,9 +133,33 @@ namespace Tobi.Plugin.NavigationPane
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            m_ViewModel.SearchTerm = SearchBox.Text;
+            m_ViewModel.PagesNavigator.SearchTerm = SearchBox.Text;
+        }
+        #region IActiveAware implementation
+        private bool _isActive;
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                if (_isActive == value) { return; }
+                _isActive = value;
+                OnIsActiveChanged(EventArgs.Empty);
+            }
         }
 
+        event EventHandler isActiveChanged;
+        public event EventHandler IsActiveChanged
+        {
+            add { isActiveChanged += value; }
+            remove { isActiveChanged -= value; }
+        }
+        protected void OnIsActiveChanged(EventArgs e)
+        {
+            if (isActiveChanged != null) { isActiveChanged(this, e); }
+        }
+        
+        #endregion
         //private void OnMouseDoubleClick_List(object sender, MouseButtonEventArgs e)
         //{
         //    //grab the original element that was doubleclicked on and search from child to parent until
@@ -146,5 +176,7 @@ namespace Tobi.Plugin.NavigationPane
         //        handleListCurrentSelection();
         //    }
         //}
+
+
     }
 }
