@@ -42,14 +42,14 @@ namespace Tobi.Common.MVVM.Command
             }
         }
 
-        public bool CanExecute(object parameter)
+        public override bool CanExecute()
         {
-            return m_compCommand.CanExecute(parameter);
+            return m_compCommand.CanExecute(null);
         }
 
-        public void Execute(object parameter)
+        public override void Execute()
         {
-            m_compCommand.Execute(parameter);
+            m_compCommand.Execute(null);
         }
     }
 }
