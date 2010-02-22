@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -30,7 +31,11 @@ namespace Tobi.Plugin.NavigationPane
 
         public void ExpandAll()
         {
-            foreach (HeadingTreeNodeWrapper node in Roots) { ExpandNode(node); }
+            ThreadPool.SetMaxThreads(50, 50);
+            foreach (HeadingTreeNodeWrapper node in Roots)
+            {
+                ThreadPool.QueueUserWorkItem(ExpandNodeCallback, node);
+            }
         }
         public void FindNext()
         {
@@ -151,11 +156,14 @@ namespace Tobi.Plugin.NavigationPane
             }
             return htnwResult;
         }
-        private static void ExpandNode(HeadingTreeNodeWrapper node)
+
+        private static void ExpandNodeCallback(object nodeObject)
         {
+            HeadingTreeNodeWrapper node = (HeadingTreeNodeWrapper) nodeObject;
             node.IsExpanded = true;
-            if (!node.HasChildren) return;
-            foreach (HeadingTreeNodeWrapper child in node.Children){ExpandNode(child);}
+            if (!node.HasChildren) { return; }
+            foreach (HeadingTreeNodeWrapper child in node.Children) { ThreadPool.QueueUserWorkItem(ExpandNodeCallback, child); }
+            
         }
         public void Expand(HeadingTreeNodeWrapper node) { node.IsExpanded = true; }
 
@@ -592,7 +600,6 @@ namespace Tobi.Plugin.NavigationPane
                 return m_TreeNodeHeading;
             }
         }
-
 
         public string Title
         {
