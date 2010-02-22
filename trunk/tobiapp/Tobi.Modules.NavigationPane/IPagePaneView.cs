@@ -7,6 +7,7 @@ namespace Tobi.Plugin.NavigationPane
     {
         string ViewName { get; }
         void LoadProject();
+        void UnloadProject();
         void UpdatePageListSelection(TreeNode node);
 
         UIElement ViewControl { get; }
