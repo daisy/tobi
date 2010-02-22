@@ -56,7 +56,7 @@ namespace Tobi.Common.MVVM.Command
         /// <summary>
         ///     Method to determine if the command can be executed
         /// </summary>
-        public bool CanExecute()
+        public virtual bool CanExecute()
         {
             if (!IsActive)
             {
@@ -73,7 +73,7 @@ namespace Tobi.Common.MVVM.Command
         /// <summary>
         ///     Execution of the command
         /// </summary>
-        public void Execute()
+        public virtual void Execute()
         {
             if (CanExecute() && _executeMethod != null)
             {
