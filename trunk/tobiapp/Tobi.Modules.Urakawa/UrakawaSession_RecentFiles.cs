@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using urakawa.ExternalFiles;
 
 namespace Tobi.Plugin.Urakawa
@@ -24,30 +25,24 @@ namespace Tobi.Plugin.Urakawa
 
         private void InitializeRecentFiles()
         {
-            FileStream recentFilesStream = null;
-            StreamReader textFileReader = null;
-            
-            if (File.Exists(m_RecentFiles_FilePath))
+            if (!File.Exists(m_RecentFiles_FilePath))
             {
-                recentFilesStream = File.Open(m_RecentFiles_FilePath, FileMode.Open, FileAccess.Read);
+                return;
             }
+
+            StreamReader streamReader = new StreamReader(m_RecentFiles_FilePath, Encoding.UTF8);
             try
             {
-                if (recentFilesStream != null)
+                string recentFileURL;
+                while ((recentFileURL = streamReader.ReadLine()) != null)
                 {
-                    textFileReader = new StreamReader(recentFilesStream);
-                    string recentFileURL = null;
-
-                    while ((recentFileURL = textFileReader.ReadLine()) != null)
-                    {
-                        if (!m_RecentFiles.Contains(recentFileURL))
-                            m_RecentFiles.Add(recentFileURL);
-                    }
+                    if (!m_RecentFiles.Contains(recentFileURL))
+                        m_RecentFiles.Add(recentFileURL);
                 }
             }
             finally
             {
-                if (textFileReader != null) textFileReader.Close();
+                streamReader.Close();
             }
         }
 
@@ -64,23 +59,17 @@ namespace Tobi.Plugin.Urakawa
 
         public void SaveRecentFiles()
         {
-            FileStream recentFileStream = null;
-            StreamWriter textFileWriter = null;
+            StreamWriter streamWriter = new StreamWriter(m_RecentFiles_FilePath, false, Encoding.UTF8);
             try
             {
-                recentFileStream = File.Create(m_RecentFiles_FilePath);
-
-                textFileWriter = new StreamWriter(recentFileStream);
-
                 for (int i = 0; i < m_RecentFiles.Count; i++)
                 {
-                    textFileWriter.WriteLine(m_RecentFiles[i]);
+                    streamWriter.WriteLine(m_RecentFiles[i]);
                 }
             }
             finally
             {
-                if (textFileWriter != null) textFileWriter.Close();
-                if (recentFileStream != null) recentFileStream.Close();
+                streamWriter.Close();
             }
         }
 
