@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;

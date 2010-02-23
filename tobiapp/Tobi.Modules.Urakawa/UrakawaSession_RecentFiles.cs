@@ -22,7 +22,7 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
-        public void InitializeRecentFiles()
+        private void InitializeRecentFiles()
         {
             FileStream recentFilesStream = null;
             StreamReader textFileReader = null;
