@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
-using Tobi.Common.MVVM;
 
 namespace Tobi
 {

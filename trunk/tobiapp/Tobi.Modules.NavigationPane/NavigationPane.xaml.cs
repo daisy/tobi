@@ -2,7 +2,6 @@
 using System.Windows;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -28,9 +27,9 @@ namespace Tobi.Plugin.NavigationPane
             IRegionManager regionManager,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
-            [Import(typeof(IPagePaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            [Import(typeof(PagePanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             PagePanelView pagesView,
-            [Import(typeof(IHeadingPaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            [Import(typeof(HeadingPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             HeadingPanelView tocView)
         {
             m_RegionManager = regionManager;
@@ -72,7 +71,7 @@ namespace Tobi.Plugin.NavigationPane
 
                                         if (ui != null)
                                         {
-                                            FocusHelper.FocusBeginInvoke(this, ui);
+                                            FocusHelper.FocusBeginInvoke(ui);
                                         }
                                     },
                                     () => true,

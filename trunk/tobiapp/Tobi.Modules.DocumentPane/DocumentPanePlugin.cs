@@ -55,10 +55,10 @@ namespace Tobi.Plugin.DocumentPane
             //m_Logger.Log(@"Document pane plugin initializing...", Category.Debug, Priority.Medium);
         }
 
-        private int m_ToolBarId_1;
+        //private int m_ToolBarId_1;
         protected override void OnToolBarReady()
         {
-            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Any);
+            //m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, PreferredPosition.Any);
 
             m_Logger.Log(@"Document commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
@@ -75,7 +75,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (m_ToolBarsView != null)
             {
-                m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
+                //m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
 
                 m_Logger.Log(@"Document commands removed from toolbar", Category.Debug, Priority.Medium);
             }

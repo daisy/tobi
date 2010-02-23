@@ -23,6 +23,7 @@ namespace Tobi.Common
         public const string MenuBar_View = UserInterfaceStrings.Menu_View;
         public const string MenuBar_Focus = UserInterfaceStrings.Menu_Focus;
         public const string MenuBar_Navigation = UserInterfaceStrings.Menu_Navigation;
+        public const string MenuBar_Find = UserInterfaceStrings.Menu_Find;
         public const string MenuBar_Magnification = UserInterfaceStrings.Menu_Magnification;
 
         public const string MenuBar_System = UserInterfaceStrings.Menu_System;

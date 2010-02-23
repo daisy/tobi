@@ -7,17 +7,5 @@
     <Setting Name="Keyboard_Focus_Nav" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F8</Value>
     </Setting>
-    <Setting Name="Keyboard_Nav_TOCFindNext" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F3</Value>
-    </Setting>
-    <Setting Name="Keyboard_Nav_TOCFindPrev" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT ] F3</Value>
-    </Setting>
-    <Setting Name="Keyboard_Nav_PageFindNext" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] F3</Value>
-    </Setting>
-    <Setting Name="Keyboard_Nav_PageFindPrev" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] F3</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

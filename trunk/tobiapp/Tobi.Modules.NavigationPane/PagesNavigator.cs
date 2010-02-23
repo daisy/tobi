@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Media;
 using System.Windows.Documents;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using Tobi.Common;
 using urakawa;
@@ -58,7 +55,8 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                MessageBox.Show(UserInterfaceStrings.PageFindNext_FAILURE);
+                //MessageBox.Show(UserInterfaceStrings.PageFindNext_FAILURE);
+                SystemSounds.Asterisk.Play();
             }
         }
         public void FindPrevious()
@@ -70,7 +68,8 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                MessageBox.Show(UserInterfaceStrings.PageFindPrev_FAILURE);
+                //MessageBox.Show(UserInterfaceStrings.PageFindPrev_FAILURE);
+                SystemSounds.Asterisk.Play();
             }
 
         }

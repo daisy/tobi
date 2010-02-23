@@ -94,11 +94,9 @@
     <Compile Include="HeadingNavigationPlugin.cs" />
     <Compile Include="HeadingPaneViewModel.cs" />
     <Compile Include="HeadingsNavigator.cs" />
-    <Compile Include="IHeadingPaneView.cs" />
     <Compile Include="InputBox.xaml.cs">
       <DependentUpon>InputBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IPagePaneView.cs" />
     <Compile Include="NavigationPane.xaml.cs">
       <DependentUpon>NavigationPane.xaml</DependentUpon>
     </Compile>

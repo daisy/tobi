@@ -36,7 +36,17 @@
              HorizontalAlignment="Right"
              >
     <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
-    
+
+
+    <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" >
+      <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+      <UI:WatermarkTextBox  x:Name="SearchBox"
+                                     TextChanged="OnSearchTextChanged"
+                                     Watermark="search keywords"
+                            VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"/>
+    </DockPanel>
+
     <UI:ButtonRichCommand
                           RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />

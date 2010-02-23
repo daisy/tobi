@@ -395,7 +395,7 @@ namespace Tobi.Common.UI
                     }
             }
 
-            FocusHelper.Focus(this, buttonToFocus);
+            FocusHelper.Focus(buttonToFocus);
         }
 
         public enum DialogButton

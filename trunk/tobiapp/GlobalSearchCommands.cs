@@ -1,26 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
+﻿using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 
 namespace Tobi
 {
     [Export(typeof(IGlobalSearchCommands)), PartCreationPolicy(CreationPolicy.Shared)]
-    class GlobalSearchCommands : IGlobalSearchCommands, IPartImportsSatisfiedNotification  
+    public sealed class GlobalSearchCommands : IGlobalSearchCommands, IPartImportsSatisfiedNotification  
     {
         private readonly ILoggerFacade m_Logger;
         private readonly IShellView m_ShellView;
 
-        
-        public RichCompositeCommand CmdFindNext { get; private set; }
-        public RichCompositeCommand CmdFindPrevious { get; private set; }
+#pragma warning disable 649 // non-initialized fields
 
+        [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IToolBarsView m_ToolBarsView;
+
+        [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IMenuBarView m_MenuBarView;
+
+#pragma warning restore 649
+
+        
         [ImportingConstructor]
         public GlobalSearchCommands(
             ILoggerFacade logger,
@@ -29,18 +32,47 @@ namespace Tobi
         {
             m_Logger = logger;
             m_ShellView = view;
-            InitialzeCommands();
+            InitializeCommands();
+
 #if DEBUG
             m_Logger.Log("Global Search Commands Created", Category.Debug, Priority.None);
 #endif
         }
 
-        private void InitialzeCommands()
+        public RichCompositeCommand CmdFindFocus { get; private set; }
+        public RichCompositeCommand CmdFindNext { get; private set; }
+        public RichCompositeCommand CmdFindPrevious { get; private set; }
+
+        private void InitializeCommands()
         {
-            CmdFindNext = new RichCompositeCommand("Find Next", "Find The Next Item That Matches The Search Criteria.", new KeyGesture(Key.F3), null);
-            CmdFindPrevious = new RichCompositeCommand("Find Previous", "Find The Previous Item That Matches The Search Criteria.", new KeyGesture(Key.F3), null);
+            CmdFindFocus = new RichCompositeCommand("Find...", //TODO: localize
+                "Edit the search criteria.",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("format-indent-more"),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Find));
+
+            m_ShellView.RegisterRichCommand(CmdFindFocus);
+
+            CmdFindNext = new RichCompositeCommand("Find Next", //TODO: localize
+                "Find The Next Item That Matches The Search Criteria.",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("format-indent-more"),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_FindNext));
+
             m_ShellView.RegisterRichCommand(CmdFindNext);
+
+            CmdFindPrevious = new RichCompositeCommand("Find Previous", //TODO: localize
+                "Find The Previous Item That Matches The Search Criteria.",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("format-indent-less"),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_FindPrevious));
+
+            m_ShellView.RegisterRichCommand(CmdFindPrevious);
         }
+
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
 #pragma warning restore 1591
@@ -48,6 +80,38 @@ namespace Tobi
             //#if DEBUG
             //            Debugger.Break();
             //#endif
+
+            // If the toolbar has been resolved, we can push our commands into it.
+            tryToolbarCommands();
+
+            // If the menubar has been resolved, we can push our commands into it.
+            tryMenubarCommands();
+        }
+
+        private bool m_ToolBarCommandsDone;
+        private void tryToolbarCommands()
+        {
+            if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
+            {
+                //int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { CmdFindPrevious, CmdFindNext }, PreferredPosition.Last);
+
+                m_ToolBarCommandsDone = true;
+
+                m_Logger.Log(@"Search commands pushed to toolbar", Category.Debug, Priority.Medium);
+            }
+        }
+
+        private bool m_MenuBarCommandsDone;
+        private void tryMenubarCommands()
+        {
+            if (!m_MenuBarCommandsDone && m_MenuBarView != null)
+            {
+                int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_Find, new[] { CmdFindFocus, CmdFindPrevious, CmdFindNext }, PreferredPosition.Any, true);
+
+                m_MenuBarCommandsDone = true;
+
+                m_Logger.Log(@"Search commands pushed to menubar", Category.Debug, Priority.Medium);
+            }
         }
     }
 }

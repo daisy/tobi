@@ -1,19 +1,19 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using Microsoft.Practices.Composite;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(HeadingPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class HeadingPaneViewModel : ViewModelBase //, IPartImportsSatisfiedNotification
+    public class HeadingPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
         private HeadingsNavigator _headingsNavigator;
 
@@ -80,25 +80,38 @@ namespace Tobi.Plugin.NavigationPane
                 () => _headingsNavigator != null,
                 null, null);
 
+            CommandFindFocus = new RichDelegateCommand(
+                @"DUMMY TXT",
+                @"DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
+                null,
+                () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
+                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
+                );
+
             CommandFindNext = new RichDelegateCommand(
-                UserInterfaceStrings.TreeFindNext,
-                UserInterfaceStrings.TreeFindNext_,
-                null, // KeyGesture obtained from settings (see last parameters below)
+                @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext,
+                @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
+                null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => _headingsNavigator.FindNext(),
                 () => _headingsNavigator != null,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext));
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
+                );
 
             CommandFindPrev = new RichDelegateCommand(
-                UserInterfaceStrings.TreeFindPrev,
-                UserInterfaceStrings.TreeFindPrev_,
-                null, // KeyGesture obtained from settings (see last parameters below)
+                @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev,
+                @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
+                null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => _headingsNavigator.FindPrevious(),
                 () => _headingsNavigator != null,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev));
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)
+                );
             /*
                         CommandCollapse = new RichDelegateCommand(
                             UserInterfaceStrings.TreeCollapse,
@@ -120,9 +133,11 @@ namespace Tobi.Plugin.NavigationPane
             //            shellView.RegisterRichCommand(CommandExpand);
             m_ShellView.RegisterRichCommand(CommandCollapseAll);
             //            shellView.RegisterRichCommand(CommandCollapse);
+            
             //shellView.RegisterRichCommand(CommandEditText);
-            m_ShellView.RegisterRichCommand(CommandFindNext);
-            m_ShellView.RegisterRichCommand(CommandFindPrev);
+
+            //m_ShellView.RegisterRichCommand(CommandFindNext);
+            //m_ShellView.RegisterRichCommand(CommandFindPrev);
         }
 
         public static RichDelegateCommand CommandExpandAll { get; private set; }
@@ -131,46 +146,58 @@ namespace Tobi.Plugin.NavigationPane
         //        public RichDelegateCommand CommandCollapse { get; private set; }
         //public RichDelegateCommand CommandEditText { get; private set; }
 
+        public RichDelegateCommand CommandFindFocus { get; private set; }
         public RichDelegateCommand CommandFindNext { get; private set; }
         public RichDelegateCommand CommandFindPrev { get; private set; }
 
         ~HeadingPaneViewModel()
         {
-            //if (m_GlobalSearchCommand != null)
-            //{
-            //    m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
-            //    m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
-            //}
+            if (m_GlobalSearchCommand != null)
+            {
+                m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
+                m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
+                m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
+            }
 #if DEBUG
             m_Logger.Log("HeadingPaneViewModel garbage collected.", Category.Debug, Priority.Medium);
 #endif
         }
 
-        //[Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
-        //private IGlobalSearchCommands m_GlobalSearchCommand;
+        [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IGlobalSearchCommands m_GlobalSearchCommand;
 
+        private void trySearchCommands()
+        {
+            if (m_GlobalSearchCommand == null) { return; }
 
-        //private void trySearchCommands()
-        //{
-        //    if (m_GlobalSearchCommand == null) { return; }
-        //    m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
-        //    m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
-        //}
+            m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+            m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
+            m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
+        }
 
-        protected IHeadingPaneView View { get; private set; }
-        public void SetView(IHeadingPaneView view)
+        protected HeadingPanelView View { get; private set; }
+        public void SetView(HeadingPanelView view)
         {
             View = view;
-            IActiveAware activeAware = (IActiveAware)View;
-            if (activeAware != null) { activeAware.IsActiveChanged += ActiveAwareIsActiveChanged; }
+
+            var focusAware = new FocusActiveAwareAdapter(View);
+            focusAware.IsActiveChanged += (sender, e) =>
+            {
+                // ALWAYS ACTIVE ! CommandFindFocus.IsActive = focusAware.IsActive;
+                CommandFindNext.IsActive = focusAware.IsActive;
+                CommandFindPrev.IsActive = focusAware.IsActive;
+            };
+
+            //IActiveAware activeAware = View as IActiveAware;
+            //if (activeAware != null) { activeAware.IsActiveChanged += ActiveAwareIsActiveChanged; }
         }
-        private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
-        {
-            IActiveAware activeAware = (sender as IActiveAware);
-            if (activeAware == null) { return; }
-            CommandFindNext.IsActive = activeAware.IsActive;
-            CommandFindPrev.IsActive = activeAware.IsActive;
-        }
+        //private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
+        //{
+        //    IActiveAware activeAware = (sender as IActiveAware);
+        //    if (activeAware == null) { return; }
+        //    CommandFindNext.IsActive = activeAware.IsActive;
+        //    CommandFindPrev.IsActive = activeAware.IsActive;
+        //}
 
         public HeadingsNavigator HeadingsNavigator
         {
@@ -195,10 +222,10 @@ namespace Tobi.Plugin.NavigationPane
         {
             View.SelectTreeNode(node);
         }
-        //public void OnImportsSatisfied()
-        //{
-        //    trySearchCommands();
-        //}
+        public void OnImportsSatisfied()
+        {
+            trySearchCommands();
+        }
         #endregion
     }
 }

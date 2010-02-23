@@ -30,7 +30,7 @@ namespace Tobi.Plugin.NavigationPane
             IUrakawaSession session,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
-            [Import(typeof(IHeadingPaneView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            [Import(typeof(HeadingPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             HeadingPanelView pane) //HeadingPaneViewModel
         {
             m_Logger = logger;
