@@ -40,7 +40,13 @@ namespace Tobi.Plugin.Urakawa
                     Uri recentFileUri;
                     Uri.TryCreate(recentFileUriString, UriKind.Absolute, out recentFileUri);
 
-                    if (recentFileUri != null && !m_RecentFiles.Contains(recentFileUri))
+                    if (recentFileUri == null
+                        //||    //TODO: should we filter the URI scheme at this stage?
+                        //recentFileUri.Scheme.ToLower() != "file"
+                        //&& recentFileUri.Scheme.ToLower() != "http"
+                        ) continue;
+
+                    if (!m_RecentFiles.Contains(recentFileUri))
                         m_RecentFiles.Add(recentFileUri);
                 }
             }
