@@ -547,6 +547,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio waveform editor..
+        /// </summary>
+        public static string AudioWaveformEditor {
+            get {
+                return ResourceManager.GetString("AudioWaveformEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Playback:.
         /// </summary>
         public static string ComboLabel_Playback {
@@ -597,6 +606,15 @@ namespace Tobi.Plugin.AudioPane {
         public static string SelectAll_ {
             get {
                 return ResourceManager.GetString("SelectAll_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The audio waveform editor and display..
+        /// </summary>
+        public static string TheAudioWaveformEditorAndDisplay {
+            get {
+                return ResourceManager.GetString("TheAudioWaveformEditorAndDisplay", resourceCulture);
             }
         }
     }

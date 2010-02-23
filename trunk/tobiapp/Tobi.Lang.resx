@@ -219,4 +219,13 @@
   <data name="Menu_Find" xml:space="preserve">
     <value>_Find</value>
   </data>
+  <data name="NoDocument" xml:space="preserve">
+    <value>no document</value>
+  </data>
+  <data name="WindowsTitleKey" xml:space="preserve">
+    <value>Tobi {{{0}}} - Please wait...</value>
+  </data>
+  <data name="WindowsTitleKey2" xml:space="preserve">
+    <value>Tobi {{{0}}} {1}[{2}]</value>
+  </data>
 </root>

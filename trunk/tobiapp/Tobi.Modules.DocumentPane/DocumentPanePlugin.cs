@@ -93,12 +93,12 @@ namespace Tobi.Plugin.DocumentPane
 
         public override string Name
         {
-            get { return @"Document pane."; }
+            get { return @"Document pane."; }      // TODO: LOCALIZE DocumentPane
         }
 
         public override string Description
         {
-            get { return @"The publication document viewer"; }
+            get { return @"The publication document viewer"; }    // TODO: LOCALIZE ThePublicationDocumentViewer
         }
     }
 }

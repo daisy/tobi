@@ -61,6 +61,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Document pane..
+        /// </summary>
+        public static string DocumentPane {
+            get {
+                return ResourceManager.GetString("DocumentPane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Next phrase.
         /// </summary>
         public static string Event_SwitchNext {
@@ -120,6 +129,15 @@ namespace Tobi.Plugin.DocumentPane {
         public static string No_Document {
             get {
                 return ResourceManager.GetString("No_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The publication document viewer.
+        /// </summary>
+        public static string ThePublicationDocumentViewer {
+            get {
+                return ResourceManager.GetString("ThePublicationDocumentViewer", resourceCulture);
             }
         }
     }

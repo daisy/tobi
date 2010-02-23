@@ -59,5 +59,41 @@ namespace Tobi.Plugin.Validator {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A framework to validate the data model of an authored Urakawa SDK project..
+        /// </summary>
+        public static string AFrameworkToValidateTheDataModelOfAnAuthoredUrakawaSDKProject {
+            get {
+                return ResourceManager.GetString("AFrameworkToValidateTheDataModelOfAnAuthoredUrakawaSDKProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aggregator Validator.
+        /// </summary>
+        public static string AggregatorValidator {
+            get {
+                return ResourceManager.GetString("AggregatorValidator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publication Validator..
+        /// </summary>
+        public static string PublicationValidator {
+            get {
+                return ResourceManager.GetString("PublicationValidator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the main content validator.
+        /// </summary>
+        public static string ThisIsTheMainContentValidator {
+            get {
+                return ResourceManager.GetString("ThisIsTheMainContentValidator", resourceCulture);
+            }
+        }
     }
 }

@@ -96,12 +96,12 @@ namespace Tobi.Plugin.Validator
 
         public override string Name
         {
-            get { return @"Publication Validator."; }
+            get { return @"Publication Validator."; }    // TODO LOCALIZE PublicationValidator
         }
 
         public override string Description
         {
-            get { return @"A framework to validate the data model of an authored Urakawa SDK project."; }
+            get { return @"A framework to validate the data model of an authored Urakawa SDK project."; }    // TODO LOCALIZE AFrameworkToValidateTheDataModelOfAnAuthoredUrakawaSDKProject
         }
 
         private bool m_DialogIsShowing;

@@ -61,6 +61,15 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Metadata editor panel..
+        /// </summary>
+        public static string MetadataEditorPanel {
+            get {
+                return ResourceManager.GetString("MetadataEditorPanel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Edit metadata.
         /// </summary>
         public static string ShowMetadata {
@@ -75,6 +84,15 @@ namespace Tobi.Plugin.MetadataPane {
         public static string ShowMetadata_ {
             get {
                 return ResourceManager.GetString("ShowMetadata_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The publication metadata editor.
+        /// </summary>
+        public static string ThePublicationMetadataEditor {
+            get {
+                return ResourceManager.GetString("ThePublicationMetadataEditor", resourceCulture);
             }
         }
     }

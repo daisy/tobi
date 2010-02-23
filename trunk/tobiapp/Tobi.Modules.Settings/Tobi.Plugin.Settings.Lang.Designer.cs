@@ -59,5 +59,23 @@ namespace Tobi.Plugin.Settings {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A manager and user-interface editor for application preferences..
+        /// </summary>
+        public static string AManagerAndUser_interfaceEditorForApplicationPreferences {
+            get {
+                return ResourceManager.GetString("AManagerAndUser-interfaceEditorForApplicationPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application preferences..
+        /// </summary>
+        public static string ApplicationPreferences {
+            get {
+                return ResourceManager.GetString("ApplicationPreferences", resourceCulture);
+            }
+        }
     }
 }
