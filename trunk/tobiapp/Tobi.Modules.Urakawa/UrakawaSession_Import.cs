@@ -28,6 +28,8 @@ namespace Tobi.Plugin.Urakawa
                 {
                     DocumentFilePath = converter.XukPath;
                     DocumentProject = converter.Project;
+
+                    AddRecentFile(new Uri(DocumentFilePath, UriKind.Absolute));
                 });
         }
     }
