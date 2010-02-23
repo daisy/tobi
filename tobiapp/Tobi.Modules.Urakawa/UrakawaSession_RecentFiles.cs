@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using urakawa.ExternalFiles;
@@ -10,9 +11,9 @@ namespace Tobi.Plugin.Urakawa
         private const string RECENT_FILES_FILENAME = @"Tobi_RecentFiles.txt";
         private static readonly string m_RecentFiles_FilePath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, RECENT_FILES_FILENAME);
 
-        private static readonly List<string> m_RecentFiles = new List<string>();
+        private readonly List<Uri> m_RecentFiles = new List<Uri>();
 
-        public IEnumerable<string> RecentFiles
+        public IEnumerable<Uri> RecentFiles
         {
             get
             {
@@ -33,11 +34,14 @@ namespace Tobi.Plugin.Urakawa
             StreamReader streamReader = new StreamReader(m_RecentFiles_FilePath, Encoding.UTF8);
             try
             {
-                string recentFileURL;
-                while ((recentFileURL = streamReader.ReadLine()) != null)
+                string recentFileUriString;
+                while ((recentFileUriString = streamReader.ReadLine()) != null)
                 {
-                    if (!m_RecentFiles.Contains(recentFileURL))
-                        m_RecentFiles.Add(recentFileURL);
+                    Uri recentFileUri;
+                    Uri.TryCreate(recentFileUriString, UriKind.Absolute, out recentFileUri);
+
+                    if (recentFileUri != null && !m_RecentFiles.Contains(recentFileUri))
+                        m_RecentFiles.Add(recentFileUri);
                 }
             }
             finally
@@ -47,11 +51,11 @@ namespace Tobi.Plugin.Urakawa
         }
 
 
-        public void AddRecentFile(string fileURL)
+        public void AddRecentFile(Uri fileURI)
         {
-            if (!m_RecentFiles.Contains(fileURL))
+            if (!m_RecentFiles.Contains(fileURI))
             {
-                m_RecentFiles.Add(fileURL);
+                m_RecentFiles.Add(fileURI);
                 SaveRecentFiles();
             }
         }
@@ -62,9 +66,9 @@ namespace Tobi.Plugin.Urakawa
             StreamWriter streamWriter = new StreamWriter(m_RecentFiles_FilePath, false, Encoding.UTF8);
             try
             {
-                foreach (string recentFileUrl in m_RecentFiles)
+                foreach (Uri recentFileUri in m_RecentFiles)
                 {
-                    streamWriter.WriteLine(recentFileUrl);
+                    streamWriter.WriteLine(recentFileUri.ToString());
                 }
             }
             finally
