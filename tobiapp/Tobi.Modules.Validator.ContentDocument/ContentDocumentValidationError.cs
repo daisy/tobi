@@ -38,32 +38,20 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     if (Target.GetXmlElementQName() != null)
                         targetNodeName = Target.GetXmlElementQName().LocalName;
                 }
-                if (BeginningOfError != null)
-                {
-                    problemChildText = BeginningOfError.GetTextMediaFlattened();
-                    if (BeginningOfError.GetXmlElementQName() != null)
-                        problemChildNodeName = BeginningOfError.GetXmlElementQName().LocalName;    
-                }
+                if (BeginningOfError != null && BeginningOfError.GetXmlElementQName() != null)
+                    problemChildNodeName = BeginningOfError.GetXmlElementQName().LocalName;
 
                 if (ErrorType == ContentDocumentErrorType.InvalidChildElements)
-                {   
-                    string msgPart1 = "";
+                {
                     string msgPart2 = "";
-                    if (string.IsNullOrEmpty(targetText))
-                        msgPart1 = string.Format("Element {0} contains an invalid sequence of child elements", targetNodeName);
-                    else
-                        msgPart1 = string.Format("Element {0} (\"{1}\"} contains an invalid sequence of child elements", targetNodeName, targetText);
-                    
+                    string msgPart1 = string.Format("Element {0} contains an invalid sequence of child elements", targetNodeName);
+
                     if (BeginningOfError != null)
-                    {
-                        if (string.IsNullOrEmpty(problemChildText))
-                            msgPart2 = string.Format(", starting with {0}.", problemChildNodeName);
-                        else
-                            msgPart2 = string.Format(", starting with {0} (\"{1}\").", problemChildNodeName, problemChildText);
-                    }
-
+                        msgPart2 = string.Format(", starting with {0}.", problemChildNodeName);
+                    else
+                        msgPart2 = ".";
                     return msgPart1 + msgPart2;
-
+                    
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {

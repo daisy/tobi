@@ -3,8 +3,59 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ContentDocument="clr-namespace:Tobi.Plugin.Validator.ContentDocument">
 
-  <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
-    <TextBlock Background="Purple" Text="{Binding Message}"/>
+  <ContentDocument:ContentDocumentErrorTemplateSelector x:Key="templateSelector"/>
+  
+  <DataTemplate x:Key="MissingDtdTemplate">
+    <StackPanel Background="Red">
+      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
+                    Path=DataContext.Message}"/>
+    </StackPanel>
   </DataTemplate>
+
+  <DataTemplate x:Key="UndefinedElementTemplate">
+    <StackPanel Background="Orange">
+      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
+                    Path=DataContext.Message}"/>
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="InvalidChildElementsTemplate">
+    <StackPanel Background="Yellow">
+      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
+                    Path=DataContext.Message}"/>
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="GeneralErrorTemplate">
+    <StackPanel Background="Brown">
+      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
+                    Path=DataContext.Message}"/>
+    </StackPanel>
+  </DataTemplate>
+  
+  <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
+    <StackPanel>
+      <ContentControl ContentTemplateSelector="{StaticResource templateSelector}"/>
+    </StackPanel>
+    <!-- 
+    this stack panel is required to give the content control a datasource
+    <StackPanel>
+      <ContentControl 
+                    Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}},
+                    Path=DataContext}"
+                    ContentTemplateSelector="{StaticResource templateSelector}">
+        
+        Why does the above template selector get a null object as input, whereas the ContentTemplate 
+        below is able to display the message?  both use the same value for @Content (see above)?
+        
+        <ContentControl.ContentTemplate>
+        <DataTemplate>
+          <TextBlock Background="Blue" Text="{Binding Message}"/>
+        </DataTemplate>
+      </ContentControl.ContentTemplate>
+      </ContentControl>
+    </StackPanel>
+    -->
+ </DataTemplate>
 
 </ResourceDictionary>
