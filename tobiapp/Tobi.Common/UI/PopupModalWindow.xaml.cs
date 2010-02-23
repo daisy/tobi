@@ -52,13 +52,13 @@ namespace Tobi.Common.UI
         public RichDelegateCommand CommandDetailsExpand { get; private set; }
         public RichDelegateCommand CommandDetailsCollapse { get; private set; }
 
-        public IInputBindingManager InputBindingManager
-        {
-            get
-            {
-                return this;
-            }
-        }
+        //public IInputBindingManager InputBindingManager
+        //{
+        //    get
+        //    {
+        //        return this;
+        //    }
+        //}
 
         private void initCommands()
         {
