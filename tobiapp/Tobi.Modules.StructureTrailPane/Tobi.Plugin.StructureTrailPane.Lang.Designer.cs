@@ -70,6 +70,15 @@ namespace Tobi.Plugin.StructureTrailPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Document pane..
+        /// </summary>
+        public static string DocumentPane {
+            get {
+                return ResourceManager.GetString("DocumentPane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No document..
         /// </summary>
         public static string No_Document {
@@ -111,6 +120,15 @@ namespace Tobi.Plugin.StructureTrailPane {
         public static string StructureUp_ {
             get {
                 return ResourceManager.GetString("StructureUp_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The publication document viewer.
+        /// </summary>
+        public static string ThePublicationDocumentViewer {
+            get {
+                return ResourceManager.GetString("ThePublicationDocumentViewer", resourceCulture);
             }
         }
     }

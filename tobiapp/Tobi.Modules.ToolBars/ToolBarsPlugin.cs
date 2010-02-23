@@ -74,12 +74,12 @@ namespace Tobi.Plugin.ToolBars
 
         public override string Name
         {
-            get { return @"Application toolbar."; }
+            get { return @"Application toolbar."; }     // TODO LOCALIZE ApplicationToolbar
         }
 
         public override string Description
         {
-            get { return @"The visual host for command buttons."; }
+            get { return @"The visual host for command buttons."; }   // TODO LOCALIZE TheVisualHostForCommandButtons
         }
     }
 }

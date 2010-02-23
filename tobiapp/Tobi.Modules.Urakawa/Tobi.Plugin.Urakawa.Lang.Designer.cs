@@ -61,6 +61,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A context for opening and saving the data model of a Urakawa SDK project..
+        /// </summary>
+        public static string AContextForOpeningAndSavingTheDataModelOfAUrakawaSDKProject {
+            get {
+                return ResourceManager.GetString("AContextForOpeningAndSavingTheDataModelOfAUrakawaSDKProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancelling....
         /// </summary>
         public static string CancellingTask {
@@ -273,6 +282,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string UnsavedChangesDetails {
             get {
                 return ResourceManager.GetString("UnsavedChangesDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Urakawa SDK session manager..
+        /// </summary>
+        public static string UrakawaSDKSessionManager {
+            get {
+                return ResourceManager.GetString("UrakawaSDKSessionManager", resourceCulture);
             }
         }
     }

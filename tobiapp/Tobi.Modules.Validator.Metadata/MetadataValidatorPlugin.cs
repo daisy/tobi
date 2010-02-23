@@ -39,12 +39,12 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Name
         {
-            get { return @"Metadata Validator."; }
+            get { return @"Metadata Validator."; }    // TODO LOCALIZE MetadataValidator
         }
 
         public override string Description
         {
-            get { return @"A validator that specialized in metadata."; }
+            get { return @"A validator that specialized in metadata."; }    // TODO LOCALIZE AValidatorThatSpecializedInMetadata
         }
     }
 }

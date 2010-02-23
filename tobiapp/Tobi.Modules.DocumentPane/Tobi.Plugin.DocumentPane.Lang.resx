@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DocumentPane" xml:space="preserve">
+    <value>Document pane.</value>
+  </data>
   <data name="Event_SwitchNext" xml:space="preserve">
     <value>_Next phrase</value>
   </data>
@@ -137,5 +140,8 @@
   </data>
   <data name="No_Document" xml:space="preserve">
     <value>No document.</value>
+  </data>
+  <data name="ThePublicationDocumentViewer" xml:space="preserve">
+    <value>The publication document viewer</value>
   </data>
 </root>

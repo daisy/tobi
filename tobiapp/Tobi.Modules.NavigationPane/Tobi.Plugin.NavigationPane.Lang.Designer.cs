@@ -88,6 +88,33 @@ namespace Tobi.Plugin.NavigationPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigation pane..
+        /// </summary>
+        public static string NavigationPane {
+            get {
+                return ResourceManager.GetString("NavigationPane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation pane..
+        /// </summary>
+        public static string NavigationPane1 {
+            get {
+                return ResourceManager.GetString("NavigationPane1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation pane..
+        /// </summary>
+        public static string NavigationPane2 {
+            get {
+                return ResourceManager.GetString("NavigationPane2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find Next.
         /// </summary>
         public static string PageFindNext {
@@ -138,6 +165,33 @@ namespace Tobi.Plugin.NavigationPane {
         public static string PageFindPrev_FAILURE {
             get {
                 return ResourceManager.GetString("PageFindPrev_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Navigation panel.
+        /// </summary>
+        public static string TheNavigationPanel {
+            get {
+                return ResourceManager.GetString("TheNavigationPanel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Navigation panel.
+        /// </summary>
+        public static string TheNavigationPanel1 {
+            get {
+                return ResourceManager.GetString("TheNavigationPanel1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Navigation panel.
+        /// </summary>
+        public static string TheNavigationPanel2 {
+            get {
+                return ResourceManager.GetString("TheNavigationPanel2", resourceCulture);
             }
         }
         

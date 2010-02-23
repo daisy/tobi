@@ -104,12 +104,12 @@ namespace Tobi.Plugin.Settings
 
         public override string Name
         {
-            get { return @"Application preferences."; }
+            get { return @"Application preferences."; }    // TODO LOCALIZE ApplicationPreferences
         }
 
         public override string Description
         {
-            get { return @"A manager and user-interface editor for application preferences."; }
+            get { return @"A manager and user-interface editor for application preferences."; }    // TODO LOCALIZE AManagerAndUser-interfaceEditorForApplicationPreferences
         }
 
         private bool m_DialogIsShowing;

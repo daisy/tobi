@@ -31,12 +31,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Name
         {
-            get { return @"Content Document Validator."; }
+            get { return @"Content Document Validator."; }    // TODO LOCALIZE ContentDocumentValidator
         }
 
         public override string Description
         {
-            get { return @"A validator that uses data from a DTD to validate elements in a document tree."; }
+            get { return @"A validator that uses data from a DTD to validate elements in a document tree."; }   // TODO LOCALIZE AValidatorThatUsesDataFromADTDToValidateElementsInADocumentTree
         }
     }
 }

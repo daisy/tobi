@@ -59,5 +59,23 @@ namespace Tobi.Plugin.MenuBar {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application menubar..
+        /// </summary>
+        public static string ApplicationMenubar {
+            get {
+                return ResourceManager.GetString("ApplicationMenubar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The menu that contains application commands..
+        /// </summary>
+        public static string TheMenuThatContainsApplicationCommands {
+            get {
+                return ResourceManager.GetString("TheMenuThatContainsApplicationCommands", resourceCulture);
+            }
+        }
     }
 }

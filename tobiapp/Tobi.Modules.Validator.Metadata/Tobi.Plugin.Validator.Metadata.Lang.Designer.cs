@@ -59,5 +59,23 @@ namespace Tobi.Plugin.Validator.Metadata {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A validator that specialized in metadata..
+        /// </summary>
+        public static string AValidatorThatSpecializedInMetadata {
+            get {
+                return ResourceManager.GetString("AValidatorThatSpecializedInMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata Validator..
+        /// </summary>
+        public static string MetadataValidator {
+            get {
+                return ResourceManager.GetString("MetadataValidator", resourceCulture);
+            }
+        }
     }
 }
