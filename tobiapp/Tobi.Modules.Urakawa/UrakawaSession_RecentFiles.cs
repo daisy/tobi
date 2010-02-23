@@ -62,9 +62,9 @@ namespace Tobi.Plugin.Urakawa
             StreamWriter streamWriter = new StreamWriter(m_RecentFiles_FilePath, false, Encoding.UTF8);
             try
             {
-                for (int i = 0; i < m_RecentFiles.Count; i++)
+                foreach (string recentFileUrl in m_RecentFiles)
                 {
-                    streamWriter.WriteLine(m_RecentFiles[i]);
+                    streamWriter.WriteLine(recentFileUrl);
                 }
             }
             finally
