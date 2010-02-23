@@ -1,25 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
+using System.Configuration;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Presentation.Commands;
-using Tobi.Common.UI;
+
 namespace Tobi.Common.MVVM.Command
 {
-    public class RichCompositeCommand:RichDelegateCommand
+    public class RichCompositeCommand : RichDelegateCommand
     {
-        private CompositeCommand m_compCommand;
+        private readonly CompositeCommand m_compCommand;
 
         public RichCompositeCommand(String shortDescription, String longDescription,
                                    KeyGesture keyGesture,
-                                   VisualBrush icon)
-        : base(shortDescription, longDescription, keyGesture, icon,null, null,null, null)
+                                   VisualBrush icon,
+                                   ApplicationSettingsBase settingContainer, string settingName)
+            : base(shortDescription, longDescription, keyGesture, icon,
+                    null, null,
+                    settingContainer, settingName)
         {
-            m_compCommand = new CompositeCommand();
-            //m_compCommand.CanExecuteChanged;  
+            m_compCommand = new CompositeCommand(true);
+            m_compCommand.CanExecuteChanged += OnCompCommandCanExecuteChanged;
+        }
+
+        private void OnCompCommandCanExecuteChanged(object sender, EventArgs e)
+        {
+            RaiseCanExecuteChanged();
         }
 
         public void RegisterCommand(RichDelegateCommand command)
@@ -36,6 +42,8 @@ namespace Tobi.Common.MVVM.Command
         {
             get
             {
+                //return (IList<RichDelegateCommand>)m_compCommand.RegisteredCommands;
+
                 IList<RichDelegateCommand> ilCommands = new List<RichDelegateCommand>(m_compCommand.RegisteredCommands.Count);
                 foreach (ICommand registeredCommand in m_compCommand.RegisteredCommands) { ilCommands.Add((RichDelegateCommand)registeredCommand); }
                 return ilCommands;

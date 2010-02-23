@@ -195,7 +195,7 @@ namespace Tobi.Plugin.StructureTrailPane
             popup.Child = scroll;
             popup.IsOpen = true;
 
-            FocusHelper.FocusBeginInvoke(this, listOfNodes);
+            FocusHelper.FocusBeginInvoke(listOfNodes);
         }
 
         private void OnPopupLostFocus(object sender, RoutedEventArgs e)
@@ -388,7 +388,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
-                () => FocusHelper.FocusBeginInvoke(this, m_FocusStartElement),
+                () => FocusHelper.FocusBeginInvoke(m_FocusStartElement),
                 () => true,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Doc));

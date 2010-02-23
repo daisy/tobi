@@ -25,6 +25,42 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] F")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Find {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Find"]));
+            }
+            set {
+                this["Keyboard_Find"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_FindNext {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_FindNext"]));
+            }
+            set {
+                this["Keyboard_FindNext"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ] F3")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_FindPrevious {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_FindPrevious"]));
+            }
+            set {
+                this["Keyboard_FindPrevious"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ ALT ] F4")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_AppExit {
             get {

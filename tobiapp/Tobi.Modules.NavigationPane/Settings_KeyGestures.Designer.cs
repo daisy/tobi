@@ -34,53 +34,5 @@ namespace Tobi.Plugin.NavigationPane {
                 this["Keyboard_Focus_Nav"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_TOCFindNext {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_TOCFindNext"]));
-            }
-            set {
-                this["Keyboard_Nav_TOCFindNext"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_TOCFindPrev {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_TOCFindPrev"]));
-            }
-            set {
-                this["Keyboard_Nav_TOCFindPrev"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_PageFindNext {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_PageFindNext"]));
-            }
-            set {
-                this["Keyboard_Nav_PageFindNext"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] F3")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Nav_PageFindPrev {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Nav_PageFindPrev"]));
-            }
-            set {
-                this["Keyboard_Nav_PageFindPrev"] = value;
-            }
-        }
     }
 }

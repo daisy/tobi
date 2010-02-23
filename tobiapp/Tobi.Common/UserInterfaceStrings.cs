@@ -130,31 +130,31 @@ namespace Tobi.Common
         public const string TreeCollapse = "Co_llapse";
         public const string TreeCollapse_ = "Collapse the current item in the tree";
 
-        public const string TreeEdit = "Edit _Heading";
-        public const string TreeEdit_ = "Edit the current heading";
+        //public const string TreeEdit = "Edit _Heading";
+        //public const string TreeEdit_ = "Edit the current heading";
 
-        public const string TreeFindNext = "Find Next";
-        public const string TreeFindNext_ = "Find the next matching item in the tree";
+        //public const string TreeFindNext = "Find Next";
+        //public const string TreeFindNext_ = "Find the next matching item in the tree";
         //public static KeyGesture TreeFindNext_KEYS = new KeyGesture(Key.F3);
         public const string TreeFindNext_FAILURE = "No More Matches Found";
 
-        public const string TreeFindPrev = "Find Previous";
-        public const string TreeFindPrev_ = "Find the previous matching item in the tree";
+        //public const string TreeFindPrev = "Find Previous";
+        //public const string TreeFindPrev_ = "Find the previous matching item in the tree";
         //public static KeyGesture TreeFindPrev_KEYS = new KeyGesture(Key.F3, ModifierKeys.Shift);
         public const string TreeFindPrev_FAILURE = "No More Matches Found";
 
-        public const string PageFindNext = "Find Next";
-        public const string PageFindNext_ = "Find the next matching item in the page list";
+        //public const string PageFindNext = "Find Next";
+        //public const string PageFindNext_ = "Find the next matching item in the page list";
         //public static KeyGesture PageFindNext_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt);
         public const string PageFindNext_FAILURE = "No More Matches Found";
 
-        public const string PageFindPrev = "Find Previous";
-        public const string PageFindPrev_ = "Find the previous matching item in the page list";
+        //public const string PageFindPrev = "Find Previous";
+        //public const string PageFindPrev_ = "Find the previous matching item in the page list";
         //public static KeyGesture PageFindPrev_KEYS = new KeyGesture(Key.F3, ModifierKeys.Alt | ModifierKeys.Shift);
         public const string PageFindPrev_FAILURE = "No More Matches Found";
 
-        public const string HeadingEdit = "Edit Heading";
-        public const string HeadingEdit_ = "Please Enter The New Value For This Heading.";
+        //public const string HeadingEdit = "Edit Heading";
+        //public const string HeadingEdit_ = "Please Enter The New Value For This Heading.";
 
         public const string Menu_File = "_File";
 
@@ -194,6 +194,7 @@ namespace Tobi.Common
         public const string Menu_AudioPane = "_Audio panel"; // TODO: move this language resource in its own module (AudioModule)
 
         public const string Menu_Navigation = "Navi_gation";
+        public const string Menu_Find = "_Find";
 
         public const string Menu_Help = "_Help";
         public const string Menu_About = "_About";

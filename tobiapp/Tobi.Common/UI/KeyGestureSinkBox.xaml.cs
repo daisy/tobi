@@ -34,7 +34,7 @@ namespace Tobi.Common.UI
 
         private void OnMouseLeftButtonUp_TextBox(object sender, MouseButtonEventArgs e)
         {
-            FocusHelper.Focus(this, this);
+            FocusHelper.Focus(this);
         }
 
         private void OnPreviewKeyDown_TextBox(object sender, KeyEventArgs e)

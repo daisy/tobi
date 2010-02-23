@@ -1190,12 +1190,12 @@ namespace Tobi.Plugin.AudioPane
         
         public void BringIntoFocus()
         {
-            FocusHelper.FocusBeginInvoke(this, FocusStart);
+            FocusHelper.FocusBeginInvoke(FocusStart);
         }
         
         public void BringIntoFocusStatusBar()
         {
-            FocusHelper.FocusBeginInvoke(this, FocusStartStatusBar);
+            FocusHelper.FocusBeginInvoke(FocusStartStatusBar);
         }
     }
 }

@@ -122,7 +122,7 @@ namespace Tobi.Plugin.Settings
                 || e.OriginalSource is TextBox
                 || e.OriginalSource is ComboBoxColor)
             {
-                FocusHelper.Focus(((UIElement)sender), ((UIElement)sender));
+                FocusHelper.Focus((UIElement)sender);
 
                 // We void the effect of the ESCAPE key
                 // (which would normally close the parent dialog window: CANCEL action)
@@ -172,7 +172,7 @@ namespace Tobi.Plugin.Settings
                 || e.OriginalSource is TextBox
                 || e.OriginalSource is ComboBoxColor)
             {
-                FocusHelper.Focus(((UIElement)sender), ((UIElement)sender));
+                FocusHelper.Focus((UIElement)sender);
 
                 // We void the effect of the RETURN key
                 // (which would normally close the parent dialog window by activating the default button: CANCEL)

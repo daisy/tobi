@@ -73,7 +73,7 @@ namespace Tobi.Plugin.ToolBars
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
-                () => FocusHelper.Focus(this, FocusStart),
+                () => FocusHelper.Focus(FocusStart),
                 () => true,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Toolbar));

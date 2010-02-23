@@ -13,6 +13,7 @@ using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 
@@ -22,8 +23,47 @@ namespace Tobi.Plugin.DocumentPane
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DocumentPaneView // : INotifyPropertyChangedEx
+    public partial class DocumentPaneView : IPartImportsSatisfiedNotification // : INotifyPropertyChangedEx
     {
+
+        public void OnImportsSatisfied()
+        {
+            trySearchCommands();
+        }
+        public RichDelegateCommand CommandFindFocus { get; private set; }
+        //public RichDelegateCommand CommandFindNext { get; private set; }
+        //public RichDelegateCommand CommandFindPrev { get; private set; }
+
+        ~DocumentPaneView()
+        {
+            if (m_GlobalSearchCommand != null)
+            {
+                m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
+                //m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
+                //m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
+            }
+#if DEBUG
+            m_Logger.Log("DocumentPaneView garbage collected.", Category.Debug, Priority.Medium);
+#endif
+        }
+        [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IGlobalSearchCommands m_GlobalSearchCommand;
+
+        private void trySearchCommands()
+        {
+            if (m_GlobalSearchCommand == null) { return; }
+
+            m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+            //m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
+            //m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
+        }
+
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            //if (m_ViewModel.HeadingsNavigator == null) { return; }
+            //m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
+        }
+
         //public event PropertyChangedEventHandler PropertyChanged;
         //public void RaisePropertyChanged(PropertyChangedEventArgs e)
         //{
@@ -68,6 +108,38 @@ namespace Tobi.Plugin.DocumentPane
 
             DataContext = this;
 
+            CommandFindFocus = new RichDelegateCommand(
+                @"DUMMY TXT",
+                @"DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
+                null,
+                () => FocusHelper.Focus(this.SearchBox),
+                () => this.SearchBox.Visibility == Visibility.Visible,
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
+                );
+
+            //CommandFindNext = new RichDelegateCommand(
+            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext,
+            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
+            //    null, // KeyGesture set only for the top-level CompositeCommand
+            //    null,
+            //    () => _headingsNavigator.FindNext(),
+            //    () => _headingsNavigator != null,
+            //    null, //Settings_KeyGestures.Default,
+            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
+            //    );
+
+            //CommandFindPrev = new RichDelegateCommand(
+            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev,
+            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
+            //    null, // KeyGesture set only for the top-level CompositeCommand
+            //    null,
+            //    () => _headingsNavigator.FindPrevious(),
+            //    () => _headingsNavigator != null,
+            //    null, //Settings_KeyGestures.Default,
+            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)
+            //    );
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
                 UserInterfaceStrings.Event_SwitchPrevious,
                 UserInterfaceStrings.Event_SwitchPrevious_,
@@ -186,6 +258,16 @@ namespace Tobi.Plugin.DocumentPane
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+
+
+            var focusAware = new FocusActiveAwareAdapter(this);
+            focusAware.IsActiveChanged += (sender, e) =>
+            {
+                // ALWAYS ACTIVE ! CommandFindFocus.IsActive = focusAware.IsActive;
+
+                //CommandFindNext.IsActive = focusAware.IsActive;
+                //CommandFindPrev.IsActive = focusAware.IsActive;
+            };
         }
 
         /*

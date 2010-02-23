@@ -1,11 +1,8 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -16,8 +13,8 @@ namespace Tobi.Plugin.NavigationPane
     /// <summary>
     /// Interaction logic for PagePanelView.xaml
     /// </summary>
-    [Export(typeof(IPagePaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class PagePanelView : IPagePaneView, IActiveAware
+    [Export(typeof(PagePanelView)), PartCreationPolicy(CreationPolicy.Shared)]
+    public partial class PagePanelView // : IPagePaneView, IActiveAware
     {
         private bool _ignorePageSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
@@ -133,33 +130,34 @@ namespace Tobi.Plugin.NavigationPane
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (m_ViewModel.PagesNavigator == null) { return; }
             m_ViewModel.PagesNavigator.SearchTerm = SearchBox.Text;
         }
-        #region IActiveAware implementation
-        private bool _isActive;
-        public bool IsActive
-        {
-            get { return _isActive; }
-            set
-            {
-                if (_isActive == value) { return; }
-                _isActive = value;
-                OnIsActiveChanged(EventArgs.Empty);
-            }
-        }
+        //#region IActiveAware implementation
+        //private bool _isActive;
+        //public bool IsActive
+        //{
+        //    get { return _isActive; }
+        //    set
+        //    {
+        //        if (_isActive == value) { return; }
+        //        _isActive = value;
+        //        OnIsActiveChanged(EventArgs.Empty);
+        //    }
+        //}
 
-        event EventHandler isActiveChanged;
-        public event EventHandler IsActiveChanged
-        {
-            add { isActiveChanged += value; }
-            remove { isActiveChanged -= value; }
-        }
-        protected void OnIsActiveChanged(EventArgs e)
-        {
-            if (isActiveChanged != null) { isActiveChanged(this, e); }
-        }
+        //event EventHandler isActiveChanged;
+        //public event EventHandler IsActiveChanged
+        //{
+        //    add { isActiveChanged += value; }
+        //    remove { isActiveChanged -= value; }
+        //}
+        //protected void OnIsActiveChanged(EventArgs e)
+        //{
+        //    if (isActiveChanged != null) { isActiveChanged(this, e); }
+        //}
         
-        #endregion
+        //#endregion
         //private void OnMouseDoubleClick_List(object sender, MouseButtonEventArgs e)
         //{
         //    //grab the original element that was doubleclicked on and search from child to parent until

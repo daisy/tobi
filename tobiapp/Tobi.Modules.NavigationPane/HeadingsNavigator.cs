@@ -1,10 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using System.Media;
 using System.Threading;
-using System.Windows;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 using urakawa.navigation;
@@ -46,7 +45,8 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                MessageBox.Show(UserInterfaceStrings.TreeFindNext_FAILURE);
+                //MessageBox.Show(UserInterfaceStrings.TreeFindNext_FAILURE);
+                SystemSounds.Asterisk.Play();
             }
 
         }
@@ -59,7 +59,8 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                MessageBox.Show(UserInterfaceStrings.TreeFindPrev_FAILURE);
+                //MessageBox.Show(UserInterfaceStrings.TreeFindPrev_FAILURE);
+                SystemSounds.Asterisk.Play();
             }
 
         }
@@ -173,23 +174,23 @@ namespace Tobi.Plugin.NavigationPane
         }
         public void Collapse(HeadingTreeNodeWrapper node) { node.IsExpanded = false; }
 
-        public void EditText(HeadingTreeNodeWrapper parameter)
-        {
-            if (parameter == null) { return; }
-            string sTitle = parameter.Title;
-            if (sTitle.StartsWith("[")) { sTitle = sTitle.Substring(sTitle.IndexOf("] ") + 1); }
-            InputBox myTest = new InputBox(UserInterfaceStrings.HeadingEdit_, sTitle.Trim());
-            var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                   UserInterfaceStrings.HeadingEdit),
-                                                   myTest,
-                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                   PopupModalWindow.DialogButton.Ok,
-                                                   false, 350, 175);
-            windowPopup.ShowDialog();
-            if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok) { return; }
-            parameter.Title = myTest.tbInput.Text;
-        }
+        //public void EditText(HeadingTreeNodeWrapper parameter)
+        //{
+        //    if (parameter == null) { return; }
+        //    string sTitle = parameter.Title;
+        //    if (sTitle.StartsWith("[")) { sTitle = sTitle.Substring(sTitle.IndexOf("] ") + 1); }
+        //    InputBox myTest = new InputBox(UserInterfaceStrings.HeadingEdit_, sTitle.Trim());
+        //    var windowPopup = new PopupModalWindow(m_ShellView,
+        //                                           UserInterfaceStrings.EscapeMnemonic(
+        //                                           UserInterfaceStrings.HeadingEdit),
+        //                                           myTest,
+        //                                           PopupModalWindow.DialogButtonsSet.OkCancel,
+        //                                           PopupModalWindow.DialogButton.Ok,
+        //                                           false, 350, 175);
+        //    windowPopup.ShowDialog();
+        //    if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok) { return; }
+        //    parameter.Title = myTest.tbInput.Text;
+        //}
 
         public ObservableCollection<HeadingTreeNodeWrapper> Roots
         {

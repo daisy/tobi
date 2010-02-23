@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi", "Tobi.csproj", "{64F90229-5944-4DBB-96A0-0E09E6BF5997}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7EFFCF20-A1AA-4668-A34C-A933C22FEEBA} = {7EFFCF20-A1AA-4668-A34C-A933C22FEEBA}
@@ -290,12 +290,12 @@ Global
 		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
-		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
-		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A36AEF66-2411-4225-B68E-F2D29368A31B}.test|Any CPU.ActiveCfg = Release|Any CPU
-		{A36AEF66-2411-4225-B68E-F2D29368A31B}.test|Any CPU.Build.0 = Release|Any CPU
+		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release with Code Analysis|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release with Code Analysis|Any CPU.Build.0 = Debug|Any CPU
+		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36AEF66-2411-4225-B68E-F2D29368A31B}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{A36AEF66-2411-4225-B68E-F2D29368A31B}.test|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36AEF66-2411-4225-B68E-F2D29368A31B}.test|Any CPU.Build.0 = Debug|Any CPU
 		{24A770F8-AF0E-400F-8ABB-3FD68617103E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24A770F8-AF0E-400F-8ABB-3FD68617103E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24A770F8-AF0E-400F-8ABB-3FD68617103E}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU

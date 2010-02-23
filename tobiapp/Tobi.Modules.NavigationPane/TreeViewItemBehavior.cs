@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -54,7 +56,10 @@ namespace Tobi.Plugin.NavigationPane
 
             TreeViewItem item = e.OriginalSource as TreeViewItem;
             if (item != null)
+            {
                 item.BringIntoView();
+                FocusHelper.Focus(item);
+            }
         }
 
         #endregion // IsBroughtIntoViewWhenSelected
