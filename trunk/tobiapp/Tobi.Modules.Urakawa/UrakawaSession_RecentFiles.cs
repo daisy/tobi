@@ -22,7 +22,7 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
-        public void InitializeRecentFilesList()
+        public void InitializeRecentFiles()
         {
             FileStream recentFilesStream = null;
             StreamReader textFileReader = null;
@@ -52,17 +52,17 @@ namespace Tobi.Plugin.Urakawa
         }
 
 
-        public void AddToRecentFilesList(string fileURL)
+        public void AddRecentFile(string fileURL)
         {
             if (!m_RecentFiles.Contains(fileURL))
             {
                 m_RecentFiles.Add(fileURL);
-                SaveRecentFilesList();
+                SaveRecentFiles();
             }
         }
 
 
-        public void SaveRecentFilesList()
+        public void SaveRecentFiles()
         {
             FileStream recentFileStream = null;
             StreamWriter textFileWriter = null;
@@ -84,10 +84,10 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
-        public void Clear()
+        public void ClearRecentFiles()
         {
             m_RecentFiles.Clear();
-            SaveRecentFilesList();
+            SaveRecentFiles();
         }
     }
 }
