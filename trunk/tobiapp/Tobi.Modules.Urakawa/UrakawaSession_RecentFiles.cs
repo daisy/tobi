@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.IO.IsolatedStorage;
-using System.Linq;
-using System.Text;
-using Tobi.Common.MVVM.Command;
 using urakawa.ExternalFiles;
 
 namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
-        private const string m_RecentFilesListStorageFileName = "Tobi_RecentFiles.txt";
-        private static readonly List<string> m_recent_files_list = new List<string>();
-        private string m_recentFiles_Save_Path = null;
+        private const string RECENT_FILES_FILENAME = @"Tobi_RecentFiles.txt";
+        private static readonly string m_RecentFiles_FilePath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, RECENT_FILES_FILENAME);
 
-        public List<string> RecentFilesList
+        private static readonly List<string> m_RecentFiles = new List<string>();
+
+        public IEnumerable<string> RecentFiles
         {
             get
             {
-                //This part has been commented so InitializeRecentFilesList() should be called explicitly .
-               /* if (m_recent_files_list.Count == 0)
+                foreach (var fileUrl in m_RecentFiles)
                 {
-                    InitializeRecentFilesList();
-                } */
-                return m_recent_files_list;
+                    yield return fileUrl;
+                }
             }
         }
 
@@ -32,11 +26,10 @@ namespace Tobi.Plugin.Urakawa
         {
             FileStream recentFilesStream = null;
             StreamReader textFileReader = null;
-            m_recentFiles_Save_Path = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH,
-                                                   m_RecentFilesListStorageFileName);
-            if (File.Exists(m_recentFiles_Save_Path))
+            
+            if (File.Exists(m_RecentFiles_FilePath))
             {
-                recentFilesStream = File.Open(m_recentFiles_Save_Path, FileMode.Open, FileAccess.Read);
+                recentFilesStream = File.Open(m_RecentFiles_FilePath, FileMode.Open, FileAccess.Read);
             }
             try
             {
@@ -47,8 +40,8 @@ namespace Tobi.Plugin.Urakawa
 
                     while ((recentFileURL = textFileReader.ReadLine()) != null)
                     {
-                        if (!m_recent_files_list.Contains(recentFileURL))
-                            m_recent_files_list.Add(recentFileURL);
+                        if (!m_RecentFiles.Contains(recentFileURL))
+                            m_RecentFiles.Add(recentFileURL);
                     }
                 }
             }
@@ -61,9 +54,9 @@ namespace Tobi.Plugin.Urakawa
 
         public void AddToRecentFilesList(string fileURL)
         {
-            if (!m_recent_files_list.Contains(fileURL))
+            if (!m_RecentFiles.Contains(fileURL))
             {
-                m_recent_files_list.Add(fileURL);
+                m_RecentFiles.Add(fileURL);
                 SaveRecentFilesList();
             }
         }
@@ -75,13 +68,13 @@ namespace Tobi.Plugin.Urakawa
             StreamWriter textFileWriter = null;
             try
             {
-                recentFileStream = File.Create(m_recentFiles_Save_Path);
+                recentFileStream = File.Create(m_RecentFiles_FilePath);
 
                 textFileWriter = new StreamWriter(recentFileStream);
 
-                for (int i = 0; i < m_recent_files_list.Count; i++)
+                for (int i = 0; i < m_RecentFiles.Count; i++)
                 {
-                    textFileWriter.WriteLine(m_recent_files_list[i]);
+                    textFileWriter.WriteLine(m_RecentFiles[i]);
                 }
             }
             finally
@@ -93,7 +86,7 @@ namespace Tobi.Plugin.Urakawa
 
         public void Clear()
         {
-            m_recent_files_list.Clear();
+            m_RecentFiles.Clear();
             SaveRecentFilesList();
         }
     }
