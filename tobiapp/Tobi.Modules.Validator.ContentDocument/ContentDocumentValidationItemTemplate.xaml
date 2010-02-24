@@ -27,35 +27,53 @@
   </DataTemplate>
 
   <DataTemplate x:Key="GeneralErrorTemplate">
-    <StackPanel Background="Brown">
+    <StackPanel Background="White">
       <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
                     Path=DataContext.Message}"/>
     </StackPanel>
   </DataTemplate>
   
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
-    <StackPanel>
-      <ContentControl ContentTemplateSelector="{StaticResource templateSelector}"/>
-    </StackPanel>
-    <!-- 
-    this stack panel is required to give the content control a datasource
-    <StackPanel>
-      <ContentControl 
-                    Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}},
+      <!-- ContentControl Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}},
                     Path=DataContext}"
-                    ContentTemplateSelector="{StaticResource templateSelector}">
-        
-        Why does the above template selector get a null object as input, whereas the ContentTemplate 
-        below is able to display the message?  both use the same value for @Content (see above)?
-        
-        <ContentControl.ContentTemplate>
-        <DataTemplate>
-          <TextBlock Background="Blue" Text="{Binding Message}"/>
-        </DataTemplate>
-      </ContentControl.ContentTemplate>
-      </ContentControl>
+                      ContentTemplateSelector="{StaticResource templateSelector}"/ -->
+
+    <StackPanel>
+      <ContentPresenter x:Name="Presenter" 
+                        ContentTemplate="{StaticResource GeneralErrorTemplate}" Content="{TemplateBinding Content}" />
     </StackPanel>
-    -->
+      <DataTemplate.Triggers>
+        <DataTrigger Binding="{Binding ErrorType}">
+        	<DataTrigger.Value>
+            <ContentDocument:ContentDocumentErrorType>InvalidChildElements</ContentDocument:ContentDocumentErrorType>
+          </DataTrigger.Value>
+        	<Setter TargetName="Presenter"
+              Property="ContentTemplate"
+              Value="{StaticResource InvalidChildElementsTemplate}" />
+        </DataTrigger>
+
+        <DataTrigger Binding="{Binding ErrorType}">
+          <DataTrigger.Value>
+            <ContentDocument:ContentDocumentErrorType>UndefinedElement</ContentDocument:ContentDocumentErrorType>
+          </DataTrigger.Value>
+          <Setter TargetName="Presenter"
+              Property="ContentTemplate"
+              Value="{StaticResource UndefinedElementTemplate}" />
+        </DataTrigger>
+
+        <DataTrigger Binding="{Binding ErrorType}">
+          <DataTrigger.Value>
+            <ContentDocument:ContentDocumentErrorType>MissingDtd</ContentDocument:ContentDocumentErrorType>
+          </DataTrigger.Value>
+          <Setter TargetName="Presenter"
+              Property="ContentTemplate"
+              Value="{StaticResource MissingDtdTemplate}" />
+        </DataTrigger>
+        
+      </DataTemplate.Triggers>
+
+
+    
  </DataTemplate>
 
 </ResourceDictionary>
