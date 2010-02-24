@@ -169,7 +169,9 @@
     <Compile Include="Shell_Commands.cs" />
     <Compile Include="Shell_Magnification.cs" />
     <Compile Include="Shell_SplitterDrag.cs" />
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

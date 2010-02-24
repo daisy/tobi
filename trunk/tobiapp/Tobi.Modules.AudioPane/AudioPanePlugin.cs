@@ -97,9 +97,9 @@ namespace Tobi.Plugin.AudioPane
                 new[]
                  {
                      m_AudioPaneViewModel.CommandAudioSettings,
-//#if DEBUG
+#if DEBUG
                      m_AudioPaneViewModel.CommandShowOptionsDialog
-//#endif //DEBUG
+#endif //DEBUG
                  });
 
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
