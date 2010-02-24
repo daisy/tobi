@@ -77,5 +77,59 @@ namespace Tobi.Plugin.Validator.ContentDocument {
                 return ResourceManager.GetString("ContentDocumentValidator", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content Document Validator.
+        /// </summary>
+        public static string ContentDocumentValidator_Key {
+            get {
+                return ResourceManager.GetString("ContentDocumentValidator_Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Element {0} contains an invalid sequence of child elements.
+        /// </summary>
+        public static string InvalidSequence {
+            get {
+                return ResourceManager.GetString("InvalidSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No DTD found for {0}.
+        /// </summary>
+        public static string NoDTDFound {
+            get {
+                return ResourceManager.GetString("NoDTDFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No element definition found for {0}.
+        /// </summary>
+        public static string NoElementDefinitionFound {
+            get {
+                return ResourceManager.GetString("NoElementDefinitionFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to , starting with {0}..
+        /// </summary>
+        public static string StartingWith0 {
+            get {
+                return ResourceManager.GetString("StartingWith0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unspecified error.
+        /// </summary>
+        public static string UnspecifiedError {
+            get {
+                return ResourceManager.GetString("UnspecifiedError", resourceCulture);
+            }
+        }
     }
 }

@@ -123,4 +123,10 @@
   <data name="MetadataValidator" xml:space="preserve">
     <value>Metadata Validator.</value>
   </data>
+  <data name="MetadataValidator_Key" xml:space="preserve">
+    <value>MetadataValidator</value>
+  </data>
+  <data name="ValidatePublicationMetadata" xml:space="preserve">
+    <value>Validate publication metadata</value>
+  </data>
 </root>
