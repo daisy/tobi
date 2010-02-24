@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using urakawa.ExternalFiles;
@@ -11,21 +11,28 @@ namespace Tobi.Plugin.Urakawa
         private const string RECENT_FILES_FILENAME = @"Tobi_RecentFiles.txt";
         private static readonly string m_RecentFiles_FilePath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, RECENT_FILES_FILENAME);
 
-        private readonly List<Uri> m_RecentFiles = new List<Uri>();
-
-        public IEnumerable<Uri> RecentFiles
+        public ObservableCollection<Uri> RecentFiles
         {
-            get
-            {
-                foreach (var fileUrl in m_RecentFiles)
-                {
-                    yield return fileUrl;
-                }
-            }
+            get;
+            private set;
         }
+
+        //private readonly List<Uri> m_RecentFiles = new List<Uri>();
+        //public IEnumerable<Uri> RecentFiles
+        //{
+        //    get
+        //    {
+        //        foreach (var fileUrl in m_RecentFiles)
+        //        {
+        //            yield return fileUrl;
+        //        }
+        //    }
+        //}
 
         private void InitializeRecentFiles()
         {
+            RecentFiles = new ObservableCollection<Uri>();
+
             if (!File.Exists(m_RecentFiles_FilePath))
             {
                 return;
@@ -46,8 +53,8 @@ namespace Tobi.Plugin.Urakawa
                         //&& recentFileUri.Scheme.ToLower() != "http"
                         ) continue;
 
-                    if (!m_RecentFiles.Contains(recentFileUri))
-                        m_RecentFiles.Add(recentFileUri);
+                    if (!RecentFiles.Contains(recentFileUri))
+                        RecentFiles.Add(recentFileUri);
                 }
             }
             finally
@@ -59,9 +66,9 @@ namespace Tobi.Plugin.Urakawa
 
         public void AddRecentFile(Uri fileURI)
         {
-            if (!m_RecentFiles.Contains(fileURI))
+            if (!RecentFiles.Contains(fileURI))
             {
-                m_RecentFiles.Add(fileURI);
+                RecentFiles.Add(fileURI);
                 SaveRecentFiles();
             }
         }
@@ -72,7 +79,7 @@ namespace Tobi.Plugin.Urakawa
             StreamWriter streamWriter = new StreamWriter(m_RecentFiles_FilePath, false, Encoding.UTF8);
             try
             {
-                foreach (Uri recentFileUri in m_RecentFiles)
+                foreach (Uri recentFileUri in RecentFiles)
                 {
                     streamWriter.WriteLine(recentFileUri.ToString());
                 }
@@ -85,7 +92,7 @@ namespace Tobi.Plugin.Urakawa
 
         public void ClearRecentFiles()
         {
-            m_RecentFiles.Clear();
+            RecentFiles.Clear();
             SaveRecentFiles();
         }
     }

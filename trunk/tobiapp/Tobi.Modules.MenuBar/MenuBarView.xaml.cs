@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -54,7 +57,9 @@ namespace Tobi.Plugin.MenuBar
         }
 
 
-        public int AddMenuBarGroup(string topLevelMenuItemId, string subMenuItemId, object[] commands, PreferredPosition position, bool addSeparator)
+        public int AddMenuBarGroup(string topLevelMenuItemId, PreferredPosition positionInTopLevel, bool addSeparatorTopLevel,
+                                    string subMenuItemId, PreferredPosition positionInSubLevel, bool addSeparatorSubLevel,
+                                    object[] commands)
         {
             m_Logger.Log(@"AddMenuBarGroup", Category.Debug, Priority.Medium);
 
@@ -64,7 +69,6 @@ namespace Tobi.Plugin.MenuBar
                 Debugger.Break();
             }
 #endif
-            int uid = getNewUid();
 
             IRegion targetRegion;
             try
@@ -84,9 +88,10 @@ namespace Tobi.Plugin.MenuBar
                 targetRegion = m_RegionManager.Regions[topLevelMenuItemId];
             }
 
+            int uid = generateNewUid();
             int count = 0;
 
-            if (addSeparator && targetRegion.Views.Count() > 0)
+            if (addSeparatorTopLevel && targetRegion.Views.Count() > 0)
             {
                 var sep = new Separator();
 
@@ -94,7 +99,7 @@ namespace Tobi.Plugin.MenuBar
                                    + uid + @"_" + count++;
 
                 m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = sep, m_viewPreferredPosition = position });
+                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = sep, m_viewPreferredPosition = positionInTopLevel });
                 //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => sep);
                 //targetRegion.Add(sep, viewname);
                 //targetRegion.Activate(sep);
@@ -108,6 +113,12 @@ namespace Tobi.Plugin.MenuBar
                 {
                     IRegion targetRegionTry = m_RegionManager.Regions[subRegionName];
                     targetRegion = targetRegionTry;
+
+                    //var concreteRegion = targetRegion as PreferredPositionRegion;
+                    //if (concreteRegion != null)
+                    //{
+                    //    concreteRegion.
+                    //}
                 }
                 catch
                 {
@@ -120,13 +131,30 @@ namespace Tobi.Plugin.MenuBar
                     string viewname = @"SUB_" + uid + @"_" + count++;
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = position });
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = positionInTopLevel });
                     //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => menuRoot);
                     //targetRegion.Add(menuRoot); //, viewname);
                     //targetRegion.Activate(menuRoot);
 
                     targetRegion = m_RegionManager.Regions[subRegionName];
                 }
+            }
+
+            if (commands == null)
+                return uid;
+
+
+            if (!string.IsNullOrEmpty(subMenuItemId) && addSeparatorSubLevel && targetRegion.Views.Count() > 0)
+            {
+                var sep = new Separator();
+
+                string viewname = uid + @"_" + count++;
+
+                m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
+                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = sep, m_viewPreferredPosition = positionInSubLevel });
+                //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => sep);
+                //targetRegion.Add(sep, viewname);
+                //targetRegion.Activate(sep);
             }
 
             foreach (var command in commands)
@@ -136,7 +164,7 @@ namespace Tobi.Plugin.MenuBar
                     string viewname = uid + @"_" + count++;
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = position });
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = (string.IsNullOrEmpty(subMenuItemId) ? positionInTopLevel : positionInSubLevel) });
                     //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => command);
                     //targetRegion.Add(command, viewname);
                     //targetRegion.Activate(command);
@@ -146,7 +174,7 @@ namespace Tobi.Plugin.MenuBar
                     string viewname = uid + @"_" + count++;
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = position });
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = (string.IsNullOrEmpty(subMenuItemId) ? positionInTopLevel : positionInSubLevel) });
                     //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => command);
                     //targetRegion.Add(command, viewname);
                     //targetRegion.Activate(command);
@@ -178,24 +206,75 @@ namespace Tobi.Plugin.MenuBar
                 return;
             }
 
+            var concreteRegion = targetRegion as PreferredPositionRegion;
+
             var viewsToRemove = new List<object>();
 
-            int count = 0;
-            object view;
-            while ((view = targetRegion.GetView(uid + @"_" + count++)) != null)
+            if (concreteRegion != null)
             {
-                viewsToRemove.Add(view);
+                viewsToRemove.AddRange(concreteRegion.GetViewsWithNamePrefix(uid + @"_"));
+            }
+            else
+            {
+                object view;
+                int count = 0;
+                while ((view = targetRegion.GetView(uid + @"_" + count++)) != null)
+                {
+                    viewsToRemove.Add(view);
+                }
+            }
+
+            if (viewsToRemove.Count == 0)
+            {
+                if (concreteRegion != null)
+                {
+                    foreach (var view in concreteRegion.GetViewsWithNamePrefix(@"SUB_")) // + uid + @"_"
+                    {
+                        if (view is MenuItem)
+                        {
+                            var menuItem = view as MenuItem;
+                            if (menuItem.HasItems)
+                            {
+                                RemoveMenuBarGroup(RegionManager.GetRegionName(view as DependencyObject), uid);
+                            }
+                            //else
+                            //    viewsToRemove.Add(view);
+                        }
+                        else
+                            viewsToRemove.Add(view);
+                    }
+                }
+                else
+                {
+                    object view;
+                    int count = 0;
+                    while ((view = targetRegion.GetView(@"SUB_" + uid + @"_" + count++)) != null)
+                    {
+                        if (view is MenuItemRichCommand)
+                        {
+                            MenuItem menuItem = view as MenuItem;
+                            if (menuItem.HasItems)
+                            {
+                                RemoveMenuBarGroup(RegionManager.GetRegionName(view as DependencyObject), uid);
+                            }
+                            else
+                                viewsToRemove.Add(view);
+                        }
+                        else
+                            viewsToRemove.Add(view);
+                    }
+                }
             }
 
             foreach (var obj in viewsToRemove)
             {
-                targetRegion.Deactivate(obj);
+                //targetRegion.Deactivate(obj);
                 targetRegion.Remove(obj);
             }
         }
 
         private int m_Uid;
-        private int getNewUid()
+        private int generateNewUid()
         {
             return m_Uid++;
         }

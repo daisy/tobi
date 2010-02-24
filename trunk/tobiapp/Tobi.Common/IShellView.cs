@@ -10,6 +10,7 @@ namespace Tobi.Common
         public const string MenuBar = "MenuBar";
 
         public const string MenuBar_File = UserInterfaceStrings.Menu_File;
+        public const string MenuBar_OpenRecent = UserInterfaceStrings.Menu_OpenRecent;
         public const string MenuBar_Edit = UserInterfaceStrings.Menu_Edit;
 
         public const string MenuBar_Audio = UserInterfaceStrings.Menu_Audio;

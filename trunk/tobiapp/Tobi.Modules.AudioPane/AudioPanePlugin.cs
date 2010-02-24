@@ -91,18 +91,24 @@ namespace Tobi.Plugin.AudioPane
                 RichCommandActive_BindingPropertyPathLambdaExpr = () => m_AudioPaneViewModel.IsRecording
             };
 
-            m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, null, new[]
-                                                                                     {
-                                                                                         m_AudioPaneViewModel.CommandAudioSettings,
-#if DEBUG
-                                                                                         m_AudioPaneViewModel.CommandShowOptionsDialog
-#endif //DEBUG
-                                                                                     }, PreferredPosition.Last, true);
+            m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.Last, true,
+                null, PreferredPosition.Any, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandAudioSettings,
+//#if DEBUG
+                     m_AudioPaneViewModel.CommandShowOptionsDialog
+//#endif //DEBUG
+                 });
 
-            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioRecording, new[]
-                                                                                     {
-                                                                                         dataMonitor, dataRecord
-                                                                                     }, PreferredPosition.First, true);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.First, true,
+                RegionNames.MenuBar_AudioRecording, PreferredPosition.Any, true,
+                new[]
+                 {
+                     dataMonitor, dataRecord
+                 });
 
 
             var dataPlay = new TwoStateMenuItemRichCommand_DataContextWrapper
@@ -115,54 +121,79 @@ namespace Tobi.Plugin.AudioPane
                 RichCommandActive_BindingPropertyPathLambdaExpr = () => m_AudioPaneViewModel.IsPlaying
             };
 
-            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioPlayback, new object[]
-                                                                                        {
-                                                                                            m_AudioPaneViewModel.CommandPlayPreviewLeft,
-                                                                                            dataPlay,
-                                                                                            m_AudioPaneViewModel.CommandPlayPreviewRight
-                                                                                        }, PreferredPosition.First, false);
+            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.First, true,
+                RegionNames.MenuBar_AudioPlayback, PreferredPosition.First, true,
+                new object[]
+                {
+                    m_AudioPaneViewModel.CommandPlayPreviewLeft,
+                    dataPlay,
+                    m_AudioPaneViewModel.CommandPlayPreviewRight
+                });
 
-            m_MenuBarId_9 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioPlayback, new object[]
-                                                                                        {
-                                                                                            m_AudioPaneViewModel.CommandAutoPlay
-                                                                                        }, PreferredPosition.Any, false);
+            m_MenuBarId_9 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.Any, true,
+                RegionNames.MenuBar_AudioPlayback, PreferredPosition.Last, true,
+                new object[]
+                    {
+                        m_AudioPaneViewModel.CommandAutoPlay
+                    });
 
-            m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioPlayback, new object[]
-                                                                                        {
-                                                                                            m_AudioPaneViewModel.CommandPlaybackRateReset,
-                                                                                            m_AudioPaneViewModel.CommandPlaybackRateDown,
-                                                                                            m_AudioPaneViewModel.CommandPlaybackRateUp
-                                                                                        }, PreferredPosition.Last, false);
+            m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.Last, false,
+                RegionNames.MenuBar_AudioPlayback, PreferredPosition.Last, false,
+                new object[]
+                    {
+                        m_AudioPaneViewModel.CommandPlaybackRateReset,
+                        m_AudioPaneViewModel.CommandPlaybackRateDown,
+                        m_AudioPaneViewModel.CommandPlaybackRateUp
+                    });
 
-            m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioTransport, new[]
-                                                                                             {
-                                                                                                 m_AudioPaneViewModel.CommandGotoBegining,
-                                                                                                 m_AudioPaneViewModel.CommandStepBack,
-                                                                                                 m_AudioPaneViewModel.CommandRewind,
-                                                                                                 m_AudioPaneViewModel.CommandFastForward,
-                                                                                                 m_AudioPaneViewModel.CommandStepForward,
-                                                                                                 m_AudioPaneViewModel.CommandGotoEnd
-                                                                                             }, PreferredPosition.Last, true);
+            m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.Last, true,
+                RegionNames.MenuBar_AudioTransport, PreferredPosition.Any, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandGotoBegining,
+                     m_AudioPaneViewModel.CommandStepBack,
+                     m_AudioPaneViewModel.CommandRewind,
+                     m_AudioPaneViewModel.CommandFastForward,
+                     m_AudioPaneViewModel.CommandStepForward,
+                     m_AudioPaneViewModel.CommandGotoEnd
+                 });
 
-            m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioSelection, new[]
-                                                                                             {
-                                                                                                 m_AudioPaneViewModel.CommandSelectAll,
-                                                                                                 m_AudioPaneViewModel.CommandSelectPreviousChunk,
-                                                                                                 m_AudioPaneViewModel.CommandSelectNextChunk,
-                                                                                                 m_AudioPaneViewModel.CommandBeginSelection,
-                                                                                                 m_AudioPaneViewModel.CommandEndSelection,
-                                                                                                 m_AudioPaneViewModel.CommandClearSelection
-                                                                                             }, PreferredPosition.Last, true);
+            m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.Last, true,
+                RegionNames.MenuBar_AudioSelection, PreferredPosition.Any, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandSelectAll,
+                     m_AudioPaneViewModel.CommandSelectPreviousChunk,
+                     m_AudioPaneViewModel.CommandSelectNextChunk,
+                     m_AudioPaneViewModel.CommandBeginSelection,
+                     m_AudioPaneViewModel.CommandEndSelection,
+                     m_AudioPaneViewModel.CommandClearSelection
+                 });
 
-            m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Audio, RegionNames.MenuBar_AudioZoom, new[]
-                                                                                             {
-                                                                                                 m_AudioPaneViewModel.CommandZoomSelection,
-                                                                                                 m_AudioPaneViewModel.CommandZoomFitFull
-                                                                                             }, PreferredPosition.Last, true);
+            m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Audio, PreferredPosition.Last, true,
+                RegionNames.MenuBar_AudioZoom, PreferredPosition.Any, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandZoomSelection,
+                     m_AudioPaneViewModel.CommandZoomFitFull
+                 });
 
 
-            m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_AudioPaneViewModel.CommandFocus }, PreferredPosition.Last, false);
-            m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_AudioPaneViewModel.CommandFocusStatusBar }, PreferredPosition.Last, false);
+            m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_View, PreferredPosition.First, true,
+                RegionNames.MenuBar_Focus, PreferredPosition.Last, false,
+                new[] { m_AudioPaneViewModel.CommandFocus });
+
+            m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_View, PreferredPosition.Last, false,
+                RegionNames.MenuBar_Focus, PreferredPosition.Last, false,
+                new[] { m_AudioPaneViewModel.CommandFocusStatusBar });
 
 
             m_Logger.Log(@"Audio commands pushed to menubar", Category.Debug, Priority.Medium);

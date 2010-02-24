@@ -72,7 +72,10 @@ namespace Tobi.Plugin.Validator
         private int m_MenuBarId_1;
         protected override void OnMenuBarReady()
         {
-            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, null, new[] { CommandShowValidator }, PreferredPosition.First, false);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Tools, PreferredPosition.Last, false,
+                null, PreferredPosition.First, false,
+                new[] { CommandShowValidator });
 
             m_Logger.Log(@"ValidatorPlugin commands pushed to menubar", Category.Debug, Priority.Medium);
         }

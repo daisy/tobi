@@ -93,7 +93,7 @@ namespace Tobi
 
             m_Logger.Log(@"ShellView.ctor", Category.Debug, Priority.Medium);
 
-            App.LOGGER = m_Logger;
+            ExceptionHandler.LOGGER = m_Logger;
 
             m_Exiting = false;
 
@@ -173,12 +173,25 @@ namespace Tobi
         {
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
-                int uid1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { ExitCommand }, PreferredPosition.Last, true);
-                int uid2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Magnification, new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Last, true);
+                int uid1 = m_MenuBarView.AddMenuBarGroup(
+                    RegionNames.MenuBar_File, PreferredPosition.Last, true,
+                    null, PreferredPosition.Any, true,
+                    new[] { ExitCommand });
+
+                int uid2 = m_MenuBarView.AddMenuBarGroup(
+                    RegionNames.MenuBar_View, PreferredPosition.Last, true,
+                    RegionNames.MenuBar_Magnification, PreferredPosition.Any, true,
+                    new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
 #if DEBUG
-                int uid3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, null, new[] { ManageShortcutsCommand }, PreferredPosition.First, true);
+                int uid3 = m_MenuBarView.AddMenuBarGroup(
+                    RegionNames.MenuBar_View, PreferredPosition.Last, true,
+                    null, PreferredPosition.Last, true,
+                    new[] { ManageShortcutsCommand });
 #endif
-                int uid4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_System, new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand, OpenTobiIsolatedStorageCommand }, PreferredPosition.Last, true);
+                int uid4 = m_MenuBarView.AddMenuBarGroup(
+                    RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
+                    RegionNames.MenuBar_System, PreferredPosition.Any, true,
+                    new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand, OpenTobiIsolatedStorageCommand });
 
 #if DEBUG
                 //int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);
