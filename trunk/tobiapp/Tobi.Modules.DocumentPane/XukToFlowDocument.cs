@@ -14,8 +14,10 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -1106,6 +1108,10 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 catch (Exception)
                 {
+
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return parent;
                 }
             }
@@ -1114,7 +1120,25 @@ namespace Tobi.Plugin.DocumentPane
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
                 string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+
                 string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+
+                AbstractImageMedia imgMedia = node.GetImageMedia();
+                var imgMedia_ext = imgMedia as ExternalImageMedia;
+                var imgMedia_man = imgMedia as ManagedImageMedia;
+
+                if (imgMedia_ext != null)
+                {
+                    fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
+                }
+                else if (imgMedia_man != null)
+                {
+                    Debug.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
+                    var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
+
+                    if (fileDataProv != null)
+                        fullImagePath = fileDataProv.DataFileFullPath;
+                }
 
                 try
                 {
@@ -1132,6 +1156,10 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 catch (Exception)
                 {
+
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return parent;
                 }
             }

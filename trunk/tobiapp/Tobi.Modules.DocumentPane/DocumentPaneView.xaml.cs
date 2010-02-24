@@ -1144,179 +1144,179 @@ namespace Tobi.Plugin.DocumentPane
             inline.TextDecorations = decs;
         }
 
-        public List<object> GetVisibleTextElements()
-        {
-            m_FoundVisible = false;
-            temp_ParagraphVisualCount = 0;
-            temp_ContainerVisualCount = 0;
-            temp_OtherCount = 0;
-            //List<object> list = GetVisibleTextObjects_Logical(TheFlowDocument);
-            List<object> list = GetVisibleTextObjects_Visual(FlowDocReader);
-            foreach (object obj in list)
-            {
-                //TODO: find the TextElement objects, and ultimately, the urakawa Nodes that correspond to this list
-                //how to find a logical object from a visual one?
-            }
-            return list;
-        }
+        //public List<object> GetVisibleTextElements()
+        //{
+        //    m_FoundVisible = false;
+        //    temp_ParagraphVisualCount = 0;
+        //    temp_ContainerVisualCount = 0;
+        //    temp_OtherCount = 0;
+        //    //List<object> list = GetVisibleTextObjects_Logical(TheFlowDocument);
+        //    List<object> list = GetVisibleTextObjects_Visual(FlowDocReader);
+        //    foreach (object obj in list)
+        //    {
+        //        //TODO: find the TextElement objects, and ultimately, the urakawa Nodes that correspond to this list
+        //        //how to find a logical object from a visual one?
+        //    }
+        //    return list;
+        //}
 
-        private bool m_FoundVisible;
-        private ScrollViewer m_ScrollViewer;
+        //private bool m_FoundVisible;
+        //private ScrollViewer m_ScrollViewer;
       
-        private List<object> GetVisibleTextObjects_Logical(DependencyObject obj)
-        {
-            List<object> elms = new List<object>();
+        //private List<object> GetVisibleTextObjects_Logical(DependencyObject obj)
+        //{
+        //    List<object> elms = new List<object>();
             
-            IEnumerable children = LogicalTreeHelper.GetChildren(obj);
-            IEnumerator enumerator = children.GetEnumerator();
+        //    IEnumerable children = LogicalTreeHelper.GetChildren(obj);
+        //    IEnumerator enumerator = children.GetEnumerator();
             
-            while (enumerator.MoveNext())
-            {    
-                if (enumerator.Current is TextElement && IsTextObjectInView((TextElement)enumerator.Current))
-                {
-                    elms.Add(enumerator.Current);
-                }
-                if (enumerator.Current is DependencyObject)
-                {
-                    List<object> list = GetVisibleTextObjects_Logical((DependencyObject)enumerator.Current);
-                    elms.AddRange(list);
-                }
-            }
-            return elms;
-        }
+        //    while (enumerator.MoveNext())
+        //    {    
+        //        if (enumerator.Current is TextElement && IsTextObjectInView((TextElement)enumerator.Current))
+        //        {
+        //            elms.Add(enumerator.Current);
+        //        }
+        //        if (enumerator.Current is DependencyObject)
+        //        {
+        //            List<object> list = GetVisibleTextObjects_Logical((DependencyObject)enumerator.Current);
+        //            elms.AddRange(list);
+        //        }
+        //    }
+        //    return elms;
+        //}
         
 
-        //just for testing purposes
-        private int temp_ContainerVisualCount;
-        private int temp_ParagraphVisualCount;
-        private int temp_OtherCount;
+        ////just for testing purposes
+        //private int temp_ContainerVisualCount;
+        //private int temp_ParagraphVisualCount;
+        //private int temp_OtherCount;
 
-        private List<object> GetVisibleTextObjects_Visual(DependencyObject obj)
-        {
-            if (obj.DependencyObjectType.Name == "ParagraphVisual") temp_ParagraphVisualCount++;
-            else if (obj is ContainerVisual) temp_ContainerVisualCount++;
-            else temp_OtherCount++;
+        //private List<object> GetVisibleTextObjects_Visual(DependencyObject obj)
+        //{
+        //    if (obj.DependencyObjectType.Name == "ParagraphVisual") temp_ParagraphVisualCount++;
+        //    else if (obj is ContainerVisual) temp_ContainerVisualCount++;
+        //    else temp_OtherCount++;
 
-            if (obj is ScrollContentPresenter)
-            {
-                object view = ((ScrollContentPresenter) obj).Content;
-            }
-            List<object> elms = new List<object>();
+        //    if (obj is ScrollContentPresenter)
+        //    {
+        //        object view = ((ScrollContentPresenter) obj).Content;
+        //    }
+        //    List<object> elms = new List<object>();
 
-            int childcount = VisualTreeHelper.GetChildrenCount(obj);
+        //    int childcount = VisualTreeHelper.GetChildrenCount(obj);
             
-            for (int i = 0; i<childcount; i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child is ScrollViewer) m_ScrollViewer = (ScrollViewer) child;
-                if (child != null)
-                {
-                    //there may be more types
-                    if (child.DependencyObjectType.Name == "ParagraphVisual")
-                    {
-                        if (IsTextObjectInView((Visual)child))
-                        {
-                            m_FoundVisible = true;
-                            elms.Add(child);
-                            List<object> list = GetVisibleTextObjects_Visual(child);
-                            if (list != null) elms.AddRange(list);
-                        }
-                        else
-                        {
-                            //if this is our first non-visible object
-                            //after encountering one or more visible objects, assume we are out of the viewable region
-                            //since it should only show contiguous objects
-                            if (m_FoundVisible)
-                            {
-                                return null;
-                            }
-                            //else, we haven't found any visible text objects yet, so keep looking
-                            else
-                            {
-                                List<object> list = GetVisibleTextObjects_Visual(child);
-                                if (list != null) elms.AddRange(list);
-                            }
-                        }
-                    }
-                    //just recurse for non-text objects
-                    else
-                    {
-                        List<object> list = GetVisibleTextObjects_Visual(child);
-                        if (list != null) elms.AddRange(list);
-                    }
-                }
+        //    for (int i = 0; i<childcount; i++)
+        //    {
+        //        DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+        //        if (child is ScrollViewer) m_ScrollViewer = (ScrollViewer) child;
+        //        if (child != null)
+        //        {
+        //            //there may be more types
+        //            if (child.DependencyObjectType.Name == "ParagraphVisual")
+        //            {
+        //                if (IsTextObjectInView((Visual)child))
+        //                {
+        //                    m_FoundVisible = true;
+        //                    elms.Add(child);
+        //                    List<object> list = GetVisibleTextObjects_Visual(child);
+        //                    if (list != null) elms.AddRange(list);
+        //                }
+        //                else
+        //                {
+        //                    //if this is our first non-visible object
+        //                    //after encountering one or more visible objects, assume we are out of the viewable region
+        //                    //since it should only show contiguous objects
+        //                    if (m_FoundVisible)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    //else, we haven't found any visible text objects yet, so keep looking
+        //                    else
+        //                    {
+        //                        List<object> list = GetVisibleTextObjects_Visual(child);
+        //                        if (list != null) elms.AddRange(list);
+        //                    }
+        //                }
+        //            }
+        //            //just recurse for non-text objects
+        //            else
+        //            {
+        //                List<object> list = GetVisibleTextObjects_Visual(child);
+        //                if (list != null) elms.AddRange(list);
+        //            }
+        //        }
 
-            }
-            return elms;
-        }
-        //say whether the text object is in view on the screen.  assumed: obj is a text visual
-        private bool IsTextObjectInView(Visual obj)
-        {
-            //ParagraphVisual objects are also ContainerVisual
-            if (obj is ContainerVisual)
-            {
-                ContainerVisual cv = (ContainerVisual) obj;
-                //express the visual object's coordinates in terms of the flow doc reader
-                GeneralTransform paraTransform = obj.TransformToAncestor(m_ScrollViewer);
-                Rect rect;
-                if (cv.Children.Count > 0)
-                    rect = cv.DescendantBounds;
-                else
-                    rect = cv.ContentBounds;
-                Rect rectTransformed = paraTransform.TransformBounds(rect);
+        //    }
+        //    return elms;
+        //}
+        ////say whether the text object is in view on the screen.  assumed: obj is a text visual
+        //private bool IsTextObjectInView(Visual obj)
+        //{
+        //    //ParagraphVisual objects are also ContainerVisual
+        //    if (obj is ContainerVisual)
+        //    {
+        //        ContainerVisual cv = (ContainerVisual) obj;
+        //        //express the visual object's coordinates in terms of the flow doc reader
+        //        GeneralTransform paraTransform = obj.TransformToAncestor(m_ScrollViewer);
+        //        Rect rect;
+        //        if (cv.Children.Count > 0)
+        //            rect = cv.DescendantBounds;
+        //        else
+        //            rect = cv.ContentBounds;
+        //        Rect rectTransformed = paraTransform.TransformBounds(rect);
 
-                //then figure out if these coordinates are in the currently visible document portion))
-                Rect viewportRect = new Rect(0, 0, m_ScrollViewer.ViewportWidth, m_ScrollViewer.ViewportHeight);
-                if (viewportRect.Contains(rectTransformed))
-                    return true;
-                else
-                    return false;
-            }
-            return false;
+        //        //then figure out if these coordinates are in the currently visible document portion))
+        //        Rect viewportRect = new Rect(0, 0, m_ScrollViewer.ViewportWidth, m_ScrollViewer.ViewportHeight);
+        //        if (viewportRect.Contains(rectTransformed))
+        //            return true;
+        //        else
+        //            return false;
+        //    }
+        //    return false;
 
-        }
-        private bool IsTextObjectInView(TextElement obj)
-        {
-            //how to find visibility information from a logical object??
-            DependencyObject test = obj;
-            while (test != null)
-            {
-                test = LogicalTreeHelper.GetParent(test);
-                if (test is Visual)
-                {
-                    break;
-                }
-            }
-            if (drillDown(test) != null)
-            {
-                return true;
-            }
-            return true;
-        }
+        //}
+        //private bool IsTextObjectInView(TextElement obj)
+        //{
+        //    //how to find visibility information from a logical object??
+        //    DependencyObject test = obj;
+        //    while (test != null)
+        //    {
+        //        test = LogicalTreeHelper.GetParent(test);
+        //        if (test is Visual)
+        //        {
+        //            break;
+        //        }
+        //    }
+        //    if (drillDown(test) != null)
+        //    {
+        //        return true;
+        //    }
+        //    return true;
+        //}
 
-        private DependencyObject drillDown(DependencyObject test)
-        {
-            IEnumerable children = LogicalTreeHelper.GetChildren(test);
-            foreach (DependencyObject obj in children)
-            {
-                if (obj is Visual)
-                    return obj;
-                else
-                    return drillDown(obj);
-            }
-            return null;
-        }
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            List<object> list = GetVisibleTextElements();
-            string str = "The visible text objects, perhaps with some redundancies:\n";
-            foreach (object obj in list)
-            {
-                str += obj.ToString();
-                str += "\n";
+        //private DependencyObject drillDown(DependencyObject test)
+        //{
+        //    IEnumerable children = LogicalTreeHelper.GetChildren(test);
+        //    foreach (DependencyObject obj in children)
+        //    {
+        //        if (obj is Visual)
+        //            return obj;
+        //        else
+        //            return drillDown(obj);
+        //    }
+        //    return null;
+        //}
+        //private void TestButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    List<object> list = GetVisibleTextElements();
+        //    string str = "The visible text objects, perhaps with some redundancies:\n";
+        //    foreach (object obj in list)
+        //    {
+        //        str += obj.ToString();
+        //        str += "\n";
 
-            }
-            MessageBox.Show(str);
-        }
+        //    }
+        //    MessageBox.Show(str);
+        //}
     }
 }
