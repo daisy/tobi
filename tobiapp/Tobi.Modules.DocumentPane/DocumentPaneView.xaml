@@ -44,7 +44,8 @@
                                      TextChanged="OnSearchTextChanged"
                                      Watermark="search keywords"
                             VerticalAlignment="Center"
-                                    HorizontalAlignment="Stretch"/>
+                                    HorizontalAlignment="Stretch"
+                            Width="200"  Margin="0,0,4,0"/>
     </DockPanel>
 
     <UI:ButtonRichCommand
@@ -56,7 +57,7 @@
       RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
-    <Button Click="TestButton_Click">Test visible</Button>
+    <!--<Button Click="TestButton_Click">Test visible</Button>-->
     
   </WrapPanel>
   <FlowDocumentScrollViewer x:Name="FlowDocReader"
