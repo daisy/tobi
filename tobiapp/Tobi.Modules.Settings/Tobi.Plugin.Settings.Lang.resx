@@ -117,10 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AManagerAndUser-interfaceEditorForApplicationPreferences" xml:space="preserve">
+  <data name="AManagerAndUserInterfaceEditorForApplicationPreferences" xml:space="preserve">
     <value>A manager and user-interface editor for application preferences.</value>
   </data>
   <data name="ApplicationPreferences" xml:space="preserve">
     <value>Application preferences.</value>
+  </data>
+  <data name="DisplayAnEditor" xml:space="preserve">
+    <value>Display an editor for application preferences</value>
+  </data>
+  <data name="InvalidKeyboardShortcut" xml:space="preserve">
+    <value>Invalid keyboard shortcut.</value>
+  </data>
+  <data name="InvalidNumericValue" xml:space="preserve">
+    <value>Invalid numeric value.</value>
+  </data>
+  <data name="NumericValueOutOfRange" xml:space="preserve">
+    <value>Numeric value is out of range [0, 9999].</value>
+  </data>
+  <data name="ShortcutAlreadyUsed" xml:space="preserve">
+    <value>Shortcut already used by:</value>
+  </data>
+  <data name="StringCannotBeEmpty" xml:space="preserve">
+    <value>String cannot be empty.</value>
+  </data>
+  <data name="StringCannotJustBeSeparators" xml:space="preserve">
+    <value>String cannot just be separators (e.g. space characters).</value>
+  </data>
+  <data name="ValueNotEmpty" xml:space="preserve">
+    <value>Value cannot be empty.</value>
   </data>
 </root>

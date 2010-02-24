@@ -120,11 +120,20 @@
   <data name="AValidatorThatSpecializedInMetadata" xml:space="preserve">
     <value>A validator that specialized in metadata.</value>
   </data>
+  <data name="DuplicateNotAllowed" xml:space="preserve">
+    <value>Duplicate of {0} not allowed.</value>
+  </data>
   <data name="MetadataValidator" xml:space="preserve">
     <value>Metadata Validator.</value>
   </data>
   <data name="MetadataValidator_Key" xml:space="preserve">
     <value>MetadataValidator</value>
+  </data>
+  <data name="Missing" xml:space="preserve">
+    <value>Missing {0}</value>
+  </data>
+  <data name="UnspecifiedError" xml:space="preserve">
+    <value>Unspecified error in {0}.</value>
   </data>
   <data name="ValidatePublicationMetadata" xml:space="preserve">
     <value>Validate publication metadata</value>

@@ -63,9 +63,9 @@ namespace Tobi.Plugin.Settings {
         /// <summary>
         ///   Looks up a localized string similar to A manager and user-interface editor for application preferences..
         /// </summary>
-        public static string AManagerAndUser_interfaceEditorForApplicationPreferences {
+        public static string AManagerAndUserInterfaceEditorForApplicationPreferences {
             get {
-                return ResourceManager.GetString("AManagerAndUser-interfaceEditorForApplicationPreferences", resourceCulture);
+                return ResourceManager.GetString("AManagerAndUserInterfaceEditorForApplicationPreferences", resourceCulture);
             }
         }
         
@@ -75,6 +75,78 @@ namespace Tobi.Plugin.Settings {
         public static string ApplicationPreferences {
             get {
                 return ResourceManager.GetString("ApplicationPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display an editor for application preferences.
+        /// </summary>
+        public static string DisplayAnEditor {
+            get {
+                return ResourceManager.GetString("DisplayAnEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid keyboard shortcut..
+        /// </summary>
+        public static string InvalidKeyboardShortcut {
+            get {
+                return ResourceManager.GetString("InvalidKeyboardShortcut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid numeric value..
+        /// </summary>
+        public static string InvalidNumericValue {
+            get {
+                return ResourceManager.GetString("InvalidNumericValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Numeric value is out of range [0, 9999]..
+        /// </summary>
+        public static string NumericValueOutOfRange {
+            get {
+                return ResourceManager.GetString("NumericValueOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortcut already used by:.
+        /// </summary>
+        public static string ShortcutAlreadyUsed {
+            get {
+                return ResourceManager.GetString("ShortcutAlreadyUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String cannot be empty..
+        /// </summary>
+        public static string StringCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("StringCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String cannot just be separators (e.g. space characters)..
+        /// </summary>
+        public static string StringCannotJustBeSeparators {
+            get {
+                return ResourceManager.GetString("StringCannotJustBeSeparators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value cannot be empty..
+        /// </summary>
+        public static string ValueNotEmpty {
+            get {
+                return ResourceManager.GetString("ValueNotEmpty", resourceCulture);
             }
         }
     }
