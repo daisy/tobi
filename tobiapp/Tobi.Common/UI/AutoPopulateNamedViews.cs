@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -254,6 +252,14 @@ namespace Tobi.Common.UI
 
     public class PreferredPositionRegion : Region
     {
+        public IEnumerable<object> GetViewsWithNamePrefix(string viewNamePrefix)
+        {
+            // just to check the parameter and throw the correct exception message obtained from the superclass resources.
+            object dummy = GetView(viewNamePrefix);
+
+            return ItemMetadataCollection.Where(x => x.Name.StartsWith(viewNamePrefix)).Select(metadata => metadata.Item);
+        }
+
         public virtual IRegionManager Add(PreferredPositionNamedView namedview, bool createRegionManagerScope)
         {
             IRegionManager manager = createRegionManagerScope ? this.RegionManager.CreateRegionManager() : this.RegionManager;

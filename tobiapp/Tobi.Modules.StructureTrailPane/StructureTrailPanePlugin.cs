@@ -67,8 +67,15 @@ namespace Tobi.Plugin.StructureTrailPane
         private int m_MenuBarId_2;
         protected override void OnMenuBarReady()
         {
-            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, RegionNames.MenuBar_Navigation, new[] { m_StructureView.CommandStructureUp, m_StructureView.CommandStructureDown }, PreferredPosition.Last, true);
-            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_View, RegionNames.MenuBar_Focus, new[] { m_StructureView.CommandFocus }, PreferredPosition.Last, false);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Navigation, PreferredPosition.Last, true,
+                new[] { m_StructureView.CommandStructureUp, m_StructureView.CommandStructureDown });
+
+            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_View, PreferredPosition.Last, false,
+                RegionNames.MenuBar_Focus, PreferredPosition.First, false,
+                new[] { m_StructureView.CommandFocus });
 
             m_Logger.Log(@"Structure commands pushed to menubar", Category.Debug, Priority.Medium);
         }

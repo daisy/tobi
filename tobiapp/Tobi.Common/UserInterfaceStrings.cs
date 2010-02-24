@@ -30,7 +30,7 @@ namespace Tobi.Common
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
             APP_VERSION = GetVersion();
 
-            UnhandledException = "A fatal problem occurred, the application must now close." + Environment.NewLine + "The full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
+            UnhandledException = "An unexpected problem occurred." + Environment.NewLine + "The full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
         }
 
         public static readonly string APP_VERSION;
@@ -51,6 +51,8 @@ namespace Tobi.Common
             return str.Replace("_", "");
         }
 
+        public const string CannotOpenLocalFile = "Cannot open file.";
+        public const string CannotOpenLocalFile_ = "Failed to open file!";
 
         public const string No_Document = "No document.";
         public const string Feature_Not_Available = "This feature is not available.";
@@ -157,6 +159,7 @@ namespace Tobi.Common
         //public const string HeadingEdit_ = "Please Enter The New Value For This Heading.";
 
         public const string Menu_File = "_File";
+        public const string Menu_OpenRecent = "_Open recent";
 
         public const string Overwrite = "_Overwrite";
         public const string OverwriteConfirm_File = "You are about to overwrite a file.\nAre you sure ?";
@@ -168,6 +171,10 @@ namespace Tobi.Common
         public const string UnsavedChanges = "_Unsaved changes";
         public const string UnsavedChangesConfirm = "There are unsaved document changes.\nWould you like to save now ?";
         public const string UnsavedChangesDetails = "If you close the document without saving,\nany changes will be lost !";
+
+
+        public const string Menu_ClearRecentFiles = "_Clear";
+        public const string Menu_ClearRecentFiles_ = "Clear the list of recently-opened files.";
 
         public const string Menu_Exit = "_Quit";
         public const string Menu_Exit_ = "Exit the application";

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Urakawa
@@ -15,6 +18,7 @@ namespace Tobi.Plugin.Urakawa
         private readonly UrakawaSession m_UrakawaSession;
 
         private readonly ILoggerFacade m_Logger;
+        private readonly IShellView m_ShellView;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -25,10 +29,13 @@ namespace Tobi.Plugin.Urakawa
         [ImportingConstructor]
         public UrakawaPlugin(
             ILoggerFacade logger,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             UrakawaSession urakawaSession)
         {
             m_Logger = logger;
+            m_ShellView = shellView;
             m_UrakawaSession = urakawaSession;
 
             //m_Logger.Log(@"Urakawa module is initializing...", Category.Debug, Priority.Medium);
@@ -49,16 +56,94 @@ namespace Tobi.Plugin.Urakawa
         private int m_MenuBarId_3;
         private int m_MenuBarId_4;
         private int m_MenuBarId_5;
+        private int m_MenuBarId_6 = -1;
         protected override void OnMenuBarReady()
         {
-            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { m_UrakawaSession.OpenCommand }, PreferredPosition.First, true);
-            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { m_UrakawaSession.SaveCommand, m_UrakawaSession.SaveAsCommand, m_UrakawaSession.ExportCommand }, PreferredPosition.First, true);
-            m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_File, null, new[] { m_UrakawaSession.CloseCommand }, PreferredPosition.First, true);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_File, PreferredPosition.First, false,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.OpenCommand });
 
-            m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand }, PreferredPosition.First, true);
-            m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { m_UrakawaSession.DataCleanupCommand }, PreferredPosition.Last, true);
+            var clearCmd = new RichDelegateCommand(UserInterfaceStrings.Menu_ClearRecentFiles,
+                                                   UserInterfaceStrings.Menu_ClearRecentFiles_,
+                                                   null,
+                                                   m_ShellView.LoadTangoIcon(@"system-log-out"),
+                                                   () => m_UrakawaSession.ClearRecentFiles(),
+                                                   () => true,
+                                                   null, null);
+            int clearID = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_File, PreferredPosition.First, true,
+                RegionNames.MenuBar_OpenRecent, PreferredPosition.Last, true,
+                new[] { clearCmd });
+
+            resetRecentFilesSubMenu();
+
+            m_UrakawaSession.RecentFiles.CollectionChanged += (sender, e) => resetRecentFilesSubMenu();
+
+            m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_File, PreferredPosition.First, true,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.SaveCommand, m_UrakawaSession.SaveAsCommand, m_UrakawaSession.ExportCommand });
+
+            m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_File, PreferredPosition.Any, true,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.CloseCommand });
+
+            m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Edit, PreferredPosition.First, true,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand });
+
+            m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Edit, PreferredPosition.First, true,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.DataCleanupCommand });
 
             m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
+        }
+
+        private void resetRecentFilesSubMenu()
+        {
+            if (m_MenuBarId_6 != -1)
+            {
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_File, m_MenuBarId_6);
+            }
+
+            var uriOpenCmds = new List<RichDelegateCommand>();
+
+            foreach (var uri in m_UrakawaSession.RecentFiles)
+            {
+                RichDelegateCommand cmd = null;
+                cmd = new RichDelegateCommand(
+                    (uri.Scheme.ToLower() == "file" ? uri.LocalPath : uri.ToString()),
+                    uri.ToString(),
+                    null, null,
+                    () =>
+                    {
+                        try
+                        {
+                            m_UrakawaSession.OpenFile(cmd.LongDescription);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
+                    },
+                    () => true,
+                    null, null
+                    );
+                uriOpenCmds.Add(cmd);
+            }
+
+            uriOpenCmds.Reverse();
+
+            //uriOpenCmds.Add(clearCmd);
+
+            m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_File, PreferredPosition.First, true,
+                RegionNames.MenuBar_OpenRecent, PreferredPosition.First, true,
+                uriOpenCmds.ToArray());
         }
 
         public override void Dispose()
@@ -79,6 +164,8 @@ namespace Tobi.Plugin.Urakawa
 
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Edit, m_MenuBarId_4);
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Edit, m_MenuBarId_5);
+
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Edit, m_MenuBarId_6);
 
                 m_Logger.Log(@"Urakawa session commands removed from menubar", Category.Debug, Priority.Medium);
             }

@@ -82,7 +82,14 @@ namespace Tobi.Plugin.Urakawa
                         IsDirty = false;
                         CloseCommand.Execute();
 
-                        openFile(dlg.FileName);
+                        try
+                        {
+                            OpenFile(dlg.FileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
                     }
 
                     return;

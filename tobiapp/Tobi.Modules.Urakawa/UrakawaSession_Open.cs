@@ -64,8 +64,14 @@ namespace Tobi.Plugin.Urakawa
                     {
                         return;
                     }
-
-                    openFile(dlg.FileName);
+                    try
+                    {
+                        OpenFile(dlg.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                    }
                 },
                 () => true,
                 Settings_KeyGestures.Default,
@@ -74,10 +80,49 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(OpenCommand);
         }
 
-
-        private bool openFile(string filename)
+        public bool OpenFile(string filename)
         {
-            AddRecentFile(new Uri(filename, UriKind.Absolute));
+            var fileUri = new Uri(filename, UriKind.Absolute);
+            AddRecentFile(fileUri);
+
+            if (fileUri.Scheme.ToLower() != "file"
+                || !File.Exists(fileUri.LocalPath))
+            {
+                var label = new TextBlock
+                {
+                    Text = UserInterfaceStrings.CannotOpenLocalFile_,
+                    Margin = new Thickness(8, 0, 8, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Focusable = true,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                };
+                panel.Children.Add(iconProvider.IconLarge);
+                panel.Children.Add(label);
+                
+                var details = new TextBoxReadOnlyCaretVisible(fileUri.ToString());
+
+                var windowPopup = new PopupModalWindow(m_ShellView,
+                                                       UserInterfaceStrings.EscapeMnemonic(
+                                                           UserInterfaceStrings.CannotOpenLocalFile),
+                                                       panel,
+                                                       PopupModalWindow.DialogButtonsSet.Close,
+                                                       PopupModalWindow.DialogButton.Close,
+                                                       true, 300, 160, details, 40);
+
+                windowPopup.ShowModal();
+
+                return false;
+            }
 
             if (!Close())
             {
@@ -101,10 +146,10 @@ namespace Tobi.Plugin.Urakawa
 
                 var project = new Project();
 
-                var uri = new Uri(DocumentFilePath, UriKind.Absolute);
+                //var uri = new Uri(DocumentFilePath, UriKind.Absolute);
                 //DocumentProject.OpenXuk(uri);
 
-                var action = new OpenXukAction(project, uri)
+                var action = new OpenXukAction(project, fileUri)
                 {
                     ShortDescription = "Opening XUK file...",
                     LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK..."

@@ -14,7 +14,9 @@ namespace Tobi.Common
         ///<param name="addSeparator">whether or not to add a visual separator before the submitted command group</param>
         ///<param name="position">a hint for the preferred position within the popup menu</param>
         ///<returns>a unique identifier for the submitted group</returns>
-        int AddMenuBarGroup(string topLevelMenuItemID, string subMenuItemID, object[] commands, PreferredPosition position, bool addSeparator);
+        int AddMenuBarGroup(string topLevelMenuItemId, PreferredPosition positionInTopLevel, bool addSeparatorTopLevel,
+                                    string subMenuItemId, PreferredPosition positionInSubLevel, bool addSeparatorSubLevel,
+                                    object[] commands);
 
         /// <summary>
         /// Removes a given command group of menu items

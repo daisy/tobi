@@ -72,7 +72,10 @@ namespace Tobi.Plugin.MetadataPane
         private int m_MenuBarId_1;
         protected override void OnMenuBarReady()
         {
-            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Edit, null, new[] { CommandShowMetadataPane }, PreferredPosition.Last, true);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+                RegionNames.MenuBar_Edit, PreferredPosition.Last, true,
+                null, PreferredPosition.Any, true,
+                new[] { CommandShowMetadataPane });
 
             m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
         }
