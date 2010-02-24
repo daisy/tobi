@@ -23,6 +23,8 @@ namespace Tobi.Common.UI
     /// </summary>
     public partial class PopupModalWindow : IInputBindingManager, INotifyPropertyChangedEx
     {
+        public IInputBindingManager InputBindingManager { get { return this; } }
+
         protected override AutomationPeer OnCreateAutomationPeer()
         {
             if (ShellView != null && ShellView.IsUIAutomationDisabled)

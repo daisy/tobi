@@ -116,7 +116,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 RichDelegateCommand cmd = null;
                 cmd = new RichDelegateCommand(
-                    (uri.Scheme.ToLower() == "file" ? uri.LocalPath : uri.ToString()),
+                    (uri.IsFile ? uri.LocalPath : uri.ToString()), //uri.Scheme.ToLower() == "file"
                     uri.ToString(),
                     null, null,
                     () =>

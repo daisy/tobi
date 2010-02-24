@@ -10,6 +10,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.exception;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.Urakawa
@@ -85,8 +86,10 @@ namespace Tobi.Plugin.Urakawa
             var fileUri = new Uri(filename, UriKind.Absolute);
             AddRecentFile(fileUri);
 
-            if (fileUri.Scheme.ToLower() != "file"
-                || !File.Exists(fileUri.LocalPath))
+            //todo: should we implement HTTP open/import ?
+            if (false &&
+                (!fileUri.IsFile //fileUri.Scheme.ToLower() != "file"
+                || !File.Exists(fileUri.LocalPath)))
             {
                 var label = new TextBlock
                 {
@@ -108,7 +111,7 @@ namespace Tobi.Plugin.Urakawa
                 };
                 panel.Children.Add(iconProvider.IconLarge);
                 panel.Children.Add(label);
-                
+
                 var details = new TextBoxReadOnlyCaretVisible(fileUri.ToString());
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
@@ -135,11 +138,20 @@ namespace Tobi.Plugin.Urakawa
                     WorkerReportsProgress = true
                 };
 
-
-            DocumentFilePath = filename;
-            if (Path.GetExtension(DocumentFilePath) == @".xuk")
+            string ext = Path.GetExtension(fileUri.ToString()).ToLower();
+            if (ext == @".xuk")
             {
+                //todo: should we implement HTTP open ?
+                if (!fileUri.IsFile)
+                    throw new InvalidUriException("The URI to open must point to a local file! " + Environment.NewLine + fileUri.ToString());
+
                 m_Logger.Log(String.Format(@"UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
+
+                //fileUri.Scheme.ToLower() == "file"
+                DocumentFilePath = fileUri.IsFile ? fileUri.LocalPath : filename;
+
+                if (!File.Exists(DocumentFilePath))
+                    throw new InvalidUriException("The import URI must point to an existing file! " + Environment.NewLine + fileUri.ToString());
 
                 int currentPercentage = 0;
                 bool cancelFlag = false;
@@ -256,9 +268,18 @@ namespace Tobi.Plugin.Urakawa
                         DocumentProject = null;
                         windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
                     }
+                    else if (workException != null)
+                    {
+                        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                    }
                     else
                     {
-                        DocumentProject = project;
+                        if (project.Presentations.Count == 0)
+                        {
+                            workException = new XukException("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
+                        }
+                        else
+                            DocumentProject = project;
                         windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
                     }
 
@@ -284,6 +305,16 @@ namespace Tobi.Plugin.Urakawa
             }
             else
             {
+                //todo: should we implement HTTP import ?
+                if (!fileUri.IsFile)
+                    throw new InvalidUriException("The import URI must point to a local file!" + Environment.NewLine + fileUri.ToString());
+
+                //fileUri.Scheme.ToLower() == "file"
+                DocumentFilePath = fileUri.IsFile ? fileUri.LocalPath : filename;
+
+                if (!File.Exists(DocumentFilePath))
+                    throw new InvalidUriException("The import URI must point to an existing file! " + Environment.NewLine + fileUri.ToString());
+
                 if (!doImport())
                 {
                     return false;

@@ -30,7 +30,7 @@ namespace Tobi.Common
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
             APP_VERSION = GetVersion();
 
-            UnhandledException = "An unexpected problem occurred." + Environment.NewLine + "The full exception message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
+            UnhandledException = "Oops, a problem occurred." + Environment.NewLine + "The full error message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
         }
 
         public static readonly string APP_VERSION;
