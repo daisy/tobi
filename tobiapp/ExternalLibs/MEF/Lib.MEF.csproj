@@ -1,27 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>Migrated rules for ComponentModel.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules />
-  </PropertyGroup>
   <PropertyGroup>
-    <OutputPath>..\..\bin</OutputPath>
-    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
-    <NoWarn>1570;1572;1573;1591;1699</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ProductVersion>10.0.20729</ProductVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A36AEF66-2411-4225-B68E-F2D29368A31B}</ProjectGuid>
-    <ProjectClrTypes>FULLCLR;SILVERLIGHT</ProjectClrTypes>
     <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.Internal</RootNamespace>
     <AssemblyName>System.ComponentModel.Composition</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
     <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <FileAlignment>512</FileAlignment>
-    <DocumentationFile>$(OutputPath)\System.ComponentModel.Composition.xml</DocumentationFile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -38,8 +30,28 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1570;1572;1573;1591;1699</NoWarn>
+    <DocumentationFile>bin\Debug\System.ComponentModel.Composition.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition="'$(USE_CUSTOM_KEY)' != 'true'">
@@ -53,7 +65,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsSilverLight)' == 'true'">
-    <Reference Include="System.Windows" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CompositionHost.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionInitializer.AssemblyList.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionInitializer.cs" />

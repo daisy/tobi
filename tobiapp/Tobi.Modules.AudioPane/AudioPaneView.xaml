@@ -10,7 +10,9 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
-    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:AudioPane="clr-namespace:Tobi.Plugin.AudioPane" Loaded="OnPaneLoaded"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+  xmlns:AudioPane="clr-namespace:Tobi.Plugin.AudioPane"
+  Loaded="OnPaneLoaded"
   
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
   >
