@@ -70,6 +70,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate of {0} not allowed..
+        /// </summary>
+        public static string DuplicateNotAllowed {
+            get {
+                return ResourceManager.GetString("DuplicateNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata Validator..
         /// </summary>
         public static string MetadataValidator {
@@ -84,6 +93,24 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string MetadataValidator_Key {
             get {
                 return ResourceManager.GetString("MetadataValidator_Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing {0}.
+        /// </summary>
+        public static string Missing {
+            get {
+                return ResourceManager.GetString("Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unspecified error in {0}..
+        /// </summary>
+        public static string UnspecifiedError {
+            get {
+                return ResourceManager.GetString("UnspecifiedError", resourceCulture);
             }
         }
         

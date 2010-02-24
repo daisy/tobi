@@ -35,13 +35,13 @@ namespace Tobi.Plugin.Validator.Metadata
                                                     Definition.Name.ToLower(), Hint);
                         break;
                     case MetadataErrorType.MissingItemError:
-                        description = string.Format("Missing {0}", Definition.Name.ToLower());
+                        description = string.Format("Missing {0}", Definition.Name.ToLower());         // TODO LOCALIZE Missing
                         break;
                     case MetadataErrorType.DuplicateItemError:
-                        description = string.Format("Duplicate of {0} not allowed.", Definition.Name.ToLower());
+                        description = string.Format("Duplicate of {0} not allowed.", Definition.Name.ToLower());    // TODO LOCALIZE DuplicateNotAllowed
                         break;
                     default:
-                        description = string.Format("Unspecified error in {0}.", Definition.Name.ToLower());
+                        description = string.Format("Unspecified error in {0}.", Definition.Name.ToLower());        // TODO LOCALIZE UnspecifiedError
                         break;
                 }
                 return description;
