@@ -77,5 +77,23 @@ namespace Tobi.Plugin.Validator.Metadata {
                 return ResourceManager.GetString("MetadataValidator", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MetadataValidator.
+        /// </summary>
+        public static string MetadataValidator_Key {
+            get {
+                return ResourceManager.GetString("MetadataValidator_Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validate publication metadata.
+        /// </summary>
+        public static string ValidatePublicationMetadata {
+            get {
+                return ResourceManager.GetString("ValidatePublicationMetadata", resourceCulture);
+            }
+        }
     }
 }

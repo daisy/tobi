@@ -44,10 +44,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (ErrorType == ContentDocumentErrorType.InvalidChildElements)
                 {
                     string msgPart2 = "";
-                    string msgPart1 = string.Format("Element {0} contains an invalid sequence of child elements", targetNodeName);
+                    string msgPart1 = string.Format("Element {0} contains an invalid sequence of child elements", targetNodeName);  // TODO LOCALIZE InvalidSequence
 
                     if (BeginningOfError != null)
-                        msgPart2 = string.Format(", starting with {0}.", problemChildNodeName);
+                        msgPart2 = string.Format(", starting with {0}.", problemChildNodeName);        // TODO LOCALIZE StartingWith0
                     else
                         msgPart2 = ".";
                     return msgPart1 + msgPart2;
@@ -55,13 +55,13 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {
-                    return string.Format("No DTD found for {0}", DtdIdentifier);
+                    return string.Format("No DTD found for {0}", DtdIdentifier);     // TODO LOCALIZE NoDTDFound
                 }
                 if (ErrorType == ContentDocumentErrorType.UndefinedElement)
                 {
-                   return string.Format("No element definition found for {0}", targetNodeName);
+                   return string.Format("No element definition found for {0}", targetNodeName);     // TODO LOCALIZE NoElementDefinitionFound
                 }
-                return "Unspecified error";
+                return "Unspecified error";    // TODO LOCALIZE UnspecifiedError
             }
         }
         public ContentDocumentValidationError()
