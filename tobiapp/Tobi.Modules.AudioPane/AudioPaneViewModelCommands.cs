@@ -13,11 +13,10 @@ namespace Tobi.Plugin.AudioPane
         #region Commands
 
         public RichDelegateCommand CommandAudioSettings { get; private set; }
-//#if DEBUG
 
+#if DEBUG
         public RichDelegateCommand CommandShowOptionsDialog { get; private set; }
-
-//#endif //DEBUG
+#endif //DEBUG
 
         public RichDelegateCommand CommandFocus { get; private set; }
         public RichDelegateCommand CommandFocusStatusBar { get; private set; }
@@ -107,7 +106,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandAudioSettings);
             //
-//#if DEBUG
+#if DEBUG
             CommandShowOptionsDialog = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_ShowOptions,
                 null,
@@ -135,7 +134,7 @@ namespace Tobi.Plugin.AudioPane
                 );
 
             m_ShellView.RegisterRichCommand(CommandShowOptionsDialog);
-//#endif //DEBUG
+#endif //DEBUG
             //
             CommandFocus = new RichDelegateCommand(
                 UserInterfaceStrings.Audio_Focus,
