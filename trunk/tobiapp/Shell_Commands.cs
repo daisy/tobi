@@ -346,10 +346,16 @@ namespace Tobi
                 () =>
                 {
                     m_Logger.Log("ShellView.HelpCommand", Category.Debug, Priority.Medium);
-
-                    throw new NotImplementedException("Functionality not implemented, sorry :(",
-                        new ArgumentOutOfRangeException("First Inner exception",
-                            new FileNotFoundException("Second inner exception !")));
+                    
+                        throw new NotImplementedException("Functionality not implemented, sorry :(",
+                            new ArgumentOutOfRangeException("First Inner exception",
+                                new FileNotFoundException("Second inner exception !")));
+                    //    try
+                    //    { }
+                    //catch (Exception ex)
+                    //{
+                    //    ExceptionHandler.Handle(ex, false, this);
+                    //}
                 },
                  () => true,
                 Settings_KeyGestures.Default,

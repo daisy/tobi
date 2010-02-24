@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Media;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using SystemColors = System.Windows.SystemColors;
 
@@ -56,6 +58,14 @@ namespace Tobi.Common.UI
             //#if DEBUG
             //            Debugger.Break();
             //#endif
+
+
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            {
+                Dispatcher.CurrentDispatcher.Invoke(
+                    (Action<Exception, bool, IShellView>)Handle, ex, doExit, shellView);
+                return;
+            }
 
             LogException(ex);
 
@@ -276,7 +286,7 @@ namespace Tobi.Common.UI
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 500, 250,
+                                                   !doExit, 500, 250,
                                                    (String.IsNullOrEmpty(exStackTrace) ? null : details), 130);
 
             SystemSounds.Exclamation.Play();
@@ -285,10 +295,16 @@ namespace Tobi.Common.UI
             {
                 windowPopup.ShowModal();
             }
-            catch
+            catch (TargetInvocationException exx1)
             {
-                //ignore.
-                int debug = 1;
+                try
+                {
+                    Dispatcher.CurrentDispatcher.Invoke((Action)(windowPopup.ShowModal));
+                }
+                catch (TargetInvocationException exx2)
+                {
+                    throw exx2.InnerException;
+                }
             }
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
