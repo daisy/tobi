@@ -81,7 +81,7 @@ namespace Tobi.Plugin.Settings
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Edit, PreferredPosition.Last, true,
                 null, PreferredPosition.Any, true,
                 new[] { CommandShowSettings });
 

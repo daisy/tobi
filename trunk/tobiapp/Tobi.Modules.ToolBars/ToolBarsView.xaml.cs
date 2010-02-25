@@ -72,7 +72,7 @@ namespace Tobi.Plugin.ToolBars
                 UserInterfaceStrings.Toolbar_Focus,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                null,
+                m_ShellView.LoadTangoIcon("applications-accessories"),
                 () => FocusHelper.Focus(FocusStart),
                 () => true,
                 Settings_KeyGestures.Default,
@@ -102,8 +102,6 @@ namespace Tobi.Plugin.ToolBars
             }
 #endif
             int uid = getNewUid();
-
-return uid; //TODO REMOVE just for testing !!!!
 
             //IRegion targetRegion = m_RegionManager.Regions[RegionNames.MainToolbar];
 

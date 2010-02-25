@@ -91,7 +91,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor,
                 Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
+                m_ShellView.LoadTangoIcon("audio-input-microphone"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);

@@ -21,7 +21,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Export,
                 UserInterfaceStrings.Export_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
+                m_ShellView.LoadGnomeNeuIcon(@"Neu_accessories-archiver"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 () =>
                 {

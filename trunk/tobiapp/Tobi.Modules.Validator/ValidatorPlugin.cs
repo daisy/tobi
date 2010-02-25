@@ -48,7 +48,7 @@ namespace Tobi.Plugin.Validator
                 "Validation Check",
                 "",
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeNeuIcon(@"Neu_preferences-user-information"),
+                m_ShellView.LoadGnomeGionIcon(@"Gion_application-certificate"),
                 ShowDialog,
                 CanShowDialog,
                 Settings_KeyGestures.Default,
@@ -61,10 +61,10 @@ namespace Tobi.Plugin.Validator
     
         private readonly RichDelegateCommand CommandShowValidator;
 
-        private int m_ToolBarId_1;
+        //private int m_ToolBarId_1;
         protected override void OnToolBarReady()
         {
-            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowValidator }, PreferredPosition.Any);
+            //m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowValidator }, PreferredPosition.Any);
 
             m_Logger.Log(@"ValidatorPlugin commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.Validator
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Tools, PreferredPosition.Any, true,
                 null, PreferredPosition.First, true,
                 new[] { CommandShowValidator });
 
@@ -84,7 +84,7 @@ namespace Tobi.Plugin.Validator
         {
             if (m_ToolBarsView != null)
             {
-                m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
+                //m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
 
                 m_Logger.Log(@"ValidatorPlugin commands removed from toolbar", Category.Debug, Priority.Medium);
             }

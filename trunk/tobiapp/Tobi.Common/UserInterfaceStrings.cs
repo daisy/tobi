@@ -1,8 +1,4 @@
 using System;
-using System.Deployment.Application;
-using System.IO;
-using System.Reflection;
-using System.Windows;
 
 namespace Tobi.Common
 {
@@ -12,39 +8,7 @@ namespace Tobi.Common
     ///</summary>
     public static class UserInterfaceStrings
     {
-        //http://daisy.trac.cvsdude.com/tobi/wiki/Alpha
-        public readonly static Uri TobiHomeUri = new Uri("http://www.digitaltalkingbook.com/projects/tobi/install/alpha/", UriKind.Absolute);
-
-        public static readonly string UnhandledException;
-
-        public const string LOG_FILE_NAME = "Tobi.log";
-        public static readonly string LOG_FILE_PATH;
-
-        static UserInterfaceStrings()
-        {
-            //Directory.GetCurrentDirectory()
-            //string apppath = (new FileInfo(Assembly.GetExecutingAssembly().CodeBase)).DirectoryName;
-            //AppDomain.CurrentDomain.BaseDirectory
-
-            string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
-            APP_VERSION = GetVersion();
-
-            UnhandledException = "Oops, a problem occurred." + Environment.NewLine + "The full error message is displayed below.\nAlternatively, you may open the '" + LOG_FILE_NAME + "' file, located here: [ " + LOG_FILE_PATH + " ].";
-        }
-
-        public static readonly string APP_VERSION;
-        private static string GetVersion()
-        {
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-            }
-            return Application.Current.GetType().Assembly.GetName().Version.ToString();
-            //return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            // DIFFERENT than FileVersion !!
-            // NOT: System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
-        }
+        public static readonly string UnhandledException = "Oops, a problem occurred." + Environment.NewLine + "The full error message is displayed below.\nAlternatively, you may open the '" + ApplicationConstants.LOG_FILE_NAME + "' file, located here: [ " + ApplicationConstants.LOG_FILE_PATH + " ].";
 
         public static string EscapeMnemonic(string str)
         {
@@ -185,6 +149,7 @@ namespace Tobi.Common
         public const string Menu_Edit = "_Edit";
 
         public const string Menu_Tools = "_Tools";
+        public const string Menu_Structure = "_Structure";
         public const string Menu_Addins = "_Add-in manager";
         public const string Menu_Logging = "_Log window";
 
@@ -268,12 +233,12 @@ namespace Tobi.Common
         //public static KeyGesture Paste_KEYS = new KeyGesture(Key.V, ModifierKeys.Control);
 
 
-        public const string ShowLogFilePath = "DEBUG: _Where is [" + LOG_FILE_NAME + "] ?";
-        public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
+        //public const string ShowLogFilePath = "DEBUG: _Where is [" + LOG_FILE_NAME + "] ?";
+        //public const string ShowLogFilePath_ = "Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.";
         //public static KeyGesture ShowLogFilePath_KEYS = new KeyGesture(Key.F1, ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift);
 
-        public const string OpenTobiIsolatedStorage = "Browse system storage folder";
-        public const string OpenTobiIsolatedStorage_ = "Open a file browser where Tobi's system files are located.";
+        public const string OpenTobiIsolatedStorage = "Browse storage folder";
+        public const string OpenTobiIsolatedStorage_ = "Open a file browser where Tobi's files are located.";
 
         public const string OpenTobiFolder = "Browse application folder";
         public const string OpenTobiFolder_ = "Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides).";

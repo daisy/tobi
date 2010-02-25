@@ -68,7 +68,7 @@ namespace Tobi.Common.UI
                 UserInterfaceStrings.DetailsExpand,
                 UserInterfaceStrings.DetailsExpand_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                (ShellView == null ? null : ShellView.LoadTangoIcon("go-down")),
+                (ShellView == null ? null : ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-down")),
                 () => IsDetailsExpanded = true,
                 () => HasDetails && !IsDetailsExpanded,
                 Settings_KeyGesture.Default,
@@ -81,7 +81,7 @@ namespace Tobi.Common.UI
                 UserInterfaceStrings.DetailsCollapse,
                 UserInterfaceStrings.DetailsCollapse_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                (ShellView == null ? null : ShellView.LoadTangoIcon("go-up")),
+                (ShellView == null ? null : ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-up")),
                 () => IsDetailsExpanded = false,
                 () => HasDetails && IsDetailsExpanded,
                 Settings_KeyGesture.Default,

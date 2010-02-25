@@ -154,7 +154,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Undo,
                 UserInterfaceStrings.Undo_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"edit-undo"),
+                m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-undo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
                 () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo,
                 Settings_KeyGestures.Default,
@@ -166,7 +166,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Redo,
                 UserInterfaceStrings.Redo_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"edit-redo"),
+                m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-redo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
                 () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo,
                 Settings_KeyGestures.Default,
@@ -178,7 +178,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Close,
                 UserInterfaceStrings.Close_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"go-jump"),
+                m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 () => Close(),
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
@@ -190,8 +190,8 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.DataCleanup,
                 UserInterfaceStrings.DataCleanup_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"edit-delete"),
-                () => DataCleanup(),
+                m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
+                DataCleanup,
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanup));

@@ -76,8 +76,8 @@ namespace Tobi
             Trace.WriteLine(@"TRACE -- Testing redirection from System.Diagnostics.Trace.WriteLine() to the application logger. This message should not appear in RELEASE mode (and in DEBUG mode only when TRACE flag is set).");
 
             m_Logger.Log(@"[" + DateTime.Now + @"]", Category.Info, Priority.High);
-            m_Logger.Log(@"[" + Tobi_Lang.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
-            m_Logger.Log(@"[Tobi version: " + Tobi_Lang.APP_VERSION + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[" + ApplicationConstants.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[Tobi version: " + ApplicationConstants.APP_VERSION + @"]", Category.Info, Priority.High);
 
             m_Logger.Log(@"[Tobi app data folder: " + ExternalFilesDataManager.STORAGE_FOLDER_PATH + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[Tobi exe/log folder: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"]", Category.Info, Priority.High);

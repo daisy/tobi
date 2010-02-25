@@ -255,7 +255,7 @@ namespace Tobi.Common.UI
     public class PreferredPositionRegion : Region
     {
 #if DEBUG
-        public static readonly bool MARK_PREFERRED_POS = true; // change this to false to avoid information overload in DEBUG mode.
+        public static readonly bool MARK_PREFERRED_POS = false; // change this to false to avoid information overload in DEBUG mode.
 #endif
         private int addIndex = 0;
 

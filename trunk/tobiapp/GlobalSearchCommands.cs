@@ -48,7 +48,7 @@ namespace Tobi
             CmdFindFocus = new RichCompositeCommand("Find...", //TODO: localize
                 "Edit the search criteria.",
                 null, // KeyGesture obtained from settings (see last parameters below)
-                null, //m_ShellView.LoadTangoIcon("format-indent-more"),
+                m_ShellView.LoadTangoIcon("edit-find"),
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Find));
 
@@ -107,8 +107,8 @@ namespace Tobi
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
                 int uid1 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_Tools, PreferredPosition.Any, true,
-                    RegionNames.MenuBar_Find, PreferredPosition.Any, true,
+                    RegionNames.MenuBar_Tools, PreferredPosition.First, true,
+                    RegionNames.MenuBar_Find, PreferredPosition.First, true,
                     new[] { CmdFindFocus, CmdFindPrevious, CmdFindNext });
 
                 m_MenuBarCommandsDone = true;
