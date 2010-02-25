@@ -70,6 +70,15 @@ namespace Tobi.Plugin.MenuBar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SUB_{0} _{1}.
+        /// </summary>
+        public static string SUB {
+            get {
+                return ResourceManager.GetString("SUB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The menu that contains application commands..
         /// </summary>
         public static string TheMenuThatContainsApplicationCommands {

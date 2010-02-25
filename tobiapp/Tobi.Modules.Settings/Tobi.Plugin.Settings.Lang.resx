@@ -136,7 +136,7 @@
     <value>Numeric value is out of range [0, 9999].</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
-    <value>Shortcut already used by:</value>
+    <value>Shortcut already used by: {0}</value>
   </data>
   <data name="StringCannotBeEmpty" xml:space="preserve">
     <value>String cannot be empty.</value>

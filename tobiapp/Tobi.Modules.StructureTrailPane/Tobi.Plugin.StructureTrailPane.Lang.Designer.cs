@@ -88,6 +88,15 @@ namespace Tobi.Plugin.StructureTrailPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [No XML]..
+        /// </summary>
+        public static string NoXML {
+            get {
+                return ResourceManager.GetString("NoXML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Narrow structure selection.
         /// </summary>
         public static string StructureDown {
@@ -129,6 +138,15 @@ namespace Tobi.Plugin.StructureTrailPane {
         public static string ThePublicationDocumentViewer {
             get {
                 return ResourceManager.GetString("ThePublicationDocumentViewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML: [{0}]..
+        /// </summary>
+        public static string XMLName {
+            get {
+                return ResourceManager.GetString("XMLName", resourceCulture);
             }
         }
     }

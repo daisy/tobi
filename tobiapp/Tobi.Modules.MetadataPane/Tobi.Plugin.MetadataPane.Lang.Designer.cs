@@ -61,11 +61,56 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The metadata editor modal dialog is opening..
+        /// </summary>
+        public static string DialogOpen {
+            get {
+                return ResourceManager.GetString("DialogOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata editor panel..
         /// </summary>
         public static string MetadataEditorPanel {
             get {
                 return ResourceManager.GetString("MetadataEditorPanel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Metadata Editor.
+        /// </summary>
+        public static string OpenMetadataEditor {
+            get {
+                return ResourceManager.GetString("OpenMetadataEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional..
+        /// </summary>
+        public static string Optional {
+            get {
+                return ResourceManager.GetString("Optional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended..
+        /// </summary>
+        public static string Recommended {
+            get {
+                return ResourceManager.GetString("Recommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required..
+        /// </summary>
+        public static string Required {
+            get {
+                return ResourceManager.GetString("Required", resourceCulture);
             }
         }
         

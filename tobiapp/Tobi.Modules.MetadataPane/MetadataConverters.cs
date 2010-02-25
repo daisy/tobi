@@ -47,10 +47,10 @@ namespace Tobi.Plugin.MetadataPane
             if (value == null) return "";
             MetadataDefinition item = (MetadataDefinition)value;
             if (item.Occurrence == MetadataOccurrence.Required)
-                return "Required.  ";
+                return "Required.  ";         // TODO LOCALIZE Required
             if (item.Occurrence == MetadataOccurrence.Recommended)
-                return "Recommended. ";
-            return "Optional. ";
+                return "Recommended. ";       // TODO LOCALIZE Recommended
+            return "Optional. ";              // TODO LOCALIZE Optional
         }
     }
 

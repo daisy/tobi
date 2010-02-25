@@ -115,6 +115,15 @@ namespace Tobi.Plugin.NavigationPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ] (No heading).
+        /// </summary>
+        public static string NoHeading {
+            get {
+                return ResourceManager.GetString("NoHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find Next.
         /// </summary>
         public static string PageFindNext {

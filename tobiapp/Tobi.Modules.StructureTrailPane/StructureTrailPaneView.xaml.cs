@@ -484,11 +484,11 @@ namespace Tobi.Plugin.StructureTrailPane
                     string strPrepend = "";
                     if (qName == null)
                     {
-                        strPrepend = "[No XML]. ";
+                        strPrepend = "[No XML]. ";           // TODO LOCALIZE NoXML
                     }
                     else
                     {
-                        strPrepend = "XML: [" + qName.LocalName + "]. ";
+                        strPrepend = "XML: [" + qName.LocalName + "]. ";      // TODO LOCALIZE XMLName
                     }
                     string str = strPrepend + m_CurrentSubTreeNode.GetTextMediaFlattened();
 
