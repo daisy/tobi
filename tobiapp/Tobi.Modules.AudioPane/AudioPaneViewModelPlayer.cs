@@ -45,8 +45,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Player()
         {
             CommandPlaybackRateReset = new RichDelegateCommand(
-                  UserInterfaceStrings.Audio_PlayRateReset,
-                  UserInterfaceStrings.Audio_PlayRateReset_,
+                  Tobi_Plugin_AudioPane_Lang.Audio_PlayRateReset,
+                  Tobi_Plugin_AudioPane_Lang.Audio_PlayRateReset_,
                   null, // KeyGesture obtained from settings (see last parameters below)
                   m_ShellView.LoadGnomeGionIcon("Gion_go-previous"),
                   () =>
@@ -62,8 +62,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandPlaybackRateReset);
             //
             CommandPlaybackRateDown = new RichDelegateCommand(
-               UserInterfaceStrings.Audio_PlayRateDown,
-               UserInterfaceStrings.Audio_PlayRateDown_,
+               Tobi_Plugin_AudioPane_Lang.Audio_PlayRateDown,
+               Tobi_Plugin_AudioPane_Lang.Audio_PlayRateDown_,
                null, // KeyGesture obtained from settings (see last parameters below)
                m_ShellView.LoadGnomeGionIcon("Gion_go-up"),
                () =>
@@ -85,8 +85,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandPlaybackRateDown);
             //
             CommandPlaybackRateUp = new RichDelegateCommand(
-               UserInterfaceStrings.Audio_PlayRateUp,
-               UserInterfaceStrings.Audio_PlayRateUp_,
+               Tobi_Plugin_AudioPane_Lang.Audio_PlayRateUp,
+               Tobi_Plugin_AudioPane_Lang.Audio_PlayRateUp_,
                null, // KeyGesture obtained from settings (see last parameters below)
                m_ShellView.LoadGnomeGionIcon("Gion_go-down"),
                () =>
@@ -108,8 +108,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandPlaybackRateUp);
             //
             CommandAutoPlay = new RichDelegateCommand(
-               UserInterfaceStrings.Audio_AutoPlay,
-               UserInterfaceStrings.Audio_AutoPlay_,
+               Tobi_Plugin_AudioPane_Lang.Audio_AutoPlay,
+               Tobi_Plugin_AudioPane_Lang.Audio_AutoPlay_,
                null, // KeyGesture obtained from settings (see last parameters below)
                m_ShellView.LoadGnomeNeuIcon("Neu_go-last"),
                () =>
@@ -126,8 +126,8 @@ namespace Tobi.Plugin.AudioPane
             //
             //
             CommandPause = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Pause,
-                UserInterfaceStrings.Audio_Pause_,
+                Tobi_Plugin_AudioPane_Lang.Audio_Pause,
+                Tobi_Plugin_AudioPane_Lang.Audio_Pause_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-pause"),
                 () =>
@@ -143,8 +143,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandPause);
             //
             CommandPlay = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Play,
-                UserInterfaceStrings.Audio_Play_,
+                Tobi_Plugin_AudioPane_Lang.Audio_Play,
+                Tobi_Plugin_AudioPane_Lang.Audio_Play_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-start"),
                 () =>
@@ -198,8 +198,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandPlay);
             //
             CommandPlayPreviewLeft = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_PlayPreviewLeft,
-                UserInterfaceStrings.Audio_PlayPreviewLeft_,
+                Tobi_Plugin_AudioPane_Lang.Audio_PlayPreviewLeft,
+                Tobi_Plugin_AudioPane_Lang.Audio_PlayPreviewLeft_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left")),
                 () => PlayPreviewLeftRight(true),
@@ -210,8 +210,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandPlayPreviewLeft);
             //
             CommandPlayPreviewRight = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_PlayPreviewRight,
-                UserInterfaceStrings.Audio_PlayPreviewRight_,
+                Tobi_Plugin_AudioPane_Lang.Audio_PlayPreviewRight,
+                Tobi_Plugin_AudioPane_Lang.Audio_PlayPreviewRight_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right")),
                 () => PlayPreviewLeftRight(false),
