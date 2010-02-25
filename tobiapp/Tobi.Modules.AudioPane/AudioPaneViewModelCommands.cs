@@ -31,7 +31,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_Reload,
                 Tobi_Plugin_AudioPane_Lang.Audio_Reload_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
+                null, //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //shellView.LoadTangoIcon("view-refresh"),
                 ()=>
                 {

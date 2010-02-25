@@ -46,7 +46,7 @@ namespace Tobi.Plugin.NavigationPane
                 UserInterfaceStrings.Navigation_Focus,
                                     null,
                                     null, // KeyGesture obtained from settings (see last parameters below)
-                                    m_ShellView.LoadTangoIcon("address-book-new"),
+                                    m_ShellView.LoadTangoIcon("start-here"),
                                     () =>
                                     {
                                         IRegion tabRegion = m_RegionManager.Regions[RegionNames.NavigationPaneTabs];

@@ -61,7 +61,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_Delete,
                 Tobi_Plugin_AudioPane_Lang.Audio_Delete_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeNeuIcon("Neu_dialog-cancel"),
+                m_ShellView.LoadTangoIcon("audio-volume-muted"),
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandDeleteAudioSelection", Category.Debug, Priority.Medium);

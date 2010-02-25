@@ -64,17 +64,10 @@ namespace Tobi.Plugin.Urakawa
                 null, PreferredPosition.First, true,
                 new[] { m_UrakawaSession.OpenCommand });
 
-            var clearCmd = new RichDelegateCommand(UserInterfaceStrings.Menu_ClearRecentFiles,
-                                                   UserInterfaceStrings.Menu_ClearRecentFiles_,
-                                                   null,
-                                                   m_ShellView.LoadGnomeFoxtrotIcon(@"Foxtrot_user-trash-full"),
-                                                   () => m_UrakawaSession.ClearRecentFiles(),
-                                                   () => true,
-                                                   null, null);
             int clearID = m_MenuBarView.AddMenuBarGroup(
                 RegionNames.MenuBar_File, PreferredPosition.First, false,
                 RegionNames.MenuBar_OpenRecent, PreferredPosition.Last, true,
-                new[] { clearCmd });
+                new[] { m_UrakawaSession.ClearRecentFilesCommand });
 
             resetRecentFilesSubMenu();
 
