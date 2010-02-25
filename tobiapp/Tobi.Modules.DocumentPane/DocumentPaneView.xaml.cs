@@ -144,7 +144,7 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Plugin_DocumentPane_Lang.Event_SwitchPrevious,
                 Tobi_Plugin_DocumentPane_Lang.Event_SwitchPrevious_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("format-indent-less"),
+                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-first"),
                 () =>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)
@@ -196,7 +196,7 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Plugin_DocumentPane_Lang.Event_SwitchNext,
                 Tobi_Plugin_DocumentPane_Lang.Event_SwitchNext_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("format-indent-more"),
+                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-last"),
                 () =>
                 {
                     if (CurrentTreeNode == CurrentSubTreeNode)

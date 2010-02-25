@@ -107,7 +107,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Save,
                 UserInterfaceStrings.Save_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"media-floppy"),
+                m_ShellView.LoadTangoIcon(@"drive-harddisk"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
                 () => save(),
                 () => DocumentProject != null,

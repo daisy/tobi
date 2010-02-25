@@ -343,7 +343,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 Tobi_Plugin_StructureTrailPane_Lang.StructureDown,
                 Tobi_Plugin_StructureTrailPane_Lang.StructureDown_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("format-indent-less"),
+                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-bottom"),
                 () =>
                 {
                     int i = PathToCurrentTreeNode.IndexOf(CurrentTreeNode);
@@ -363,7 +363,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 Tobi_Plugin_StructureTrailPane_Lang.StructureUp,
                 Tobi_Plugin_StructureTrailPane_Lang.StructureUp_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("format-indent-more"),
+                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-top"),
                 () =>
                 {
                     selectNode(CurrentTreeNode.Parent, false);
@@ -387,7 +387,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 Tobi_Plugin_StructureTrailPane_Lang.Document_Focus,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                null,
+                m_ShellView.LoadTangoIcon("edit-select-all"),
                 () => FocusHelper.FocusBeginInvoke(m_FocusStartElement),
                 () => true,
                 Settings_KeyGestures.Default,

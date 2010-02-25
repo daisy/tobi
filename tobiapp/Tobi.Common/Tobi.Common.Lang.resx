@@ -120,9 +120,6 @@
   <data name="Apply" xml:space="preserve">
     <value>_Apply</value>
   </data>
-  <data name="APP_VERSION" xml:space="preserve">
-    <value>[0]</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>_Cancel</value>
   </data>
@@ -140,9 +137,6 @@
   </data>
   <data name="DetailsExpand_" xml:space="preserve">
     <value>Display detailed information</value>
-  </data>
-  <data name="LOG_FILE_NAME" xml:space="preserve">
-    <value>Tobi.log</value>
   </data>
   <data name="Menu_Audio" xml:space="preserve">
     <value>_Audio</value>
@@ -194,8 +188,5 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>_Yes</value>
-  </data>
-  <data name="UnhandledException" xml:space="preserve">
-    <value>[0]</value>
   </data>
 </root>

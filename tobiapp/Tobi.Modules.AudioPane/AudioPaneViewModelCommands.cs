@@ -66,7 +66,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_FitFull,
                 Tobi_Plugin_AudioPane_Lang.Audio_FitFull_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("utilities-system-monitor"),
+                m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandZoomFitFull", Category.Debug, Priority.Medium);
@@ -84,7 +84,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_Settings,
                 Tobi_Plugin_AudioPane_Lang.Audio_Settings_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("audio-card"),
+                m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandAudioSettings", Category.Debug, Priority.Medium);
@@ -140,7 +140,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_Focus,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                null,
+                m_ShellView.LoadTangoIcon("audio-volume-low"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFocus", Category.Debug, Priority.Medium);
@@ -157,7 +157,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_FocusStatusBar,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                null,
+                m_ShellView.LoadGnomeNeuIcon("Neu_utilities-terminal"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFocusStatusBar", Category.Debug, Priority.Medium);

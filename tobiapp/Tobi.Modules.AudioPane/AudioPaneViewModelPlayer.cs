@@ -65,7 +65,7 @@ namespace Tobi.Plugin.AudioPane
                Tobi_Plugin_AudioPane_Lang.Audio_PlayRateDown,
                Tobi_Plugin_AudioPane_Lang.Audio_PlayRateDown_,
                null, // KeyGesture obtained from settings (see last parameters below)
-               m_ShellView.LoadGnomeGionIcon("Gion_go-up"),
+               m_ShellView.LoadGnomeGionIcon("Gion_go-down"),
                () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandPlaybackRateDown", Category.Debug, Priority.Medium);
@@ -88,7 +88,7 @@ namespace Tobi.Plugin.AudioPane
                Tobi_Plugin_AudioPane_Lang.Audio_PlayRateUp,
                Tobi_Plugin_AudioPane_Lang.Audio_PlayRateUp_,
                null, // KeyGesture obtained from settings (see last parameters below)
-               m_ShellView.LoadGnomeGionIcon("Gion_go-down"),
+               m_ShellView.LoadGnomeGionIcon("Gion_go-up"),
                () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandPlaybackRateUp", Category.Debug, Priority.Medium);
@@ -111,7 +111,7 @@ namespace Tobi.Plugin.AudioPane
                Tobi_Plugin_AudioPane_Lang.Audio_AutoPlay,
                Tobi_Plugin_AudioPane_Lang.Audio_AutoPlay_,
                null, // KeyGesture obtained from settings (see last parameters below)
-               m_ShellView.LoadGnomeNeuIcon("Neu_go-last"),
+               m_ShellView.LoadTangoIcon("applications-multimedia"),
                () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);

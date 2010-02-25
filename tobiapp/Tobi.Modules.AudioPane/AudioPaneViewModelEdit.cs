@@ -38,7 +38,7 @@ namespace Tobi.Plugin.AudioPane
                 UserInterfaceStrings.Audio_InsertFile,
                 UserInterfaceStrings.Audio_InsertFile_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeNeuIcon("Neu_go-jump"),
+                m_ShellView.LoadTangoIcon("folder-open"),
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandInsertFile", Category.Debug, Priority.Medium);

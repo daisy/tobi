@@ -61,10 +61,10 @@ namespace Tobi.Plugin.MetadataPane
 
         public RichDelegateCommand CommandShowMetadataPane { get; private set; }
 
-        private int m_ToolBarId_1;
+        //private int m_ToolBarId_1;
         protected override void OnToolBarReady()
         {
-            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowMetadataPane }, PreferredPosition.Any);
+            //m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowMetadataPane }, PreferredPosition.Any);
 
             m_Logger.Log(@"Urakawa session commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.MetadataPane
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Edit, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Edit, PreferredPosition.Any, true,
                 null, PreferredPosition.Any, true,
                 new[] { CommandShowMetadataPane });
 
@@ -84,7 +84,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             if (m_ToolBarsView != null)
             {
-                m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
+                //m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
 
                 m_Logger.Log(@"Urakawa session commands removed from toolbar", Category.Debug, Priority.Medium);
             }

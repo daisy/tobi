@@ -38,7 +38,7 @@ namespace Tobi.Plugin.Urakawa
                 UserInterfaceStrings.Open,
                 UserInterfaceStrings.Open_,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"document-open"),
+                m_ShellView.LoadGnomeFoxtrotIcon(@"Foxtrot_gnome-fs-accept"),
                 () =>
                 {
                     var dlg = new OpenFileDialog

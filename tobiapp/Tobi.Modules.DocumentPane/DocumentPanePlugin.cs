@@ -67,8 +67,8 @@ namespace Tobi.Plugin.DocumentPane
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Tools, PreferredPosition.First, true,
-                RegionNames.MenuBar_Navigation, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Structure, PreferredPosition.First, true,
+                RegionNames.MenuBar_Navigation, PreferredPosition.First, true,
                 new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
 
             m_Logger.Log(@"Document commands pushed to menubar", Category.Debug, Priority.Medium);

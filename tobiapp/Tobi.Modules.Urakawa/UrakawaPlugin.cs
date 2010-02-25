@@ -67,12 +67,12 @@ namespace Tobi.Plugin.Urakawa
             var clearCmd = new RichDelegateCommand(UserInterfaceStrings.Menu_ClearRecentFiles,
                                                    UserInterfaceStrings.Menu_ClearRecentFiles_,
                                                    null,
-                                                   m_ShellView.LoadTangoIcon(@"system-log-out"),
+                                                   m_ShellView.LoadGnomeFoxtrotIcon(@"Foxtrot_user-trash-full"),
                                                    () => m_UrakawaSession.ClearRecentFiles(),
                                                    () => true,
                                                    null, null);
             int clearID = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_File, PreferredPosition.First, true,
+                RegionNames.MenuBar_File, PreferredPosition.First, false,
                 RegionNames.MenuBar_OpenRecent, PreferredPosition.Last, true,
                 new[] { clearCmd });
 
@@ -96,7 +96,7 @@ namespace Tobi.Plugin.Urakawa
                 new[] { m_UrakawaSession.UndoCommand, m_UrakawaSession.RedoCommand });
 
             m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Edit, PreferredPosition.First, true,
+                RegionNames.MenuBar_Edit, PreferredPosition.Any, true,
                 null, PreferredPosition.First, true,
                 new[] { m_UrakawaSession.DataCleanupCommand });
 

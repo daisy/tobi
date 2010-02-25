@@ -92,12 +92,12 @@ namespace Tobi.Common
 
         public virtual string Version
         {
-            get { return Tobi_Common_Lang.APP_VERSION; }
+            get { return ApplicationConstants.APP_VERSION; }
         }
 
         public virtual Uri Home
         {
-            get { return UserInterfaceStrings.TobiHomeUri; }
+            get { return ApplicationConstants.TobiHomeUri; }
         }
 
         public virtual string Name { private set; get; }

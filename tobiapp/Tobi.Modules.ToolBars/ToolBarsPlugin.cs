@@ -53,8 +53,8 @@ namespace Tobi.Plugin.ToolBars
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_View, PreferredPosition.Last, true,
-                RegionNames.MenuBar_Focus, PreferredPosition.First, true,
+                RegionNames.MenuBar_View, PreferredPosition.First, true,
+                RegionNames.MenuBar_Focus, PreferredPosition.Any, false,
                 new[] { m_ToolBarsView.CommandFocus });
 
             m_Logger.Log(@"Toolbar commands pushed to menubar", Category.Debug, Priority.Medium);

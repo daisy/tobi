@@ -147,8 +147,7 @@ namespace Tobi
         {
             if (!m_ToolBarCommandsDone && m_ToolBarsView != null)
             {
-                // TODO: remove this ! (just for debug)
-                int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { ExitCommand }, PreferredPosition.First);
+                //int uid3 = m_ToolBarsView.AddToolBarGroup(new[] { ExitCommand }, PreferredPosition.First);
 
                 int uid2 = m_ToolBarsView.AddToolBarGroup(new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand }, PreferredPosition.Any);
                 //int uid1 = m_ToolBarsView.AddToolBarGroup(new[] { ManageShortcutsCommand }, PreferredPosition.Any);
@@ -179,8 +178,8 @@ namespace Tobi
                     new[] { ExitCommand });
 
                 int uid2 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_View, PreferredPosition.Last, true,
-                    RegionNames.MenuBar_Magnification, PreferredPosition.Any, true,
+                    RegionNames.MenuBar_View, PreferredPosition.First, true,
+                    RegionNames.MenuBar_Magnification, PreferredPosition.First, true,
                     new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
 #if DEBUG
                 int uid3 = m_MenuBarView.AddMenuBarGroup(
@@ -190,7 +189,7 @@ namespace Tobi
 #endif
                 int uid4 = m_MenuBarView.AddMenuBarGroup(
                     RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
-                    RegionNames.MenuBar_System, PreferredPosition.Any, true,
+                    RegionNames.MenuBar_System, PreferredPosition.First, true,
                     new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand, OpenTobiIsolatedStorageCommand });
 
 #if DEBUG
@@ -447,9 +446,13 @@ namespace Tobi
             {
                 if (m_UrakawaSession == null)
                 {
-                    return String.Format(@"Tobi {{{0}}} - Please wait...", Tobi_Lang.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
+                    return String.Format(@"Tobi {{{0}}} - Please wait...", ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
                 }
-                return String.Format(@"Tobi {{{0}}} {1}[{2}]", Tobi_Lang.APP_VERSION, (m_UrakawaSession.IsDirty ? @"* " : @""), (m_UrakawaSession.DocumentProject == null ? @"no document" : m_UrakawaSession.DocumentFilePath));    // TODO LOCALIZE WindowsTitleKey2, NoDocument
+                return String.Format(@"Tobi {{{0}}} {1}[{2}]",
+                    ApplicationConstants.APP_VERSION,
+                    (m_UrakawaSession.IsDirty ? @"* " : @""),
+                    (m_UrakawaSession.DocumentProject == null ? @"no document" : m_UrakawaSession.DocumentFilePath)
+                    );    // TODO LOCALIZE WindowsTitleKey2, NoDocument
             }
         }
 
