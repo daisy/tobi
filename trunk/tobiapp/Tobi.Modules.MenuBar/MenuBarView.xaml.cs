@@ -91,15 +91,18 @@ namespace Tobi.Plugin.MenuBar
             int uid = generateNewUid();
             int count = 0;
 
-            if (addSeparatorTopLevel && targetRegion.Views.Count() > 0)
+            if (addSeparatorTopLevel) // && targetRegion.Views.Count() > 0)
             {
-                var sep = new Separator();
+                object view = new Separator();
+#if DEBUG
+                view = new MenuItemRichCommand { Header = positionInTopLevel.ToString("G") + " >> -------" };
+#endif
 
                 string viewname = (!string.IsNullOrEmpty(subMenuItemId) ? @"SUB_" : "")
                                    + uid + @"_" + count++;
 
                 m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = sep, m_viewPreferredPosition = positionInTopLevel });
+                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = view, m_viewPreferredPosition = positionInTopLevel });
                 //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => sep);
                 //targetRegion.Add(sep, viewname);
                 //targetRegion.Activate(sep);
@@ -123,12 +126,14 @@ namespace Tobi.Plugin.MenuBar
                 catch
                 {
                     var subMenuRoot = new MenuItemRichCommand { Header = subMenuItemId };
-
+#if DEBUG
+                    subMenuRoot.Header = positionInTopLevel.ToString("G") + " >> " + subMenuRoot.Header;
+#endif
                     //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
                     RegionManager.SetRegionName(subMenuRoot, subRegionName);
                     //RegionManager.UpdateRegions();
 
-                    string viewname = @"SUB_" + uid + @"_" + count++;        // TODO LOCALIZE SUB
+                    string viewname = @"SUB_" + uid + @"_" + count++;
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
                         new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = positionInTopLevel });
@@ -144,37 +149,53 @@ namespace Tobi.Plugin.MenuBar
                 return uid;
 
 
-            if (!string.IsNullOrEmpty(subMenuItemId) && addSeparatorSubLevel && targetRegion.Views.Count() > 0)
+            if (!string.IsNullOrEmpty(subMenuItemId) && addSeparatorSubLevel) // && targetRegion.Views.Count() > 0)
             {
-                var sep = new Separator();
+                object view = new Separator();
+#if DEBUG
+                view = new MenuItemRichCommand { Header = positionInSubLevel.ToString("G") + " >> -------" };
+#endif
 
                 string viewname = uid + @"_" + count++;
 
                 m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = sep, m_viewPreferredPosition = positionInSubLevel });
+                    new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = view, m_viewPreferredPosition = positionInSubLevel });
                 //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => sep);
                 //targetRegion.Add(sep, viewname);
                 //targetRegion.Activate(sep);
             }
 
+            var actualPosition = (string.IsNullOrEmpty(subMenuItemId) ? positionInTopLevel : positionInSubLevel);
+
             foreach (var command in commands)
             {
                 if (command is RichDelegateCommand)
                 {
+#if DEBUG
+                    string str = ((RichDelegateCommand)command).ShortDescription;
+                    ((RichDelegateCommand)command).ShortDescription = actualPosition.ToString("G") + " >> " + str;
+#endif
                     string viewname = uid + @"_" + count++;
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = (string.IsNullOrEmpty(subMenuItemId) ? positionInTopLevel : positionInSubLevel) });
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = actualPosition });
                     //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => command);
                     //targetRegion.Add(command, viewname);
                     //targetRegion.Activate(command);
                 }
                 else if (command is TwoStateMenuItemRichCommand_DataContextWrapper)
                 {
+#if DEBUG
+                    string str = ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandOne.ShortDescription;
+                    ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandOne.ShortDescription = actualPosition.ToString("G") + " >> " + str;
+
+                    str = ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandTwo.ShortDescription;
+                    ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandTwo.ShortDescription = actualPosition.ToString("G") + " >> " + str;
+#endif
                     string viewname = uid + @"_" + count++;
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
-                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = (string.IsNullOrEmpty(subMenuItemId) ? positionInTopLevel : positionInSubLevel) });
+                        new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = actualPosition });
                     //m_RegionManager.RegisterViewWithRegion(targetRegion.Name, () => command);
                     //targetRegion.Add(command, viewname);
                     //targetRegion.Activate(command);

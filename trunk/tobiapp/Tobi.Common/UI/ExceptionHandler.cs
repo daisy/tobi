@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Logging;
 using SystemColors = System.Windows.SystemColors;
 
@@ -51,20 +52,36 @@ namespace Tobi.Common.UI
             }
         }
 
-        public static void Handle(Exception ex, bool doExit, IShellView shellView)
+        public static void Handle(Exception rootException, bool doExit, IShellView shellView)
         {
-            if (ex == null)
+            if (rootException == null)
                 return;
             //#if DEBUG
             //            Debugger.Break();
             //#endif
 
-
             if (!Dispatcher.CurrentDispatcher.CheckAccess())
             {
                 Dispatcher.CurrentDispatcher.Invoke(
-                    (Action<Exception, bool, IShellView>)Handle, ex, doExit, shellView);
+                    (Action<Exception, bool, IShellView>)Handle, rootException, doExit, shellView);
                 return;
+            }
+
+
+            Exception ex = rootException;
+
+            if (rootException is TargetInvocationException)
+            {
+                if (rootException.InnerException != null)
+                {
+                    ex = rootException.InnerException.GetRootException();
+                }
+                else
+                {
+                    ex = rootException.GetRootException();
+                }
+
+                ex = rootException.InnerException;
             }
 
             LogException(ex);

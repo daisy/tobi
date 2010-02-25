@@ -11,6 +11,7 @@ using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.ServiceLocation;
+using Tobi.Common.MVVM.Command;
 
 
 namespace Tobi.Common.UI
@@ -25,6 +26,12 @@ namespace Tobi.Common.UI
 
             return regionManager;
         }
+    }
+
+
+    public enum PreferredPosition : byte
+    {
+        First, Any, Last
     }
 
     public struct PreferredPositionNamedView
@@ -203,13 +210,6 @@ namespace Tobi.Common.UI
     //    //public readonly NamedView Content;
     //}
 
-    public enum PreferredPosition
-    {
-        Any = -1,
-        First = 0, // DEFAULT
-        Last = 100
-    }
-
     public class PreferredPositionItemMetadata : ItemMetadata
     {
         public static readonly DependencyProperty PreferredPositionProperty =
@@ -227,8 +227,35 @@ namespace Tobi.Common.UI
         }
     }
 
+    public class PreferredPositionAllActiveRegion : PreferredPositionRegion
+    {
+        public override IViewsCollection ActiveViews
+        {
+            get { return Views; }
+        }
+
+        public override void Deactivate(object view)
+        {
+            throw new InvalidOperationException("DeactiveNotPossibleException");
+        }
+    }
+
+    public class PreferredPositionItemsControlRegionAdapter : ItemsControlRegionAdapter
+    {
+        public PreferredPositionItemsControlRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)
+            : base(regionBehaviorFactory)
+        {
+        }
+
+        protected override IRegion CreateRegion()
+        {
+            return new PreferredPositionAllActiveRegion();
+        }
+    }
     public class PreferredPositionRegion : Region
     {
+        private int addIndex = 0;
+
         public IEnumerable<object> GetViewsWithNamePrefix(string viewNamePrefix)
         {
             // just to check the parameter and throw the correct exception message obtained from the superclass resources.
@@ -271,6 +298,13 @@ namespace Tobi.Common.UI
             {
                 Microsoft.Practices.Composite.Presentation.Regions.RegionManager.SetRegionManager(dependencyObject, scopedRegionManager);
             }
+#if DEBUG
+            markWithAddIndex(itemMetadata);
+#endif
+            int initialCount = ItemMetadataCollection.Count;
+
+            // normally introcuced first before actual views (sub-MenuItem, Command for Menu or Toolbar)
+            bool isSeparator = itemMetadata.Item is Separator;
 
             switch (itemMetadata.PreferredPosition)
             {
@@ -287,57 +321,67 @@ namespace Tobi.Common.UI
                             return positionedItem.PreferredPosition == PreferredPosition.First;
                         });
 
+                        // No First in the current list of views for this region
                         if (lastItemWithFirstPreferredPosition == null)
                         {
+                            if (isSeparator) break; // the following views will be inserted as the very first ones, no need for separation
+
                             if (ItemMetadataCollection.Count == 0)
                             {
-                                if (!(itemMetadata.Item is Separator))
-                                {
-                                    ItemMetadataCollection.Add(itemMetadata);
-                                }
+                                ItemMetadataCollection.Add(itemMetadata);
+#if DEBUG
+                                ItemMetadataCollectionCheckPreferredPositions();
+#endif
                             }
                             else
                             {
                                 //ItemMetadataCollection.Insert(0, itemMetadata);
+                                //ItemMetadataCollectionInsert(0, itemMetadata);
 
-                                var backup = new List<ItemMetadata>(ItemMetadataCollection.Count);
+                                var backup = new List<ItemMetadata>(initialCount);
                                 while (ItemMetadataCollection.Count > 0)
                                 {
                                     var toRemove = ItemMetadataCollection.First();
                                     ItemMetadataCollection.Remove(toRemove);
                                     backup.Add(toRemove);
                                 }
-                                if (!(itemMetadata.Item is Separator))
-                                {
-                                    ItemMetadataCollection.Add(itemMetadata);
-                                }
+
+                                ItemMetadataCollection.Add(itemMetadata);
                                 ItemMetadataCollection.AddRange(backup);
+
+#if DEBUG
+                                ItemMetadataCollectionCheckPreferredPositions();
+#endif
                             }
+
+                            Debug.Assert(ItemMetadataCollection.Count == initialCount + 1);
                         }
-                        else
+                        else // we found the last view with position == First
                         {
                             int index = ItemMetadataCollection.IndexOf(lastItemWithFirstPreferredPosition);
+
+                            // All the current views are First, so we append the new view (note: could be a Separator)
+                            // i.e. the first view to be registered as First is guaranteed to take precedence over the ones that come after.
                             if (index == ItemMetadataCollection.Count - 1)
                             {
                                 ItemMetadataCollection.Add(itemMetadata);
+
+#if DEBUG
+                                ItemMetadataCollectionCheckPreferredPositions();
+#endif
                             }
-                            else
+                            else // there are Any or Last views after the last First one.
                             {
                                 //ItemMetadataCollection.Insert(index + 1, itemMetadata);
 
-                                var nToKeep = index + 1;
-                                var nToRemove = ItemMetadataCollection.Count - nToKeep;
-                                var backup = new List<ItemMetadata>(nToRemove);
-                                backup.AddRange(ItemMetadataCollection.Skip(nToKeep));
+                                ItemMetadataCollectionInsert(index + 1, itemMetadata);
 
-                                for (int i = 1; i <= nToRemove; i++)
-                                {
-                                    ItemMetadataCollection.RemoveAt(ItemMetadataCollection.Count - 1);
-                                }
-
-                                ItemMetadataCollection.Add(itemMetadata);
-                                ItemMetadataCollection.AddRange(backup);
+#if DEBUG
+                                ItemMetadataCollectionCheckPreferredPositions();
+#endif
                             }
+
+                            Debug.Assert(ItemMetadataCollection.Count == initialCount + 1);
                         }
 
                         break;
@@ -355,35 +399,36 @@ namespace Tobi.Common.UI
                             return positionedItem.PreferredPosition == PreferredPosition.Last;
                         });
 
+                        // No Last in the current list of views for this region
                         if (lastItemWithLastPreferredPosition == null)
                         {
-                            ItemMetadataCollection.Add(itemMetadata);
+                            ItemMetadataCollection.Add(itemMetadata); // could be a separator
+
+#if DEBUG
+                            ItemMetadataCollectionCheckPreferredPositions();
+#endif
                         }
-                        else
+                        else // we found the last view with position == Last
                         {
                             int index = ItemMetadataCollection.IndexOf(lastItemWithLastPreferredPosition);
                             if (index == ItemMetadataCollection.Count - 1)
                             {
-                                ItemMetadataCollection.Add(itemMetadata);
+                                ItemMetadataCollection.Add(itemMetadata); // could be a separator
+
+#if DEBUG
+                                ItemMetadataCollectionCheckPreferredPositions();
+#endif
                             }
                             else
                             {
-                                //ItemMetadataCollection.Insert(index + 1, itemMetadata);
+                                Debug.Fail("No First or Any should follow a Last !!");
 
-                                var nToKeep = index + 1;
-                                var nToRemove = ItemMetadataCollection.Count - nToKeep;
-                                var backup = new List<ItemMetadata>(nToRemove);
-                                backup.AddRange(ItemMetadataCollection.Skip(nToKeep));
-
-                                for (int i = 1; i <= nToRemove; i++)
-                                {
-                                    ItemMetadataCollection.RemoveAt(ItemMetadataCollection.Count - 1);
-                                }
-
-                                ItemMetadataCollection.Add(itemMetadata);
-                                ItemMetadataCollection.AddRange(backup);
+                                ////ItemMetadataCollection.Insert(index + 1, itemMetadata);
+                                //ItemMetadataCollectionInsert(index + 1, itemMetadata);
                             }
                         }
+
+                        Debug.Assert(ItemMetadataCollection.Count == initialCount + 1);
 
                         break;
                     }
@@ -400,45 +445,96 @@ namespace Tobi.Common.UI
                             return positionedItem.PreferredPosition == PreferredPosition.Last;
                         });
 
+                        // No Last in the current list of views for this region
                         if (firstItemWithLastPreferredPosition == null)
                         {
-                            ItemMetadataCollection.Add(itemMetadata);
+                            ItemMetadataCollection.Add(itemMetadata); // could be a separator
+
+#if DEBUG
+                            ItemMetadataCollectionCheckPreferredPositions();
+#endif
                         }
                         else
                         {
                             int index = ItemMetadataCollection.IndexOf(firstItemWithLastPreferredPosition);
-                            ItemMetadataCollection.Insert(index, itemMetadata);
+
+                            // ItemMetadataCollection.Insert(index, itemMetadata);
+                            ItemMetadataCollectionInsert(index, itemMetadata);
+
+#if DEBUG
+                            ItemMetadataCollectionCheckPreferredPositions();
+#endif
                         }
 
                         break;
                     }
             }
         }
-    }
 
-    public class PreferredPositionAllActiveRegion : PreferredPositionRegion
-    {
-        public override IViewsCollection ActiveViews
+        [Conditional("DEBUG")]
+        private void markWithAddIndex(ItemMetadata itemMetadata)
         {
-            get { return Views; }
+            addIndex++;
+
+            if (itemMetadata.Item is TwoStateMenuItemRichCommand_DataContextWrapper)
+            {
+                var item = (TwoStateMenuItemRichCommand_DataContextWrapper)itemMetadata.Item;
+                item.RichCommandOne.ShortDescription = addIndex + ") " +
+                                                       item.RichCommandOne.ShortDescription;
+                item.RichCommandTwo.ShortDescription = addIndex + ") " +
+                                                       item.RichCommandTwo.ShortDescription;
+            }
+            else if (itemMetadata.Item is RichDelegateCommand)
+            {
+                var item = (RichDelegateCommand)itemMetadata.Item;
+                item.ShortDescription = addIndex + ") " +
+                                                       item.ShortDescription;
+            }
+            else if (itemMetadata.Item is MenuItemRichCommand)
+            {
+                var item = (MenuItemRichCommand)itemMetadata.Item;
+                item.Header = addIndex + ") " +
+                                                       item.Header;
+            }
         }
 
-        public override void Deactivate(object view)
+        [Conditional("DEBUG")]
+        private void ItemMetadataCollectionCheckPreferredPositions()
         {
-            throw new InvalidOperationException("DeactiveNotPossibleException");
-        }
-    }
+            PreferredPosition currentPreferredPosition = PreferredPosition.First;
+            bool first = true;
+            foreach (var itemMetadata in ItemMetadataCollection)
+            {
+                var prefPos = ((PreferredPositionItemMetadata)itemMetadata).PreferredPosition;
 
-    public class PreferredPositionItemsControlRegionAdapter : ItemsControlRegionAdapter
-    {
-        public PreferredPositionItemsControlRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)
-            : base(regionBehaviorFactory)
-        {
+                if (first) currentPreferredPosition = prefPos;
+                first = false;
+
+                if (prefPos < currentPreferredPosition)
+                    Debug.Fail("Corrupted PreferredPosition order !!");
+
+                if (prefPos > currentPreferredPosition)
+                    currentPreferredPosition = prefPos;
+            }
         }
 
-        protected override IRegion CreateRegion()
+        private void ItemMetadataCollectionInsert(int index, PreferredPositionItemMetadata itemMetadata)
         {
-            return new PreferredPositionAllActiveRegion();
+            var nToKeep = index; // left
+            var nToRemove = ItemMetadataCollection.Count - nToKeep; // right
+
+            Debug.Assert(ItemMetadataCollection.Count == nToRemove + nToKeep);
+
+            var backup = new List<ItemMetadata>(nToRemove);
+            backup.AddRange(ItemMetadataCollection.Skip(nToKeep)); // save the left part
+
+            for (int i = 1; i <= nToRemove; i++) // remove the right part
+            {
+                ItemMetadataCollection.RemoveAt(ItemMetadataCollection.Count - 1); // remove last view
+            }
+
+            ItemMetadataCollection.Add(itemMetadata); // append after the left part
+            ItemMetadataCollection.AddRange(backup); // restore the right part
         }
     }
 }
