@@ -141,8 +141,8 @@ namespace Tobi.Plugin.DocumentPane
             //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)
             //    );
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
-                UserInterfaceStrings.Event_SwitchPrevious,
-                UserInterfaceStrings.Event_SwitchPrevious_,
+                Tobi_Plugin_DocumentPane_Lang.Event_SwitchPrevious,
+                Tobi_Plugin_DocumentPane_Lang.Event_SwitchPrevious_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 () =>
@@ -193,8 +193,8 @@ namespace Tobi.Plugin.DocumentPane
             m_ShellView.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
             CommandSwitchPhraseNext = new RichDelegateCommand(
-                UserInterfaceStrings.Event_SwitchNext,
-                UserInterfaceStrings.Event_SwitchNext_,
+                Tobi_Plugin_DocumentPane_Lang.Event_SwitchNext,
+                Tobi_Plugin_DocumentPane_Lang.Event_SwitchNext_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 () =>

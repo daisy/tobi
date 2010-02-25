@@ -195,4 +195,7 @@
   <data name="Yes" xml:space="preserve">
     <value>_Yes</value>
   </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>[0]</value>
+  </data>
 </root>

@@ -132,6 +132,12 @@
   <data name="Audio_BeginSelection_" xml:space="preserve">
     <value>Begin audio waveform selection</value>
   </data>
+  <data name="Audio_ClearSelection" xml:space="preserve">
+    <value>_Clear selection</value>
+  </data>
+  <data name="Audio_ClearSelection_" xml:space="preserve">
+    <value>Clear the current audio selection</value>
+  </data>
   <data name="Audio_Delete" xml:space="preserve">
     <value>_Delete audio selection</value>
   </data>
@@ -143,6 +149,12 @@
   </data>
   <data name="Audio_EndSelection_" xml:space="preserve">
     <value>End audio waveform selection</value>
+  </data>
+  <data name="Audio_FastForward" xml:space="preserve">
+    <value>_Step forward</value>
+  </data>
+  <data name="Audio_FastForward_" xml:space="preserve">
+    <value>Jump forward by a pre-defined time increment</value>
   </data>
   <data name="Audio_FitFull" xml:space="preserve">
     <value>_Fit into view</value>
@@ -228,6 +240,12 @@
   <data name="Audio_Reload_" xml:space="preserve">
     <value>Reload the audio waveform data</value>
   </data>
+  <data name="Audio_Rewind" xml:space="preserve">
+    <value>_Step backwards</value>
+  </data>
+  <data name="Audio_Rewind_" xml:space="preserve">
+    <value>Jump back by a pre-defined time increment</value>
+  </data>
   <data name="Audio_SelectNextChunk" xml:space="preserve">
     <value>Select next phrase</value>
   </data>
@@ -239,6 +257,12 @@
   </data>
   <data name="Audio_SelectPreviousChunk_" xml:space="preserve">
     <value>Select the entire audio phrase preceding the current one</value>
+  </data>
+  <data name="Audio_Settings" xml:space="preserve">
+    <value>Audio se_ttings</value>
+  </data>
+  <data name="Audio_Settings_" xml:space="preserve">
+    <value>Settings for the audio player and recorder</value>
   </data>
   <data name="Audio_ShowOptions" xml:space="preserve">
     <value>Show audio options</value>
@@ -278,6 +302,12 @@
   </data>
   <data name="Audio_StopRecord_" xml:space="preserve">
     <value>Stop the current recording</value>
+  </data>
+  <data name="Audio_ZoomSelection" xml:space="preserve">
+    <value>_Zoom on selection</value>
+  </data>
+  <data name="Audio_ZoomSelection_" xml:space="preserve">
+    <value>Zoom waveform selection into view</value>
   </data>
   <data name="Audio_ZoomSlider" xml:space="preserve">
     <value>Audio waveform zoom</value>

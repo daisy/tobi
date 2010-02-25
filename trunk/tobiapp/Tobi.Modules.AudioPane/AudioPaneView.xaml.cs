@@ -71,7 +71,7 @@ namespace Tobi.Plugin.AudioPane
 
             WinFormHost.Child = m_ViewModel.GetWindowsFormsHookControl();
 
-            ZoomSlider.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.Audio_ZoomSlider);
+            ZoomSlider.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_AudioPane_Lang.Audio_ZoomSlider);
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
         }
 

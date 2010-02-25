@@ -367,15 +367,6 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [0].
-        /// </summary>
-        public static string UnhandledException {
-            get {
-                return ResourceManager.GetString("UnhandledException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tobi {{{0}}} - Please wait....
         /// </summary>
         public static string WindowsTitleKey {

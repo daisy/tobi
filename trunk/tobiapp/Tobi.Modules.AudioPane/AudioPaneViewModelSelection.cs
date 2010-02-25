@@ -21,8 +21,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Selection()
         {
             CommandSelectPreviousChunk = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_SelectPreviousChunk,
-                UserInterfaceStrings.Audio_SelectPreviousChunk_,
+                Tobi_Plugin_AudioPane_Lang.Audio_SelectPreviousChunk,
+                Tobi_Plugin_AudioPane_Lang.Audio_SelectPreviousChunk_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-previous"),
                 ()=>
@@ -40,8 +40,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandSelectPreviousChunk);
             //
             CommandSelectNextChunk = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_SelectNextChunk,
-                UserInterfaceStrings.Audio_SelectNextChunk_,
+                Tobi_Plugin_AudioPane_Lang.Audio_SelectNextChunk,
+                Tobi_Plugin_AudioPane_Lang.Audio_SelectNextChunk_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-next"),
                 ()=>
@@ -60,8 +60,8 @@ namespace Tobi.Plugin.AudioPane
             //
             //
             CommandEndSelection = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_EndSelection,
-                UserInterfaceStrings.Audio_EndSelection_,
+                Tobi_Plugin_AudioPane_Lang.Audio_EndSelection,
+                Tobi_Plugin_AudioPane_Lang.Audio_EndSelection_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
                 ()=>
@@ -116,8 +116,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandEndSelection);
             //
             CommandBeginSelection = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_BeginSelection,
-                UserInterfaceStrings.Audio_BeginSelection_,
+                Tobi_Plugin_AudioPane_Lang.Audio_BeginSelection,
+                Tobi_Plugin_AudioPane_Lang.Audio_BeginSelection_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
                 ()=>
@@ -135,8 +135,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandBeginSelection);
             //
             CommandSelectAll = new RichDelegateCommand(
-                UserInterfaceStrings.SelectAll,
-                UserInterfaceStrings.SelectAll_,
+                Tobi_Plugin_AudioPane_Lang.SelectAll,
+                Tobi_Plugin_AudioPane_Lang.SelectAll_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("view-fullscreen"),
                 ()=>
@@ -162,8 +162,8 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandSelectAll);
             //
-            CommandClearSelection = new RichDelegateCommand(UserInterfaceStrings.Audio_ClearSelection,
-                UserInterfaceStrings.Audio_ClearSelection_,
+            CommandClearSelection = new RichDelegateCommand(Tobi_Plugin_AudioPane_Lang.Audio_ClearSelection,
+                Tobi_Plugin_AudioPane_Lang.Audio_ClearSelection_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-clear"),
                 ()=>

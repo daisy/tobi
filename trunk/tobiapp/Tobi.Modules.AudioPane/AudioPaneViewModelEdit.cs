@@ -58,8 +58,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandInsertFile);
             //
             CommandDeleteAudioSelection = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Delete,
-                UserInterfaceStrings.Audio_Delete_,
+                Tobi_Plugin_AudioPane_Lang.Audio_Delete,
+                Tobi_Plugin_AudioPane_Lang.Audio_Delete_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_dialog-cancel"),
                 () =>

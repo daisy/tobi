@@ -59,13 +59,13 @@ namespace Tobi
             //standardErr.AutoFlush = true;
             //Console.SetError(standardErr);
 
-            if (File.Exists(UserInterfaceStrings.LOG_FILE_PATH))
+            if (File.Exists(Tobi_Lang.LOG_FILE_PATH))
             {
                 // Remark: the following logging messages go to the System.Out, and that's it (not to any file target). We initialize file redirect later on (see below).
 
-                Console.WriteLine("Deleting log file [" + UserInterfaceStrings.LOG_FILE_PATH + "]...");
-                File.Delete(UserInterfaceStrings.LOG_FILE_PATH);
-                Console.WriteLine("File deleted [" + UserInterfaceStrings.LOG_FILE_PATH + "].");
+                Console.WriteLine("Deleting log file [" + Tobi_Lang.LOG_FILE_PATH + "]...");
+                File.Delete(Tobi_Lang.LOG_FILE_PATH);
+                Console.WriteLine("File deleted [" + Tobi_Lang.LOG_FILE_PATH + "].");
 
                 Thread.Sleep(200);
             }
@@ -97,7 +97,7 @@ namespace Tobi
             // for each Write operation, which obviously is a massive performance bottleneck.
 
             //m_FileWriter = File.CreateText(UserInterfaceStrings.LOG_FILE_PATH);
-            FileStream fileStream = new FileStream(UserInterfaceStrings.LOG_FILE_PATH, FileMode.Create, FileAccess.Write, FileShare.Read);
+            FileStream fileStream = new FileStream(Tobi_Lang.LOG_FILE_PATH, FileMode.Create, FileAccess.Write, FileShare.Read);
 
 #if (false && DEBUG) // We want clickable code line numbers in the debugger output window, but we don't want to spam the log file with this info.
             m_FileWriter = new CodeLocationTextWriter(new StreamWriter(fileStream));

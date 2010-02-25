@@ -24,8 +24,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Recorder()
         {
             CommandStopRecord = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_StopRecord,
-                UserInterfaceStrings.Audio_StopRecord_,
+                Tobi_Plugin_AudioPane_Lang.Audio_StopRecord,
+                Tobi_Plugin_AudioPane_Lang.Audio_StopRecord_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
                 ()=>
@@ -88,8 +88,8 @@ namespace Tobi.Plugin.AudioPane
 
             //
             CommandStartMonitor = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_StartMonitor,
-                UserInterfaceStrings.Audio_StartMonitor_,
+                Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor,
+                Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
                 ()=>
@@ -125,8 +125,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStartMonitor);
             //
             CommandStopMonitor = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_StopMonitor,
-                UserInterfaceStrings.Audio_StopMonitor_,
+                Tobi_Plugin_AudioPane_Lang.Audio_StopMonitor,
+                Tobi_Plugin_AudioPane_Lang.Audio_StopMonitor_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
                 ()=>

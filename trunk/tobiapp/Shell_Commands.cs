@@ -244,7 +244,7 @@ namespace Tobi
                     //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-                    var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.LOG_FILE_PATH)
+                    var details = new TextBoxReadOnlyCaretVisible(Tobi_Lang.LOG_FILE_PATH)
                     {
                     };
 

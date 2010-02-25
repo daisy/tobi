@@ -93,7 +93,7 @@ namespace Tobi.Common.UI
 
 
 
-            var labelMsg = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnhandledException)
+            var labelMsg = new TextBoxReadOnlyCaretVisible(Tobi_Common_Lang.UnhandledException)
             {
                 FontWeight = FontWeights.ExtraBlack,
                 Margin = margin,

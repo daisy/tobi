@@ -340,8 +340,8 @@ namespace Tobi.Plugin.StructureTrailPane
             DataContext = this;
 
             CommandStructureDown = new RichDelegateCommand(
-                UserInterfaceStrings.StructureDown,
-                UserInterfaceStrings.StructureDown_,
+                Tobi_Plugin_StructureTrailPane_Lang.StructureDown,
+                Tobi_Plugin_StructureTrailPane_Lang.StructureDown_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 () =>
@@ -360,8 +360,8 @@ namespace Tobi.Plugin.StructureTrailPane
             m_ShellView.RegisterRichCommand(CommandStructureDown);
             //
             CommandStructureUp = new RichDelegateCommand(
-                UserInterfaceStrings.StructureUp,
-                UserInterfaceStrings.StructureUp_,
+                Tobi_Plugin_StructureTrailPane_Lang.StructureUp,
+                Tobi_Plugin_StructureTrailPane_Lang.StructureUp_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 () =>
@@ -384,7 +384,7 @@ namespace Tobi.Plugin.StructureTrailPane
             m_ShellView.RegisterRichCommand(CommandStructureUp);
             //
             CommandFocus = new RichDelegateCommand(
-                UserInterfaceStrings.Document_Focus,
+                Tobi_Plugin_StructureTrailPane_Lang.Document_Focus,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
@@ -430,10 +430,10 @@ namespace Tobi.Plugin.StructureTrailPane
 
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
-            BreadcrumbPanel.Children.Add(new TextBlock(new Run(UserInterfaceStrings.No_Document)));
+            BreadcrumbPanel.Children.Add(new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)));
 
             PathToCurrentTreeNode = null;
-            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(UserInterfaceStrings.No_Document);
+            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Tobi_Plugin_StructureTrailPane_Lang.No_Document);
         }
 
         private void OnProjectLoaded(Project project)

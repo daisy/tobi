@@ -28,8 +28,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_View()
         {
             CommandRefresh = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Reload,
-                UserInterfaceStrings.Audio_Reload_,
+                Tobi_Plugin_AudioPane_Lang.Audio_Reload,
+                Tobi_Plugin_AudioPane_Lang.Audio_Reload_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //shellView.LoadTangoIcon("view-refresh"),
@@ -45,8 +45,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandRefresh);
             //
             CommandZoomSelection = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_ZoomSelection,
-                UserInterfaceStrings.Audio_ZoomSelection_,
+                Tobi_Plugin_AudioPane_Lang.Audio_ZoomSelection,
+                Tobi_Plugin_AudioPane_Lang.Audio_ZoomSelection_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
                 //shellView.LoadTangoIcon("system-search"),
@@ -63,8 +63,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandZoomSelection);
             //
             CommandZoomFitFull = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_FitFull,
-                UserInterfaceStrings.Audio_FitFull_,
+                Tobi_Plugin_AudioPane_Lang.Audio_FitFull,
+                Tobi_Plugin_AudioPane_Lang.Audio_FitFull_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("utilities-system-monitor"),
                 ()=>
@@ -81,8 +81,8 @@ namespace Tobi.Plugin.AudioPane
             //
             //
             CommandAudioSettings = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Settings,
-                UserInterfaceStrings.Audio_Settings_,
+                Tobi_Plugin_AudioPane_Lang.Audio_Settings,
+                Tobi_Plugin_AudioPane_Lang.Audio_Settings_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("audio-card"),
                 ()=>
@@ -121,7 +121,7 @@ namespace Tobi.Plugin.AudioPane
                     var pane = new AudioOptions { DataContext = this };
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                           UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_ShowOptions),
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.Audio_ShowOptions),
                                                            pane,
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
@@ -137,7 +137,7 @@ namespace Tobi.Plugin.AudioPane
 #endif //DEBUG
             //
             CommandFocus = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_Focus,
+                Tobi_Plugin_AudioPane_Lang.Audio_Focus,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
@@ -154,7 +154,7 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandFocus);
             //
             CommandFocusStatusBar = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_FocusStatusBar,
+                Tobi_Plugin_AudioPane_Lang.Audio_FocusStatusBar,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
