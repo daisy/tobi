@@ -69,7 +69,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
                 RegionNames.MenuBar_View, PreferredPosition.Last, true,
-                RegionNames.MenuBar_Focus, PreferredPosition.First, false,
+                RegionNames.MenuBar_Focus, PreferredPosition.First, true,
                 new[] { m_NavPane.CommandFocus });
 
             m_Logger.Log(@"Navigation commands pushed to menubar", Category.Debug, Priority.Medium);

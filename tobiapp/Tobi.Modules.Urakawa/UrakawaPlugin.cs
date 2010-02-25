@@ -60,7 +60,7 @@ namespace Tobi.Plugin.Urakawa
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_File, PreferredPosition.First, false,
+                RegionNames.MenuBar_File, PreferredPosition.First, true,
                 null, PreferredPosition.First, true,
                 new[] { m_UrakawaSession.OpenCommand });
 

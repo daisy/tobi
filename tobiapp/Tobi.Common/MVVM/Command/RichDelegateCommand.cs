@@ -113,7 +113,7 @@ namespace Tobi.Common.MVVM.Command
 
             ShortDescription = (String.IsNullOrEmpty(shortDescription) ? "" : shortDescription);
             LongDescription = (String.IsNullOrEmpty(longDescription) ? "" : longDescription);
-            
+
             m_VisualBrush = icon;
 
             if (HasIcon)
@@ -128,7 +128,10 @@ namespace Tobi.Common.MVVM.Command
         public String ShortDescription
         {
             get;
-            private set;
+#if !DEBUG
+        private
+#endif
+            set;
         }
 
         public String LongDescription
@@ -199,7 +202,7 @@ namespace Tobi.Common.MVVM.Command
             {
                 //CultureInfo.InvariantCulture
                 //return KeyGesture.DisplayString;
-                
+
                 //return (KeyGesture == null ? m_KeyGestureText : KeyGestureString.GetDisplayString(KeyGesture));
                 return (KeyGesture == null ? null :
                     KeyGestureStringConverter.Convert(KeyGesture)
@@ -221,7 +224,7 @@ namespace Tobi.Common.MVVM.Command
             //[MethodImpl(MethodImplOptions.Synchronized)]
             remove
             {
-                m_DataChanged = (EventHandler)Delegate.Remove(m_DataChanged, value); 
+                m_DataChanged = (EventHandler)Delegate.Remove(m_DataChanged, value);
             }
         }
 

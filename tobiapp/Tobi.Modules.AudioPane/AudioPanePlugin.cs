@@ -140,8 +140,8 @@ namespace Tobi.Plugin.AudioPane
                     });
 
             m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Audio, PreferredPosition.Last, false,
-                RegionNames.MenuBar_AudioPlayback, PreferredPosition.Last, false,
+                RegionNames.MenuBar_Audio, PreferredPosition.Last, true,
+                RegionNames.MenuBar_AudioPlayback, PreferredPosition.Last, true,
                 new object[]
                     {
                         m_AudioPaneViewModel.CommandPlaybackRateReset,
@@ -187,12 +187,12 @@ namespace Tobi.Plugin.AudioPane
 
             m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(
                 RegionNames.MenuBar_View, PreferredPosition.First, true,
-                RegionNames.MenuBar_Focus, PreferredPosition.Last, false,
+                RegionNames.MenuBar_Focus, PreferredPosition.Last, true,
                 new[] { m_AudioPaneViewModel.CommandFocus });
 
             m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_View, PreferredPosition.Last, false,
-                RegionNames.MenuBar_Focus, PreferredPosition.Last, false,
+                RegionNames.MenuBar_View, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Focus, PreferredPosition.Last, true,
                 new[] { m_AudioPaneViewModel.CommandFocusStatusBar });
 
 

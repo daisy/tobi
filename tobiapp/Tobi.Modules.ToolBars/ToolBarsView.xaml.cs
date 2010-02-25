@@ -103,6 +103,8 @@ namespace Tobi.Plugin.ToolBars
 #endif
             int uid = getNewUid();
 
+return uid; //TODO REMOVE just for testing !!!!
+
             //IRegion targetRegion = m_RegionManager.Regions[RegionNames.MainToolbar];
 
             int count = 0;

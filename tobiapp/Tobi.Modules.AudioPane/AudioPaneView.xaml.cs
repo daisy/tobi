@@ -629,6 +629,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
             PCMFormatInfo pcmInfo = m_ViewModel.State.Audio.GetCurrentPcmFormat();
+            if (pcmInfo == null) return;
 
             double barWidth = PeakMeterCanvas.ActualWidth;
             if (pcmInfo.Data.NumberOfChannels > 1)
