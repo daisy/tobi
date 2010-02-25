@@ -123,7 +123,8 @@ namespace Tobi.Plugin.MetadataPane
                                                    true, 700, 400);
             
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
-                ("Open metadata editor", "The metadata editor modal dialog is opening.");
+                ("Open metadata editor", "The metadata editor modal dialog is opening.");            // TODO LOCALIZE OpenMetadataEditor
+                                                                                                     // TODO LOCALIZE DialogOpen
 
             windowPopup.ShowModal();
 

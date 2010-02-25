@@ -128,7 +128,7 @@ namespace Tobi.Plugin.MenuBar
                     RegionManager.SetRegionName(subMenuRoot, subRegionName);
                     //RegionManager.UpdateRegions();
 
-                    string viewname = @"SUB_" + uid + @"_" + count++;
+                    string viewname = @"SUB_" + uid + @"_" + count++;        // TODO LOCALIZE SUB
 
                     m_RegionManager.RegisterNamedViewWithRegion(targetRegion.Name,
                         new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = positionInTopLevel });

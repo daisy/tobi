@@ -611,7 +611,7 @@ namespace Tobi.Plugin.NavigationPane
                     return "DUMMY";
                 }
                 string str = (WrappedTreeNode_LevelHeading != null ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened()
-                    : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + "] (No heading)");
+                    : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + "] (No heading)");                   // TODO LOCALIZE  NoHeading, brackets not included.
                 return str.Trim();
             }
             internal set

@@ -144,6 +144,9 @@
   <data name="Open" xml:space="preserve">
     <value>_Open / import</value>
   </data>
+  <data name="OpenXukFile" xml:space="preserve">
+    <value>Opening XUK file...</value>
+  </data>
   <data name="Open_" xml:space="preserve">
     <value>Open or import a document</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="OverwriteConfirm_Folder" xml:space="preserve">
     <value>You are about to overwrite a folder.\nAre you sure ?</value>
+  </data>
+  <data name="ParsingXMLDoc_BuildingDOM" xml:space="preserve">
+    <value>Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK...</value>
   </data>
   <data name="Redo" xml:space="preserve">
     <value>_Redo</value>

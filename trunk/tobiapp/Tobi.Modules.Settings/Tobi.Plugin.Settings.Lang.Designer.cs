@@ -115,7 +115,7 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shortcut already used by:.
+        ///   Looks up a localized string similar to Shortcut already used by: {0}.
         /// </summary>
         public static string ShortcutAlreadyUsed {
             get {

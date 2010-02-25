@@ -123,6 +123,9 @@
   <data name="Document_Focus" xml:space="preserve">
     <value>Document pane focus</value>
   </data>
+  <data name="NoXML" xml:space="preserve">
+    <value>[No XML].</value>
+  </data>
   <data name="No_Document" xml:space="preserve">
     <value>No document.</value>
   </data>
@@ -140,5 +143,8 @@
   </data>
   <data name="ThePublicationDocumentViewer" xml:space="preserve">
     <value>The publication document viewer</value>
+  </data>
+  <data name="XMLName" xml:space="preserve">
+    <value>XML: [{0}].</value>
   </data>
 </root>

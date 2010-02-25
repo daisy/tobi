@@ -163,8 +163,8 @@ namespace Tobi.Plugin.Urakawa
 
                 var action = new OpenXukAction(project, fileUri)
                 {
-                    ShortDescription = "Opening XUK file...",
-                    LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK..."
+                    ShortDescription = "Opening XUK file...",                                                                                            // TODO LOCALIZE OpenXukFile
+                    LongDescription = "Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK..."   // TODO LOCALIZE ParsingXMLDoc_BuildingDOM
                 };
 
                 action.Progress += (sender, e) =>

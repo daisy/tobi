@@ -117,8 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DialogOpen" xml:space="preserve">
+    <value>The metadata editor modal dialog is opening.</value>
+  </data>
   <data name="MetadataEditorPanel" xml:space="preserve">
     <value>Metadata editor panel.</value>
+  </data>
+  <data name="OpenMetadataEditor" xml:space="preserve">
+    <value>Open Metadata Editor</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Optional.</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>Recommended.</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required.</value>
   </data>
   <data name="ShowMetadata" xml:space="preserve">
     <value>_Edit metadata</value>

@@ -151,6 +151,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opening XUK file....
+        /// </summary>
+        public static string OpenXukFile {
+            get {
+                return ResourceManager.GetString("OpenXukFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Overwrite.
         /// </summary>
         public static string Overwrite {
@@ -174,6 +183,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string OverwriteConfirm_Folder {
             get {
                 return ResourceManager.GetString("OverwriteConfirm_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK....
+        /// </summary>
+        public static string ParsingXMLDoc_BuildingDOM {
+            get {
+                return ResourceManager.GetString("ParsingXMLDoc_BuildingDOM", resourceCulture);
             }
         }
         
