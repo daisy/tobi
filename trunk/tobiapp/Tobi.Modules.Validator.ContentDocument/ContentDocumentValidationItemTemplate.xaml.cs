@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
+using urakawa.core;
 
 namespace Tobi.Plugin.Validator.ContentDocument
 {
@@ -14,6 +15,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public ContentDocumentValidationItemTemplate()
         {
             InitializeComponent();
+        }
+
+        private void OnLinkClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("This should highlight the error in the document");
         }
     }
 
@@ -30,50 +36,69 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 return "Missing DTD";
             if (item == ContentDocumentErrorType.UndefinedElement)
                 return "Undefined element";
-            if (item == ContentDocumentErrorType.InvalidChildElements)
+            if (item == ContentDocumentErrorType.InvalidElementSequence)
                 return "Document structure error";
             return "General document error";
 
         }
     }
 
-    [ValueConversion(typeof(ContentDocumentValidationError), typeof(string))]
-    public class ContentDocumentErrorDescriptionConverter : ValueConverterMarkupExtensionBase<ContentDocumentErrorDescriptionConverter>
+    [ValueConversion(typeof(TreeNode), typeof(string))]
+    public class ElementNameStartTagConverter : ValueConverterMarkupExtensionBase<ElementNameStartTagConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return null;
-            /*if (value == null) return "";
-            if (!(value is ContentDocumentValidationError)) return "";
-            ContentDocumentValidationError error = (ContentDocumentValidationError) value;
-
-            if (error.ErrorType == ContentDocumentErrorType.InvalidChildElements)
-                return InvalidChildElementsError(error);
-            if (error.ErrorType == ContentDocumentErrorType.UndefinedElement)
-                return */
-        }
- 
-        
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+            TreeNode element = value as TreeNode;
+            if (element.GetXmlElementQName() == null) return "";
+            string elementName = element.GetXmlElementQName().LocalName;
+            if (string.IsNullOrEmpty(elementName)) return "";
+            return string.Format("<{0}>", elementName);
+        }       
     }
 
-    public class ContentDocumentErrorTemplateSelector :  DataTemplateSelector
+    [ValueConversion(typeof(TreeNode), typeof(string))]
+    public class ElementNameEndTagConverter : ValueConverterMarkupExtensionBase<ElementNameEndTagConverter>
     {
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (item == null) return null;
-
-            FrameworkElement elem = container as FrameworkElement;
-            ContentDocumentValidationError error = item as ContentDocumentValidationError;
-
-            if (error.ErrorType == ContentDocumentErrorType.MissingDtd)
-                return (DataTemplate)elem.FindResource("MissingDtdTemplate");
-            if (error.ErrorType == ContentDocumentErrorType.UndefinedElement)
-                return (DataTemplate)elem.FindResource("UndefinedElementTemplate");
-            if (error.ErrorType == ContentDocumentErrorType.InvalidChildElements)
-                return (DataTemplate) elem.FindResource("InvalidChildElementsTemplate");
-            return (DataTemplate) elem.FindResource("GeneralErrorTemplate");
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+            TreeNode element = value as TreeNode;
+            if (element.GetXmlElementQName() == null) return "";
+            string elementName = element.GetXmlElementQName().LocalName;
+            if (string.IsNullOrEmpty(elementName)) return "";
+            string test = string.Format("</{0}>", elementName);
+            return test;
         }
     }
 
+    [ValueConversion(typeof(TreeNode), typeof(string))]
+    public class ElementTextExcerptConverter : ValueConverterMarkupExtensionBase<ElementTextExcerptConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+            TreeNode element = value as TreeNode;
+            string elementText = element.GetTextMediaFlattened();
+            if (elementText.Length > 100)
+                elementText = elementText.Substring(0, 100);
 
+            elementText += "...";
+            return elementText;
+        }
+    }
+
+    
+    [ValueConversion(typeof(TreeNode), typeof(Visibility))]
+    public class NodeToVisibilityConverter : ValueConverterMarkupExtensionBase<NodeToVisibilityConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return Visibility.Hidden;
+            else return Visibility.Visible;
+        }
+    }
 }

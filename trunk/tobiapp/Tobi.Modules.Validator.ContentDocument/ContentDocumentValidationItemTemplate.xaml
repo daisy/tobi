@@ -3,53 +3,103 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ContentDocument="clr-namespace:Tobi.Plugin.Validator.ContentDocument">
 
-  <ContentDocument:ContentDocumentErrorTemplateSelector x:Key="templateSelector"/>
-  
-  <DataTemplate x:Key="MissingDtdTemplate">
-    <StackPanel Background="Red">
-      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
-                    Path=DataContext.Message}"/>
+  <Style x:Key="ContentDocumentHeadingStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="FontWeight" Value="Bold"/>
+    <!-- left, top, right, bottom -->
+    <Setter Property="Margin" Value="0,0,0,5"/>
+  </Style>
+
+  <Style x:Key="ContentDocumentNodeContentsStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="Margin" Value="5,0,5,0"/>
+    <Setter Property="FontFamily" Value="Courier New"/>
+  </Style>
+  <Style x:Key="ContentDocumentNodeNameStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="FontFamily" Value="Courier New"/>
+  </Style>
+  <Style x:Key="ContentDocumentNodeBorderStyle" TargetType="{x:Type Border}">
+    <Setter Property="CornerRadius" Value="8,8,8,8"/>
+    <Setter Property="Margin" Value="5"/>
+    <Setter Property="BorderBrush" Value="Black"/>
+    <Setter Property="BorderThickness" Value="2,2,2,2"/>
+  </Style>
+
+  <DataTemplate x:Key="ContentDocumentNodeTemplate">
+    <Border Style="{StaticResource ContentDocumentNodeBorderStyle}">
+    <StackPanel Margin="5" Background="White">
+      <TextBlock Style="{StaticResource ContentDocumentNodeNameStyle}"
+                 Text="{Binding Converter={ContentDocument:ElementNameStartTagConverter}}"/>
+      <TextBlock Style="{StaticResource ContentDocumentNodeContentsStyle}" 
+                 Text="{Binding Converter={ContentDocument:ElementTextExcerptConverter}}"
+                 TextWrapping="Wrap"/>
+      <TextBlock Style="{StaticResource ContentDocumentNodeNameStyle}"
+                 Text="{Binding Converter={ContentDocument:ElementNameEndTagConverter}}"/>
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnLinkClick">
+          <Run Text="Click to view"/>
+        </Hyperlink>
+      </TextBlock>
+      
+    </StackPanel>
+    </Border>
+  </DataTemplate>
+
+  <DataTemplate x:Key="ContentDocumentMissingDtdTemplate">
+    <StackPanel>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Missing DTD"/>
+      <TextBlock Text="Tobi could not locate a DTD, so it cannot validate the document."/>
+      <TextBlock Text="The DTD identifier associated with this document:"/>
+      <TextBlock Text="{Binding DtdIdentifier}"/>
+   </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="ContentDocumentUndefinedElementTemplate">
+    <StackPanel>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Undefined element"/>
+      <TextBlock Text="An element definition was not found for:"/>
+      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
+                          Content="{Binding Target}" /> 
     </StackPanel>
   </DataTemplate>
 
-  <DataTemplate x:Key="UndefinedElementTemplate">
-    <StackPanel Background="Orange">
-      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
-                    Path=DataContext.Message}"/>
+  <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplate">
+    
+    <StackPanel>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Invalid element sequence"/>
+      <TextBlock Text="This element contain an invalid sequence of child elements:"/>
+      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
+                          Content="{Binding Target}" />
+      <TextBlock Text="Additionally, the error begins with this child element:">
+        <TextBlock.Visibility>
+          <Binding Path="BeginningOfError" Converter="{ContentDocument:NodeToVisibilityConverter}"/>
+        </TextBlock.Visibility>
+      </TextBlock>
+      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
+                        Content="{Binding BeginningOfError}">
+        <ContentPresenter.Visibility>
+          <Binding Path="BeginningOfError" Converter="{ContentDocument:NodeToVisibilityConverter}"/>
+        </ContentPresenter.Visibility>
+      </ContentPresenter>
     </StackPanel>
   </DataTemplate>
 
-  <DataTemplate x:Key="InvalidChildElementsTemplate">
-    <StackPanel Background="Yellow">
-      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
-                    Path=DataContext.Message}"/>
-    </StackPanel>
-  </DataTemplate>
-
-  <DataTemplate x:Key="GeneralErrorTemplate">
-    <StackPanel Background="White">
-      <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType={x:Type StackPanel}},
-                    Path=DataContext.Message}"/>
-    </StackPanel>
+  <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
+      <TextBlock Text="{Binding Message}"/>
   </DataTemplate>
   
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
-      <!-- ContentControl Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}},
-                    Path=DataContext}"
-                      ContentTemplateSelector="{StaticResource templateSelector}"/ -->
-
-    <StackPanel>
       <ContentPresenter x:Name="Presenter" 
-                        ContentTemplate="{StaticResource GeneralErrorTemplate}" Content="{TemplateBinding Content}" />
-    </StackPanel>
+                        ContentTemplate="{StaticResource ContentDocumentGeneralErrorTemplate}" 
+                        Content="{TemplateBinding Content}" />
+    
       <DataTemplate.Triggers>
         <DataTrigger Binding="{Binding ErrorType}">
         	<DataTrigger.Value>
-            <ContentDocument:ContentDocumentErrorType>InvalidChildElements</ContentDocument:ContentDocumentErrorType>
+            <ContentDocument:ContentDocumentErrorType>InvalidElementSequence</ContentDocument:ContentDocumentErrorType>
           </DataTrigger.Value>
         	<Setter TargetName="Presenter"
               Property="ContentTemplate"
-              Value="{StaticResource InvalidChildElementsTemplate}" />
+              Value="{StaticResource ContentDocumentInvalidChildElementsTemplate}" />
         </DataTrigger>
 
         <DataTrigger Binding="{Binding ErrorType}">
@@ -58,7 +108,7 @@
           </DataTrigger.Value>
           <Setter TargetName="Presenter"
               Property="ContentTemplate"
-              Value="{StaticResource UndefinedElementTemplate}" />
+              Value="{StaticResource ContentDocumentUndefinedElementTemplate}" />
         </DataTrigger>
 
         <DataTrigger Binding="{Binding ErrorType}">
@@ -67,13 +117,10 @@
           </DataTrigger.Value>
           <Setter TargetName="Presenter"
               Property="ContentTemplate"
-              Value="{StaticResource MissingDtdTemplate}" />
+              Value="{StaticResource ContentDocumentMissingDtdTemplate}" />
         </DataTrigger>
         
-      </DataTemplate.Triggers>
-
-
-    
+      </DataTemplate.Triggers>    
  </DataTemplate>
 
 </ResourceDictionary>

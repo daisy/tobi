@@ -244,7 +244,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 error = new ContentDocumentValidationError
                                                            {
                                                                Target = node,
-                                                               ErrorType = ContentDocumentErrorType.InvalidChildElements,
+                                                               ErrorType = ContentDocumentErrorType.InvalidElementSequence,
                                                                AllowedChildNodes = childrenNames,
                                                            };
 
