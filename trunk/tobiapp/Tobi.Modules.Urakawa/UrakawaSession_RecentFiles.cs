@@ -2,12 +2,16 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using Tobi.Common;
+using Tobi.Common.MVVM.Command;
 using urakawa.ExternalFiles;
 
 namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        public RichDelegateCommand ClearRecentFilesCommand { get; private set; }
+
         private const string RECENT_FILES_FILENAME = @"Tobi_RecentFiles.txt";
         private static readonly string m_RecentFiles_FilePath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, RECENT_FILES_FILENAME);
 
@@ -31,6 +35,14 @@ namespace Tobi.Plugin.Urakawa
 
         private void InitializeRecentFiles()
         {
+            ClearRecentFilesCommand = new RichDelegateCommand(UserInterfaceStrings.Menu_ClearRecentFiles,
+                                                   UserInterfaceStrings.Menu_ClearRecentFiles_,
+                                                   null,
+                                                   m_ShellView.LoadGnomeNeuIcon(@"Neu_view-refresh"),
+                                                   ClearRecentFiles,
+                                                   () => true,
+                                                   null, null);
+
             RecentFiles = new ObservableCollection<Uri>();
 
             if (!File.Exists(m_RecentFiles_FilePath))
