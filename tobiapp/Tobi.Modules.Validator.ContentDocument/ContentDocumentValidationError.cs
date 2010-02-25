@@ -6,13 +6,13 @@ namespace Tobi.Plugin.Validator.ContentDocument
     public enum ContentDocumentErrorType
     {
         UndefinedElement,
-        InvalidChildElements,
+        InvalidElementSequence,
         MissingDtd
     }
     
     //expectation of error types and available data
     //UndefinedElement => supply Target
-    //InvalidChildElements => supply Target, AllowedChildNodes, optionally BeginningOfError
+    //InvalidElementSequence => supply Target, AllowedChildNodes, optionally BeginningOfError
     //MissingDtd => supply DtdIdentifier
     public class ContentDocumentValidationError : ValidationItem
     {
@@ -41,27 +41,19 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (BeginningOfError != null && BeginningOfError.GetXmlElementQName() != null)
                     problemChildNodeName = BeginningOfError.GetXmlElementQName().LocalName;
 
-                if (ErrorType == ContentDocumentErrorType.InvalidChildElements)
+                if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
                 {
-                    string msgPart2 = "";
-                    string msgPart1 = string.Format("Element {0} contains an invalid sequence of child elements", targetNodeName);  // TODO LOCALIZE InvalidSequence
-
-                    if (BeginningOfError != null)
-                        msgPart2 = string.Format(", starting with {0}.", problemChildNodeName);        // TODO LOCALIZE StartingWith0
-                    else
-                        msgPart2 = ".";
-                    return msgPart1 + msgPart2;
-                    
+                    return string.Format("Element {0} contains an invalid sequence of child elements", targetNodeName);
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {
-                    return string.Format("No DTD found for {0}", DtdIdentifier);     // TODO LOCALIZE NoDTDFound
+                    return string.Format("No DTD found for {0}", DtdIdentifier);
                 }
                 if (ErrorType == ContentDocumentErrorType.UndefinedElement)
                 {
-                   return string.Format("No element definition found for {0}", targetNodeName);     // TODO LOCALIZE NoElementDefinitionFound
+                   return string.Format("No element definition found for {0}", targetNodeName);
                 }
-                return "Unspecified error";    // TODO LOCALIZE UnspecifiedError
+                return "Unspecified error";
             }
         }
         public ContentDocumentValidationError()

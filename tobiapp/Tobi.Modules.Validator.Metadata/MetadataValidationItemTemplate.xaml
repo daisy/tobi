@@ -3,8 +3,149 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata">
 
-  <DataTemplate DataType="{x:Type Metadata:MetadataValidationError}">
-    <TextBlock Background="Green" Text="{Binding Message}"/>
-  </DataTemplate>
+  <Style x:Key="MetadataHeadingStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="FontWeight" Value="Bold"/>
+    <!-- left, top, right, bottom -->
+    <Setter Property="Margin" Value="0,0,0,5"/>
+  </Style>
+
   
+  <Style x:Key="MetadataItemBorderStyle" TargetType="{x:Type Border}">
+    <Setter Property="CornerRadius" Value="8,8,8,8"/>
+    <Setter Property="Margin" Value="5"/>
+    <Setter Property="BorderBrush" Value="Black"/>
+    <Setter Property="BorderThickness" Value="2,2,2,2"/>
+  </Style>
+
+  <DataTemplate x:Key="MetadataItemTemplate">
+    <Border Style="{StaticResource MetadataItemBorderStyle}">
+      <StackPanel Margin="5" Background="White">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="{Binding Path=NameContentAttribute.Name}"/>
+          <TextBlock Text="=" Padding="5,0,5,0"/>
+          <TextBlock Text="{Binding Path=NameContentAttribute.Value}" TextWrapping="Wrap"/>
+        </StackPanel>
+        <TextBlock Margin="0,3,0,3">
+          <Hyperlink Click="OnLinkClick">
+            <Run Text="Click to edit"/>
+          </Hyperlink>
+        </TextBlock>
+      </StackPanel>
+    </Border>
+  </DataTemplate>
+
+  <DataTemplate x:Key="MetadataDefinitionTemplate">
+      <StackPanel>
+        <TextBlock Style="{StaticResource MetadataHeadingStyle}">
+          <TextBlock.Text>
+            <Binding StringFormat="Rules for {0}" Path="Name"/>
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock Text="{Binding Description}"/>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding StringFormat="Must be a {0}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>
+          </TextBlock.Text>
+        </TextBlock>
+
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding StringFormat="Is {0}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>
+          </TextBlock.Text>
+        </TextBlock>
+
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="IsRepeatable" Converter="{Metadata:IsRepeatableToStringConverter}"/>
+          </TextBlock.Text>
+        </TextBlock>
+      </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="MetadataDuplicateItemErrorTemplate">
+    <StackPanel>
+      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="Metadata error: duplicate items detected"/>
+      <TextBlock Text="This metadata field cannot have more than one instance." Margin="0,0,0,5"/>
+      <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
+                          Content="{Binding Definition}" />
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="MetadataMissingItemErrorTemplate">
+    <StackPanel>
+      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="Metadata error: missing a required item"/>
+      <TextBlock Margin="0,0,0,5">
+        <TextBlock.Text>
+          <Binding StringFormat="An entry for {0} was not found" Path="Definition.Name"/>
+        </TextBlock.Text>
+      </TextBlock>
+        <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
+                          Content="{Binding Definition}" />
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="MetadataFormatErrorTemplate">
+    <StackPanel>
+      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="Metadata error: invalid formatting"/>
+      <TextBlock Text="The value for the item is invalid:"/>
+      <ContentPresenter ContentTemplate="{StaticResource MetadataItemTemplate}"
+                          Content="{Binding Target}" />
+      <TextBlock Margin="0,0,0,5">
+        <TextBlock.Text>
+          <MultiBinding StringFormat="Hint: {0} must be {1}">
+            <Binding Path="Definition.Name"/>
+            <Binding Path="Hint"/>
+          </MultiBinding>
+        </TextBlock.Text>
+      </TextBlock>
+      
+      <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
+                          Content="{Binding Definition}" />
+      
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="MetadataGeneralErrorTemplate">
+    <StackPanel>
+      <TextBlock Text="Metadata error: general error" Style="{StaticResource MetadataHeadingStyle}"/>
+      <TextBlock Text="{Binding Message}"/>
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate DataType="{x:Type Metadata:MetadataValidationError}">
+    <ContentPresenter x:Name="Presenter"
+                      ContentTemplate="{StaticResource MetadataGeneralErrorTemplate}"
+                      Content="{TemplateBinding Content}" />
+
+    <DataTemplate.Triggers>
+      <DataTrigger Binding="{Binding ErrorType}">
+        <DataTrigger.Value>
+          <Metadata:MetadataErrorType>FormatError</Metadata:MetadataErrorType>
+        </DataTrigger.Value>
+        <Setter TargetName="Presenter"
+            Property="ContentTemplate"
+            Value="{StaticResource MetadataFormatErrorTemplate}" />
+      </DataTrigger>
+
+      <DataTrigger Binding="{Binding ErrorType}">
+        <DataTrigger.Value>
+          <Metadata:MetadataErrorType>DuplicateItemError</Metadata:MetadataErrorType>
+        </DataTrigger.Value>
+        <Setter TargetName="Presenter"
+            Property="ContentTemplate"
+            Value="{StaticResource MetadataDuplicateItemErrorTemplate}" />
+      </DataTrigger>
+
+      <DataTrigger Binding="{Binding ErrorType}">
+        <DataTrigger.Value>
+          <Metadata:MetadataErrorType>MissingItemError</Metadata:MetadataErrorType>
+        </DataTrigger.Value>
+        <Setter TargetName="Presenter"
+            Property="ContentTemplate"
+            Value="{StaticResource MetadataMissingItemErrorTemplate}" />
+      </DataTrigger>
+
+    </DataTemplate.Triggers>
+  </DataTemplate>
+
 </ResourceDictionary>

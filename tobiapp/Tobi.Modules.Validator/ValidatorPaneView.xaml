@@ -7,33 +7,7 @@
     <Validator:SeverityConverter x:Key="SeverityConverter"/>
   </DockPanel.Resources -->
   <!--<Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>-->
-  <!--
-  <ListBox
-    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-    ItemsSource="{Binding ValidationItems}"
-    DisplayMemberPath="Message">
--->
-    <!-- ListBox.ItemTemplate>
-      <DataTemplate>
-        <TextBox Text="{Binding Message}"/>
-      </DataTemplate>
-    </ListBox.ItemTemplate -->
-<!--    <ListBox.ItemContainerStyle>
-      <Style TargetType="{x:Type ListBoxItem}">
-
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="FontWeight" Value="Normal" />
-
-        <Style.Triggers>
-          <DataTrigger Binding="{Binding Severity, Converter={Validator:SeverityConverter}}" Value="True">
-            <Setter Property="FontWeight" Value="Bold" />
-          </DataTrigger>
-        </Style.Triggers>
-      </Style>
-    </ListBox.ItemContainerStyle>
-  </ListBox>
--->
-
+  
   <DockPanel.Resources>
     <CollectionViewSource Source="{Binding Path=ValidationItems}" x:Key="ValidationItemsCVS"/>
   </DockPanel.Resources>
@@ -49,27 +23,18 @@
     </Grid.RowDefinitions>
     
     <!-- Left side: List of all validation items -->
-    <ListBox Grid.Row="0" Grid.Column="0" 
+    <ListBox Grid.Row="0" Grid.Column="0"
              ItemsSource="{Binding Source={StaticResource ValidationItemsCVS}}"
              IsSynchronizedWithCurrentItem="True"
-             DisplayMemberPath="Message"/>
-    <!--
-    <UI:SortableListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1"
-	      ItemsSource="{Binding Source={StaticResource ValidationItemsCVS}}"
-	      IsSynchronizedWithCurrentItem="True"
-	      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-	      HorizontalContentAlignment="Stretch"
-	      x:Name="ValidationListView"
-	      SelectionChanged="ValidationListView_OnSelectionChanged"
-	      DisplayMemberPath="Message"/>
--->
-    <!-- TODO: how to tell WPF to use a data template from the merged resource dictionary here?-->
-    <!-- StackPanel Grid.Column="1" Grid.Row="0">
-      <TextBlock Text="Dummy placeholder"/>
-      <TextBlock Text="{Binding Source={StaticResource ValidationItemsCVS}, Path=/}"/>
-    </StackPanel -->
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,0,0,5"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
     
-    <ContentControl  Grid.Column="1" Grid.Row="0"
+    <ContentControl Margin="10,0,0,0" Grid.Column="1" Grid.Row="0"
                        Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />
   </Grid>
 </DockPanel>
