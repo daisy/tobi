@@ -254,6 +254,9 @@ namespace Tobi.Common.UI
     }
     public class PreferredPositionRegion : Region
     {
+#if DEBUG
+        public static readonly bool MARK_PREFERRED_POS = true; // change this to false to avoid information overload in DEBUG mode.
+#endif
         private int addIndex = 0;
 
         public IEnumerable<object> GetViewsWithNamePrefix(string viewNamePrefix)
@@ -299,12 +302,15 @@ namespace Tobi.Common.UI
                 Microsoft.Practices.Composite.Presentation.Regions.RegionManager.SetRegionManager(dependencyObject, scopedRegionManager);
             }
 #if DEBUG
-            markWithAddIndex(itemMetadata);
+            if (MARK_PREFERRED_POS) markWithAddIndex(itemMetadata);
 #endif
             int initialCount = ItemMetadataCollection.Count;
 
-            // normally introcuced first before actual views (sub-MenuItem, Command for Menu or Toolbar)
-            bool isSeparator = itemMetadata.Item is Separator;
+            bool isSeparator = itemMetadata.Item is Separator
+#if DEBUG
+ || !(itemMetadata.Item is MenuItemRichCommand) && itemMetadata.Item is MenuItem
+#endif
+;
 
             switch (itemMetadata.PreferredPosition)
             {
