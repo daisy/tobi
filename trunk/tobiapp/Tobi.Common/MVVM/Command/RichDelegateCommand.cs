@@ -225,19 +225,19 @@ namespace Tobi.Common.MVVM.Command
             }
         }
 
-        private List<WeakReference> m_DataChangedChangedHandlers;
-        public event EventHandler DataChanged_WEAK
+        private List<WeakReference<EventHandler<EventArgs>>> m_DataChangedChangedHandlers;
+        public event EventHandler<EventArgs> DataChanged_WEAK
         {
             //[MethodImpl(MethodImplOptions.Synchronized)]
             add
             {
-                WeakReferencedEventHandlerHelper.AddWeakReferenceHandler(ref m_DataChangedChangedHandlers, value, 2);
+                WeakReferencedEventHandlerHelper.AddWeakReferenceHandler<EventArgs>(ref m_DataChangedChangedHandlers, value, 2);
             }
 
             //[MethodImpl(MethodImplOptions.Synchronized)]
             remove
             {
-                WeakReferencedEventHandlerHelper.RemoveWeakReferenceHandler(m_DataChangedChangedHandlers, value);
+                WeakReferencedEventHandlerHelper.RemoveWeakReferenceHandler<EventArgs>(m_DataChangedChangedHandlers, value);
             }
         }
 
@@ -251,7 +251,7 @@ namespace Tobi.Common.MVVM.Command
 
         private void FireDataChanged_WEAK()
         {
-            WeakReferencedEventHandlerHelper.CallWeakReferenceHandlers_WithDispatchCheck(m_DataChangedChangedHandlers);
+            WeakReferencedEventHandlerHelper.CallWeakReferenceHandlers_WithDispatchCheck<EventArgs>(m_DataChangedChangedHandlers, this, EventArgs.Empty);
         }
 
         public bool DataChangedHasHandlers
