@@ -342,7 +342,7 @@ namespace Tobi.Plugin.AudioPane
         {
             get
             {
-                return "Playback x" + PlaybackRate;
+                return "Playback x" + PlaybackRate;       // TODO Localize  PlaybackX
             }
         }
 
@@ -512,11 +512,11 @@ namespace Tobi.Plugin.AudioPane
 
                     if (m_IsWaveFormLoading)
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Loading waveform...");
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Loading waveform..."); // TODO Localize LoadingWaveform
                     }
                     else
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Waveform loaded.");
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Waveform loaded.");  // TODO Localize WaveformLoaded
                     }
 
                     RaisePropertyChanged(() => IsWaveFormLoading);
@@ -793,7 +793,7 @@ namespace Tobi.Plugin.AudioPane
                     );
             }
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playing...");
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playing..."); // TODO Localize Playing
 
             //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
@@ -851,7 +851,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 m_Player.Stop();
 
-                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback stopped.");
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback stopped."); // TODO Localize PlaybackStopped
             }
         }
 
@@ -941,7 +941,7 @@ namespace Tobi.Plugin.AudioPane
 
             RaisePropertyChanged(() => IsPlaying);
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback ended.");
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback ended."); // TODO Localize PlaybackEnded
 
             if (State.Audio.HasContent)
             {

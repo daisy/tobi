@@ -487,7 +487,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
 
-                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document."); // TODO Localize NoDocument
             }
         }
 
