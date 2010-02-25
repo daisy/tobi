@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,7 +8,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite;
-using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
 using Microsoft.Practices.ServiceLocation;
@@ -39,40 +37,9 @@ namespace Tobi.Common.UI
         public PreferredPosition m_viewPreferredPosition;
     }
 
-    public class WeakDelegatesManager
-    {
-        private readonly List<DelegateReference> m_Listeners = new List<DelegateReference>();
-
-        public void AddListener(Delegate listener)
-        {
-            m_Listeners.Add(new DelegateReference(listener, false));
-        }
-
-        public void RemoveListener(Delegate listener)
-        {
-            m_Listeners.RemoveAll(reference =>
-            {
-                //Remove the listener, and prune collected listeners
-                Delegate target = reference.Target;
-                return listener.Equals(target) || target == null;
-            });
-        }
-
-        public void Raise(params object[] args)
-        {
-            m_Listeners.RemoveAll(listener => listener.Target == null);
-
-            foreach (Delegate handler in m_Listeners.ToList().Select(listener => listener.Target).Where(listener => listener != null))
-            {
-                handler.DynamicInvoke(args);
-            }
-        }
-    }
-
-
     public interface IRegionNamedViewRegistry
     {
-        event EventHandler<NamedViewRegisteredEventArgs> ContentRegistered;
+        event EventHandler<EventArgsx<string>> ContentRegistered; //NamedViewRegisteredEventArgs
 
         IEnumerable<PreferredPositionNamedView> PullContents(string regionName);
 
@@ -83,6 +50,8 @@ namespace Tobi.Common.UI
     {
         private readonly IServiceLocator locator;
         private readonly ListDictionary<string, PreferredPositionNamedView> m_RegisteredContent = new ListDictionary<string, PreferredPositionNamedView>();
+
+        //private List<WeakReference<EventHandler<EventArgsx<string>>>> m_ContentRegisteredHandlers;
         private readonly WeakDelegatesManager m_ContentRegisteredListeners = new WeakDelegatesManager();
 
         public RegionNamedViewRegistry(IServiceLocator m_Locator)
@@ -90,10 +59,18 @@ namespace Tobi.Common.UI
             m_Locator = m_Locator;
         }
 
-        public event EventHandler<NamedViewRegisteredEventArgs> ContentRegistered
+        public event EventHandler<EventArgsx<string>> ContentRegistered //NamedViewRegisteredEventArgs
         {
-            add { m_ContentRegisteredListeners.AddListener(value); }
-            remove { m_ContentRegisteredListeners.RemoveListener(value); }
+            add
+            {
+                //WeakReferencedEventHandlerHelper.AddWeakReferenceHandler<EventArgsx<string>>(ref m_ContentRegisteredHandlers, value, 2);
+                m_ContentRegisteredListeners.AddListener(value);
+            }
+            remove
+            {
+                //WeakReferencedEventHandlerHelper.RemoveWeakReferenceHandler<EventArgsx<string>>(m_ContentRegisteredHandlers, value);
+                m_ContentRegisteredListeners.RemoveListener(value);
+            }
         }
 
         public IEnumerable<PreferredPositionNamedView> PullContents(string regionName)
@@ -115,13 +92,14 @@ namespace Tobi.Common.UI
         public void RegisterNamedViewWithRegion(string regionName, PreferredPositionNamedView content)
         {
             m_RegisteredContent.Add(regionName, content);
-            OnContentRegistered(new NamedViewRegisteredEventArgs(regionName));
+            OnContentRegistered(new EventArgsx<string>(regionName)); //NamedViewRegisteredEventArgs
         }
 
-        private void OnContentRegistered(NamedViewRegisteredEventArgs e)
+        private void OnContentRegistered(EventArgsx<string> e) //NamedViewRegisteredEventArgs
         {
             try
             {
+                //WeakReferencedEventHandlerHelper.CallWeakReferenceHandlers_WithDispatchCheck<EventArgsx<string>>(m_ContentRegisteredHandlers, this, e);
                 m_ContentRegisteredListeners.Raise(this, e);
             }
             catch (TargetInvocationException ex)
@@ -137,7 +115,7 @@ namespace Tobi.Common.UI
                 }
 
                 throw new ViewRegistrationException(string.Format(CultureInfo.CurrentCulture,
-                    "Problem trying to register named view ! {0}, {1}", e.RegionName, rootException), ex.InnerException);
+                    "Problem trying to register named view ! {0}, {1}", e.PayLoad, rootException), ex.InnerException);
             }
         }
     }
@@ -196,13 +174,12 @@ namespace Tobi.Common.UI
             {
                 Region.Add((viewToAdd.m_viewInstance ?? viewToAdd.m_viewInstanceProvider()), viewToAdd.m_viewName);
             }
-
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers", Justification = "This has to be public in order to work with weak references in partial trust or Silverlight environments.")]
-        public virtual void OnNamedViewRegistered(object sender, NamedViewRegisteredEventArgs e)
+        public virtual void OnNamedViewRegistered(object sender, EventArgsx<string> e) //NamedViewRegisteredEventArgs e)
         {
-            if (e.RegionName == Region.Name)
+            if (Region.Name == e.PayLoad) //e.RegionName
             {
                 foreach (PreferredPositionNamedView view in m_RegionNamedViewRegistry.PullContents(Region.Name))
                 {
@@ -214,17 +191,17 @@ namespace Tobi.Common.UI
         }
     }
 
-    public class NamedViewRegisteredEventArgs : EventArgs
-    {
-        public NamedViewRegisteredEventArgs(string regionName) //, NamedView content)
-        {
-            //Content = content;
-            RegionName = regionName;
-        }
+    //public class NamedViewRegisteredEventArgs : EventArgs
+    //{
+    //    public NamedViewRegisteredEventArgs(string regionName) //, NamedView content)
+    //    {
+    //        //Content = content;
+    //        RegionName = regionName;
+    //    }
 
-        public readonly string RegionName;
-        //public readonly NamedView Content;
-    }
+    //    public readonly string RegionName;
+    //    //public readonly NamedView Content;
+    //}
 
     public enum PreferredPosition
     {

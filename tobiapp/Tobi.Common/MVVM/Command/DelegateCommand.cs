@@ -128,7 +128,7 @@ namespace Tobi.Common.MVVM.Command
         /// </summary>
         protected virtual void OnCanExecuteChanged()
         {
-            WeakReferencedEventHandlerHelper.CallWeakReferenceHandlers_WithDispatchCheck(_canExecuteChangedHandlers);
+            WeakReferencedEventHandlerHelper.CallWeakReferenceHandlers_WithDispatchCheck(_canExecuteChangedHandlers, this, EventArgs.Empty);
         }
 
         #endregion
@@ -146,6 +146,7 @@ namespace Tobi.Common.MVVM.Command
                 {
                     CommandManager.RequerySuggested += value;
                 }
+
                 WeakReferencedEventHandlerHelper.AddWeakReferenceHandler(ref _canExecuteChangedHandlers, value, 2);
             }
             remove
@@ -154,6 +155,7 @@ namespace Tobi.Common.MVVM.Command
                 {
                     CommandManager.RequerySuggested -= value;
                 }
+
                 WeakReferencedEventHandlerHelper.RemoveWeakReferenceHandler(_canExecuteChangedHandlers, value);
             }
         }
@@ -175,7 +177,7 @@ namespace Tobi.Common.MVVM.Command
         private readonly Action _executeMethod = null;
         private readonly Func<bool> _canExecuteMethod = null;
         private bool _isAutomaticRequeryDisabled = false;
-        private List<WeakReference> _canExecuteChangedHandlers;
+        private List<WeakReference<EventHandler>> _canExecuteChangedHandlers;
 
         #endregion
     }
@@ -186,13 +188,13 @@ namespace Tobi.Common.MVVM.Command
     /// </summary>
     public static class CommandManagerHelper
     {
-        public static void AddHandlersToRequerySuggested(List<WeakReference> handlers)
+        public static void AddHandlersToRequerySuggested(List<WeakReference<EventHandler>> handlers)
         {
             if (handlers != null)
             {
-                foreach (WeakReference handlerRef in handlers)
+                foreach (WeakReference<EventHandler> handlerRef in handlers)
                 {
-                    EventHandler handler = handlerRef.Target as EventHandler;
+                    EventHandler handler = handlerRef.Target; // as EventHandler;
                     if (handler != null)
                     {
                         CommandManager.RequerySuggested += handler;
@@ -201,13 +203,13 @@ namespace Tobi.Common.MVVM.Command
             }
         }
 
-        public static void RemoveHandlersFromRequerySuggested(List<WeakReference> handlers)
+        public static void RemoveHandlersFromRequerySuggested(List<WeakReference<EventHandler>> handlers)
         {
             if (handlers != null)
             {
-                foreach (WeakReference handlerRef in handlers)
+                foreach (WeakReference<EventHandler> handlerRef in handlers)
                 {
-                    EventHandler handler = handlerRef.Target as EventHandler;
+                    EventHandler handler = handlerRef.Target; // as EventHandler;
                     if (handler != null)
                     {
                         CommandManager.RequerySuggested -= handler;
