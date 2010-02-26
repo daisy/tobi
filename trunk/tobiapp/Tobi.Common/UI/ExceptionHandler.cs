@@ -299,7 +299,7 @@ namespace Tobi.Common.UI
 
             var windowPopup = new PopupModalWindow(shellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.Unexpected),
+                                                       Tobi_Common_Lang.Unexpected),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,

@@ -151,8 +151,8 @@ namespace Tobi.Plugin.Urakawa
 
             //
             UndoCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Undo,
-                UserInterfaceStrings.Undo_,
+                Tobi_Plugin_Urakawa_Lang.Undo,
+                Tobi_Plugin_Urakawa_Lang.Undo_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-undo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
@@ -163,8 +163,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(UndoCommand);
             //
             RedoCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Redo,
-                UserInterfaceStrings.Redo_,
+                Tobi_Plugin_Urakawa_Lang.Redo,
+                Tobi_Plugin_Urakawa_Lang.Redo_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-redo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
@@ -175,8 +175,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(RedoCommand);
             //
             CloseCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Close,
-                UserInterfaceStrings.Close_,
+                Tobi_Plugin_Urakawa_Lang.Close,
+                Tobi_Plugin_Urakawa_Lang.Close_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 () => Close(),
@@ -187,8 +187,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(CloseCommand);
             //
             DataCleanupCommand = new RichDelegateCommand(
-                UserInterfaceStrings.DataCleanup,
-                UserInterfaceStrings.DataCleanup_,
+                Tobi_Plugin_Urakawa_Lang.DataCleanup,
+                Tobi_Plugin_Urakawa_Lang.DataCleanup_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
                 DataCleanup,
@@ -253,7 +253,7 @@ namespace Tobi.Plugin.Urakawa
 
                 var label = new TextBlock
                 {
-                    Text = UserInterfaceStrings.UnsavedChangesConfirm,
+                    Text = Tobi_Plugin_Urakawa_Lang.UnsavedChangesConfirm,
                     Margin = new Thickness(8, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
@@ -274,11 +274,11 @@ namespace Tobi.Plugin.Urakawa
                 panel.Children.Add(label);
                 //panel.Margin = new Thickness(8, 8, 8, 0);
 
-                var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnsavedChangesDetails);
+                var details = new TextBoxReadOnlyCaretVisible(Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails);
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
-                                                           UserInterfaceStrings.UnsavedChanges),
+                                                           Tobi_Plugin_Urakawa_Lang.UnsavedChanges),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.YesNoCancel,
                                                        PopupModalWindow.DialogButton.Cancel,
@@ -506,7 +506,7 @@ namespace Tobi.Plugin.Urakawa
 
                 windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
-                                                           UserInterfaceStrings.CancellingTask),
+                                                           Tobi_Plugin_Urakawa_Lang.CancellingTask),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,

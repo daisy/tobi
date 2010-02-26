@@ -26,8 +26,8 @@ namespace Tobi.Plugin.Urakawa
         {
             //
             SaveAsCommand = new RichDelegateCommand(
-                UserInterfaceStrings.SaveAs,
-                UserInterfaceStrings.SaveAs_,
+                Tobi_Plugin_Urakawa_Lang.SaveAs,
+                Tobi_Plugin_Urakawa_Lang.SaveAs_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-save"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
@@ -51,7 +51,7 @@ namespace Tobi.Plugin.Urakawa
                         CreatePrompt = false,
                         DereferenceLinks = true,
                         OverwritePrompt = false,
-                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.SaveAs)
+                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.SaveAs)
                     };
 
                     bool? result = false;
@@ -104,8 +104,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(SaveAsCommand);
             //
             SaveCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Save,
-                UserInterfaceStrings.Save_,
+                Tobi_Plugin_Urakawa_Lang.Save,
+                Tobi_Plugin_Urakawa_Lang.Save_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"drive-harddisk"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
@@ -244,7 +244,7 @@ namespace Tobi.Plugin.Urakawa
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.RunningTask),
+                                                       Tobi_Plugin_Urakawa_Lang.RunningTask),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Cancel,
                                                    PopupModalWindow.DialogButton.Cancel,
@@ -313,7 +313,7 @@ namespace Tobi.Plugin.Urakawa
 
             var label = new TextBlock
             {
-                Text = (folder ? UserInterfaceStrings.OverwriteConfirm_Folder : UserInterfaceStrings.OverwriteConfirm_File),
+                Text = (folder ? Tobi_Plugin_Urakawa_Lang.OverwriteConfirm_Folder : Tobi_Plugin_Urakawa_Lang.OverwriteConfirm_File),
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -338,7 +338,7 @@ namespace Tobi.Plugin.Urakawa
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.Overwrite),
+                                                       Tobi_Plugin_Urakawa_Lang.Overwrite),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,

@@ -17,7 +17,7 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Edit()
         {
             CommandOpenFile = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_OpenFile,
+                Tobi_Plugin_AudioPane_Lang.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("document-open"),
@@ -35,8 +35,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandOpenFile);
             //
             CommandInsertFile = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_InsertFile,
-                UserInterfaceStrings.Audio_InsertFile_,
+                Tobi_Plugin_AudioPane_Lang.Audio_InsertFile,
+                Tobi_Plugin_AudioPane_Lang.Audio_InsertFile_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("folder-open"),
                 () =>

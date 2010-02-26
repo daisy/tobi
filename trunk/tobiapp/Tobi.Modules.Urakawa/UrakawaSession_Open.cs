@@ -35,8 +35,8 @@ namespace Tobi.Plugin.Urakawa
             //shellView.RegisterRichCommand(NewCommand);
             //
             OpenCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Open,
-                UserInterfaceStrings.Open_,
+                Tobi_Plugin_Urakawa_Lang.Open,
+                Tobi_Plugin_Urakawa_Lang.Open_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-open"),
                 () =>
@@ -54,7 +54,7 @@ namespace Tobi.Plugin.Urakawa
                         CheckPathExists = false,
                         AddExtension = true,
                         DereferenceLinks = true,
-                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Open)
+                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.Open)
                     };
 
                     bool? result = false;
@@ -93,7 +93,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 var label = new TextBlock
                 {
-                    Text = UserInterfaceStrings.CannotOpenLocalFile_,
+                    Text = Tobi_Plugin_Urakawa_Lang.CannotOpenLocalFile_,
                     Margin = new Thickness(8, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
@@ -116,7 +116,7 @@ namespace Tobi.Plugin.Urakawa
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
-                                                           UserInterfaceStrings.CannotOpenLocalFile),
+                                                           Tobi_Plugin_Urakawa_Lang.CannotOpenLocalFile),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.Close,
                                                        PopupModalWindow.DialogButton.Close,
@@ -225,7 +225,7 @@ namespace Tobi.Plugin.Urakawa
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
-                                                           UserInterfaceStrings.RunningTask),
+                                                           Tobi_Plugin_Urakawa_Lang.RunningTask),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.Cancel,
                                                        PopupModalWindow.DialogButton.Cancel,

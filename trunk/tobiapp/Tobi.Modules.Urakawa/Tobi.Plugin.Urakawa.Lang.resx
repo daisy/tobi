@@ -123,6 +123,12 @@
   <data name="CancellingTask" xml:space="preserve">
     <value>Cancelling...</value>
   </data>
+  <data name="CannotOpenLocalFile" xml:space="preserve">
+    <value>Cannot open file.</value>
+  </data>
+  <data name="CannotOpenLocalFile_" xml:space="preserve">
+    <value>Failed to open file!</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>_Close</value>
   </data>
@@ -140,6 +146,12 @@
   </data>
   <data name="Export_" xml:space="preserve">
     <value>Export the current document  to DAISY...</value>
+  </data>
+  <data name="Menu_ClearRecentFiles" xml:space="preserve">
+    <value>_Clear</value>
+  </data>
+  <data name="Menu_ClearRecentFiles_" xml:space="preserve">
+    <value>Clear the list of recently-opened files.</value>
   </data>
   <data name="Open" xml:space="preserve">
     <value>_Open / import</value>

@@ -54,8 +54,8 @@ namespace Tobi
 
             //
             ExitCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Menu_Exit,
-                UserInterfaceStrings.Menu_Exit_,
+                Tobi_Lang.Menu_Exit,
+                Tobi_Lang.Menu_Exit_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 //UserInterfaceStrings.Menu_Exit_KEYS,
                 LoadTangoIcon(@"system-log-out"),
@@ -78,8 +78,8 @@ namespace Tobi
             //
 
             MagnifyUiResetCommand = new RichDelegateCommand(
-                UserInterfaceStrings.UI_ResetMagnification,
-                UserInterfaceStrings.UI_ResetMagnification_,
+                Tobi_Lang.UI_ResetMagnification,
+                Tobi_Lang.UI_ResetMagnification_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"weather-clear"),
                 () =>
@@ -95,8 +95,8 @@ namespace Tobi
             RegisterRichCommand(MagnifyUiResetCommand);
             //
             MagnifyUiIncreaseCommand = new RichDelegateCommand(
-                UserInterfaceStrings.UI_IncreaseMagnification,
-                UserInterfaceStrings.UI_IncreaseMagnification_,
+                Tobi_Lang.UI_IncreaseMagnification,
+                Tobi_Lang.UI_IncreaseMagnification_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 //LoadTangoIcon("mail-forward"),
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource(@"Horizon_Image_Zoom_In")),
@@ -114,8 +114,8 @@ namespace Tobi
             //
 
             MagnifyUiDecreaseCommand = new RichDelegateCommand(
-                UserInterfaceStrings.UI_DecreaseMagnification,
-                UserInterfaceStrings.UI_DecreaseMagnification_,
+                Tobi_Lang.UI_DecreaseMagnification,
+                Tobi_Lang.UI_DecreaseMagnification_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource(@"Horizon_Image_Zoom_out")),
                 () =>
@@ -143,8 +143,8 @@ namespace Tobi
 #endif
             //
             ManageShortcutsCommand = new RichDelegateCommand(
-                UserInterfaceStrings.ManageShortcuts,
-                UserInterfaceStrings.ManageShortcuts_,
+                Tobi_Lang.ManageShortcuts,
+                Tobi_Lang.ManageShortcuts_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"preferences-desktop-keyboard-shortcuts"),
                 () =>
@@ -153,7 +153,7 @@ namespace Tobi
 
                     var windowPopup = new PopupModalWindow(this,
                                                            UserInterfaceStrings.EscapeMnemonic(
-                                                               UserInterfaceStrings.ManageShortcuts),
+                                                               Tobi_Lang.ManageShortcuts),
                                                            new KeyboardShortcuts(this),
                                                            PopupModalWindow.DialogButtonsSet.Ok,
                                                            PopupModalWindow.DialogButton.Ok,
@@ -169,8 +169,8 @@ namespace Tobi
             RegisterRichCommand(ManageShortcutsCommand);
             //
             CutCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Cut,
-                UserInterfaceStrings.Cut_,
+                Tobi_Lang.Cut,
+                Tobi_Lang.Cut_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-cut"),
                 () =>
@@ -187,8 +187,8 @@ namespace Tobi
             RegisterRichCommand(CutCommand);
             //
             CopyCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Copy,
-                UserInterfaceStrings.Copy_,
+                Tobi_Lang.Copy,
+                Tobi_Lang.Copy_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-copy"),
                 () => Debug.Fail(@"Functionality not implemented yet."),
@@ -199,8 +199,8 @@ namespace Tobi
             RegisterRichCommand(CopyCommand);
             //
             PasteCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Paste,
-                UserInterfaceStrings.Paste_,
+                Tobi_Lang.Paste,
+                Tobi_Lang.Paste_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon(@"edit-paste"),
                 () => Debug.Fail(@"Functionality not implemented yet."),
@@ -270,8 +270,8 @@ namespace Tobi
             //
 
             OpenTobiIsolatedStorageCommand = new RichDelegateCommand(
-                UserInterfaceStrings.OpenTobiIsolatedStorage,
-                UserInterfaceStrings.OpenTobiIsolatedStorage_,
+                Tobi_Lang.OpenTobiIsolatedStorage,
+                Tobi_Lang.OpenTobiIsolatedStorage_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadGnomeNeuIcon(@"Neu_applications-office"),
                 () =>
@@ -292,8 +292,8 @@ namespace Tobi
             RegisterRichCommand(OpenTobiIsolatedStorageCommand);
             //
             OpenTobiFolderCommand = new RichDelegateCommand(
-                UserInterfaceStrings.OpenTobiFolder,
-                UserInterfaceStrings.OpenTobiFolder_,
+                Tobi_Lang.OpenTobiFolder,
+                Tobi_Lang.OpenTobiFolder_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadGnomeNeuIcon(@"Neu_user-home"),
                 () =>
@@ -314,8 +314,8 @@ namespace Tobi
             RegisterRichCommand(OpenTobiFolderCommand);
             //
             OpenTobiSettingsFolderCommand = new RichDelegateCommand(
-                UserInterfaceStrings.OpenTobiSettingsFolder,
-                UserInterfaceStrings.OpenTobiSettingsFolder_,
+                Tobi_Lang.OpenTobiSettingsFolder,
+                Tobi_Lang.OpenTobiSettingsFolder_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadGnomeFoxtrotIcon(@"Foxtrot_folder"),
                 () =>
@@ -339,8 +339,8 @@ namespace Tobi
             RegisterRichCommand(OpenTobiSettingsFolderCommand);
             //
             HelpCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Help,
-                UserInterfaceStrings.Help_,
+                Tobi_Lang.Help,
+                Tobi_Lang.Help_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 LoadTangoIcon("help-browser"),
                 () =>

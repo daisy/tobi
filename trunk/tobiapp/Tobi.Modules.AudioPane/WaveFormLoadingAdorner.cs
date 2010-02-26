@@ -59,7 +59,7 @@ namespace Tobi.Plugin.AudioPane
         protected override void OnRender(DrawingContext drawingContext)
         {
             var formattedText = new FormattedText(
-                (DisplayRecorderTime ? m_AudioPaneViewModel.TimeStringCurrent : UserInterfaceStrings.Loading),
+                (DisplayRecorderTime ? m_AudioPaneViewModel.TimeStringCurrent : Tobi_Plugin_AudioPane_Lang.Loading),
                 m_culture,
                 FlowDirection.LeftToRight,
                 m_typeFace,
