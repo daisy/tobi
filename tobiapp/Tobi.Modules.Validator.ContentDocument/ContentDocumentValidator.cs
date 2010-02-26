@@ -65,6 +65,16 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             get { return "A validator that uses data from a DTD to validate elements in a document tree."; }     // Key already specified
         }
+
+        public new bool ShouldRunOnlyOnce
+        {
+            get { return true; }
+        }
+
+        public new bool ShouldBeValidatedAsynchronously
+        {
+            get { return true; }
+        }
         public override IEnumerable<ValidationItem> ValidationItems
         {
             get { return m_ValidationItems; }

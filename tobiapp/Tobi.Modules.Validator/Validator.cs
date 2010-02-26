@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using Microsoft.Practices.Composite.Events;
@@ -30,7 +31,8 @@ namespace Tobi.Plugin.Validator
 
         private readonly IUrakawaSession m_UrakawaSession;
         public readonly IEnumerable<IValidator> m_Validators;
-        
+        private bool m_RanOnce;
+
         [ImportingConstructor]
         public Validator(
             ILoggerFacade logger,
@@ -42,7 +44,7 @@ namespace Tobi.Plugin.Validator
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
-
+            m_RanOnce = false;
             m_Validators = validators;
             m_UrakawaSession = session;
             
@@ -130,11 +132,52 @@ namespace Tobi.Plugin.Validator
             
             foreach (IValidator validator in m_Validators)
             {
-                bool result = validator.Validate();
-                isValid = isValid && result;
+                bool result = true;
+                if (!validator.ShouldRunOnlyOnce || 
+                    (validator.ShouldRunOnlyOnce && !m_RanOnce))
+                {
+                    if (validator.ShouldBeValidatedAsynchronously)
+                    {
+                        var backWorker = new BackgroundWorker
+                        {
+                            WorkerSupportsCancellation = true,
+                            WorkerReportsProgress = true
+                        };
+
+                        backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+                        {
+                            if (backWorker.CancellationPending)
+                            {
+                                args.Cancel = true;
+                                return;
+                            }
+
+                            result = validator.Validate();
+                            args.Result = @"dummy result";
+                        };
+
+                        backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+                        {
+                            var workException = args.Error;
+                            backWorker = null;
+                            //TODO: log an exception
+
+                        };
+                    }
+                    else
+                    {
+                        result = validator.Validate();
+                    }
+
+
+                    isValid = isValid && result;
+                }
+                
             }
 
             IsValid = isValid;
+
+            m_RanOnce = true;
             return IsValid;
         }
     }
