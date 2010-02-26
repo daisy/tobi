@@ -96,7 +96,7 @@ namespace Tobi.Plugin.AudioPane
                                 {
                                     m_TreeNode = marker.m_TreeNode,
                                     m_LocalStreamLeftMark = byteSelectionLeft - bytesLeft,
-                                    m_LocalStreamRightMark = (rightBoundaryIsAlsoHere ? byteSelectionRight - bytesLeft : -1)
+                                    m_LocalStreamRightMark = (rightBoundaryIsAlsoHere && State.Audio.PlayStreamMarkers.Count > 1 ? byteSelectionRight - bytesLeft : -1)
                                 };
                                 listOfTreeNodeAndStreamSelection.Add(data);
 
@@ -117,7 +117,9 @@ namespace Tobi.Plugin.AudioPane
                                     m_LocalStreamLeftMark = -1,
                                     m_LocalStreamRightMark = byteSelectionRight - bytesLeft
                                 };
-                                listOfTreeNodeAndStreamSelection.Add(data);
+
+                                if (data.m_LocalStreamRightMark > 0)
+                                    listOfTreeNodeAndStreamSelection.Add(data);
 
                                 break;
                             }
@@ -145,7 +147,7 @@ namespace Tobi.Plugin.AudioPane
                     if (listOfTreeNodeAndStreamSelection.Count == 1)
                     {
                         var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
-                                    CreateTreeNodeAudioStreamDeleteCommand(listOfTreeNodeAndStreamSelection[0]);
+                                    CreateTreeNodeAudioStreamDeleteCommand(listOfTreeNodeAndStreamSelection[0], State.CurrentTreeNode);
 
                         m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
                     }
@@ -156,7 +158,7 @@ namespace Tobi.Plugin.AudioPane
                         foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
                         {
                             var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
-                                        CreateTreeNodeAudioStreamDeleteCommand(selection);
+                                        CreateTreeNodeAudioStreamDeleteCommand(selection, State.CurrentTreeNode);
 
                             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
                         }
