@@ -127,7 +127,7 @@ namespace Tobi.Plugin.Settings
             m_Logger.Log("SettingsPlugin.ShowDialog", Category.Debug, Priority.Medium);
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Preferences),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Settings_Lang.Preferences),
                                                    m_Container.Resolve<SettingsView>(),
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,

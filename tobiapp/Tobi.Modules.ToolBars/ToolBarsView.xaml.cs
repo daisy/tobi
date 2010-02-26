@@ -69,7 +69,7 @@ namespace Tobi.Plugin.ToolBars
         private void initCommands()
         {
             CommandFocus = new RichDelegateCommand(
-                UserInterfaceStrings.Toolbar_Focus,
+                Tobi_Plugin_ToolBars_Lang.Toolbar_Focus,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("applications-accessories"),

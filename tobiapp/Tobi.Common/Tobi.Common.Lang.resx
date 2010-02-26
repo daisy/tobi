@@ -186,6 +186,9 @@
   <data name="Ok" xml:space="preserve">
     <value>_Ok</value>
   </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Unexpected problem !</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>_Yes</value>
   </data>

@@ -204,9 +204,6 @@
   <data name="UI_ResetMagnification_" xml:space="preserve">
     <value>Reset the UI magnification level</value>
   </data>
-  <data name="Unexpected" xml:space="preserve">
-    <value>Unexpected problem !</value>
-  </data>
   <data name="Menu_Find" xml:space="preserve">
     <value>_Find</value>
   </data>

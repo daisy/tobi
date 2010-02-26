@@ -429,7 +429,7 @@ namespace Tobi.Plugin.AudioPane
                 CheckPathExists = false,
                 AddExtension = true,
                 DereferenceLinks = true,
-                Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Audio_OpenFile)
+                Title = "Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.Audio_OpenFile)
             };
 
             bool? result = false;

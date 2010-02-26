@@ -115,6 +115,24 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Preferences.
+        /// </summary>
+        public static string Preferences {
+            get {
+                return ResourceManager.GetString("Preferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application configurable options.
+        /// </summary>
+        public static string Preferences_ {
+            get {
+                return ResourceManager.GetString("Preferences_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shortcut already used by: {0}.
         /// </summary>
         public static string ShortcutAlreadyUsed {

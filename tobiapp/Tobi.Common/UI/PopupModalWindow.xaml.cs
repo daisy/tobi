@@ -65,8 +65,8 @@ namespace Tobi.Common.UI
         private void initCommands()
         {
             CommandDetailsExpand = new RichDelegateCommand(
-                UserInterfaceStrings.DetailsExpand,
-                UserInterfaceStrings.DetailsExpand_,
+                Tobi_Common_Lang.DetailsExpand,
+                Tobi_Common_Lang.DetailsExpand_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 (ShellView == null ? null : ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-down")),
                 () => IsDetailsExpanded = true,
@@ -78,8 +78,8 @@ namespace Tobi.Common.UI
             //AddInputBinding(CommandDetailsExpand.KeyBinding);
             //
             CommandDetailsCollapse = new RichDelegateCommand(
-                UserInterfaceStrings.DetailsCollapse,
-                UserInterfaceStrings.DetailsCollapse_,
+                Tobi_Common_Lang.DetailsCollapse,
+                Tobi_Common_Lang.DetailsCollapse_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 (ShellView == null ? null : ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-up")),
                 () => IsDetailsExpanded = false,

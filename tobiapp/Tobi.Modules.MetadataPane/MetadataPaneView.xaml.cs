@@ -116,7 +116,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.ShowMetadata),
+                                                       Tobi_Plugin_MetadataPane_Lang.ShowMetadata),
                                                    this,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,

@@ -79,6 +79,24 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot open file..
+        /// </summary>
+        public static string CannotOpenLocalFile {
+            get {
+                return ResourceManager.GetString("CannotOpenLocalFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open file!.
+        /// </summary>
+        public static string CannotOpenLocalFile_ {
+            get {
+                return ResourceManager.GetString("CannotOpenLocalFile_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Close.
         /// </summary>
         public static string Close {
@@ -129,6 +147,24 @@ namespace Tobi.Plugin.Urakawa {
         public static string Export_ {
             get {
                 return ResourceManager.GetString("Export_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Clear.
+        /// </summary>
+        public static string Menu_ClearRecentFiles {
+            get {
+                return ResourceManager.GetString("Menu_ClearRecentFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear the list of recently-opened files..
+        /// </summary>
+        public static string Menu_ClearRecentFiles_ {
+            get {
+                return ResourceManager.GetString("Menu_ClearRecentFiles_", resourceCulture);
             }
         }
         

@@ -43,7 +43,7 @@ namespace Tobi.Plugin.NavigationPane
             RegionManager.UpdateRegions();
 
             CommandFocus = new RichDelegateCommand(
-                UserInterfaceStrings.Navigation_Focus,
+                Tobi_Plugin_NavigationPane_Lang.Navigation_Focus,
                                     null,
                                     null, // KeyGesture obtained from settings (see last parameters below)
                                     m_ShellView.LoadTangoIcon("start-here"),

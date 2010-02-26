@@ -322,7 +322,7 @@ namespace Tobi
 
             var label = new TextBlock
             {
-                Text = UserInterfaceStrings.ExitConfirm,
+                Text = Tobi_Lang.ExitConfirm,
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -343,13 +343,13 @@ namespace Tobi
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.ExitConfirm)
+            var details = new TextBoxReadOnlyCaretVisible(Tobi_Lang.ExitConfirm)
             {
             };
 
             var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(
-                                                       UserInterfaceStrings.Exit),
+                                                       Tobi_Lang.Exit),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,

@@ -18,8 +18,8 @@ namespace Tobi.Plugin.Urakawa
         {
             //
             ExportCommand = new RichDelegateCommand(
-                UserInterfaceStrings.Export,
-                UserInterfaceStrings.Export_,
+                Tobi_Plugin_Urakawa_Lang.Export,
+                Tobi_Plugin_Urakawa_Lang.Export_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_accessories-archiver"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
@@ -35,7 +35,7 @@ namespace Tobi.Plugin.Urakawa
                     var dlg = new FolderBrowserDialog
                     {
                         ShowNewFolderButton = true,
-                        Description = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(UserInterfaceStrings.Export)
+                        Description = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.Export)
                     };
 
                     DialogResult result = DialogResult.Abort;
