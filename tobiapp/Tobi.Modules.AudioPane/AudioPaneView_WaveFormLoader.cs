@@ -63,7 +63,7 @@ namespace Tobi.Plugin.AudioPane
 
             var estimatedCapacity = (int)(widthMagnified / (bytesPerStep / BytesPerPixel)) + 1;
 
-            if (estimatedCapacity * m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 501)
+            if (estimatedCapacity * m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1001) //501
             {
                 bool vertical = WaveFormProgress.Orientation == Orientation.Vertical;
                 double sizeProgress = (vertical ? WaveFormScroll.Height : WaveFormScroll.Width);
