@@ -13,12 +13,7 @@ namespace Tobi.Common.Validation
         public abstract bool Validate();
         public abstract IEnumerable<ValidationItem> ValidationItems { get; }
 
-        public bool ShouldBeValidatedAsynchronously
-        {
-            get { return false; }
-        }
-
-        public bool ShouldRunOnlyOnce
+        public virtual bool ShouldRunOnlyOnce
         {
             get { return false; }
         }
@@ -61,7 +56,6 @@ namespace Tobi.Common.Validation
         bool Validate();
         bool IsValid { get; }
         IEnumerable<ValidationItem> ValidationItems { get; }
-        bool ShouldBeValidatedAsynchronously { get; }
         bool ShouldRunOnlyOnce { get;}
     }
 

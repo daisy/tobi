@@ -77,6 +77,10 @@
       <Project>{3393A6E2-BB27-4D53-ACAA-629723D51F5E}</Project>
       <Name>DTDs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation.csproj">
+      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
+      <Name>Lib.Composite.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite.csproj">
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>

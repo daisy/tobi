@@ -136,40 +136,7 @@ namespace Tobi.Plugin.Validator
                 if (!validator.ShouldRunOnlyOnce || 
                     (validator.ShouldRunOnlyOnce && !m_RanOnce))
                 {
-                    if (validator.ShouldBeValidatedAsynchronously)
-                    {
-                        var backWorker = new BackgroundWorker
-                        {
-                            WorkerSupportsCancellation = true,
-                            WorkerReportsProgress = true
-                        };
-
-                        backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
-                        {
-                            if (backWorker.CancellationPending)
-                            {
-                                args.Cancel = true;
-                                return;
-                            }
-
-                            result = validator.Validate();
-                            args.Result = @"dummy result";
-                        };
-
-                        backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
-                        {
-                            var workException = args.Error;
-                            backWorker = null;
-                            //TODO: log an exception
-
-                        };
-                    }
-                    else
-                    {
-                        result = validator.Validate();
-                    }
-
-
+                    result = validator.Validate();
                     isValid = isValid && result;
                 }
                 
