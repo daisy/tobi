@@ -3,6 +3,9 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
+using Microsoft.Practices.Composite.Events;
+using Tobi.Common;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.core;
@@ -17,9 +20,14 @@ namespace Tobi.Plugin.Validator.ContentDocument
             InitializeComponent();
         }
 
+        [Import(typeof(IEventAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+        private IEventAggregator m_EventAggregator;
         private void OnLinkClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This should highlight the error in the document");
+            var obj = sender as Hyperlink;
+            var node = obj.DataContext as TreeNode;
+
+            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
         }
     }
 
