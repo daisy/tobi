@@ -128,6 +128,8 @@ namespace Tobi.Plugin.AudioPane
             var samplesPerStep = (int)Math.Floor((BytesPerPixel * m_ViewModel.WaveStepX) / byteDepth);
             samplesPerStep += (samplesPerStep % m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
 
+            if (samplesPerStep <= 0) return;
+
             int bytesPerStep = samplesPerStep * byteDepth;
 
             var estimatedCapacity = (int)(widthMagnified / (bytesPerStep / BytesPerPixel)) + 1;

@@ -96,7 +96,7 @@ namespace Tobi.Plugin.AudioPane
                                 {
                                     m_TreeNode = marker.m_TreeNode,
                                     m_LocalStreamLeftMark = byteSelectionLeft - bytesLeft,
-                                    m_LocalStreamRightMark = (rightBoundaryIsAlsoHere && State.Audio.PlayStreamMarkers.Count > 1 ? byteSelectionRight - bytesLeft : -1)
+                                    m_LocalStreamRightMark = (rightBoundaryIsAlsoHere ? byteSelectionRight - bytesLeft : -1)
                                 };
                                 listOfTreeNodeAndStreamSelection.Add(data);
 
