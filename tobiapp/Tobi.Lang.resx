@@ -180,12 +180,6 @@
   <data name="Paste_" xml:space="preserve">
     <value>Paste from clipboard</value>
   </data>
-  <data name="ShowLogFilePath" xml:space="preserve">
-    <value>DEBUG: _Where is [" + LOG_FILE_NAME + "] ?</value>
-  </data>
-  <data name="ShowLogFilePath_" xml:space="preserve">
-    <value>Here is the path to the Tobi log file.\nYou may copy/paste into the file explorer\nand open with any text editor.</value>
-  </data>
   <data name="UI_DecreaseMagnification" xml:space="preserve">
     <value>_Decrease magnification</value>
   </data>
