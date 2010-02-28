@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Composition;
-using System.Diagnostics;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
@@ -58,6 +57,13 @@ namespace Tobi.Plugin.AudioPane
             //targetRegion.Activate(m_AudioPaneView);
 
             //m_Logger.Log(@"AudioPanePlugin is initializing...", Category.Debug, Priority.Medium);
+        }
+        private int m_ToolBarId_1;
+        protected override void OnToolBarReady()
+        {
+            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(
+                new[] { m_AudioPaneViewModel.CopyCommand, m_AudioPaneViewModel.CutCommand, m_AudioPaneViewModel.PasteCommand},
+                PreferredPosition.Any);
         }
 
         private int m_MenuBarId_1;
@@ -228,6 +234,11 @@ namespace Tobi.Plugin.AudioPane
 
         public override void Dispose()
         {
+            if (m_ToolBarsView != null)
+            {
+                m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
+            }
+
             if (m_MenuBarView != null)
             {
                 m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Audio, m_MenuBarId_1);

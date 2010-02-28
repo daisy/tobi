@@ -70,7 +70,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (done)
             {
-                double begin = timeOffset + timeInsert.TimeAsMillisecondFloat;
+                double begin = timeOffset + timeInsert.TimeAsMillisecondDouble;
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBegin = begin,
@@ -86,7 +86,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     SelectionBegin = -1,
                     SelectionEnd = -1,
-                    LastPlayHeadTime = timeOffset + timeInsert.TimeAsMillisecondFloat
+                    LastPlayHeadTime = timeOffset + timeInsert.TimeAsMillisecondDouble
                 };
             }
 
