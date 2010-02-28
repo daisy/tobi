@@ -61,42 +61,6 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Copy.
-        /// </summary>
-        public static string Copy {
-            get {
-                return ResourceManager.GetString("Copy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy to clipboard.
-        /// </summary>
-        public static string Copy_ {
-            get {
-                return ResourceManager.GetString("Copy_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to C_ut.
-        /// </summary>
-        public static string Cut {
-            get {
-                return ResourceManager.GetString("Cut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cut to clipboard.
-        /// </summary>
-        public static string Cut_ {
-            get {
-                return ResourceManager.GetString("Cut_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to E_xit.
         /// </summary>
         public static string Exit {
@@ -246,24 +210,6 @@ namespace Tobi {
         public static string OpenTobiSettingsFolder_ {
             get {
                 return ResourceManager.GetString("OpenTobiSettingsFolder_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Paste.
-        /// </summary>
-        public static string Paste {
-            get {
-                return ResourceManager.GetString("Paste", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Paste from clipboard.
-        /// </summary>
-        public static string Paste_ {
-            get {
-                return ResourceManager.GetString("Paste_", resourceCulture);
             }
         }
         

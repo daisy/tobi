@@ -30,10 +30,6 @@ namespace Tobi
         public RichDelegateCommand ManageShortcutsCommand { get; private set; }
         public RichDelegateCommand DisplayPreviewIconsDebugCommand { get; private set; }
 
-        public RichDelegateCommand CopyCommand { get; private set; }
-        public RichDelegateCommand CutCommand { get; private set; }
-        public RichDelegateCommand PasteCommand { get; private set; }
-
         public RichDelegateCommand HelpCommand { get; private set; }
         //public RichDelegateCommand PreferencesCommand { get; private set; }
         //public RichDelegateCommand WebHomeCommand { get; private set; }
@@ -167,49 +163,7 @@ namespace Tobi
                 );
 
             RegisterRichCommand(ManageShortcutsCommand);
-            //
-            CutCommand = new RichDelegateCommand(
-                Tobi_Lang.Cut,
-                Tobi_Lang.Cut_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                LoadTangoIcon(@"edit-cut"),
-                () =>
-                {
-                    // TODO: this is for testing only.
-                    CheckParseScanWalkUiTreeThing();
-
-                    Debug.Fail(@"Functionality not implemented yet.");
-                },
-                () => true,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Cut));
-
-            RegisterRichCommand(CutCommand);
-            //
-            CopyCommand = new RichDelegateCommand(
-                Tobi_Lang.Copy,
-                Tobi_Lang.Copy_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                LoadTangoIcon(@"edit-copy"),
-                () => Debug.Fail(@"Functionality not implemented yet."),
-                () => true,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Copy));
-
-            RegisterRichCommand(CopyCommand);
-            //
-            PasteCommand = new RichDelegateCommand(
-                Tobi_Lang.Paste,
-                Tobi_Lang.Paste_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                LoadTangoIcon(@"edit-paste"),
-                () => Debug.Fail(@"Functionality not implemented yet."),
-                () => true,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Paste));
-
-            RegisterRichCommand(PasteCommand);
-            //
+            
 //#if DEBUG
 //            ShowLogFilePathCommand = new RichDelegateCommand(
 //                UserInterfaceStrings.ShowLogFilePath,

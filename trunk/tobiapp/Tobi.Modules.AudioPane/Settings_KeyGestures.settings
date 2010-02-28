@@ -4,6 +4,15 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="Keyboard_Copy" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] C</Value>
+    </Setting>
+    <Setting Name="Keyboard_Cut" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] X</Value>
+    </Setting>
+    <Setting Name="Keyboard_Paste" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] V</Value>
+    </Setting>
     <Setting Name="Keyboard_Audio_PlaybackRateReset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] D0 (0)</Value>
     </Setting>

@@ -14,8 +14,57 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandInsertFile { get; private set; }
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
+        public RichDelegateCommand CopyCommand { get; private set; }
+        public RichDelegateCommand CutCommand { get; private set; }
+        public RichDelegateCommand PasteCommand { get; private set; }
+
+        public object AudioClipboard { get; private set; }
+
         private void initializeCommands_Edit()
         {
+            //
+            CopyCommand = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.Copy,
+                Tobi_Plugin_AudioPane_Lang.Copy_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon(@"edit-copy"),
+                () => Debug.Fail(@"Functionality not implemented yet."),
+                () => !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                      && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
+                      && IsAudioLoaded,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Copy));
+
+            m_ShellView.RegisterRichCommand(CopyCommand);
+            //
+            CutCommand = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.Cut,
+                Tobi_Plugin_AudioPane_Lang.Cut_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon(@"edit-cut"),
+                () => Debug.Fail(@"Functionality not implemented yet."),
+                () => !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                      && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
+                      && IsAudioLoaded,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Cut));
+
+            m_ShellView.RegisterRichCommand(CutCommand);
+            //
+            PasteCommand = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.Paste,
+                Tobi_Plugin_AudioPane_Lang.Paste_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon(@"edit-paste"),
+                () => Debug.Fail(@"Functionality not implemented yet."),
+                () => !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                      && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
+                      && IsAudioLoaded,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Paste));
+
+            m_ShellView.RegisterRichCommand(PasteCommand);
+            //
             CommandOpenFile = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.Audio_OpenFile,
                 UserInterfaceStrings.Audio_OpenFile_,
@@ -46,12 +95,9 @@ namespace Tobi.Plugin.AudioPane
                     State.Audio.PcmFormatAlt = null;
                     openFile(null, true, false);
                 },
-                () =>
-                {
-                    return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
-                        && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
-                        && IsAudioLoaded;
-                },
+                () => !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                      && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
+                      && IsAudioLoaded,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_InsertFile));
 
@@ -166,14 +212,11 @@ namespace Tobi.Plugin.AudioPane
                         m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
                     }
                 },
-                () =>
-                {
-                    return !IsWaveFormLoading
-                        && !IsPlaying && !IsMonitoring && !IsRecording
-                        && m_UrakawaSession.DocumentProject != null
-                        && State.CurrentTreeNode != null
-                        && IsAudioLoaded && IsSelectionSet;
-                },
+                () => !IsWaveFormLoading
+                      && !IsPlaying && !IsMonitoring && !IsRecording
+                      && m_UrakawaSession.DocumentProject != null
+                      && State.CurrentTreeNode != null
+                      && IsAudioLoaded && IsSelectionSet,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Delete));
 

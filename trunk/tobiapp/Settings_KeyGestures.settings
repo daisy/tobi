@@ -16,15 +16,6 @@
     <Setting Name="Keyboard_AppExit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ ALT ] F4</Value>
     </Setting>
-    <Setting Name="Keyboard_Copy" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] C</Value>
-    </Setting>
-    <Setting Name="Keyboard_Cut" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] X</Value>
-    </Setting>
-    <Setting Name="Keyboard_Paste" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] V</Value>
-    </Setting>
     <Setting Name="Keyboard_Help" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F1</Value>
     </Setting>

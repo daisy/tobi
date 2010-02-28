@@ -524,6 +524,8 @@ namespace Tobi.Plugin.AudioPane
             SequenceMedia seqManAudioMedia = treeNode.GetManagedAudioSequenceMedia();
             if (seqManAudioMedia != null)
             {
+                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+
                 foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
                 {
                     var manMedia = (ManagedAudioMedia)media;
@@ -1138,6 +1140,8 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else if (audioMedia is SequenceMedia)
                     {
+                        Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+
                         var seqManAudioMedia = (SequenceMedia)audioMedia;
 
                         var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
