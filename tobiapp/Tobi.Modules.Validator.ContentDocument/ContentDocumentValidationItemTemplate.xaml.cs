@@ -59,11 +59,22 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
             TreeNode element = value as TreeNode;
-            if (element.GetXmlElementQName() == null) return "";
-            string elementName = element.GetXmlElementQName().LocalName;
+            string elementName = GetNearestElementName(element);
             if (string.IsNullOrEmpty(elementName)) return "";
             return string.Format("<{0}>", elementName);
-        }       
+        }
+        public static string GetNearestElementName(TreeNode node)
+        {
+            if (node.GetXmlElementQName() == null)
+            {
+                if (node.Parent != null)
+                    return GetNearestElementName(node.Parent);
+                else
+                    return "";
+            }
+            
+            return node.GetXmlElementQName().LocalName;
+        }
     }
 
     [ValueConversion(typeof(TreeNode), typeof(string))]
@@ -74,8 +85,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
             TreeNode element = value as TreeNode;
-            if (element.GetXmlElementQName() == null) return "";
-            string elementName = element.GetXmlElementQName().LocalName;
+            string elementName = ElementNameStartTagConverter.GetNearestElementName(element);
             if (string.IsNullOrEmpty(elementName)) return "";
             string test = string.Format("</{0}>", elementName);
             return test;
@@ -95,6 +105,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 elementText = elementText.Substring(0, 100);
 
             elementText += "...";
+            
+            //if this is a mixed content model node with previous sibling(s), add some ellipses before the text too
+            if (element.GetXmlElementQName() == null && element.PreviousSibling != null)
+                elementText = "...\n" + elementText;
+
             return elementText;
         }
     }
