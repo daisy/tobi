@@ -77,7 +77,7 @@
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
                         Content="{Binding BeginningOfError}">
         <ContentPresenter.Visibility>
-          <Binding Path="BeginningOfError" Converter="{ContentDocument:NodeToVisibilityConverter}"/>
+          <Binding Converter="{ContentDocument:NodeToVisibilityConverter}"/>
         </ContentPresenter.Visibility>
       </ContentPresenter>
     </StackPanel>
