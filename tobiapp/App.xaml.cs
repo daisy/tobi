@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Test;
 using Tobi.Common;
@@ -184,6 +185,11 @@ c.Execute();
                   new FrameworkPropertyMetadata(
                      XmlLanguage.GetLanguage(
                      CultureInfo.CurrentCulture.IetfLanguageTag)));
+
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(
+                typeof(Timeline),
+                new FrameworkPropertyMetadata { DefaultValue = 20 }
+                );
 
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 

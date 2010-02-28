@@ -346,6 +346,8 @@ namespace Tobi.Plugin.DocumentPane
             SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
             if (seqManagedAudioMedia != null)
             {
+                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+
                 data.Foreground = Brushes.Black;
                 //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.Cross;

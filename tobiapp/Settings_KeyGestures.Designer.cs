@@ -73,42 +73,6 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] C")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Copy {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Copy"]));
-            }
-            set {
-                this["Keyboard_Copy"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] X")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Cut {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Cut"]));
-            }
-            set {
-                this["Keyboard_Cut"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] V")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Paste {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Paste"]));
-            }
-            set {
-                this["Keyboard_Paste"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F1")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Help {
             get {

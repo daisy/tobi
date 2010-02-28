@@ -117,18 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Copy" xml:space="preserve">
-    <value>_Copy</value>
-  </data>
-  <data name="Copy_" xml:space="preserve">
-    <value>Copy to clipboard</value>
-  </data>
-  <data name="Cut" xml:space="preserve">
-    <value>C_ut</value>
-  </data>
-  <data name="Cut_" xml:space="preserve">
-    <value>Cut to clipboard</value>
-  </data>
   <data name="Exit" xml:space="preserve">
     <value>E_xit</value>
   </data>
@@ -173,12 +161,6 @@
   </data>
   <data name="OpenTobiSettingsFolder_" xml:space="preserve">
     <value>Open a file browser where the Tobi user settings are stored.</value>
-  </data>
-  <data name="Paste" xml:space="preserve">
-    <value>_Paste</value>
-  </data>
-  <data name="Paste_" xml:space="preserve">
-    <value>Paste from clipboard</value>
   </data>
   <data name="UI_DecreaseMagnification" xml:space="preserve">
     <value>_Decrease magnification</value>
