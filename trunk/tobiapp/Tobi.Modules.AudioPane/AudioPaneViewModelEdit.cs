@@ -115,7 +115,8 @@ namespace Tobi.Plugin.AudioPane
                       && !IsPlaying && !IsMonitoring && !IsRecording
                       && m_UrakawaSession.DocumentProject != null
                       && State.CurrentTreeNode != null
-                      && IsAudioLoaded,
+                      //&& IsAudioLoaded
+                      ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Paste));
 
