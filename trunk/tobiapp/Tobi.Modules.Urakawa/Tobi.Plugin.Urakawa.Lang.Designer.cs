@@ -232,7 +232,8 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are about to overwrite a file.\nAre you sure ?.
+        ///   Looks up a localized string similar to You are about to overwrite a file.
+        ///Are you sure ?.
         /// </summary>
         public static string OverwriteConfirm_File {
             get {
@@ -241,7 +242,8 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are about to overwrite a folder.\nAre you sure ?.
+        ///   Looks up a localized string similar to You are about to overwrite a folder.
+        ///Are you sure ?.
         /// </summary>
         public static string OverwriteConfirm_Folder {
             get {
@@ -376,7 +378,8 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are unsaved document changes.\nWould you like to save now ?.
+        ///   Looks up a localized string similar to There are unsaved document changes.
+        ///Would you like to save now ?.
         /// </summary>
         public static string UnsavedChangesConfirm {
             get {
@@ -385,7 +388,8 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you close the document without saving,\nany changes will be lost !.
+        ///   Looks up a localized string similar to If you close the document without saving,
+        ///any changes will be lost !.
         /// </summary>
         public static string UnsavedChangesDetails {
             get {

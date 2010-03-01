@@ -51,7 +51,7 @@ namespace Tobi.Common.UI
             });
         }
 
-        public TextBoxReadOnlyCaretVisible()
+        protected TextBoxReadOnlyCaretVisible()
         {
             AcceptsTab = false;
             AcceptsReturn = true;
