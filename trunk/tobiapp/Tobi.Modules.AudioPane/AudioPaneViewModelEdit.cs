@@ -32,42 +32,42 @@ namespace Tobi.Plugin.AudioPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-copy"),
                 () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CopyCommand", Category.Debug, Priority.Medium);
+
+                    List<TreeNodeAndStreamSelection> listOfTreeNodeAndStreamSelection = getAudioSelectionData();
+
+                    if (listOfTreeNodeAndStreamSelection.Count == 0)
                     {
-                        Logger.Log("AudioPaneViewModel.CopyCommand", Category.Debug, Priority.Medium);
+                        Debug.Fail("This should never happen !");
+                        return;
+                    }
 
-                        List<TreeNodeAndStreamSelection> listOfTreeNodeAndStreamSelection = getAudioSelectionData();
+                    ManagedAudioMedia managedAudioMediaClipboard = listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
+                    var mediaDataClipboard = (WavAudioMediaData)listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+                    managedAudioMediaClipboard.AudioMediaData = mediaDataClipboard;
 
-                        if (listOfTreeNodeAndStreamSelection.Count == 0)
-                        {
-                            Debug.Fail("This should never happen !");
-                            return;
-                        }
+                    foreach (var treeNodeAndStreamSelection in listOfTreeNodeAndStreamSelection)
+                    {
+                        ManagedAudioMedia manMedia = treeNodeAndStreamSelection.ExtractManagedAudioMedia();
 
-                        ManagedAudioMedia managedAudioMediaClipboard = listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
-                        var mediaDataClipboard = (WavAudioMediaData)listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
-                        managedAudioMediaClipboard.AudioMediaData = mediaDataClipboard;
+                        mediaDataClipboard.MergeWith(manMedia.AudioMediaData); // The audio from the parameter gets emptied !
 
-                        foreach (var treeNodeAndStreamSelection in listOfTreeNodeAndStreamSelection)
-                        {
-                            ManagedAudioMedia manMedia = treeNodeAndStreamSelection.ExtractManagedAudioMedia();
+                        // Another way to do it:
+                        //Stream streamToBackup = manMedia.AudioMediaData.OpenPcmInputStream();
+                        //try
+                        //{
+                        //    //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
+                        //    mediaDataClipboard.AppendPcmData(streamToBackup, null);
+                        //}
+                        //finally
+                        //{
+                        //    streamToBackup.Close();
+                        //}
+                    }
 
-                            mediaDataClipboard.MergeWith(manMedia.AudioMediaData); // The audio from the parameter gets emptied !
-
-                            // Another way to do it:
-                            //Stream streamToBackup = manMedia.AudioMediaData.OpenPcmInputStream();
-                            //try
-                            //{
-                            //    //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
-                            //    mediaDataClipboard.AppendPcmData(streamToBackup, null);
-                            //}
-                            //finally
-                            //{
-                            //    streamToBackup.Close();
-                            //}
-                        }
-
-                        AudioClipboard = managedAudioMediaClipboard;
-                    },
+                    AudioClipboard = managedAudioMediaClipboard;
+                },
                 () => !IsWaveFormLoading
                       && !IsPlaying && !IsMonitoring && !IsRecording
                       && m_UrakawaSession.DocumentProject != null
@@ -84,10 +84,10 @@ namespace Tobi.Plugin.AudioPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-cut"),
                 () =>
-                    {
-                        CommandDeleteAudioSelection.Execute();
-                        CopyCommand.Execute();
-                    },
+                {
+                    CopyCommand.Execute();
+                    CommandDeleteAudioSelection.Execute();
+                },
                 () => !IsWaveFormLoading
                       && !IsPlaying && !IsMonitoring && !IsRecording
                       && m_UrakawaSession.DocumentProject != null
@@ -153,7 +153,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
                       && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null
-                      //&& IsAudioLoaded
+                //&& IsAudioLoaded
                       ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_InsertFile));
@@ -175,6 +175,11 @@ namespace Tobi.Plugin.AudioPane
                     {
                         Debug.Fail("This should never happen !");
                         return;
+                    }
+
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
                     }
 
                     if (listOfTreeNodeAndStreamSelection.Count == 1)

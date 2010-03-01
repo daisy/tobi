@@ -1135,11 +1135,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                 }
 
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                }
-
+                
                 if (!managedAudioMedia.HasActualAudioMediaData)
                 {
                     Debug.Fail("This should never happen !!!");
@@ -1158,7 +1154,7 @@ namespace Tobi.Plugin.AudioPane
 
                     var command = treeNode.Presentation.CommandFactory.
                         CreateManagedAudioMediaInsertDataCommand(
-                            treeNode, managedAudioMedia, manMedia,
+                            treeNode, manMedia,
                             new Time(timeInsert),
                             State.CurrentTreeNode);
 
@@ -1168,9 +1164,14 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
                     var command = treeNode.Presentation.CommandFactory.
                         CreateManagedAudioMediaInsertDataCommand(
-                            treeNode, managedAudioMedia, manMedia,
+                            treeNode, manMedia,
                             new Time(timeOffset),
                             State.CurrentTreeNode);
 
@@ -1220,9 +1221,9 @@ namespace Tobi.Plugin.AudioPane
 
                         var command = treeNode.Presentation.CommandFactory.
                             CreateManagedAudioMediaInsertDataCommand(
-                            treeNode, manangedMediaSeqItem, manMedia,
+                            treeNode, manMedia,
                             new Time(timeOffset),
-                            State.CurrentTreeNode);
+                            State.CurrentTreeNode); //manangedMediaSeqItem
 
                         treeNode.Presentation.UndoRedoManager.Execute(command);
 
