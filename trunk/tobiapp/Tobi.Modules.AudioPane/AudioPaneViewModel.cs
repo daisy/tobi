@@ -469,6 +469,7 @@ namespace Tobi.Plugin.AudioPane
         {
             State.ResetAll();
 
+            AudioClipboard = null;
             m_LastPlayHeadTime = -1;
             IsWaveFormLoading = false;
 

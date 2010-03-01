@@ -183,6 +183,8 @@ namespace Tobi.Plugin.AudioPane
                         ensurePlaybackStreamIsDead();
                     }
 
+                    State.Selection.ClearSelection();
+
                     if (listOfTreeNodeAndStreamSelection.Count == 1)
                     {
                         var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
