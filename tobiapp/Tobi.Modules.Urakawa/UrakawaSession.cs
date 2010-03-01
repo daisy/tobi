@@ -275,7 +275,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 m_Logger.Log(@"UrakawaSession.askUserSave", Category.Debug, Priority.Medium);
 
-                var label = new TextBlock
+                var label = new TextBlock //TextBoxReadOnlyCaretVisible(Tobi_Plugin_Urakawa_Lang.UnsavedChangesConfirm) //
                 {
                     Text = Tobi_Plugin_Urakawa_Lang.UnsavedChangesConfirm,
                     Margin = new Thickness(8, 0, 8, 0),

@@ -91,7 +91,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     try
                     {
-                        State.Audio.PlayStream = File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        State.Audio.SetPlayStream_FromFile(File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read));
                     }
                     catch (Exception ex)
                     {
@@ -124,7 +124,7 @@ namespace Tobi.Plugin.AudioPane
                                 TreeNode theCurrentSubTreeNode = State.CurrentTreeNode;
                                 State.CurrentTreeNode = ancerstor;
 
-                                State.Audio.PlayStream = sma.GetValueOrDefault().m_Stream;
+                                State.Audio.SetPlayStream_FromTreeNode(sma.GetValueOrDefault().m_Stream);
                                 State.Audio.PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
 
                                 Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
@@ -139,7 +139,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        State.Audio.PlayStream = sm.GetValueOrDefault().m_Stream;
+                        State.Audio.SetPlayStream_FromTreeNode(sm.GetValueOrDefault().m_Stream);
                         State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
                     }
 
@@ -1010,7 +1010,6 @@ namespace Tobi.Plugin.AudioPane
 
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
-                State.Audio.PcmFormatAlt = null;
                 return;
             }
 
@@ -1042,8 +1041,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                     if (wavFormat.IsCompatibleWith(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Data))
                     {
-                        State.Audio.PcmFormatAlt = new PCMFormatInfo(wavFormat);
-                        RaisePropertyChanged(() => State.Audio.PcmFormat);
+                        State.Audio.PcmFormat = new PCMFormatInfo(wavFormat);
+                        //RaisePropertyChanged(() => State.Audio.PcmFormat);
                     }
                     else
                     {
@@ -1065,8 +1064,8 @@ namespace Tobi.Plugin.AudioPane
                     {
                         uint dataLength;
                         wavFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
-                        State.Audio.PcmFormatAlt = new PCMFormatInfo(wavFormat);
-                        RaisePropertyChanged(() => State.Audio.PcmFormat);
+                        State.Audio.PcmFormat = new PCMFormatInfo(wavFormat);
+                        //RaisePropertyChanged(() => State.Audio.PcmFormat);
                     }
                     finally
                     {
@@ -1112,9 +1111,6 @@ namespace Tobi.Plugin.AudioPane
 
                 insertAudioAtCursorOrSelectionReplace(treeNode, managedAudioMedia);
 
-
-                State.Audio.PcmFormatAlt = null;
-
                 return;
             }
 
@@ -1146,8 +1142,8 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            State.Audio.PcmFormatAlt = new PCMFormatInfo(wavFormat);
-            RaisePropertyChanged(() => State.Audio.PcmFormat);
+            State.Audio.PcmFormat = new PCMFormatInfo(wavFormat);
+            //RaisePropertyChanged(() => State.Audio.PcmFormat);
 
             AudioPlayer_LoadAndPlayFromFile(filePath);
         }
@@ -1191,7 +1187,6 @@ namespace Tobi.Plugin.AudioPane
                             if (State.CurrentSubTreeNode != marker.m_TreeNode)
                             {
                                 //recordingStream.Close();
-                                State.Audio.PcmFormatAlt = null;
                                 Debug.Fail("This should never happen !!!");
                                 return;
                             }
@@ -1208,7 +1203,6 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Debug.Fail("This should never happen !!!");
                     //recordingStream.Close();
-                    State.Audio.PcmFormatAlt = null;
                     return;
                 }
 
@@ -1297,7 +1291,6 @@ namespace Tobi.Plugin.AudioPane
                         {
                             Debug.Fail("This should never happen !!!");
                             //recordingStream.Close();
-                            State.Audio.PcmFormatAlt = null;
                             return;
                         }
 

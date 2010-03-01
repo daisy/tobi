@@ -35,6 +35,8 @@ namespace Tobi.Plugin.AudioPane
                     m_Recorder.StopRecording();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped."); // TODO Localize RecordingStopped
+
+                    State.Audio.PcmFormatRecordingMonitoring = null;
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -55,7 +57,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         State.ResetAll();
 
-                        State.Audio.PcmFormatAlt = new PCMFormatInfo();
+                        State.Audio.PcmFormatRecordingMonitoring = new PCMFormatInfo();
                     }
                     else
                     {
@@ -65,10 +67,12 @@ namespace Tobi.Plugin.AudioPane
                         }
 
                         Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        State.Audio.PcmFormatAlt = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                        State.Audio.PcmFormatRecordingMonitoring = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
-                    m_Recorder.StartRecording(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
+                    m_Recorder.StartRecording(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
+
+                    RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording..."); // TODO Localize Recording
                 },
@@ -100,7 +104,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         State.ResetAll();
 
-                        State.Audio.PcmFormatAlt = new PCMFormatInfo();
+                        State.Audio.PcmFormatRecordingMonitoring = new PCMFormatInfo();
 
                         //m_PcmFormatOfAudioToInsert = IsAudioLoaded ? State.Audio.PcmFormat : new PCMFormatInfo();
                         //m_Recorder.InputDevice.Capture.Caps.Format44KhzMono16Bit
@@ -108,11 +112,12 @@ namespace Tobi.Plugin.AudioPane
                     else
                     {
                         Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        State.Audio.PcmFormatAlt = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                        State.Audio.PcmFormatRecordingMonitoring = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
-                    m_Recorder.StartMonitoring(new AudioLibPCMFormat(State.Audio.PcmFormatAlt.Data.NumberOfChannels, State.Audio.PcmFormatAlt.Data.SampleRate, State.Audio.PcmFormatAlt.Data.BitDepth));
+                    m_Recorder.StartMonitoring(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
 
+                    RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Monitoring..."); // TODO Localize Monitoring
                     
@@ -138,7 +143,7 @@ namespace Tobi.Plugin.AudioPane
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Monitoring stopped.");// TODO Localize MonitoringStopped
 
-                    State.Audio.PcmFormatAlt = null;
+                    State.Audio.PcmFormatRecordingMonitoring = null;
                     
                     AudioCues.PlayTockTock();
                 },

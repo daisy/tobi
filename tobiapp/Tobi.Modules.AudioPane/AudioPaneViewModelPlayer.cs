@@ -342,6 +342,7 @@ namespace Tobi.Plugin.AudioPane
         {
             get
             {
+                if (IsMonitoring || IsRecording) return "";
                 return "Playback x" + PlaybackRate;       // TODO Localize  PlaybackX
             }
         }
@@ -686,11 +687,9 @@ namespace Tobi.Plugin.AudioPane
 
             if (play)
             {
-                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat(); //pcmInfo.Copy().Data
-
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
-                              pcmInfo.Copy().Data,
+                              State.Audio.PcmFormat.Copy().Data,
                               -1, -1);
             }
             else
@@ -760,11 +759,9 @@ namespace Tobi.Plugin.AudioPane
 
                     State.Audio.EndOffsetOfPlayStream = State.Audio.DataLength;
                     
-                    PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
-
                     m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                                   State.Audio.DataLength,
-                                  pcmInfo.Copy().Data,
+                                  State.Audio.PcmFormat.Copy().Data,
                                   bytesStart,
                                   -1
                         );
@@ -789,11 +786,9 @@ namespace Tobi.Plugin.AudioPane
                 }
                 // else: the stream is now open
 
-                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
-
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
-                              pcmInfo.Copy().Data,
+                              State.Audio.PcmFormat.Copy().Data,
                               bytesStart,
                               bytesEnd
                     );
@@ -906,7 +901,9 @@ namespace Tobi.Plugin.AudioPane
             loadAndPlay();
         }
 
-        [NotifyDependsOnEx("PcmFormatAlt", typeof(StreamStateData))]
+        //[NotifyDependsOn("IsRecording")]
+        //[NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOnEx("PcmFormatRecordingMonitoring", typeof(StreamStateData))]
         [NotifyDependsOnEx("PcmFormat", typeof(StreamStateData))]
         public bool PcmFormatStringVisible
         {
@@ -917,6 +914,8 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        //[NotifyDependsOn("IsRecording")]
+        //[NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("PcmFormatStringVisible")]
         public String PcmFormatString
         {
