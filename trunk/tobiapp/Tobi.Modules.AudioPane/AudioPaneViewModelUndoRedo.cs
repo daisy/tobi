@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.commands;
@@ -15,13 +14,18 @@ namespace Tobi.Plugin.AudioPane
         private void UndoRedoManagerChanged(TreeNodeAudioStreamDeleteCommand command, bool done)
         {
             ManagedAudioMedia audioMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
-            if(audioMedia==null)
+            if (audioMedia == null)
             {
                 bool bCurrentTreeNodeNeedsRefresh = resetCurrentTreeNodeState(command.CurrentTreeNode);
 
                 if (bCurrentTreeNodeNeedsRefresh)
                 {
-                    m_StateToRestore = null;
+                    m_StateToRestore = new StateToRestore
+                    {
+                        SelectionBegin = -1,
+                        SelectionEnd = -1,
+                        LastPlayHeadTime = 0
+                    };
 
                     State.CurrentTreeNode = null;
 
