@@ -43,12 +43,12 @@ namespace Tobi.Plugin.Urakawa
                 {
                     var dlg = new OpenFileDialog
                     {
-                        FileName = @"dtbook",
+                        FileName = @"",
                         DefaultExt = @".xml",
 #if DEBUG
-                        Filter = @"DTBook, OPF, XUK or EPUB (.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub",
+                        Filter = @"DTBook, OPF, XUK or EPUB (*.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub",
 #else
-                        Filter = @"DTBook, OPF or XUK (.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk",
+                        Filter = @"DTBook, OPF or XUK (*.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk",
 #endif //DEBUG
                         CheckFileExists = false,
                         CheckPathExists = false,

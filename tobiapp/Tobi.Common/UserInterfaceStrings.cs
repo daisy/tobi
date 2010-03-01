@@ -156,7 +156,7 @@ namespace Tobi.Common
         public const string Menu_Focus = "_Focus";
         public const string Menu_View = "_View";
         public const string Menu_Magnification = "Ma_gnification";
-        public const string Menu_System = "_System";
+        public const string Menu_System = "_Browse folder";
 
         public const string Menu_ToolBars = "_Tool bars"; // TODO: move this language resource in its own module (ToolBarsModule)
         public const string Menu_StatusBar = "_Status bar"; // TODO: move this language resource in its own module (StatusBarModule)

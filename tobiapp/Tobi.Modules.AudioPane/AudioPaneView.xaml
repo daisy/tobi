@@ -659,14 +659,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         RichCommandTwo="{Binding CommandStartRecord}"
         InputBindingManager="{Binding InputBindingManager}"
               RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
+    
+    <Separator/>
 
-      <UI:ButtonRichCommand
+    <UI:ButtonRichCommand
         RichCommand="{Binding CommandInsertFile}"/>
 
       <!--<UI:ButtonRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"
                                  />-->
+ 
+    <UI:ButtonRichCommand
+      RichCommand="{Binding CommandDeleteAudioSelection}"/>
 
-      <Separator/>
+    <Separator/>
 
       <!-- UI:ButtonRichCommand RichCommand="{Binding CommandAudioSettings}" / -->
 
@@ -722,11 +727,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
                                  />
 
-    <Separator/>
-
-    <UI:ButtonRichCommand
-      RichCommand="{Binding CommandDeleteAudioSelection}"/>
-
+    
     <Separator/>
     
     <!-- UI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/ -->

@@ -189,8 +189,8 @@ namespace Tobi
 #endif
                 int uid4 = m_MenuBarView.AddMenuBarGroup(
                     RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
-                    RegionNames.MenuBar_System, PreferredPosition.First, true,
-                    new[] { OpenTobiFolderCommand, OpenTobiSettingsFolderCommand, OpenTobiIsolatedStorageCommand });
+                    RegionNames.MenuBar_System, PreferredPosition.First, false,
+                    new[] { OpenTobiSettingsFolderCommand, OpenTobiFolderCommand, OpenTobiIsolatedStorageCommand });
 
 #if DEBUG
                 //int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);

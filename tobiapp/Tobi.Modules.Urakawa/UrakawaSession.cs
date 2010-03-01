@@ -73,6 +73,8 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand UndoCommand { get; private set; }
         public RichDelegateCommand RedoCommand { get; private set; }
 
+        public RichDelegateCommand OpenDocumentFolderCommand { get; private set; }
+
         public RichDelegateCommand DataCleanupCommand { get; private set; }
 
         private Project m_DocumentProject;
@@ -149,6 +151,28 @@ namespace Tobi.Plugin.Urakawa
             initCommands_Save();
             initCommands_Export();
 
+            OpenDocumentFolderCommand = new RichDelegateCommand(
+                Tobi_Plugin_Urakawa_Lang.OpenDocumentFolder,
+                Tobi_Plugin_Urakawa_Lang.OpenDocumentFolder_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeFoxtrotIcon(@"Foxtrot_user-home"),
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenDocumentFolderCommand", Category.Debug, Priority.Medium);
+
+                    var p = new Process
+                    {
+                        StartInfo = { FileName = Path.GetDirectoryName(DocumentFilePath) }
+                    };
+                    p.Start();
+                },
+                 () => DocumentProject != null && !string.IsNullOrEmpty(DocumentFilePath),
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
+                );
+
+            m_ShellView.RegisterRichCommand(OpenDocumentFolderCommand);
+            //
             //
             UndoCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.Undo,
