@@ -11,9 +11,11 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa;
+using urakawa.command;
 using urakawa.core;
 using urakawa.daisy.import;
 using urakawa.data;
+using urakawa.ExternalFiles;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
@@ -38,6 +40,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
         #region Construction
+
 
         private readonly ILoggerFacade Logger;
         private readonly IEventAggregator EventAggregator;
@@ -297,7 +300,7 @@ namespace Tobi.Plugin.AudioPane
             m_Recorder.SetDevice(@"fakename");
             m_Recorder.StateChanged += OnStateChanged_Recorder;
             m_Recorder.AudioRecordingFinished += OnAudioRecordingFinished;
-            m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
+            m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();
 
             //m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
 
@@ -458,6 +461,8 @@ namespace Tobi.Plugin.AudioPane
         //    }
         //}
 
+        private AudioFormatConvertorSession m_AudioFormatConvertorSession;
+
         private void OnProjectUnLoaded(Project project)
         {
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
@@ -473,21 +478,27 @@ namespace Tobi.Plugin.AudioPane
             AudioClipboard = null;
             m_LastPlayHeadTime = -1;
             IsWaveFormLoading = false;
+            m_AudioFormatConvertorSession = null;
 
             //var shell = Container.Resolve<IShellView>();
             //shell.DocumentProject
             if (project != null)
             {
+                m_AudioFormatConvertorSession =
+                    new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                    //project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
+                project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat);
+
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-                m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+                m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
 
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
             }
             else
             {
-                m_Recorder.RecordingDirectory = Directory.GetCurrentDirectory();
+                m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();
 
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document."); // TODO Localize NoDocument
             }
@@ -1005,119 +1016,106 @@ namespace Tobi.Plugin.AudioPane
 
             bool isWav = Path.GetExtension(filePath).ToLower() == ".wav";
 
-            if (insert)
+            AudioLibPCMFormat wavFormat = null;
+            if (isWav)
+            {
+                Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                try
+                {
+                    uint dataLength;
+                    wavFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                }
+                finally
+                {
+                    fileStream.Close();
+                }
+            }
+
+            if (insert && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null)
             {
                 string originalFilePath = null;
 
-                if (m_UrakawaSession.DocumentProject != null)
+                Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+
+                bool wavNeedsConversion = false;
+                if (wavFormat != null)
                 {
-                    Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-
-                    bool wavNeedsConversion = false;
-                    if (isWav)
+                    if (wavFormat.IsCompatibleWith(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Data))
                     {
-                        Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                        try
-                        {
-                            uint dataLength;
-                            AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
-                            if (format.IsCompatibleWith(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Data))
-                            {
-                                State.Audio.PcmFormatAlt = new PCMFormatInfo(format);
-                                RaisePropertyChanged(() => State.Audio.PcmFormat);
-                            }
-                            else
-                            {
-                                wavNeedsConversion = true;
-                            }
-                        }
-                        finally
-                        {
-                            fileStream.Close();
-                        }
+                        State.Audio.PcmFormatAlt = new PCMFormatInfo(wavFormat);
+                        RaisePropertyChanged(() => State.Audio.PcmFormat);
                     }
-
-                    if (!isWav || wavNeedsConversion)
+                    else
                     {
-                        originalFilePath = filePath;
-
-                        AudioFormatConvertorSession converter =
-                            new AudioFormatConvertorSession(m_UrakawaSession.DocumentProject.Presentations.Get(0));
-                        filePath = converter.ConvertAudioFileFormat(filePath);
-
-                        Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
-                                   Category.Debug, Priority.Medium);
+                        wavNeedsConversion = true;
                     }
                 }
 
-                if (State.Audio.PcmFormatAlt == null)
+                if (!isWav || wavNeedsConversion)
                 {
+                    originalFilePath = filePath;
+
+                    filePath = m_AudioFormatConvertorSession.ConvertAudioFileFormat(filePath);
+
+                    Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
+                               Category.Debug, Priority.Medium);
+
                     Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     try
                     {
                         uint dataLength;
-                        AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
-                        State.Audio.PcmFormatAlt = new PCMFormatInfo(format);
+                        wavFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                        State.Audio.PcmFormatAlt = new PCMFormatInfo(wavFormat);
+                        RaisePropertyChanged(() => State.Audio.PcmFormat);
                     }
                     finally
                     {
                         fileStream.Close();
                     }
-
-                    RaisePropertyChanged(() => State.Audio.PcmFormat);
                 }
-
 
                 //AudioCues.PlayTockTock();
 
-                if (m_UrakawaSession.DocumentProject != null)
+
+                TreeNode treeNode = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
+
+                ManagedAudioMedia managedAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
+
+                var mediaData = (WavAudioMediaData)treeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+
+                managedAudioMedia.AudioMediaData = mediaData;
+
+                //Directory.GetParent(filePath).FullName
+                //bool recordedFileIsInDataDir = Path.GetDirectoryName(filePath) == nodeRecord.Presentation.DataProviderManager.DataFileDirectoryFullPath;
+
+                if (deleteAfterInsert)
                 {
-                    if (State.CurrentTreeNode == null)
-                    {
-                        State.Audio.PcmFormatAlt = null;
-                        return;
-                    }
-
-                    TreeNode treeNode = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
-
-                    ManagedAudioMedia managedAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
-
-                    var mediaData = (WavAudioMediaData)treeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
-
-                    managedAudioMedia.AudioMediaData = mediaData;
-
-                    //Directory.GetParent(filePath).FullName
-                    //bool recordedFileIsInDataDir = Path.GetDirectoryName(filePath) == nodeRecord.Presentation.DataProviderManager.DataFileDirectoryFullPath;
-
-                    if (deleteAfterInsert)
-                    {
-                        FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                        dataProv.InitByMovingExistingFile(filePath);
-                        mediaData.AppendPcmData(dataProv);
-                    }
-                    else
-                    {
-                        mediaData.AppendPcmData_RiffHeader(filePath);
-                    }
-
-                    if (deleteAfterInsert && File.Exists(filePath)) //check exist just in case file adopted by DataProviderManager
-                    {
-                        File.Delete(filePath);
-                    }
-
-                    if (!string.IsNullOrEmpty(originalFilePath)
-                        && deleteAfterInsert && File.Exists(originalFilePath)) //check exist just in case file adopted by DataProviderManager
-                    {
-                        File.Delete(originalFilePath);
-                    }
-
-                    insertAudioAtCursorOrSelectionReplace(treeNode, managedAudioMedia);
-
-
-                    State.Audio.PcmFormatAlt = null;
-
-                    return;
+                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                    dataProv.InitByMovingExistingFile(filePath);
+                    mediaData.AppendPcmData(dataProv);
                 }
+                else
+                {
+                    mediaData.AppendPcmData_RiffHeader(filePath);
+                }
+
+                if (deleteAfterInsert && File.Exists(filePath)) //check exist just in case file adopted by DataProviderManager
+                {
+                    File.Delete(filePath);
+                }
+
+                if (!string.IsNullOrEmpty(originalFilePath)
+                    && deleteAfterInsert && File.Exists(originalFilePath)) //check exist just in case file adopted by DataProviderManager
+                {
+                    File.Delete(originalFilePath);
+                }
+
+                insertAudioAtCursorOrSelectionReplace(treeNode, managedAudioMedia);
+
+
+                State.Audio.PcmFormatAlt = null;
+
+                return;
             }
 
             if (AudioPlaybackStreamKeepAlive)
@@ -1130,12 +1128,26 @@ namespace Tobi.Plugin.AudioPane
                 string originalFilePath = filePath;
 
                 AudioFormatConvertorSession converter =
-                    new AudioFormatConvertorSession(m_UrakawaSession.DocumentProject.Presentations.Get(0));
+                    new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null);
                 filePath = converter.ConvertAudioFileFormat(filePath);
 
                 Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
                            Category.Debug, Priority.Medium);
+
+                Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                try
+                {
+                    uint dataLength;
+                    wavFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                }
+                finally
+                {
+                    fileStream.Close();
+                }
             }
+
+            State.Audio.PcmFormatAlt = new PCMFormatInfo(wavFormat);
+            RaisePropertyChanged(() => State.Audio.PcmFormat);
 
             AudioPlayer_LoadAndPlayFromFile(filePath);
         }
@@ -1208,11 +1220,25 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandDeleteAudioSelection.Execute();
 
-                    var command = treeNode.Presentation.CommandFactory.
-                        CreateManagedAudioMediaInsertDataCommand(
-                            treeNode, manMedia,
-                            new Time(timeInsert),
-                            State.CurrentTreeNode);
+                    Command command;
+                    
+                    Media newManMedia = treeNode.GetManagedAudioMedia();
+                    if (newManMedia == null)
+                    {
+                        command = treeNode.Presentation.CommandFactory.
+                            CreateTreeNodeSetManagedAudioMediaCommand(
+                            treeNode, manMedia);
+                    }
+                    else
+                    {
+                        Debug.Assert(newManMedia == manMedia);
+
+                        command = treeNode.Presentation.CommandFactory.
+                           CreateManagedAudioMediaInsertDataCommand(
+                               treeNode, manMedia,
+                               new Time(timeInsert),
+                               State.CurrentTreeNode);
+                    }
 
                     treeNode.Presentation.UndoRedoManager.Execute(command);
 

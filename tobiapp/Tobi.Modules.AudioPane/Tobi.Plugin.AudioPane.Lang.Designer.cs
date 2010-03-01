@@ -250,7 +250,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inserts a local WAV file (PCM 16 bits).
+        ///   Looks up a localized string similar to Insert a local WAV or MP3 file.
         /// </summary>
         public static string Audio_InsertFile_ {
             get {
@@ -268,7 +268,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open a local WAV file (PCM 16 bits).
+        ///   Looks up a localized string similar to Open a local WAV or MP3 file.
         /// </summary>
         public static string Audio_OpenFile_ {
             get {

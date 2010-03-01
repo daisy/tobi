@@ -77,7 +77,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         }
 
         private List<ValidationItem> m_ValidationItems;
-        
+
         public override bool Validate()
         {
             if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
@@ -143,8 +143,13 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
 #else
-            string dirpath = ExternalFilesDataManager.STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + m_DtdStoreDirName;
-            string path = dirpath + Path.DirectorySeparatorChar + dtdCache;
+            string dirpath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, m_DtdStoreDirName);
+            //if (!Directory.Exists(dirpath))
+            //{
+            //    Directory.CreateDirectory(dirpath);
+            //}
+
+            string path = Path.Combine(dirpath, dtdCache);
             if (File.Exists(path))
             {
                 Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
@@ -278,7 +283,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 ArrayList childrenArr = StringToArrayList(childrenNames, '#');
                 if (childrenArr.Count < error.Target.Children.Count)
                 {
-                    error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);    
+                    error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);
                 }
             }
             else

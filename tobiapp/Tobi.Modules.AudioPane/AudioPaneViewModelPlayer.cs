@@ -686,9 +686,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (play)
             {
+                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat(); //pcmInfo.Copy().Data
+
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
-                              new AudioLibPCMFormat(State.Audio.PcmFormat.Data.NumberOfChannels, State.Audio.PcmFormat.Data.SampleRate, State.Audio.PcmFormat.Data.BitDepth),
+                              pcmInfo.Copy().Data,
                               -1, -1);
             }
             else
@@ -757,10 +759,12 @@ namespace Tobi.Plugin.AudioPane
                     // else: the stream is now open
 
                     State.Audio.EndOffsetOfPlayStream = State.Audio.DataLength;
+                    
+                    PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
 
                     m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                                   State.Audio.DataLength,
-                                  new AudioLibPCMFormat(State.Audio.PcmFormat.Data.NumberOfChannels, State.Audio.PcmFormat.Data.SampleRate, State.Audio.PcmFormat.Data.BitDepth),
+                                  pcmInfo.Copy().Data,
                                   bytesStart,
                                   -1
                         );
@@ -785,9 +789,11 @@ namespace Tobi.Plugin.AudioPane
                 }
                 // else: the stream is now open
 
+                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
+
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
-                              new AudioLibPCMFormat(State.Audio.PcmFormat.Data.NumberOfChannels, State.Audio.PcmFormat.Data.SampleRate, State.Audio.PcmFormat.Data.BitDepth),
+                              pcmInfo.Copy().Data,
                               bytesStart,
                               bytesEnd
                     );
