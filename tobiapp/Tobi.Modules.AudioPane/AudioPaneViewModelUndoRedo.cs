@@ -46,7 +46,7 @@ namespace Tobi.Plugin.AudioPane
                 : new Time(audioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamLeftMark));
 
             Time timeEnd = command.SelectionData.m_LocalStreamRightMark == -1
-                ? Time.Zero.AddTimeDelta(audioMedia.AudioMediaData.AudioDuration)
+                ? new Time(audioMedia.AudioMediaData.AudioDuration.TimeDeltaAsTimeSpan)
                 : new Time(audioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamRightMark));
 
             //Debug.Assert(audioMedia != null); Can be null, if the deleted audio range was the entire audio media
