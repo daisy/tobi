@@ -219,4 +219,19 @@
   <data name="UrakawaSDKSessionManager" xml:space="preserve">
     <value>Urakawa SDK session manager.</value>
   </data>
+  <data name="Importing" xml:space="preserve">
+    <value>Importing...</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Saved.</value>
+  </data>
+  <data name="SaveXukFile" xml:space="preserve">
+    <value>Saving XUK file...</value>
+  </data>
+  <data name="SerializeDOMIntoXukFile" xml:space="preserve">
+    <value>Serializing the document object model from the Urakawa SDK as XML content into a XUK file...</value>
+  </data>
+  <data name="WaitToCancel" xml:space="preserve">
+    <value>Please wait while cancelling...</value>
+  </data>
 </root>

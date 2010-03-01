@@ -17,7 +17,7 @@ namespace Tobi.Plugin.Urakawa
                 Path.Combine(Path.GetDirectoryName(DocumentFilePath),
                 XUK_DIR)); //Directory.GetParent(bookfile).FullName
 
-            return DoWorkProgressUI("Importing ...",
+            return DoWorkProgressUI("Importing ...",                   // TODO LOCALIZE Importing
                 converter,
                 () =>
                 {
