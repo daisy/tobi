@@ -160,7 +160,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse application folder.
+        ///   Looks up a localized string similar to Application executable and log.
         /// </summary>
         public static string OpenTobiFolder {
             get {
@@ -178,7 +178,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse system storage folder.
+        ///   Looks up a localized string similar to Private storage space.
         /// </summary>
         public static string OpenTobiIsolatedStorage {
             get {
@@ -196,7 +196,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse settings folder.
+        ///   Looks up a localized string similar to Settings / user preferences.
         /// </summary>
         public static string OpenTobiSettingsFolder {
             get {

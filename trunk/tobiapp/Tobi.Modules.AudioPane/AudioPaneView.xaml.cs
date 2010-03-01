@@ -422,9 +422,9 @@ namespace Tobi.Plugin.AudioPane
 
             var dlg = new OpenFileDialog
             {
-                FileName = "audio",
+                FileName = "",
                 DefaultExt = ".wav",
-                Filter = "WAV files (.wav)|*.wav;*.aiff",
+                Filter = @"WAV, MP3 (*.wav, *.mp3)|*.wav;*.mp3",
                 CheckFileExists = false,
                 CheckPathExists = false,
                 AddExtension = true,

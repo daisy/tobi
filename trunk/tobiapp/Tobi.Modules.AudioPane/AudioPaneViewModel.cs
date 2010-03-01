@@ -12,6 +12,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa;
 using urakawa.core;
+using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data;
@@ -996,17 +997,57 @@ namespace Tobi.Plugin.AudioPane
                 filePath = View.OpenFileDialog();
             }
 
-            if (String.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
+                State.Audio.PcmFormatAlt = null;
                 return;
             }
 
+            bool isWav = Path.GetExtension(filePath).ToLower() == ".wav";
+
             if (insert)
             {
-                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                string originalFilePath = null;
+
+                if (m_UrakawaSession.DocumentProject != null)
                 {
-                    State.Audio.PcmFormatAlt = null;
-                    return;
+                    Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+
+                    bool wavNeedsConversion = false;
+                    if (isWav)
+                    {
+                        Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        try
+                        {
+                            uint dataLength;
+                            AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                            if (format.IsCompatibleWith(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Data))
+                            {
+                                State.Audio.PcmFormatAlt = new PCMFormatInfo(format);
+                                RaisePropertyChanged(() => State.Audio.PcmFormat);
+                            }
+                            else
+                            {
+                                wavNeedsConversion = true;
+                            }
+                        }
+                        finally
+                        {
+                            fileStream.Close();
+                        }
+                    }
+
+                    if (!isWav || wavNeedsConversion)
+                    {
+                        originalFilePath = filePath;
+
+                        AudioFormatConvertorSession converter =
+                            new AudioFormatConvertorSession(m_UrakawaSession.DocumentProject.Presentations.Get(0));
+                        filePath = converter.ConvertAudioFileFormat(filePath);
+
+                        Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
+                                   Category.Debug, Priority.Medium);
+                    }
                 }
 
                 if (State.Audio.PcmFormatAlt == null)
@@ -1023,7 +1064,6 @@ namespace Tobi.Plugin.AudioPane
                         fileStream.Close();
                     }
 
-                    //RaisePropertyChanged("PcmFormat");
                     RaisePropertyChanged(() => State.Audio.PcmFormat);
                 }
 
@@ -1065,24 +1105,39 @@ namespace Tobi.Plugin.AudioPane
                         File.Delete(filePath);
                     }
 
-                    insertAudioAtCursorOrSelectionReplace(treeNode, managedAudioMedia);
-                }
-                else
-                {
-                    if (AudioPlaybackStreamKeepAlive)
+                    if (!string.IsNullOrEmpty(originalFilePath)
+                        && deleteAfterInsert && File.Exists(originalFilePath)) //check exist just in case file adopted by DataProviderManager
                     {
-                        ensurePlaybackStreamIsDead();
+                        File.Delete(originalFilePath);
                     }
 
-                    AudioPlayer_LoadAndPlayFromFile(filePath);
-                }
+                    insertAudioAtCursorOrSelectionReplace(treeNode, managedAudioMedia);
 
-                State.Audio.PcmFormatAlt = null;
+
+                    State.Audio.PcmFormatAlt = null;
+
+                    return;
+                }
             }
-            else
+
+            if (AudioPlaybackStreamKeepAlive)
             {
-                AudioPlayer_LoadAndPlayFromFile(filePath);
+                ensurePlaybackStreamIsDead();
             }
+
+            if (!isWav)
+            {
+                string originalFilePath = filePath;
+
+                AudioFormatConvertorSession converter =
+                    new AudioFormatConvertorSession(m_UrakawaSession.DocumentProject.Presentations.Get(0));
+                filePath = converter.ConvertAudioFileFormat(filePath);
+
+                Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
+                           Category.Debug, Priority.Medium);
+            }
+
+            AudioPlayer_LoadAndPlayFromFile(filePath);
         }
 
         private void insertAudioAtCursorOrSelectionReplace(TreeNode treeNode, ManagedAudioMedia manMedia)
@@ -1136,7 +1191,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                 }
 
-                
+
                 if (!managedAudioMedia.HasActualAudioMediaData)
                 {
                     Debug.Fail("This should never happen !!!");
