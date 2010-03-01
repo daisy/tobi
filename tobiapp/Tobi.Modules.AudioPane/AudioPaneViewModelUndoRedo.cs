@@ -14,18 +14,53 @@ namespace Tobi.Plugin.AudioPane
     {
         private void UndoRedoManagerChanged(TreeNodeAudioStreamDeleteCommand command, bool done)
         {
-            ManagedAudioMedia audioMedia = command.TreeNode.GetManagedAudioMedia();
+            ManagedAudioMedia audioMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
+            if(audioMedia==null)
+            {
+                bool bCurrentTreeNodeNeedsRefresh = resetCurrentTreeNodeState(command.CurrentTreeNode);
+
+                if (bCurrentTreeNodeNeedsRefresh)
+                {
+                    m_StateToRestore = null;
+
+                    State.CurrentTreeNode = null;
+
+                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
+                               Category.Debug, Priority.Medium);
+                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
+                }
+
+                if (State.CurrentSubTreeNode != command.SelectionData.m_TreeNode)
+                {
+                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
+                               Category.Debug, Priority.Medium);
+                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.SelectionData.m_TreeNode);
+                }
+
+                CommandRefresh.Execute();
+                return;
+            }
+
+            Time timeBegin = command.SelectionData.m_LocalStreamLeftMark == -1
+                ? Time.Zero
+                : new Time(audioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamLeftMark));
+
+            Time timeEnd = command.SelectionData.m_LocalStreamRightMark == -1
+                ? Time.Zero.AddTimeDelta(audioMedia.AudioMediaData.AudioDuration)
+                : new Time(audioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamRightMark));
 
             //Debug.Assert(audioMedia != null); Can be null, if the deleted audio range was the entire audio media
 
-            HandleInsertDelete(command.CurrentTreeNode, command.TreeNode, command.DeletionTimeBegin,
-                               command.DeletedManagedAudioMedia, audioMedia, !done);
+            HandleInsertDelete(command.CurrentTreeNode, command.SelectionData.m_TreeNode, timeBegin,
+                               timeEnd.TimeAsMillisecondDouble - timeBegin.TimeAsMillisecondDouble,
+                               audioMedia, !done);
         }
 
         private void UndoRedoManagerChanged(ManagedAudioMediaInsertDataCommand command, bool done)
         {
             HandleInsertDelete(command.CurrentTreeNode, command.TreeNode, command.TimeInsert,
-                               command.ManagedAudioMediaSource, command.ManagedAudioMediaTarget, done);
+                               command.ManagedAudioMediaSource.Duration.TimeDeltaAsMillisecondDouble,
+                               command.TreeNode.GetManagedAudioMedia(), done);
         }
 
         private bool resetCurrentTreeNodeState(TreeNode commandCurrentTreeNode)
@@ -58,7 +93,8 @@ namespace Tobi.Plugin.AudioPane
             return bCurrentTreeNodeNeedsRefresh;
         }
 
-        private void HandleInsertDelete(TreeNode currentTreeNode, TreeNode treeNode, Time timeInsert, ManagedAudioMedia managedAudioMediaSource, ManagedAudioMedia managedAudioMediaTarget, bool done)
+        private void HandleInsertDelete(TreeNode currentTreeNode, TreeNode treeNode, Time timeInsert,
+            double selectionDur, ManagedAudioMedia managedAudioMediaTarget, bool done)
         {
             bool bCurrentTreeNodeNeedsRefresh = resetCurrentTreeNodeState(currentTreeNode);
 
@@ -74,9 +110,7 @@ namespace Tobi.Plugin.AudioPane
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBegin = begin,
-                    SelectionEnd =
-                        begin +
-                        managedAudioMediaSource.Duration.TimeDeltaAsMillisecondDouble,
+                    SelectionEnd = begin + selectionDur,
                     LastPlayHeadTime = begin
                 };
             }
