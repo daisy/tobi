@@ -26,6 +26,8 @@ namespace Tobi.Plugin.Urakawa
                 },
                 () =>
                 {
+                    if (string.IsNullOrEmpty(converter.XukPath)) return;
+
                     DocumentFilePath = converter.XukPath;
                     DocumentProject = converter.Project;
 

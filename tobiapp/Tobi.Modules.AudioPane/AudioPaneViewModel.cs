@@ -485,15 +485,16 @@ namespace Tobi.Plugin.AudioPane
             if (project != null)
             {
                 m_AudioFormatConvertorSession =
-                    new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
-                    //project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
+                    new AudioFormatConvertorSession(
+                        //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                    project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
                 project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat);
 
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-                m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
-
+                m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath; //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY
+                
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
             }
             else
