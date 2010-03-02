@@ -70,6 +70,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to formatted as YYYY-MM-DD, YYYY-MM, or YYYY.
+        /// </summary>
+        public static string Date {
+            get {
+                return ResourceManager.GetString("Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate of {0} not allowed..
         /// </summary>
         public static string DuplicateNotAllowed {
@@ -102,6 +111,24 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string Missing {
             get {
                 return ResourceManager.GetString("Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to non-empty.
+        /// </summary>
+        public static string NonEmpty {
+            get {
+                return ResourceManager.GetString("NonEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to a numeric value.
+        /// </summary>
+        public static string NumVal {
+            get {
+                return ResourceManager.GetString("NumVal", resourceCulture);
             }
         }
         

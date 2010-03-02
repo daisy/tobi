@@ -120,6 +120,9 @@
   <data name="AValidatorThatSpecializedInMetadata" xml:space="preserve">
     <value>A validator that specialized in metadata.</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>formatted as YYYY-MM-DD, YYYY-MM, or YYYY</value>
+  </data>
   <data name="DuplicateNotAllowed" xml:space="preserve">
     <value>Duplicate of {0} not allowed.</value>
   </data>
@@ -131,6 +134,12 @@
   </data>
   <data name="Missing" xml:space="preserve">
     <value>Missing {0}</value>
+  </data>
+  <data name="NonEmpty" xml:space="preserve">
+    <value>non-empty</value>
+  </data>
+  <data name="NumVal" xml:space="preserve">
+    <value>a numeric value</value>
   </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error in {0}.</value>

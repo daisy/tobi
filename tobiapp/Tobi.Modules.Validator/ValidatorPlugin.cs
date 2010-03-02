@@ -45,7 +45,7 @@ namespace Tobi.Plugin.Validator
             m_ValidatorPaneView = view;
 
             CommandShowValidator = new RichDelegateCommand(
-                "Validation Check",
+                "Validation Check",                                                // TODO LOCALIZE ValidationCheck
                 "",
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeGionIcon(@"Gion_application-certificate"),

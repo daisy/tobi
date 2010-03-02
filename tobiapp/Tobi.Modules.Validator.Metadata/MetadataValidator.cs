@@ -227,8 +227,8 @@ namespace Tobi.Plugin.Validator.Metadata
         private MetadataValidator m_ParentValidator;
         //These hints describe what the data must be formatted as.
         //Complete sentences purposefully left out.
-        private const string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";
-        private const string m_NumericHint = "a numeric value";
+        private const string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";             // TODO LOCALIZE Date
+        private const string m_NumericHint = "a numeric value";                                    // TODO LOCALIZE NumVal
 
         public MetadataDataTypeValidator(MetadataValidator parentValidator)
         {
@@ -420,7 +420,7 @@ namespace Tobi.Plugin.Validator.Metadata
     public class MetadataOccurrenceValidator
     {
         private MetadataValidator m_ParentValidator;
-        private const string m_NonEmptyHint = "non-empty";
+        private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
 
         public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {

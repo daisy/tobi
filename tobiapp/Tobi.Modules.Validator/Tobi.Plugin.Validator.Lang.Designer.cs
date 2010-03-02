@@ -95,5 +95,14 @@ namespace Tobi.Plugin.Validator {
                 return ResourceManager.GetString("ThisIsTheMainContentValidator", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation Check.
+        /// </summary>
+        public static string ValidationCheck {
+            get {
+                return ResourceManager.GetString("ValidationCheck", resourceCulture);
+            }
+        }
     }
 }
