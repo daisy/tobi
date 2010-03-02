@@ -54,6 +54,8 @@ namespace Tobi.Plugin.AudioPane
                       Logger.Log("AudioPaneViewModel.CommandPlaybackRateReset", Category.Debug, Priority.Medium);
 
                       PlaybackRate = PLAYBACK_RATE_MIN;
+
+                      AudioCues.PlayTock();
                   },
                   () => !IsWaveFormLoading,
                    Settings_KeyGestures.Default,
@@ -77,6 +79,8 @@ namespace Tobi.Plugin.AudioPane
                        PlaybackRate = PLAYBACK_RATE_MIN;
                        Debug.Fail("This should never happen !");
                    }
+
+                   AudioCues.PlayTockTock();
                },
                () => !IsWaveFormLoading && (PlaybackRate - PLAYBACK_RATE_STEP) >= PLAYBACK_RATE_MIN,
                 Settings_KeyGestures.Default,
@@ -100,6 +104,8 @@ namespace Tobi.Plugin.AudioPane
                        PlaybackRate = PLAYBACK_RATE_MAX;
                        Debug.Fail("This should never happen !");
                    }
+
+                   AudioCues.PlayHi();
                },
                () => !IsWaveFormLoading && (PlaybackRate + PLAYBACK_RATE_STEP) <= PLAYBACK_RATE_MAX,
                 Settings_KeyGestures.Default,
@@ -115,6 +121,15 @@ namespace Tobi.Plugin.AudioPane
                () =>
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
+
+                   if (IsAutoPlay)
+                   {
+                       AudioCues.PlayTock();
+                   }
+                   else
+                   {
+                       AudioCues.PlayTockTock();
+                   }
 
                    IsAutoPlay = !IsAutoPlay;
                },
@@ -153,26 +168,25 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioPlayer_Stop();
 
+                    long byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+
                     if (!IsSelectionSet)
                     {
-                        if (LastPlayHeadTime >=
-                                State.Audio.ConvertBytesToMilliseconds(
-                                                    State.Audio.DataLength))
+                        //if (LastPlayHeadTime >= State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength))
+                        if (byteLastPlayHeadTime >= State.Audio.DataLength)
                         {
                             //LastPlayHeadTime = 0; infinite loop !
                             AudioPlayer_PlayFromTo(0, -1);
                         }
                         else
                         {
-                            AudioPlayer_PlayFromTo(State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime), -1);
+                            AudioPlayer_PlayFromTo(byteLastPlayHeadTime, -1);
                         }
                     }
                     else
                     {
                         long byteSelectionLeft = State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionBegin);
                         long byteSelectionRight = State.Audio.ConvertMillisecondsToBytes(State.Selection.SelectionEnd);
-
-                        long byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                         if (byteLastPlayHeadTime >= byteSelectionLeft
                                 && byteLastPlayHeadTime < byteSelectionRight)
@@ -713,6 +727,11 @@ namespace Tobi.Plugin.AudioPane
             if (m_Player.CurrentState == AudioPlayer.State.Playing)
             {
                 m_Player.Pause();
+
+                bool wasAutoPlay = IsAutoPlay;
+                if (wasAutoPlay) IsAutoPlay = false;
+                LastPlayHeadTime = m_Player.CurrentTime;
+                if (wasAutoPlay) IsAutoPlay = true;
             }
             else if (m_Player.CurrentState == AudioPlayer.State.Paused || m_Player.CurrentState == AudioPlayer.State.Stopped)
             {
@@ -850,6 +869,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
+                bool wasAutoPlay = IsAutoPlay;
+                if (wasAutoPlay) IsAutoPlay = false;
+                LastPlayHeadTime = m_Player.CurrentTime;
+                if (wasAutoPlay) IsAutoPlay = true;
+                
                 m_Player.Stop();
 
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback stopped."); // TODO Localize PlaybackStopped

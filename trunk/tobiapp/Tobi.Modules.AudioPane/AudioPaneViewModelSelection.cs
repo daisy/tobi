@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -68,14 +69,17 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandEndSelection", Category.Debug, Priority.Medium);
 
-                    AudioCues.PlayTockTock();
-
                     if (m_SelectionBeginTmp < 0)
                     {
                         return;
                     }
+
+                    AudioPlayer_Stop();
+
                     double begin = m_SelectionBeginTmp;
                     double end = LastPlayHeadTime;
+
+                    AudioCues.PlayTockTock();
 
                     if (begin == end)
                     {
@@ -123,6 +127,8 @@ namespace Tobi.Plugin.AudioPane
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandBeginSelection", Category.Debug, Priority.Medium);
+
+                    AudioPlayer_Stop();
 
                     m_SelectionBeginTmp = LastPlayHeadTime;
 
