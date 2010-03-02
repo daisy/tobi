@@ -15,7 +15,9 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.commands;
 using urakawa.core;
+using urakawa.events.undo;
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -328,9 +330,52 @@ namespace Tobi.Plugin.DocumentPane
 
         private Dictionary<string, TextElement> m_idLinkTargets;
 
-
-        private void OnProjectUnLoaded(Project obj)
+        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
+            m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+
+            bool refresh = eventt is DoneEventArgs
+                           || eventt is UnDoneEventArgs
+                           || eventt is ReDoneEventArgs;
+            if (!refresh)
+            {
+                Debug.Fail("This should never happen !!");
+                return;
+            }
+
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs;
+
+            if (eventt.Command is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)eventt.Command;
+
+                //UndoRedoManagerChanged(command, done);
+                return;
+            }
+
+            if (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)eventt.Command;
+
+                //UndoRedoManagerChanged(command, done);
+                return;
+            }
+
+            if (eventt.Command is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)eventt.Command;
+
+                //UndoRedoManagerChanged(command, done);
+                return;
+            }
+        }
+
+        private void OnProjectUnLoaded(Project project)
+        {
+            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+
             OnProjectLoaded(null);
         }
 
@@ -356,6 +401,12 @@ namespace Tobi.Plugin.DocumentPane
                 //setTextDecoration_ErrorUnderline(run);
                 TheFlowDocument.Blocks.Add(new Paragraph(run));
                 return;
+            }
+            else
+            {
+                project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
             }
 
             createFlowDocumentFromXuk(project);
