@@ -129,4 +129,7 @@
   <data name="ThisIsTheMainContentValidator" xml:space="preserve">
     <value>This is the main content validator</value>
   </data>
+  <data name="ValidationCheck" xml:space="preserve">
+    <value>Validation Check</value>
+  </data>
 </root>
