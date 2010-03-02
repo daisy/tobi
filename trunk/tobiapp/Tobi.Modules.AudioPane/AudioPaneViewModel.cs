@@ -313,6 +313,9 @@ namespace Tobi.Plugin.AudioPane
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             PeakMeterBarDataCh2.ValueDb = Double.NegativeInfinity;
             m_PeakMeterValues = new double[2];
+
+            m_AudioFormatConvertorSession_NoProject =
+                new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null);
         }
 
         #endregion Initialization
@@ -462,12 +465,14 @@ namespace Tobi.Plugin.AudioPane
         //}
 
         private AudioFormatConvertorSession m_AudioFormatConvertorSession;
+        private AudioFormatConvertorSession m_AudioFormatConvertorSession_NoProject;
 
         private void OnProjectUnLoaded(Project project)
         {
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+
             OnProjectLoaded(null);
         }
 
@@ -478,8 +483,7 @@ namespace Tobi.Plugin.AudioPane
             AudioClipboard = null;
             m_LastPlayHeadTime = -1;
             IsWaveFormLoading = false;
-            m_AudioFormatConvertorSession = null;
-
+            
             //var shell = Container.Resolve<IShellView>();
             //shell.DocumentProject
             if (project != null)
@@ -499,6 +503,8 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
+                m_AudioFormatConvertorSession = null;
+
                 m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();
 
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document."); // TODO Localize NoDocument
@@ -1124,9 +1130,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 string originalFilePath = filePath;
 
-                AudioFormatConvertorSession converter =
-                    new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null);
-                filePath = converter.ConvertAudioFileFormat(filePath);
+                filePath = m_AudioFormatConvertorSession_NoProject.ConvertAudioFileFormat(filePath);
 
                 Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
                            Category.Debug, Priority.Medium);
