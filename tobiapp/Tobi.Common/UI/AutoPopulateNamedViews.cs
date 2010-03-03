@@ -476,7 +476,7 @@ namespace Tobi.Common.UI
                     }
             }
         }
-
+#if DEBUG
         [Conditional("DEBUG")]
         private void markWithAddIndex(ItemMetadata itemMetadata)
         {
@@ -523,7 +523,7 @@ namespace Tobi.Common.UI
                     currentPreferredPosition = prefPos;
             }
         }
-
+#endif
         private void ItemMetadataCollectionInsert(int index, PreferredPositionItemMetadata itemMetadata)
         {
             var nToKeep = index; // left
