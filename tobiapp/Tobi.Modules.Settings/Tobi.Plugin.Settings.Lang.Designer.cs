@@ -115,6 +115,15 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Numeric value is out of range [-9999, 9999]..
+        /// </summary>
+        public static string NumericValueOutOfRange9999 {
+            get {
+                return ResourceManager.GetString("NumericValueOutOfRange9999", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Preferences.
         /// </summary>
         public static string Preferences {

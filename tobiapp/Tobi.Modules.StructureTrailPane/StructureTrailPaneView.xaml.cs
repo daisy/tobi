@@ -510,11 +510,11 @@ namespace Tobi.Plugin.StructureTrailPane
                         string strPrepend = "";
                         if (qName == null)
                         {
-                            strPrepend = "[No XML]. ";
+                            strPrepend = "[No XML]. ";                                    // TODO LOCALIZE Key already added
                         }
                         else
                         {
-                            strPrepend = "XML: [" + qName.LocalName + "]. ";
+                            strPrepend = "XML: [" + qName.LocalName + "]. ";              // TODO LOCALIZE Key already added
                         }
 
                         m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(strPrepend + str);
