@@ -1085,15 +1085,15 @@ namespace Tobi.Plugin.DocumentPane
 
             if (srcAttr.Value.StartsWith("http://"))
             {
+                //image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
+
+                string imagePath = new Uri(srcAttr.Value, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
+                imagePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(imagePath));
+
+                //string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
+
                 try
                 {
-                    //image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
-
-                    string imagePath = new Uri(srcAttr.Value, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
-                    imagePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(imagePath));
-
-                    //string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
-
                     WebClient webClient = new WebClient();
                     webClient.Proxy = null;
                     webClient.DownloadFile(srcAttr.Value, imagePath);
@@ -1110,9 +1110,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 catch (Exception)
                 {
-
+                    Console.WriteLine(@"Problem trying to load: [" + imagePath + "]");
 #if DEBUG
-                    Debugger.Break();
+                    //Debugger.Break();
 #endif
                     return parent;
                 }
@@ -1158,9 +1158,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 catch (Exception)
                 {
-
+                    Console.WriteLine(@"Problem trying to load: [" + fullImagePath + "]");
 #if DEBUG
-                    Debugger.Break();
+                    //Debugger.Break();
 #endif
                     return parent;
                 }

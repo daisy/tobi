@@ -101,6 +101,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (!(value is TreeNode)) return "";
             TreeNode element = value as TreeNode;
             string elementText = element.GetTextMediaFlattened();
+            if (elementText == null) return "";
             if (elementText.Length > 100)
                 elementText = elementText.Substring(0, 100);
 
