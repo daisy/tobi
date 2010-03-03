@@ -129,7 +129,7 @@ namespace Tobi.Common.MVVM.Command
         {
             get;
 #if !DEBUG
-        private
+        protected
 #endif
             set;
         }
