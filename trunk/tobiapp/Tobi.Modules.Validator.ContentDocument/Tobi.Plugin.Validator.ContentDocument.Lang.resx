@@ -126,8 +126,17 @@
   <data name="ContentDocumentValidator_Key" xml:space="preserve">
     <value>Content Document Validator</value>
   </data>
+  <data name="DocStructureError" xml:space="preserve">
+    <value>Document structure error</value>
+  </data>
+  <data name="GeneralDocumentError" xml:space="preserve">
+    <value>General document error</value>
+  </data>
   <data name="InvalidSequence" xml:space="preserve">
     <value>Element {0} contains an invalid sequence of child elements</value>
+  </data>
+  <data name="MissingDTD" xml:space="preserve">
+    <value>Missing DTD</value>
   </data>
   <data name="NoDTDFound" xml:space="preserve">
     <value>No DTD found for {0}</value>
@@ -137,6 +146,9 @@
   </data>
   <data name="StartingWith0" xml:space="preserve">
     <value>, starting with {0}.</value>
+  </data>
+  <data name="UndefinedElement" xml:space="preserve">
+    <value>Undefined element</value>
   </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error</value>

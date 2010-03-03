@@ -142,7 +142,7 @@ namespace Tobi.Plugin.Settings
             {
                 if (val < -9999 || val > 9999)
                 {
-                    return NotValid("Numeric value is out of range [-9999, 9999].");
+                    return NotValid("Numeric value is out of range [-9999, 9999].");           // TODO LOCALIZE NumericValueOutOfRange9999
                 }
             }
 

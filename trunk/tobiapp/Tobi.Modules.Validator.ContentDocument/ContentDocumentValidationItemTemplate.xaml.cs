@@ -41,12 +41,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
             ContentDocumentErrorType item = (ContentDocumentErrorType)value;
             if (item == ContentDocumentErrorType.MissingDtd)
-                return "Missing DTD";
+                return "Missing DTD";                                           // TODO LOCALIZE MissingDTD
             if (item == ContentDocumentErrorType.UndefinedElement)
-                return "Undefined element";
+                return "Undefined element";                                     // TODO LOCALIZE UndefinedElement
             if (item == ContentDocumentErrorType.InvalidElementSequence)
-                return "Document structure error";
-            return "General document error";
+                return "Document structure error";                              // TODO LOCALIZE DocStructureError
+            return "General document error";                                    // TODO LOCALIZE GeneralDocError
 
         }
     }
