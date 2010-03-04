@@ -30,12 +30,12 @@
         
     x:Name="MainWindow"
     
-    ToolTip="{x:Static Tobi:Tobi_Lang.LangStringKey1}"
         
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
    >
 <!--
 
+    ToolTip="{x:Static Tobi:Tobi_Lang.LangStringKey1}"
     GotFocus="OnWindowGotFocus"
     
     Height="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellSize.Height, Mode=TwoWay}"

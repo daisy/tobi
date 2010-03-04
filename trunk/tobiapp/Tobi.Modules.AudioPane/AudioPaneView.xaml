@@ -499,9 +499,21 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       </Canvas>
     </ScrollViewer>
   </DockPanel>
-
-  <ProgressBar Grid.Column="0" Grid.Row="0"
+  <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="true"
+             Visibility="{Binding Path=IsWaveFormLoading,
+                            Converter={StaticResource boolToVisConverter},
+                            Mode=OneWay}"
+             Focusable="False"
+             
+               VerticalAlignment="Bottom">
+    <Button Content="Cancel"
+            DockPanel.Dock="Right"
+            Click="OnWaveFormCancelButtonClick"
+            
+               VerticalAlignment="Bottom"/>
+  <ProgressBar 
                 x:Name="WaveFormProgress"
+                Focusable="False"
                Orientation="Horizontal"
                IsIndeterminate="True"
                Value="0"
@@ -509,10 +521,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Maximum="100"
                Height="18"
                VerticalAlignment="Bottom"
-               Visibility="{Binding Path=IsWaveFormLoading,
-                            Converter={StaticResource boolToVisConverter},
-                            Mode=OneWay}" />
-
+               />
+  </DockPanel>
   <Grid
     x:Name="columnContentPeakMeter"
     Grid.Column="2" Grid.Row="0"
