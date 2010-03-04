@@ -131,7 +131,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandOpenFile", Category.Debug, Priority.Medium);
 
-                    openFile(null, false, false);
+                    openFile(null, false, false, null);
                 },
                 () => !IsWaveFormLoading && !IsMonitoring && !IsRecording,
                 Settings_KeyGestures.Default,
@@ -148,7 +148,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandInsertFile", Category.Debug, Priority.Medium);
 
-                    openFile(null, true, false);
+                    openFile(null, true, false, null);
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
                       && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null

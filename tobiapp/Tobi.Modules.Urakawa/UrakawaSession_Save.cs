@@ -75,11 +75,14 @@ namespace Tobi.Plugin.Urakawa
                     {
                         Debug.Assert(!IsDirty);
 
+                        DocumentProject.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(dlg.FileName));
+
                         DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
                         DocumentProject.Presentations.Get(0).RootUri = new Uri(Path.GetDirectoryName(dlg.FileName) + Path.DirectorySeparatorChar, UriKind.Absolute);
                         DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(false);
 
-                        IsDirty = false;
+                        RaisePropertyChanged(() => IsDirty);
+                        //IsDirty = false;
                         CloseCommand.Execute();
 
                         try
@@ -196,9 +199,12 @@ namespace Tobi.Plugin.Urakawa
                     DocumentFilePath = m_SaveAsDocumentFilePath;
                 }
 
+                DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
+
                 m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");            // TODO LOCALIZE Saved
 
-                IsDirty = false;
+                RaisePropertyChanged(() => IsDirty);
+                //IsDirty = false;
             };
             action.Cancelled += (sender, e) =>
             {
@@ -207,7 +213,8 @@ namespace Tobi.Plugin.Urakawa
                     File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
                 }
 
-                IsDirty = true;
+                RaisePropertyChanged(() => IsDirty);
+                //IsDirty = true;
 
                 backWorker.CancelAsync();
             };
@@ -277,7 +284,8 @@ namespace Tobi.Plugin.Urakawa
 
                 if (args.Cancelled)
                 {
-                    IsDirty = true;
+                    RaisePropertyChanged(() => IsDirty);
+                    //IsDirty = true;
                     windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
                 }
                 else
