@@ -15,9 +15,7 @@ using urakawa.command;
 using urakawa.core;
 using urakawa.daisy.import;
 using urakawa.data;
-using urakawa.ExternalFiles;
 using urakawa.media;
-using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
@@ -414,6 +412,11 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+            //if (IsWaveFormLoading && View != null)
+            //{
+            //    View.CancelWaveFormLoad();
+            //}
+
             if (State.CurrentTreeNode == node)
             {
                 return;
@@ -483,14 +486,14 @@ namespace Tobi.Plugin.AudioPane
             AudioClipboard = null;
             m_LastPlayHeadTime = -1;
             IsWaveFormLoading = false;
-            
+
             //var shell = Container.Resolve<IShellView>();
             //shell.DocumentProject
             if (project != null)
             {
                 m_AudioFormatConvertorSession =
                     new AudioFormatConvertorSession(
-                        //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                    //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                     project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
                 project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat);
 
@@ -498,7 +501,7 @@ namespace Tobi.Plugin.AudioPane
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath; //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY
-                
+
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
             }
             else
@@ -1220,7 +1223,7 @@ namespace Tobi.Plugin.AudioPane
                     CommandDeleteAudioSelection.Execute();
 
                     Command command;
-                    
+
                     Media newManMedia = treeNode.GetManagedAudioMedia();
                     if (newManMedia == null)
                     {

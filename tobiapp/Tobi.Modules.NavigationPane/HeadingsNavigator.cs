@@ -28,14 +28,72 @@ namespace Tobi.Plugin.NavigationPane
         private readonly Project m_Project;
         private readonly IShellView m_ShellView;
 
-        public void ExpandAll()
+        //public void ExpandAllThreaded()
+        //{
+        //    ThreadPool.SetMaxThreads(50, 50);
+        //    foreach (HeadingTreeNodeWrapper node in Roots)
+        //    {
+        //        ThreadPool.QueueUserWorkItem(ExpandNodeCallback, node);
+        //    }
+        //}
+
+        //private static void ExpandNodeCallback(object nodeObject)
+        //{
+        //    HeadingTreeNodeWrapper node = (HeadingTreeNodeWrapper)nodeObject;
+        //    node.IsExpanded = true;
+        //    if (!node.HasChildren) { return; }
+        //    foreach (HeadingTreeNodeWrapper child in node.Children) { ThreadPool.QueueUserWorkItem(ExpandNodeCallback, child); }
+        //}
+
+        
+        public void CollapseAll()
         {
-            ThreadPool.SetMaxThreads(50, 50);
-            foreach (HeadingTreeNodeWrapper node in Roots)
-            {
-                ThreadPool.QueueUserWorkItem(ExpandNodeCallback, node);
+            foreach (HeadingTreeNodeWrapper node in Roots) {
+                Collapse(node);
             }
         }
+
+        public static void CollapseAll(HeadingTreeNodeWrapper node)
+        {
+            Collapse(node);
+            if (!node.HasChildren) { return; }
+            foreach (HeadingTreeNodeWrapper child in node.Children)
+            {
+                CollapseAll(child);
+            }
+        }
+
+        public static void Collapse(HeadingTreeNodeWrapper node)
+        {
+            node.IsExpanded = false;
+        }
+
+        public void ExpandAll()
+        {
+            foreach (HeadingTreeNodeWrapper node in Roots)
+            {
+                ExpandAll(node);
+            }
+        }
+
+        private static void ExpandAll(HeadingTreeNodeWrapper node)
+        {
+            node.IsExpanded = true;
+            if (!node.HasChildren)
+            {
+                return;
+            }
+            foreach (HeadingTreeNodeWrapper child in node.Children)
+            {
+                ExpandAll(child);
+            }
+        }
+
+        public static void Expand(HeadingTreeNodeWrapper node)
+        {
+            node.IsExpanded = true;
+        }
+
         public void FindNext()
         {
             HeadingTreeNodeWrapper nextMatch = FindNextMatch(m_roots);
@@ -158,21 +216,6 @@ namespace Tobi.Plugin.NavigationPane
             return htnwResult;
         }
 
-        private static void ExpandNodeCallback(object nodeObject)
-        {
-            HeadingTreeNodeWrapper node = (HeadingTreeNodeWrapper) nodeObject;
-            node.IsExpanded = true;
-            if (!node.HasChildren) { return; }
-            foreach (HeadingTreeNodeWrapper child in node.Children) { ThreadPool.QueueUserWorkItem(ExpandNodeCallback, child); }
-            
-        }
-        public void Expand(HeadingTreeNodeWrapper node) { node.IsExpanded = true; }
-
-        public void CollapseAll()
-        {
-            foreach (HeadingTreeNodeWrapper node in Roots) { node.IsExpanded = false; }
-        }
-        public void Collapse(HeadingTreeNodeWrapper node) { node.IsExpanded = false; }
 
         //public void EditText(HeadingTreeNodeWrapper parameter)
         //{
@@ -514,11 +557,11 @@ namespace Tobi.Plugin.NavigationPane
                 else
                 {
                     m_children = null;
+                    //RaisePropertyChanged(() => Children);
 //                    m_childSelected = false;
                 }
 
                 RaisePropertyChanged(() => IsExpanded);
-                RaisePropertyChanged(() => Children);
             }
         }
         public bool IsSelected
