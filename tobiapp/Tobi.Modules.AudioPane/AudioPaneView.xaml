@@ -510,8 +510,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             DockPanel.Dock="Right"
             Click="OnWaveFormCancelButtonClick"
             
+                x:Name="WaveFormCancelButton"
                VerticalAlignment="Bottom"/>
   <ProgressBar 
+    Height="{Binding ElementName=WaveFormCancelButton, Mode=OneWay, Path=ActualHeight}"
                 x:Name="WaveFormProgress"
                 Focusable="False"
                Orientation="Horizontal"
@@ -519,7 +521,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Value="0"
                Minimum="0"
                Maximum="100"
-               Height="18"
+
                VerticalAlignment="Bottom"
                />
   </DockPanel>
