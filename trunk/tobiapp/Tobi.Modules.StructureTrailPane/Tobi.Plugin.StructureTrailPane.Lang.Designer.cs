@@ -61,6 +61,15 @@ namespace Tobi.Plugin.StructureTrailPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio..
+        /// </summary>
+        public static string Audio {
+            get {
+                return ResourceManager.GetString("Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Document pane focus.
         /// </summary>
         public static string Document_Focus {
@@ -93,6 +102,24 @@ namespace Tobi.Plugin.StructureTrailPane {
         public static string NoXML {
             get {
                 return ResourceManager.GetString("NoXML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No XML.
+        /// </summary>
+        public static string NoXMLFound {
+            get {
+                return ResourceManager.GetString("NoXMLFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to , Selected..
+        /// </summary>
+        public static string Selected {
+            get {
+                return ResourceManager.GetString("Selected", resourceCulture);
             }
         }
         
@@ -138,6 +165,15 @@ namespace Tobi.Plugin.StructureTrailPane {
         public static string ThePublicationDocumentViewer {
             get {
                 return ResourceManager.GetString("ThePublicationDocumentViewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML Children..
+        /// </summary>
+        public static string XMLChildren {
+            get {
+                return ResourceManager.GetString("XMLChildren", resourceCulture);
             }
         }
         

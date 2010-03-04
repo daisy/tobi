@@ -124,7 +124,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
                     BreadcrumbPanel.Children.Add(tb);
 
-                    tb.SetValue(AutomationProperties.NameProperty, "XML Children.");
+                    tb.SetValue(AutomationProperties.NameProperty, "XML Children.");                  // TODO LOCALIZE XMLChildren
                 }
 
                 bool selected = false;
@@ -145,7 +145,9 @@ namespace Tobi.Plugin.StructureTrailPane
                     }
                 }
 
-                butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : "No XML") + (selected ? ", Selected." : "") + (withMedia ? "Audio." : ""));
+                butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : "No XML") + (selected ? ", Selected." : "") + (withMedia ? "Audio." : ""));        // TODO LOCALIZE NoXMLFound
+                                                                                                                                                                                       // TODO LOCALIZE Selected
+                                                                                                                                                                                       // TODO LOCALIZE Audio
 
                 counter++;
             }

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio.</value>
+  </data>
   <data name="DocumentPane" xml:space="preserve">
     <value>Document pane.</value>
   </data>
@@ -126,8 +129,14 @@
   <data name="NoXML" xml:space="preserve">
     <value>[No XML].</value>
   </data>
+  <data name="NoXMLFound" xml:space="preserve">
+    <value>No XML</value>
+  </data>
   <data name="No_Document" xml:space="preserve">
     <value>No document.</value>
+  </data>
+  <data name="Selected" xml:space="preserve">
+    <value>, Selected.</value>
   </data>
   <data name="StructureDown" xml:space="preserve">
     <value>_Narrow structure selection</value>
@@ -143,6 +152,9 @@
   </data>
   <data name="ThePublicationDocumentViewer" xml:space="preserve">
     <value>The publication document viewer</value>
+  </data>
+  <data name="XMLChildren" xml:space="preserve">
+    <value>XML Children.</value>
   </data>
   <data name="XMLName" xml:space="preserve">
     <value>XML: [{0}].</value>
