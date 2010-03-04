@@ -1005,7 +1005,7 @@ namespace Tobi.Plugin.AudioPane
         #endregion VuMeter / PeakMeter
 
 
-        private void openFile(String str, bool insert, bool deleteAfterInsert)
+        private void openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
@@ -1025,8 +1025,8 @@ namespace Tobi.Plugin.AudioPane
 
             bool isWav = Path.GetExtension(filePath).ToLower() == ".wav";
 
-            AudioLibPCMFormat wavFormat = null;
-            if (isWav)
+            AudioLibPCMFormat wavFormat = (pcmInfo != null ? pcmInfo.Copy().Data : null);
+            if (isWav && wavFormat == null)
             {
                 Stream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 try

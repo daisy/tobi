@@ -36,7 +36,6 @@ namespace Tobi.Plugin.AudioPane
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped."); // TODO Localize RecordingStopped
 
-                    State.Audio.PcmFormatRecordingMonitoring = null;
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -180,6 +179,24 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        // ReSharper disable RedundantDefaultFieldInitializer
+        private bool m_IsAutoRecordNext = false;
+        // ReSharper restore RedundantDefaultFieldInitializer
+        public bool IsAutoRecordNext
+        {
+            get
+            {
+                return m_IsAutoRecordNext;
+            }
+            set
+            {
+                if (m_IsAutoRecordNext == value) return;
+                m_IsAutoRecordNext = value;
+
+                RaisePropertyChanged(() => IsAutoRecordNext);
+            }
+        }
+
         private void OnAudioRecordingFinished(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
             if (!Dispatcher.CheckAccess())
@@ -192,8 +209,10 @@ namespace Tobi.Plugin.AudioPane
 
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
-                openFile(e.RecordedFilePath, true, true);
+                openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
             }
+
+            State.Audio.PcmFormatRecordingMonitoring = null;
         }
 
         // ReSharper disable MemberCanBeMadeStatic.Local

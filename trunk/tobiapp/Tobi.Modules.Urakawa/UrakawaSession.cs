@@ -57,7 +57,7 @@ namespace Tobi.Plugin.Urakawa
             m_EventAggregator = eventAggregator;
             m_ShellView = shellView;
 
-            IsDirty = false;
+            //IsDirty = false;
 
             InitializeCommands();
             InitializeRecentFiles();
@@ -89,30 +89,37 @@ namespace Tobi.Plugin.Urakawa
                 }
                 if (m_DocumentProject != null)
                 {
-                    m_DocumentProject.Changed -= OnDocumentProjectChanged;
-                    //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed -= OnUndoRedoManagerChanged;
+                    //m_DocumentProject.Changed -= OnDocumentProjectChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
                 }
 
-                IsDirty = false;
+                //IsDirty = false;
                 m_DocumentProject = value;
                 if (m_DocumentProject != null)
                 {
-                    m_DocumentProject.Changed += OnDocumentProjectChanged;
-                    //m_DocumentProject.Presentations.Get(0).UndoRedoManager.Changed += OnUndoRedoManagerChanged;
+                    //m_DocumentProject.Changed += OnDocumentProjectChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
                 }
                 RaisePropertyChanged(() => DocumentProject);
+                RaisePropertyChanged(() => IsDirty);
             }
         }
 
-        //private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
-        //{
-        //    IsDirty = m_DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo;
-        //}
-
-        private void OnDocumentProjectChanged(object sender, DataModelChangedEventArgs e)
+        private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
         {
-            IsDirty = true;
+            RaisePropertyChanged(() => IsDirty);
+            //IsDirty = m_DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo;
         }
+
+        //private void OnDocumentProjectChanged(object sender, DataModelChangedEventArgs e)
+        //{
+        //    RaisePropertyChanged(() => IsDirty);
+        //    //IsDirty = true;
+        //}
 
         private string m_DocumentFilePath;
         [NotifyDependsOn("DocumentProject")]
@@ -130,19 +137,27 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
-        private bool m_IsDirty;
+        //private bool m_IsDirty;
         public bool IsDirty
         {
-            get { return m_IsDirty; }
-            set
+            get
             {
-                if (m_IsDirty == value)
+                if (m_DocumentProject != null)
                 {
-                    return;
+                    return !m_DocumentProject.Presentations.Get(0).UndoRedoManager.IsOnDirtyMarker();
                 }
-                m_IsDirty = value;
-                RaisePropertyChanged(() => IsDirty);
+                return false;
+                //return m_IsDirty;
             }
+            //set
+            //{
+            //    if (m_IsDirty == value)
+            //    {
+            //        return;
+            //    }
+            //    m_IsDirty = value;
+            //    RaisePropertyChanged(() => IsDirty);
+            //}
         }
 
         internal void InitializeCommands()
@@ -243,7 +258,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 Directory.CreateDirectory(deletedDataFolderPath);
             }
-            
+
 
             foreach (string filePath in Directory.GetFiles(dataFolderPath))
             {
