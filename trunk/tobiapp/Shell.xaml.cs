@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -7,7 +6,6 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite.Logging;
@@ -523,15 +521,6 @@ namespace Tobi
                 ((TextBox)sender).SelectAll();
         }
 
-        private void MainWindow_Closed(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MainWindow_Closed_1(object sender, EventArgs e)
-        {
-
-        }
 
         //private static void UIElement_LostKeyboardFocus(object sender, RoutedEventArgs e)
         //{

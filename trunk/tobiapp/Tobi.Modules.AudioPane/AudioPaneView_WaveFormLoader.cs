@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -19,7 +19,7 @@ namespace Tobi.Plugin.AudioPane
         public void CancelWaveFormLoad()
         {
             if (!m_ViewModel.IsWaveFormLoading) return;
-            if (m_BackgroundLoader == null) return; 
+            if (m_BackgroundLoader == null) return;
             if (!m_BackgroundLoader.IsBusy) return;
 
             m_BackgroundLoader.CancelAsync();
@@ -250,15 +250,18 @@ namespace Tobi.Plugin.AudioPane
                     sgcCh2 = geometryCh2.Open();
                 }
 
-                #region LOOP
-
                 //bool isLittleEndian = BitConverter.IsLittleEndian;
 
                 double sumProgress = 0;
 
                 if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
 
+                Stopwatch stopWatch = Stopwatch.StartNew();
+
                 int read;
+
+                #region LOOP
+
                 while ((read = audioStream.Read(bytes, 0, bytesPerStep)) > 0)
                 {
 #if USE_BLOCK_COPY
@@ -266,7 +269,7 @@ namespace Tobi.Plugin.AudioPane
                     Buffer.BlockCopy(bytes, 0, samples, 0, read);
 #endif //USE_BLOCK_COPY
 
-                    if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+                    if (m_BackgroundLoader.CancellationPending) break;
 
                     for (int channel = 0; channel < m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels; channel++)
                     {
@@ -529,6 +532,20 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
 
+
+                    stopWatch.Stop();
+                    if (stopWatch.ElapsedMilliseconds >= 1000)
+                    {
+                        drawWaveForm(inBackgroundThread, false,
+                            sgcCh1, sgcCh2, geometryCh1, geometryCh2,
+                            listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
+                            heightMagnified, widthMagnified,
+                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance);
+
+                        stopWatch.Reset();
+                    }
+                    stopWatch.Start();
+
                     if (inBackgroundThread)
                     {
                         sumProgress++;
@@ -550,7 +567,7 @@ namespace Tobi.Plugin.AudioPane
                         break;
                     }
 
-                    if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+                    if (m_BackgroundLoader.CancellationPending) break;
                 }
 
                 #endregion LOOP
@@ -564,60 +581,12 @@ namespace Tobi.Plugin.AudioPane
                     }));
                 }
 
-                if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-                DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(
+                drawWaveForm(inBackgroundThread, true,
                     sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                     listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                     heightMagnified, widthMagnified,
                     dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance);
 
-                if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-                var drawImg = new DrawingImage(drawGrp);
-                drawImg.Freeze();
-                m_WaveFormImageSourceDrawingImage = drawImg;
-
-                /*
-                WaveFormImage.Source = drawImg;
-                 */
-
-                if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-                var renderBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
-
-                if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-                var drawingVisual = new DrawingVisual();
-                using (DrawingContext context = drawingVisual.RenderOpen())
-                {
-                    context.DrawDrawing(drawGrp);
-                }
-                renderBitmap.Render(drawingVisual);
-                renderBitmap.Freeze();
-
-                if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-                GC.Collect();
-
-                if (inBackgroundThread)
-                {
-                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                    {
-                        WaveFormImage.Source = renderBitmap;
-                        m_WaveFormTimeTicksAdorner.InvalidateVisual();
-                        m_WaveFormTimeTicksAdorner.ResetBrushes();
-                        m_WaveFormLoadingAdorner.ResetBrushes();
-                    }));
-                }
-                else
-                {
-                    WaveFormImage.Source = renderBitmap;
-                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
-                    m_WaveFormTimeTicksAdorner.ResetBrushes();
-                    m_WaveFormLoadingAdorner.ResetBrushes();
-                }
             }
             finally
             {
@@ -638,9 +607,89 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private void drawWaveForm(bool inBackgroundThread, bool freeze, StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2, List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2, double heightMagnified, double widthMagnified, double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance)
+        {
+            Console.WriteLine(@"Drawing waveform...");
 
-        private DrawingGroup drawWaveFormUsingCollectedPoints(
-            StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2,
+            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+
+            DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(freeze,
+                sgcCh1, sgcCh2, geometryCh1, geometryCh2,
+                listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
+                heightMagnified, widthMagnified,
+                dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance);
+
+            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+
+
+            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+
+            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+
+            if (freeze)
+            {
+                var drawingVisual = new DrawingVisual();
+                using (DrawingContext context = drawingVisual.RenderOpen())
+                {
+                    context.DrawDrawing(drawGrp);
+                }
+
+                var renderBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
+                renderBitmap.Render(drawingVisual);
+                renderBitmap.Freeze();
+
+                GC.Collect();
+
+                if (inBackgroundThread)
+                {
+                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                    {
+                        WaveFormImage.Source = renderBitmap;
+
+                        m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                        m_WaveFormTimeTicksAdorner.ResetBrushes();
+                        m_WaveFormLoadingAdorner.ResetBrushes();
+
+                    }));
+                }
+                else
+                {
+                    WaveFormImage.Source = renderBitmap;
+
+                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                    m_WaveFormTimeTicksAdorner.ResetBrushes();
+                    m_WaveFormLoadingAdorner.ResetBrushes();
+                }
+            }
+            else
+            {
+                var drawImg = new DrawingImage(drawGrp);
+                drawImg.Freeze();
+                m_WaveFormImageSourceDrawingImage = drawImg;
+
+                if (inBackgroundThread)
+                {
+                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                    {
+                        WaveFormImage.Source = drawImg;
+                    }));
+                }
+                else
+                {
+                    WaveFormImage.Source = drawImg;
+                }
+            }
+
+            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+
+        }
+
+
+        private DrawingGroup drawWaveFormUsingCollectedPoints(bool freeze,
+            StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2,
+            StreamGeometry geometryCh1, StreamGeometry geometryCh2,
             List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2,
             double heightMagnified, double widthMagnified,
             double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance
@@ -648,29 +697,33 @@ namespace Tobi.Plugin.AudioPane
         {
             Brush brushColorBars = new SolidColorBrush(m_ViewModel.ColorWaveBars);
 
-            sgcCh1.Close();
-            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2 != null)
-            {
-                sgcCh2.Close();
-            }
-
-            geometryCh1.Freeze();
-            var geoDraw1 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh1);
-            geoDraw1.Freeze();
-
+            GeometryDrawing geoDraw1 = null;
             GeometryDrawing geoDraw2 = null;
-            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && geometryCh2 != null)
+            if (m_ViewModel.IsWaveFillVisible && freeze)
             {
-                geometryCh2.Freeze();
-                geoDraw2 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh2);
-                geoDraw2.Freeze();
+                sgcCh1.Close();
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2 != null)
+                {
+                    sgcCh2.Close();
+                }
+
+                geometryCh1.Freeze();
+                geoDraw1 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh1);
+                geoDraw1.Freeze();
+
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && geometryCh2 != null)
+                {
+                    geometryCh2.Freeze();
+                    geoDraw2 = new GeometryDrawing(brushColorBars, new Pen(brushColorBars, 1.0), geometryCh2);
+                    geoDraw2.Freeze();
+                }
             }
             //
             GeometryDrawing geoDraw1_envelope = null;
             GeometryDrawing geoDraw2_envelope = null;
             if (m_ViewModel.IsEnvelopeVisible)
             {
-                createGeometry_envelope(out geoDraw1_envelope, out geoDraw2_envelope,
+                createGeometry_envelope(freeze, out geoDraw1_envelope, out geoDraw2_envelope,
                                         ref listTopPointsCh1, ref listTopPointsCh2,
                                         ref listBottomPointsCh1, ref listBottomPointsCh2,
                                         dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
@@ -700,14 +753,14 @@ namespace Tobi.Plugin.AudioPane
                     {
                         drawGrp.Children.Add(geoDraw1_envelope);
                     }
-                    if (m_ViewModel.IsWaveFillVisible)
+                    if (m_ViewModel.IsWaveFillVisible && freeze)
                     {
                         drawGrp.Children.Add(geoDraw1);
                     }
                 }
                 else
                 {
-                    if (m_ViewModel.IsWaveFillVisible)
+                    if (m_ViewModel.IsWaveFillVisible && freeze)
                     {
                         drawGrp.Children.Add(geoDraw1);
                     }
@@ -717,7 +770,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                 }
             }
-            else if (m_ViewModel.IsWaveFillVisible)
+            else if (m_ViewModel.IsWaveFillVisible && freeze)
             {
                 drawGrp.Children.Add(geoDraw1);
             }
@@ -731,14 +784,14 @@ namespace Tobi.Plugin.AudioPane
                         {
                             drawGrp.Children.Add(geoDraw2_envelope);
                         }
-                        if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                        if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null && freeze)
                         {
                             drawGrp.Children.Add(geoDraw2);
                         }
                     }
                     else
                     {
-                        if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                        if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null && freeze)
                         {
                             drawGrp.Children.Add(geoDraw2);
                         }
@@ -748,7 +801,7 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 }
-                else if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null)
+                else if (m_ViewModel.IsWaveFillVisible && geoDraw2 != null && freeze)
                 {
                     drawGrp.Children.Add(geoDraw2);
                 }
@@ -829,7 +882,7 @@ namespace Tobi.Plugin.AudioPane
             return geoDrawBack;
         }
 
-        private void createGeometry_envelope(out GeometryDrawing geoDraw1_envelope, out GeometryDrawing geoDraw2_envelope,
+        private void createGeometry_envelope(bool freeze, out GeometryDrawing geoDraw1_envelope, out GeometryDrawing geoDraw2_envelope,
             ref List<Point> listTopPointsCh1, ref List<Point> listTopPointsCh2,
             ref List<Point> listBottomPointsCh1, ref List<Point> listBottomPointsCh2,
             double dBMinHardCoded, double dBMinReached,
@@ -852,19 +905,19 @@ namespace Tobi.Plugin.AudioPane
             int bottomIndexStartCh1 = listTopPointsCh1.Count;
             int bottomIndexStartCh2 = listTopPointsCh2.Count;
 
-            if (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
-            {
-                listBottomPointsCh1.Reverse();
-                listTopPointsCh1.AddRange(listBottomPointsCh1);
-                listBottomPointsCh1.Clear();
+            //if (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
+            //{
+            //    listBottomPointsCh1.Reverse();
+            //    listTopPointsCh1.AddRange(listBottomPointsCh1);
+            //    listBottomPointsCh1.Clear();
 
-                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
-                {
-                    listBottomPointsCh2.Reverse();
-                    listTopPointsCh2.AddRange(listBottomPointsCh2);
-                    listBottomPointsCh2.Clear();
-                }
-            }
+            //    if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
+            //    {
+            //        listBottomPointsCh2.Reverse();
+            //        listTopPointsCh2.AddRange(listBottomPointsCh2);
+            //        listBottomPointsCh2.Clear();
+            //    }
+            //}
 
             if (m_ViewModel.IsUseDecibels && m_ViewModel.IsUseDecibelsAdjust &&
                 (dBMinHardCoded != dBMinReached ||
@@ -988,42 +1041,11 @@ namespace Tobi.Plugin.AudioPane
 
             int count = 0;
             var pp = new Point();
-            foreach (Point p in listTopPointsCh1)
-            {
-                pp.X = p.X;
-                pp.Y = p.Y;
 
-                if (pp.X > widthMagnified)
-                {
-                    pp.X = widthMagnified;
-                }
-                if (pp.X < 0)
-                {
-                    pp.X = 0;
-                }
-                if (pp.Y > heightMagnified - tolerance)
-                {
-                    pp.Y = heightMagnified - tolerance;
-                }
-                if (pp.Y < 0 + tolerance)
-                {
-                    pp.Y = 0 + tolerance;
-                }
-                if (count == 0)
-                {
-                    sgcCh1_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
-                }
-                else
-                {
-                    sgcCh1_envelope.LineTo(pp, true, false);
-                }
-                count++;
-            }
-            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
-            {
-                count = 0;
 
-                foreach (Point p in listTopPointsCh2)
+            if (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
+            {
+                foreach (Point p in listTopPointsCh1)
                 {
                     pp.X = p.X;
                     pp.Y = p.Y;
@@ -1046,13 +1068,185 @@ namespace Tobi.Plugin.AudioPane
                     }
                     if (count == 0)
                     {
-                        sgcCh2_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                        sgcCh1_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
                     {
-                        sgcCh2_envelope.LineTo(pp, true, false);
+                        sgcCh1_envelope.LineTo(pp, true, false);
                     }
                     count++;
+                }
+                for (int i = listBottomPointsCh1.Count - 1; i >= 0; i--)
+                {
+                    Point p = listBottomPointsCh1[i];
+
+                    pp.X = p.X;
+                    pp.Y = p.Y;
+
+                    if (pp.X > widthMagnified)
+                    {
+                        pp.X = widthMagnified;
+                    }
+                    if (pp.X < 0)
+                    {
+                        pp.X = 0;
+                    }
+                    if (pp.Y > heightMagnified - tolerance)
+                    {
+                        pp.Y = heightMagnified - tolerance;
+                    }
+                    if (pp.Y < 0 + tolerance)
+                    {
+                        pp.Y = 0 + tolerance;
+                    }
+                    if (count == 0)
+                    {
+                        sgcCh1_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                    }
+                    else
+                    {
+                        sgcCh1_envelope.LineTo(pp, true, false);
+                    }
+                    count++;
+                }
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
+                {
+                    count = 0;
+
+                    foreach (Point p in listTopPointsCh2)
+                    {
+                        pp.X = p.X;
+                        pp.Y = p.Y;
+
+                        if (pp.X > widthMagnified)
+                        {
+                            pp.X = widthMagnified;
+                        }
+                        if (pp.X < 0)
+                        {
+                            pp.X = 0;
+                        }
+                        if (pp.Y > heightMagnified - tolerance)
+                        {
+                            pp.Y = heightMagnified - tolerance;
+                        }
+                        if (pp.Y < 0 + tolerance)
+                        {
+                            pp.Y = 0 + tolerance;
+                        }
+                        if (count == 0)
+                        {
+                            sgcCh2_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                        }
+                        else
+                        {
+                            sgcCh2_envelope.LineTo(pp, true, false);
+                        }
+                        count++;
+                    }
+                    for (int i = listBottomPointsCh2.Count - 1; i >= 0; i--)
+                    {
+                        Point p = listBottomPointsCh2[i];
+
+                        pp.X = p.X;
+                        pp.Y = p.Y;
+
+                        if (pp.X > widthMagnified)
+                        {
+                            pp.X = widthMagnified;
+                        }
+                        if (pp.X < 0)
+                        {
+                            pp.X = 0;
+                        }
+                        if (pp.Y > heightMagnified - tolerance)
+                        {
+                            pp.Y = heightMagnified - tolerance;
+                        }
+                        if (pp.Y < 0 + tolerance)
+                        {
+                            pp.Y = 0 + tolerance;
+                        }
+                        if (count == 0)
+                        {
+                            sgcCh2_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                        }
+                        else
+                        {
+                            sgcCh2_envelope.LineTo(pp, true, false);
+                        }
+                        count++;
+                    }
+                }
+            }
+            else
+            {
+                foreach (Point p in listTopPointsCh1)
+                {
+                    pp.X = p.X;
+                    pp.Y = p.Y;
+
+                    if (pp.X > widthMagnified)
+                    {
+                        pp.X = widthMagnified;
+                    }
+                    if (pp.X < 0)
+                    {
+                        pp.X = 0;
+                    }
+                    if (pp.Y > heightMagnified - tolerance)
+                    {
+                        pp.Y = heightMagnified - tolerance;
+                    }
+                    if (pp.Y < 0 + tolerance)
+                    {
+                        pp.Y = 0 + tolerance;
+                    }
+                    if (count == 0)
+                    {
+                        sgcCh1_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                    }
+                    else
+                    {
+                        sgcCh1_envelope.LineTo(pp, true, false);
+                    }
+                    count++;
+                }
+                if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1 && sgcCh2_envelope != null)
+                {
+                    count = 0;
+
+                    foreach (Point p in listTopPointsCh2)
+                    {
+                        pp.X = p.X;
+                        pp.Y = p.Y;
+
+                        if (pp.X > widthMagnified)
+                        {
+                            pp.X = widthMagnified;
+                        }
+                        if (pp.X < 0)
+                        {
+                            pp.X = 0;
+                        }
+                        if (pp.Y > heightMagnified - tolerance)
+                        {
+                            pp.Y = heightMagnified - tolerance;
+                        }
+                        if (pp.Y < 0 + tolerance)
+                        {
+                            pp.Y = 0 + tolerance;
+                        }
+                        if (count == 0)
+                        {
+                            sgcCh2_envelope.BeginFigure(pp, m_ViewModel.IsEnvelopeFilled && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                        }
+                        else
+                        {
+                            sgcCh2_envelope.LineTo(pp, true, false);
+                        }
+                        count++;
+                    }
                 }
             }
 
