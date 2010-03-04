@@ -133,6 +133,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This should open the metadata editor.
+        /// </summary>
+        public static string OpenMetadataEditor {
+            get {
+                return ResourceManager.GetString("OpenMetadataEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unspecified error in {0}..
         /// </summary>
         public static string UnspecifiedError {
