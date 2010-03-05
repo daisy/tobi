@@ -365,7 +365,8 @@ namespace Tobi
                 if (m_UrakawaSession != null &&
                     m_UrakawaSession.DocumentProject != null && m_UrakawaSession.IsDirty)
                 {
-                    if (!m_UrakawaSession.Close())
+                    PopupModalWindow.DialogButton button = m_UrakawaSession.Close(PopupModalWindow.DialogButtonsSet.OkCancel);
+                    if (button != PopupModalWindow.DialogButton.Ok)
                     {
                         return false;
                     }

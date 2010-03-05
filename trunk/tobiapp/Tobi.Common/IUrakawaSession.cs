@@ -1,4 +1,5 @@
 ﻿using Tobi.Common.MVVM;
+using Tobi.Common.UI;
 using urakawa;
 
 namespace Tobi.Common
@@ -26,7 +27,7 @@ namespace Tobi.Common
         /// <summary>
         /// Requests to close the current document.
         /// </summary>
-        /// <returns>true if the current document was successfully closed.</returns>
-        bool Close();
+        /// <returns>OK if the current document was successfully closed.</returns>
+        PopupModalWindow.DialogButton Close(PopupModalWindow.DialogButtonsSet buttonset);
     }
 }

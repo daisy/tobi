@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -218,7 +219,15 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Plugin_Urakawa_Lang.Close_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
-                () => Close(),
+                () =>
+                    {
+                        PopupModalWindow.DialogButton button =
+                            Close(PopupModalWindow.DialogButtonsSet.OkCancel);
+                        //if (button != PopupModalWindow.DialogButton.Ok)
+                        //{
+                        //    return false;
+                        //}
+                    },
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Close));
@@ -242,8 +251,12 @@ namespace Tobi.Plugin.Urakawa
         {
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
-
-            if (!Close()) return;
+            
+            PopupModalWindow.DialogButton button = Close(PopupModalWindow.DialogButtonsSet.OkCancel);
+            if (button != PopupModalWindow.DialogButton.Ok)
+            {
+                return;
+            }
 
             project.Presentations.Get(0).Cleanup(); //TODO: time consuming progress bar
 
@@ -258,7 +271,7 @@ namespace Tobi.Plugin.Urakawa
 
             var dataFolderPath = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
 
-            var deletedDataFolderPath = Path.Combine(dataFolderPath, "__DELETED");
+            var deletedDataFolderPath = Path.Combine(dataFolderPath, "__DELETED" + Path.DirectorySeparatorChar);
             if (!Directory.Exists(deletedDataFolderPath))
             {
                 Directory.CreateDirectory(deletedDataFolderPath);
@@ -275,14 +288,66 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            //if (Directory.GetFiles(deletedDataFolderPath).Length == 0) return;
-
-            var p = new Process
+            if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
             {
-                StartInfo = { FileName = deletedDataFolderPath }
-            };
-            p.Start();
+                var p = new Process
+                {
+                    StartInfo = { FileName = deletedDataFolderPath }
+                };
+                p.Start();
+            }
 
+            //if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            //{
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+            //    Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, (Action) (() =>
+            //      {
+            //          var p = new Process
+            //          {
+            //              StartInfo = { FileName = deletedDataFolderPath }
+            //          };
+            //          p.Start();
+            //      }));
+            //}
+            //else
+            //{
+            //    //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+            //    //{
+            //    //    var p = new Process
+            //    //    {
+            //    //        StartInfo = { FileName = deletedDataFolderPath }
+            //    //    };
+            //    //    p.Start();
+            //    //}));
+
+            //    //var p = new Process
+            //    //{
+            //    //    StartInfo = { FileName = deletedDataFolderPath }
+            //    //};
+            //    //p.Start();
+
+
+            //    Thread thread = new Thread(new ThreadStart(() =>
+            //    {
+            //        var p = new Process
+            //        {
+            //            StartInfo =
+            //                {
+            //                    FileName = deletedDataFolderPath,
+            //                    CreateNoWindow = true,
+            //                    UseShellExecute = true,
+            //                    WorkingDirectory = deletedDataFolderPath
+            //                }
+            //        };
+            //        p.Start();
+            //    }));
+            //    thread.Name = "File explorer popup from Tobi (after cleanup _DELETED)";
+            //    thread.Priority = ThreadPriority.Normal;
+            //    thread.IsBackground = true;
+            //    thread.Start();
+            //}
+
+            
             DocumentFilePath =  docPath;
             DocumentProject = project;
 
@@ -295,11 +360,11 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
-        public bool Close()
+        public PopupModalWindow.DialogButton Close(PopupModalWindow.DialogButtonsSet buttonset)
         {
             if (DocumentProject == null)
             {
-                return true;
+                return PopupModalWindow.DialogButton.Ok;
             }
 
             if (IsDirty)
@@ -335,23 +400,29 @@ namespace Tobi.Plugin.Urakawa
                                                        UserInterfaceStrings.EscapeMnemonic(
                                                            Tobi_Plugin_Urakawa_Lang.UnsavedChanges),
                                                        panel,
-                                                       PopupModalWindow.DialogButtonsSet.YesNoCancel,
+                                                       buttonset,
                                                        PopupModalWindow.DialogButton.Cancel,
                                                        false, 300, 160, details, 40);
 
                 windowPopup.ShowModal();
 
-                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel
+                    || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.ESC)
                 {
-                    return false;
+                    return PopupModalWindow.DialogButton.Cancel;
                 }
 
-                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
+                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes
+                    || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
                 {
                     if (!save())
                     {
-                        return false;
+                        return PopupModalWindow.DialogButton.No;
                     }
+                }
+                else
+                {
+                    return PopupModalWindow.DialogButton.No;
                 }
             }
 
@@ -362,7 +433,7 @@ namespace Tobi.Plugin.Urakawa
             DocumentFilePath = null;
             DocumentProject = null;
 
-            return true;
+            return PopupModalWindow.DialogButton.Ok;
         }
 
 

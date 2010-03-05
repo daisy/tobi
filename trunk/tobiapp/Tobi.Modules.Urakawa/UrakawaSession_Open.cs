@@ -127,7 +127,8 @@ namespace Tobi.Plugin.Urakawa
                 return false;
             }
 
-            if (!Close())
+            PopupModalWindow.DialogButton button = Close(PopupModalWindow.DialogButtonsSet.OkCancel);
+            if (button != PopupModalWindow.DialogButton.Ok)
             {
                 return false;
             }

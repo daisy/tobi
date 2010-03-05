@@ -97,7 +97,9 @@ namespace Tobi.Plugin.Urakawa
                         {
                             //CloseCommand.Execute();
                             //if (DocumentProject == null) //effectively closed
-                            if (Close())
+
+                            PopupModalWindow.DialogButton button = Close(PopupModalWindow.DialogButtonsSet.OkCancel);
+                            if (button == PopupModalWindow.DialogButton.Ok)
                             {
                                 try
                                 {
