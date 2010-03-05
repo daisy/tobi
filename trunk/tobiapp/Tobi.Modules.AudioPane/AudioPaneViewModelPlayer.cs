@@ -836,8 +836,8 @@ namespace Tobi.Plugin.AudioPane
         //        endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
         //    }
         //    double time = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-        //    TimeDelta timeD = new TimeDelta(time);
-        //    //TimeDelta timeD = pcmInfo.GetDuration(DataLength);
+        //    Time timeD = new Time(time);
+        //    //Time timeD = pcmInfo.GetDuration(DataLength);
         //    if (startPosition >= 0 &&
         //        (endPosition == 0 || startPosition < endPosition) &&
         //        endPosition <= pcmInfo.GetDataLength(timeD))
@@ -968,11 +968,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (State.Audio.HasContent)
             {
-                //double time = m_PcmFormat.GetDuration(m_DataLength).TimeDeltaAsMillisecondDouble;
+                //double time = m_PcmFormat.GetDuration(m_DataLength).AsMilliseconds;
                 //long bytes = (long) m_Player.CurrentTime;
 
                 double time = State.Audio.ConvertBytesToMilliseconds(State.Audio.EndOffsetOfPlayStream);
-                //double time = PcmFormat.GetDuration(m_EndOffsetOfPlayStream).TimeDeltaAsMillisecondDouble;
+                //double time = PcmFormat.GetDuration(m_EndOffsetOfPlayStream).AsMilliseconds;
 
                 bool oldVal = IsAutoPlay;
                 IsAutoPlay = false;

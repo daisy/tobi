@@ -50,20 +50,20 @@ namespace Tobi.Plugin.AudioPane
                 : new Time(audioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamLeftMark));
 
             Time timeEnd = command.SelectionData.m_LocalStreamRightMark == -1
-                ? new Time(audioMedia.AudioMediaData.AudioDuration.TimeDeltaAsTimeSpan)
+                ? new Time(audioMedia.AudioMediaData.AudioDuration.AsTimeSpan)
                 : new Time(audioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamRightMark));
 
             //Debug.Assert(audioMedia != null); Can be null, if the deleted audio range was the entire audio media
 
             HandleInsertDelete(command.CurrentTreeNode, command.SelectionData.m_TreeNode, timeBegin,
-                               timeEnd.TimeAsMillisecondDouble - timeBegin.TimeAsMillisecondDouble,
+                               timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
                                audioMedia, !done);
         }
 
         private void UndoRedoManagerChanged(ManagedAudioMediaInsertDataCommand command, bool done)
         {
             HandleInsertDelete(command.CurrentTreeNode, command.TreeNode, command.TimeInsert,
-                               command.ManagedAudioMediaSource.Duration.TimeDeltaAsMillisecondDouble,
+                               command.ManagedAudioMediaSource.Duration.AsMilliseconds,
                                command.TreeNode.GetManagedAudioMedia(), done);
         }
 
@@ -110,7 +110,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (done)
             {
-                double begin = timeOffset + timeInsert.TimeAsMillisecondDouble;
+                double begin = timeOffset + timeInsert.AsMilliseconds;
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBegin = begin,
@@ -124,7 +124,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     SelectionBegin = -1,
                     SelectionEnd = -1,
-                    LastPlayHeadTime = timeOffset + timeInsert.TimeAsMillisecondDouble
+                    LastPlayHeadTime = timeOffset + timeInsert.AsMilliseconds
                 };
             }
 
@@ -167,7 +167,7 @@ namespace Tobi.Plugin.AudioPane
                     m_StateToRestore = new StateToRestore
                     {
                         SelectionBegin = 0,
-                        SelectionEnd = command.ManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble,
+                        SelectionEnd = command.ManagedAudioMedia.Duration.AsMilliseconds,
                         LastPlayHeadTime = 0
                     };
                 }
@@ -190,7 +190,7 @@ namespace Tobi.Plugin.AudioPane
                     m_StateToRestore = new StateToRestore
                     {
                         SelectionBegin = timeOffset,
-                        SelectionEnd = timeOffset + command.ManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble,
+                        SelectionEnd = timeOffset + command.ManagedAudioMedia.Duration.AsMilliseconds,
                         LastPlayHeadTime = timeOffset
                     };
                 }

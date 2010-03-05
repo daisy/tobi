@@ -192,7 +192,7 @@ namespace Tobi.Plugin.AudioPane
                     double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX)));
 
                     var formattedText = new FormattedText(
-                        AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
+                        AudioPaneViewModel.FormatTimeSpan_Units(ms),
                         m_culture,
                         FlowDirection.LeftToRight,
                         m_typeFace,
@@ -259,7 +259,7 @@ namespace Tobi.Plugin.AudioPane
                         double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
 
                         var formattedTextDuration = new FormattedText(
-                                                AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
+                                                AudioPaneViewModel.FormatTimeSpan_Units(ms),
                                                               m_culture,
                                                               FlowDirection.LeftToRight,
                                                               m_typeFace,
@@ -415,7 +415,7 @@ namespace Tobi.Plugin.AudioPane
                 double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX)));
 
                 var formattedText = new FormattedText(
-                    AudioPaneViewModel.FormatTimeSpan_Units(TimeSpan.FromMilliseconds(ms)),
+                    AudioPaneViewModel.FormatTimeSpan_Units(ms),
                     m_culture,
                     FlowDirection.LeftToRight,
                     m_typeFace,
