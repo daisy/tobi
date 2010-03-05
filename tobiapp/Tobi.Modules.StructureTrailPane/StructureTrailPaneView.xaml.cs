@@ -231,6 +231,8 @@ namespace Tobi.Plugin.StructureTrailPane
             wrapper.Popup.IsOpen = false;
 
             selectNode(wrapper.TreeNode, true);
+
+            CommandFocus.Execute();
         }
 
         private void selectNode(TreeNode node, bool toggleIntersection)

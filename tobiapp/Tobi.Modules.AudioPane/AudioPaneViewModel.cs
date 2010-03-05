@@ -431,10 +431,11 @@ namespace Tobi.Plugin.AudioPane
             if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                }
+            }
+
+            if (AudioPlaybackStreamKeepAlive)
+            {
+                ensurePlaybackStreamIsDead();
             }
 
             State.ResetAll();
@@ -506,6 +507,11 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                }
+
                 m_AudioFormatConvertorSession = null;
 
                 m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();

@@ -120,6 +120,12 @@
   <data name="AContextForOpeningAndSavingTheDataModelOfAUrakawaSDKProject" xml:space="preserve">
     <value>A context for opening and saving the data model of a Urakawa SDK project.</value>
   </data>
+  <data name="OpenSaveAsQuestion" xml:space="preserve">
+    <value>Do you want to open the saved document ?</value>
+  </data>
+  <data name="OpenSaveAsQuestion_" xml:space="preserve">
+    <value>Open saved document ?</value>
+  </data>
   <data name="OpenDocumentFolder" xml:space="preserve">
     <value>Current document</value>
   </data>
