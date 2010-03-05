@@ -360,13 +360,13 @@ namespace Tobi
 
             windowPopup.ShowModal();
 
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
                 if (m_UrakawaSession != null &&
                     m_UrakawaSession.DocumentProject != null && m_UrakawaSession.IsDirty)
                 {
-                    PopupModalWindow.DialogButton button = m_UrakawaSession.Close(PopupModalWindow.DialogButtonsSet.OkCancel);
-                    if (button != PopupModalWindow.DialogButton.Ok)
+                    PopupModalWindow.DialogButton button = m_UrakawaSession.CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, "exit");
+                    if (PopupModalWindow.IsButtonEscCancel(button))
                     {
                         return false;
                     }

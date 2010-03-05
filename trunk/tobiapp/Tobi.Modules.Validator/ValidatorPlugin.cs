@@ -119,11 +119,11 @@ namespace Tobi.Plugin.Validator
             m_Logger.Log("ValidatorPlugin.ShowDialog", Category.Debug, Priority.Medium);
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic("Validation Checker"),
+                                                   UserInterfaceStrings.EscapeMnemonic("Validator"),
                                                    m_ValidatorPaneView,
                                                    PopupModalWindow.DialogButtonsSet.Close,
                                                    PopupModalWindow.DialogButton.Close,
-                                                   true, 700, 400);
+                                                   true, 700, 400, null, 0);
             windowPopup.ShowFloating(null);
 
             windowPopup.Closed += (o, args) =>

@@ -289,11 +289,11 @@ namespace Tobi.Common.UI
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
         }
 
-        public PopupModalWindow(IShellView window, string title, object content,
-            DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
-            : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null, 0)
-        {
-        }
+        //public PopupModalWindow(IShellView window, string title, object content,
+        //    DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
+        //    : this(window, title, content, buttons, button, allowEscapeAndCloseButton, width, height, null, 0)
+        //{
+        //}
 
         private bool m_ButtonTriggersClose = false;
         private readonly IShellView ShellView;
@@ -398,6 +398,19 @@ namespace Tobi.Common.UI
             }
 
             FocusHelper.Focus(buttonToFocus);
+        }
+
+        public static bool IsButtonOkYesApply(DialogButton button)
+        {
+            return button == DialogButton.Apply || button == DialogButton.Ok || button == DialogButton.Yes;
+        }
+        public static bool IsButtonEscCancel(DialogButton button)
+        {
+            return button == DialogButton.ESC || button == DialogButton.Cancel;
+        }
+        public static bool IsButtonCloseNo(DialogButton button)
+        {
+            return button == DialogButton.Close || button == DialogButton.No;
         }
 
         public enum DialogButton

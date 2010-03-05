@@ -28,6 +28,6 @@ namespace Tobi.Common
         /// Requests to close the current document.
         /// </summary>
         /// <returns>OK if the current document was successfully closed.</returns>
-        PopupModalWindow.DialogButton Close(PopupModalWindow.DialogButtonsSet buttonset);
+        PopupModalWindow.DialogButton CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet buttonset, string role);
     }
 }

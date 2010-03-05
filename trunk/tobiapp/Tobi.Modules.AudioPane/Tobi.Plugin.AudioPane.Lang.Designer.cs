@@ -493,7 +493,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show audio options.
+        ///   Looks up a localized string similar to Show hack audio options.
         /// </summary>
         public static string Audio_ShowOptions {
             get {
