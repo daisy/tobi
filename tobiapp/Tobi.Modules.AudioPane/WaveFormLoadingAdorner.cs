@@ -63,7 +63,7 @@ namespace Tobi.Plugin.AudioPane
                 m_culture,
                 FlowDirection.LeftToRight,
                 m_typeFace,
-                40,
+                30,
                 Brushes.Black
                 );
 

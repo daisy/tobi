@@ -286,7 +286,25 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnEscape(object obj)
         {
-            if (View != null) View.CancelWaveFormLoad();
+            if (View != null)
+            {
+                View.CancelWaveFormLoad();
+            }
+            if (IsPlaying)
+            {
+                CommandPause.Execute();
+                return;
+            }
+            if (IsMonitoring)
+            {
+                CommandStopMonitor.Execute();
+                return;
+            }
+            if (IsRecording)
+            {
+                CommandStopRecord.Execute();
+                return;
+            }
         }
 
         private void initializeAudioStuff()

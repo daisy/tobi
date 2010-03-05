@@ -700,7 +700,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading....
+        ///   Looks up a localized string similar to Loading (ESC to stop).
         /// </summary>
         public static string Loading {
             get {
