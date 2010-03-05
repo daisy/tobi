@@ -283,7 +283,7 @@
     <value>Settings for the audio player and recorder</value>
   </data>
   <data name="Audio_ShowOptions" xml:space="preserve">
-    <value>Show audio options</value>
+    <value>Show hack audio options</value>
   </data>
   <data name="Audio_StartMonitor" xml:space="preserve">
     <value>St_art monitoring</value>

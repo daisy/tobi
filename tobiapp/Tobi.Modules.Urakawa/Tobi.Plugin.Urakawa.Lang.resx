@@ -179,11 +179,11 @@
   </data>
   <data name="OverwriteConfirm_File" xml:space="preserve">
     <value>You are about to overwrite a file.
-Are you sure ?</value>
+Do you want to continue ?</value>
   </data>
   <data name="OverwriteConfirm_Folder" xml:space="preserve">
     <value>You are about to overwrite a folder.
-Are you sure ?</value>
+Do you want to continue ?</value>
   </data>
   <data name="ParsingXMLDoc_BuildingDOM" xml:space="preserve">
     <value>Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK...</value>
@@ -195,7 +195,7 @@ Are you sure ?</value>
     <value>Redo last undone action</value>
   </data>
   <data name="RunningTask" xml:space="preserve">
-    <value>Running task...</value>
+    <value>Please wait...</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>_Save</value>
@@ -216,11 +216,11 @@ Are you sure ?</value>
     <value>Undo last action</value>
   </data>
   <data name="UnsavedChanges" xml:space="preserve">
-    <value>_Unsaved changes</value>
+    <value>_Save before close</value>
   </data>
   <data name="UnsavedChangesConfirm" xml:space="preserve">
-    <value>There are unsaved document changes.
-Would you like to save now ?</value>
+    <value>There are unsaved changes.
+Agree to save the document now ?</value>
   </data>
   <data name="UnsavedChangesDetails" xml:space="preserve">
     <value>If you close the document without saving,

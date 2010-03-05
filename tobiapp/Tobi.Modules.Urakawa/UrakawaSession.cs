@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -222,7 +223,7 @@ namespace Tobi.Plugin.Urakawa
                 () =>
                     {
                         PopupModalWindow.DialogButton button =
-                            Close(PopupModalWindow.DialogButtonsSet.OkCancel);
+                            CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, "confirm");
                         //if (button != PopupModalWindow.DialogButton.Ok)
                         //{
                         //    return false;
@@ -249,25 +250,21 @@ namespace Tobi.Plugin.Urakawa
 
         public void DataCleanup()
         {
+            // Backup before close.
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
             
-            PopupModalWindow.DialogButton button = Close(PopupModalWindow.DialogButtonsSet.OkCancel);
-            if (button != PopupModalWindow.DialogButton.Ok)
+            // Closing is REQUIRED ! 
+            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.OkCancel, "data cleanup");
+            if (!PopupModalWindow.IsButtonOkYesApply(button))
             {
                 return;
             }
+            
+            project.Presentations.Get(0).UndoRedoManager.FlushCommands();
+            //RaisePropertyChanged(()=>IsDirty);
 
-            project.Presentations.Get(0).Cleanup(); //TODO: time consuming progress bar
-
-            var listOfDataProviderFiles = new List<string>();
-            foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
-            {
-                var fileDataProvider = dataProvider as FileDataProvider;
-                if (fileDataProvider == null) continue;
-
-                listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
-            }
+            // ==> SAVED AND CLOSED (clipboard removed), undo-redo removed.
 
             var dataFolderPath = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
 
@@ -277,25 +274,92 @@ namespace Tobi.Plugin.Urakawa
                 Directory.CreateDirectory(deletedDataFolderPath);
             }
 
-
-            foreach (string filePath in Directory.GetFiles(dataFolderPath))
-            {
-                var fileName = Path.GetFileName(filePath);
-                if (!listOfDataProviderFiles.Contains(fileName))
+            DoWorkProgressUI("Cleaning up data files ...",
+                new Cleaner(project.Presentations.Get(0), deletedDataFolderPath), //project.Presentations.Get(0).Cleanup();
+                () =>
                 {
-                    var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-                    File.Move(filePath, filePathDest);
-                }
-            }
+                    m_Logger.Log(@"CANCELLED", Category.Debug, Priority.Medium);
 
-            if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
-            {
-                var p = new Process
+                    // We restore the old one, not cleaned-up (or partially...).
+
+                    DocumentFilePath = null;
+                    DocumentProject = null;
+
+                    try
+                    {
+                        OpenFile(docPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                    }
+                },
+                () =>
                 {
-                    StartInfo = { FileName = deletedDataFolderPath }
-                };
-                p.Start();
-            }
+                    m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
+
+                    var listOfDataProviderFiles = new List<string>();
+                    foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+                    {
+                        var fileDataProvider = dataProvider as FileDataProvider;
+                        if (fileDataProvider == null) continue;
+
+                        listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
+                    }
+
+
+                    bool folderIsShowing = false;
+                    if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                    {
+                        folderIsShowing = true;
+
+                        var p = new Process
+                        {
+                            StartInfo = { FileName = deletedDataFolderPath }
+                        };
+                        p.Start();
+                    }
+
+                    foreach (string filePath in Directory.GetFiles(dataFolderPath))
+                    {
+                        var fileName = Path.GetFileName(filePath);
+                        if (!listOfDataProviderFiles.Contains(fileName))
+                        {
+                            var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
+                            File.Move(filePath, filePathDest);
+                        }
+                    }
+
+                    if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                    {
+                        var p = new Process
+                        {
+                            StartInfo = { FileName = deletedDataFolderPath }
+                        };
+                        p.Start();
+                    }
+
+                    // We must now save the modified cleaned-up doc
+
+                    DocumentFilePath = docPath;
+                    DocumentProject = project;
+
+                    if (save())
+                    {
+                        DocumentFilePath = null;
+                        DocumentProject = null;
+
+                        try
+                        {
+                            OpenFile(docPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
+                    }
+                });
+
 
             //if (!Dispatcher.CurrentDispatcher.CheckAccess())
             //{
@@ -347,25 +411,16 @@ namespace Tobi.Plugin.Urakawa
             //    thread.Start();
             //}
 
-            
-            DocumentFilePath =  docPath;
-            DocumentProject = project;
-
-            if (save())
-            {
-                DocumentFilePath = null;
-                DocumentProject = null;
-
-                OpenFile(docPath);
-            }
         }
 
-        public PopupModalWindow.DialogButton Close(PopupModalWindow.DialogButtonsSet buttonset)
+        public PopupModalWindow.DialogButton CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet buttonset, string role)
         {
             if (DocumentProject == null)
             {
                 return PopupModalWindow.DialogButton.Ok;
             }
+
+            var result = PopupModalWindow.DialogButton.Ok;
 
             if (IsDirty)
             {
@@ -398,31 +453,34 @@ namespace Tobi.Plugin.Urakawa
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Plugin_Urakawa_Lang.UnsavedChanges),
+                                                           Tobi_Plugin_Urakawa_Lang.UnsavedChanges) + (string.IsNullOrEmpty(role) ? "" : " (" + role + ")"),
                                                        panel,
                                                        buttonset,
                                                        PopupModalWindow.DialogButton.Cancel,
-                                                       false, 300, 160, details, 40);
+                                                       buttonset == PopupModalWindow.DialogButtonsSet.Cancel
+                                                       || buttonset == PopupModalWindow.DialogButtonsSet.OkCancel
+                                                       || buttonset == PopupModalWindow.DialogButtonsSet.YesNoCancel,
+                                                       300, 160, details, 40);
 
                 windowPopup.ShowModal();
 
-                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel
-                    || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.ESC)
+                if (PopupModalWindow.IsButtonEscCancel(windowPopup.ClickedDialogButton))
                 {
                     return PopupModalWindow.DialogButton.Cancel;
                 }
 
-                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes
-                    || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+                if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
                 {
                     if (!save())
                     {
-                        return PopupModalWindow.DialogButton.No;
+                        return PopupModalWindow.DialogButton.Cancel;
                     }
+
+                    result = PopupModalWindow.DialogButton.Ok;
                 }
                 else
                 {
-                    return PopupModalWindow.DialogButton.No;
+                    result = PopupModalWindow.DialogButton.No;
                 }
             }
 
@@ -433,11 +491,11 @@ namespace Tobi.Plugin.Urakawa
             DocumentFilePath = null;
             DocumentProject = null;
 
-            return PopupModalWindow.DialogButton.Ok;
+            return result;
         }
 
 
-        protected bool DoWorkProgressUI(string title, IDualCancellableProgressReporter converter,
+        protected bool DoWorkProgressUI(string title, IDualCancellableProgressReporter reporter,
             Action actionCancelled, Action actionCompleted)
         {
             m_Logger.Log(String.Format(@"UrakawaSession.DoWorkProgressUI() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
@@ -529,12 +587,12 @@ namespace Tobi.Plugin.Urakawa
                     return;
                 }
 
-                converter.ProgressChangedEvent += (sender, e) =>
+                reporter.ProgressChangedEvent += (sender, e) =>
                 {
                     backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
                 };
 
-                converter.SubProgressChangedEvent += (sender, e) => Application.Current.Dispatcher.BeginInvoke((Action)(
+                reporter.SubProgressChangedEvent += (sender, e) => Application.Current.Dispatcher.BeginInvoke((Action)(
                    () =>
                    {
                        if (e.ProgressPercentage < 0 && e.UserState == null)
@@ -565,14 +623,14 @@ namespace Tobi.Plugin.Urakawa
                                ),
                        DispatcherPriority.Normal);
 
-                converter.DoWork();
+                reporter.DoWork();
 
                 args.Result = @"dummy result";
             };
 
             backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
             {
-                if (converter.RequestCancellation)
+                if (reporter.RequestCancellation)
                 {
                     return;
                 }
@@ -596,7 +654,7 @@ namespace Tobi.Plugin.Urakawa
 
                 backWorker = null;
 
-                if (converter.RequestCancellation || args.Cancelled)
+                if (reporter.RequestCancellation || args.Cancelled)
                 {
                     actionCancelled();
                     windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
@@ -639,7 +697,7 @@ namespace Tobi.Plugin.Urakawa
                                                        false, 500, 150, null, 80);
 
                 //m_OpenXukActionWorker.CancelAsync();
-                converter.RequestCancellation = true;
+                reporter.RequestCancellation = true;
 
                 windowPopup.ShowModal();
 

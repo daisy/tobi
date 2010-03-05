@@ -95,22 +95,13 @@ namespace Tobi.Plugin.Urakawa
 
                         if (askUserOpenSavedAs(dlg.FileName))
                         {
-                            //CloseCommand.Execute();
-                            //if (DocumentProject == null) //effectively closed
-
-                            PopupModalWindow.DialogButton button = Close(PopupModalWindow.DialogButtonsSet.OkCancel);
-                            if (button == PopupModalWindow.DialogButton.Ok)
+                            try
                             {
-                                try
-                                {
-                                    OpenFile(dlg.FileName);
-
-                                    Debug.Assert(!IsDirty);
-                                }
-                                catch (Exception ex)
-                                {
-                                    ExceptionHandler.Handle(ex, false, m_ShellView);
-                                }
+                                OpenFile(dlg.FileName);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
                             }
                         }
                     }

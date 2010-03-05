@@ -153,7 +153,7 @@ namespace Tobi
                                                            new KeyboardShortcuts(this),
                                                            PopupModalWindow.DialogButtonsSet.Ok,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           true, 500, 600);
+                                                           true, 500, 600, null, 0);
 
                     windowPopup.ShowFloating(null);
                 },

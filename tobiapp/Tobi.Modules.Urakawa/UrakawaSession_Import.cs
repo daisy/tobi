@@ -17,6 +17,15 @@ namespace Tobi.Plugin.Urakawa
                 Path.Combine(Path.GetDirectoryName(DocumentFilePath),
                 XUK_DIR)); //Directory.GetParent(bookfile).FullName
 
+
+            if (File.Exists(converter.XukPath))
+            {
+                if (!askUserConfirmOverwriteFileFolder(converter.XukPath, false))
+                {
+                    return false;
+                }
+            }
+
             return DoWorkProgressUI("Importing ...",                   // TODO LOCALIZE Importing
                 converter,
                 () =>
