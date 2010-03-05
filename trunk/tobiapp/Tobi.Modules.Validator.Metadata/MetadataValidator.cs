@@ -421,7 +421,7 @@ namespace Tobi.Plugin.Validator.Metadata
     {
         private MetadataValidator m_ParentValidator;
         private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
-
+        public static string MagicStringEmpty { get { return "[EMPTY]";}}
         public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {
             m_ParentValidator = parentValidator;
@@ -429,29 +429,24 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public bool Validate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            //if it's a required field, it can't be empty
-            if (definition.Occurrence == MetadataOccurrence.Required)
-            {
-                if (metadata.NameContentAttribute.Value.Length > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    MetadataValidationError err = new MetadataValidationError(definition);
-                    err.ErrorType = MetadataErrorType.FormatError;
-                    err.Hint = m_NonEmptyHint;
-                    err.Target = metadata;
-
-                    m_ParentValidator.ReportError(err);
-                    return false;
-                }
-            }
-            else
+            //neither required nor optional fields may be empty
+            //check both an empty string and our "magic" string value that is
+            //used upon creation of a new metadata item
+            if (!string.IsNullOrEmpty(metadata.NameContentAttribute.Value) && 
+                    metadata.NameContentAttribute.Value != MagicStringEmpty)
             {
                 return true;
             }
+            else
+            {
+                MetadataValidationError err = new MetadataValidationError(definition);
+                err.ErrorType = MetadataErrorType.FormatError;
+                err.Hint = m_NonEmptyHint;
+                err.Target = metadata;
 
+                m_ParentValidator.ReportError(err);
+                return false;
+            }
         }
     }
 }
