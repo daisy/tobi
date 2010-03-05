@@ -71,28 +71,48 @@ namespace Tobi.Plugin.Urakawa
                         }
                     }
 
+                    Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
+                    string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
+
+                    string dirPath = Path.GetDirectoryName(dlg.FileName);
+                    string prefix = Path.GetFileNameWithoutExtension(dlg.FileName);
+
+                    DocumentProject.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(prefix);
+                    DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
+
                     if (saveAs(dlg.FileName))
                     {
-                        Debug.Assert(!IsDirty);
+                        //TODO: add progress report
+                        string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
 
-                        DocumentProject.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(dlg.FileName));
+                        Debug.Assert(datafolderPath == DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath);
 
-                        DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
-                        DocumentProject.Presentations.Get(0).RootUri = new Uri(Path.GetDirectoryName(dlg.FileName) + Path.DirectorySeparatorChar, UriKind.Absolute);
-                        DocumentProject.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(false);
+                        DocumentProject.Presentations.Get(0).RootUri = oldUri;
+                        DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
 
-                        RaisePropertyChanged(() => IsDirty);
-                        //IsDirty = false;
-                        CloseCommand.Execute();
-
-                        try
+                        if (askUserOpenSavedAs(dlg.FileName))
                         {
-                            OpenFile(dlg.FileName);
+                            CloseCommand.Execute();
+
+                            if (DocumentProject == null) //effectively closed
+                            {
+                                try
+                                {
+                                    OpenFile(dlg.FileName);
+
+                                    Debug.Assert(!IsDirty);
+                                }
+                                catch (Exception ex)
+                                {
+                                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                                }
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            ExceptionHandler.Handle(ex, false, m_ShellView);
-                        }
+                    }
+                    else
+                    {
+                        DocumentProject.Presentations.Get(0).RootUri = oldUri;
+                        DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
                     }
 
                     return;
@@ -188,6 +208,8 @@ namespace Tobi.Plugin.Urakawa
 
                     //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
                     //File.Delete(DocumentFilePath + SAVING_EXT);
+
+                    DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
                 }
                 else
                 {
@@ -196,10 +218,8 @@ namespace Tobi.Plugin.Urakawa
                         File.Delete(m_SaveAsDocumentFilePath);
                     }
                     File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
-                    DocumentFilePath = m_SaveAsDocumentFilePath;
                 }
 
-                DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
 
                 m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");            // TODO LOCALIZE Saved
 
@@ -316,7 +336,7 @@ namespace Tobi.Plugin.Urakawa
 
         private bool askUserConfirmOverwriteFileFolder(string path, bool folder)
         {
-            m_Logger.Log(@"ShellView.askUserConfirmExit", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"UrakawaSession_Save.askUserConfirmOverwriteFileFolder", Category.Debug, Priority.Medium);
 
 
             var label = new TextBlock
@@ -347,6 +367,55 @@ namespace Tobi.Plugin.Urakawa
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(
                                                        Tobi_Plugin_Urakawa_Lang.Overwrite),
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.No,
+                                                   false, 300, 160, details, 40);
+
+            windowPopup.ShowModal();
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        private bool askUserOpenSavedAs(string path)
+        {
+            m_Logger.Log(@"UrakawaSession_Save.askUserOpenSavedAs", Category.Debug, Priority.Medium);
+
+
+            var label = new TextBlock
+            {
+                Text = Tobi_Plugin_Urakawa_Lang.OpenSaveAsQuestion,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadGnomeNeuIcon(@"Neu_dialog-question"),
+                                                                 m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            var details = new TextBoxReadOnlyCaretVisible("Path: " + path);
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(
+                                                       Tobi_Plugin_Urakawa_Lang.OpenSaveAsQuestion_),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
