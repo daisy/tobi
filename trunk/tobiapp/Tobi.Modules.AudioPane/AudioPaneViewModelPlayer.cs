@@ -771,7 +771,7 @@ namespace Tobi.Plugin.AudioPane
                     // else: the stream is now open
 
                     State.Audio.EndOffsetOfPlayStream = State.Audio.DataLength;
-                    
+
                     m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                                   State.Audio.DataLength,
                                   State.Audio.PcmFormat.Copy().Data,
@@ -867,7 +867,7 @@ namespace Tobi.Plugin.AudioPane
                 if (wasAutoPlay) IsAutoPlay = false;
                 LastPlayHeadTime = m_Player.CurrentTime;
                 if (wasAutoPlay) IsAutoPlay = true;
-                
+
                 m_Player.Stop();
 
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback stopped."); // TODO Localize PlaybackStopped
@@ -879,7 +879,11 @@ namespace Tobi.Plugin.AudioPane
 
         private void ensurePlaybackStreamIsDead()
         {
-            m_Player.EnsurePlaybackStreamIsDead();
+            bool itClosedTheStream = m_Player.EnsurePlaybackStreamIsDead();
+            if (!itClosedTheStream && State.Audio.PlayStream != null)
+            {
+                State.Audio.PlayStream.Close();
+            }
             State.Audio.ResetAll();
         }
 

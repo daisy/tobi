@@ -6,6 +6,7 @@ namespace Tobi.Common.Validation
     {
         public class ValidationItemSelectedEvent : CompositePresentationEvent<ValidationItem>
         {
+            public static ThreadOption THREAD_OPTION = ThreadOption.PublisherThread;
         }
     }
 }

@@ -5,5 +5,6 @@ namespace Tobi.Common
 {
     public class PageFoundByFlowDocumentParserEvent : CompositePresentationEvent<TextElement>
     {
+        public static ThreadOption THREAD_OPTION = ThreadOption.PublisherThread;
     }
 }
