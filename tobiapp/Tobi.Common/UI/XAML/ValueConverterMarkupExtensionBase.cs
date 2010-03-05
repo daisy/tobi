@@ -5,6 +5,7 @@ using System.Windows.Markup;
 
 namespace Tobi.Common.UI.XAML
 {
+    [MarkupExtensionReturnType(typeof(IValueConverter))]
     public abstract class ValueConverterMarkupExtensionBase<T> :
         MarkupExtension,
         IValueConverter,

@@ -149,7 +149,7 @@ namespace Tobi.Plugin.AudioPane
                 new[]
                  {
                      m_AudioPaneViewModel.CommandAudioSettings,
-#if DEBUG
+#if false && DEBUG
                      m_AudioPaneViewModel.CommandShowOptionsDialog
 #endif //DEBUG
                  });

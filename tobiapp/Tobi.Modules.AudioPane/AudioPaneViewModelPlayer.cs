@@ -54,8 +54,6 @@ namespace Tobi.Plugin.AudioPane
                       Logger.Log("AudioPaneViewModel.CommandPlaybackRateReset", Category.Debug, Priority.Medium);
 
                       PlaybackRate = PLAYBACK_RATE_MIN;
-
-                      AudioCues.PlayTock();
                   },
                   () => !IsWaveFormLoading,
                    Settings_KeyGestures.Default,
@@ -79,8 +77,6 @@ namespace Tobi.Plugin.AudioPane
                        PlaybackRate = PLAYBACK_RATE_MIN;
                        Debug.Fail("This should never happen !");
                    }
-
-                   AudioCues.PlayTockTock();
                },
                () => !IsWaveFormLoading && (PlaybackRate - PLAYBACK_RATE_STEP) >= PLAYBACK_RATE_MIN,
                 Settings_KeyGestures.Default,
@@ -104,8 +100,6 @@ namespace Tobi.Plugin.AudioPane
                        PlaybackRate = PLAYBACK_RATE_MAX;
                        Debug.Fail("This should never happen !");
                    }
-
-                   AudioCues.PlayHi();
                },
                () => !IsWaveFormLoading && (PlaybackRate + PLAYBACK_RATE_STEP) <= PLAYBACK_RATE_MAX,
                 Settings_KeyGestures.Default,
