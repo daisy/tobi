@@ -1247,8 +1247,6 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        Debug.Assert(newManMedia == manMedia);
-
                         command = treeNode.Presentation.CommandFactory.
                            CreateManagedAudioMediaInsertDataCommand(
                                treeNode, manMedia,
