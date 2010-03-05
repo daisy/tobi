@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
@@ -81,7 +79,7 @@ namespace Tobi.Plugin.Settings
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Edit, PreferredPosition.Last, true,
+                RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
                 null, PreferredPosition.Any, true,
                 new[] { CommandShowSettings });
 

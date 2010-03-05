@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Tobi.Common.UI;
 
 namespace Tobi.Common.MVVM.Command
