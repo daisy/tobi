@@ -275,7 +275,7 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            if (Directory.GetFiles(deletedDataFolderPath).Length == 0) return;
+            //if (Directory.GetFiles(deletedDataFolderPath).Length == 0) return;
 
             var p = new Process
             {
