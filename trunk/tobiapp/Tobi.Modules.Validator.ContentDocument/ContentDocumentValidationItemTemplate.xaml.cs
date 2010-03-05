@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +26,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         private void OnLinkClick(object sender, RoutedEventArgs e)
         {
             var obj = sender as Hyperlink;
-            var node = obj.DataContext as TreeNode;
+            var node = ((ContentDocumentValidationError)obj.DataContext).Target as TreeNode;
 
             m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
         }
@@ -52,7 +53,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
     }
 
     [ValueConversion(typeof(TreeNode), typeof(string))]
-    public class ElementNameStartTagConverter : ValueConverterMarkupExtensionBase<ElementNameStartTagConverter>
+    public class ElementNameConverter : ValueConverterMarkupExtensionBase<ElementNameConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -61,7 +62,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             TreeNode element = value as TreeNode;
             string elementName = GetNearestElementName(element);
             if (string.IsNullOrEmpty(elementName)) return "";
-            return string.Format("<{0}>", elementName);
+            return elementName;
         }
         public static string GetNearestElementName(TreeNode node)
         {
@@ -74,21 +75,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
             }
             
             return node.GetXmlElementQName().LocalName;
-        }
-    }
-
-    [ValueConversion(typeof(TreeNode), typeof(string))]
-    public class ElementNameEndTagConverter : ValueConverterMarkupExtensionBase<ElementNameEndTagConverter>
-    {
-        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value == null) return "";
-            if (!(value is TreeNode)) return "";
-            TreeNode element = value as TreeNode;
-            string elementName = ElementNameStartTagConverter.GetNearestElementName(element);
-            if (string.IsNullOrEmpty(elementName)) return "";
-            string test = string.Format("</{0}>", elementName);
-            return test;
         }
     }
 
@@ -123,6 +109,34 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             if (value == null) return Visibility.Hidden;
             else return Visibility.Visible;
+        }
+    }
+
+    [ValueConversion(typeof(TreeNode), typeof(IEnumerable))]
+    public class DirectElementChildrenConverter : ValueConverterMarkupExtensionBase<DirectElementChildrenConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+            if (! (value is TreeNode)) return null;
+            TreeNode node = value as TreeNode;
+            return node.Children.ContentsAs_YieldEnumerable;
+        }
+    }
+
+    [ValueConversion(typeof(string), typeof(string))]
+    public class AllowedChildNodesConverter : ValueConverterMarkupExtensionBase<AllowedChildNodesConverter>
+    {
+        //todo: work on this regex string pretty print function
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is string)) return "";
+
+            string str = value as string;
+            if (string.IsNullOrEmpty(str)) return "";
+
+            return str.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
         }
     }
 }
