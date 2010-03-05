@@ -82,13 +82,16 @@ namespace Tobi.Plugin.Urakawa
 
                     if (saveAs(dlg.FileName))
                     {
+                        DocumentProject.Presentations.Get(0).RootUri = oldUri;
+
+                        string datafolderPathSavedAs =
+                            DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+                        DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
+
                         //TODO: add progress report
                         string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
 
-                        Debug.Assert(datafolderPath == DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath);
-
-                        DocumentProject.Presentations.Get(0).RootUri = oldUri;
-                        DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
+                        Debug.Assert(datafolderPath == datafolderPathSavedAs);
 
                         if (askUserOpenSavedAs(dlg.FileName))
                         {

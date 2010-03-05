@@ -30,6 +30,7 @@
         
     x:Name="MainWindow"
     
+    KeyUp="OnWindowKeyUp"
         
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
    >
