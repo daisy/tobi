@@ -68,7 +68,7 @@ namespace Tobi.Plugin.Validator
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
-
+            m_RanOnce = false;
             Validate();
         }
 
@@ -145,6 +145,9 @@ namespace Tobi.Plugin.Validator
             IsValid = isValid;
 
             m_RanOnce = true;
+
+            
+
             return IsValid;
         }
     }
