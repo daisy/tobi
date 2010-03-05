@@ -256,7 +256,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                                                            {
                                                                Target = node,
                                                                ErrorType = ContentDocumentErrorType.InvalidElementSequence,
-                                                               AllowedChildNodes = childrenNames,
+                                                               AllowedChildNodes = regex.ToString(),
                                                            };
 
                 //look for more details about this error -- which child element is causing problems?

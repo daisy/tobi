@@ -27,19 +27,32 @@
   <DataTemplate x:Key="ContentDocumentNodeTemplate">
     <Border Style="{StaticResource ContentDocumentNodeBorderStyle}">
     <StackPanel Margin="5" Background="White">
-      <TextBlock Style="{StaticResource ContentDocumentNodeNameStyle}"
-                 Text="{Binding Converter={ContentDocument:ElementNameStartTagConverter}}"/>
-      <TextBlock Style="{StaticResource ContentDocumentNodeContentsStyle}" 
-                 Text="{Binding Converter={ContentDocument:ElementTextExcerptConverter}}"
-                 TextWrapping="Wrap"/>
-      <TextBlock Style="{StaticResource ContentDocumentNodeNameStyle}"
-                 Text="{Binding Converter={ContentDocument:ElementNameEndTagConverter}}"/>
-      <TextBlock Margin="0,3,0,3">
-        <Hyperlink Click="OnLinkClick">
-          <Run Text="Click to view"/>
-        </Hyperlink>
+      <TextBlock>
+        <TextBlock.Text>
+          <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
+        </TextBlock.Text>
       </TextBlock>
       
+      <!-- <TextBlock Style="{StaticResource ContentDocumentNodeContentsStyle}" 
+                 Text="{Binding Converter={ContentDocument:ElementTextExcerptConverter}}"
+                 TextWrapping="Wrap"/>
+      -->
+      <ListBox ItemsSource="{Binding Converter={ContentDocument:DirectElementChildrenConverter}}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock>
+              <TextBlock.Text>
+                <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
+              </TextBlock.Text>
+            </TextBlock>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <TextBlock>
+        <TextBlock.Text>
+          <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
+        </TextBlock.Text>
+      </TextBlock>
     </StackPanel>
     </Border>
   </DataTemplate>
@@ -63,7 +76,39 @@
   </DataTemplate>
 
   <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplate">
-    
+    <StackPanel>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Invalid element sequence"/>
+      <TextBlock TextWrapping="Wrap">
+        <TextBlock.Text>
+          <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
+                   Path="Target"
+                   Converter="{ContentDocument:ElementNameConverter}"/>
+        </TextBlock.Text>
+      </TextBlock>
+      
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnLinkClick">
+          <Run Text="Click to view"/>
+        </Hyperlink>
+      </TextBlock>
+
+      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
+                          Content="{Binding Target}" />
+
+      <TextBlock>
+        <TextBlock.Text>
+          <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:" 
+                   Path="Target"
+                   Converter="{ContentDocument:ElementNameConverter}"/>
+        </TextBlock.Text>
+      </TextBlock>
+
+      <TextBlock TextWrapping="Wrap" 
+                 Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"/>
+      
+    </StackPanel>
+  </DataTemplate>
+  <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplateOld">
     <StackPanel>
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Invalid element sequence"/>
       <TextBlock Text="This element contain an invalid sequence of child elements:"/>
