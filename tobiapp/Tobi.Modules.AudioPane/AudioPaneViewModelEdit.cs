@@ -57,7 +57,7 @@ namespace Tobi.Plugin.AudioPane
                         //Stream streamToBackup = manMedia.AudioMediaData.OpenPcmInputStream();
                         //try
                         //{
-                        //    //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
+                        //    //Time timeDelta = mediaData.AudioDuration.Substract(new Time(timeBegin.TimeAsMillisecondFloat));
                         //    mediaDataClipboard.AppendPcmData(streamToBackup, null);
                         //}
                         //finally

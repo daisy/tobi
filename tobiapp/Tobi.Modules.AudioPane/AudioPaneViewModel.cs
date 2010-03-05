@@ -569,7 +569,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         break;
                     }
-                    timeOffset += manMedia.Duration.TimeDeltaAsMillisecondDouble;
+                    timeOffset += manMedia.Duration.AsMilliseconds;
                 }
             }
 
@@ -607,8 +607,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                     return "";
                 }
-                var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionBegin);
-                return FormatTimeSpan_Units(timeSpan);
+
+                return FormatTimeSpan_Units(State.Selection.SelectionBegin);
             }
         }
 
@@ -622,8 +622,7 @@ namespace Tobi.Plugin.AudioPane
                     return "";
                 }
 
-                var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionEnd);
-                return FormatTimeSpan_Units(timeSpan);
+                return FormatTimeSpan_Units(State.Selection.SelectionEnd);
             }
         }
 
@@ -636,8 +635,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                     return "";
                 }
-                var timeSpan = TimeSpan.FromMilliseconds(State.Selection.SelectionEnd - State.Selection.SelectionBegin);
-                return FormatTimeSpan_Units(timeSpan);
+
+                return FormatTimeSpan_Units(State.Selection.SelectionEnd - State.Selection.SelectionBegin);
             }
         }
 
@@ -651,8 +650,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                     return "";
                 }
-                var timeSpan = TimeSpan.FromMilliseconds(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
-                return FormatTimeSpan_Units(timeSpan);
+
+                return FormatTimeSpan_Units(State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength));
             }
         }
 
@@ -666,10 +665,13 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        public static string FormatTimeSpan_Units(TimeSpan time)
+        public static string FormatTimeSpan_Units(double ms)
         {
+            TimeSpan time = TimeSpan.FromTicks((long) (ms*TimeSpan.TicksPerMillisecond));
+
             if (Settings.Default.UseFriendlyTimeFormat)
                 return Time.Format_H_MN_S_MS(time);
+
             return Time.Format_Standard(time);
         }
 
@@ -709,9 +711,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 if (IsRecording || IsMonitoring)
                 {
-                    var timeSpan = TimeSpan.FromMilliseconds(RecorderCurrentDuration);
-
-                    return FormatTimeSpan_Units(timeSpan); //"Time: " + 
+                    return FormatTimeSpan_Units(RecorderCurrentDuration);
                 }
 
                 string strToDisplay = null;
@@ -723,16 +723,14 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else if (IsPlaying)
                 {
-                    var timeSpan = TimeSpan.FromMilliseconds(m_Player.CurrentTime);
-                    strToDisplay = FormatTimeSpan_Units(timeSpan);
+                    strToDisplay = FormatTimeSpan_Units(m_Player.CurrentTime);
                 }
                 else if (LastPlayHeadTime >= 0 && (
                                                  m_Player.CurrentState == AudioPlayer.State.Paused ||
                                                  m_Player.CurrentState == AudioPlayer.State.Stopped
                                              ))
                 {
-                    var timeSpan = TimeSpan.FromMilliseconds(LastPlayHeadTime);
-                    strToDisplay = FormatTimeSpan_Units(timeSpan);
+                    strToDisplay = FormatTimeSpan_Units(LastPlayHeadTime);
                 }
 
                 if (!String.IsNullOrEmpty(strToDisplay))
@@ -772,7 +770,7 @@ namespace Tobi.Plugin.AudioPane
                 if (State.Audio.HasContent)
                 {
                     double time = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
-                    //double time = PcmFormat.GetDuration(DataLength).TimeDeltaAsMillisecondDouble;
+                    //double time = PcmFormat.GetDuration(DataLength).AsMilliseconds;
                     if (m_LastPlayHeadTime > time)
                     {
                         Debug.Fail(String.Format("m_LastPlayHeadTime > DataLength ?? {0}", m_LastPlayHeadTime));
@@ -1246,7 +1244,7 @@ namespace Tobi.Plugin.AudioPane
                     treeNode.Presentation.UndoRedoManager.Execute(command);
                 }
 
-                //managedAudioMedia.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
+                //managedAudioMedia.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new Time(recordingDuration));
                 //recordingStream.Close();
             }
             else if (audioMedia is SequenceMedia)
@@ -1269,7 +1267,7 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble);
+                    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.AsMilliseconds);
                     if (byteOffset < sumData)
                     {
                         timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
@@ -1294,7 +1292,7 @@ namespace Tobi.Plugin.AudioPane
 
                         treeNode.Presentation.UndoRedoManager.Execute(command);
 
-                        //manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new TimeDelta(recordingDuration));
+                        //manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new Time(recordingDuration));
                         //recordingStream.Close();
                         break;
                     }
@@ -1303,7 +1301,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
-            //SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.TimeDeltaAsMillisecondDouble;
+            //SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.AsMilliseconds;
 
             //ReloadWaveForm(); UndoRedoManager.Changed callback will take care of that.
         }

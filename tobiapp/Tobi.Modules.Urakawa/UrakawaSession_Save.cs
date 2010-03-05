@@ -95,9 +95,9 @@ namespace Tobi.Plugin.Urakawa
 
                         if (askUserOpenSavedAs(dlg.FileName))
                         {
-                            CloseCommand.Execute();
-
-                            if (DocumentProject == null) //effectively closed
+                            //CloseCommand.Execute();
+                            //if (DocumentProject == null) //effectively closed
+                            if (Close())
                             {
                                 try
                                 {

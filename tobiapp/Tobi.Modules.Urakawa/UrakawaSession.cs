@@ -240,10 +240,15 @@ namespace Tobi.Plugin.Urakawa
 
         public void DataCleanup()
         {
-            DocumentProject.Presentations.Get(0).Cleanup();
+            string docPath = DocumentFilePath;
+            Project project = DocumentProject;
+
+            if (!Close()) return;
+
+            project.Presentations.Get(0).Cleanup(); //TODO: time consuming progress bar
 
             var listOfDataProviderFiles = new List<string>();
-            foreach (var dataProvider in DocumentProject.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 var fileDataProvider = dataProvider as FileDataProvider;
                 if (fileDataProvider == null) continue;
@@ -251,7 +256,7 @@ namespace Tobi.Plugin.Urakawa
                 listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
             }
 
-            var dataFolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+            var dataFolderPath = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
 
             var deletedDataFolderPath = Path.Combine(dataFolderPath, "__DELETED");
             if (!Directory.Exists(deletedDataFolderPath))
@@ -277,6 +282,17 @@ namespace Tobi.Plugin.Urakawa
                 StartInfo = { FileName = deletedDataFolderPath }
             };
             p.Start();
+
+            DocumentFilePath =  docPath;
+            DocumentProject = project;
+
+            if (save())
+            {
+                DocumentFilePath = null;
+                DocumentProject = null;
+
+                OpenFile(docPath);
+            }
         }
 
         public bool Close()
