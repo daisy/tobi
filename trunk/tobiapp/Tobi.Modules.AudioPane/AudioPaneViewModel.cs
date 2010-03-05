@@ -89,7 +89,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     try
                     {
-                        State.Audio.SetPlayStream_FromFile(File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+                        State.Audio.SetPlayStream_FromFile(File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read), State.FilePath);
                     }
                     catch (Exception ex)
                     {

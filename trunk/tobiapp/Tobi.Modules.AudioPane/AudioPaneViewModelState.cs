@@ -75,7 +75,7 @@ namespace Tobi.Plugin.AudioPane
                 PlayStream = stream;
             }
 
-            public void SetPlayStream_FromFile(FileStream fileStream)
+            public void SetPlayStream_FromFile(FileStream fileStream, string filePathOptionalInfo)
             {
                 Stream stream = fileStream;
 
@@ -91,7 +91,7 @@ namespace Tobi.Plugin.AudioPane
 
                     dataLength = (uint)(stream.Length - stream.Position);
 
-                    stream = new SubStream(stream, stream.Position, dataLength);
+                    stream = new SubStream(stream, stream.Position, dataLength, filePathOptionalInfo);
 
                     Debug.Assert(dataLength == stream.Length);
 
