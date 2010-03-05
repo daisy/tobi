@@ -9,6 +9,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using urakawa.data;
 using urakawa.xuk;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Orientation = System.Windows.Controls.Orientation;
@@ -84,26 +85,46 @@ namespace Tobi.Plugin.Urakawa
                     {
                         DocumentProject.Presentations.Get(0).RootUri = oldUri;
 
-                        string datafolderPathSavedAs =
-                            DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+                        //string datafolderPathSavedAs = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
                         DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
 
-                        //TODO: add progress report
-                        string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
+                        //string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
+                        //Debug.Assert(datafolderPath == datafolderPathSavedAs);
 
-                        Debug.Assert(datafolderPath == datafolderPathSavedAs);
+                        DoWorkProgressUI("Copying data files ...",
+                            new DataFolderCopier(DocumentProject.Presentations.Get(0), dirPath, prefix),
+                            () =>
+                            {
+                                m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
 
-                        if (askUserOpenSavedAs(dlg.FileName))
-                        {
-                            try
+                                if (askUserOpenSavedAs(dlg.FileName))
+                                {
+                                    try
+                                    {
+                                        OpenFile(dlg.FileName);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                                    }
+                                }
+                            },
+                            () =>
                             {
-                                OpenFile(dlg.FileName);
-                            }
-                            catch (Exception ex)
-                            {
-                                ExceptionHandler.Handle(ex, false, m_ShellView);
-                            }
-                        }
+                                m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
+
+                                if (askUserOpenSavedAs(dlg.FileName))
+                                {
+                                    try
+                                    {
+                                        OpenFile(dlg.FileName);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                                    }
+                                }
+                            });
                     }
                     else
                     {
