@@ -190,7 +190,7 @@ namespace Tobi.Plugin.AudioPane
             const int tolerance = 5;
             try
             {
-                var audioStream = m_ViewModel.AudioPlayer_GetPlayStream();
+                Stream audioStream = m_ViewModel.AudioPlayer_GetPlayStream();
 
                 if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
 
