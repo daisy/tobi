@@ -281,6 +281,13 @@ namespace Tobi.Plugin.AudioPane
 
             EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, ThreadOption.UIThread);
             EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, ThreadOption.UIThread);
+
+            EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, ThreadOption.UIThread);
+        }
+
+        private void OnEscape(object obj)
+        {
+            if (View != null) View.CancelWaveFormLoad();
         }
 
         private void initializeAudioStuff()
@@ -1111,6 +1118,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
+                    // TODO: progress ! (time consuming file copy)
                     mediaData.AppendPcmData_RiffHeader(filePath);
                 }
 

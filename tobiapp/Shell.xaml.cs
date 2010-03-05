@@ -6,8 +6,10 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -76,8 +78,10 @@ namespace Tobi
         private ISettingsAggregator m_SettingsAggregator;
 
 #pragma warning restore 649
-
+        
         private readonly ILoggerFacade m_Logger;
+        private readonly IEventAggregator m_EventAggregator;
+         
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -85,9 +89,10 @@ namespace Tobi
         ///</summary>
         ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
         [ImportingConstructor]
-        public Shell(ILoggerFacade logger)
+        public Shell(ILoggerFacade logger, IEventAggregator eventAggregator)
         {
             m_Logger = logger;
+            m_EventAggregator = eventAggregator;
 
             m_Logger.Log(@"ShellView.ctor", Category.Debug, Priority.Medium);
 
@@ -559,5 +564,14 @@ namespace Tobi
         //    theAdorner.InvalidateVisual();
         //}
 
+        private void OnWindowKeyUp(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Escape)
+            {
+                m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+            }
+        }
     }
 }
