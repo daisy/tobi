@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Windows;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa;
@@ -54,9 +50,9 @@ namespace Tobi.Plugin.Validator
             {
                 OnProjectLoaded(m_UrakawaSession.DocumentProject);
             }
-            
-            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ThreadOption.UIThread);
-            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ThreadOption.UIThread);
+
+            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
         }
 
         //EventAggregator.GetEvent<TypeConstructedEvent>().Publish(GetType());
