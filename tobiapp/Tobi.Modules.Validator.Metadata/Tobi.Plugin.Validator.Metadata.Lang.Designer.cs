@@ -79,6 +79,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} must be {1}..
+        /// </summary>
+        public static string DefNameMustBeHint {
+            get {
+                return ResourceManager.GetString("DefNameMustBeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate of {0} not allowed..
         /// </summary>
         public static string DuplicateNotAllowed {

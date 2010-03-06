@@ -123,6 +123,9 @@
   <data name="Date" xml:space="preserve">
     <value>formatted as YYYY-MM-DD, YYYY-MM, or YYYY</value>
   </data>
+  <data name="DefNameMustBeHint" xml:space="preserve">
+    <value>{0} must be {1}.</value>
+  </data>
   <data name="DuplicateNotAllowed" xml:space="preserve">
     <value>Duplicate of {0} not allowed.</value>
   </data>

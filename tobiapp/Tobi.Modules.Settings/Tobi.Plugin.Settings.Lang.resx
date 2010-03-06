@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AManagerAndUserInterfaceEditorForApplicationPreferences" xml:space="preserve">
-    <value>A manager and user-interface editor for application preferences.</value>
-  </data>
   <data name="ApplicationPreferences" xml:space="preserve">
     <value>Application preferences.</value>
   </data>
@@ -131,6 +128,9 @@
   </data>
   <data name="InvalidNumericValue" xml:space="preserve">
     <value>Invalid numeric value.</value>
+  </data>
+  <data name="ManagerAndUIEditorForAppPref" xml:space="preserve">
+    <value>A manager and user-interface editor for application preferences.</value>
   </data>
   <data name="NumericValueOutOfRange" xml:space="preserve">
     <value>Numeric value is out of range [0, 9999].</value>

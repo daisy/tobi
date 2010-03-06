@@ -45,7 +45,7 @@ namespace Tobi.Plugin.Validator
             m_ValidatorPaneView = view;
 
             CommandShowValidator = new RichDelegateCommand(
-                "Validation Check",                                                // TODO LOCALIZE ValidationCheck
+                Tobi_Plugin_Validator_Lang.ValidationCheck,                                                // TODO LOCALIZE ValidationCheck
                 "",
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeGionIcon(@"Gion_application-certificate"),
@@ -99,12 +99,12 @@ namespace Tobi.Plugin.Validator
 
         public override string Name
         {
-            get { return @"Publication Validator."; }    // TODO LOCALIZE PublicationValidator
+            get { return Tobi_Plugin_Validator_Lang.PublicationValidator; }    // TODO LOCALIZE PublicationValidator
         }
 
         public override string Description
         {
-            get { return @"A framework to validate the data model of an authored Urakawa SDK project."; }    // TODO LOCALIZE AFrameworkToValidateTheDataModelOfAnAuthoredUrakawaSDKProject
+            get { return Tobi_Plugin_Validator_Lang.FrameworkToValidateDataModelofSDK; }    // TODO LOCALIZE  FrameworkToValidateDataModelofSDK
         }
 
         private bool m_DialogIsShowing;

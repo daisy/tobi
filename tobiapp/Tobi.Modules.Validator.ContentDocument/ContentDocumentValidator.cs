@@ -58,12 +58,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Name
         {
-            get { return "Content Document Validator"; }       // TODO LOCALIZE ContentDocumentValidator
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Key; }       // TODO LOCALIZE ContentDocumentValidator_Key
         }
 
         public override string Description
         {
-            get { return "A validator that uses data from a DTD to validate elements in a document tree."; }     // Key already specified
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.AValidatorThatUsesDataFromADTDToValidateElementsInADocumentTree; }     // Key already specified
         }
 
         public override bool ShouldRunOnlyOnce

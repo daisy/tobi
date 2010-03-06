@@ -51,8 +51,8 @@ namespace Tobi.Plugin.Settings
             m_SettingsAggregator = settingsAggregator;
 
             CommandShowSettings = new RichDelegateCommand(
-                "Application preferences",                         // TODO LOCALIZE ApplicationPreferences, key already present
-                "Display an editor for application preferences",     // TODO LOCALIZE DisplayAnEditor
+                Tobi_Plugin_Settings_Lang.ApplicationPreferences,                         // TODO LOCALIZE Key already added ApplicationPreferences
+                Tobi_Plugin_Settings_Lang.DisplayAnEditor,                                // TODO LOCALIZE DisplayAnEditor
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"preferences-system"),
                 ShowDialog,
@@ -105,12 +105,12 @@ namespace Tobi.Plugin.Settings
 
         public override string Name
         {
-            get { return @"Application preferences."; }    // TODO LOCALIZE ApplicationPreferences
+            get { return Tobi_Plugin_Settings_Lang.ApplicationPreferences; }    // TODO LOCALIZE ApplicationPreferences
         }
 
         public override string Description
         {
-            get { return @"A manager and user-interface editor for application preferences."; }    // TODO LOCALIZE AManagerAndUser-interfaceEditorForApplicationPreferences
+            get { return Tobi_Plugin_Settings_Lang.ManagerAndUIEditorForAppPref; }    // TODO LOCALIZE ManagerAndUIEditorForAppPref
         }
 
         private bool m_DialogIsShowing;

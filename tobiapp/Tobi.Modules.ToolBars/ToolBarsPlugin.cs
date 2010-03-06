@@ -77,12 +77,12 @@ namespace Tobi.Plugin.ToolBars
 
         public override string Name
         {
-            get { return @"Application toolbar."; }     // TODO LOCALIZE ApplicationToolbar
+            get { return Tobi_Plugin_ToolBars_Lang.ApplicationToolbar; }     // TODO LOCALIZE ApplicationToolbar
         }
 
         public override string Description
         {
-            get { return @"The visual host for command buttons."; }   // TODO LOCALIZE TheVisualHostForCommandButtons
+            get { return Tobi_Plugin_ToolBars_Lang.TheVisualHostForCommandButtons; }   // TODO LOCALIZE TheVisualHostForCommandButtons
         }
     }
 }

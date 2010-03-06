@@ -195,8 +195,8 @@ namespace Tobi.Plugin.Urakawa
 
             var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
             {
-                ShortDescription = "Saving XUK file...",                               // TODO LOCALIZE SaveXukFile
-                LongDescription = "Serializing the document object model from the Urakawa SDK as XML content into a XUK file..."       // TODO LOCALIZE SerializeDOMIntoXukFile
+                ShortDescription = Tobi_Plugin_Urakawa_Lang.SaveXukFile,                               // TODO LOCALIZE SaveXukFile
+                LongDescription = Tobi_Plugin_Urakawa_Lang.SerializeDOMIntoXukFile       // TODO LOCALIZE SerializeDOMIntoXukFile
             };
 
             action.Progress += (sender, e) =>
@@ -238,7 +238,7 @@ namespace Tobi.Plugin.Urakawa
                 }
 
 
-                m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Saved.");            // TODO LOCALIZE Saved
+                m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);            // TODO LOCALIZE Saved
 
                 RaisePropertyChanged(() => IsDirty);
                 //IsDirty = false;

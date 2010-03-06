@@ -175,12 +175,12 @@ namespace Tobi.Plugin.Urakawa
 
         public override string Name
         {
-            get { return @"Urakawa SDK session manager."; }    // TODO LOCALIZE UrakawaSDKSessionManager.
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaSDKSessionManager; }    // TODO LOCALIZE UrakawaSDKSessionManager.
         }
 
         public override string Description
         {
-            get { return @"A context for opening and saving the data model of a Urakawa SDK project."; }    // TODO LOCALIZE AContextForOpeningAndSavingTheDataModelOfAUrakawaSDKProject
+            get { return Tobi_Plugin_Urakawa_Lang.ContextToOpenSaveDataModelOfSDKProject; }    // TODO LOCALIZE ContextToOpenSaveDataModelOfSDKProject
         }
     }
 }

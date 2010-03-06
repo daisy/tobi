@@ -124,7 +124,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
                     BreadcrumbPanel.Children.Add(tb);
 
-                    tb.SetValue(AutomationProperties.NameProperty, "XML Children.");                  // TODO LOCALIZE XMLChildren
+                    tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.XMLChildren);                  // TODO LOCALIZE XMLChildren
                 }
 
                 bool selected = false;
@@ -145,7 +145,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     }
                 }
 
-                butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : "No XML") + (selected ? ", Selected." : "") + (withMedia ? "Audio." : ""));        // TODO LOCALIZE NoXMLFound
+                butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound) + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "") + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));        // TODO LOCALIZE NoXMLFound
                                                                                                                                                                                        // TODO LOCALIZE Selected
                                                                                                                                                                                        // TODO LOCALIZE Audio
 
@@ -488,11 +488,11 @@ namespace Tobi.Plugin.StructureTrailPane
                     string strPrepend = "";
                     if (qName == null)
                     {
-                        strPrepend = "[No XML]. ";           // TODO LOCALIZE NoXML
+                        strPrepend = Tobi_Plugin_StructureTrailPane_Lang.NoXML;           // TODO LOCALIZE NoXML
                     }
                     else
                     {
-                        strPrepend = "XML: [" + qName.LocalName + "]. ";      // TODO LOCALIZE XMLName
+                        strPrepend = String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName);      // TODO LOCALIZE XMLName
                     }
                     string str = strPrepend + m_CurrentSubTreeNode.GetTextMediaFlattened();
 
@@ -514,11 +514,11 @@ namespace Tobi.Plugin.StructureTrailPane
                         string strPrepend = "";
                         if (qName == null)
                         {
-                            strPrepend = "[No XML]. ";                                    // TODO LOCALIZE Key already added
+                            strPrepend = Tobi_Plugin_StructureTrailPane_Lang.NoXML;                                    // TODO LOCALIZE Key already added NoXML
                         }
                         else
                         {
-                            strPrepend = "XML: [" + qName.LocalName + "]. ";              // TODO LOCALIZE Key already added
+                            strPrepend = String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName);              // TODO LOCALIZE Key already added XMLName
                         }
 
                         m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(strPrepend + str);
