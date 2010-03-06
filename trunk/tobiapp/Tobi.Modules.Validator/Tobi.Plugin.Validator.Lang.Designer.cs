@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Validator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A framework to validate the data model of an authored Urakawa SDK project..
-        /// </summary>
-        public static string AFrameworkToValidateTheDataModelOfAnAuthoredUrakawaSDKProject {
-            get {
-                return ResourceManager.GetString("AFrameworkToValidateTheDataModelOfAnAuthoredUrakawaSDKProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Aggregator Validator.
         /// </summary>
         public static string AggregatorValidator {
@@ -79,20 +70,29 @@ namespace Tobi.Plugin.Validator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publication Validator..
+        ///   Looks up a localized string similar to A framework to validate the data model of an authored Urakawa SDK project..
         /// </summary>
-        public static string PublicationValidator {
+        public static string FrameworkToValidateDataModelofSDK {
             get {
-                return ResourceManager.GetString("PublicationValidator", resourceCulture);
+                return ResourceManager.GetString("FrameworkToValidateDataModelofSDK", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to This is the main content validator.
         /// </summary>
-        public static string ThisIsTheMainContentValidator {
+        public static string MainContentValidator {
             get {
-                return ResourceManager.GetString("ThisIsTheMainContentValidator", resourceCulture);
+                return ResourceManager.GetString("MainContentValidator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publication Validator..
+        /// </summary>
+        public static string PublicationValidator {
+            get {
+                return ResourceManager.GetString("PublicationValidator", resourceCulture);
             }
         }
         

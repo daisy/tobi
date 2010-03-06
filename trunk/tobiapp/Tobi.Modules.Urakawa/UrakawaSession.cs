@@ -681,7 +681,7 @@ namespace Tobi.Plugin.Urakawa
                 if (backWorker == null) return false;
 
                 progressBar.IsIndeterminate = true;
-                label.Text = "Please wait while cancelling...";                     // TODO LOCALIZE WaitToCancel
+                label.Text = Tobi_Plugin_Urakawa_Lang.WaitToCancel;                     // TODO LOCALIZE WaitToCancel
 
                 progressBar2.Visibility = Visibility.Collapsed;
                 label2.Visibility = Visibility.Collapsed;

@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A manager and user-interface editor for application preferences..
-        /// </summary>
-        public static string AManagerAndUserInterfaceEditorForApplicationPreferences {
-            get {
-                return ResourceManager.GetString("AManagerAndUserInterfaceEditorForApplicationPreferences", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Application preferences..
         /// </summary>
         public static string ApplicationPreferences {
@@ -102,6 +93,15 @@ namespace Tobi.Plugin.Settings {
         public static string InvalidNumericValue {
             get {
                 return ResourceManager.GetString("InvalidNumericValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A manager and user-interface editor for application preferences..
+        /// </summary>
+        public static string ManagerAndUIEditorForAppPref {
+            get {
+                return ResourceManager.GetString("ManagerAndUIEditorForAppPref", resourceCulture);
             }
         }
         

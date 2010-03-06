@@ -31,17 +31,17 @@ namespace Tobi.Plugin.Validator.Metadata
                 switch (ErrorType)
                 {
                     case MetadataErrorType.FormatError:
-                        description = string.Format("{0} must be {1}.",
+                        description = string.Format(Tobi_Plugin_Validator_Metadata_Lang.DefNameMustBeHint,                               // TODO LOCALIZE DefNameMustBeHint
                                                     Definition.Name.ToLower(), Hint);
                         break;
                     case MetadataErrorType.MissingItemError:
-                        description = string.Format("Missing {0}", Definition.Name.ToLower());         // TODO LOCALIZE Missing
+                        description = string.Format(Tobi_Plugin_Validator_Metadata_Lang.Missing, Definition.Name.ToLower());         // TODO LOCALIZE Missing
                         break;
                     case MetadataErrorType.DuplicateItemError:
-                        description = string.Format("Duplicate of {0} not allowed.", Definition.Name.ToLower());    // TODO LOCALIZE DuplicateNotAllowed
+                        description = string.Format(Tobi_Plugin_Validator_Metadata_Lang.DuplicateNotAllowed, Definition.Name.ToLower());    // TODO LOCALIZE DuplicateNotAllowed
                         break;
                     default:
-                        description = string.Format("Unspecified error in {0}.", Definition.Name.ToLower());        // TODO LOCALIZE UnspecifiedError
+                        description = string.Format(Tobi_Plugin_Validator_Metadata_Lang.UnspecifiedError, Definition.Name.ToLower());        // TODO LOCALIZE UnspecifiedError
                         break;
                 }
                 return description;

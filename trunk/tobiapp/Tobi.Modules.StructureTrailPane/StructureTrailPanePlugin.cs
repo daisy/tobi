@@ -103,12 +103,12 @@ namespace Tobi.Plugin.StructureTrailPane
 
         public override string Name
         {
-            get { return @"Document pane."; }    // TODO LOCALIZE DocumentPane
+            get { return Tobi_Plugin_StructureTrailPane_Lang.DocumentPane; }    // TODO LOCALIZE DocumentPane
         }
 
         public override string Description
         {
-            get { return @"The publication document viewer"; }    // TODO LOCALIZE ThePublicationDocumentViewer
+            get { return Tobi_Plugin_StructureTrailPane_Lang.ThePublicationDocumentViewer; }    // TODO LOCALIZE ThePublicationDocumentViewer
         }
     }
 }

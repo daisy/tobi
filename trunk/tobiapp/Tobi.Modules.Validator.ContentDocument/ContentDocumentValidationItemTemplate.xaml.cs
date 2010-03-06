@@ -42,12 +42,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
             ContentDocumentErrorType item = (ContentDocumentErrorType)value;
             if (item == ContentDocumentErrorType.MissingDtd)
-                return "Missing DTD";                                           // TODO LOCALIZE MissingDTD
+                return Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD;                                           // TODO LOCALIZE MissingDTD
             if (item == ContentDocumentErrorType.UndefinedElement)
-                return "Undefined element";                                     // TODO LOCALIZE UndefinedElement
+                return Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement;                                     // TODO LOCALIZE UndefinedElement
             if (item == ContentDocumentErrorType.InvalidElementSequence)
-                return "Document structure error";                              // TODO LOCALIZE DocStructureError
-            return "General document error";                                    // TODO LOCALIZE GeneralDocError
+                return Tobi_Plugin_Validator_ContentDocument_Lang.DocStructureError;                              // TODO LOCALIZE DocStructureError
+            return Tobi_Plugin_Validator_ContentDocument_Lang.GeneralDocumentError;                                    // TODO LOCALIZE GeneralDocError
 
         }
     }

@@ -26,7 +26,7 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            return DoWorkProgressUI("Importing ...",                   // TODO LOCALIZE Importing
+            return DoWorkProgressUI(Tobi_Plugin_Urakawa_Lang.Importing,                   // TODO LOCALIZE Importing
                 converter,
                 () =>
                 {
