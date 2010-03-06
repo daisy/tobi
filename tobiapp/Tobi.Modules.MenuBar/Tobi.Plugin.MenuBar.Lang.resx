@@ -120,10 +120,10 @@
   <data name="ApplicationMenubar" xml:space="preserve">
     <value>Application menubar.</value>
   </data>
+  <data name="MenuContainingAppCommands" xml:space="preserve">
+    <value>The menu that contains application commands.</value>
+  </data>
   <data name="SUB" xml:space="preserve">
     <value>SUB_{0} _{1}</value>
-  </data>
-  <data name="TheMenuThatContainsApplicationCommands" xml:space="preserve">
-    <value>The menu that contains application commands.</value>
   </data>
 </root>
