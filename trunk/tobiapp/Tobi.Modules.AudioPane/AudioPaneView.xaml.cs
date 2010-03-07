@@ -37,7 +37,7 @@ namespace Tobi.Plugin.AudioPane
 
         private readonly IShellView m_ShellView;
         private readonly AudioPaneViewModel m_ViewModel;
-        
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -57,7 +57,7 @@ namespace Tobi.Plugin.AudioPane
         {
             m_Logger = logger;
             m_EventAggregator = eventAggregator;
-            
+
             m_ViewModel = viewModel;
             m_ViewModel.SetView(this);
 
@@ -133,12 +133,16 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnZoomSliderDragStarted(object sender, DragStartedEventArgs e1)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             m_Logger.Log("AudioPaneView.OnZoomSliderDragStarted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = true;
         }
 
         private void OnZoomSliderDragCompleted(object sender, DragCompletedEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             m_Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = false;
 
@@ -155,6 +159,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) CancelWaveFormLoad();
+
             double oldWidth = e.PreviousSize.Width;
 
             double width = WaveFormCanvas.ActualWidth;
@@ -173,7 +179,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_ViewModel.State.Audio.HasContent)
             {
-                BytesPerPixel = m_ViewModel.State.Audio.DataLength/width;
+                BytesPerPixel = m_ViewModel.State.Audio.DataLength / width;
             }
             else
             {
@@ -212,6 +218,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             if (m_WaveFormTimeTicksAdorner != null)
             {
                 m_WaveFormTimeTicksAdorner.OnAdornerMouseMove(sender, e);
@@ -268,6 +276,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseEnter(object sender, MouseEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             m_ControlKeyWasDownAtLastMouseMove = isControlKeyDown();
 
             WaveFormCanvas.Cursor = m_ControlKeyWasDownAtLastMouseMove ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor;
@@ -275,6 +285,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseLeave(object sender, MouseEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
 
             m_WaveFormDragX = -1;
@@ -301,12 +313,15 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
             m_WaveFormDragX = -1;
 
             if (!m_ControlKeyWasDownAtLastMouseMove)
             {
                 Point p = e.GetPosition(WaveFormCanvas);
+
                 if (m_MouseClicks == 2)
                 {
                     if (!m_ViewModel.State.Audio.HasContent || m_ViewModel.State.CurrentTreeNode == null)
@@ -317,7 +332,7 @@ namespace Tobi.Plugin.AudioPane
                     else
                     {
                         m_ViewModel.CommandClearSelection.Execute();
-                        m_ViewModel.SelectChunk(Convert.ToInt64(p.X*BytesPerPixel));
+                        m_ViewModel.SelectChunk(Convert.ToInt64(p.X * BytesPerPixel));
                     }
                 }
                 else if (m_MouseClicks == 3)
@@ -327,7 +342,15 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
-                    selectionFinished(p.X);
+                    if (isShiftKeyDown())
+                    {
+                        m_TimeSelectionLeftX = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime) / BytesPerPixel;
+                        selectionFinished(p.X);
+                    }
+                    else
+                    {
+                        selectionFinished(p.X);
+                    }
                 }
             }
 
@@ -338,6 +361,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (m_ViewModel.IsWaveFormLoading) return;
+
             Point p = e.GetPosition(WaveFormCanvas);
 
             m_ViewModel.AudioPlayer_Stop();
@@ -369,6 +394,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 backupSelection();
                 m_ViewModel.CommandClearSelection.Execute();
+
                 m_TimeSelectionLeftX = p.X;
             }
         }
@@ -590,7 +616,7 @@ namespace Tobi.Plugin.AudioPane
                 geometryRange = (StreamGeometry)WaveFormTimeRangePath.Data;
             }
 
-            double thickNezz = m_ArrowDepth/2;
+            double thickNezz = m_ArrowDepth / 2;
 
             using (StreamGeometryContext sgc = geometryRange.Open())
             {
@@ -1180,20 +1206,33 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private bool isControlKeyDown()
+        private bool isShiftKeyDown()
         {
-            return (Keyboard.Modifiers &
-                    (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None;
+            return (Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.None;
 
+            //Keyboard.IsKeyDown(Key.LeftShift)
             //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
             // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
         }
-        
+
+        private bool isControlKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Control
+                //| ModifierKeys.Shift
+                    )
+                    ) != ModifierKeys.None;
+
+            //Keyboard.IsKeyDown(Key.LeftShift)
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
+
         public void BringIntoFocus()
         {
             FocusHelper.FocusBeginInvoke(FocusStart);
         }
-        
+
         public void BringIntoFocusStatusBar()
         {
             FocusHelper.FocusBeginInvoke(FocusStartStatusBar);

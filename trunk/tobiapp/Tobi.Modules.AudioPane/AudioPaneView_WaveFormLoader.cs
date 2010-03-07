@@ -32,6 +32,7 @@ namespace Tobi.Plugin.AudioPane
             //    //System.Windows.Threading.Dispatcher.CurrentDispatcher.
             //}
         }
+
         private void OnWaveFormCancelButtonClick(object sender, RoutedEventArgs e)
         {
             CancelWaveFormLoad();
