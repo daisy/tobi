@@ -63,7 +63,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.AValidatorThatUsesDataFromADTDToValidateElementsInADocumentTree; }     // Key already specified
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ValidatorToValidateElementsInADocumentTree; }     // TODO LOCALIZE Key already added ValidatorToValidateElementsInADocumentTree
         }
 
         public override bool ShouldRunOnlyOnce

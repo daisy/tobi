@@ -19,7 +19,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         private void OnLinkClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This should open the metadata editor");                       // TODO LOCALIZE OpenMetadataEditor
+            MessageBox.Show(Tobi_Plugin_Validator_Metadata_Lang.OpenMetadataEditor);                       // TODO LOCALIZE OpenMetadataEditor
         }
     }
 

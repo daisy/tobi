@@ -70,6 +70,15 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application preferences.
+        /// </summary>
+        public static string ApplicationPreferences_Key {
+            get {
+                return ResourceManager.GetString("ApplicationPreferences_Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display an editor for application preferences.
         /// </summary>
         public static string DisplayAnEditor {

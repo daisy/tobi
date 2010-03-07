@@ -175,7 +175,7 @@ namespace Tobi.Plugin.Urakawa
 
         public override string Name
         {
-            get { return Tobi_Plugin_Urakawa_Lang.UrakawaSDKSessionManager; }    // TODO LOCALIZE UrakawaSDKSessionManager.
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaSDKSessionManager; }    // TODO LOCALIZE UrakawaSDKSessionManager
         }
 
         public override string Description
