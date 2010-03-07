@@ -2,116 +2,156 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Tobi.Common.UI
 {
     /// <summary>
-    /// Class used to have an image that is able to be gray when the control is not enabled.
-    /// Author: Thomas LEBRUN (http://blogs.developpeur.org/tom)
+    /// Heavily modified from the code by: Thomas LEBRUN (http://blogs.developpeur.org/tom)
     /// </summary>
     public class AutoGreyableImage : Image
     {
-        public BindingBase SourceBindingColor
-        {
-            get;
-            set;
-        }
-
-        public BindingBase SourceBindingGrey
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutoGreyableImage"/> class.
-        /// </summary>
         static AutoGreyableImage()
         {
-            //Override the metadata of the IsEnabled property.
             IsEnabledProperty.OverrideMetadata(typeof(AutoGreyableImage),
                    new FrameworkPropertyMetadata(true,
-                       new PropertyChangedCallback(OnAutoGreyScaleImageIsEnabledPropertyChanged)));
+                       new PropertyChangedCallback(OnIsEnabledChanged)));
         }
 
-        /// <summary>
-        /// Called when [auto grey scale image is enabled property changed].
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="args">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnAutoGreyScaleImageIsEnabledPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
+        private static void OnIsEnabledChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
         {
             var autoGreyScaleImg = source as AutoGreyableImage;
             if (autoGreyScaleImg == null)
             {
-                return;
-            }
-            var isEnable = Convert.ToBoolean(args.NewValue);
-
-            if (!isEnable)
-            {
-                if (autoGreyScaleImg.SourceBindingGrey != null)
-                {
 #if DEBUG
                 Debugger.Break();
 #endif
-                    var expr = autoGreyScaleImg.SetBinding(SourceProperty, autoGreyScaleImg.SourceBindingGrey);
-                }
-                else
-                {
-                    BitmapSource bitmapImage = null;
-                    
-                    if (autoGreyScaleImg.Source is FormatConvertedBitmap)
-                    {
-                        // Already grey !
-                        return;
-                    }
-                    else if (autoGreyScaleImg.Source is BitmapSource)
-                    {
-                        bitmapImage = (BitmapSource)autoGreyScaleImg.Source;
-                    }
-                    else // trying string 
-                    {
-                        bitmapImage = new BitmapImage(new Uri(autoGreyScaleImg.Source.ToString()));
-                        bitmapImage.Freeze();
-                    }
+                return;
+            }
 
-                    autoGreyScaleImg.Source = new FormatConvertedBitmap(bitmapImage,
-                                                    PixelFormats.Gray32Float, null, 0);
-                }
+            //var isEnable = Convert.ToBoolean(args.NewValue);
+            var isEnable = (bool)args.NewValue;
+            autoGreyScaleImg.SetGrey(!isEnable);
+        }
 
-                // Create Opacity Mask for greyscale image as FormatConvertedBitmap does not keep transparency info
-                autoGreyScaleImg.OpacityMask = new ImageBrush(((FormatConvertedBitmap)autoGreyScaleImg.Source).Source); //equivalent to new ImageBrush(bitmapImage)
-                autoGreyScaleImg.OpacityMask.Opacity = 0.4;
+        public FormatConvertedBitmap CachedFormatConvertedBitmap;
+        public ImageBrush CachedOpacityMask;
+
+        public void SetGrey(bool grey)
+        {
+            if (grey)
+            {
+                Source = CachedFormatConvertedBitmap;
+                OpacityMask = CachedOpacityMask;
             }
             else
             {
-                if (autoGreyScaleImg.SourceBindingColor != null)
-                {
+                Source = CachedFormatConvertedBitmap.Source;
+                OpacityMask = null;
+            }
+        }
+
+        public void InitializeFromVectorGraphics(VisualBrush visualBrush, double width, double height) //, Boolean grey)
+        {
+            RenderTargetBitmap renderTargetImage = CreateFromVectorGraphics(visualBrush, width, height);
+
+            CachedFormatConvertedBitmap = new FormatConvertedBitmap(renderTargetImage, PixelFormats.Gray32Float, null, 0);
+            CachedFormatConvertedBitmap.Freeze();
+
+            CachedOpacityMask = new ImageBrush(renderTargetImage);
+            CachedOpacityMask.Opacity = 0.4;
+            CachedOpacityMask.Freeze();
+            
+            SetGrey(!IsEnabled);
+        }
+
+        public static RenderTargetBitmap CreateFromVectorGraphics(VisualBrush visualBrush, double width, double height) //, Boolean grey)
+        {
+            if (Double.IsNaN(width))
+            {
 #if DEBUG
                 Debugger.Break();
 #endif
-                    var expr = autoGreyScaleImg.SetBinding(SourceProperty, autoGreyScaleImg.SourceBindingColor);
-                }
-                else
-                {
-                    if (autoGreyScaleImg.Source is FormatConvertedBitmap)
-                    {
-                        autoGreyScaleImg.Source = ((FormatConvertedBitmap)autoGreyScaleImg.Source).Source;
-                    }
-                    else if (autoGreyScaleImg.Source is BitmapSource)
-                    {
-                        // Should be full color already.
-                        return;
-                    }
-                }
-
-                // Reset the Opcity Mask
-                autoGreyScaleImg.OpacityMask = null;
+                return null;
             }
+            if (Double.IsNaN(height))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return null;
+            }
+
+            //visualBrush.ViewboxUnits = BrushMappingMode.RelativeToBoundingBox;
+            //visualBrush.Viewbox = new Rect(0, 0, 1, 1);
+
+            //visualBrush.ViewportUnits = BrushMappingMode.Absolute;
+            //visualBrush.Viewport = new Rect(0, 0, width, height);
+
+            //if (visualBrush.Visual is FrameworkElement)
+            //{
+            //    var frameElement = (FrameworkElement)visualBrush.Visual;
+            //    frameElement.Width = width;
+            //    frameElement.Height = height;
+            //}
+            //else
+            //{
+            //    Debugger.Break();
+            //}
+
+            var size = new Size(width, height);
+
+            if (visualBrush.Visual is UIElement)
+            {
+                var uiElement = (UIElement)visualBrush.Visual;
+
+                uiElement.Measure(size);
+                uiElement.Arrange(new Rect(0, 0, width, height));
+                //uiElement.UpdateLayout();
+                //uiElement.InvalidateVisual();
+            }
+
+            var visualBrushHost = new Border // Rectangle
+            {
+                //StrokeThickness = 0,
+                //Fill = Brushes.Red,
+                SnapsToDevicePixels = true,
+                Height = height,
+                Width = width,
+                BorderThickness = new Thickness(0),
+                BorderBrush = null,
+                Background = visualBrush // Fill
+            };
+            visualBrushHost.Measure(size);
+            visualBrushHost.Arrange(new Rect(0, 0, width, height));
+            visualBrushHost.UpdateLayout();
+
+            var renderBitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
+            renderBitmap.Render(visualBrushHost);
+            renderBitmap.Freeze();
+
+            //    Clipboard.SetImage(renderBitmap);
+
+            //PngBitmapEncoder png = new PngBitmapEncoder();
+            //png.Frames.Add(BitmapFrame.Create(renderBitmap));
+            //using (Stream stm = File.Create(filepath))
+            //{
+            //    png.Save(stm);
+            //}
+
+            //            if (grey)
+            //            {
+            //#if DEBUG
+            //                Debugger.Break();
+            //#endif
+
+            //                var bmp = new FormatConvertedBitmap(renderBitmap, PixelFormats.Gray32Float, null, 0);
+            //                bmp.Freeze();
+            //                return bmp;
+            //            }
+
+            return renderBitmap; //renderBitmap.GetAsFrozen();
         }
     }
 }

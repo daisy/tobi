@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Tobi.Common.MVVM;
-using Tobi.Common.UI.XAML;
 
 namespace Tobi.Common.UI
 {
@@ -58,28 +56,19 @@ namespace Tobi.Common.UI
             }
         }
 
-        public void InvalidateIconsCache()
-        {
-            m_IconSmall = null;
-            m_IconMedium = null;
-            m_IconLarge = null;
-            m_IconXLarge = null;
-        }
-
         public Thickness IconMargin_Small { get; set; }
         public Thickness IconMargin_Medium { get; set; }
         public Thickness IconMargin_Large { get; set; }
         public Thickness IconMargin_XLarge { get; set; }
 
-        private void updateSource(Image image)
+        private void updateSource(AutoGreyableImage image)
         {
-            image.Source = RenderTargetBitmapImageSourceConverter.convert(
+            image.InitializeFromVectorGraphics(
                 IconVisualBrush,
-                image.Width * IconDrawScale, image.Height * IconDrawScale,
-                false); //!image.IsEnabled
+                image.Width * IconDrawScale, image.Height * IconDrawScale);
         }
 
-        private Image createImage(int size)
+        private AutoGreyableImage createImage(int size)
         {
             var image = new AutoGreyableImage
             {
@@ -145,70 +134,7 @@ namespace Tobi.Common.UI
 
         }
 
-        /*
-        private void assignMultiBinding(FrameworkElement image, string size)
-        {
-            var bindingMulti = new MultiBinding
-            {
-                Converter = new RenderTargetBitmapImageSourceConverter()
-            };
-
-            var bindingVisualBrush = new Binding
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                Path = new PropertyPath("IconVisualBrush")
-            };
-            bindingMulti.Bindings.Add(bindingVisualBrush);
-
-            var bindingWidth = new Binding
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                Path = new PropertyPath("IconWidth_" + size)
-            };
-            bindingMulti.Bindings.Add(bindingWidth);
-
-            var bindingHeight = new Binding
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                Path = new PropertyPath("IconHeight_" + size)
-            };
-            bindingMulti.Bindings.Add(bindingHeight);
-
-            bindingMulti.ConverterParameter = false;
-
-            var expr = image.SetBinding(Image.SourceProperty, bindingMulti);
-
-            if (image is AutoGreyableImage)
-            {
-                MultiBinding bind = cloneBinding(bindingMulti);
-                bind.ConverterParameter = true;
-                ((AutoGreyableImage) image).SourceBindingColor = bindingMulti;
-                ((AutoGreyableImage) image).SourceBindingGrey = bind;
-            }
-        }
-
-        private MultiBinding cloneBinding(MultiBinding binding)
-        {
-            var multiBind = new MultiBinding
-            {
-                Converter = binding.Converter,
-                ConverterParameter = binding.ConverterParameter
-            };
-            foreach (Binding bind in binding.Bindings)
-            {
-                var newBind = new Binding();
-                newBind.Mode = bind.Mode;
-                newBind.Source = bind.Source;
-                newBind.Path = bind.Path;
-                multiBind.Bindings.Add(newBind);
-            }
-            return multiBind;
-        }*/
-
-        private VisualBrush m_IconVisualBrush = null;
+        private VisualBrush m_IconVisualBrush;
         public VisualBrush IconVisualBrush
         {
             get { return m_IconVisualBrush; }
@@ -274,7 +200,7 @@ namespace Tobi.Common.UI
                 return m_IconSmall;
             }
         }
-        private Image m_IconSmall = null;
+        private AutoGreyableImage m_IconSmall;
 
         [NotifyDependsOn("IconDrawScale")]
         public double IconHeight_Medium
@@ -308,7 +234,7 @@ namespace Tobi.Common.UI
                 return m_IconMedium;
             }
         }
-        private Image m_IconMedium = null;
+        private AutoGreyableImage m_IconMedium;
 
         [NotifyDependsOn("IconDrawScale")]
         public double IconHeight_Large
@@ -342,7 +268,7 @@ namespace Tobi.Common.UI
                 return m_IconLarge;
             }
         }
-        private Image m_IconLarge = null;
+        private AutoGreyableImage m_IconLarge;
 
         [NotifyDependsOn("IconDrawScale")]
         public double IconHeight_XLarge
@@ -376,11 +302,84 @@ namespace Tobi.Common.UI
                 return m_IconXLarge;
             }
         }
-        private Image m_IconXLarge = null;
+        private AutoGreyableImage m_IconXLarge;
+
+
+
+        //public void InvalidateIconsCache()
+        //{
+        //    m_IconSmall = null;
+        //    m_IconMedium = null;
+        //    m_IconLarge = null;
+        //    m_IconXLarge = null;
+        //}
     }
 }
 
 
+
+/*
+private void assignMultiBinding(FrameworkElement image, string size)
+{
+    var bindingMulti = new MultiBinding
+    {
+        Converter = new RenderTargetBitmapImageSourceConverter()
+    };
+
+    var bindingVisualBrush = new Binding
+    {
+        Mode = BindingMode.OneWay,
+        Source = this,
+        Path = new PropertyPath("IconVisualBrush")
+    };
+    bindingMulti.Bindings.Add(bindingVisualBrush);
+
+    var bindingWidth = new Binding
+    {
+        Mode = BindingMode.OneWay,
+        Source = this,
+        Path = new PropertyPath("IconWidth_" + size)
+    };
+    bindingMulti.Bindings.Add(bindingWidth);
+
+    var bindingHeight = new Binding
+    {
+        Mode = BindingMode.OneWay,
+        Source = this,
+        Path = new PropertyPath("IconHeight_" + size)
+    };
+    bindingMulti.Bindings.Add(bindingHeight);
+
+    bindingMulti.ConverterParameter = false;
+
+    var expr = image.SetBinding(Image.SourceProperty, bindingMulti);
+
+    if (image is AutoGreyableImage)
+    {
+        MultiBinding bind = cloneBinding(bindingMulti);
+        bind.ConverterParameter = true;
+        ((AutoGreyableImage) image).SourceBindingColor = bindingMulti;
+        ((AutoGreyableImage) image).SourceBindingGrey = bind;
+    }
+}
+
+private MultiBinding cloneBinding(MultiBinding binding)
+{
+    var multiBind = new MultiBinding
+    {
+        Converter = binding.Converter,
+        ConverterParameter = binding.ConverterParameter
+    };
+    foreach (Binding bind in binding.Bindings)
+    {
+        var newBind = new Binding();
+        newBind.Mode = bind.Mode;
+        newBind.Source = bind.Source;
+        newBind.Path = bind.Path;
+        multiBind.Bindings.Add(newBind);
+    }
+    return multiBind;
+}*/
 
 
 /*

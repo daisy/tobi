@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,101 +46,15 @@ namespace Tobi.Common.UI.XAML
             var width = (Double)values[1];
             var height = (Double)values[2];
 
-            bool grey = false;
-            if (parameter != null && parameter is Boolean)
-            {
-                grey = (Boolean)parameter;
-            }
+            return AutoGreyableImage.CreateFromVectorGraphics(visualBrush, width, height);
 
-            return convert(visualBrush, width, height, grey);
-        }
-
-        public static BitmapSource convert(VisualBrush visualBrush, double width, double height, Boolean grey)
-        {
-            if (Double.IsNaN(width))
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                return null;
-            }
-            if (Double.IsNaN(height))
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                return null;
-            }
-
-            //visualBrush.ViewboxUnits = BrushMappingMode.RelativeToBoundingBox;
-            //visualBrush.Viewbox = new Rect(0, 0, 1, 1);
-
-            //visualBrush.ViewportUnits = BrushMappingMode.Absolute;
-            //visualBrush.Viewport = new Rect(0, 0, width, height);
-
-            //if (visualBrush.Visual is FrameworkElement)
+            //bool grey = false;
+            //if (parameter != null && parameter is Boolean)
             //{
-            //    var frameElement = (FrameworkElement)visualBrush.Visual;
-            //    frameElement.Width = width;
-            //    frameElement.Height = height;
-            //}
-            //else
-            //{
-            //    Debugger.Break();
+            //    grey = (Boolean)parameter;
             //}
 
-            var size = new Size(width, height);
-
-            if (visualBrush.Visual is UIElement)
-            {
-                var uiElement = (UIElement)visualBrush.Visual;
-
-                uiElement.Measure(size);
-                uiElement.Arrange(new Rect(0, 0, width, height));
-                //uiElement.UpdateLayout();
-                //uiElement.InvalidateVisual();
-            }
-
-            var visualBrushHost = new Border // Rectangle
-            {
-                //StrokeThickness = 0,
-                //Fill = Brushes.Red,
-                SnapsToDevicePixels = true,
-                Height = height,
-                Width = width,
-                BorderThickness = new Thickness(0),
-                BorderBrush = null,
-                Background = visualBrush // Fill
-            };
-            visualBrushHost.Measure(size);
-            visualBrushHost.Arrange(new Rect(0, 0, width, height));
-            visualBrushHost.UpdateLayout();
-
-            var renderBitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
-            renderBitmap.Render(visualBrushHost);
-            renderBitmap.Freeze();
-
-            //    Clipboard.SetImage(renderBitmap);
-
-            //PngBitmapEncoder png = new PngBitmapEncoder();
-            //png.Frames.Add(BitmapFrame.Create(renderBitmap));
-            //using (Stream stm = File.Create(filepath))
-            //{
-            //    png.Save(stm);
-            //}
-
-            if (grey)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-
-                var bmp = new FormatConvertedBitmap(renderBitmap, PixelFormats.Gray32Float, null, 0);
-                bmp.Freeze();
-                return bmp;
-            }
-
-            return renderBitmap; //renderBitmap.GetAsFrozen();
+            //return convert(visualBrush, width, height, grey);
         }
     }
 }
