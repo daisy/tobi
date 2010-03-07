@@ -90,7 +90,7 @@ namespace Tobi.Plugin.Validator
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Lang.MainContentValidator; }    // TODO LOCALIZE ThisIsTheMainContentValidator
+            get { return Tobi_Plugin_Validator_Lang.MainContentValidator; }    // TODO LOCALIZE MainContentValidator
         }
 
         public override IEnumerable<ValidationItem> ValidationItems

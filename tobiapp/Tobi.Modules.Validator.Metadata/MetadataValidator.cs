@@ -56,7 +56,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Key;}       // TODO LOCALIZE MetadataValidator
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Key;}       // TODO LOCALIZE MetadataValidator_Key
         }
 
         public override string Description
@@ -421,7 +421,7 @@ namespace Tobi.Plugin.Validator.Metadata
     {
         private MetadataValidator m_ParentValidator;
         private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
-        public static string MagicStringEmpty { get { return "[EMPTY]";}}
+        public static string MagicStringEmpty { get { return Tobi_Plugin_Validator_Metadata_Lang.Empty;}}                // TODO LOCALIZE Empty
         public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {
             m_ParentValidator = parentValidator;

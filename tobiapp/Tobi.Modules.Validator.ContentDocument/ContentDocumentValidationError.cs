@@ -43,17 +43,17 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
                 {
-                    return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.InvalidSequence, targetNodeName);           // TODO LOCALIZE KeyAlreadyAdded InvalidSequence
+                    return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.InvalidSequence, targetNodeName);           // TODO LOCALIZE Key already added InvalidSequence
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {
-                    return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.NoDTDFound, DtdIdentifier);                // TODO LOCALIZE KeyAlreadyAdded NoDTDFound
+                    return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.NoDTDFound, DtdIdentifier);                // TODO LOCALIZE Key already added NoDTDFound
                 }
                 if (ErrorType == ContentDocumentErrorType.UndefinedElement)
                 {
-                    return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.NoElementDefinitionFound, targetNodeName);      // TODO LOCALIZE KeyAlreadyAdded NoElementDefinitionFound
+                    return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.NoElementDefinitionFound, targetNodeName);      // TODO LOCALIZE Key already added NoElementDefinitionFound
                 }
-                return Tobi_Plugin_Validator_ContentDocument_Lang.UnspecifiedError;                                                           // TODO LOCALIZE KeyAlreadyAdded UnspecifiedError
+                return Tobi_Plugin_Validator_ContentDocument_Lang.UnspecifiedError;                                                           // TODO LOCALIZE Key already added UnspecifiedError
             }
         }
         public ContentDocumentValidationError()

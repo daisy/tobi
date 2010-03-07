@@ -120,6 +120,9 @@
   <data name="ApplicationPreferences" xml:space="preserve">
     <value>Application preferences.</value>
   </data>
+  <data name="ApplicationPreferences_Key" xml:space="preserve">
+    <value>Application preferences</value>
+  </data>
   <data name="DisplayAnEditor" xml:space="preserve">
     <value>Display an editor for application preferences</value>
   </data>

@@ -129,6 +129,9 @@
   <data name="DuplicateNotAllowed" xml:space="preserve">
     <value>Duplicate of {0} not allowed.</value>
   </data>
+  <data name="Empty" xml:space="preserve">
+    <value>"[EMPTY]"</value>
+  </data>
   <data name="MetadataValidator" xml:space="preserve">
     <value>Metadata Validator.</value>
   </data>

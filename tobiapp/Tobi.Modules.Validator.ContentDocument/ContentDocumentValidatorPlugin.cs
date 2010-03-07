@@ -36,7 +36,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.AValidatorThatUsesDataFromADTDToValidateElementsInADocumentTree; }   // TODO LOCALIZE AValidatorThatUsesDataFromADTDToValidateElementsInADocumentTree
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ValidatorToValidateElementsInADocumentTree; }   // TODO LOCALIZE ValidatorToValidateElementsInADocumentTree
         }
     }
 }
