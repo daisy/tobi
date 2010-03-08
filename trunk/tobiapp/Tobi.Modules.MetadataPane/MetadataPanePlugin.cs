@@ -109,12 +109,12 @@ namespace Tobi.Plugin.MetadataPane
 
         public override string Name
         {
-            get { return @"Metadata editor panel."; }      // TODO LOCALIZE MetadataEditorPanel
+            get { return Tobi_Plugin_MetadataPane_Lang.MetadataEditorPanel; }      // TODO LOCALIZE MetadataEditorPanel
         }
 
         public override string Description
         {
-            get { return @"The publication metadata editor"; }   // TODO LOCALIZE ThePublicationMetadataEditor
+            get { return Tobi_Plugin_MetadataPane_Lang.PublicationMetadataEditor; }   // TODO LOCALIZE PublicationMetadataEditor
         }
     }
 }

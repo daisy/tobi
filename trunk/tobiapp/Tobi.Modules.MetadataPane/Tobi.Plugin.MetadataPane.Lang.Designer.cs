@@ -79,7 +79,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Metadata Editor.
+        ///   Looks up a localized string similar to Open metadata editor.
         /// </summary>
         public static string OpenMetadataEditor {
             get {
@@ -93,6 +93,15 @@ namespace Tobi.Plugin.MetadataPane {
         public static string Optional {
             get {
                 return ResourceManager.GetString("Optional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The publication metadata editor.
+        /// </summary>
+        public static string PublicationMetadataEditor {
+            get {
+                return ResourceManager.GetString("PublicationMetadataEditor", resourceCulture);
             }
         }
         
@@ -129,15 +138,6 @@ namespace Tobi.Plugin.MetadataPane {
         public static string ShowMetadata_ {
             get {
                 return ResourceManager.GetString("ShowMetadata_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The publication metadata editor.
-        /// </summary>
-        public static string ThePublicationMetadataEditor {
-            get {
-                return ResourceManager.GetString("ThePublicationMetadataEditor", resourceCulture);
             }
         }
     }

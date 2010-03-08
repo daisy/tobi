@@ -47,10 +47,10 @@ namespace Tobi.Plugin.MetadataPane
             if (value == null) return "";
             MetadataDefinition item = (MetadataDefinition)value;
             if (item.Occurrence == MetadataOccurrence.Required)
-                return "Required.  ";         // TODO LOCALIZE Required
+                return Tobi_Plugin_MetadataPane_Lang.Required;         // TODO LOCALIZE Required
             if (item.Occurrence == MetadataOccurrence.Recommended)
-                return "Recommended. ";       // TODO LOCALIZE Recommended
-            return "Optional. ";              // TODO LOCALIZE Optional
+                return Tobi_Plugin_MetadataPane_Lang.Recommended;       // TODO LOCALIZE Recommended
+            return Tobi_Plugin_MetadataPane_Lang.Optional;              // TODO LOCALIZE Optional
         }
     }
 

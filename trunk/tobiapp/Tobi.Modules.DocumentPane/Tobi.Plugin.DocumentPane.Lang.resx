@@ -141,7 +141,7 @@
   <data name="No_Document" xml:space="preserve">
     <value>No document.</value>
   </data>
-  <data name="ThePublicationDocumentViewer" xml:space="preserve">
+  <data name="PublicationDocumentViewer" xml:space="preserve">
     <value>The publication document viewer</value>
   </data>
 </root>

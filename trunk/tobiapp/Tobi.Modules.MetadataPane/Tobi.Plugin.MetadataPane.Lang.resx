@@ -124,10 +124,13 @@
     <value>Metadata editor panel.</value>
   </data>
   <data name="OpenMetadataEditor" xml:space="preserve">
-    <value>Open Metadata Editor</value>
+    <value>Open metadata editor</value>
   </data>
   <data name="Optional" xml:space="preserve">
     <value>Optional.</value>
+  </data>
+  <data name="PublicationMetadataEditor" xml:space="preserve">
+    <value>The publication metadata editor</value>
   </data>
   <data name="Recommended" xml:space="preserve">
     <value>Recommended.</value>
@@ -140,8 +143,5 @@
   </data>
   <data name="ShowMetadata_" xml:space="preserve">
     <value>Metadata viewer/editor</value>
-  </data>
-  <data name="ThePublicationMetadataEditor" xml:space="preserve">
-    <value>The publication metadata editor</value>
   </data>
 </root>
