@@ -270,12 +270,12 @@ namespace Tobi.Plugin.AudioPane
 
         public override string Name
         {
-            get { return @"Audio waveform editor."; }              // TODO Localize AudioWaveformEditor
+            get { return Tobi_Plugin_AudioPane_Lang.AudioWaveformEditor; }              // TODO Localize AudioWaveformEditor
         }
 
         public override string Description
         {
-            get { return @"The audio waveform editor and display."; }    // TODO Localize TheAudioWaveformEditorAndDisplay
+            get { return Tobi_Plugin_AudioPane_Lang.AudioWaveformEditorAndDisplay; }    // TODO Localize AudioWaveformEditorAndDisplay
         }
     }
 }
