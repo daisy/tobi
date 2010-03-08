@@ -135,9 +135,9 @@ namespace Tobi.Plugin.DocumentPane {
         /// <summary>
         ///   Looks up a localized string similar to The publication document viewer.
         /// </summary>
-        public static string ThePublicationDocumentViewer {
+        public static string PublicationDocumentViewer {
             get {
-                return ResourceManager.GetString("ThePublicationDocumentViewer", resourceCulture);
+                return ResourceManager.GetString("PublicationDocumentViewer", resourceCulture);
             }
         }
     }
