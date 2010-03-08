@@ -351,7 +351,7 @@ namespace Tobi.Plugin.AudioPane
             get
             {
                 if (IsMonitoring || IsRecording) return "";
-                return "Playback x" + PlaybackRate;       // TODO Localize  PlaybackX
+                return String.Format(Tobi_Plugin_AudioPane_Lang.PlaybackX, PlaybackRate);       // TODO Localize  PlaybackX
             }
         }
 
@@ -521,11 +521,11 @@ namespace Tobi.Plugin.AudioPane
 
                     if (m_IsWaveFormLoading)
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Loading waveform..."); // TODO Localize LoadingWaveform
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.LoadingWaveform); // TODO Localize LoadingWaveform
                     }
                     else
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Waveform loaded.");  // TODO Localize WaveformLoaded
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.WaveformLoaded);  // TODO Localize WaveformLoaded
                     }
 
                     RaisePropertyChanged(() => IsWaveFormLoading);
@@ -807,7 +807,7 @@ namespace Tobi.Plugin.AudioPane
                     );
             }
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playing..."); // TODO Localize Playing
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Playing); // TODO Localize Playing
 
             //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
@@ -870,7 +870,7 @@ namespace Tobi.Plugin.AudioPane
 
                 m_Player.Stop();
 
-                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback stopped."); // TODO Localize PlaybackStopped
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped); // TODO Localize PlaybackStopped
             }
         }
 
@@ -968,7 +968,7 @@ namespace Tobi.Plugin.AudioPane
 
             RaisePropertyChanged(() => IsPlaying);
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Playback ended."); // TODO Localize PlaybackEnded
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackEnded); // TODO Localize PlaybackEnded
 
             if (State.Audio.HasContent)
             {

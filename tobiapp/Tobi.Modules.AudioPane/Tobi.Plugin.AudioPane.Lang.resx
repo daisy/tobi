@@ -340,37 +340,37 @@
     <value>Loading (ESC to stop)</value>
   </data>
   <data name="LoadingWaveform" xml:space="preserve">
-    <value>Loading Waveform</value>
+    <value>Loading waveform...</value>
   </data>
   <data name="Monitoring" xml:space="preserve">
-    <value>Monitoring</value>
+    <value>Monitoring...</value>
   </data>
   <data name="MonitoringStopped" xml:space="preserve">
-    <value>Monitoring Stopped</value>
+    <value>Monitoring stopped.</value>
   </data>
   <data name="NoDocument" xml:space="preserve">
     <value>No document</value>
   </data>
   <data name="PlaybackEnded" xml:space="preserve">
-    <value>Playback Ended</value>
+    <value>Playback ended.</value>
   </data>
   <data name="PlaybackStopped" xml:space="preserve">
-    <value>Playback Stopped</value>
+    <value>Playback stopped.</value>
   </data>
   <data name="PlaybackX" xml:space="preserve">
     <value>Playback x{0}</value>
   </data>
   <data name="Playing" xml:space="preserve">
-    <value>Playing</value>
+    <value>Playing...</value>
   </data>
   <data name="Ready" xml:space="preserve">
     <value>Ready.</value>
   </data>
   <data name="Recording" xml:space="preserve">
-    <value>Recording</value>
+    <value>Recording...</value>
   </data>
   <data name="RecordingStopped" xml:space="preserve">
-    <value>Recording Stopped</value>
+    <value>Recording stopped.</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
     <value>_Select all</value>
@@ -378,10 +378,10 @@
   <data name="SelectAll_" xml:space="preserve">
     <value>Select all content</value>
   </data>
-  <data name="TheAudioWaveformEditorAndDisplay" xml:space="preserve">
+  <data name="AudioWaveformEditorAndDisplay" xml:space="preserve">
     <value>The audio waveform editor and display.</value>
   </data>
   <data name="WaveformLoaded" xml:space="preserve">
-    <value>Waveform Loaded</value>
+    <value>Waveform loaded.</value>
   </data>
 </root>

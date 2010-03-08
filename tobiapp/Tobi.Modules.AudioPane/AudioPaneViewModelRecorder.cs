@@ -34,7 +34,7 @@ namespace Tobi.Plugin.AudioPane
 
                     m_Recorder.StopRecording();
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording stopped."); // TODO Localize RecordingStopped
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped); // TODO Localize RecordingStopped
 
                 },
                 () => !IsWaveFormLoading && IsRecording,
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.AudioPane
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Recording..."); // TODO Localize Recording
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording); // TODO Localize Recording
                 },
                 ()=>
                 {
@@ -118,7 +118,7 @@ namespace Tobi.Plugin.AudioPane
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Monitoring..."); // TODO Localize Monitoring
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring); // TODO Localize Monitoring
                     
                     AudioCues.PlayTock();
                 },
@@ -140,7 +140,7 @@ namespace Tobi.Plugin.AudioPane
                     m_Recorder.StopRecording();
 
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("Monitoring stopped.");// TODO Localize MonitoringStopped
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);// TODO Localize MonitoringStopped
 
                     State.Audio.PcmFormatRecordingMonitoring = null;
                     
