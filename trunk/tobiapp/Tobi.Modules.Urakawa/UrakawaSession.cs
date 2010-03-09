@@ -482,10 +482,20 @@ namespace Tobi.Plugin.Urakawa
             return result;
         }
 
-
+        // Must be called on the UI thread
         protected bool DoWorkProgressUI(string title, IDualCancellableProgressReporter reporter,
             Action actionCancelled, Action actionCompleted)
         {
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            {
+                Debug.Fail("DoWorkProgressUI should be called on the UI thread !!");
+
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal,
+                //    (Action<string, IDualCancellableProgressReporter, Action, Action>)DoWorkProgressUI, title, reporter, actionCancelled, actionCompleted);
+                //return;
+            }
+
             m_Logger.Log(String.Format(@"UrakawaSession.DoWorkProgressUI() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
             var progressBar = new ProgressBar

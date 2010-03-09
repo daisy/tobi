@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -286,6 +287,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnEscape(object obj)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object>)OnEscape, obj);
+                return;
+            }
+
             if (View != null)
             {
                 View.CancelWaveFormLoad();
@@ -367,6 +376,13 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnSubTreeNodeSelected(TreeNode node)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<TreeNode>)OnSubTreeNodeSelected, node);
+                return;
+            }
             //Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
 
             if (node == null || State.CurrentTreeNode == null)
@@ -429,6 +445,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnTreeNodeSelected(TreeNode node)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<TreeNode>)OnTreeNodeSelected, node);
+                return;
+            }
+
             //Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
 
             if (node == null)
@@ -497,6 +521,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnProjectUnLoaded(Project project)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<Project>)OnProjectUnLoaded, project);
+                return;
+            }
+
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
@@ -506,6 +538,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnProjectLoaded(Project project)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<Project>)OnProjectLoaded, project);
+                return;
+            }
+
             if (AudioPlaybackStreamKeepAlive)
             {
                 ensurePlaybackStreamIsDead();
@@ -958,6 +998,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnPeakMeterUpdated(object sender, VuMeter.PeakMeterUpdateEventArgs e)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, VuMeter.PeakMeterUpdateEventArgs>)OnPeakMeterUpdated, sender, e);
+                return;
+            }
+
             if (IsRecording || IsMonitoring)
             {
                 if (View != null)
@@ -985,6 +1033,13 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnPeakMeterOverloaded(object sender, VuMeter.PeakOverloadEventArgs e)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, VuMeter.PeakOverloadEventArgs>)OnPeakMeterOverloaded, sender, e);
+                return;
+            }
             if (e != null)
             {
                 AudioCues.PlayHi();
