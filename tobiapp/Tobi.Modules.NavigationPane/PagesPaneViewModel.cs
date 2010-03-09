@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -157,6 +159,13 @@ namespace Tobi.Plugin.NavigationPane
         }
         private void onPageFoundByFlowDocumentParser(TextElement data)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<TextElement>)onPageFoundByFlowDocumentParser, data);
+                return;
+            }
             _pagesNavigator.AddPage(data);
         }
         private void onTreeNodeSelected(TreeNode node)

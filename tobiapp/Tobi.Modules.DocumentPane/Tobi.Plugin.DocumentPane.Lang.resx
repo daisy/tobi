@@ -144,4 +144,10 @@
   <data name="PublicationDocumentViewer" xml:space="preserve">
     <value>The publication document viewer</value>
   </data>
+  <data name="CreatingFlowDocument" xml:space="preserve">
+    <value>Rendering the document ...</value>
+  </data>
+  <data name="ConvertingXukToFlowDocument" xml:space="preserve">
+    <value>Converting XUK markup ...</value>
+  </data>
 </root>
