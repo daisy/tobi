@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -78,10 +79,10 @@ namespace Tobi
         private ISettingsAggregator m_SettingsAggregator;
 
 #pragma warning restore 649
-        
+
         private readonly ILoggerFacade m_Logger;
         private readonly IEventAggregator m_EventAggregator;
-         
+
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -378,6 +379,43 @@ namespace Tobi
             return false;
         }
 
+        public void ExecuteShellProcess(string shellCmd)
+        {
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = shellCmd,
+                    RedirectStandardError = false, // We can't redirect messages when shell-execute
+                    RedirectStandardOutput = false, // We can't redirect messages when shell-execute
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    Arguments = ""
+                }
+            };
+            process.Start();
+
+            //process.WaitForExit(); We don't have a process to wait for when shell-execute
+            //if (process.ExitCode != 0)
+            //{
+            //    StreamReader stdErr = process.StandardError;
+            //    string toLog = stdErr.ReadToEnd();
+            //    if (!string.IsNullOrEmpty(toLog))
+            //    {
+            //        m_Logger.Log(toLog, Category.Debug, Priority.Medium);
+            //        ExceptionHandler.Handle(new InvalidOperationException(toLog), false, this);
+            //    }
+            //}
+            //else
+            //{
+            //    StreamReader stdOut = process.StandardOutput;
+            //    string toLog = stdOut.ReadToEnd();
+            //    if (!string.IsNullOrEmpty(toLog))
+            //    {
+            //        m_Logger.Log(toLog, Category.Debug, Priority.Medium);
+            //    }
+            //}
+        }
 
         public void DimBackgroundWhile(Action action)
         {

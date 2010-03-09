@@ -1005,6 +1005,8 @@ namespace Tobi.Plugin.AudioPane
         private void OnStateChanged_Player(object sender, AudioPlayer.StateChangedEventArgs e)
         {
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
+            
+            CommandManager.InvalidateRequerySuggested();
 
             resetPeakMeter();
 
