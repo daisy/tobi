@@ -10,31 +10,52 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.core;
 using urakawa.data;
+using urakawa.exception;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
-using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
 {
-    public class XukToFlowDocument
+    public class XukToFlowDocument : DualCancellableProgressReporter
     {
+        private int m_percentageProgress = 0;
+        public override void DoWork()
+        {
+            m_percentageProgress = -1;
+            reportProgress(m_percentageProgress, Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument);
+
+            try
+            {
+                walkBookTreeAndGenerateFlowDocument(m_TreeNode, null);
+            }
+            catch (ProgressCancelledException ex)
+            {
+                return;
+            }
+        }
+
         protected ILoggerFacade Logger { private set; get; }
         protected IEventAggregator EventAggregator { private set; get; }
 
-        public XukToFlowDocument(ILoggerFacade logger, IEventAggregator aggregator,
+        public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
+            ILoggerFacade logger, IEventAggregator aggregator,
             DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
             DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
             DelegateOnRequestNavigate delegateOnRequestNavigate,
             DelegateAddIdLinkTarget delegateAddIdLinkTarget)
         {
+            if (flowDocument != null) m_FlowDoc = flowDocument;
+
+            m_TreeNode = node;
             Logger = logger;
             EventAggregator = aggregator;
 
@@ -47,20 +68,10 @@ namespace Tobi.Plugin.DocumentPane
         public delegate void DelegateAddIdLinkTarget(string name, TextElement data);
         private DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
 
-        private FlowDocument m_FlowDoc;
+        public readonly FlowDocument m_FlowDoc = new FlowDocument();
+
         private TreeNode m_TreeNode;
 
-        public void Convert(TreeNode node, FlowDocument flowDoc)
-        {
-            m_TreeNode = node;
-            
-            m_FlowDoc = flowDoc;
-
-            walkBookTreeAndGenerateFlowDocument(m_TreeNode, null);
-
-            //m_FlowDoc.MouseUp += OnMouseUpFlowDoc;
-
-        }
 
         private int m_currentTD;
         private bool m_firstTR;
@@ -735,7 +746,7 @@ namespace Tobi.Plugin.DocumentPane
                 else
                 {
 #if DEBUG
-                Debugger.Break();
+                    Debugger.Break();
 #endif
                     throw new Exception("table row not in Table ??");
                 }
@@ -829,7 +840,7 @@ namespace Tobi.Plugin.DocumentPane
                 else
                 {
 #if DEBUG
-                Debugger.Break();
+                    Debugger.Break();
 #endif
                     throw new Exception("table row not in Table ??");
                 }
@@ -1703,7 +1714,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (textMedia == null)
                     {
 #if DEBUG
-                Debugger.Break();
+                        Debugger.Break();
 #endif
                         throw new Exception("The given TreeNode has no children, has no XmlProperty, and has no TextMedia.");
                     }
@@ -1734,14 +1745,14 @@ namespace Tobi.Plugin.DocumentPane
                     if (textMedia == null)
                     {
 #if DEBUG
-                Debugger.Break();
+                        Debugger.Break();
 #endif
                         throw new Exception("The given TreeNode has children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount != 0 && qname == null && textMedia != null
                     {
 #if DEBUG
-                Debugger.Break();
+                        Debugger.Break();
 #endif
                         throw new Exception("The given TreeNode has children, has no XmlProperty, and has TextMedia.");
                     }
@@ -1756,7 +1767,7 @@ namespace Tobi.Plugin.DocumentPane
                     else //childCount != 0 && qname != null && textMedia != null
                     {
 #if DEBUG
-                Debugger.Break();
+                        Debugger.Break();
 #endif
                         throw new Exception("The given TreeNode has children, has XmlProperty, and has TextMedia.");
                     }
@@ -1764,6 +1775,11 @@ namespace Tobi.Plugin.DocumentPane
 
                 for (int i = 0; i < node.Children.Count; i++)
                 {
+                    if (RequestCancellation)
+                    {
+                        throw new ProgressCancelledException(@"dummy");
+                    }
+
                     walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }
 

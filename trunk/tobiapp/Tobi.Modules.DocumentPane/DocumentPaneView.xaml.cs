@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -9,7 +9,6 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -605,10 +604,11 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
             if (nodeBook == null)
             {
+                Debug.Fail("No 'book' root element ??");
                 return;
             }
 
-            var converter = new XukToFlowDocument(m_Logger, m_EventAggregator,
+            var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator,
                             OnMouseUpFlowDoc,
                             (textElem) =>
                             {
@@ -635,8 +635,32 @@ namespace Tobi.Plugin.DocumentPane
                             (name, data) =>
                             {
                                 m_idLinkTargets.Add(name, data);
-                            });
-            converter.Convert(nodeBook, TheFlowDocument);
+                            }
+                            );
+
+            try
+            {
+                converter.DoWork();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, m_ShellView);
+            }
+
+            // WE CAN'T USE A THREAD BECAUSE FLOWDOCUMENT CANNOT BE FROZEN FOR INTER-THREAD INSTANCE EXCHANGE !! :(
+            //m_ShellView.RunModalCancellableProgressTask(
+            //    Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument,
+            //    converter,
+            //    () =>
+            //        {
+            //            TheFlowDocument = converter.m_FlowDoc;
+            //        },
+            //    () =>
+            //        {
+            //            TheFlowDocument = converter.m_FlowDoc;
+            //        }
+            //    );
+
         }
 
         private void selectNode(TreeNode node)
@@ -1213,14 +1237,14 @@ namespace Tobi.Plugin.DocumentPane
 
         //private bool m_FoundVisible;
         //private ScrollViewer m_ScrollViewer;
-      
+
         //private List<object> GetVisibleTextObjects_Logical(DependencyObject obj)
         //{
         //    List<object> elms = new List<object>();
-            
+
         //    IEnumerable children = LogicalTreeHelper.GetChildren(obj);
         //    IEnumerator enumerator = children.GetEnumerator();
-            
+
         //    while (enumerator.MoveNext())
         //    {    
         //        if (enumerator.Current is TextElement && IsTextObjectInView((TextElement)enumerator.Current))
@@ -1235,7 +1259,7 @@ namespace Tobi.Plugin.DocumentPane
         //    }
         //    return elms;
         //}
-        
+
 
         ////just for testing purposes
         //private int temp_ContainerVisualCount;
@@ -1255,7 +1279,7 @@ namespace Tobi.Plugin.DocumentPane
         //    List<object> elms = new List<object>();
 
         //    int childcount = VisualTreeHelper.GetChildrenCount(obj);
-            
+
         //    for (int i = 0; i<childcount; i++)
         //    {
         //        DependencyObject child = VisualTreeHelper.GetChild(obj, i);
