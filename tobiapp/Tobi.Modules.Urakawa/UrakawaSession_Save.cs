@@ -181,14 +181,14 @@ namespace Tobi.Plugin.Urakawa
 
             m_Logger.Log(String.Format(@"UrakawaSession.saveas() [{0}]", m_SaveAsDocumentFilePath), Category.Debug, Priority.Medium);
 
-            var backWorker = new BackgroundWorker
-                {
-                    WorkerSupportsCancellation = true,
-                    WorkerReportsProgress = true
-                };
+            //var backWorker = new BackgroundWorker
+            //    {
+            //        WorkerSupportsCancellation = true,
+            //        WorkerReportsProgress = true
+            //    };
 
-            bool cancelFlag = false;
-            int currentPercentage = 0;
+            //bool cancelFlag = false;
+            //int currentPercentage = 0;
 
             var uri = new Uri(m_SaveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
             //DocumentProject.OpenXuk(uri);
@@ -199,156 +199,143 @@ namespace Tobi.Plugin.Urakawa
                 LongDescription = Tobi_Plugin_Urakawa_Lang.SerializeDOMIntoXukFile       // TODO LOCALIZE SerializeDOMIntoXukFile
             };
 
-            action.Progress += (sender, e) =>
-            {
-                double val = e.Current;
-                double max = e.Total;
-                var percent = (int)((val / max) * 100);
-
-                if (percent != currentPercentage)
+            bool notCancelled = DoWorkProgressUI(Tobi_Plugin_Urakawa_Lang.SaveXukFile, action,
+                () =>
                 {
-                    currentPercentage = percent;
-                    backWorker.ReportProgress(currentPercentage);
-                }
-
-                if (cancelFlag)
-                {
-                    e.Cancel();
-                }
-            };
-            action.Finished += (sender, e) =>
-            {
-                if (DocumentFilePath == m_SaveAsDocumentFilePath)
-                {
-                    File.Delete(DocumentFilePath);
-                    File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
-
-                    //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
-                    //File.Delete(DocumentFilePath + SAVING_EXT);
-
-                    DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
-                }
-                else
-                {
-                    if (File.Exists(m_SaveAsDocumentFilePath))
+                    if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
                     {
-                        File.Delete(m_SaveAsDocumentFilePath);
+                        File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
                     }
-                    File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
-                }
 
-
-                m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);            // TODO LOCALIZE Saved
-
-                RaisePropertyChanged(() => IsDirty);
-                //IsDirty = false;
-            };
-            action.Cancelled += (sender, e) =>
-            {
-                if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
-                {
-                    File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
-                }
-
-                RaisePropertyChanged(() => IsDirty);
-                //IsDirty = true;
-
-                backWorker.CancelAsync();
-            };
-
-            var progressBar = new ProgressBar
-            {
-                IsIndeterminate = true,
-                Height = 18,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Minimum = 0,
-                Maximum = 100,
-                Value = 0
-            };
-
-            var label = new TextBlock
-            {
-                Text = action.ShortDescription,
-                Margin = new Thickness(0, 0, 0, 8),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Focusable = true,
-            };
-            var panel = new StackPanel
-            {
-                Orientation = Orientation.Vertical,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-
-            panel.Children.Add(label);
-            panel.Children.Add(progressBar);
-
-            var details = new TextBoxReadOnlyCaretVisible(action.LongDescription);
-
-            var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       Tobi_Plugin_Urakawa_Lang.RunningTask),
-                                                   panel,
-                                                   PopupModalWindow.DialogButtonsSet.Cancel,
-                                                   PopupModalWindow.DialogButton.Cancel,
-                                                   false, 500, 150, details, 80);
-
-            Exception workException = null;
-            backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
-            {
-                //var dummy = (string)args.Argument;
-
-                if (backWorker.CancellationPending)
-                {
-                    args.Cancel = true;
-                    return;
-                }
-
-                action.Execute();
-
-                args.Result = @"dummy result";
-            };
-
-            backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
-            {
-                progressBar.Value = args.ProgressPercentage;
-            };
-
-            backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
-            {
-                workException = args.Error;
-
-                if (args.Cancelled)
-                {
                     RaisePropertyChanged(() => IsDirty);
                     //IsDirty = true;
-                    windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
-                }
-                else
+
+                    //backWorker.CancelAsync();
+                },
+                () =>
                 {
-                    windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                    if (DocumentFilePath == m_SaveAsDocumentFilePath)
+                    {
+                        File.Delete(DocumentFilePath);
+                        File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+
+                        //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+                        //File.Delete(DocumentFilePath + SAVING_EXT);
+
+                        DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
+                    }
+                    else
+                    {
+                        if (File.Exists(m_SaveAsDocumentFilePath))
+                        {
+                            File.Delete(m_SaveAsDocumentFilePath);
+                        }
+                        File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
+                    }
+
+
+                    m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);            // TODO LOCALIZE Saved
+
+                    RaisePropertyChanged(() => IsDirty);
+                    //IsDirty = false;
                 }
+                );
 
-                //var result = (string)args.Result;
+            return notCancelled;
 
-                backWorker = null;
-            };
+            //var progressBar = new ProgressBar
+            //{
+            //    IsIndeterminate = true,
+            //    Height = 18,
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    Minimum = 0,
+            //    Maximum = 100,
+            //    Value = 0
+            //};
 
-            backWorker.RunWorkerAsync(@"dummy arg");
-            windowPopup.ShowModal();
+            //var label = new TextBlock
+            //{
+            //    Text = action.ShortDescription,
+            //    Margin = new Thickness(0, 0, 0, 8),
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    Focusable = true,
+            //};
+            //var panel = new StackPanel
+            //{
+            //    Orientation = Orientation.Vertical,
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //};
 
-            if (workException != null)
-            {
-                throw workException;
-            }
+            //panel.Children.Add(label);
+            //panel.Children.Add(progressBar);
 
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
-            {
-                cancelFlag = true;
-                return false;
-            }
-            return true;
+            //var details = new TextBoxReadOnlyCaretVisible(action.LongDescription);
+
+            //var windowPopup = new PopupModalWindow(m_ShellView,
+            //                                       UserInterfaceStrings.EscapeMnemonic(
+            //                                           Tobi_Plugin_Urakawa_Lang.RunningTask),
+            //                                       panel,
+            //                                       PopupModalWindow.DialogButtonsSet.Cancel,
+            //                                       PopupModalWindow.DialogButton.Cancel,
+            //                                       false, 500, 150, details, 80);
+
+            //Exception workException = null;
+            //backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+            //{
+            //    //var dummy = (string)args.Argument;
+
+            //    if (backWorker.CancellationPending)
+            //    {
+            //        args.Cancel = true;
+            //        return;
+            //    }
+
+            //    action.Execute();
+
+            //    args.Result = @"dummy result";
+            //};
+
+            //backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+            //{
+            //    progressBar.Value = args.ProgressPercentage;
+            //};
+
+            //backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+            //{
+            //    workException = args.Error;
+
+            //    if (args.Cancelled)
+            //    {
+            //        RaisePropertyChanged(() => IsDirty);
+            //        //IsDirty = true;
+            //        windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
+            //    }
+            //    else
+            //    {
+            //        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+            //    }
+
+            //    //var result = (string)args.Result;
+
+            //    backWorker = null;
+            //};
+
+            //backWorker.RunWorkerAsync(@"dummy arg");
+            //windowPopup.ShowModal();
+
+            //if (workException != null)
+            //{
+            //    throw workException;
+            //}
+
+            //if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+            //{
+            //    cancelFlag = true;
+            //    return false;
+            //}
+            //return true;
         }
 
         private bool askUserConfirmOverwriteFileFolder(string path, bool folder)

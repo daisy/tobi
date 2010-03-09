@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using urakawa.commands;
@@ -201,6 +203,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
+            }
+
             Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             bool refresh = eventt is DoneEventArgs

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -134,12 +135,6 @@ namespace Tobi.Plugin.Urakawa
                 return false;
             }
 
-            var backWorker = new BackgroundWorker
-                {
-                    WorkerSupportsCancellation = true,
-                    WorkerReportsProgress = true
-                };
-
             string ext = Path.GetExtension(fileUri.ToString()).ToLower();
             if (ext == @".xuk")
             {
@@ -155,10 +150,13 @@ namespace Tobi.Plugin.Urakawa
                 if (!File.Exists(DocumentFilePath))
                     throw new InvalidUriException("The import URI must point to an existing file! " + Environment.NewLine + fileUri.ToString());
 
-                int currentPercentage = 0;
-                bool cancelFlag = false;
-
                 var project = new Project();
+
+                //var backWorker = new BackgroundWorker
+                //    {
+                //        WorkerSupportsCancellation = true,
+                //        WorkerReportsProgress = true
+                //    };
 
                 //var uri = new Uri(DocumentFilePath, UriKind.Absolute);
                 //DocumentProject.OpenXuk(uri);
@@ -169,141 +167,140 @@ namespace Tobi.Plugin.Urakawa
                     LongDescription = Tobi_Plugin_Urakawa_Lang.ParsingXMLDoc_BuildingDOM                    // TODO LOCALIZE ParsingXMLDoc_BuildingDOM
                 };
 
-                action.Progress += (sender, e) =>
-                {
-                    double val = e.Current;
-                    double max = e.Total;
-                    var percent = (int)((val / max) * 100);
-
-                    if (percent != currentPercentage)
-                    {
-                        currentPercentage = percent;
-                        backWorker.ReportProgress(currentPercentage);
-                    }
-
-                    if (cancelFlag)
-                    {
-                        e.Cancel();
-                    }
-                };
-                action.Finished += (sender, e) => { };
-                action.Cancelled += (sender, e) =>
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-
-                        backWorker.CancelAsync();
-                    };
-
-                var progressBar = new ProgressBar
-                {
-                    IsIndeterminate = false,
-                    Height = 18,
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    Minimum = 0,
-                    Maximum = 100,
-                    Value = 0
-                };
-
-                var label = new TextBlock
-                {
-                    Text = action.ShortDescription,
-                    Margin = new Thickness(0, 0, 0, 8),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Focusable = true,
-                };
-                var panel = new StackPanel
-                {
-                    Orientation = Orientation.Vertical,
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-
-                panel.Children.Add(label);
-                panel.Children.Add(progressBar);
-
-                var details = new TextBoxReadOnlyCaretVisible(action.LongDescription);
-
-                var windowPopup = new PopupModalWindow(m_ShellView,
-                                                       UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Plugin_Urakawa_Lang.RunningTask),
-                                                       panel,
-                                                       PopupModalWindow.DialogButtonsSet.Cancel,
-                                                       PopupModalWindow.DialogButton.Cancel,
-                                                       false, 500, 150, details, 80);
-
-
-                Exception workException = null;
-                backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
-                {
-                    //var dummy = (string)args.Argument;
-
-                    if (backWorker.CancellationPending)
-                    {
-                        args.Cancel = true;
-                        return;
-                    }
-
-                    action.Execute();
-
-                    args.Result = @"dummy result";
-                };
-
-                backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
-                {
-                    progressBar.Value = args.ProgressPercentage;
-                };
-
-                backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
-                {
-                    workException = args.Error;
-
-                    if (cancelFlag)
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-                    }
-                    else if (args.Cancelled)
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-                        windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
-                    }
-                    else if (workException != null)
-                    {
-                        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
-                    }
-                    else
-                    {
-                        if (project.Presentations.Count == 0)
+                bool notCancelled = DoWorkProgressUI(Tobi_Plugin_Urakawa_Lang.OpenXukFile, action, 
+                    ()=>
                         {
-                            workException = new XukException("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
+                            DocumentFilePath = null;
+                            DocumentProject = null;
+
+                            //backWorker.CancelAsync();
+                        },
+                    () =>
+                        {
+                            if (project.Presentations.Count == 0)
+                            {
+                                Debug.Fail("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
+                                //workException = new XukException()
+                            }
+                            else
+                                DocumentProject = project;   
                         }
-                        else
-                            DocumentProject = project;
-                        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
-                    }
-
-
-                    //var result = (string)args.Result;
-
-                    backWorker = null;
-                };
-
-                backWorker.RunWorkerAsync(@"dummy arg");
-                windowPopup.ShowModal();
-
-                if (workException != null)
+                    );
+                
+                if (!notCancelled)
                 {
-                    throw workException;
-                }
-
-                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
-                {
-                    cancelFlag = true;
                     return false;
                 }
+
+                //var progressBar = new ProgressBar
+                //{
+                //    IsIndeterminate = false,
+                //    Height = 18,
+                //    HorizontalAlignment = HorizontalAlignment.Stretch,
+                //    Minimum = 0,
+                //    Maximum = 100,
+                //    Value = 0
+                //};
+
+                //var label = new TextBlock
+                //{
+                //    Text = action.ShortDescription,
+                //    Margin = new Thickness(0, 0, 0, 8),
+                //    HorizontalAlignment = HorizontalAlignment.Left,
+                //    VerticalAlignment = VerticalAlignment.Top,
+                //    Focusable = true,
+                //};
+                //var panel = new StackPanel
+                //{
+                //    Orientation = Orientation.Vertical,
+                //    HorizontalAlignment = HorizontalAlignment.Stretch,
+                //    VerticalAlignment = VerticalAlignment.Center,
+                //};
+
+                //panel.Children.Add(label);
+                //panel.Children.Add(progressBar);
+
+                //var details = new TextBoxReadOnlyCaretVisible(action.LongDescription);
+
+                //var windowPopup = new PopupModalWindow(m_ShellView,
+                //                                       UserInterfaceStrings.EscapeMnemonic(
+                //                                           Tobi_Plugin_Urakawa_Lang.RunningTask),
+                //                                       panel,
+                //                                       PopupModalWindow.DialogButtonsSet.Cancel,
+                //                                       PopupModalWindow.DialogButton.Cancel,
+                //                                       false, 500, 150, details, 80);
+
+
+                //Exception workException = null;
+                //backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+                //{
+                //    //var dummy = (string)args.Argument;
+
+                //    if (backWorker.CancellationPending)
+                //    {
+                //        args.Cancel = true;
+                //        return;
+                //    }
+
+                //    action.Execute();
+
+                //    args.Result = @"dummy result";
+                //};
+
+                //backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+                //{
+                //    progressBar.Value = args.ProgressPercentage;
+                //};
+
+                //backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+                //{
+                //    workException = args.Error;
+
+                //    if (cancelFlag)
+                //    {
+                //        DocumentFilePath = null;
+                //        DocumentProject = null;
+                //    }
+                //    else if (args.Cancelled)
+                //    {
+                //        DocumentFilePath = null;
+                //        DocumentProject = null;
+                //        windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
+                //    }
+                //    else if (workException != null)
+                //    {
+                //        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                //    }
+                //    else
+                //    {
+                //        if (project.Presentations.Count == 0)
+                //        {
+                //            workException = new XukException("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
+                //        }
+                //        else
+                //            DocumentProject = project;
+                //        windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                //    }
+
+
+                //    //var result = (string)args.Result;
+
+                //    backWorker = null;
+                //};
+
+                //backWorker.RunWorkerAsync(@"dummy arg");
+                //windowPopup.ShowModal();
+
+                //if (workException != null)
+                //{
+                //    throw workException;
+                //}
+
+                //if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+                //{
+                //    cancelFlag = true;
+                //    return false;
+                //}
             }
             else
             {

@@ -84,7 +84,7 @@ namespace Tobi.Plugin.AudioPane
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (!m_AudioPaneViewModel.IsAudioLoaded)
+            if (!m_AudioPaneViewModel.IsAudioLoaded || m_AudioPaneView.BytesPerPixel <= 0)
             {
                 return;
             }

@@ -186,7 +186,7 @@ Do you want to continue ?</value>
 Do you want to continue ?</value>
   </data>
   <data name="ParsingXMLDoc_BuildingDOM" xml:space="preserve">
-    <value>Parsing the XML content of a XUK file and building the in-memory document object model into the Urakawa SDK...</value>
+    <value>Parsing the XML content of the XUK file...</value>
   </data>
   <data name="Redo" xml:space="preserve">
     <value>_Redo</value>
@@ -239,7 +239,7 @@ any changes will be lost !</value>
     <value>Saving XUK file...</value>
   </data>
   <data name="SerializeDOMIntoXukFile" xml:space="preserve">
-    <value>Serializing the document object model from the Urakawa SDK as XML content into a XUK file...</value>
+    <value>Saving the document as XML into the XUK file...</value>
   </data>
   <data name="WaitToCancel" xml:space="preserve">
     <value>Please wait while cancelling...</value>

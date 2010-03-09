@@ -116,7 +116,12 @@ namespace Tobi.Plugin.AudioPane
 
                 m_BackgroundLoader = new BackgroundWorker() { WorkerSupportsCancellation = true };
                 Exception workException = null;
+
+                // Executes on a separate thread
                 m_BackgroundLoader.DoWork += (sender, e) => loadWaveForm(true, widthMagnified, heightMagnified, wasPlaying, play, bytesPerPixel_Magnified);
+
+                // Executes on the thread that created the background worker (synchronization context)
+                // which is the WPF dispatcher and which has a message pump on its own
                 m_BackgroundLoader.RunWorkerCompleted += (sender, e) =>
                 {
                     workException = e.Error;

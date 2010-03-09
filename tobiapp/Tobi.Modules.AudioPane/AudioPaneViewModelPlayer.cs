@@ -592,6 +592,13 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
+                return;
+            }
             //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
 
             m_WaveFormLoadTimer.Stop();
@@ -964,6 +971,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnAudioPlaybackFinished(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, AudioPlayer.AudioPlaybackFinishEventArgs>)OnAudioPlaybackFinished, sender, e);
+                return;
+            }
+
             //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             RaisePropertyChanged(() => IsPlaying);
@@ -1004,6 +1019,14 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnStateChanged_Player(object sender, AudioPlayer.StateChangedEventArgs e)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, AudioPlayer.StateChangedEventArgs>)OnStateChanged_Player, sender, e);
+                return;
+            }
+
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
             
             CommandManager.InvalidateRequerySuggested();

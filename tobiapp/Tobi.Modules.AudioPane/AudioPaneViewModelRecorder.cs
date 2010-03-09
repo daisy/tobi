@@ -221,6 +221,13 @@ namespace Tobi.Plugin.AudioPane
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
         // ReSharper restore MemberCanBeMadeStatic.Local
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action<object, AudioRecorder.StateChangedEventArgs>)OnStateChanged_Recorder, sender, e);
+                return;
+            }
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
             
             CommandManager.InvalidateRequerySuggested();
