@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancelling....
-        /// </summary>
-        public static string CancellingTask {
-            get {
-                return ResourceManager.GetString("CancellingTask", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot open file..
         /// </summary>
         public static string CannotOpenLocalFile {
@@ -421,15 +412,6 @@ namespace Tobi.Plugin.Urakawa {
         public static string UrakawaSDKSessionManager {
             get {
                 return ResourceManager.GetString("UrakawaSDKSessionManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please wait while cancelling....
-        /// </summary>
-        public static string WaitToCancel {
-            get {
-                return ResourceManager.GetString("WaitToCancel", resourceCulture);
             }
         }
     }

@@ -132,9 +132,6 @@
   <data name="OpenDocumentFolder_" xml:space="preserve">
     <value>Open a file browser where the currently-loaded document is located.</value>
   </data>
-  <data name="CancellingTask" xml:space="preserve">
-    <value>Cancelling...</value>
-  </data>
   <data name="CannotOpenLocalFile" xml:space="preserve">
     <value>Cannot open file.</value>
   </data>
@@ -240,8 +237,5 @@ any changes will be lost !</value>
   </data>
   <data name="SerializeDOMIntoXukFile" xml:space="preserve">
     <value>Saving the document as XML into the XUK file...</value>
-  </data>
-  <data name="WaitToCancel" xml:space="preserve">
-    <value>Please wait while cancelling...</value>
   </data>
 </root>

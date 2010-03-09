@@ -73,7 +73,7 @@ namespace Tobi.Plugin.Urakawa
 
             var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null, Settings.Default.AudioExportEncodeToMp3);
 
-            DoWorkProgressUI("Exporting ...",
+            m_ShellView.RunModalCancellableProgressTask("Exporting ...",
                 converter,
                 () =>
                 {

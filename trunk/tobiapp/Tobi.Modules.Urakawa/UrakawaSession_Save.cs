@@ -91,7 +91,7 @@ namespace Tobi.Plugin.Urakawa
                         //string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
                         //Debug.Assert(datafolderPath == datafolderPathSavedAs);
 
-                        DoWorkProgressUI("Copying data files ...",
+                        m_ShellView.RunModalCancellableProgressTask("Copying data files ...",
                             new DataFolderCopier(DocumentProject.Presentations.Get(0), dirPath, prefix),
                             () =>
                             {
@@ -199,7 +199,7 @@ namespace Tobi.Plugin.Urakawa
                 LongDescription = Tobi_Plugin_Urakawa_Lang.SerializeDOMIntoXukFile       // TODO LOCALIZE SerializeDOMIntoXukFile
             };
 
-            bool notCancelled = DoWorkProgressUI(Tobi_Plugin_Urakawa_Lang.SaveXukFile, action,
+            bool notCancelled = m_ShellView.RunModalCancellableProgressTask(Tobi_Plugin_Urakawa_Lang.SaveXukFile, action,
                 () =>
                 {
                     if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))

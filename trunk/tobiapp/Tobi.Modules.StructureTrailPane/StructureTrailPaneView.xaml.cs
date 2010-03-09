@@ -146,8 +146,8 @@ namespace Tobi.Plugin.StructureTrailPane
                 }
 
                 butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound) + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "") + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));        // TODO LOCALIZE NoXMLFound
-                                                                                                                                                                                       // TODO LOCALIZE Selected
-                                                                                                                                                                                       // TODO LOCALIZE Audio
+                // TODO LOCALIZE Selected
+                // TODO LOCALIZE Audio
 
                 counter++;
             }
@@ -425,6 +425,8 @@ namespace Tobi.Plugin.StructureTrailPane
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
+
+            m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(obj => CommandFocus.Execute(), EscapeEvent.THREAD_OPTION);
         }
 
         private void OnProjectUnLoaded(Project obj)
