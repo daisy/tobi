@@ -167,7 +167,7 @@ namespace Tobi.Plugin.Urakawa
                     LongDescription = Tobi_Plugin_Urakawa_Lang.ParsingXMLDoc_BuildingDOM                    // TODO LOCALIZE ParsingXMLDoc_BuildingDOM
                 };
 
-                bool notCancelled = DoWorkProgressUI(Tobi_Plugin_Urakawa_Lang.OpenXukFile, action, 
+                bool notCancelled = m_ShellView.RunModalCancellableProgressTask(Tobi_Plugin_Urakawa_Lang.OpenXukFile, action, 
                     ()=>
                         {
                             DocumentFilePath = null;

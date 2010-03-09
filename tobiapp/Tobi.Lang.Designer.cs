@@ -61,6 +61,15 @@ namespace Tobi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelling....
+        /// </summary>
+        public static string CancellingTask {
+            get {
+                return ResourceManager.GetString("CancellingTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E_xit.
         /// </summary>
         public static string Exit {
@@ -264,6 +273,15 @@ namespace Tobi {
         public static string UI_ResetMagnification_ {
             get {
                 return ResourceManager.GetString("UI_ResetMagnification_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait while cancelling....
+        /// </summary>
+        public static string WaitToCancel {
+            get {
+                return ResourceManager.GetString("WaitToCancel", resourceCulture);
             }
         }
         

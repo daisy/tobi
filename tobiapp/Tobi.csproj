@@ -187,6 +187,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.csproj">
+      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
+      <Name>AudioLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
       <Name>UrakawaSDK.core</Name>

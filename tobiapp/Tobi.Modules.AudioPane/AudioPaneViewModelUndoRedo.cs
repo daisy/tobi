@@ -222,6 +222,8 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+            AudioPlayer_Stop();
+
             AudioCues.PlayTockTock();
 
             if (View != null)

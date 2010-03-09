@@ -10,6 +10,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -611,6 +613,231 @@ namespace Tobi
             {
                 m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
             }
+        }
+
+
+
+        // Must be called on the UI thread
+        public bool RunModalCancellableProgressTask(string title, IDualCancellableProgressReporter reporter,
+            Action actionCancelled, Action actionCompleted)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Debug.Fail("RunModalCancellableProgressTask should be called on the UI thread !!");
+
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal,
+                //    (Action<string, IDualCancellableProgressReporter, Action, Action>)DoWorkProgressUI, title, reporter, actionCancelled, actionCompleted);
+                //return;
+            }
+
+            m_Logger.Log(String.Format(@"Shell.RunModalCancellableProgressTask() [{0}]", title), Category.Debug, Priority.Medium);
+
+            var progressBar = new ProgressBar
+            {
+                IsIndeterminate = false,
+                Height = 18,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Minimum = 0,
+                Maximum = 100,
+                Value = 0
+            };
+
+            var progressBar2 = new ProgressBar
+            {
+                IsIndeterminate = false,
+                Height = 18,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Minimum = 0,
+                Maximum = 100,
+                Value = 0
+            };
+
+            var label = new TextBlock
+            {
+                Text = title,
+                Margin = new Thickness(0, 0, 0, 8),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Focusable = true,
+            };
+            var label2 = new TextBlock
+            {
+                Text = "...",
+                Margin = new Thickness(0, 0, 0, 8),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Focusable = true,
+            };
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            panel.Children.Add(label);
+            panel.Children.Add(progressBar);
+            //panel.Children.Add(new TextBlock(new Run(" ")));
+            //panel.Children.Add(label2);
+            //panel.Children.Add(progressBar2);
+
+            label2.Visibility = Visibility.Collapsed;
+            progressBar2.Visibility = Visibility.Collapsed;
+
+            //var details = new TextBoxReadOnlyCaretVisible("Converting data and building the in-memory document object model into the Urakawa SDK...");
+            var details = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            details.Children.Add(label2);
+            details.Children.Add(progressBar2);
+
+            var windowPopup = new PopupModalWindow(this,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.Cancel,
+                                                   PopupModalWindow.DialogButton.Cancel,
+                                                   false, 500, 150, details, 80);
+
+            var backWorker = new BackgroundWorker
+            {
+                WorkerSupportsCancellation = true,
+                WorkerReportsProgress = true
+            };
+
+            Exception workException = null;
+            backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
+            {
+                //var dummy = (string)args.Argument;
+
+                if (backWorker.CancellationPending)
+                {
+                    args.Cancel = true;
+                    return;
+                }
+
+                reporter.ProgressChangedEvent += (sender, e) =>
+                {
+                    backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
+                };
+
+                reporter.SubProgressChangedEvent += (sender, e) => Application.Current.Dispatcher.BeginInvoke((Action)(
+                   () =>
+                   {
+                       if (e.ProgressPercentage < 0 && e.UserState == null)
+                       {
+                           progressBar2.Visibility = Visibility.Hidden;
+                           label2.Visibility = Visibility.Hidden;
+                           return;
+                       }
+
+                       if (progressBar2.Visibility != Visibility.Visible)
+                           progressBar2.Visibility = Visibility.Visible;
+
+                       if (label2.Visibility != Visibility.Visible)
+                           label2.Visibility = Visibility.Visible;
+
+                       if (e.ProgressPercentage < 0)
+                       {
+                           progressBar2.IsIndeterminate = true;
+                       }
+                       else
+                       {
+                           progressBar2.IsIndeterminate = false;
+                           progressBar2.Value = e.ProgressPercentage;
+                       }
+
+                       label2.Text = (string)e.UserState;
+                   }
+                               ),
+                       DispatcherPriority.Normal);
+
+                reporter.DoWork();
+
+                args.Result = @"dummy result";
+            };
+
+            backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
+            {
+                if (reporter.RequestCancellation)
+                {
+                    return;
+                }
+
+                if (args.ProgressPercentage < 0)
+                {
+                    progressBar.IsIndeterminate = true;
+                }
+                else
+                {
+                    progressBar.IsIndeterminate = false;
+                    progressBar.Value = args.ProgressPercentage;
+                }
+
+                label.Text = (string)args.UserState;
+            };
+
+            backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
+            {
+                workException = args.Error;
+
+                backWorker = null;
+
+                if (reporter.RequestCancellation || args.Cancelled)
+                {
+                    actionCancelled();
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
+                }
+                else
+                {
+                    actionCompleted();
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                }
+
+                //var result = (string)args.Result;
+            };
+
+            backWorker.RunWorkerAsync(@"dummy arg");
+            windowPopup.ShowModal();
+
+            if (workException != null)
+            {
+                throw workException;
+            }
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+            {
+                if (backWorker == null) return false;
+
+                progressBar.IsIndeterminate = true;
+                label.Text = Tobi_Lang.WaitToCancel;                     // TODO LOCALIZE WaitToCancel
+
+                progressBar2.Visibility = Visibility.Collapsed;
+                label2.Visibility = Visibility.Collapsed;
+
+                //details.Text = "Cancelling the current operation...";
+
+                windowPopup = new PopupModalWindow(this,
+                                                       UserInterfaceStrings.EscapeMnemonic(
+                                                           Tobi_Lang.CancellingTask),
+                                                       panel,
+                                                       PopupModalWindow.DialogButtonsSet.None,
+                                                       PopupModalWindow.DialogButton.ESC,
+                                                       false, 500, 150, null, 80);
+
+                //m_OpenXukActionWorker.CancelAsync();
+                reporter.RequestCancellation = true;
+
+                windowPopup.ShowModal();
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

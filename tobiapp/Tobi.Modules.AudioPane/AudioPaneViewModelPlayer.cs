@@ -677,6 +677,10 @@ namespace Tobi.Plugin.AudioPane
                 {
                     State.Selection.SetSelectionTime(begin, end);
                 }
+                else
+                {
+                    State.Selection.ResetAll();
+                }
 
                 m_StateToRestore = null;
             }
@@ -1028,7 +1032,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
-            
+
             CommandManager.InvalidateRequerySuggested();
 
             resetPeakMeter();
