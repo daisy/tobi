@@ -79,21 +79,13 @@ namespace Tobi.Plugin.Urakawa
                 {
                     m_Logger.Log(@"UrakawaSession-Daisy3_Export-CANCELED-ShowFolder", Category.Debug, Priority.Medium);
 
-                    var p = new Process
-                    {
-                        StartInfo = { FileName = path }
-                    };
-                    p.Start();
+                    m_ShellView.ExecuteShellProcess(path);
                 },
                 () =>
                 {
                     m_Logger.Log(@"UrakawaSession-Daisy3_Export-DONE-ShowFolder", Category.Debug, Priority.Medium);
 
-                    var p = new Process
-                    {
-                        StartInfo = { FileName = path }
-                    };
-                    p.Start();
+                    m_ShellView.ExecuteShellProcess(path);
                 });
         }
     }

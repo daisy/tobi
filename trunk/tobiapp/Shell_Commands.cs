@@ -232,11 +232,7 @@ namespace Tobi
                 {
                     m_Logger.Log(@"ShellView.OpenTobiIsolatedStorageCommand", Category.Debug, Priority.Medium);
 
-                    var p = new Process
-                    {
-                        StartInfo = { FileName = ExternalFilesDataManager.STORAGE_FOLDER_PATH }
-                    };
-                    p.Start();
+                    ExecuteShellProcess(ExternalFilesDataManager.STORAGE_FOLDER_PATH);
                 },
                  () => true,
                 Settings_KeyGestures.Default,
@@ -254,11 +250,7 @@ namespace Tobi
                 {
                     m_Logger.Log(@"ShellView.OpenTobiFolderCommand", Category.Debug, Priority.Medium);
 
-                    var p = new Process
-                                {
-                                    StartInfo = { FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) }
-                                };
-                    p.Start();
+                    ExecuteShellProcess(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                 },
                  () => true,
                 Settings_KeyGestures.Default,
@@ -278,12 +270,7 @@ namespace Tobi
 
                     Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
                     string settingsPath = Path.GetDirectoryName(config.FilePath);
-
-                    var p = new Process
-                    {
-                        StartInfo = { FileName = settingsPath }
-                    };
-                    p.Start();
+                    ExecuteShellProcess(settingsPath);
                 },
                  () => true,
                 Settings_KeyGestures.Default,

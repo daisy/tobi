@@ -177,11 +177,7 @@ namespace Tobi.Plugin.Urakawa
                 {
                     m_Logger.Log(@"ShellView.OpenDocumentFolderCommand", Category.Debug, Priority.Medium);
 
-                    var p = new Process
-                    {
-                        StartInfo = { FileName = Path.GetDirectoryName(DocumentFilePath) }
-                    };
-                    p.Start();
+                    m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(DocumentFilePath));
                 },
                  () => DocumentProject != null && !string.IsNullOrEmpty(DocumentFilePath),
                 Settings_KeyGestures.Default,
@@ -313,11 +309,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         folderIsShowing = true;
 
-                        var p = new Process
-                        {
-                            StartInfo = { FileName = deletedDataFolderPath }
-                        };
-                        p.Start();
+                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
                     }
 
                     foreach (string filePath in Directory.GetFiles(dataFolderPath))
@@ -332,11 +324,7 @@ namespace Tobi.Plugin.Urakawa
 
                     if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
                     {
-                        var p = new Process
-                        {
-                            StartInfo = { FileName = deletedDataFolderPath }
-                        };
-                        p.Start();
+                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
                     }
 
                     // We must now save the modified cleaned-up doc

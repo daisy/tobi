@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
@@ -9,6 +10,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.media.data.audio;
+using InputDevice = AudioLib.InputDevice;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -221,6 +223,8 @@ namespace Tobi.Plugin.AudioPane
         {
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
             
+            CommandManager.InvalidateRequerySuggested();
+
             resetPeakMeter();
 
             RaisePropertyChanged(() => IsRecording);
