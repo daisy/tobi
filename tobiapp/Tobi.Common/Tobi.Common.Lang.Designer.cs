@@ -133,7 +133,7 @@ namespace Tobi.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Menu_AudioPlayback.
+        ///   Looks up a localized string similar to _Playback.
         /// </summary>
         public static string Menu_AudioPlayback {
             get {
@@ -196,7 +196,7 @@ namespace Tobi.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Focus.
+        ///   Looks up a localized string similar to _Focus.
         /// </summary>
         public static string Menu_Focus {
             get {
@@ -219,6 +219,24 @@ namespace Tobi.Common {
         public static string Menu_Navigation {
             get {
                 return ResourceManager.GetString("Menu_Navigation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open recent.
+        /// </summary>
+        public static string Menu_OpenRecent {
+            get {
+                return ResourceManager.GetString("Menu_OpenRecent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Structure.
+        /// </summary>
+        public static string Menu_Structure {
+            get {
+                return ResourceManager.GetString("Menu_Structure", resourceCulture);
             }
         }
         

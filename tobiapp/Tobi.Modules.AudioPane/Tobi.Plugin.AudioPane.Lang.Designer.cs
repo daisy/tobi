@@ -268,7 +268,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open a local WAV or MP3 file.
+        ///   Looks up a localized string similar to Open a local WAV file (PCM 16 bits).
         /// </summary>
         public static string Audio_OpenFile_ {
             get {
