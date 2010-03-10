@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
@@ -11,7 +10,6 @@ using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
-using System.Linq;
 
 namespace Tobi.Plugin.MenuBar
 {
@@ -121,7 +119,7 @@ namespace Tobi.Plugin.MenuBar
             if (addSeparatorTopLevel && (needTopLevelSeparator || targetRegionSub == null))
             {
                 object view = new Separator();
-#if DEBUG
+#if true || DEBUG
                 if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     view = new MenuItem { Header = positionInTopLevel.ToString("G") + " >> -------" };
 #endif
@@ -140,7 +138,7 @@ namespace Tobi.Plugin.MenuBar
             if (targetRegionSub == null && !string.IsNullOrEmpty(subRegionName))
             {
                 var subMenuRoot = new MenuItemRichCommand { Header = subMenuItemId };
-#if DEBUG
+#if true || DEBUG
                 if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     subMenuRoot.Header = positionInTopLevel.ToString("G") + " >> " + subMenuRoot.Header;
 #endif
@@ -148,7 +146,7 @@ namespace Tobi.Plugin.MenuBar
                 RegionManager.SetRegionName(subMenuRoot, subRegionName);
                 //RegionManager.UpdateRegions();
 
-                string viewname = String.Format(Tobi_Plugin_MenuBar_Lang.SUB, uid, count++);                      // TODO LOCALIZE SUB     
+                string viewname = @"SUB_" + uid + @"_" + count++; 
 
                 m_RegionManager.RegisterNamedViewWithRegion(targetRegionTop.Name,
                     new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = positionInTopLevel });
@@ -162,7 +160,7 @@ namespace Tobi.Plugin.MenuBar
             if (addSeparatorSubLevel && targetRegionSub != null)
             {
                 object view = new Separator();
-#if DEBUG
+#if true || DEBUG
                 if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     view = new MenuItem { Header = positionInSubLevel.ToString("G") + " >> -------" };
 #endif
@@ -182,7 +180,7 @@ namespace Tobi.Plugin.MenuBar
             {
                 if (command is RichDelegateCommand)
                 {
-#if DEBUG
+#if true || DEBUG
                     if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     {
                         string str = ((RichDelegateCommand) command).ShortDescription;
@@ -199,7 +197,7 @@ namespace Tobi.Plugin.MenuBar
                 }
                 else if (command is TwoStateMenuItemRichCommand_DataContextWrapper)
                 {
-#if DEBUG
+#if true || DEBUG
                     if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     {
                         string str =

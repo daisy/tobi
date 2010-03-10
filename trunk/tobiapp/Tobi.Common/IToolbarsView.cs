@@ -18,5 +18,7 @@ namespace Tobi.Common
         /// </summary>
         /// <param name="uid">the unique identifier previously obtained from a call to AddToolBarGroup()</param>
         void RemoveToolBarGroup(int uid);
+
+        RichDelegateCommand CommandFocus { get; }
     }
 }

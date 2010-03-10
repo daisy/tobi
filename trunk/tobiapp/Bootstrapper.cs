@@ -203,7 +203,7 @@ namespace Tobi
             }
 
             return regionAdapterMappings;
-        
+
             //var mappings = base.ConfigureRegionAdapterMappings();
             //if (mappings != null)
             //{
@@ -238,12 +238,15 @@ namespace Tobi
             // Does nothing, as we do not use any real CAG IModule (only the dummy empty one).
             base.InitializeModules();
 
+            var shell = Container.TryResolve<IShellView>();
+            Debug.Assert(shell != null);
+
             // MEF will fetch DLL assemblies adjacent to the Tobi.exe executable
             // We could add support for a special "plugin" folder,
             // using something like: + Path.DirectorySeparatorChar + "addons";
             string mefDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            // TODO: deactivated for debugging only ! (to avoid scanning DLLs other than the below explicit ones below)
+
             // sowe can call dirCatalog.Refresh(); when needed (which triggers re-composition)
             //var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.*.dll");
             //Container.RegisterCatalog(dirCatalog);
@@ -255,30 +258,113 @@ namespace Tobi
             var directories = Directory.GetDirectories(mefDir, @"Extensions", SearchOption.TopDirectoryOnly); // @"*.*"
             foreach (var directory in directories)
             {
-                Container.RegisterCatalog(new DirectoryCatalog(directory));
+                try
+                {
+                    Container.RegisterCatalog(new DirectoryCatalog(directory));
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, false, shell);
+                }
+            }
+            //var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.MenuBarDebug*.dll");
+            //Container.RegisterCatalog(dirCatalog);
+
+
+            var tobiModulesExtensions = MefContainer.GetExportedValues<ITobiPlugin>();
+            foreach (var tobiModuleEXT in tobiModulesExtensions)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(tobiModuleEXT.Name) && !string.IsNullOrEmpty(tobiModuleEXT.Description));
+                LoggerFacade.Log(@"Loaded extension plugin: [[" + tobiModuleEXT.Name + @"]] [[" + tobiModuleEXT.Description + @"]]", Category.Debug, Priority.Low);
             }
 
-            //MessageBox.Show(@"Just before resolving Urakawa session (take a look at the window title 'waiting...')");
-
             // NOTE: we're loading assemblies manually so that they get picked-up by ClickOnce deployment.
-            Container.RegisterFallbackCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+
+            try
             {
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(AbstractTobiPlugin))),
-
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(StructureTrailPanePlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
-
-                //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
-                //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
-            }));
-
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(AbstractTobiPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataValidatorPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(StructureTrailPanePlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+                {
+                    //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
+                    //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
+                    new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
+                }));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
             //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");
 
             var tobiModules = MefContainer.GetExportedValues<ITobiPlugin>();
@@ -290,15 +376,32 @@ namespace Tobi
 
             //MessageBox.Show(@"Urakawa module is loaded but it 'waits' for a toolbar to push its commands: press ok to get the toolbar view to load (but not to display yet)");
 
-            // This artificially emulates the dynamic loading of the Toolbar and Menubar plugina:
+            // This artificially emulates the dynamic loading of the Toolbar and Menubar plugin:
             // the container gets composed again and the modules dependent on the toolbar/menubar gets satisified
-            Container.RegisterFallbackCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+            try
             {
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(MenuBarPlugin))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(SettingsPlugin)))
-            }));
-
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(MenuBarPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(SettingsPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
 
             //MessageBox.Show(@"After pressing ok the toolbar module will load to integrate the view into the window");
 
@@ -307,7 +410,7 @@ namespace Tobi
             foreach (var tobiModuleAFTER in tobiModulesAFTER)
             {
                 Debug.Assert(!string.IsNullOrEmpty(tobiModuleAFTER.Name) && !string.IsNullOrEmpty(tobiModuleAFTER.Description));
-                LoggerFacade.Log(@"Loaded plugins: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
+                LoggerFacade.Log(@"Loaded plugin FATER: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
             }
 
             // In ClickOnce application manifest:

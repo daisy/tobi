@@ -254,8 +254,8 @@ namespace Tobi.Common.UI
     }
     public class PreferredPositionRegion : Region
     {
-#if DEBUG
-        public static readonly bool MARK_PREFERRED_POS = false; // change this to false to avoid information overload in DEBUG mode.
+#if true || DEBUG
+        public static bool MARK_PREFERRED_POS = false; // change this to false to avoid information overload in DEBUG mode.
 #endif
         private int addIndex = 0;
 
@@ -301,14 +301,14 @@ namespace Tobi.Common.UI
             {
                 Microsoft.Practices.Composite.Presentation.Regions.RegionManager.SetRegionManager(dependencyObject, scopedRegionManager);
             }
-#if DEBUG
+#if true || DEBUG
             if (MARK_PREFERRED_POS) markWithAddIndex(itemMetadata);
 #endif
             int initialCount = ItemMetadataCollection.Count;
 
             bool isSeparator = itemMetadata.Item is Separator
-#if DEBUG
- || !(itemMetadata.Item is MenuItemRichCommand) && itemMetadata.Item is MenuItem
+#if true || DEBUG
+ || MARK_PREFERRED_POS && !(itemMetadata.Item is MenuItemRichCommand) && itemMetadata.Item is MenuItem
 #endif
 ;
 
@@ -335,8 +335,8 @@ namespace Tobi.Common.UI
                             if (ItemMetadataCollection.Count == 0)
                             {
                                 ItemMetadataCollection.Add(itemMetadata);
-#if DEBUG
-                                ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                                if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                             }
                             else
@@ -355,8 +355,8 @@ namespace Tobi.Common.UI
                                 ItemMetadataCollection.Add(itemMetadata);
                                 ItemMetadataCollection.AddRange(backup);
 
-#if DEBUG
-                                ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                                if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                             }
 
@@ -372,8 +372,8 @@ namespace Tobi.Common.UI
                             {
                                 ItemMetadataCollection.Add(itemMetadata);
 
-#if DEBUG
-                                ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                                if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                             }
                             else // there are Any or Last views after the last First one.
@@ -382,8 +382,8 @@ namespace Tobi.Common.UI
 
                                 ItemMetadataCollectionInsert(index + 1, itemMetadata);
 
-#if DEBUG
-                                ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                                if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                             }
 
@@ -410,8 +410,8 @@ namespace Tobi.Common.UI
                         {
                             ItemMetadataCollection.Add(itemMetadata); // could be a separator
 
-#if DEBUG
-                            ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                            if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                         }
                         else // we found the last view with position == Last
@@ -421,8 +421,8 @@ namespace Tobi.Common.UI
                             {
                                 ItemMetadataCollection.Add(itemMetadata); // could be a separator
 
-#if DEBUG
-                                ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                                if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                             }
                             else
@@ -456,8 +456,8 @@ namespace Tobi.Common.UI
                         {
                             ItemMetadataCollection.Add(itemMetadata); // could be a separator
 
-#if DEBUG
-                            ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                            if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                         }
                         else
@@ -467,8 +467,8 @@ namespace Tobi.Common.UI
                             // ItemMetadataCollection.Insert(index, itemMetadata);
                             ItemMetadataCollectionInsert(index, itemMetadata);
 
-#if DEBUG
-                            ItemMetadataCollectionCheckPreferredPositions();
+#if true || DEBUG
+                            if (MARK_PREFERRED_POS) ItemMetadataCollectionCheckPreferredPositions();
 #endif
                         }
 
@@ -476,8 +476,8 @@ namespace Tobi.Common.UI
                     }
             }
         }
-#if DEBUG
-        [Conditional("DEBUG")]
+#if true ||DEBUG
+        //[Conditional("DEBUG")]
         private void markWithAddIndex(ItemMetadata itemMetadata)
         {
             addIndex++;
@@ -504,7 +504,7 @@ namespace Tobi.Common.UI
             }
         }
 
-        [Conditional("DEBUG")]
+        //[Conditional("DEBUG")]
         private void ItemMetadataCollectionCheckPreferredPositions()
         {
             PreferredPosition currentPreferredPosition = PreferredPosition.First;
