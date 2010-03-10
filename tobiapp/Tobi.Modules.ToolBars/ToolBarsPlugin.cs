@@ -14,7 +14,7 @@ namespace Tobi.Plugin.ToolBars
     {
         private readonly IRegionManager m_RegionManager;
 
-        private readonly ToolBarsView m_ToolBarsView;
+        //private readonly ToolBarsView m_ToolBarsView;
 
         private readonly ILoggerFacade m_Logger;
 
@@ -28,17 +28,15 @@ namespace Tobi.Plugin.ToolBars
         [ImportingConstructor]
         public ToolBarsPlugin(
             ILoggerFacade logger,
-            IRegionManager regionManager,
-            [Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            ToolBarsView toolBarsView)
+            IRegionManager regionManager
+            //,[Import(typeof(IToolBarsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            //ToolBarsView toolBarsView
+            )
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
 
-            m_ToolBarsView = toolBarsView;
-
-            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.ToolBars,
-                new PreferredPositionNamedView { m_viewInstance = m_ToolBarsView, m_viewName = @"ViewOf_" + RegionNames.ToolBars });
+            //m_ToolBarsView = toolBarsView;
 
             //m_RegionManager.RegisterViewWithRegion(RegionNames.ToolBars, typeof(IToolBarsView));
 
@@ -49,10 +47,16 @@ namespace Tobi.Plugin.ToolBars
             //m_Logger.Log(@"Toolbar pushed to region", Category.Debug, Priority.Medium);
         }
 
-        private int m_MenuBarId_1;
+        protected override void OnToolBarReady()
+        {
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.ToolBars,
+                   new PreferredPositionNamedView { m_viewInstance = m_ToolBarsView, m_viewName = @"ViewOf_" + RegionNames.ToolBars });
+        }
+
+        private int m_ToolBarId_1;
         protected override void OnMenuBarReady()
         {
-            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+            m_ToolBarId_1 = m_MenuBarView.AddMenuBarGroup(
                 RegionNames.MenuBar_View, PreferredPosition.First, true,
                 RegionNames.MenuBar_Focus, PreferredPosition.Any, false,
                 new[] { m_ToolBarsView.CommandFocus });
@@ -64,7 +68,7 @@ namespace Tobi.Plugin.ToolBars
         {
             if (m_MenuBarView != null)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_ToolBarId_1);
 
                 m_Logger.Log(@"Toolbar commands removed from menubar", Category.Debug, Priority.Medium);
             }

@@ -22,22 +22,21 @@ namespace Tobi.Plugin.MenuBar
         ///</summary>
         ///<param name="logger">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         ///<param name="regionManager">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
-        ///<param name="toolBarsView">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
+        /////<param name="menuBarsView">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
         public MenuBarPlugin(
             ILoggerFacade logger,
-            IRegionManager regionManager,
-            [Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            MenuBarView toolBarsView)
+            IRegionManager regionManager
+            //,[Import(typeof(IMenuBarView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            //MenuBarView menuBarsView
+            )
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
 
-            m_MenuBarView = toolBarsView;
+            //m_MenuBarView = menuBarsView;
 
-            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MenuBar,
-                new PreferredPositionNamedView { m_viewInstance = m_MenuBarView, m_viewName = @"ViewOf_" + RegionNames.MenuBar });
-
+            
             //m_RegionManager.RegisterViewWithRegion(RegionNames.MenuBar, typeof(IMenuBarView));
 
             //IRegion targetRegion = m_RegionManager.Regions[RegionNames.MenuBar];
@@ -45,6 +44,12 @@ namespace Tobi.Plugin.MenuBar
             //targetRegion.Activate(m_MenuBarView);
 
             //m_Logger.Log(@"MenuBar pushed to region", Category.Debug, Priority.Medium);
+        }
+
+        protected override void OnMenuBarReady()
+        {
+            m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MenuBar,
+                   new PreferredPositionNamedView { m_viewInstance = m_MenuBarView, m_viewName = @"ViewOf_" + RegionNames.MenuBar });
         }
 
         public override void Dispose()
