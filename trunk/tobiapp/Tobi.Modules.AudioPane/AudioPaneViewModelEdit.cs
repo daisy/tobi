@@ -124,7 +124,7 @@ namespace Tobi.Plugin.AudioPane
             //
             CommandOpenFile = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.Audio_OpenFile,
-                UserInterfaceStrings.Audio_OpenFile_,
+                Tobi_Plugin_AudioPane_Lang.Audio_OpenFile_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("document-open"),
                 () =>

@@ -142,7 +142,7 @@
     <value>_Audio</value>
   </data>
   <data name="Menu_AudioPlayback" xml:space="preserve">
-    <value>Menu_AudioPlayback</value>
+    <value>_Playback</value>
   </data>
   <data name="Menu_AudioRecording" xml:space="preserve">
     <value>_Recording</value>
@@ -163,13 +163,19 @@
     <value>_File</value>
   </data>
   <data name="Menu_Focus" xml:space="preserve">
-    <value>Focus</value>
+    <value>_Focus</value>
   </data>
   <data name="Menu_Magnification" xml:space="preserve">
     <value>Ma_gnification</value>
   </data>
   <data name="Menu_Navigation" xml:space="preserve">
     <value>Navi_gation</value>
+  </data>
+  <data name="Menu_OpenRecent" xml:space="preserve">
+    <value>_Open recent</value>
+  </data>
+  <data name="Menu_Structure" xml:space="preserve">
+    <value>_Structure</value>
   </data>
   <data name="Menu_System" xml:space="preserve">
     <value>_System</value>

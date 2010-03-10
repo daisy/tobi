@@ -198,4 +198,7 @@
   <data name="CancellingTask" xml:space="preserve">
     <value>Cancelling...</value>
   </data>
+  <data name="IconsDebug" xml:space="preserve">
+    <value>Icons preview (debug view)</value>
+  </data>
 </root>

@@ -128,7 +128,7 @@ namespace Tobi
             //
 #if ICONS
             DisplayPreviewIconsDebugCommand = new RichDelegateCommand(
-                UserInterfaceStrings.IconsDebug,
+                UserInterfaceStrings.IconsDebug,                               
                 null,
                 UserInterfaceStrings.IconsDebug_KEYS,
                 null,

@@ -1,12 +1,13 @@
 ﻿<UniformGrid x:Class="Tobi.Plugin.AudioPane.AudioSettings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-            
+        xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+            xmlns:AudioPane="clr-namespace:Tobi.Plugin.AudioPane"
+             
             Columns="2" Rows="2"
                     HorizontalAlignment="Left">
   
-    <TextBlock x:Name="LabelOutputDevices" Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static Common:UserInterfaceStrings.ComboLabel_Playback}"/>
+    <TextBlock x:Name="LabelOutputDevices" Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
   <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
             SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
             
@@ -37,7 +38,7 @@
     </ComboBox.ItemContainerStyle>
   </ComboBox>
 
-    <TextBlock x:Name="LabelInputDevices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static Common:UserInterfaceStrings.ComboLabel_Recording}"/>
+    <TextBlock x:Name="LabelInputDevices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
     <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
               SelectedItem="{Binding InputDevice, Mode=TwoWay}"
               SelectedValuePath="Name"

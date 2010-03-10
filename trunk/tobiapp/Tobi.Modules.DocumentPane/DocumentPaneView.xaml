@@ -79,7 +79,7 @@
                       ViewingMode="Scroll" -->
     
       <FlowDocument x:Name="TheFlowDocument"
-                    AutomationProperties.Name="{x:Static Common:UserInterfaceStrings.Feature_Not_Available}"
+                   AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
            IsEnabled = "True"
            IsHyphenationEnabled = "False"
            IsOptimalParagraphEnabled = "False"
