@@ -93,12 +93,12 @@ namespace Tobi.Plugin.NavigationPane
 
         public override string Name
         {
-            get { return @"Navigation pane."; }    // TODO LOCALIZE NavigationPane2
+            get { return Tobi_Plugin_NavigationPane_Lang.NavigationPane2; }    // TODO LOCALIZE NavigationPane2
         }
 
         public override string Description
         {
-            get { return @"The Navigation panel"; }     // TODO LOCALIZE TheNavigationPanel2
+            get { return Tobi_Plugin_NavigationPane_Lang.TheNavigationPanel2; }     // TODO LOCALIZE TheNavigationPanel2
         }
     }
 }
