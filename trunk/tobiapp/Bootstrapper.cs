@@ -248,8 +248,11 @@ namespace Tobi
             //var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.*.dll");
             //Container.RegisterCatalog(dirCatalog);
 
-            // We could add MEF sub-directories too
-            var directories = Directory.GetDirectories(mefDir, @"extensions", SearchOption.TopDirectoryOnly); // @"*.*"
+            // Any MEF part exported from this directory will take precedence over the built-in Tobi ones.
+            // As a result, a single Import (as opposed to ImportMany) that has several realizations
+            // (i.e. the default/fallback Tobi implementation and the custom Extension)
+            // will not trigger an exception (as it is normally the case), instead the Extension will be returned, and the built-in feature ignored.
+            var directories = Directory.GetDirectories(mefDir, @"Extensions", SearchOption.TopDirectoryOnly); // @"*.*"
             foreach (var directory in directories)
             {
                 Container.RegisterCatalog(new DirectoryCatalog(directory));
