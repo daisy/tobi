@@ -839,5 +839,18 @@ namespace Tobi
 
             return true;
         }
+
+        // DoEvent() equivalent
+        public void PumpDispatcherFrames()
+        {
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, new VoidHandler(() => { }));
+
+            //var frame = new DispatcherFrame();
+            //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new ExitFrameHandler(frm => frm.Continue = false), frame);
+            //Dispatcher.PushFrame(frame);
+        }
+
+        private delegate void VoidHandler();
+        //private delegate void ExitFrameHandler(DispatcherFrame frame);
     }
 }

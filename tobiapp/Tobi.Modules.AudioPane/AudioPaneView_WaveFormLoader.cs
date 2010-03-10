@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,17 +21,25 @@ namespace Tobi.Plugin.AudioPane
 
         public void CancelWaveFormLoad()
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    (Action)CancelWaveFormLoad);
+                return;
+            }
+
             if (!m_ViewModel.IsWaveFormLoading) return;
             if (m_BackgroundLoader == null) return;
             if (!m_BackgroundLoader.IsBusy) return;
 
             m_BackgroundLoader.CancelAsync();
 
-            //while (m_BackgroundLoader != null && m_ViewModel.IsWaveFormLoading)
-            //{
-            //    Thread.Sleep(100);
-            //    //System.Windows.Threading.Dispatcher.CurrentDispatcher.
-            //}
+            while (m_BackgroundLoader != null || m_ViewModel.IsWaveFormLoading)
+            {
+                Thread.Sleep(100);
+                m_ShellView.PumpDispatcherFrames();
+            }
         }
 
         private void OnWaveFormCancelButtonClick(object sender, RoutedEventArgs e)
