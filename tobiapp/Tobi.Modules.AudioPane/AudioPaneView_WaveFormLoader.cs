@@ -38,7 +38,7 @@ namespace Tobi.Plugin.AudioPane
             while (m_BackgroundLoader != null || m_ViewModel.IsWaveFormLoading)
             {
                 Thread.Sleep(100);
-                m_ShellView.PumpDispatcherFrames();
+                m_ShellView.PumpDispatcherFrames(); // make sure we don't block the UI thread
             }
         }
 

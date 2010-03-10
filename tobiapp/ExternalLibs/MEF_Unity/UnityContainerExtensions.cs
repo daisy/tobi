@@ -12,6 +12,18 @@ namespace MefContrib.Integration.Unity
     /// </summary>
     public static class UnityContainerExtensions
     {
+        public static CompositionIntegration GetOrInitCompositionIntegration(this IUnityContainer unityContainer)
+        {
+            var compositionIntegration = unityContainer.Configure<CompositionIntegration>();
+            if (compositionIntegration == null)
+            {
+                var unityExportProvider = new UnityExportProvider(unityContainer);
+                compositionIntegration = new CompositionIntegration(true, unityExportProvider);
+                unityContainer.AddExtension(compositionIntegration);
+            }
+            return compositionIntegration;
+        }
+
         /// <summary>
         /// Registers a MEF catalog within Unity container.
         /// </summary>
@@ -21,13 +33,7 @@ namespace MefContrib.Integration.Unity
         {
             lock (unityContainer)
             {
-                var compositionIntegration = unityContainer.Configure<CompositionIntegration>();
-                if (compositionIntegration == null)
-                {
-                    var unityExportProvider = new UnityExportProvider(unityContainer);
-                    compositionIntegration = new CompositionIntegration(true, unityExportProvider);
-                    unityContainer.AddExtension(compositionIntegration);
-                }
+                var compositionIntegration = GetOrInitCompositionIntegration(unityContainer);
 
                 compositionIntegration.Catalogs.Add(catalog);
 
@@ -35,6 +41,17 @@ namespace MefContrib.Integration.Unity
             }
         }
 
+        public static CompositionContainer RegisterFallbackCatalog(this IUnityContainer unityContainer, ComposablePartCatalog catalog)
+        {
+            lock (unityContainer)
+            {
+                var compositionIntegration = GetOrInitCompositionIntegration(unityContainer);
+
+                compositionIntegration.FallbackCatalogs.Add(catalog);
+
+                return compositionIntegration.CompositionContainer;
+            }
+        }
         /// <summary>
         /// Returns whether a specified type has a type mapping registered in the container.
         /// </summary>
