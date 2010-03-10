@@ -725,7 +725,7 @@ namespace Tobi
                     backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
                 };
 
-                reporter.SubProgressChangedEvent += (sender, e) => Application.Current.Dispatcher.BeginInvoke((Action)(
+                reporter.SubProgressChangedEvent += (sender, e) => Dispatcher.BeginInvoke((Action)(
                    () =>
                    {
                        if (e.ProgressPercentage < 0 && e.UserState == null)
@@ -756,6 +756,7 @@ namespace Tobi
                                ),
                        DispatcherPriority.Normal);
 
+                //Dispatcher.Invoke((Action)(reporter.DoWork), DispatcherPriority.Normal);
                 reporter.DoWork();
 
                 args.Result = @"dummy result";
@@ -763,6 +764,8 @@ namespace Tobi
 
             backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
             {
+                //PumpDispatcherFrames();
+
                 if (reporter.RequestCancellation)
                 {
                     return;

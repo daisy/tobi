@@ -110,7 +110,8 @@ namespace Tobi
         {
             LoggerFacade.Log(@"Creating the Unity Dependency Injection container and binding (bi-directionally) with the default MEF composition catalog (i.e. Tobi.exe, for the empty shell window)", Category.Debug, Priority.Low);
 
-            // MEF will scan Tobi.exe only to start with, so that the shell window doesn't attempt to load dependencies immediately but in a differed manner
+            // MEF will scan Tobi.exe only to start with,
+            // so that the shell window doesn't attempt to load dependencies immediately but in a differed manner
             // (through a container re-composition when we add further MEF discovery catalogs)
             var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
             {
@@ -130,7 +131,7 @@ namespace Tobi
             // Remark: calls MEF-Compose, which triggers application Parts scanning
             // (building the graph of dependencies, and pruning branches that are rejected),
             // but the OnImportsSatisfied callbacks will only be activated at instanciation time.
-            MefContainer = unityContainer.RegisterCatalog(aggregateCatalog);
+            MefContainer = unityContainer.RegisterFallbackCatalog(aggregateCatalog);
 
             return unityContainer;
         }
@@ -242,26 +243,25 @@ namespace Tobi
             // using something like: + Path.DirectorySeparatorChar + "addons";
             string mefDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            // TODO: save the catalog in the MEF container,
-            // so we can call dirCatalog.Refresh(); when needed (which triggers re-composition)
-            var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.*.dll");
-
-            // TODO: deactivated for debugging only ! (to avoid scanning DLLs other than the below explicit ones)
+            // TODO: deactivated for debugging only ! (to avoid scanning DLLs other than the below explicit ones below)
+            // sowe can call dirCatalog.Refresh(); when needed (which triggers re-composition)
+            //var dirCatalog = new DirectoryCatalog(mefDir, @"Tobi.Plugin.*.dll");
             //Container.RegisterCatalog(dirCatalog);
 
             // We could add MEF sub-directories too
-            //var directories = Directory.GetDirectories(mefDir, "*.*", SearchOption.AllDirectories);
-            //foreach (var directory in directories)
-            //{
-            //    aggregateCatalog.Catalogs.Add(new DirectoryCatalog(directory));
-            //}
+            var directories = Directory.GetDirectories(mefDir, @"extensions", SearchOption.TopDirectoryOnly); // @"*.*"
+            foreach (var directory in directories)
+            {
+                Container.RegisterCatalog(new DirectoryCatalog(directory));
+            }
 
             //MessageBox.Show(@"Just before resolving Urakawa session (take a look at the window title 'waiting...')");
 
             // NOTE: we're loading assemblies manually so that they get picked-up by ClickOnce deployment.
-            Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+            Container.RegisterFallbackCatalog(new AggregateCatalog(new ComposablePartCatalog[]
             {
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(AbstractTobiPlugin))),
+
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ValidatorPlugin))),
@@ -270,6 +270,7 @@ namespace Tobi
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MetadataPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(StructureTrailPanePlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(DocumentPanePlugin))),
+
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
@@ -288,7 +289,7 @@ namespace Tobi
 
             // This artificially emulates the dynamic loading of the Toolbar and Menubar plugina:
             // the container gets composed again and the modules dependent on the toolbar/menubar gets satisified
-            Container.RegisterCatalog(new AggregateCatalog(new ComposablePartCatalog[]
+            Container.RegisterFallbackCatalog(new AggregateCatalog(new ComposablePartCatalog[]
             {
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(ToolBarsPlugin))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(MenuBarPlugin))),

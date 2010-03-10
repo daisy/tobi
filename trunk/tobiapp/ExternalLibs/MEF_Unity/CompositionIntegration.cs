@@ -22,25 +22,28 @@ namespace MefContrib.Integration.Unity
         private readonly bool m_Register;
 
         private AggregateCatalog m_AggregateCatalog;
+        private AggregateCatalog m_AggregateFallbackCatalog;
+        private CatalogExportProvider m_FallbackCatalogExportProvider;
+
         private ExportProvider[] m_Providers;
         private CompositionContainer m_CompositionContainer;
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="CompositionIntegration"/> class.
-        /// </summary>
-        public CompositionIntegration()
-            : this(true)
-        {
-        }
+        ///// <summary>
+        ///// Initializes a new instance of <see cref="CompositionIntegration"/> class.
+        ///// </summary>
+        //public CompositionIntegration()
+        //    : this(true)
+        //{
+        //}
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="CompositionIntegration"/> class.
-        /// </summary>
-        /// <param name="providers">An array of export providers.</param>
-        public CompositionIntegration(params ExportProvider[] providers)
-            : this(true, providers)
-        {
-        }
+        ///// <summary>
+        ///// Initializes a new instance of <see cref="CompositionIntegration"/> class.
+        ///// </summary>
+        ///// <param name="providers">An array of export providers.</param>
+        //public CompositionIntegration(params ExportProvider[] providers)
+        //    : this(true, providers)
+        //{
+        //}
 
         /// <summary>
         /// Initializes a new instance of <see cref="CompositionIntegration"/> class.
@@ -51,8 +54,25 @@ namespace MefContrib.Integration.Unity
         public CompositionIntegration(bool register, params ExportProvider[] providers)
         {
             m_AggregateCatalog = new AggregateCatalog();
+            m_AggregateFallbackCatalog = new AggregateCatalog();
+            m_FallbackCatalogExportProvider = new CatalogExportProvider(m_AggregateFallbackCatalog);
+
             m_Register = register;
-            m_Providers = providers;
+
+            if (providers == null)
+            {
+                m_Providers = new ExportProvider[] { m_FallbackCatalogExportProvider };
+            }
+            else
+            {
+                m_Providers = new ExportProvider[providers.Length + 1];
+                m_Providers[0] = m_FallbackCatalogExportProvider;
+                int i = 1;
+                foreach (var exportProvider in providers)
+                {
+                    m_Providers[i++] = exportProvider;
+                }
+            }
         }
 
         protected override void Initialize()
@@ -70,6 +90,7 @@ namespace MefContrib.Integration.Unity
         {
             // Create the MEF container based on the catalog
             var compositionContainer = new CompositionContainer(m_AggregateCatalog, m_Providers);
+            m_FallbackCatalogExportProvider.SourceProvider = compositionContainer;
 
             // If desired, register an instance of CompositionContainer and Unity container in MEF,
             // this will also make CompositionContainer available to the Unity
@@ -103,6 +124,11 @@ namespace MefContrib.Integration.Unity
         public ICollection<ComposablePartCatalog> Catalogs
         {
             get { return m_AggregateCatalog.Catalogs; }
+        }
+
+        public ICollection<ComposablePartCatalog> FallbackCatalogs
+        {
+            get { return m_AggregateFallbackCatalog.Catalogs; }
         }
 
         /// <summary>
@@ -186,8 +212,13 @@ namespace MefContrib.Integration.Unity
             if (m_AggregateCatalog != null)
                 m_AggregateCatalog.Dispose();
             
+            if (m_AggregateFallbackCatalog != null)
+                m_AggregateFallbackCatalog.Dispose();
+
             m_CompositionContainer = null;
             m_AggregateCatalog = null;
+            m_AggregateFallbackCatalog = null;
+            m_FallbackCatalogExportProvider = null;
             m_Providers = null;
         }
 
