@@ -81,6 +81,8 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
+        void PumpDispatcherFrames();
+
         bool RunModalCancellableProgressTask(string title, IDualCancellableProgressReporter reporter, Action actionCancelled, Action actionCompleted);
 
         bool IsUIAutomationDisabled { get; }

@@ -68,7 +68,7 @@ namespace DtdSharp
             //the dtd is found so that we don't run into problems parsing any
             //relative external files referenced by the dtd.
             string file = uri.ToString();
-            DefaultLocation = file.Substring(0, file.LastIndexOf('/') + 1);
+            DefaultLocation = file.Substring(0, file.LastIndexOf(Environment.NewLine) + 1);
             
             WebRequest req = WebRequest.Create(uri);
             WebResponse resp = req.GetResponse();
@@ -90,7 +90,7 @@ namespace DtdSharp
         //the dtd is found so that we don't run into problems parsing any
         //relative external files referenced by the dtd.
             string file = uri.ToString();
-            DefaultLocation = file.Substring(0, file.LastIndexOf('/') + 1);
+            DefaultLocation = file.Substring(0, file.LastIndexOf(Environment.NewLine) + 1);
             
             WebRequest req = WebRequest.Create(uri);
             WebResponse resp = req.GetResponse();

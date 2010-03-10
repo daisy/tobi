@@ -208,7 +208,7 @@
     <value>_Open audio file</value>
   </data>
   <data name="Audio_OpenFile_" xml:space="preserve">
-    <value>Open a local WAV file (PCM 16 bits)</value>
+    <value>Open a local WAV or MP3</value>
   </data>
   <data name="Audio_Pause" xml:space="preserve">
     <value>_Pause</value>

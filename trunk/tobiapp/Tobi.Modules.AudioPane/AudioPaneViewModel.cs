@@ -7,7 +7,6 @@ using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -385,6 +384,12 @@ namespace Tobi.Plugin.AudioPane
             }
             //Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
 
+
+            if (View != null)
+            {
+                View.CancelWaveFormLoad();
+            }
+
             if (node == null || State.CurrentTreeNode == null)
             {
                 return;
@@ -454,6 +459,12 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
+
+
+            if (View != null)
+            {
+                View.CancelWaveFormLoad();
+            }
 
             if (node == null)
             {
@@ -544,6 +555,11 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                     (Action<Project>)OnProjectLoaded, project);
                 return;
+            }
+
+            if (View != null)
+            {
+                View.CancelWaveFormLoad();
             }
 
             if (AudioPlaybackStreamKeepAlive)
