@@ -77,12 +77,14 @@ namespace Tobi.Plugin.Urakawa
             if (nodeHasDirectAudio || nodeDescendantAudio != null)
             {
                 m_TreeNode = node;
+                return;
             }
 
             // we need to adjust the selection so that the waveform display represents some useful information
             if (nodeAncestorAudio != null)
             {
                 m_TreeNode = nodeAncestorAudio;
+                return;
             }
 
             // no audio at all => we just leave the selection as it is.
@@ -113,7 +115,14 @@ namespace Tobi.Plugin.Urakawa
                 if (m_TreeNode == null) // brand new selection
                 {
                     adjustTreeNodeIfAncestorAudio(node);
-                    m_SubTreeNode = null;
+                    if (m_TreeNode != node)
+                    {
+                        m_SubTreeNode = node;
+                    }
+                    else
+                    {
+                        m_SubTreeNode = null;
+                    }
                 }
                 else if (m_TreeNode == node)
                 {
@@ -149,7 +158,14 @@ namespace Tobi.Plugin.Urakawa
                 else
                 {
                     adjustTreeNodeIfAncestorAudio(node);
-                    m_SubTreeNode = null;
+                    if (m_TreeNode != node)
+                    {
+                        m_SubTreeNode = node;
+                    }
+                    else
+                    {
+                        m_SubTreeNode = null;
+                    }
                 }
 
 #if DEBUG

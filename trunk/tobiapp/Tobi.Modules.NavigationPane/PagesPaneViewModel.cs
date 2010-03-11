@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
@@ -164,9 +166,10 @@ namespace Tobi.Plugin.NavigationPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<TextElement>)onPageFoundByFlowDocumentParser, data);
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TextElement>)onPageFoundByFlowDocumentParser, data);
                 return;
             }
             _pagesNavigator.AddPage(data);

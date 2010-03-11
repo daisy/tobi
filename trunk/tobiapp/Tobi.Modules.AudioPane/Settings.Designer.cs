@@ -26,6 +26,18 @@ namespace Tobi.Plugin.AudioPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AudioWaveForm_SkipDrawing {
+            get {
+                return ((bool)(this["AudioWaveForm_SkipDrawing"]));
+            }
+            set {
+                this["AudioWaveForm_SkipDrawing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseFriendlyTimeFormat {
             get {
                 return ((bool)(this["UseFriendlyTimeFormat"]));

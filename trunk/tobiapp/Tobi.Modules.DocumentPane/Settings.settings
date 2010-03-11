@@ -3,4 +3,27 @@
   <Profiles>
     <Profile Name="(Default)" />
   </Profiles>
+  <Settings>
+    <Setting Name="Document_Color_Font_Audio" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff000000</Value>
+    </Setting>
+    <Setting Name="Document_Color_Font_NoAudio" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffa9a9a9</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_UnderOverLine" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffff4500</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Font" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff000000</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Border" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffff4500</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Back1" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#fffafad2</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Back2" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffffff00</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Media;
 using System.Reflection;
 using System.Windows;
@@ -56,14 +57,13 @@ namespace Tobi.Common.UI
         {
             if (rootException == null)
                 return;
-            //#if DEBUG
-            //            Debugger.Break();
-            //#endif
 
             if (!Dispatcher.CurrentDispatcher.CheckAccess())
             {
-                Dispatcher.CurrentDispatcher.Invoke(
-                    (Action<Exception, bool, IShellView>)Handle, rootException, doExit, shellView);
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.CurrentDispatcher.Invoke((Action<Exception, bool, IShellView>)Handle, rootException, doExit, shellView);
                 return;
             }
 

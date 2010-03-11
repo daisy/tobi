@@ -449,26 +449,23 @@ namespace Tobi.Plugin.AudioPane
 
             long byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
-            long bytesRight = 0;
-            long bytesLeft = 0;
-            int index = -1;
-            TreeNode subTreeNode = null;
-            foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-            {
-                index++;
-                bytesRight += marker.m_LocalStreamDataLength;
-                if (byteOffset < bytesRight
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
-                {
-                    subTreeNode = marker.m_TreeNode;
-                    break;
-                }
-                bytesLeft = bytesRight;
-            }
+            long bytesRight;
+            long bytesLeft;
+            int index;
+            TreeNode subTreeNode;
+            bool match = State.Audio.FindInPlayStreamMarkers(byteOffset, out subTreeNode, out index, out bytesLeft, out bytesRight);
 
-            if (View != null) // && subTreeNode != CurrentSubTreeNode
+            if (match)
             {
-                View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
+                if (View != null) // && subTreeNode != CurrentSubTreeNode
+                {
+                    View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
+                }
+            }
+            else
+            {
+                Debug.Fail("audio chunk not found ??");
+                return;
             }
         }
 
@@ -596,9 +593,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
                 return;
             }
             //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
@@ -979,13 +977,19 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<object, AudioPlayer.AudioPlaybackFinishEventArgs>)OnAudioPlaybackFinished, sender, e);
+                                  (Action<object, AudioPlayer.AudioPlaybackFinishEventArgs>) OnAudioPlaybackFinished_,
+                                  sender, e);
                 return;
             }
+#if DEBUG
+            Debugger.Break();
+#endif
+        }
+        private void OnAudioPlaybackFinished_(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
+        {
 
-            //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
+        //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             RaisePropertyChanged(() => IsPlaying);
 
@@ -1030,13 +1034,16 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<object, AudioPlayer.StateChangedEventArgs>)OnStateChanged_Player, sender, e);
+                                  (Action<object, AudioPlayer.StateChangedEventArgs>) OnStateChanged_Player_, sender, e);
                 return;
             }
+            OnStateChanged_Player_(sender, e);
+        }
+        private void OnStateChanged_Player_(object sender, AudioPlayer.StateChangedEventArgs e)
+        {
 
-            //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
+        //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
 
             CommandManager.InvalidateRequerySuggested();
 
