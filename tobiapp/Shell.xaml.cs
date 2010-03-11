@@ -490,9 +490,9 @@ namespace Tobi
             {
                 if (m_UrakawaSession == null)
                 {
-                    return String.Format(Tobi_Lang.WindowsTitleKey, ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
+                    return String.Format(@"Tobi {{{0}}} - " + Tobi_Lang.PleaseWait, ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
                 }
-                return String.Format(Tobi_Lang.WindowsTitleKey2,
+                return String.Format(@"Tobi {{{0}}} {1}[{2}]",
                     ApplicationConstants.APP_VERSION,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
                     (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
@@ -712,54 +712,66 @@ namespace Tobi
             Exception workException = null;
             backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
-                //var dummy = (string)args.Argument;
-
-                if (backWorker.CancellationPending)
+#if DEBUG
+                try
                 {
-                    args.Cancel = true;
-                    return;
+#endif
+                    //var dummy = (string)args.Argument;
+
+                    if (backWorker.CancellationPending)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+
+                    reporter.ProgressChangedEvent += (sender, e) =>
+                    {
+                        backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
+                    };
+
+                    reporter.SubProgressChangedEvent += (sender, e) => Dispatcher.BeginInvoke((Action)(
+                       () =>
+                       {
+                           if (e.ProgressPercentage < 0 && e.UserState == null)
+                           {
+                               progressBar2.Visibility = Visibility.Hidden;
+                               label2.Visibility = Visibility.Hidden;
+                               return;
+                           }
+
+                           if (progressBar2.Visibility != Visibility.Visible)
+                               progressBar2.Visibility = Visibility.Visible;
+
+                           if (label2.Visibility != Visibility.Visible)
+                               label2.Visibility = Visibility.Visible;
+
+                           if (e.ProgressPercentage < 0)
+                           {
+                               progressBar2.IsIndeterminate = true;
+                           }
+                           else
+                           {
+                               progressBar2.IsIndeterminate = false;
+                               progressBar2.Value = e.ProgressPercentage;
+                           }
+
+                           label2.Text = (string)e.UserState;
+                       }
+                                   ),
+                           DispatcherPriority.Normal);
+
+                    //Dispatcher.Invoke((Action)(reporter.DoWork), DispatcherPriority.Normal);
+                    reporter.DoWork();
+
+                    args.Result = @"dummy result";
+#if DEBUG
                 }
-
-                reporter.ProgressChangedEvent += (sender, e) =>
+                catch
                 {
-                    backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
-                };
-
-                reporter.SubProgressChangedEvent += (sender, e) => Dispatcher.BeginInvoke((Action)(
-                   () =>
-                   {
-                       if (e.ProgressPercentage < 0 && e.UserState == null)
-                       {
-                           progressBar2.Visibility = Visibility.Hidden;
-                           label2.Visibility = Visibility.Hidden;
-                           return;
-                       }
-
-                       if (progressBar2.Visibility != Visibility.Visible)
-                           progressBar2.Visibility = Visibility.Visible;
-
-                       if (label2.Visibility != Visibility.Visible)
-                           label2.Visibility = Visibility.Visible;
-
-                       if (e.ProgressPercentage < 0)
-                       {
-                           progressBar2.IsIndeterminate = true;
-                       }
-                       else
-                       {
-                           progressBar2.IsIndeterminate = false;
-                           progressBar2.Value = e.ProgressPercentage;
-                       }
-
-                       label2.Text = (string)e.UserState;
-                   }
-                               ),
-                       DispatcherPriority.Normal);
-
-                //Dispatcher.Invoke((Action)(reporter.DoWork), DispatcherPriority.Normal);
-                reporter.DoWork();
-
-                args.Result = @"dummy result";
+                    Debugger.Break();
+                    throw;
+                }
+#endif
             };
 
             backWorker.ProgressChanged += delegate(object s, ProgressChangedEventArgs args)
@@ -787,7 +799,10 @@ namespace Tobi
             backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
             {
                 workException = args.Error;
-
+#if DEBUG
+                if (workException != null)
+                    Debugger.Break();
+#endif
                 backWorker = null;
 
                 if (reporter.RequestCancellation || args.Cancelled)
@@ -817,7 +832,7 @@ namespace Tobi
                 if (backWorker == null) return false;
 
                 progressBar.IsIndeterminate = true;
-                label.Text = Tobi_Lang.WaitToCancel;                     // TODO LOCALIZE WaitToCancel
+                label.Text = Tobi_Lang.PleaseWait;
 
                 progressBar2.Visibility = Visibility.Collapsed;
                 label2.Visibility = Visibility.Collapsed;

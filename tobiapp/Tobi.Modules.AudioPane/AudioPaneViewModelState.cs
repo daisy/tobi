@@ -334,14 +334,14 @@ namespace Tobi.Plugin.AudioPane
                     return true;
                 }
 
-                if (!Audio.HasContent)
+                if (Audio.PlayStreamMarkers == null)
                 {
                     return false;
                 }
 
                 foreach (TreeNodeAndStreamDataLength marker in Audio.PlayStreamMarkers)
                 {
-                    if (marker.m_TreeNode == treeNode) return true;
+                    if (treeNode == marker.m_TreeNode || treeNode.IsDescendantOf(marker.m_TreeNode)) return true;
                 }
 
                 return false;
