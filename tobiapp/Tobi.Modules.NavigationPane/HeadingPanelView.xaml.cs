@@ -19,7 +19,7 @@ namespace Tobi.Plugin.NavigationPane
         private TreeViewItem m_SelectedTreeViewItem;
 
         private bool m_ignoreTreeNodeSelectedEvent;
-        private bool m_ignoreHeadingSelected;
+        //private bool m_ignoreHeadingSelected;
 
         private readonly HeadingPaneViewModel m_ViewModel;
         private readonly IEventAggregator m_EventAggregator;
@@ -43,7 +43,7 @@ namespace Tobi.Plugin.NavigationPane
             m_ViewModel.SetView(this);
 
             m_ignoreTreeNodeSelectedEvent = false;
-            m_ignoreHeadingSelected = false;
+            //m_ignoreHeadingSelected = false;
 
             InitializeComponent();
         }
@@ -65,7 +65,7 @@ namespace Tobi.Plugin.NavigationPane
 
             HeadingTreeNodeWrapper nodeTOC = m_ViewModel.HeadingsNavigator.GetAncestorContainer(node);
             if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
-            m_ignoreHeadingSelected = true;
+            //m_ignoreHeadingSelected = true;
 
             m_SelectedTreeViewItem = TreeView.SelectItem(nodeTOC, false);
         }
@@ -111,11 +111,11 @@ namespace Tobi.Plugin.NavigationPane
             TreeNode treeNode = (node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level.GetFirstDescendantWithText());
             if (treeNode == null) return;
 
-            if (m_ignoreHeadingSelected)
-            {
-                m_ignoreHeadingSelected = false;
-                return;
-            }
+            //if (m_ignoreHeadingSelected)
+            //{
+            //    m_ignoreHeadingSelected = false;
+            //    return;
+            //}
 
             m_ignoreTreeNodeSelectedEvent = true;
 

@@ -16,7 +16,7 @@ namespace Tobi.Plugin.NavigationPane
     [Export(typeof(PagePanelView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class PagePanelView // : IPagePaneView, IActiveAware
     {
-        private bool _ignorePageSelected = false;
+        //private bool _ignorePageSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
 
         private readonly PagesPaneViewModel m_ViewModel;
@@ -47,6 +47,11 @@ namespace Tobi.Plugin.NavigationPane
         }
         public void UpdatePageListSelection(TreeNode node)
         {
+            //if (_ignorePageSelected)
+            //{
+            //    _ignorePageSelected = false;
+            //    return;
+            //}
             if (_ignoreTreeNodeSelectedEvent)
             {
                 _ignoreTreeNodeSelectedEvent = false;
@@ -62,7 +67,7 @@ namespace Tobi.Plugin.NavigationPane
                     Page pageToSelect = prevPage ?? page;
                     if (pageToSelect != ListView.SelectedItem)
                     {
-                        _ignorePageSelected = true;
+                        //_ignorePageSelected = true;
                         ListView.SelectedItem = pageToSelect;
                         ListView.ScrollIntoView(pageToSelect);
                     }
@@ -101,11 +106,6 @@ namespace Tobi.Plugin.NavigationPane
 
         private void handleListCurrentSelection()
         {
-            if (_ignorePageSelected)
-            {
-                _ignorePageSelected = false;
-                return;
-            }
             Page page = ListView.SelectedItem as Page;
             if (page == null) return;
             TextElement textElement = page.TextElement;
