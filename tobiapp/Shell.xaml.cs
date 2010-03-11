@@ -490,12 +490,12 @@ namespace Tobi
             {
                 if (m_UrakawaSession == null)
                 {
-                    return String.Format(@"Tobi {{{0}}} - Please wait...", ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
+                    return String.Format(Tobi_Lang.WindowsTitleKey, ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
                 }
-                return String.Format(@"Tobi {{{0}}} {1}[{2}]",
+                return String.Format(Tobi_Lang.WindowsTitleKey2,
                     ApplicationConstants.APP_VERSION,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
-                    (m_UrakawaSession.DocumentProject == null ? @"no document" : m_UrakawaSession.DocumentFilePath)
+                    (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
                     );    // TODO LOCALIZE WindowsTitleKey2, NoDocument
             }
         }

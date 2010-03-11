@@ -45,7 +45,7 @@ namespace Tobi
 
         private void InitializeCommands()
         {
-            CmdFindFocus = new RichCompositeCommand("Find...", //TODO: localize
+            CmdFindFocus = new RichCompositeCommand(Tobi_Lang.Find, //TODO: localize Find
                 "Edit the search criteria.",
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-find"),
@@ -54,7 +54,7 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindFocus);
 
-            CmdFindNext = new RichCompositeCommand("Find Next", //TODO: localize
+            CmdFindNext = new RichCompositeCommand(Tobi_Lang.FindNext, //TODO: localize FindNext
                 "Find The Next Item That Matches The Search Criteria.",
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
@@ -63,7 +63,7 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindNext);
 
-            CmdFindPrevious = new RichCompositeCommand("Find Previous", //TODO: localize
+            CmdFindPrevious = new RichCompositeCommand(Tobi_Lang.FindPrevious, //TODO: localize FindPrevious
                 "Find The Previous Item That Matches The Search Criteria.",
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
