@@ -111,6 +111,8 @@ namespace Tobi.Plugin.AudioPane
 
                 if (State.Audio.PlayStream == null)
                 {
+                    Debug.Assert(State.Audio.PlayStreamMarkers == null);
+
                     StreamWithMarkers? sm = treeNodeSelection.Item1.OpenPcmInputStreamOfManagedAudioMediaFlattened();
 
                     if (sm != null)
@@ -143,13 +145,13 @@ namespace Tobi.Plugin.AudioPane
                         State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
                     }
 
-                    if (State.Audio.PlayStream == null)
-                    {
-                        //State.ResetAll();
-                        //m_LastPlayHeadTime = -1;
-                        //IsWaveFormLoading = false;
-                        return null;
-                    }
+                    //if (State.Audio.PlayStream == null)
+                    //{
+                    //    //State.ResetAll();
+                    //    //m_LastPlayHeadTime = -1;
+                    //    //IsWaveFormLoading = false;
+                    //    return null;
+                    //}
 
                     //if (State.Audio.PlayStreamMarkers.Count == 1)
                     //{
@@ -425,7 +427,9 @@ namespace Tobi.Plugin.AudioPane
         {
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-            if (!State.Audio.HasContent || treeNodeSelection.Item2 == null)
+            TreeNode treeNodeToMatch = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+            if (!State.Audio.HasContent || treeNodeToMatch == null)
             {
                 return;
             }
@@ -436,8 +440,8 @@ namespace Tobi.Plugin.AudioPane
             {
                 bytesRight += marker.m_LocalStreamDataLength;
 
-                if (treeNodeSelection.Item2 == marker.m_TreeNode
-                    || treeNodeSelection.Item2.IsDescendantOf(marker.m_TreeNode))
+                if (treeNodeToMatch == marker.m_TreeNode
+                    || treeNodeToMatch.IsDescendantOf(marker.m_TreeNode))
                 {
                     if (placePlayHead)
                     {
@@ -470,6 +474,20 @@ namespace Tobi.Plugin.AudioPane
 
             //Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
 
+            if (State.Audio.PlayStreamMarkers != null)
+            {
+                TreeNode treeNodeToMatch = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+                foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+                {
+                    if (treeNodeToMatch == marker.m_TreeNode
+                        || treeNodeToMatch.IsDescendantOf(marker.m_TreeNode))
+                    {
+                        RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
+                        return;
+                    }
+                }
+            }
 
             if (View != null)
             {
@@ -504,13 +522,13 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            //m_LastPlayHeadTime = 0; Set after waveform loaded
 
             if (IsAudioLoadedWithSubTreeNodes)
             {
                 RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
             }
 
+            //m_LastPlayHeadTime = 0; Set after waveform loaded
             loadAndPlay();
         }
 
@@ -676,13 +694,13 @@ namespace Tobi.Plugin.AudioPane
 
             double timeOffset = 0;
 
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-            if (treeNodeSelection.Item1 != treeNode)
+            if (State.Audio.PlayStreamMarkers  != null)
             {
                 foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
                 {
-                    if (marker.m_TreeNode == treeNode) break;
+                    if (treeNode == marker.m_TreeNode || treeNode.IsDescendantOf(marker.m_TreeNode)) break;
 
                     timeOffset += State.Audio.ConvertBytesToMilliseconds(marker.m_LocalStreamDataLength);
                 }
@@ -934,10 +952,14 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
+                TreeNode treeNodeToMatch = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
                 TreeNode subTreeNode = null;
 
                 //long byteOffset = PcmFormat.GetByteForTime(new Time(LastPlayHeadTime));
                 long byteOffset = State.Audio.ConvertMillisecondsToBytes(m_LastPlayHeadTime);
+
+                bool chunkIsAlreadySelected = false;
 
                 long bytesRight = 0;
                 long bytesLeft = 0;
@@ -951,8 +973,16 @@ namespace Tobi.Plugin.AudioPane
                     {
                         subTreeNode = marker.m_TreeNode;
 
-                        if (View != null
-                            && treeNodeSelection.Item2 != null && subTreeNode != treeNodeSelection.Item2)
+                        chunkIsAlreadySelected = treeNodeToMatch == subTreeNode ||
+                                                 treeNodeToMatch.IsDescendantOf(marker.m_TreeNode);
+
+                        if (chunkIsAlreadySelected)
+                        {
+                            checkAndDoAutoPlay();
+                            return;
+                        }
+                        
+                        if (View != null)
                         {
                             View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
                         }
@@ -961,16 +991,10 @@ namespace Tobi.Plugin.AudioPane
                     bytesLeft = bytesRight;
                 }
 
-                if (subTreeNode == treeNodeSelection.Item1)
-                {
-                    checkAndDoAutoPlay();
-                    return;
-                }
 
-                if (subTreeNode == null
-                    || treeNodeSelection.Item2 != null && subTreeNode == treeNodeSelection.Item2)
+                if (subTreeNode == null)
                 {
-                    checkAndDoAutoPlay();
+                    Debug.Fail("audio chunk not found ??");
                     return;
                 }
 
@@ -1186,7 +1210,9 @@ namespace Tobi.Plugin.AudioPane
 
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-            if (insert && m_UrakawaSession.DocumentProject != null && treeNodeSelection.Item1 != null)
+            TreeNode treeNode = (treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
+
+            if (insert && m_UrakawaSession.DocumentProject != null && treeNode != null)
             {
                 string originalFilePath = null;
 
@@ -1230,9 +1256,6 @@ namespace Tobi.Plugin.AudioPane
                 }
 
                 //AudioCues.PlayTockTock();
-
-
-                TreeNode treeNode = (treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
 
                 ManagedAudioMedia managedAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
 

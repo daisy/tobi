@@ -127,7 +127,23 @@ namespace Tobi.Plugin.AudioPane
                 Exception workException = null;
 
                 // Executes on a separate thread
-                m_BackgroundLoader.DoWork += (sender, e) => loadWaveForm(true, widthMagnified, heightMagnified, wasPlaying, play, bytesPerPixel_Magnified);
+                m_BackgroundLoader.DoWork += (sender, e) =>
+                                                 {
+#if DEBUG
+                                                     try
+                                                     {
+#endif
+                                                         loadWaveForm(true, widthMagnified, heightMagnified, wasPlaying,
+                                                                      play, bytesPerPixel_Magnified);
+#if DEBUG
+                                                     }
+                                                     catch
+                                                     {
+                                                         Debugger.Break();
+                                                         throw;
+                                                     }
+#endif
+                                                 };
 
                 // Executes on the thread that created the background worker (synchronization context)
                 // which is the WPF dispatcher and which has a message pump on its own
@@ -139,6 +155,9 @@ namespace Tobi.Plugin.AudioPane
 
                     if (workException != null)
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif
                         throw workException;
                     }
 
