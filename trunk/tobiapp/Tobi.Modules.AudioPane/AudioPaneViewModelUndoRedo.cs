@@ -29,18 +29,22 @@ namespace Tobi.Plugin.AudioPane
                         LastPlayHeadTime = 0
                     };
 
-                    State.CurrentTreeNode = null;
+                    //State.CurrentTreeNode = null;
 
                     Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                                Category.Debug, Priority.Medium);
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
+                    //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
+                    m_UrakawaSession.PerformTreeNodeSelection(command.CurrentTreeNode);
                 }
 
-                if (State.CurrentSubTreeNode != command.SelectionData.m_TreeNode)
+                Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+                if (treeNodeSelection.Item2 != command.SelectionData.m_TreeNode)
                 {
                     Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                                Category.Debug, Priority.Medium);
-                    EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.SelectionData.m_TreeNode);
+                    //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.SelectionData.m_TreeNode);
+                    m_UrakawaSession.PerformTreeNodeSelection(command.SelectionData.m_TreeNode);
                 }
 
                 CommandRefresh.Execute();
@@ -71,21 +75,23 @@ namespace Tobi.Plugin.AudioPane
 
         private bool resetCurrentTreeNodeState(TreeNode commandCurrentTreeNode)
         {
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
             bool bCurrentTreeNodeNeedsRefresh = false;
-            if (State.CurrentTreeNode != commandCurrentTreeNode)
+            if (treeNodeSelection.Item1 != commandCurrentTreeNode)
             {
                 bCurrentTreeNodeNeedsRefresh = true;
 
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                }
+                //if (AudioPlaybackStreamKeepAlive)
+                //{
+                //    ensurePlaybackStreamIsDead();
+                //}
 
-                State.ResetAll();
-                State.CurrentTreeNode = commandCurrentTreeNode;
-                m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
+                //State.ResetAll();
+                //State.CurrentTreeNode = commandCurrentTreeNode;
+                //m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
 
-                m_CurrentAudioStreamProvider();
+                //m_CurrentAudioStreamProvider();
             }
             else
             {
@@ -130,6 +136,8 @@ namespace Tobi.Plugin.AudioPane
                 };
             }
 
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
             if (bCurrentTreeNodeNeedsRefresh)
             {
                 StateToRestore? state = new StateToRestore
@@ -139,20 +147,22 @@ namespace Tobi.Plugin.AudioPane
                     LastPlayHeadTime = m_StateToRestore.Value.LastPlayHeadTime
                 };
 
-                State.CurrentTreeNode = null;
+                //State.CurrentTreeNode = null;
 
                 Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                            Category.Debug, Priority.Medium);
-                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(currentTreeNode);
+                //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(currentTreeNode);
+                m_UrakawaSession.PerformTreeNodeSelection(currentTreeNode);
 
                 m_StateToRestore = state;
             }
 
-            if (State.CurrentSubTreeNode != treeNode)
+            if (treeNodeSelection.Item2 != treeNode)
             {
                 Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                            Category.Debug, Priority.Medium);
-                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(treeNode);
+                //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(treeNode);
+                m_UrakawaSession.PerformTreeNodeSelection(treeNode);
             }
 
             CommandRefresh.Execute();
@@ -175,7 +185,8 @@ namespace Tobi.Plugin.AudioPane
                 }
 
                 Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.TreeNode);
+                //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.TreeNode);
+                m_UrakawaSession.PerformTreeNodeSelection(command.TreeNode);
             }
             else
             {

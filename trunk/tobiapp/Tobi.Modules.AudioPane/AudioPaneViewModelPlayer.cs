@@ -395,16 +395,17 @@ namespace Tobi.Plugin.AudioPane
                 return (m_Player.CurrentState == AudioPlayer.State.Playing);
             }
         }
-
+        //[NotifyDependsOnEx("CurrentTreeNode", typeof(StateData))]
         [NotifyDependsOn("IsAudioLoaded")]
-        [NotifyDependsOnEx("CurrentTreeNode", typeof(StateData))]
         [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         public bool IsAudioLoadedWithSubTreeNodes
         {
             get
             {
+                //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                 return (IsAudioLoaded
-                    && State.CurrentTreeNode != null
+                    //&& treeNodeSelection.Item1 != null
+                    && State.Audio.PlayStreamMarkers != null
                     && State.Audio.PlayStreamMarkers.Count > 1);
             }
         }
@@ -438,7 +439,8 @@ namespace Tobi.Plugin.AudioPane
 
         public void RefreshWaveFormChunkMarkers()
         {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            if (treeNodeSelection.Item1 == null || !State.Audio.HasContent)
             {
                 return;
             }
@@ -614,8 +616,8 @@ namespace Tobi.Plugin.AudioPane
         public void AudioPlayer_LoadWaveForm(bool play)
         {
             //Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
-
-            if (String.IsNullOrEmpty(State.FilePath) && State.CurrentTreeNode == null)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            if (String.IsNullOrEmpty(State.FilePath) && treeNodeSelection.Item1 == null)
             {
                 if (View != null)
                 {
@@ -1009,14 +1011,17 @@ namespace Tobi.Plugin.AudioPane
 
             UpdatePeakMeter();
 
-            if (State.CurrentTreeNode != null && State.Audio.EndOffsetOfPlayStream == State.Audio.DataLength && IsAutoPlay)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            if (State.Audio.EndOffsetOfPlayStream == State.Audio.DataLength && IsAutoPlay)
             {
-                TreeNode nextNode = State.CurrentTreeNode.GetNextSiblingWithManagedAudio();
+                TreeNode nextNode = treeNodeSelection.Item1.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)
                 {
                     Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
-                    EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    m_UrakawaSession.PerformTreeNodeSelection(nextNode);
                 }
             }
         }

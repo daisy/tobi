@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AudioLib;
-using Microsoft.Practices.Composite.Logging;
-using Tobi.Common;
 using Tobi.Common.MVVM;
 using urakawa.core;
 using urakawa.data;
 using urakawa.media.data.audio;
-using urakawa.media.data.utilities;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -52,10 +49,12 @@ namespace Tobi.Plugin.AudioPane
                     stream.Position = 0;
                     stream.Seek(0, SeekOrigin.Begin);
 
-                    if (m_viewModel.State.CurrentTreeNode != null)
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_viewModel.m_UrakawaSession.GetTreeNodeSelection();
+
+                    if (treeNodeSelection.Item1 != null)
                     {
-                        Debug.Assert(m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.EnforceSinglePCMFormat);
-                        PcmFormat = m_viewModel.State.CurrentTreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                        Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
+                        PcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                     }
                     else if (m_viewModel.m_UrakawaSession != null && m_viewModel.m_UrakawaSession.DocumentProject != null)
                     {
@@ -328,7 +327,9 @@ namespace Tobi.Plugin.AudioPane
                     return false;
                 }
 
-                if (CurrentTreeNode == treeNode || CurrentSubTreeNode == treeNode)
+                Tuple<TreeNode, TreeNode> treeNodeSelection = m_viewModel.m_UrakawaSession.GetTreeNodeSelection();
+                if (treeNodeSelection.Item1 == treeNode
+                    || treeNodeSelection.Item2 == treeNode)
                 {
                     return true;
                 }
@@ -346,45 +347,45 @@ namespace Tobi.Plugin.AudioPane
                 return false;
             }
 
-            // Main selected node. There are sub tree nodes when no audio is directly
-            // attached to this tree node.
-            // Automatically implies that FilePath is null
-            // (they are mutually-exclusive state values).
-            private TreeNode m_CurrentTreeNode;
-            public TreeNode CurrentTreeNode
-            {
-                get
-                {
-                    return m_CurrentTreeNode;
-                }
-                set
-                {
-                    if (m_CurrentTreeNode == value) return;
-                    m_CurrentTreeNode = value;
-                    m_notifier.RaisePropertyChanged(() => CurrentTreeNode);
+            //// Main selected node. There are sub tree nodes when no audio is directly
+            //// attached to this tree node.
+            //// Automatically implies that FilePath is null
+            //// (they are mutually-exclusive state values).
+            //private TreeNode m_CurrentTreeNode;
+            //public TreeNode CurrentTreeNode
+            //{
+            //    get
+            //    {
+            //        return m_CurrentTreeNode;
+            //    }
+            //    set
+            //    {
+            //        if (m_CurrentTreeNode == value) return;
+            //        m_CurrentTreeNode = value;
+            //        m_notifier.RaisePropertyChanged(() => CurrentTreeNode);
 
-                    CurrentSubTreeNode = null;
+            //        CurrentSubTreeNode = null;
 
-                    FilePath = null;
-                }
-            }
+            //        FilePath = null;
+            //    }
+            //}
 
-            // Secondary selected node. By default is the first one in the series.
-            // It is equal to the main selected tree node when the audio data is attached directly to it.
-            private TreeNode m_CurrentSubTreeNode;
-            public TreeNode CurrentSubTreeNode
-            {
-                get
-                {
-                    return m_CurrentSubTreeNode;
-                }
-                set
-                {
-                    if (m_CurrentSubTreeNode == value) return;
-                    m_CurrentSubTreeNode = value;
-                    m_notifier.RaisePropertyChanged(() => CurrentSubTreeNode);
-                }
-            }
+            //// Secondary selected node. By default is the first one in the series.
+            //// It is equal to the main selected tree node when the audio data is attached directly to it.
+            //private TreeNode m_CurrentSubTreeNode;
+            //public TreeNode CurrentSubTreeNode
+            //{
+            //    get
+            //    {
+            //        return m_CurrentSubTreeNode;
+            //    }
+            //    set
+            //    {
+            //        if (m_CurrentSubTreeNode == value) return;
+            //        m_CurrentSubTreeNode = value;
+            //        m_notifier.RaisePropertyChanged(() => CurrentSubTreeNode);
+            //    }
+            //}
 
             // Path to a WAV file,
             // only used when the user opens such file for playback / preview.
@@ -403,7 +404,7 @@ namespace Tobi.Plugin.AudioPane
                     m_WavFilePath = value;
                     m_notifier.RaisePropertyChanged(() => FilePath);
 
-                    CurrentTreeNode = null;
+                    //CurrentTreeNode = null;
                 }
             }
 
@@ -412,8 +413,8 @@ namespace Tobi.Plugin.AudioPane
                 //m_viewModel.Logger.Log("Audio StateData reset.", Category.Debug, Priority.Medium);
 
                 FilePath = null;
-                CurrentTreeNode = null;
-                CurrentSubTreeNode = null;
+                //CurrentTreeNode = null;
+                //CurrentSubTreeNode = null;
 
                 Selection.ResetAll();
                 Audio.ResetAll();

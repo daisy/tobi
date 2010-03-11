@@ -306,7 +306,7 @@ namespace Tobi.Common.UI
                                                    !doExit, 500, 250,
                                                    (String.IsNullOrEmpty(exStackTrace) ? null : details), 130);
 
-            SystemSounds.Exclamation.Play();
+            AudioCues.PlayExclamation();
 
             try
             {

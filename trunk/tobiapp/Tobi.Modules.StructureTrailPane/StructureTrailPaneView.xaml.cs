@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Media;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -12,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -49,17 +47,18 @@ namespace Tobi.Plugin.StructureTrailPane
 
         private List<TreeNode> PathToCurrentTreeNode;
 
-        private void updateBreadcrumbPanel(TreeNode node)
+        private void updateBreadcrumbPanel(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
             bool firstTime = PathToCurrentTreeNode == null;
 
-            if (firstTime || !PathToCurrentTreeNode.Contains(node))
+            TreeNode treeNodeSel = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+            if (firstTime || !PathToCurrentTreeNode.Contains(treeNodeSel))
             {
                 PathToCurrentTreeNode = new List<TreeNode>();
-                TreeNode treeNode = node;
+                TreeNode treeNode = treeNodeSel;
                 do
                 {
                     PathToCurrentTreeNode.Add(treeNode);
@@ -127,25 +126,16 @@ namespace Tobi.Plugin.StructureTrailPane
                     tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.XMLChildren);                  // TODO LOCALIZE XMLChildren
                 }
 
-                bool selected = false;
-                if (CurrentTreeNode == CurrentSubTreeNode)
+                bool selected = n == treeNodeSelection.Item2 || n == treeNodeSelection.Item1;
+                if (selected)
                 {
-                    if (n == node)
-                    {
-                        run.FontWeight = FontWeights.Heavy;
-                        selected = true;
-                    }
-                }
-                else
-                {
-                    if (n == CurrentTreeNode)
-                    {
-                        run.FontWeight = FontWeights.Heavy;
-                        selected = true;
-                    }
+                    run.FontWeight = FontWeights.Heavy;
                 }
 
-                butt.SetValue(AutomationProperties.NameProperty, (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound) + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "") + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));        // TODO LOCALIZE NoXMLFound
+                butt.SetValue(AutomationProperties.NameProperty,
+                    (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
+                    + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "")
+                    + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));        // TODO LOCALIZE NoXMLFound
                 // TODO LOCALIZE Selected
                 // TODO LOCALIZE Audio
 
@@ -230,57 +220,58 @@ namespace Tobi.Plugin.StructureTrailPane
             var wrapper = (TreeNodeWrapper)ui.SelectedItem;
             wrapper.Popup.IsOpen = false;
 
-            selectNode(wrapper.TreeNode, true);
+            m_UrakawaSession.PerformTreeNodeSelection(wrapper.TreeNode);
+            //selectNode(wrapper.TreeNode, true);
 
             CommandFocus.Execute();
         }
 
-        private void selectNode(TreeNode node, bool toggleIntersection)
-        {
-            if (node == null) return;
+        //private void selectNode(TreeNode node, bool toggleIntersection)
+        //{
+        //    if (node == null) return;
 
-            if (toggleIntersection && node == CurrentTreeNode)
-            {
-                if (CurrentSubTreeNode != null)
-                {
-                    m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.selectNode",
-                               Category.Debug, Priority.Medium);
+        //    if (toggleIntersection && node == CurrentTreeNode)
+        //    {
+        //        if (CurrentSubTreeNode != null)
+        //        {
+        //            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.selectNode",
+        //                       Category.Debug, Priority.Medium);
 
-                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
-                }
-                else
-                {
-                    var treeNode = node.GetFirstDescendantWithText();
-                    if (treeNode != null)
-                    {
-                        m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
-                                     Category.Debug, Priority.Medium);
+        //            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(CurrentSubTreeNode);
+        //        }
+        //        else
+        //        {
+        //            var treeNode = node.GetFirstDescendantWithText();
+        //            if (treeNode != null)
+        //            {
+        //                m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+        //                             Category.Debug, Priority.Medium);
 
-                        m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-                    }
-                }
+        //                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+        //            }
+        //        }
 
-                return;
-            }
+        //        return;
+        //    }
 
-            if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
-                && node.IsDescendantOf(CurrentTreeNode))
-            {
-                m_Logger.Log(
-                    "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.selectNode",
-                    Category.Debug, Priority.Medium);
+        //    if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
+        //        && node.IsDescendantOf(CurrentTreeNode))
+        //    {
+        //        m_Logger.Log(
+        //            "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.selectNode",
+        //            Category.Debug, Priority.Medium);
 
-                m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
-            }
-            else
-            {
-                m_Logger.Log(
-                    "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
-                    Category.Debug, Priority.Medium);
+        //        m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
+        //    }
+        //    else
+        //    {
+        //        m_Logger.Log(
+        //            "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+        //            Category.Debug, Priority.Medium);
 
-                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
-            }
-        }
+        //        m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+        //    }
+        //}
 
         private void OnBreadCrumbButtonClick(object sender, RoutedEventArgs e)
         {
@@ -289,8 +280,8 @@ namespace Tobi.Plugin.StructureTrailPane
             {
                 return;
             }
-
-            selectNode((TreeNode)ui.Tag, true);
+            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)ui.Tag);
+            //selectNode((TreeNode)ui.Tag, true);
 
             CommandFocus.Execute();
         }
@@ -316,9 +307,6 @@ namespace Tobi.Plugin.StructureTrailPane
         //    m_PropertyChangeHandler.InitializeDependentProperties(this);
         //}
 
-        public RichDelegateCommand CommandStructureUp { get; private set; }
-        public RichDelegateCommand CommandStructureDown { get; private set; }
-
         public RichDelegateCommand CommandFocus { get; private set; }
 
         private readonly ILoggerFacade m_Logger;
@@ -326,6 +314,7 @@ namespace Tobi.Plugin.StructureTrailPane
         private readonly IEventAggregator m_EventAggregator;
 
         private readonly IShellView m_ShellView;
+        private readonly IUrakawaSession m_UrakawaSession;
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -334,58 +323,18 @@ namespace Tobi.Plugin.StructureTrailPane
         public StructureTrailPaneView(
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession urakawaSession,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
+            m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
             m_ShellView = shellView;
 
             DataContext = this;
 
-            CommandStructureDown = new RichDelegateCommand(
-                Tobi_Plugin_StructureTrailPane_Lang.StructureDown,
-                Tobi_Plugin_StructureTrailPane_Lang.StructureDown_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-bottom"),
-                () =>
-                {
-                    int i = PathToCurrentTreeNode.IndexOf(CurrentTreeNode);
-                    if (i == (PathToCurrentTreeNode.Count - 1)) return;
-
-                    selectNode(PathToCurrentTreeNode[i + 1], false);
-
-                    CommandFocus.Execute();
-                },
-                () => CurrentTreeNode != null && CurrentSubTreeNode != null,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectDown));
-
-            m_ShellView.RegisterRichCommand(CommandStructureDown);
-            //
-            CommandStructureUp = new RichDelegateCommand(
-                Tobi_Plugin_StructureTrailPane_Lang.StructureUp,
-                Tobi_Plugin_StructureTrailPane_Lang.StructureUp_,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-top"),
-                () =>
-                {
-                    selectNode(CurrentTreeNode.Parent, false);
-
-                    //if (CurrentSubTreeNode != null)
-                    //    selectNode(CurrentSubTreeNode.Parent, false);
-                    //else
-                    //    selectNode(CurrentTreeNode.Parent, false);
-
-                    CommandFocus.Execute();
-                },
-                () => CurrentTreeNode != null && CurrentTreeNode.Parent != null
-                //|| CurrentSubTreeNode != null && CurrentSubTreeNode.Parent != null
-                        ,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectUp));
-
-            m_ShellView.RegisterRichCommand(CommandStructureUp);
             //
             CommandFocus = new RichDelegateCommand(
                 Tobi_Plugin_StructureTrailPane_Lang.Document_Focus,
@@ -420,8 +369,10 @@ namespace Tobi.Plugin.StructureTrailPane
 
             OnProjectUnLoaded(null);
 
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+
+            m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
@@ -431,9 +382,6 @@ namespace Tobi.Plugin.StructureTrailPane
 
         private void OnProjectUnLoaded(Project obj)
         {
-            CurrentTreeNode = null;
-            CurrentSubTreeNode = null;
-
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
             BreadcrumbPanel.Children.Add(new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)));
@@ -444,9 +392,6 @@ namespace Tobi.Plugin.StructureTrailPane
 
         private void OnProjectLoaded(Project project)
         {
-            CurrentTreeNode = null;
-            CurrentSubTreeNode = null;
-
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
@@ -454,159 +399,132 @@ namespace Tobi.Plugin.StructureTrailPane
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("No selection");
         }
 
-        private TreeNode m_CurrentTreeNode;
-        public TreeNode CurrentTreeNode
-        {
-            get
-            {
-                return m_CurrentTreeNode;
-            }
-            set
-            {
-                if (m_CurrentTreeNode == value) return;
+        //private TreeNode m_CurrentTreeNode;
+        //public TreeNode CurrentTreeNode
+        //{
+        //    get
+        //    {
+        //        return m_CurrentTreeNode;
+        //    }
+        //    set
+        //    {
+        //        if (m_CurrentTreeNode == value) return;
 
-                m_CurrentTreeNode = value;
-                //RaisePropertyChanged(() => CurrentTreeNode);
+        //        m_CurrentTreeNode = value;
+        //        //RaisePropertyChanged(() => CurrentTreeNode);
+        //    }
+        //}
+
+        //private TreeNode m_CurrentSubTreeNode;
+        //public TreeNode CurrentSubTreeNode
+        //{
+        //    get
+        //    {
+        //        return m_CurrentSubTreeNode;
+        //    }
+        //    set
+        //    {
+        //        if (m_CurrentSubTreeNode == value) return;
+        //        m_CurrentSubTreeNode = value;
+
+
+        //        //RaisePropertyChanged(() => CurrentSubTreeNode);
+        //    }
+        //}
+
+        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
+        {
+            TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+            var qName = treeNode.GetXmlElementQName();
+            string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)) + treeNode.GetTextMediaFlattened();
+            if (str.Length > 100)
+            {
+                str = str.Substring(0, 100) + ". . .";
             }
+            Console.WriteLine(@"}}}}}" + str);
+
+            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
+
+
+            updateBreadcrumbPanel(treeNodeSelection);
         }
 
-        private TreeNode m_CurrentSubTreeNode;
-        public TreeNode CurrentSubTreeNode
-        {
-            get
-            {
-                return m_CurrentSubTreeNode;
-            }
-            set
-            {
-                if (m_CurrentSubTreeNode == value) return;
-                m_CurrentSubTreeNode = value;
+        //private void OnSubTreeNodeSelected(TreeNode node)
+        //{
+        //    if (node == null || CurrentTreeNode == null)
+        //    {
+        //        return;
+        //    }
+        //    if (CurrentSubTreeNode == node)
+        //    {
+        //        return;
+        //    }
+        //    if (!node.IsDescendantOf(CurrentTreeNode))
+        //    {
+        //        return;
+        //    }
+        //    CurrentSubTreeNode = node;
 
+        //    updateBreadcrumbPanel(node);
+        //}
 
-                if (m_CurrentSubTreeNode != null)
-                {
-                    var qName = m_CurrentSubTreeNode.GetXmlElementQName();
+        //private void OnTreeNodeSelected(TreeNode node)
+        //{
+        //    if (node == null)
+        //    {
+        //        return;
+        //    }
+        //    if (CurrentTreeNode == node)
+        //    {
+        //        return;
+        //    }
 
-                    string strPrepend = "";
-                    if (qName == null)
-                    {
-                        strPrepend = Tobi_Plugin_StructureTrailPane_Lang.NoXML;           // TODO LOCALIZE NoXML
-                    }
-                    else
-                    {
-                        strPrepend = String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName);      // TODO LOCALIZE XMLName
-                    }
-                    string str = strPrepend + m_CurrentSubTreeNode.GetTextMediaFlattened();
+        //    TreeNode subTreeNode = null;
 
-                    m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
-                }
-                else
-                {
-                    if (CurrentTreeNode != null)
-                    {
-                        string str = CurrentTreeNode.GetTextMediaFlattened();
-                        if (str.Length > 100)
-                        {
-                            str = str.Substring(0, 100) + ". . .";
-                        }
-                        Console.WriteLine(@"}}}}}" + str);
+        //    if (CurrentTreeNode != null)
+        //    {
+        //        if (CurrentSubTreeNode == CurrentTreeNode)
+        //        {
+        //            if (node.IsAncestorOf(CurrentTreeNode))
+        //            {
+        //                subTreeNode = CurrentTreeNode;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (node.IsAncestorOf(CurrentSubTreeNode))
+        //            {
+        //                subTreeNode = CurrentSubTreeNode;
+        //            }
+        //            else if (node.IsDescendantOf(CurrentTreeNode))
+        //            {
+        //                subTreeNode = node;
+        //            }
+        //        }
+        //    }
 
-                        var qName = CurrentTreeNode.GetXmlElementQName();
+        //    if (subTreeNode == node)
+        //    {
+        //        CurrentTreeNode = node;
+        //        CurrentSubTreeNode = CurrentTreeNode;
 
-                        string strPrepend = "";
-                        if (qName == null)
-                        {
-                            strPrepend = Tobi_Plugin_StructureTrailPane_Lang.NoXML;                                    // TODO LOCALIZE Key already added NoXML
-                        }
-                        else
-                        {
-                            strPrepend = String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName);              // TODO LOCALIZE Key already added XMLName
-                        }
+        //        updateBreadcrumbPanel(node);
+        //    }
+        //    else
+        //    {
+        //        CurrentTreeNode = node;
+        //        CurrentSubTreeNode = CurrentTreeNode;
 
-                        m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(strPrepend + str);
-                    }
-                }
+        //        updateBreadcrumbPanel(node);
 
-                //RaisePropertyChanged(() => CurrentSubTreeNode);
-            }
-        }
+        //        if (subTreeNode != null)
+        //        {
+        //            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] StructureTrailPaneView.OnTreeNodeSelected",
+        //                       Category.Debug, Priority.Medium);
 
-        private void OnSubTreeNodeSelected(TreeNode node)
-        {
-            if (node == null || CurrentTreeNode == null)
-            {
-                return;
-            }
-            if (CurrentSubTreeNode == node)
-            {
-                return;
-            }
-            if (!node.IsDescendantOf(CurrentTreeNode))
-            {
-                return;
-            }
-            CurrentSubTreeNode = node;
-
-            updateBreadcrumbPanel(node);
-        }
-
-        private void OnTreeNodeSelected(TreeNode node)
-        {
-            if (node == null)
-            {
-                return;
-            }
-            if (CurrentTreeNode == node)
-            {
-                return;
-            }
-
-            TreeNode subTreeNode = null;
-
-            if (CurrentTreeNode != null)
-            {
-                if (CurrentSubTreeNode == CurrentTreeNode)
-                {
-                    if (node.IsAncestorOf(CurrentTreeNode))
-                    {
-                        subTreeNode = CurrentTreeNode;
-                    }
-                }
-                else
-                {
-                    if (node.IsAncestorOf(CurrentSubTreeNode))
-                    {
-                        subTreeNode = CurrentSubTreeNode;
-                    }
-                    else if (node.IsDescendantOf(CurrentTreeNode))
-                    {
-                        subTreeNode = node;
-                    }
-                }
-            }
-
-            if (subTreeNode == node)
-            {
-                CurrentTreeNode = node;
-                CurrentSubTreeNode = CurrentTreeNode;
-
-                updateBreadcrumbPanel(node);
-            }
-            else
-            {
-                CurrentTreeNode = node;
-                CurrentSubTreeNode = CurrentTreeNode;
-
-                updateBreadcrumbPanel(node);
-
-                if (subTreeNode != null)
-                {
-                    m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] StructureTrailPaneView.OnTreeNodeSelected",
-                               Category.Debug, Priority.Medium);
-
-                    m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
-                }
-            }
-        }
+        //            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+        //        }
+        //    }
+        //}
     }
 }

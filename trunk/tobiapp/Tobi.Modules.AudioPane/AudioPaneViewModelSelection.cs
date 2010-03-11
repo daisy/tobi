@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
-using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -190,7 +190,8 @@ namespace Tobi.Plugin.AudioPane
 
         public void SelectChunk(long byteOffset)
         {
-            if (State.CurrentTreeNode == null || !State.Audio.HasContent)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            if (treeNodeSelection.Item1 == null || !State.Audio.HasContent)
             {
                 return;
             }

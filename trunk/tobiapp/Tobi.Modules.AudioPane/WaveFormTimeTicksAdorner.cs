@@ -241,7 +241,8 @@ namespace Tobi.Plugin.AudioPane
                 currentTickX += minorTickInterval_pixels;
             }
 
-            if (m_AudioPaneViewModel.State.CurrentTreeNode != null)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
+            if (treeNodeSelection.Item1 != null)
             {
                 //drawingContext.Pop(); //PushOpacity
 

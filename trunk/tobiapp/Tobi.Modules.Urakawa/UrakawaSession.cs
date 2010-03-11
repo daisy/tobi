@@ -16,6 +16,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.core;
 using urakawa.daisy;
 using urakawa.data;
 using urakawa.events;
@@ -28,6 +29,149 @@ namespace Tobi.Plugin.Urakawa
     [Export(typeof(IUrakawaSession)), PartCreationPolicy(CreationPolicy.Shared)]
     public sealed partial class UrakawaSession : PropertyChangedNotifyBase, IUrakawaSession, IPartImportsSatisfiedNotification
     {
+        private readonly Object m_TreeNodeSelectionLock = new object();
+        private TreeNode m_TreeNode;
+        private TreeNode m_SubTreeNode;
+
+        [Conditional("DEBUG")]
+        private void verifyTreeNodeSelection()
+        {
+            if (m_SubTreeNode != null)
+            {
+                Debug.Assert(m_TreeNode != null);
+                Debug.Assert(m_TreeNode.IsAncestorOf(m_SubTreeNode)); // nodes cannot be equal
+            }
+
+            if (m_TreeNode == null) return;
+
+            TreeNode nodeAncestorAudio = m_TreeNode.GetFirstAncestorWithManagedAudio();
+            bool nodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+            TreeNode nodeDescendantAudio = m_TreeNode.GetFirstDescendantWithManagedAudio();
+
+            if (nodeAncestorAudio != null)
+            {
+                Debug.Assert(!nodeHasDirectAudio);
+                Debug.Assert(nodeDescendantAudio == null);
+            }
+
+            if (nodeHasDirectAudio)
+            {
+                Debug.Assert(nodeAncestorAudio == null);
+                Debug.Assert(nodeDescendantAudio == null);
+            }
+
+            if (nodeDescendantAudio != null)
+            {
+                Debug.Assert(!nodeHasDirectAudio);
+                Debug.Assert(nodeAncestorAudio == null);
+            }
+        }
+
+        private void adjustTreeNodeIfAncestorAudio(TreeNode node)
+        {
+            bool nodeHasDirectAudio = node.GetManagedAudioMediaOrSequenceMedia() != null;
+            TreeNode nodeDescendantAudio = node.GetFirstDescendantWithManagedAudio();
+            TreeNode nodeAncestorAudio = node.GetFirstAncestorWithManagedAudio();
+
+            // will be picked-up as-is by the waveform display
+            if (nodeHasDirectAudio || nodeDescendantAudio != null)
+            {
+                m_TreeNode = node;
+            }
+
+            // we need to adjust the selection so that the waveform display represents some useful information
+            if (nodeAncestorAudio != null)
+            {
+                m_TreeNode = nodeAncestorAudio;
+            }
+
+            // no audio at all => we just leave the selection as it is.
+            m_TreeNode = node;
+        }
+
+        public Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode node)
+        {
+            if (node == null) throw new ArgumentNullException("node");
+
+            // Reminder: the "lock" block statement is equivalent to:
+            //Monitor.Enter(LOCK);
+            //try
+            //{
+            //    
+            //}
+            //finally
+            //{
+            //    Monitor.Exit(LOCK);
+            //}
+            lock (m_TreeNodeSelectionLock)
+            {
+                var oldTreeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
+
+#if DEBUG
+                verifyTreeNodeSelection();
+#endif
+                if (m_TreeNode == null) // brand new selection
+                {
+                    adjustTreeNodeIfAncestorAudio(node);
+                    m_SubTreeNode = null;
+                }
+                else if (m_TreeNode == node)
+                {
+                    if (m_SubTreeNode != null) // toggle
+                    {
+                        adjustTreeNodeIfAncestorAudio(m_SubTreeNode);
+                        if (m_TreeNode == m_SubTreeNode)
+                        {
+                            m_SubTreeNode = null;
+                        }
+                    }
+                }
+                else if (node.IsDescendantOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
+                {
+                    adjustTreeNodeIfAncestorAudio(m_TreeNode);
+                    if (node == m_SubTreeNode) // toggle
+                    {
+                        m_SubTreeNode = null;
+                    }
+                    else
+                    {
+                        m_SubTreeNode = node; // those 2 may be equal already, it doesn't matter.
+                    }
+                }
+                else if (node.IsAncestorOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
+                {
+                    if (m_SubTreeNode == null)
+                    {
+                        m_SubTreeNode = m_TreeNode;
+                    }
+                    adjustTreeNodeIfAncestorAudio(node);
+                }
+                else
+                {
+                    adjustTreeNodeIfAncestorAudio(node);
+                    m_SubTreeNode = null;
+                }
+
+#if DEBUG
+                verifyTreeNodeSelection();
+#endif
+                var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
+
+                if (oldTreeNodeSelection != treeNodeSelection)
+                    m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Publish(treeNodeSelection);
+
+                return treeNodeSelection;
+            }
+        }
+
+        public Tuple<TreeNode, TreeNode> GetTreeNodeSelection()
+        {
+            lock (m_TreeNodeSelectionLock)
+            {
+                return new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
+            }
+        }
+
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
 #pragma warning restore 1591
@@ -217,14 +361,14 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 () =>
-                    {
-                        PopupModalWindow.DialogButton button =
-                            CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, "confirm");
-                        //if (button != PopupModalWindow.DialogButton.Ok)
-                        //{
-                        //    return false;
-                        //}
-                    },
+                {
+                    PopupModalWindow.DialogButton button =
+                        CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, "confirm");
+                    //if (button != PopupModalWindow.DialogButton.Ok)
+                    //{
+                    //    return false;
+                    //}
+                },
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Close));
@@ -249,14 +393,14 @@ namespace Tobi.Plugin.Urakawa
             // Backup before close.
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
-            
+
             // Closing is REQUIRED ! 
             PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.OkCancel, "data cleanup");
             if (!PopupModalWindow.IsButtonOkYesApply(button))
             {
                 return;
             }
-            
+
             project.Presentations.Get(0).UndoRedoManager.FlushCommands();
             //RaisePropertyChanged(()=>IsDirty);
 
@@ -351,7 +495,7 @@ namespace Tobi.Plugin.Urakawa
 
             //if (!Dispatcher.CurrentDispatcher.CheckAccess())
             //{
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+            //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
             //    Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, (Action) (() =>
             //      {
             //          var p = new Process

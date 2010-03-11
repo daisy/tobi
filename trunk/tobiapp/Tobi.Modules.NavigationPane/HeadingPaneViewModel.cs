@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -44,8 +45,11 @@ namespace Tobi.Plugin.NavigationPane
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(onProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(onProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+            
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+
+            m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
         }
 
         private void intializeCommands()
@@ -214,14 +218,19 @@ namespace Tobi.Plugin.NavigationPane
             View.UnloadProject();
             _headingsNavigator = null;
         }
-        private void onSubTreeNodeSelected(TreeNode node)
+
+        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
-            onTreeNodeSelected(node);
+            View.SelectTreeNode(treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
         }
-        private void onTreeNodeSelected(TreeNode node)
-        {
-            View.SelectTreeNode(node);
-        }
+        //private void onSubTreeNodeSelected(TreeNode node)
+        //{
+        //    onTreeNodeSelected(node);
+        //}
+        //private void onTreeNodeSelected(TreeNode node)
+        //{
+        //    View.SelectTreeNode(node);
+        //}
         public void OnImportsSatisfied()
         {
             trySearchCommands();

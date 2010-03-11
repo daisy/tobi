@@ -7,11 +7,5 @@
     <Setting Name="Keyboard_Focus_Doc" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F6</Value>
     </Setting>
-    <Setting Name="Keyboard_StructureSelectUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ALT ] OemComma (,)</Value>
-    </Setting>
-    <Setting Name="Keyboard_StructureSelectDown" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ALT ] OemPeriod (.)</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

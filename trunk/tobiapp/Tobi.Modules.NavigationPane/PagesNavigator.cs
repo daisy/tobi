@@ -55,8 +55,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                //MessageBox.Show(UserInterfaceStrings.PageFindNext_FAILURE);
-                SystemSounds.Asterisk.Play();
+                AudioCues.PlayAsterisk();
             }
         }
         public void FindPrevious()
@@ -68,8 +67,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                //MessageBox.Show(UserInterfaceStrings.PageFindPrev_FAILURE);
-                SystemSounds.Asterisk.Play();
+                AudioCues.PlayAsterisk();
             }
 
         }

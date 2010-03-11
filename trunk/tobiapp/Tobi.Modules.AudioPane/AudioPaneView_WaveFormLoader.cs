@@ -35,11 +35,11 @@ namespace Tobi.Plugin.AudioPane
 
             m_BackgroundLoader.CancelAsync();
 
-            while (m_BackgroundLoader != null || m_ViewModel.IsWaveFormLoading)
-            {
-                Thread.Sleep(100);
-                m_ShellView.PumpDispatcherFrames(); // make sure we don't block the UI thread
-            }
+            //while (m_BackgroundLoader != null || m_ViewModel.IsWaveFormLoading)
+            //{
+            //    Thread.Sleep(100);
+            //    m_ShellView.PumpDispatcherFrames(); // make sure we don't block the UI thread
+            //}
         }
 
         private void OnWaveFormCancelButtonClick(object sender, RoutedEventArgs e)
@@ -754,7 +754,9 @@ namespace Tobi.Plugin.AudioPane
 #endif
             //
             GeometryDrawing geoDrawMarkers = null;
-            if (m_ViewModel.State.CurrentTreeNode != null)
+
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_ViewModel.m_UrakawaSession.GetTreeNodeSelection();
+            if (treeNodeSelection.Item1 != null)
             {
                 geoDrawMarkers = createGeometry_Markers(heightMagnified, bytesPerPixel_Magnified);
             }
@@ -829,7 +831,7 @@ namespace Tobi.Plugin.AudioPane
                     drawGrp.Children.Add(geoDraw2);
                 }
             }
-            if (m_ViewModel.State.CurrentTreeNode != null && geoDrawMarkers != null)
+            if (treeNodeSelection.Item1 != null && geoDrawMarkers != null)
             {
                 drawGrp.Children.Add(geoDrawMarkers);
             }

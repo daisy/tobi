@@ -46,5 +46,29 @@ namespace Tobi.Plugin.DocumentPane {
                 this["Keyboard_Doc_Event_SwitchNext"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] OemComma (,)")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectUp {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_StructureSelectUp"]));
+            }
+            set {
+                this["Keyboard_StructureSelectUp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] OemPeriod (.)")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectDown {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_StructureSelectDown"]));
+            }
+            set {
+                this["Keyboard_StructureSelectDown"] = value;
+            }
+        }
     }
 }

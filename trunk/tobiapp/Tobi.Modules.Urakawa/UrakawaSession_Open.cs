@@ -332,8 +332,9 @@ namespace Tobi.Plugin.Urakawa
                 {
                     m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
                                Category.Debug, Priority.Medium);
-
-                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                    
+                    PerformTreeNodeSelection(treeNode);
+                    //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
                 }
 
                 return true;

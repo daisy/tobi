@@ -44,7 +44,7 @@ namespace Tobi.Plugin.AudioPane
         private readonly IEventAggregator EventAggregator;
 
         private readonly IShellView m_ShellView;
-        private readonly IUrakawaSession m_UrakawaSession;
+        internal readonly IUrakawaSession m_UrakawaSession;
 
 
         ///<summary>
@@ -105,38 +105,40 @@ namespace Tobi.Plugin.AudioPane
 
             m_AudioStreamProvider_TreeNode = () =>
             {
-                if (State.CurrentTreeNode == null) return null;
+                Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+                if (treeNodeSelection.Item1 == null) return null;
 
                 if (State.Audio.PlayStream == null)
                 {
-                    StreamWithMarkers? sm = State.CurrentTreeNode.OpenPcmInputStreamOfManagedAudioMediaFlattened();
+                    StreamWithMarkers? sm = treeNodeSelection.Item1.OpenPcmInputStreamOfManagedAudioMediaFlattened();
 
-                    if (sm == null)
+                    if (sm != null)
                     {
-                        TreeNode ancerstor = State.CurrentTreeNode.GetFirstAncestorWithManagedAudio();
-                        if (ancerstor != null)
-                        {
-                            StreamWithMarkers? sma = ancerstor.OpenPcmInputStreamOfManagedAudioMedia();
-                            if (sma != null)
-                            {
-                                TreeNode theCurrentSubTreeNode = State.CurrentTreeNode;
-                                State.CurrentTreeNode = ancerstor;
+                        //    TreeNode ancerstor = State.CurrentTreeNode.GetFirstAncestorWithManagedAudio();
+                        //    if (ancerstor != null)
+                        //    {
+                        //        StreamWithMarkers? sma = ancerstor.OpenPcmInputStreamOfManagedAudioMedia();
+                        //        if (sma != null)
+                        //        {
+                        //            TreeNode theCurrentSubTreeNode = State.CurrentTreeNode;
+                        //            State.CurrentTreeNode = ancerstor;
 
-                                State.Audio.SetPlayStream_FromTreeNode(sma.GetValueOrDefault().m_Stream);
-                                State.Audio.PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
+                        //            State.Audio.SetPlayStream_FromTreeNode(sma.GetValueOrDefault().m_Stream);
+                        //            State.Audio.PlayStreamMarkers = sma.GetValueOrDefault().m_SubStreamMarkers;
 
-                                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+                        //            Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
 
-                                EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(State.CurrentTreeNode);
+                        //            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(State.CurrentTreeNode);
 
-                                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
+                        //            Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.m_CurrentAudioStreamProvider", Category.Debug, Priority.Medium);
 
-                                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
-                            }
-                        }
-                    }
-                    else
-                    {
+                        //            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(theCurrentSubTreeNode);
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
                         State.Audio.SetPlayStream_FromTreeNode(sm.GetValueOrDefault().m_Stream);
                         State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
                     }
@@ -277,9 +279,11 @@ namespace Tobi.Plugin.AudioPane
 
             EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
-            
-            EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+
+            //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+            //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+
+            EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
 
             EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, EscapeEvent.THREAD_OPTION);
         }
@@ -373,53 +377,55 @@ namespace Tobi.Plugin.AudioPane
 
         //private bool m_SkipTreeNodeSelectedEvent = false;
 
-        private void OnSubTreeNodeSelected(TreeNode node)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<TreeNode>)OnSubTreeNodeSelected, node);
-                return;
-            }
-            //Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
+        //private void OnSubTreeNodeSelected(TreeNode node)
+        //{
+        //    if (!Dispatcher.CheckAccess())
+        //    {
+        //        //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+        //        Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+        //            (Action<TreeNode>)OnSubTreeNodeSelected, node);
+        //        return;
+        //    }
+        //    //Logger.Log("AudioPaneViewModel.OnSubTreeNodeSelected", Category.Debug, Priority.Medium);
 
 
-            if (View != null)
-            {
-                View.CancelWaveFormLoad();
-            }
+        //    if (View != null)
+        //    {
+        //        View.CancelWaveFormLoad();
+        //    }
 
-            if (node == null || State.CurrentTreeNode == null)
-            {
-                return;
-            }
-            if (State.CurrentSubTreeNode == node)
-            {
-                return;
-            }
-            if (!IsAudioLoadedWithSubTreeNodes)
-            {
-                return;
-            }
-            if (!node.IsDescendantOf(State.CurrentTreeNode))
-            {
-                return;
-            }
+        //    if (node == null || State.CurrentTreeNode == null)
+        //    {
+        //        return;
+        //    }
+        //    if (State.CurrentSubTreeNode == node)
+        //    {
+        //        return;
+        //    }
+        //    if (!IsAudioLoadedWithSubTreeNodes)
+        //    {
+        //        return;
+        //    }
+        //    if (!node.IsDescendantOf(State.CurrentTreeNode))
+        //    {
+        //        return;
+        //    }
 
-            if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
-            {
-                m_Player.Stop();
-            }
+        //    if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
+        //    {
+        //        m_Player.Stop();
+        //    }
 
-            State.CurrentSubTreeNode = node;
+        //    State.CurrentSubTreeNode = node;
 
-            RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
-        }
+        //    RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
+        //}
 
         private void RefreshWaveFormChunkMarkersForCurrentSubTreeNode(bool placePlayHead)
         {
-            if (!State.Audio.HasContent || State.CurrentSubTreeNode == null)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            if (!State.Audio.HasContent || treeNodeSelection.Item2 == null)
             {
                 return;
             }
@@ -430,7 +436,8 @@ namespace Tobi.Plugin.AudioPane
             {
                 bytesRight += marker.m_LocalStreamDataLength;
 
-                if (State.CurrentSubTreeNode == marker.m_TreeNode)
+                if (treeNodeSelection.Item2 == marker.m_TreeNode
+                    || treeNodeSelection.Item2.IsDescendantOf(marker.m_TreeNode))
                 {
                     if (placePlayHead)
                     {
@@ -448,13 +455,16 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private void OnTreeNodeSelected(TreeNode node)
+
+        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
+            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
             if (!Dispatcher.CheckAccess())
             {
                 //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<TreeNode>)OnTreeNodeSelected, node);
+                    (Action<Tuple<TreeNode, TreeNode>>)OnTreeNodeSelectionChanged, treeNodeSelection);
                 return;
             }
 
@@ -464,21 +474,6 @@ namespace Tobi.Plugin.AudioPane
             if (View != null)
             {
                 View.CancelWaveFormLoad();
-            }
-
-            if (node == null)
-            {
-                return;
-            }
-
-            //if (IsWaveFormLoading && View != null)
-            //{
-            //    View.CancelWaveFormLoad();
-            //}
-
-            if (State.CurrentTreeNode == node)
-            {
-                return;
             }
 
             /*if (m_SkipTreeNodeSelectedEvent)
@@ -502,8 +497,6 @@ namespace Tobi.Plugin.AudioPane
             m_LastPlayHeadTime = -1;
             IsWaveFormLoading = false;
 
-            State.CurrentTreeNode = node;
-
             m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
 
             if (m_CurrentAudioStreamProvider() == null)
@@ -513,8 +506,76 @@ namespace Tobi.Plugin.AudioPane
 
             //m_LastPlayHeadTime = 0; Set after waveform loaded
 
+            if (IsAudioLoadedWithSubTreeNodes)
+            {
+                RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
+            }
+
             loadAndPlay();
         }
+
+        //private void OnTreeNodeSelected(TreeNode node)
+        //{
+        //    if (node == null)
+        //    {
+        //        return;
+        //    }
+
+        //    if (!Dispatcher.CheckAccess())
+        //    {
+        //        //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+        //        Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+        //            (Action<TreeNode>)OnTreeNodeSelected, node);
+        //        return;
+        //    }
+
+        //    //Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
+
+
+        //    if (View != null)
+        //    {
+        //        View.CancelWaveFormLoad();
+        //    }
+
+        //    if (State.CurrentTreeNode == node)
+        //    {
+        //        return;
+        //    }
+
+        //    /*if (m_SkipTreeNodeSelectedEvent)
+        //    {
+        //        m_SkipTreeNodeSelectedEvent = false;
+        //        return;
+        //    }*/
+
+        //    if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
+        //    {
+        //        m_Player.Stop();
+        //    }
+
+        //    if (AudioPlaybackStreamKeepAlive)
+        //    {
+        //        ensurePlaybackStreamIsDead();
+        //    }
+
+        //    State.ResetAll();
+
+        //    m_LastPlayHeadTime = -1;
+        //    IsWaveFormLoading = false;
+
+        //    State.CurrentTreeNode = node;
+
+        //    m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
+
+        //    if (m_CurrentAudioStreamProvider() == null)
+        //    {
+        //        return;
+        //    }
+
+        //    //m_LastPlayHeadTime = 0; Set after waveform loaded
+
+        //    loadAndPlay();
+        //}
 
 
         //private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -615,7 +676,9 @@ namespace Tobi.Plugin.AudioPane
 
             double timeOffset = 0;
 
-            if (State.CurrentTreeNode != treeNode)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            if (treeNodeSelection.Item1 != treeNode)
             {
                 foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
                 {
@@ -740,7 +803,7 @@ namespace Tobi.Plugin.AudioPane
 
         public static string FormatTimeSpan_Units(double ms)
         {
-            TimeSpan time = TimeSpan.FromTicks((long) (ms*TimeSpan.TicksPerMillisecond));
+            TimeSpan time = TimeSpan.FromTicks((long)(ms * TimeSpan.TicksPerMillisecond));
 
             if (Settings.Default.UseFriendlyTimeFormat)
                 return Time.Format_H_MN_S_MS(time);
@@ -863,8 +926,9 @@ namespace Tobi.Plugin.AudioPane
                 {
                     return;
                 }
+                Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                if (State.CurrentTreeNode == null)
+                if (treeNodeSelection.Item1 == null)
                 {
                     checkAndDoAutoPlay();
                     return;
@@ -887,7 +951,8 @@ namespace Tobi.Plugin.AudioPane
                     {
                         subTreeNode = marker.m_TreeNode;
 
-                        if (View != null && subTreeNode != State.CurrentSubTreeNode)
+                        if (View != null
+                            && treeNodeSelection.Item2 != null && subTreeNode != treeNodeSelection.Item2)
                         {
                             View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
                         }
@@ -896,18 +961,26 @@ namespace Tobi.Plugin.AudioPane
                     bytesLeft = bytesRight;
                 }
 
-                if (subTreeNode == null || subTreeNode == State.CurrentSubTreeNode)
+                if (subTreeNode == treeNodeSelection.Item1)
                 {
                     checkAndDoAutoPlay();
                     return;
                 }
 
-                State.CurrentSubTreeNode = subTreeNode;
+                if (subTreeNode == null
+                    || treeNodeSelection.Item2 != null && subTreeNode == treeNodeSelection.Item2)
+                {
+                    checkAndDoAutoPlay();
+                    return;
+                }
+
+                //State.CurrentSubTreeNode = subTreeNode;
 
                 Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead",
                                Category.Debug, Priority.Medium);
 
-                EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
+                //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
+                m_UrakawaSession.PerformTreeNodeSelection(subTreeNode);
 
                 //if (State.CurrentSubTreeNode != State.CurrentTreeNode)
                 //{
@@ -1111,7 +1184,9 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            if (insert && m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            if (insert && m_UrakawaSession.DocumentProject != null && treeNodeSelection.Item1 != null)
             {
                 string originalFilePath = null;
 
@@ -1157,7 +1232,7 @@ namespace Tobi.Plugin.AudioPane
                 //AudioCues.PlayTockTock();
 
 
-                TreeNode treeNode = (State.CurrentSubTreeNode ?? State.CurrentTreeNode);
+                TreeNode treeNode = (treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
 
                 ManagedAudioMedia managedAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
 
@@ -1234,6 +1309,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.ResetAll();
             }
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
             Media audioMedia = treeNode.GetManagedAudioMediaOrSequenceMedia();
             if (audioMedia == null)
@@ -1249,7 +1325,7 @@ namespace Tobi.Plugin.AudioPane
                 var managedAudioMedia = (ManagedAudioMedia)audioMedia;
 
                 double timeOffset = LastPlayHeadTime;
-                if (State.CurrentSubTreeNode != null)
+                if (treeNodeSelection.Item2 != null)
                 {
                     var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
@@ -1264,7 +1340,8 @@ namespace Tobi.Plugin.AudioPane
                         if (byteOffset < bytesRight
                                 || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                         {
-                            if (State.CurrentSubTreeNode != marker.m_TreeNode)
+                            if (treeNodeSelection.Item2 != marker.m_TreeNode
+                                && !treeNodeSelection.Item2.IsDescendantOf(marker.m_TreeNode))
                             {
                                 //recordingStream.Close();
                                 Debug.Fail("This should never happen !!!");
@@ -1309,7 +1386,7 @@ namespace Tobi.Plugin.AudioPane
                            CreateManagedAudioMediaInsertDataCommand(
                                treeNode, manMedia,
                                new Time(timeInsert),
-                               State.CurrentTreeNode);
+                               treeNodeSelection.Item1);
                     }
 
                     treeNode.Presentation.UndoRedoManager.Execute(command);
@@ -1327,7 +1404,7 @@ namespace Tobi.Plugin.AudioPane
                         CreateManagedAudioMediaInsertDataCommand(
                             treeNode, manMedia,
                             new Time(timeOffset),
-                            State.CurrentTreeNode);
+                            treeNodeSelection.Item1);
 
                     treeNode.Presentation.UndoRedoManager.Execute(command);
                 }
@@ -1376,7 +1453,7 @@ namespace Tobi.Plugin.AudioPane
                             CreateManagedAudioMediaInsertDataCommand(
                             treeNode, manMedia,
                             new Time(timeOffset),
-                            State.CurrentTreeNode); //manangedMediaSeqItem
+                            treeNodeSelection.Item1); //manangedMediaSeqItem
 
                         treeNode.Presentation.UndoRedoManager.Execute(command);
 

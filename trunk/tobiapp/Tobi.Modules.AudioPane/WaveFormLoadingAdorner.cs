@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Tobi.Common;
 using Colors=System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.AudioPane
