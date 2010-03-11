@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
@@ -202,23 +203,19 @@ namespace Tobi.Plugin.AudioPane
             //    return;
             //}
 
-            long bytesRight = 0;
-            long bytesLeft = 0;
-            int index = -1;
-            foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+            long bytesRight;
+            long bytesLeft;
+            int index;
+            TreeNode subTreeNode;
+            bool match = State.Audio.FindInPlayStreamMarkers(byteOffset, out subTreeNode, out index, out bytesLeft, out bytesRight);
+
+            if (match)
             {
-                index++;
-                bytesRight += marker.m_LocalStreamDataLength;
-                if (byteOffset < bytesRight
-                    || index == (State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
-                {
-                    //subTreeNode = marker.m_TreeNode;
-
-                    State.Selection.SetSelectionBytes(bytesLeft, bytesRight);
-
-                    break;
-                }
-                bytesLeft = bytesRight;
+                State.Selection.SetSelectionBytes(bytesLeft, bytesRight);
+            }
+            else
+            {
+                Debug.Fail("audio chunk not found ??");
             }
         }
 

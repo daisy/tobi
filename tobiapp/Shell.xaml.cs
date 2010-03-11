@@ -619,16 +619,13 @@ namespace Tobi
 
         // Must be called on the UI thread
         public bool RunModalCancellableProgressTask(string title, IDualCancellableProgressReporter reporter,
-            Action actionCancelled, Action actionCompleted)
+                                                     Action actionCancelled, Action actionCompleted)
         {
             if (!Dispatcher.CheckAccess())
             {
-                Debug.Fail("RunModalCancellableProgressTask should be called on the UI thread !!");
-
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal,
-                //    (Action<string, IDualCancellableProgressReporter, Action, Action>)DoWorkProgressUI, title, reporter, actionCancelled, actionCompleted);
-                //return;
+#if DEBUG
+                Debugger.Break();
+#endif
             }
 
             m_Logger.Log(String.Format(@"Shell.RunModalCancellableProgressTask() [{0}]", title), Category.Debug, Priority.Medium);
@@ -766,10 +763,10 @@ namespace Tobi
                     args.Result = @"dummy result";
 #if DEBUG
                 }
-                catch
+                catch (Exception ex)
                 {
                     Debugger.Break();
-                    throw;
+                    throw ex;
                 }
 #endif
             };
@@ -861,11 +858,23 @@ namespace Tobi
         // DoEvent() equivalent
         public void PumpDispatcherFrames()
         {
-            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, new VoidHandler(() => { }));
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                //new ThreadStart();
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)PumpDispatcherFrames);
+                return;
+            }
+
+            Dispatcher.Invoke(DispatcherPriority.Background,
+                                                        new VoidHandler(() => { }));
 
             //var frame = new DispatcherFrame();
-            //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new ExitFrameHandler(frm => frm.Continue = false), frame);
-            //Dispatcher.PushFrame(frame);
+            //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+            //                            new ExitFrameHandler(frm => frm.Continue = false), frame);
+            //Dispatcher.PushFrame(frame); // blocks until Continue == false, which happens only when all operations with priority greater than Background have been processed by the Dispatcher.
         }
 
         private delegate void VoidHandler();

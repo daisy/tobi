@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -154,7 +155,7 @@ namespace Tobi.Plugin.DocumentPane
                         m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1); //pathToTreeNode[iTreeNode]
                         return;
                     }
-                    m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1); 
+                    m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1);
                     m_UrakawaSession.PerformTreeNodeSelection(pathToTreeNode[iTreeNode + 1]);
                 },
                 () =>
@@ -437,6 +438,8 @@ namespace Tobi.Plugin.DocumentPane
         private TextElement m_lastHighlightedSub;
         private Brush m_lastHighlightedSub_Background;
         private Brush m_lastHighlightedSub_Foreground;
+        private Brush m_lastHighlightedSub_BorderBrush;
+        private Thickness m_lastHighlightedSub_BorderThickness;
 
 
         private Dictionary<string, TextElement> m_idLinkTargets;
@@ -613,13 +616,142 @@ namespace Tobi.Plugin.DocumentPane
 
         private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
-
-            TextElement t1 = BringIntoViewAndHighlight(treeNodeSelection.Item1, treeNodeSelection.Item2 == null);
-
+            TextElement textElement1 = FindTextElement(treeNodeSelection.Item1);
+            if (textElement1 == null)
+            {
+                Debug.Fail("TextElement not found ?");
+                return;
+            }
+            TextElement textElement2 = null;
             if (treeNodeSelection.Item2 != null)
             {
-                TextElement t2 = BringIntoViewAndHighlightSub(treeNodeSelection.Item2);
-                //t2.BringIntoView();
+                textElement2 = FindTextElement(treeNodeSelection.Item2);
+                if (textElement2 == null)
+                {
+                    Debug.Fail("TextElement not found ?");
+                    return;
+                }
+            }
+
+            clearLastHighlighteds();
+
+            if (textElement2 == null)
+            {
+                doLastHighlightedOnly(textElement1);
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement1.BringIntoView));
+            }
+            else
+            {
+                doLastHighlightedAndSub(textElement1, textElement2);
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement2.BringIntoView));
+            }
+        }
+
+        private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2)
+        {
+            Brush brushFont = new SolidColorBrush(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = new SolidColorBrush(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack1 = new SolidColorBrush(Settings.Default.Document_Color_Selection_Back1);
+            Brush brushBack2 = new SolidColorBrush(Settings.Default.Document_Color_Selection_Back2);
+
+            m_lastHighlighted = textElement1;
+
+            m_lastHighlighted_Background = m_lastHighlighted.Background;
+            m_lastHighlighted.Background = brushBack1;
+
+            m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            m_lastHighlighted.Foreground = brushFont;
+
+            if (m_lastHighlighted is Block)
+            {
+                m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
+
+                m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
+            }
+
+            m_lastHighlightedSub = textElement2;
+
+            m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
+            m_lastHighlightedSub.Background = brushBack2;
+
+            m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
+            m_lastHighlightedSub.Foreground = brushFont;
+
+            if (m_lastHighlightedSub is Block)
+            {
+                m_lastHighlightedSub_BorderBrush = ((Block)m_lastHighlightedSub).BorderBrush;
+                ((Block)m_lastHighlightedSub).BorderBrush = brushBorder;
+
+                m_lastHighlightedSub_BorderThickness = ((Block)m_lastHighlightedSub).BorderThickness;
+                ((Block)m_lastHighlightedSub).BorderThickness = new Thickness(1);
+            }
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
+        }
+
+
+        private void doLastHighlightedOnly(TextElement textElement)
+        {
+            Brush brushFont = new SolidColorBrush(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = new SolidColorBrush(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack2 = new SolidColorBrush(Settings.Default.Document_Color_Selection_Back2);
+
+            m_lastHighlighted = textElement;
+
+            if (m_lastHighlighted is Block)
+            {
+                m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
+
+                m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
+            }
+
+            m_lastHighlighted_Background = m_lastHighlighted.Background;
+            m_lastHighlighted.Background = brushBack2;
+
+            m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            m_lastHighlighted.Foreground = brushFont;
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);
+        }
+
+        private void clearLastHighlighteds()
+        {
+            if (m_lastHighlighted != null)
+            {
+                if (m_lastHighlighted is Block)
+                {
+                    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
+                    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
+                }
+
+                m_lastHighlighted.Background = m_lastHighlighted_Background;
+                m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
+
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
+
+                m_lastHighlighted = null;
+            }
+
+            if (m_lastHighlightedSub != null)
+            {
+                if (m_lastHighlightedSub is Block)
+                {
+                    ((Block)m_lastHighlightedSub).BorderBrush = m_lastHighlightedSub_BorderBrush;
+                    ((Block)m_lastHighlightedSub).BorderThickness = m_lastHighlightedSub_BorderThickness;
+                }
+
+                m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
+                m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
+
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
+
+                m_lastHighlightedSub = null;
             }
         }
 
@@ -1054,26 +1186,6 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        public TextElement BringIntoViewAndHighlight(TreeNode node, bool bringIntoView)
-        {
-            TextElement textElement = FindTextElement(node);
-            if (textElement != null)
-            {
-                BringIntoViewAndHighlight(textElement, bringIntoView);
-            }
-            return textElement;
-        }
-
-        public TextElement BringIntoViewAndHighlightSub(TreeNode node)
-        {
-            TextElement textElement = FindTextElement(node);
-            if (textElement != null)
-            {
-                BringIntoViewAndHighlightSub(textElement);
-            }
-            return textElement;
-        }
-
         public void BringIntoViewAndHighlight(string uid)
         {
             string id = XukToFlowDocument.IdToName(uid);
@@ -1098,86 +1210,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    BringIntoViewAndHighlight(textElement, true);
+                    Debug.Fail("Hyperlink not to TreeNode ??");
                 }
             }
-        }
-
-
-        public void BringIntoViewAndHighlightSub(TextElement textElement)
-        {
-            textElement.BringIntoView();
-            return;
-            if (m_lastHighlightedSub != null)
-            {
-                m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
-                m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
-
-                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
-            }
-            else
-            {
-                if (m_lastHighlighted != null)
-                {
-                    if (m_lastHighlighted is Block)
-                    {
-                        m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
-                        m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
-                        ((Block)m_lastHighlighted).BorderBrush = Brushes.OrangeRed;
-                        ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
-                    }
-
-                    setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
-                }
-            }
-            m_lastHighlightedSub = textElement;
-
-            m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
-            m_lastHighlightedSub.Background = Brushes.Yellow;
-
-            m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
-            m_lastHighlightedSub.Foreground = Brushes.Black;
-
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
-        }
-
-        public void BringIntoViewAndHighlight(TextElement textElement, bool bringIntoView)
-        {
-            if (bringIntoView)
-                textElement.BringIntoView();
-
-            if (m_lastHighlightedSub != null)
-            {
-                m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
-                m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
-
-                if (m_lastHighlighted != null && m_lastHighlighted is Block)
-                {
-                    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
-                    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
-                }
-
-                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
-            }
-
-            if (m_lastHighlighted != null)
-            {
-                m_lastHighlighted.Background = m_lastHighlighted_Background;
-                m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
-
-                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
-            }
-
-            m_lastHighlighted = textElement;
-            m_lastHighlightedSub = null;
-
-            m_lastHighlighted_Background = m_lastHighlighted.Background;
-            m_lastHighlighted.Background = Brushes.LightGoldenrodYellow;
-
-            m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
-            m_lastHighlighted.Foreground = Brushes.Black;
-
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);
         }
 
         private void setOrRemoveTextDecoration_SelectUnderline(TextElement textElement, bool remove)
@@ -1294,9 +1329,11 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
+            Brush brush = new SolidColorBrush(Settings.Default.Document_Color_Selection_UnderOverLine);
+
             var decUnder = new TextDecoration(
                 TextDecorationLocation.Underline,
-                new Pen(Brushes.DarkGoldenrod, 1)
+                new Pen(brush, 1)
                 {
                     DashStyle = DashStyles.Dot
                 },
@@ -1307,7 +1344,7 @@ namespace Tobi.Plugin.DocumentPane
 
             var decOver = new TextDecoration(
                 TextDecorationLocation.OverLine,
-                new Pen(Brushes.DarkGoldenrod, 1)
+                new Pen(brush, 1)
                 {
                     DashStyle = DashStyles.Dot
                 },
@@ -1321,33 +1358,33 @@ namespace Tobi.Plugin.DocumentPane
             inline.TextDecorations = decs;
         }
 
-        private void setTextDecoration_ErrorUnderline(Inline inline)
-        {
-            //if (textDecorations == null || !textDecorations.Equals(System.Windows.TextDecorations.Underline))
-            //{
-            //    textDecorations = System.Windows.TextDecorations.Underline;
-            //}
-            //else
-            //{
-            //    textDecorations = new TextDecorationCollection(); // or null
-            //}
+        //private void setTextDecoration_ErrorUnderline(Inline inline)
+        //{
+        //    //if (textDecorations == null || !textDecorations.Equals(System.Windows.TextDecorations.Underline))
+        //    //{
+        //    //    textDecorations = System.Windows.TextDecorations.Underline;
+        //    //}
+        //    //else
+        //    //{
+        //    //    textDecorations = new TextDecorationCollection(); // or null
+        //    //}
 
-            var dec = new TextDecoration(
-                TextDecorationLocation.Underline,
-                new Pen(Brushes.Red, 1)
-                {
-                    DashStyle = DashStyles.Dot
-                },
-                1,
-                TextDecorationUnit.FontRecommended,
-                TextDecorationUnit.FontRecommended
-            );
+        //    var dec = new TextDecoration(
+        //        TextDecorationLocation.Underline,
+        //        new Pen(Brushes.Red, 1)
+        //        {
+        //            DashStyle = DashStyles.Dot
+        //        },
+        //        1,
+        //        TextDecorationUnit.FontRecommended,
+        //        TextDecorationUnit.FontRecommended
+        //    );
 
-            //var decs = new TextDecorationCollection { dec };
-            var decs = new TextDecorationCollection(TextDecorations.OverLine) { dec };
+        //    //var decs = new TextDecorationCollection { dec };
+        //    var decs = new TextDecorationCollection(TextDecorations.OverLine) { dec };
 
-            inline.TextDecorations = decs;
-        }
+        //    inline.TextDecorations = decs;
+        //}
 
         //public List<object> GetVisibleTextElements()
         //{

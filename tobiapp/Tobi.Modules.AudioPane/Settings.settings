@@ -4,6 +4,9 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="AudioWaveForm_SkipDrawing" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="UseFriendlyTimeFormat" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

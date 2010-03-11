@@ -110,11 +110,13 @@ namespace Tobi.Plugin.AudioPane
         {
             bool bCurrentTreeNodeNeedsRefresh = resetCurrentTreeNodeState(currentTreeNode);
 
-            bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(treeNode);
+            //bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(treeNode);
 
-            double timeOffset = isTreeNodeInAudioWaveForm && managedAudioMediaTarget != null
-                                    ? getTimeOffset(treeNode, managedAudioMediaTarget)
-                                    : 0;
+            //double timeOffset = isTreeNodeInAudioWaveForm && managedAudioMediaTarget != null
+            //                        ? getTimeOffset(treeNode, managedAudioMediaTarget)
+            //                        : 0;
+            
+            double timeOffset = getTimeOffset(treeNode, managedAudioMediaTarget);
 
             if (done)
             {
@@ -170,9 +172,9 @@ namespace Tobi.Plugin.AudioPane
 
         private void UndoRedoManagerChanged(TreeNodeSetManagedAudioMediaCommand command, bool done)
         {
-            bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(command.TreeNode);
-
-            if (!isTreeNodeInAudioWaveForm)
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            
+            if (command.TreeNode != treeNodeSelection.Item1)
             {
                 if (done)
                 {
@@ -216,9 +218,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
 

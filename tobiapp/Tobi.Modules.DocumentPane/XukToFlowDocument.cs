@@ -341,13 +341,16 @@ namespace Tobi.Plugin.DocumentPane
 
         private void setTag(TextElement data, TreeNode node)
         {
+            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontNoAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_NoAudio);
+            
             data.Tag = node;
             data.Foreground = Brushes.Red;
 
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
-                data.Foreground = Brushes.Black;
+                data.Foreground = brushFontAudio;
                 //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.Hand;
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
@@ -369,7 +372,7 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
             {
-                data.Foreground = Brushes.Black;
+                data.Foreground = brushFontAudio;
                 //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.SizeAll;
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
@@ -378,7 +381,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.GetTextMedia() != null)
             {
-                data.Foreground = Brushes.DarkGray;
+                data.Foreground = brushFontNoAudio;
                 //data.Background = Brushes.LimeGreen;
                 data.Cursor = Cursors.Pen;
                 data.MouseDown += OnMouseDownTextElementWithNode;

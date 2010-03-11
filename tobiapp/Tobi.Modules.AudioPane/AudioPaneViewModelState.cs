@@ -223,6 +223,110 @@ namespace Tobi.Plugin.AudioPane
                 PlayStreamMarkers = null;
                 DataLength = -1;
             }
+
+            public bool FindInPlayStreamMarkers(TreeNode treeNode, out int index, out long bytesLeft, out long bytesRight)
+            {
+                bytesRight = 0;
+                bytesLeft = -1;
+                index = -1;
+                if (PlayStreamMarkers == null) return false;
+
+                foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+                {
+                    index++;
+                    bytesRight += marker.m_LocalStreamDataLength;
+                    if (treeNode == marker.m_TreeNode || treeNode.IsDescendantOf(marker.m_TreeNode))
+                    {
+                        return true;
+                    }
+                    bytesLeft = bytesRight;
+                }
+
+                return false;
+            }
+
+            public bool FindInPlayStreamMarkers(long byteOffset, out TreeNode treeNode, out int index, out long bytesLeft, out long bytesRight)
+            {
+                treeNode = null;
+                bytesRight = 0;
+                bytesLeft = -1;
+                index = -1;
+                if (PlayStreamMarkers == null) return false;
+
+                foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+                {
+                    index++;
+                    bytesRight += marker.m_LocalStreamDataLength;
+                    if (byteOffset < bytesRight
+                    || index == (PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
+                    {
+                        treeNode = marker.m_TreeNode;
+
+                        return true;
+                    }
+                    bytesLeft = bytesRight;
+                }
+
+                return false;
+            }
+
+            public void FindInPlayStreamMarkersAndDo(long byteOffset,
+                Func<long, long, TreeNode, int, long> matchFunc,
+                Func<long, long, long, TreeNode, long> nonMatchFunc)
+            {
+                if (PlayStreamMarkers == null) return;
+
+                TreeNode treeNode = null;
+                long bytesRight = 0;
+                long bytesLeft = -1;
+                int index = -1;
+                
+                foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
+                {
+                    index++;
+                    bytesRight += marker.m_LocalStreamDataLength;
+                    if (byteOffset < bytesRight
+                    || index == (PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
+                    {
+                        treeNode = marker.m_TreeNode;
+
+                        long newMatch = matchFunc(bytesLeft, bytesRight, treeNode, index);
+                        if (newMatch == -1) break;
+                        byteOffset = newMatch;
+                    }
+                    else
+                    {
+                        long newMatch = nonMatchFunc(byteOffset, bytesLeft, bytesRight, treeNode);
+                        if (newMatch == -1) break;
+                        byteOffset = newMatch;
+                    }
+                    bytesLeft = bytesRight;
+                }
+            }
+            //public bool IsTreeNodeShownInAudioWaveForm(TreeNode treeNode)
+            //{
+            //    if (treeNode == null)
+            //    {
+            //        return false;
+            //    }
+
+            //    Tuple<TreeNode, TreeNode> treeNodeSelection = m_viewModel.m_UrakawaSession.GetTreeNodeSelection();
+            //    if (treeNodeSelection.Item1 == treeNode
+            //        || treeNodeSelection.Item2 == treeNode)
+            //    {
+            //        return true;
+            //    }
+
+            //    if (PlayStreamMarkers == null)
+            //    {
+            //        return false;
+            //    }
+
+            //    long bytesRight;
+            //    long bytesLeft;
+            //    int index;
+            //    return FindInPlayStreamMarkers(treeNode, out index, out bytesLeft, out bytesRight);
+            //}
         }
 
         public class SelectionStateData
@@ -320,33 +424,7 @@ namespace Tobi.Plugin.AudioPane
                 Selection = new SelectionStateData(m_notifier, vm);
             }
 
-            public bool IsTreeNodeShownInAudioWaveForm(TreeNode treeNode)
-            {
-                if (treeNode == null)
-                {
-                    return false;
-                }
-
-                Tuple<TreeNode, TreeNode> treeNodeSelection = m_viewModel.m_UrakawaSession.GetTreeNodeSelection();
-                if (treeNodeSelection.Item1 == treeNode
-                    || treeNodeSelection.Item2 == treeNode)
-                {
-                    return true;
-                }
-
-                if (Audio.PlayStreamMarkers == null)
-                {
-                    return false;
-                }
-
-                foreach (TreeNodeAndStreamDataLength marker in Audio.PlayStreamMarkers)
-                {
-                    if (treeNode == marker.m_TreeNode || treeNode.IsDescendantOf(marker.m_TreeNode)) return true;
-                }
-
-                return false;
-            }
-
+            
             //// Main selected node. There are sub tree nodes when no audio is directly
             //// attached to this tree node.
             //// Automatically implies that FilePath is null

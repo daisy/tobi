@@ -99,52 +99,50 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioPlayer_Stop();
 
-                    long bytesLeftPrevious = -1;
-
-                    long bytesLeft = 0;
-                    long bytesRight = 0;
-
                     long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
-                    int index = -1;
+                    long bytesLeftPrevious = -1;
 
-                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
-                    {
-                        index++;
+                    State.Audio.FindInPlayStreamMarkersAndDo(bytesPlayHead,
+                       (bytesLeft, bytesRight, markerTreeNode, index)
+                       =>
+                       {
+                           if (bytesLeftPrevious == -1)
+                           {
+                               if (IsAutoPlay)
+                               {
+                                   if (View != null)
+                                   {
+                                       View.ClearSelection();
+                                   }
+                               }
 
-                        bytesRight = (bytesLeft + marker.m_LocalStreamDataLength);
-                        if (bytesPlayHead >= bytesLeft && bytesPlayHead < bytesRight
-                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesPlayHead >= bytesRight)
-                        {
-                            if (bytesLeftPrevious == -1)
-                            {
-                                if (IsAutoPlay)
-                                {
-                                    if (View != null)
-                                    {
-                                        View.ClearSelection();
-                                    }
-                                }
+                               LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
+                               AudioCues.PlayBeep();
+                               return -1;
+                           }
 
-                                LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
-                                AudioCues.PlayBeep();
-                                break;
-                            }
+                           if (IsAutoPlay)
+                           {
+                               if (View != null)
+                               {
+                                   View.ClearSelection();
+                               }
+                           }
 
-                            if (IsAutoPlay)
-                            {
-                                if (View != null)
-                                {
-                                    View.ClearSelection();
-                                }
-                            }
+                           LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
 
-                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
-                            break;
-                        }
-                        bytesLeftPrevious = bytesLeft;
-                        bytesLeft += marker.m_LocalStreamDataLength;
-                    }
+                           return -1;
+                       }
+                        ,
+                       (bytesToMatch_, bytesLeft, bytesRight, markerTreeNode)
+                       =>
+                       {
+                           bytesLeftPrevious = bytesLeft;
+                           return bytesToMatch_;
+                       }
+                        );
+
                 },
                 () => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
@@ -163,50 +161,33 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioPlayer_Stop();
 
-                    long bytesLeft = 0;
-                    long bytesRight = 0;
-
                     long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
-                    bool found = false;
+                    long bytesRight;
+                    long bytesLeft;
+                    int index;
+                    TreeNode subTreeNode;
+                    bool match = State.Audio.FindInPlayStreamMarkers(bytesPlayHead, out subTreeNode, out index, out bytesLeft, out bytesRight);
 
-                    int index = -1;
-                    foreach (TreeNodeAndStreamDataLength marker in State.Audio.PlayStreamMarkers)
+                    if (match)
                     {
-                        index++;
-
-                        if (found)
+                        if (IsAutoPlay)
                         {
-                            if (IsAutoPlay)
+                            if (View != null)
                             {
-                                if (View != null)
-                                {
-                                    View.ClearSelection();
-                                }
+                                View.ClearSelection();
                             }
-
-                            LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
-                            return;
                         }
 
-                        bytesRight = (bytesLeft + marker.m_LocalStreamDataLength);
-                        if (bytesPlayHead >= bytesLeft && bytesPlayHead < bytesRight
-                            || index == (State.Audio.PlayStreamMarkers.Count - 1) && bytesPlayHead >= bytesRight)
-                        {
-                            found = true;
-                        }
-
-                        bytesLeft += marker.m_LocalStreamDataLength;
+                        LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesRight);
+                        return;
                     }
-
-                    if (!found)
+                    else
                     {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                    }
+                        Debug.Fail("audio chunk not found ??");
 
-                    AudioCues.PlayBeep();
+                        AudioCues.PlayBeep();
+                    }
                 },
                 () => CommandStepBack.CanExecute(),
                 Settings_KeyGestures.Default,

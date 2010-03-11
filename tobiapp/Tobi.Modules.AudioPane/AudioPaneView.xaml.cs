@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -479,8 +480,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(ResetWaveFormEmpty));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(ResetWaveFormEmpty));
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(ResetWaveFormEmpty));
                 return;
             }
 
@@ -529,7 +532,9 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(ResetAll));
+#if DEBUG
+                Debugger.Break();
+#endif
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(ResetAll));
                 return;
             }
@@ -576,11 +581,70 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(RefreshUI_WaveFormPlayHead_NoDispatcherCheck));
-                Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(RefreshUI_WaveFormPlayHead_NoDispatcherCheck));
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(RefreshUI_WaveFormPlayHead));
                 return;
             }
-            RefreshUI_WaveFormPlayHead_NoDispatcherCheck();
+            if (!m_ViewModel.State.Audio.HasContent)
+            {
+                if (m_TimeSelectionLeftX >= 0)
+                {
+                    scrollInView(m_TimeSelectionLeftX + 1);
+                }
+
+                return;
+            }
+
+            if (BytesPerPixel <= 0)
+            {
+                return;
+            }
+
+            //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
+            long bytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime);
+
+            double pixels = bytes / BytesPerPixel;
+
+            StreamGeometry geometry;
+            if (WaveFormPlayHeadPath.Data == null)
+            {
+                geometry = new StreamGeometry();
+            }
+            else
+            {
+                geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
+            }
+
+            double height = WaveFormCanvas.ActualHeight;
+            if (double.IsNaN(height) || height == 0)
+            {
+                height = WaveFormCanvas.Height;
+            }
+
+            using (StreamGeometryContext sgc = geometry.Open())
+            {
+                sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
+                sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
+                sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
+                sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
+                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+                sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
+                sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
+                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+
+                sgc.Close();
+            }
+
+            if (WaveFormPlayHeadPath.Data == null)
+            {
+                WaveFormPlayHeadPath.Data = geometry;
+            }
+
+            WaveFormPlayHeadPath.InvalidateVisual();
+
+            scrollInView(pixels);
         }
 
         /// <summary>
@@ -592,9 +656,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<long, long>)RefreshUI_WaveFormChunkMarkers, bytesLeft, bytesRight);
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<long, long>)RefreshUI_WaveFormChunkMarkers, bytesLeft, bytesRight);
                 return;
             }
             //m_Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
@@ -652,8 +717,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_PeakMeter));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(RefreshUI_PeakMeter));
                 return;
             }
             PCMFormatInfo pcmInfo = m_ViewModel.State.Audio.GetCurrentPcmFormat();
@@ -781,15 +848,16 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 if (black)
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_PeakMeterBlackoutOn));
-                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_PeakMeterBlackoutOn));
+                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(refreshUI_PeakMeterBlackoutOn));
                 }
                 else
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_PeakMeterBlackoutOff));
-                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_PeakMeterBlackoutOff));
+                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(refreshUI_PeakMeterBlackoutOff));
                 }
             }
         }
@@ -801,8 +869,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Render, new ThreadStart(TimeMessageRefresh));
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(TimeMessageRefresh));
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(TimeMessageRefresh));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -818,8 +888,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(TimeMessageHide));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(TimeMessageHide));
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(TimeMessageHide));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -836,8 +908,10 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(TimeMessageShow));
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(TimeMessageShow));
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(TimeMessageShow));
                 return;
             }
             if (m_WaveFormLoadingAdorner != null)
@@ -868,15 +942,16 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 if (visible)
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_LoadingMessageVisible));
-                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_LoadingMessageVisible));
+                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(refreshUI_LoadingMessageVisible));
                 }
                 else
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(refreshUI_LoadingMessageHidden));
-                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(refreshUI_LoadingMessageHidden));
+                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(refreshUI_LoadingMessageHidden));
                 }
             }
         }
@@ -1038,70 +1113,6 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        /// <summary>
-        /// (ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        private void RefreshUI_WaveFormPlayHead_NoDispatcherCheck()
-        {
-            if (!m_ViewModel.State.Audio.HasContent)
-            {
-                if (m_TimeSelectionLeftX >= 0)
-                {
-                    scrollInView(m_TimeSelectionLeftX + 1);
-                }
-
-                return;
-            }
-
-            if (BytesPerPixel <= 0)
-            {
-                return;
-            }
-
-            //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime);
-
-            double pixels = bytes / BytesPerPixel;
-
-            StreamGeometry geometry;
-            if (WaveFormPlayHeadPath.Data == null)
-            {
-                geometry = new StreamGeometry();
-            }
-            else
-            {
-                geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
-            }
-
-            double height = WaveFormCanvas.ActualHeight;
-            if (double.IsNaN(height) || height == 0)
-            {
-                height = WaveFormCanvas.Height;
-            }
-
-            using (StreamGeometryContext sgc = geometry.Open())
-            {
-                sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
-                sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
-                sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
-                sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
-                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
-
-                sgc.Close();
-            }
-
-            if (WaveFormPlayHeadPath.Data == null)
-            {
-                WaveFormPlayHeadPath.Data = geometry;
-            }
-
-            WaveFormPlayHeadPath.InvalidateVisual();
-
-            scrollInView(pixels);
-        }
 
         // ReSharper restore InconsistentNaming
 

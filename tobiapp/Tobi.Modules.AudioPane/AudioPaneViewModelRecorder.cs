@@ -30,7 +30,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_StopRecord_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
 
@@ -50,7 +50,7 @@ namespace Tobi.Plugin.AudioPane
                 UserInterfaceStrings.Audio_StartRecord_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-record"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartRecord", Category.Debug, Priority.Medium);
 
@@ -78,15 +78,19 @@ namespace Tobi.Plugin.AudioPane
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording); // TODO Localize Recording
                 },
-                ()=>
+                () =>
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
                     return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
-                        && (
-                        (m_UrakawaSession.DocumentProject != null && treeNodeSelection.Item1 != null)
+                        && (m_UrakawaSession.DocumentProject == null
                         ||
-                        (m_UrakawaSession.DocumentProject == null)
-                        );
+                           State.Audio.PlayStreamMarkers != null
+                           ||
+                           treeNodeSelection.Item1 != null
+                           && treeNodeSelection.Item1.GetXmlElementQName() != null
+                           && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
+                           );
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopRecord));
@@ -99,7 +103,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("audio-input-microphone"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);
 
@@ -123,7 +127,7 @@ namespace Tobi.Plugin.AudioPane
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring); // TODO Localize Monitoring
-                    
+
                     AudioCues.PlayTock();
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
@@ -137,7 +141,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.Audio_StopMonitor_,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
 
@@ -147,7 +151,7 @@ namespace Tobi.Plugin.AudioPane
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);// TODO Localize MonitoringStopped
 
                     State.Audio.PcmFormatRecordingMonitoring = null;
-                    
+
                     AudioCues.PlayTockTock();
                 },
                 () => !IsWaveFormLoading && IsMonitoring,
@@ -205,12 +209,18 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<object, AudioRecorder.AudioRecordingFinishEventArgs>)OnAudioRecordingFinished, sender, e);
+                                  (Action<object, AudioRecorder.AudioRecordingFinishEventArgs>)OnAudioRecordingFinished_,
+                                  sender, e);
                 return;
             }
 
+#if DEBUG
+            Debugger.Break();
+#endif
+        }
+        private void OnAudioRecordingFinished_(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
+        {
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
                 openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
@@ -219,19 +229,24 @@ namespace Tobi.Plugin.AudioPane
             State.Audio.PcmFormatRecordingMonitoring = null;
         }
 
-        // ReSharper disable MemberCanBeMadeStatic.Local
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
-        // ReSharper restore MemberCanBeMadeStatic.Local
         {
             if (!Dispatcher.CheckAccess())
             {
-                //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action<object, AudioRecorder.StateChangedEventArgs>)OnStateChanged_Recorder, sender, e);
+                                  (Action<object, AudioRecorder.StateChangedEventArgs>) OnStateChanged_Recorder_, sender,
+                                  e);
                 return;
             }
-            //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
-            
+
+            OnStateChanged_Recorder_(sender, e);
+        }
+        private void OnStateChanged_Recorder_(object sender, AudioRecorder.StateChangedEventArgs e)
+        {
+
+        //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
+
             CommandManager.InvalidateRequerySuggested();
 
             resetPeakMeter();
