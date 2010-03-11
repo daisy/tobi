@@ -24,14 +24,18 @@ namespace Tobi.Plugin.NavigationPane
         private readonly HeadingPaneViewModel m_ViewModel;
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
+        private readonly IUrakawaSession m_UrakawaSession;
 
         [ImportingConstructor]
         public HeadingPanelView(
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession urakawaSession,
             [Import(typeof(HeadingPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             HeadingPaneViewModel viewModel)
         {
+            m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
@@ -119,7 +123,8 @@ namespace Tobi.Plugin.NavigationPane
 
             m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
 
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 
         private void OnKeyDown_TreeViewItem(object sender, KeyEventArgs e)

@@ -13,6 +13,7 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
+using urakawa.core;
 using urakawa.media.data.audio;
 
 namespace Tobi.Plugin.AudioPane
@@ -324,7 +325,8 @@ namespace Tobi.Plugin.AudioPane
 
                 if (m_MouseClicks == 2)
                 {
-                    if (!m_ViewModel.State.Audio.HasContent || m_ViewModel.State.CurrentTreeNode == null)
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_ViewModel.m_UrakawaSession.GetTreeNodeSelection();
+                    if (!m_ViewModel.State.Audio.HasContent || treeNodeSelection.Item1 == null)
                     {
                         m_ViewModel.CommandClearSelection.Execute();
                         m_ViewModel.CommandSelectAll.Execute();

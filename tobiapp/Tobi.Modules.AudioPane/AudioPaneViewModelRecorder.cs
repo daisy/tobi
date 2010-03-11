@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
@@ -9,6 +8,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using urakawa.core;
 using urakawa.media.data.audio;
 using InputDevice = AudioLib.InputDevice;
 
@@ -62,7 +62,8 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        if (State.CurrentTreeNode == null)
+                        Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                        if (treeNodeSelection.Item1 == null)
                         {
                             return;
                         }
@@ -79,9 +80,10 @@ namespace Tobi.Plugin.AudioPane
                 },
                 ()=>
                 {
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                     return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
                         && (
-                        (m_UrakawaSession.DocumentProject != null && State.CurrentTreeNode != null)
+                        (m_UrakawaSession.DocumentProject != null && treeNodeSelection.Item1 != null)
                         ||
                         (m_UrakawaSession.DocumentProject == null)
                         );

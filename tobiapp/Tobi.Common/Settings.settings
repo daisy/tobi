@@ -3,4 +3,9 @@
   <Profiles>
     <Profile Name="(Default)" />
   </Profiles>
+  <Settings>
+    <Setting Name="EnableAudioCues" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

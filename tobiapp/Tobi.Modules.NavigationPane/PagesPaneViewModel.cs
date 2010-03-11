@@ -84,8 +84,10 @@ namespace Tobi.Plugin.NavigationPane
 
             m_EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Subscribe(onPageFoundByFlowDocumentParser, PageFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+
+            m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
         }
 
         public RichDelegateCommand CommandFindFocusPage { get; private set; }
@@ -169,14 +171,20 @@ namespace Tobi.Plugin.NavigationPane
             }
             _pagesNavigator.AddPage(data);
         }
-        private void onTreeNodeSelected(TreeNode node)
+
+
+        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
-            View.UpdatePageListSelection(node);
+            View.UpdatePageListSelection(treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
         }
-        private void onSubTreeNodeSelected(TreeNode node)
-        {
-            View.UpdatePageListSelection(node);
-        }
+        //private void onTreeNodeSelected(TreeNode node)
+        //{
+        //    View.UpdatePageListSelection(node);
+        //}
+        //private void onSubTreeNodeSelected(TreeNode node)
+        //{
+        //    View.UpdatePageListSelection(node);
+        //}
         public void OnImportsSatisfied()
         {
             trySearchCommands();

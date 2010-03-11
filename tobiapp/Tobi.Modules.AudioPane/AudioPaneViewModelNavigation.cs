@@ -31,7 +31,7 @@ namespace Tobi.Plugin.AudioPane
 
                        if (LastPlayHeadTime == 0)
                        {
-                           SystemSounds.Beep.Play();
+                           AudioCues.PlayBeep();
                        }
                        else
                        {
@@ -67,7 +67,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (LastPlayHeadTime == end)
                     {
-                        SystemSounds.Beep.Play();
+                        AudioCues.PlayBeep();
                     }
                     else
                     {
@@ -127,7 +127,7 @@ namespace Tobi.Plugin.AudioPane
                                 }
 
                                 LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
-                                SystemSounds.Beep.Play();
+                                AudioCues.PlayBeep();
                                 break;
                             }
 
@@ -206,7 +206,7 @@ namespace Tobi.Plugin.AudioPane
 #endif
                     }
 
-                    SystemSounds.Beep.Play();
+                    AudioCues.PlayBeep();
                 },
                 () => CommandStepBack.CanExecute(),
                 Settings_KeyGestures.Default,
@@ -230,7 +230,7 @@ namespace Tobi.Plugin.AudioPane
                     if (newTime > max)
                     {
                         newTime = max;
-                        SystemSounds.Beep.Play();
+                        AudioCues.PlayBeep();
                     }
 
                     if (IsAutoPlay)
@@ -264,7 +264,7 @@ namespace Tobi.Plugin.AudioPane
                     if (newTime < 0)
                     {
                         newTime = 0;
-                        SystemSounds.Beep.Play();
+                        AudioCues.PlayBeep();
                     }
 
                     if (IsAutoPlay)

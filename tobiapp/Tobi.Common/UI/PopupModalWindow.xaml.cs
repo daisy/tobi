@@ -316,7 +316,7 @@ namespace Tobi.Common.UI
                 }
                 else
                 {
-                    SystemSounds.Asterisk.Play();
+                    AudioCues.PlayAsterisk();
                 }
             }
             base.OnKeyUp(e);
@@ -333,7 +333,7 @@ namespace Tobi.Common.UI
 
             if (!AllowEscapeAndCloseButton)
             {
-                SystemSounds.Asterisk.Play();
+                AudioCues.PlayAsterisk();
                 e.Cancel = true;
                 return;
             }

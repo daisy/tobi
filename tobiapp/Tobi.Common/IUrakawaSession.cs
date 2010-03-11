@@ -1,6 +1,8 @@
-﻿using Tobi.Common.MVVM;
+﻿using System;
+using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.core;
 
 namespace Tobi.Common
 {
@@ -9,6 +11,9 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode node);
+        Tuple<TreeNode, TreeNode> GetTreeNodeSelection();
+
         /// <summary>
         /// The Project instance for the currently active document.
         /// </summary>

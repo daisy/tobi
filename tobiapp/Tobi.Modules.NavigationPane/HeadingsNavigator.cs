@@ -103,8 +103,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                //MessageBox.Show(UserInterfaceStrings.TreeFindNext_FAILURE);
-                SystemSounds.Asterisk.Play();
+                AudioCues.PlayAsterisk();
             }
 
         }
@@ -117,8 +116,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                //MessageBox.Show(UserInterfaceStrings.TreeFindPrev_FAILURE);
-                SystemSounds.Asterisk.Play();
+                AudioCues.PlayAsterisk();
             }
 
         }

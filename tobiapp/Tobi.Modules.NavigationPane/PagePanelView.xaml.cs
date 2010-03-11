@@ -22,14 +22,18 @@ namespace Tobi.Plugin.NavigationPane
         private readonly PagesPaneViewModel m_ViewModel;
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
+        private readonly IUrakawaSession m_UrakawaSession;
 
         [ImportingConstructor]
         public PagePanelView(
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession urakawaSession,
             [Import(typeof(PagesPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             PagesPaneViewModel viewModel)
         {
+            m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
@@ -112,7 +116,8 @@ namespace Tobi.Plugin.NavigationPane
 
             m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
 
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 
         private void OnKeyUp_ListItem(object sender, KeyEventArgs e)

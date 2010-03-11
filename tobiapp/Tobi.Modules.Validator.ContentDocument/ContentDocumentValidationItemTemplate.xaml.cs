@@ -21,14 +21,19 @@ namespace Tobi.Plugin.Validator.ContentDocument
             InitializeComponent();
         }
 
-        [Import(typeof(IEventAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-        private IEventAggregator m_EventAggregator;
+        //[Import(typeof(IEventAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+        //private IEventAggregator m_EventAggregator;
+
+        [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false, AllowRecomposition = false)]
+        private IUrakawaSession m_UrakawaSession;
+
         private void OnLinkClick(object sender, RoutedEventArgs e)
         {
             var obj = sender as Hyperlink;
             var node = ((ContentDocumentValidationError)obj.DataContext).Target as TreeNode;
 
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+            m_UrakawaSession.PerformTreeNodeSelection(node);
         }
     }
 

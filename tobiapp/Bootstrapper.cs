@@ -278,8 +278,16 @@ namespace Tobi
                 LoggerFacade.Log(@"Loaded extension plugin: [[" + tobiModuleEXT.Name + @"]] [[" + tobiModuleEXT.Description + @"]]", Category.Debug, Priority.Low);
             }
 
-            // NOTE: we're loading assemblies manually so that they get picked-up by ClickOnce deployment.
+            // NOTE: we're loading assemblies manually so that they get picked-up by ClickOnce deployment (and it means we can control the order of registration).
 
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
             try
             {
                 Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(AbstractTobiPlugin))));
@@ -291,14 +299,6 @@ namespace Tobi
             try
             {
                 Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioPanePlugin))));
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.Handle(ex, false, shell);
-            }
-            try
-            {
-                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(UrakawaPlugin))));
             }
             catch (Exception ex)
             {

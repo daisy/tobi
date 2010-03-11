@@ -31,7 +31,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             trySearchCommands();
         }
-        public RichDelegateCommand CommandFindFocus { get; private set; }
+        //public RichDelegateCommand CommandFindFocus { get; private set; }
         //public RichDelegateCommand CommandFindNext { get; private set; }
         //public RichDelegateCommand CommandFindPrev { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (m_GlobalSearchCommand != null)
             {
-                m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
+                //m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
                 //m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
                 //m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
             }
@@ -54,7 +54,8 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (m_GlobalSearchCommand == null) { return; }
 
-            m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+            //m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+
             //m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
             //m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
         }
@@ -87,9 +88,13 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CommandSwitchPhrasePrevious { get; private set; }
         public RichDelegateCommand CommandSwitchPhraseNext { get; private set; }
 
+        public RichDelegateCommand CommandStructureUp { get; private set; }
+        public RichDelegateCommand CommandStructureDown { get; private set; }
+
         private readonly ILoggerFacade m_Logger;
 
         private readonly IEventAggregator m_EventAggregator;
+        private readonly IUrakawaSession m_UrakawaSession;
 
         private readonly IShellView m_ShellView;
 
@@ -100,26 +105,92 @@ namespace Tobi.Plugin.DocumentPane
         public DocumentPaneView(
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession urakawaSession,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
+            m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
             m_ShellView = shellView;
 
             DataContext = this;
 
-            CommandFindFocus = new RichDelegateCommand(
-                @"DUMMY TXT",
-                @"DUMMY TXT",
-                null, // KeyGesture set only for the top-level CompositeCommand
-                null,
-                () => FocusHelper.Focus(this.SearchBox),
-                () => this.SearchBox.Visibility == Visibility.Visible,
-                null, //Settings_KeyGestures.Default,
-                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
-                );
+            //CommandFindFocus = new RichDelegateCommand(
+            //    @"DUMMY TXT",
+            //    @"DUMMY TXT",
+            //    null, // KeyGesture set only for the top-level CompositeCommand
+            //    null,
+            //    () => FocusHelper.Focus(this.SearchBox),
+            //    () => this.SearchBox.Visibility == Visibility.Visible,
+            //    null, //Settings_KeyGestures.Default,
+            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
+            //    );
 
+            CommandStructureDown = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.StructureDown,
+                Tobi_Plugin_DocumentPane_Lang.StructureDown_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-bottom"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    List<TreeNode> pathToTreeNode = getPathToTreeNode(treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
+                    int iTreeNode = pathToTreeNode.IndexOf(treeNodeSelection.Item1);
+                    int iSubTreeNode = treeNodeSelection.Item2 == null ? -1 : pathToTreeNode.IndexOf(treeNodeSelection.Item2);
+                    if (iTreeNode == (pathToTreeNode.Count - 1))
+                    {
+                        AudioCues.PlayBeep();
+                        return;
+                    }
+                    if (iSubTreeNode == -1) // down
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(pathToTreeNode[iTreeNode + 1]);
+                        return;
+                    }
+                    if (iTreeNode == iSubTreeNode - 1) // toggle
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1); //pathToTreeNode[iTreeNode]
+                        return;
+                    }
+                    m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1); 
+                    m_UrakawaSession.PerformTreeNodeSelection(pathToTreeNode[iTreeNode + 1]);
+                },
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    return selection.Item1 != null;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectDown));
+
+            m_ShellView.RegisterRichCommand(CommandStructureDown);
+            //
+            CommandStructureUp = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.StructureUp,
+                Tobi_Plugin_DocumentPane_Lang.StructureUp_,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-top"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode nodeToNavigate = treeNodeSelection.Item1.Parent;
+                    if (nodeToNavigate == null)
+                        AudioCues.PlayBeep();
+                    else
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeToNavigate);
+
+                },
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    return selection.Item1 != null;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectUp));
+
+            m_ShellView.RegisterRichCommand(CommandStructureUp);
             //CommandFindNext = new RichDelegateCommand(
             //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext,
             //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
@@ -148,46 +219,57 @@ namespace Tobi.Plugin.DocumentPane
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-first"),
                 () =>
                 {
-                    if (CurrentTreeNode == CurrentSubTreeNode)
-                    {
-                        TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
-                        if (nextNode != null)
-                        {
-                            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
-                                       Category.Debug, Priority.Medium);
-
-                            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                            return;
-                        }
-                    }
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode nodeToNavigate = node.GetPreviousSiblingWithText();
+                    if (nodeToNavigate == null)
+                        AudioCues.PlayBeep();
                     else
-                    {
-                        TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(CurrentTreeNode);
-                        if (nextNode != null)
-                        {
-                            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
-                                       Category.Debug, Priority.Medium);
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeToNavigate);
 
-                            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
-                            return;
-                        }
-                        else
-                        {
-                            nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
-                            if (nextNode != null)
-                            {
-                                m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
-                                           Category.Debug, Priority.Medium);
+                    //if (CurrentTreeNode == CurrentSubTreeNode)
+                    //{
+                    //    TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
+                    //    if (nextNode != null)
+                    //    {
+                    //        m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                    //                   Category.Debug, Priority.Medium);
 
-                                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                                return;
-                            }
-                        }
-                    }
+                    //        m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    //        return;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    TreeNode nextNode = CurrentSubTreeNode.GetPreviousSiblingWithText(CurrentTreeNode);
+                    //    if (nextNode != null)
+                    //    {
+                    //        m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                    //                   Category.Debug, Priority.Medium);
 
-                    SystemSounds.Beep.Play();
+                    //        m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                    //        return;
+                    //    }
+                    //    else
+                    //    {
+                    //        nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
+                    //        if (nextNode != null)
+                    //        {
+                    //            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhrasePrevious",
+                    //                       Category.Debug, Priority.Medium);
+
+                    //            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    //            return;
+                    //        }
+                    //    }
+                    //}
+
                 },
-                () => CurrentTreeNode != null,
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    return selection.Item1 != null;
+                },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Doc_Event_SwitchPrevious));
 
@@ -200,46 +282,57 @@ namespace Tobi.Plugin.DocumentPane
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-last"),
                 () =>
                 {
-                    if (CurrentTreeNode == CurrentSubTreeNode)
-                    {
-                        TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithText();
-                        if (nextNode != null)
-                        {
-                            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
-                                       Category.Debug, Priority.Medium);
-
-                            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                            return;
-                        }
-                    }
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode nodeToNavigate = node.GetNextSiblingWithText();
+                    if (nodeToNavigate == null)
+                        AudioCues.PlayBeep();
                     else
-                    {
-                        TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(CurrentTreeNode);
-                        if (nextNode != null)
-                        {
-                            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
-                                       Category.Debug, Priority.Medium);
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeToNavigate);
 
-                            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
-                            return;
-                        }
-                        else
-                        {
-                            nextNode = CurrentTreeNode.GetNextSiblingWithText();
-                            if (nextNode != null)
-                            {
-                                m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
-                                           Category.Debug, Priority.Medium);
+                    //if (CurrentTreeNode == CurrentSubTreeNode)
+                    //{
+                    //    TreeNode nextNode = CurrentTreeNode.GetNextSiblingWithText();
+                    //    if (nextNode != null)
+                    //    {
+                    //        m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                    //                   Category.Debug, Priority.Medium);
 
-                                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
-                                return;
-                            }
-                        }
-                    }
+                    //        m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    //        return;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    TreeNode nextNode = CurrentSubTreeNode.GetNextSiblingWithText(CurrentTreeNode);
+                    //    if (nextNode != null)
+                    //    {
+                    //        m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                    //                   Category.Debug, Priority.Medium);
 
-                    SystemSounds.Beep.Play();
+                    //        m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(nextNode);
+                    //        return;
+                    //    }
+                    //    else
+                    //    {
+                    //        nextNode = CurrentTreeNode.GetNextSiblingWithText();
+                    //        if (nextNode != null)
+                    //        {
+                    //            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.SwitchPhraseNext",
+                    //                       Category.Debug, Priority.Medium);
+
+                    //            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
+                    //            return;
+                    //        }
+                    //    }
+                    //}
+
                 },
-                () => CurrentTreeNode != null,
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    return selection.Item1 != null;
+                },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Doc_Event_SwitchNext));
 
@@ -254,8 +347,10 @@ namespace Tobi.Plugin.DocumentPane
             //setTextDecoration_ErrorUnderline(run);
             TheFlowDocument.Blocks.Add(new Paragraph(run));
 
-            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+            m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
+
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
@@ -269,6 +364,23 @@ namespace Tobi.Plugin.DocumentPane
                 //CommandFindNext.IsActive = focusAware.IsActive;
                 //CommandFindPrev.IsActive = focusAware.IsActive;
             };
+        }
+
+        private List<TreeNode> m_PathToTreeNode;
+        private List<TreeNode> getPathToTreeNode(TreeNode treeNodeSel)
+        {
+            if (m_PathToTreeNode == null || !m_PathToTreeNode.Contains(treeNodeSel))
+            {
+                m_PathToTreeNode = new List<TreeNode>();
+                TreeNode treeNode = treeNodeSel;
+                do
+                {
+                    m_PathToTreeNode.Add(treeNode);
+                } while ((treeNode = treeNode.Parent) != null);
+
+                m_PathToTreeNode.Reverse();
+            }
+            return m_PathToTreeNode;
         }
 
         /*
@@ -380,8 +492,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private void OnProjectLoaded(Project project)
         {
-            CurrentTreeNode = null;
-            CurrentSubTreeNode = null;
+            m_PathToTreeNode = null;
 
             if (m_idLinkTargets != null)
             {
@@ -467,113 +578,126 @@ namespace Tobi.Plugin.DocumentPane
             TheFlowDocument.Blocks.Clear();
         }
 
-        private TreeNode m_CurrentTreeNode;
-        public TreeNode CurrentTreeNode
-        {
-            get
-            {
-                return m_CurrentTreeNode;
-            }
-            set
-            {
-                if (m_CurrentTreeNode == value) return;
+        //private TreeNode m_CurrentTreeNode;
+        //public TreeNode CurrentTreeNode
+        //{
+        //    get
+        //    {
+        //        return m_CurrentTreeNode;
+        //    }
+        //    set
+        //    {
+        //        if (m_CurrentTreeNode == value) return;
 
-                m_CurrentTreeNode = value;
-                //RaisePropertyChanged(() => CurrentTreeNode);
+        //        m_CurrentTreeNode = value;
+        //        //RaisePropertyChanged(() => CurrentTreeNode);
+        //    }
+        //}
+
+        //private TreeNode m_CurrentSubTreeNode;
+        //public TreeNode CurrentSubTreeNode
+        //{
+        //    get
+        //    {
+        //        return m_CurrentSubTreeNode;
+        //    }
+        //    set
+        //    {
+        //        if (m_CurrentSubTreeNode == value) return;
+        //        m_CurrentSubTreeNode = value;
+
+        //        //RaisePropertyChanged(() => CurrentSubTreeNode);
+        //    }
+        //}
+
+
+        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
+        {
+
+            TextElement t1 = BringIntoViewAndHighlight(treeNodeSelection.Item1, treeNodeSelection.Item2 == null);
+
+            if (treeNodeSelection.Item2 != null)
+            {
+                TextElement t2 = BringIntoViewAndHighlightSub(treeNodeSelection.Item2);
+                //t2.BringIntoView();
             }
         }
 
-        private TreeNode m_CurrentSubTreeNode;
-        public TreeNode CurrentSubTreeNode
-        {
-            get
-            {
-                return m_CurrentSubTreeNode;
-            }
-            set
-            {
-                if (m_CurrentSubTreeNode == value) return;
-                m_CurrentSubTreeNode = value;
+        //private void OnSubTreeNodeSelected(TreeNode node)
+        //{
+        //    if (node == null || CurrentTreeNode == null)
+        //    {
+        //        return;
+        //    }
+        //    if (CurrentSubTreeNode == node)
+        //    {
+        //        return;
+        //    }
+        //    if (!node.IsDescendantOf(CurrentTreeNode))
+        //    {
+        //        return;
+        //    }
+        //    CurrentSubTreeNode = node;
 
-                //RaisePropertyChanged(() => CurrentSubTreeNode);
-            }
-        }
+        //    BringIntoViewAndHighlightSub(node);
+        //}
 
-        private void OnSubTreeNodeSelected(TreeNode node)
-        {
-            if (node == null || CurrentTreeNode == null)
-            {
-                return;
-            }
-            if (CurrentSubTreeNode == node)
-            {
-                return;
-            }
-            if (!node.IsDescendantOf(CurrentTreeNode))
-            {
-                return;
-            }
-            CurrentSubTreeNode = node;
+        //private void OnTreeNodeSelected(TreeNode node)
+        //{
+        //    if (node == null)
+        //    {
+        //        return;
+        //    }
+        //    if (CurrentTreeNode == node)
+        //    {
+        //        return;
+        //    }
 
-            BringIntoViewAndHighlightSub(node);
-        }
+        //    TreeNode subTreeNode = null;
 
-        private void OnTreeNodeSelected(TreeNode node)
-        {
-            if (node == null)
-            {
-                return;
-            }
-            if (CurrentTreeNode == node)
-            {
-                return;
-            }
+        //    if (CurrentTreeNode != null)
+        //    {
+        //        if (CurrentSubTreeNode == CurrentTreeNode)
+        //        {
+        //            if (node.IsAncestorOf(CurrentTreeNode))
+        //            {
+        //                subTreeNode = CurrentTreeNode;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (node.IsAncestorOf(CurrentSubTreeNode))
+        //            {
+        //                subTreeNode = CurrentSubTreeNode;
+        //            }
+        //            else if (node.IsDescendantOf(CurrentTreeNode))
+        //            {
+        //                subTreeNode = node;
+        //            }
+        //        }
+        //    }
 
-            TreeNode subTreeNode = null;
+        //    if (subTreeNode == node)
+        //    {
+        //        CurrentTreeNode = node;
+        //        CurrentSubTreeNode = CurrentTreeNode;
+        //        BringIntoViewAndHighlight(node);
+        //    }
+        //    else
+        //    {
+        //        CurrentTreeNode = node;
+        //        CurrentSubTreeNode = CurrentTreeNode;
+        //        BringIntoViewAndHighlight(node);
 
-            if (CurrentTreeNode != null)
-            {
-                if (CurrentSubTreeNode == CurrentTreeNode)
-                {
-                    if (node.IsAncestorOf(CurrentTreeNode))
-                    {
-                        subTreeNode = CurrentTreeNode;
-                    }
-                }
-                else
-                {
-                    if (node.IsAncestorOf(CurrentSubTreeNode))
-                    {
-                        subTreeNode = CurrentSubTreeNode;
-                    }
-                    else if (node.IsDescendantOf(CurrentTreeNode))
-                    {
-                        subTreeNode = node;
-                    }
-                }
-            }
+        //        if (subTreeNode != null)
+        //        {
+        //            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected",
+        //                       Category.Debug, Priority.Medium);
 
-            if (subTreeNode == node)
-            {
-                CurrentTreeNode = node;
-                CurrentSubTreeNode = CurrentTreeNode;
-                BringIntoViewAndHighlight(node);
-            }
-            else
-            {
-                CurrentTreeNode = node;
-                CurrentSubTreeNode = CurrentTreeNode;
-                BringIntoViewAndHighlight(node);
-
-                if (subTreeNode != null)
-                {
-                    m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnTreeNodeSelected",
-                               Category.Debug, Priority.Medium);
-
-                    m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
-                }
-            }
-        }
+        //            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
+        //        }
+        //    }
+        //}
         //DependencyObject FindVisualTreeRoot(DependencyObject initial)
         //{
         //    DependencyObject current = initial;
@@ -620,7 +744,8 @@ namespace Tobi.Plugin.DocumentPane
                                     return;
                                 }
 
-                                selectNode(node);
+                                m_UrakawaSession.PerformTreeNodeSelection(node);
+                                //selectNode(node);
                             },
                             (uri) =>
                             {
@@ -663,40 +788,40 @@ namespace Tobi.Plugin.DocumentPane
 
         }
 
-        private void selectNode(TreeNode node)
-        {
-            if (node == CurrentTreeNode)
-            {
-                var treeNode = node.GetFirstDescendantWithText();
-                if (treeNode != null)
-                {
-                    m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
-                               Category.Debug, Priority.Medium);
+        //private void selectNode(TreeNode node)
+        //{
+        //    if (node == CurrentTreeNode)
+        //    {
+        //        var treeNode = node.GetFirstDescendantWithText();
+        //        if (treeNode != null)
+        //        {
+        //            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.selectNode",
+        //                       Category.Debug, Priority.Medium);
 
-                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-                }
+        //            m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+        //        }
 
-                return;
-            }
+        //        return;
+        //    }
 
-            if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
-                && node.IsDescendantOf(CurrentTreeNode))
-            {
-                m_Logger.Log(
-                    "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
-                    Category.Debug, Priority.Medium);
+        //    if (CurrentTreeNode != null && CurrentSubTreeNode != CurrentTreeNode
+        //        && node.IsDescendantOf(CurrentTreeNode))
+        //    {
+        //        m_Logger.Log(
+        //            "-- PublishEvent [SubTreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+        //            Category.Debug, Priority.Medium);
 
-                m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
-            }
-            else
-            {
-                m_Logger.Log(
-                    "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
-                    Category.Debug, Priority.Medium);
+        //        m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(node);
+        //    }
+        //    else
+        //    {
+        //        m_Logger.Log(
+        //            "-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnMouseDownTextElement",
+        //            Category.Debug, Priority.Medium);
 
-                m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
-            }
-        }
+        //        m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
+        //    }
+        //}
 
         private void OnMouseUpFlowDoc()
         {
@@ -724,7 +849,8 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     return;
                 }
-                BringIntoViewAndHighlight((TextElement)leftPointer.Parent);
+
+                //BringIntoViewAndHighlight((TextElement)leftPointer.Parent);
             }
         }
         private TextElement FindTextElement(TreeNode node, InlineCollection ic)
@@ -928,22 +1054,24 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        public void BringIntoViewAndHighlight(TreeNode node)
+        public TextElement BringIntoViewAndHighlight(TreeNode node, bool bringIntoView)
         {
             TextElement textElement = FindTextElement(node);
             if (textElement != null)
             {
-                BringIntoViewAndHighlight(textElement);
+                BringIntoViewAndHighlight(textElement, bringIntoView);
             }
+            return textElement;
         }
 
-        public void BringIntoViewAndHighlightSub(TreeNode node)
+        public TextElement BringIntoViewAndHighlightSub(TreeNode node)
         {
             TextElement textElement = FindTextElement(node);
             if (textElement != null)
             {
                 BringIntoViewAndHighlightSub(textElement);
             }
+            return textElement;
         }
 
         public void BringIntoViewAndHighlight(string uid)
@@ -965,11 +1093,12 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
 
-                    m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
+                    m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                    //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));
                 }
                 else
                 {
-                    BringIntoViewAndHighlight(textElement);
+                    BringIntoViewAndHighlight(textElement, true);
                 }
             }
         }
@@ -978,7 +1107,7 @@ namespace Tobi.Plugin.DocumentPane
         public void BringIntoViewAndHighlightSub(TextElement textElement)
         {
             textElement.BringIntoView();
-
+            return;
             if (m_lastHighlightedSub != null)
             {
                 m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
@@ -1012,9 +1141,10 @@ namespace Tobi.Plugin.DocumentPane
             setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
         }
 
-        public void BringIntoViewAndHighlight(TextElement textElement)
+        public void BringIntoViewAndHighlight(TextElement textElement, bool bringIntoView)
         {
-            textElement.BringIntoView();
+            if (bringIntoView)
+                textElement.BringIntoView();
 
             if (m_lastHighlightedSub != null)
             {

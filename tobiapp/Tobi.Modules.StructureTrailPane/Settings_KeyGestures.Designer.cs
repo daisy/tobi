@@ -34,29 +34,5 @@ namespace Tobi.Plugin.StructureTrailPane {
                 this["Keyboard_Focus_Doc"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] OemComma (,)")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectUp {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_StructureSelectUp"]));
-            }
-            set {
-                this["Keyboard_StructureSelectUp"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ALT ] OemPeriod (.)")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectDown {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_StructureSelectDown"]));
-            }
-            set {
-                this["Keyboard_StructureSelectDown"] = value;
-            }
-        }
     }
 }
