@@ -201,4 +201,13 @@
   <data name="IconsDebug" xml:space="preserve">
     <value>Icons preview (debug view)</value>
   </data>
+  <data name="Find" xml:space="preserve">
+    <value>Find...</value>
+  </data>
+  <data name="FindNext" xml:space="preserve">
+    <value>Find Next</value>
+  </data>
+  <data name="FindPrevious" xml:space="preserve">
+    <value>Find Previous</value>
+  </data>
 </root>
