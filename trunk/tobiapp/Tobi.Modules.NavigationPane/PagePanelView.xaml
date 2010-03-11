@@ -129,7 +129,7 @@
                     <!-- Setter Property="FontSize" Value="15" / -->
                     <Setter Property="FontWeight" Value="Normal" />
                     <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
-                    <Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
+                  <!-- Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" / -->
                     <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
                     <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
 
