@@ -615,10 +615,217 @@ namespace Tobi
             }
         }
 
+        // Must be called on the UI thread
+        private bool RunModalCancellableProgressTask_(string title, IDualCancellableProgressReporter reporter,
+                                                     Action actionCancelled, Action actionCompleted)
+        {
+            var progressBar = new ProgressBar
+            {
+                IsIndeterminate = false,
+                Height = 18,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Minimum = 0,
+                Maximum = 100,
+                Value = 0
+            };
 
+            var progressBar2 = new ProgressBar
+            {
+                IsIndeterminate = false,
+                Height = 18,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Minimum = 0,
+                Maximum = 100,
+                Value = 0
+            };
+
+            var label = new TextBlock
+            {
+                Text = title,
+                Margin = new Thickness(0, 0, 0, 8),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Focusable = true,
+            };
+            var label2 = new TextBlock
+            {
+                Text = "...",
+                Margin = new Thickness(0, 0, 0, 8),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Focusable = true,
+            };
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            panel.Children.Add(label);
+            panel.Children.Add(progressBar);
+            //panel.Children.Add(new TextBlock(new Run(" ")));
+            //panel.Children.Add(label2);
+            //panel.Children.Add(progressBar2);
+
+            //label2.Visibility = Visibility.Collapsed;
+            //progressBar2.Visibility = Visibility.Collapsed;
+
+            //var details = new TextBoxReadOnlyCaretVisible("Converting data and building the in-memory document object model into the Urakawa SDK...");
+            var details = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            details.Children.Add(label2);
+            details.Children.Add(progressBar2);
+            details.Visibility = Visibility.Collapsed;
+
+            // TODO: Caveat: cannot be cancelled !! :(
+            // Problem with Window.ShowDialog() not returning once closed,
+            // Dispatcher probably waiting for DoWork() to complete...yet the priorities are set correctly. ??
+            var windowPopup = new PopupModalWindow(this,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.None,
+                                                   PopupModalWindow.DialogButton.ESC,
+                //PopupModalWindow.DialogButtonsSet.Cancel,
+                //PopupModalWindow.DialogButton.Cancel,
+                                                   false, 500, 120, details, 80);
+
+            reporter.ProgressChangedEvent += (sender, args) =>
+            {
+                if (args.ProgressPercentage < 0)
+                {
+                    progressBar.IsIndeterminate = true;
+                }
+                else
+                {
+                    progressBar.IsIndeterminate = false;
+                    progressBar.Value = args.ProgressPercentage;
+                }
+
+                label.Text = (string)args.UserState;
+            };
+
+            reporter.SubProgressChangedEvent += (sender, e) =>
+            {
+                if (e.ProgressPercentage < 0 && e.UserState == null)
+                {
+                    details.Visibility = Visibility.Collapsed;
+                    //progressBar2.Visibility = Visibility.Hidden;
+                    //label2.Visibility = Visibility.Hidden;
+                    return;
+                }
+                if (details.Visibility != Visibility.Visible)
+                    details.Visibility = Visibility.Visible;
+
+                //if (progressBar2.Visibility != Visibility.Visible)
+                //    progressBar2.Visibility = Visibility.Visible;
+
+                //if (label2.Visibility != Visibility.Visible)
+                //    label2.Visibility = Visibility.Visible;
+
+                if (e.ProgressPercentage < 0)
+                {
+                    progressBar2.IsIndeterminate = true;
+                }
+                else
+                {
+                    progressBar2.IsIndeterminate = false;
+                    progressBar2.Value = e.ProgressPercentage;
+                }
+
+                label2.Text = (string)e.UserState;
+            };
+
+            reporter.SetDoEventsMethod(() =>
+            {
+                windowPopup.DoEvents(DispatcherPriority.Input); // See DispatcherObjectExtensions.cs
+                //this.DoEvents(DispatcherPriority.ApplicationIdle);
+            });
+
+            bool windowForcedClose = false;
+
+            Exception workException = null;
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                try
+                {
+                    reporter.DoWork();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    reporter.RequestCancellation = true;
+                    workException = ex;
+                    //throw ex;
+                }
+                windowForcedClose = true;
+                if (reporter.RequestCancellation)
+                {
+                    actionCancelled();
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
+                }
+                else
+                {
+                    actionCompleted();
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                }
+            }),
+            DispatcherPriority.Background);
+
+            windowPopup.ShowModal();
+
+            if (workException != null)
+            {
+                ExceptionHandler.Handle(workException, false, this);
+                return false;
+                //throw workException;
+            }
+
+            if (reporter.RequestCancellation)
+            {
+                return false;
+            }
+
+            if (!windowForcedClose && // User clicked CANCEL
+                windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+            {
+                progressBar.IsIndeterminate = true;
+                label.Text = Tobi_Lang.PleaseWait;
+
+                details.Visibility = Visibility.Collapsed;
+                //progressBar2.Visibility = Visibility.Collapsed;
+                //label2.Visibility = Visibility.Collapsed;
+
+                //details.Text = "Cancelling the current operation...";
+
+                windowPopup = new PopupModalWindow(this,
+                                                       UserInterfaceStrings.EscapeMnemonic(
+                                                           Tobi_Lang.CancellingTask),
+                                                       panel,
+                                                       PopupModalWindow.DialogButtonsSet.None,
+                                                       PopupModalWindow.DialogButton.ESC,
+                                                       false, 500, 150, null, 80);
+
+                reporter.RequestCancellation = true;
+
+                windowPopup.ShowModal();
+
+                return false;
+            }
+
+            return true;
+        }
 
         // Must be called on the UI thread
-        public bool RunModalCancellableProgressTask(string title, IDualCancellableProgressReporter reporter,
+        // CAVEAT: when not inSeparateThread => not cancellable (see above)
+        public bool RunModalCancellableProgressTask(bool inSeparateThread, string title, IDualCancellableProgressReporter reporter,
                                                      Action actionCancelled, Action actionCompleted)
         {
             if (!Dispatcher.CheckAccess())
@@ -627,8 +834,21 @@ namespace Tobi
                 Debugger.Break();
 #endif
             }
-
             m_Logger.Log(String.Format(@"Shell.RunModalCancellableProgressTask() [{0}]", title), Category.Debug, Priority.Medium);
+
+            if (!inSeparateThread)
+            {
+                bool result = false;
+
+                // we ensure the Dispatcher priority
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                {
+                    result = RunModalCancellableProgressTask_(title, reporter, actionCancelled, actionCompleted);
+                }));
+
+                return result;
+            }
+
 
             var progressBar = new ProgressBar
             {
@@ -680,8 +900,8 @@ namespace Tobi
             //panel.Children.Add(label2);
             //panel.Children.Add(progressBar2);
 
-            label2.Visibility = Visibility.Collapsed;
-            progressBar2.Visibility = Visibility.Collapsed;
+            //label2.Visibility = Visibility.Collapsed;
+            //progressBar2.Visibility = Visibility.Collapsed;
 
             //var details = new TextBoxReadOnlyCaretVisible("Converting data and building the in-memory document object model into the Urakawa SDK...");
             var details = new StackPanel
@@ -692,6 +912,7 @@ namespace Tobi
             };
             details.Children.Add(label2);
             details.Children.Add(progressBar2);
+            details.Visibility = Visibility.Collapsed;
 
             var windowPopup = new PopupModalWindow(this,
                                                    title,
@@ -699,6 +920,7 @@ namespace Tobi
                                                    PopupModalWindow.DialogButtonsSet.Cancel,
                                                    PopupModalWindow.DialogButton.Cancel,
                                                    false, 500, 150, details, 80);
+
 
             var backWorker = new BackgroundWorker
             {
@@ -709,55 +931,59 @@ namespace Tobi
             Exception workException = null;
             backWorker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
+
+                //var dummy = (string)args.Argument;
+
+                if (backWorker.CancellationPending)
+                {
+                    args.Cancel = true;
+                    return;
+                }
+
+                reporter.ProgressChangedEvent += (sender, e) =>
+                {
+                    backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
+                };
+
+                reporter.SubProgressChangedEvent += (sender, e) =>
+                    Dispatcher.BeginInvoke((Action)(
+                   () =>
+                   {
+                       if (e.ProgressPercentage < 0 && e.UserState == null)
+                       {
+                           details.Visibility = Visibility.Collapsed;
+                           //progressBar2.Visibility = Visibility.Hidden;
+                           //label2.Visibility = Visibility.Hidden;
+                           return;
+                       }
+                       if (details.Visibility != Visibility.Visible)
+                           details.Visibility = Visibility.Visible;
+
+                       //if (progressBar2.Visibility != Visibility.Visible)
+                       //    progressBar2.Visibility = Visibility.Visible;
+
+                       //if (label2.Visibility != Visibility.Visible)
+                       //    label2.Visibility = Visibility.Visible;
+
+                       if (e.ProgressPercentage < 0)
+                       {
+                           progressBar2.IsIndeterminate = true;
+                       }
+                       else
+                       {
+                           progressBar2.IsIndeterminate = false;
+                           progressBar2.Value = e.ProgressPercentage;
+                       }
+
+                       label2.Text = (string)e.UserState;
+                   }
+                               ),
+                       DispatcherPriority.Normal);
+
 #if DEBUG
                 try
                 {
 #endif
-                    //var dummy = (string)args.Argument;
-
-                    if (backWorker.CancellationPending)
-                    {
-                        args.Cancel = true;
-                        return;
-                    }
-
-                    reporter.ProgressChangedEvent += (sender, e) =>
-                    {
-                        backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
-                    };
-
-                    reporter.SubProgressChangedEvent += (sender, e) => Dispatcher.BeginInvoke((Action)(
-                       () =>
-                       {
-                           if (e.ProgressPercentage < 0 && e.UserState == null)
-                           {
-                               progressBar2.Visibility = Visibility.Hidden;
-                               label2.Visibility = Visibility.Hidden;
-                               return;
-                           }
-
-                           if (progressBar2.Visibility != Visibility.Visible)
-                               progressBar2.Visibility = Visibility.Visible;
-
-                           if (label2.Visibility != Visibility.Visible)
-                               label2.Visibility = Visibility.Visible;
-
-                           if (e.ProgressPercentage < 0)
-                           {
-                               progressBar2.IsIndeterminate = true;
-                           }
-                           else
-                           {
-                               progressBar2.IsIndeterminate = false;
-                               progressBar2.Value = e.ProgressPercentage;
-                           }
-
-                           label2.Text = (string)e.UserState;
-                       }
-                                   ),
-                           DispatcherPriority.Normal);
-
-                    //Dispatcher.Invoke((Action)(reporter.DoWork), DispatcherPriority.Normal);
                     reporter.DoWork();
 
                     args.Result = @"dummy result";
@@ -815,13 +1041,15 @@ namespace Tobi
 
                 //var result = (string)args.Result;
             };
-
             backWorker.RunWorkerAsync(@"dummy arg");
+
             windowPopup.ShowModal();
 
             if (workException != null)
             {
-                throw workException;
+                ExceptionHandler.Handle(workException, false, this);
+                return false;
+                //throw workException;
             }
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
@@ -831,8 +1059,9 @@ namespace Tobi
                 progressBar.IsIndeterminate = true;
                 label.Text = Tobi_Lang.PleaseWait;
 
-                progressBar2.Visibility = Visibility.Collapsed;
-                label2.Visibility = Visibility.Collapsed;
+                details.Visibility = Visibility.Collapsed;
+                //progressBar2.Visibility = Visibility.Collapsed;
+                //label2.Visibility = Visibility.Collapsed;
 
                 //details.Text = "Cancelling the current operation...";
 
@@ -858,26 +1087,7 @@ namespace Tobi
         // DoEvent() equivalent
         public void PumpDispatcherFrames()
         {
-            if (!Dispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                //new ThreadStart();
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)PumpDispatcherFrames);
-                return;
-            }
-
-            Dispatcher.Invoke(DispatcherPriority.Background,
-                                                        new VoidHandler(() => { }));
-
-            //var frame = new DispatcherFrame();
-            //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
-            //                            new ExitFrameHandler(frm => frm.Continue = false), frame);
-            //Dispatcher.PushFrame(frame); // blocks until Continue == false, which happens only when all operations with priority greater than Background have been processed by the Dispatcher.
+            this.DoEvents(); // See DispatcherObjectExtensions
         }
-
-        private delegate void VoidHandler();
-        //private delegate void ExitFrameHandler(DispatcherFrame frame);
     }
 }

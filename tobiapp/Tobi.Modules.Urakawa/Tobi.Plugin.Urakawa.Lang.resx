@@ -229,6 +229,15 @@ any changes will be lost !</value>
   <data name="Importing" xml:space="preserve">
     <value>Importing...</value>
   </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Exporting...</value>
+  </data>
+  <data name="CleaningUpDataFiles" xml:space="preserve">
+    <value>Cleaning up data files...</value>
+  </data>
+  <data name="CopyingDataFiles" xml:space="preserve">
+    <value>Copying data files...</value>
+  </data>
   <data name="Saved" xml:space="preserve">
     <value>Saved.</value>
   </data>

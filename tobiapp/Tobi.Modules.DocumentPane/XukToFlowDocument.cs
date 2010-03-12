@@ -46,6 +46,8 @@ namespace Tobi.Plugin.DocumentPane
         protected ILoggerFacade Logger { private set; get; }
         protected IEventAggregator EventAggregator { private set; get; }
 
+        private long m_nTreeNode;
+
         public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
             ILoggerFacade logger, IEventAggregator aggregator,
             DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
@@ -53,7 +55,7 @@ namespace Tobi.Plugin.DocumentPane
             DelegateOnRequestNavigate delegateOnRequestNavigate,
             DelegateAddIdLinkTarget delegateAddIdLinkTarget)
         {
-            if (flowDocument != null) m_FlowDoc = flowDocument;
+            m_FlowDoc = flowDocument;
 
             m_TreeNode = node;
             Logger = logger;
@@ -343,7 +345,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
             Brush brushFontNoAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_NoAudio);
-            
+
             data.Tag = node;
             data.Foreground = Brushes.Red;
 
@@ -1705,6 +1707,8 @@ namespace Tobi.Plugin.DocumentPane
 
         private void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
+            m_nTreeNode++;
+
             TextElement parentNext = parent;
 
             QualifiedName qname = node.GetXmlElementQName();
@@ -1782,6 +1786,17 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         throw new ProgressCancelledException(@"dummy");
                     }
+                    if (node.Presentation.XukedInTreeNodes <= 0) m_percentageProgress = -1;
+                    else
+                    {
+                        m_percentageProgress = (int) (100*m_nTreeNode/node.Presentation.XukedInTreeNodes);
+                        if (m_percentageProgress > 100)
+                            m_percentageProgress = -1;
+                    }
+                    reportProgress(m_percentageProgress,
+                        Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
+                        + (node.Presentation.XukedInTreeNodes <= 0 ? m_nTreeNode.ToString() : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
+                        + "]");
 
                     walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }

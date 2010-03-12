@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Practices.Composite.Logging;
+using Tobi.Common.UI;
 using urakawa.daisy.import;
 
 namespace Tobi.Plugin.Urakawa
@@ -26,22 +28,51 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            return m_ShellView.RunModalCancellableProgressTask(Tobi_Plugin_Urakawa_Lang.Importing,                   // TODO LOCALIZE Importing
+            bool cancelled = false;
+
+            bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                Tobi_Plugin_Urakawa_Lang.Importing,
                 converter,
                 () =>
                 {
+                    cancelled = true;
                     DocumentFilePath = null;
                     DocumentProject = null;
                 },
                 () =>
                 {
-                    if (string.IsNullOrEmpty(converter.XukPath)) return;
+                    cancelled = false;
+                    if (string.IsNullOrEmpty(converter.XukPath))
+                    {
+                        return;
+                    }
 
-                    DocumentFilePath = converter.XukPath;
-                    DocumentProject = converter.Project;
+                    //DocumentFilePath = converter.XukPath;
+                    //DocumentProject = converter.Project;
 
-                    AddRecentFile(new Uri(DocumentFilePath, UriKind.Absolute));
+                    //AddRecentFile(new Uri(DocumentFilePath, UriKind.Absolute));
                 });
+
+            if (result) //NOT cancelled
+            {
+                Debug.Assert(!cancelled);
+
+                if (string.IsNullOrEmpty(converter.XukPath)) return false;
+
+                DocumentFilePath = null;
+                DocumentProject = null;
+                try
+                {
+                    OpenFile(converter.XukPath);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                    return false;
+                }
+            }
+
+            return result;
         }
     }
 }

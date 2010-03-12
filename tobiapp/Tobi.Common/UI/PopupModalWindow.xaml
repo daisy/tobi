@@ -95,13 +95,14 @@
         >
 
         <Rectangle DockPanel.Dock="Top"
-                   Margin="0, 0, 0, 8"
+
                    Height="1"
                    HorizontalAlignment="Stretch"
                    StrokeThickness="1"
                    Stroke="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
                     Fill="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
                 SnapsToDevicePixels="True"
+                   Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={StaticResource booleanToVisibilityConverter}}"
                    />
 
         <!-- 
@@ -117,10 +118,13 @@
           RichCommandTwo="{Binding CommandDetailsExpand}"
                 RichCommandActive="{Binding IsDetailsExpanded, Mode=OneWay}"
           DockPanel.Dock="Left"
+          VerticalAlignment="Bottom"
           Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={StaticResource booleanToVisibilityConverter}}"/>
-        
+
         <StackPanel
+          Margin="0, 8, 0, 0"
                   Orientation="Horizontal"
+          VerticalAlignment="Bottom"
                   HorizontalAlignment="Right">
 
 
