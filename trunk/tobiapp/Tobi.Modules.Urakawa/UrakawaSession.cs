@@ -137,7 +137,8 @@ namespace Tobi.Plugin.Urakawa
                 }
                 else if (node.IsDescendantOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
                 {
-                    adjustTreeNodeIfAncestorAudio(m_TreeNode);
+                    TreeNode oldTreeNode = m_TreeNode;
+                    adjustTreeNodeIfAncestorAudio(oldTreeNode);
                     if (node == m_SubTreeNode) // toggle
                     {
                         m_SubTreeNode = null;
@@ -430,14 +431,84 @@ namespace Tobi.Plugin.Urakawa
                 Directory.CreateDirectory(deletedDataFolderPath);
             }
 
-            m_ShellView.RunModalCancellableProgressTask("Cleaning up data files ...",
+            bool cancelled = false;
+
+            bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                 new Cleaner(project.Presentations.Get(0), deletedDataFolderPath), //project.Presentations.Get(0).Cleanup();
                 () =>
                 {
                     m_Logger.Log(@"CANCELLED", Category.Debug, Priority.Medium);
+                    cancelled = true;
 
-                    // We restore the old one, not cleaned-up (or partially...).
+                },
+                () =>
+                {
+                    m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
+                    cancelled = false;
 
+                });
+
+            if (cancelled)
+            {
+                Debug.Assert(!result);
+
+                // We restore the old one, not cleaned-up (or partially...).
+
+                DocumentFilePath = null;
+                DocumentProject = null;
+
+                try
+                {
+                    OpenFile(docPath);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                }
+            }
+            else
+            {
+                var listOfDataProviderFiles = new List<string>();
+                foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+                {
+                    var fileDataProvider = dataProvider as FileDataProvider;
+                    if (fileDataProvider == null) continue;
+
+                    listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
+                }
+
+
+                bool folderIsShowing = false;
+                if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                {
+                    folderIsShowing = true;
+
+                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                }
+
+                foreach (string filePath in Directory.GetFiles(dataFolderPath))
+                {
+                    var fileName = Path.GetFileName(filePath);
+                    if (!listOfDataProviderFiles.Contains(fileName))
+                    {
+                        var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
+                        File.Move(filePath, filePathDest);
+                    }
+                }
+
+                if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                {
+                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                }
+
+                // We must now save the modified cleaned-up doc
+
+                DocumentFilePath = docPath;
+                DocumentProject = project;
+
+                if (save())
+                {
                     DocumentFilePath = null;
                     DocumentProject = null;
 
@@ -449,65 +520,8 @@ namespace Tobi.Plugin.Urakawa
                     {
                         ExceptionHandler.Handle(ex, false, m_ShellView);
                     }
-                },
-                () =>
-                {
-                    m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
-
-                    var listOfDataProviderFiles = new List<string>();
-                    foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
-                    {
-                        var fileDataProvider = dataProvider as FileDataProvider;
-                        if (fileDataProvider == null) continue;
-
-                        listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
-                    }
-
-
-                    bool folderIsShowing = false;
-                    if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
-                    {
-                        folderIsShowing = true;
-
-                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-                    }
-
-                    foreach (string filePath in Directory.GetFiles(dataFolderPath))
-                    {
-                        var fileName = Path.GetFileName(filePath);
-                        if (!listOfDataProviderFiles.Contains(fileName))
-                        {
-                            var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-                            File.Move(filePath, filePathDest);
-                        }
-                    }
-
-                    if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
-                    {
-                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-                    }
-
-                    // We must now save the modified cleaned-up doc
-
-                    DocumentFilePath = docPath;
-                    DocumentProject = project;
-
-                    if (save())
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-
-                        try
-                        {
-                            OpenFile(docPath);
-                        }
-                        catch (Exception ex)
-                        {
-                            ExceptionHandler.Handle(ex, false, m_ShellView);
-                        }
-                    }
-                });
-
+                }
+            }
 
             //if (!Dispatcher.CurrentDispatcher.CheckAccess())
             //{

@@ -858,6 +858,9 @@ namespace Tobi.Plugin.DocumentPane
         {
             TreeNode root = project.Presentations.Get(0).RootNode;
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
+            
+            Debug.Assert(root==nodeBook);
+            
             if (nodeBook == null)
             {
                 Debug.Fail("No 'book' root element ??");
@@ -895,28 +898,29 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             );
 
-            try
-            {
-                converter.DoWork();
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.Handle(ex, false, m_ShellView);
-            }
+            //try
+            //{
+            //    converter.DoWork();
+            //}
+            //catch (Exception ex)
+            //{
+            //    ExceptionHandler.Handle(ex, false, m_ShellView);
+            //}
+
+            var action = (Action)(() =>
+                             {
+                                 FlowDocReader.Document = TheFlowDocument;
+                                  //converter.m_FlowDoc;
+                             });
+            FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument)));
 
             // WE CAN'T USE A THREAD BECAUSE FLOWDOCUMENT CANNOT BE FROZEN FOR INTER-THREAD INSTANCE EXCHANGE !! :(
-            //m_ShellView.RunModalCancellableProgressTask(
-            //    Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument,
-            //    converter,
-            //    () =>
-            //        {
-            //            TheFlowDocument = converter.m_FlowDoc;
-            //        },
-            //    () =>
-            //        {
-            //            TheFlowDocument = converter.m_FlowDoc;
-            //        }
-            //    );
+            m_ShellView.RunModalCancellableProgressTask(false,
+                Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument,
+                converter,
+                action,
+                action
+                );
 
         }
 

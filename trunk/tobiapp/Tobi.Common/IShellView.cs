@@ -83,7 +83,7 @@ namespace Tobi.Common
     {
         void PumpDispatcherFrames();
 
-        bool RunModalCancellableProgressTask(string title, IDualCancellableProgressReporter reporter, Action actionCancelled, Action actionCompleted);
+        bool RunModalCancellableProgressTask(bool inSeparateThread, string title, IDualCancellableProgressReporter reporter, Action actionCancelled, Action actionCompleted);
 
         bool IsUIAutomationDisabled { get; }
 

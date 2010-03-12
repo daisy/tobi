@@ -91,40 +91,36 @@ namespace Tobi.Plugin.Urakawa
                         //string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
                         //Debug.Assert(datafolderPath == datafolderPathSavedAs);
 
-                        m_ShellView.RunModalCancellableProgressTask("Copying data files ...",
+
+                        bool cancelled = false;
+
+                        bool outcome = m_ShellView.RunModalCancellableProgressTask(true,
+                            Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
                             new DataFolderCopier(DocumentProject.Presentations.Get(0), dirPath, prefix),
                             () =>
                             {
                                 m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
-
-                                if (askUserOpenSavedAs(dlg.FileName))
-                                {
-                                    try
-                                    {
-                                        OpenFile(dlg.FileName);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        ExceptionHandler.Handle(ex, false, m_ShellView);
-                                    }
-                                }
+                                cancelled = true;
                             },
                             () =>
                             {
                                 m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
-
-                                if (askUserOpenSavedAs(dlg.FileName))
-                                {
-                                    try
-                                    {
-                                        OpenFile(dlg.FileName);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        ExceptionHandler.Handle(ex, false, m_ShellView);
-                                    }
-                                }
+                                cancelled = false;
                             });
+
+                        Debug.Assert(outcome==!cancelled);
+
+                        if (askUserOpenSavedAs(dlg.FileName))
+                        {
+                            try
+                            {
+                                OpenFile(dlg.FileName);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
                     }
                     else
                     {
@@ -199,7 +195,8 @@ namespace Tobi.Plugin.Urakawa
                 LongDescription = Tobi_Plugin_Urakawa_Lang.SerializeDOMIntoXukFile       // TODO LOCALIZE SerializeDOMIntoXukFile
             };
 
-            bool notCancelled = m_ShellView.RunModalCancellableProgressTask(Tobi_Plugin_Urakawa_Lang.SaveXukFile, action,
+            bool notCancelled = m_ShellView.RunModalCancellableProgressTask(true,
+                Tobi_Plugin_Urakawa_Lang.SaveXukFile, action,
                 () =>
                 {
                     if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))

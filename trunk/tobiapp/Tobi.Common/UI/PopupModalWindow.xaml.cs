@@ -138,7 +138,14 @@ namespace Tobi.Common.UI
 
         public bool HasDetails
         {
-            get { return DetailsPlaceHolder.Content != null; }
+            get
+            {
+                if (DetailsPlaceHolder.Content == null) return false;
+                var ui = DetailsPlaceHolder.Content as UIElement;
+                if (ui == null) return true;
+                if (ui.Visibility != Visibility.Visible) return false;
+                return true;
+            }
         }
 
         public void ShowModal()
@@ -287,6 +294,12 @@ namespace Tobi.Common.UI
             DialogButtons = buttons;
             DefaultDialogButton = button;
             AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
+
+            var ui = DetailsPlaceHolder.Content as UIElement;
+            if (ui != null)
+            {
+                ui.IsVisibleChanged += (obj, args) => m_PropertyChangeHandler.RaisePropertyChanged(() => HasDetails);
+            }
         }
 
         //public PopupModalWindow(IShellView window, string title, object content,
@@ -344,6 +357,7 @@ namespace Tobi.Common.UI
             if (m_whenDoneAction != null)
             {
                 m_whenDoneAction.Invoke();
+                m_whenDoneAction = null;
             }
         }
 
@@ -650,7 +664,7 @@ namespace Tobi.Common.UI
                 {
                     if ((Boolean)values[1])
                         return new GridLength(1.5, GridUnitType.Star);
-                    
+
                     return new GridLength(0.0, GridUnitType.Pixel);
                 }
                 if (values[1].GetType() == typeof(Visibility))

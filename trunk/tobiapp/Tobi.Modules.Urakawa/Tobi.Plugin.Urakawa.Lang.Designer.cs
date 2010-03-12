@@ -79,6 +79,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cleaning up data files....
+        /// </summary>
+        public static string CleaningUpDataFiles {
+            get {
+                return ResourceManager.GetString("CleaningUpDataFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Close.
         /// </summary>
         public static string Close {
@@ -102,6 +111,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string ContextToOpenSaveDataModelOfSDKProject {
             get {
                 return ResourceManager.GetString("ContextToOpenSaveDataModelOfSDKProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copying data files....
+        /// </summary>
+        public static string CopyingDataFiles {
+            get {
+                return ResourceManager.GetString("CopyingDataFiles", resourceCulture);
             }
         }
         
@@ -138,6 +156,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string Export_ {
             get {
                 return ResourceManager.GetString("Export_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exporting....
+        /// </summary>
+        public static string Exporting {
+            get {
+                return ResourceManager.GetString("Exporting", resourceCulture);
             }
         }
         

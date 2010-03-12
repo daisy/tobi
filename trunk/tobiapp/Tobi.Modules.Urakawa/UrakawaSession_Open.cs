@@ -167,9 +167,14 @@ namespace Tobi.Plugin.Urakawa
                     LongDescription = Tobi_Plugin_Urakawa_Lang.ParsingXMLDoc_BuildingDOM                    // TODO LOCALIZE ParsingXMLDoc_BuildingDOM
                 };
 
-                bool notCancelled = m_ShellView.RunModalCancellableProgressTask(Tobi_Plugin_Urakawa_Lang.OpenXukFile, action, 
+                bool cancelled = false;
+
+                bool result = m_ShellView.RunModalCancellableProgressTask(true, 
+                    Tobi_Plugin_Urakawa_Lang.OpenXukFile, action, 
                     ()=>
                         {
+                            cancelled = true;
+
                             DocumentFilePath = null;
                             DocumentProject = null;
 
@@ -177,6 +182,8 @@ namespace Tobi.Plugin.Urakawa
                         },
                     () =>
                         {
+                            cancelled = false;
+
                             if (project.Presentations.Count == 0)
                             {
                                 Debug.Fail("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
@@ -186,12 +193,32 @@ namespace Tobi.Plugin.Urakawa
                                 DocumentProject = project;   
                         }
                     );
-                
-                if (!notCancelled)
+
+                if (!result)
                 {
+                    Debug.Assert(cancelled);
                     return false;
                 }
 
+                if (DocumentProject != null)
+                {
+                    m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug,
+                               Priority.Medium);
+
+                    m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+
+                    var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText();
+                    if (treeNode != null)
+                    {
+                        m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
+                                   Category.Debug, Priority.Medium);
+
+                        PerformTreeNodeSelection(treeNode);
+                        //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                    }
+
+                    return true;
+                }
                 //var progressBar = new ProgressBar
                 //{
                 //    IsIndeterminate = false,
@@ -320,25 +347,6 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            if (DocumentProject != null)
-            {
-                m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug,
-                           Priority.Medium);
-
-                m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
-
-                var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText();
-                if (treeNode != null)
-                {
-                    m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
-                               Category.Debug, Priority.Medium);
-                    
-                    PerformTreeNodeSelection(treeNode);
-                    //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-                }
-
-                return true;
-            }
             return false;
         }
     }

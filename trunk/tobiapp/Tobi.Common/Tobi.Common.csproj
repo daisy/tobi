@@ -187,6 +187,7 @@
     <Compile Include="UI\ComboBoxColor.xaml.cs">
       <DependentUpon>ComboBoxColor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\DispatcherObjectExtensions.cs" />
     <Compile Include="UI\ValidationAwareTextBox.xaml.cs">
       <DependentUpon>ValidationAwareTextBox.xaml</DependentUpon>
     </Compile>
