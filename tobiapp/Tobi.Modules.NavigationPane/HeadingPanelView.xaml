@@ -48,6 +48,12 @@
                     <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
                   <!-- Setter Property="local:TreeViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" / -->
 
+                  <Setter Property="HorizontalContentAlignment"
+                      Value="{Binding Path=HorizontalContentAlignment,
+                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                  <Setter Property="VerticalContentAlignment"
+                      Value="{Binding Path=VerticalContentAlignment,
+                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <Setter Property="FontWeight" Value="Normal" />
