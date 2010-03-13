@@ -24,7 +24,7 @@ namespace Tobi.Plugin.StructureTrailPane
     internal class TreeNodeWrapper
     {
         public TreeNode TreeNode;
-        public Popup Popup;
+        //public Popup Popup;
 
         public override string ToString()
         {
@@ -119,6 +119,22 @@ namespace Tobi.Plugin.StructureTrailPane
                         IsTabStop = true
                     };
 
+                    tb.ContextMenu = new ContextMenu();
+
+                    foreach (TreeNode child in n.Children.ContentsAs_YieldEnumerable)
+                    {
+                        var menuItem = new MenuItem();
+                        QualifiedName qnameChild = child.GetXmlElementQName();
+                        if (qnameChild != null)
+                        {
+                            menuItem.Header = qnameChild.LocalName;
+                        }
+                        else menuItem.Header = "TEXT";
+                        menuItem.Tag = child;
+                        menuItem.Click += menuItem_Click;
+                        tb.ContextMenu.Items.Add(menuItem);
+                    }
+
                     tb.Click += OnBreadCrumbSeparatorClick;
 
                     BreadcrumbPanel.Children.Add(tb);
@@ -148,6 +164,20 @@ namespace Tobi.Plugin.StructureTrailPane
             }
         }
 
+        private void menuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var ui = sender as MenuItem;
+            if (ui == null)
+            {
+                return;
+            }
+
+            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)ui.Tag);
+            //selectNode(wrapper.TreeNode, true);
+
+            CommandFocus.Execute();
+        }
+
         private void OnBreadCrumbSeparatorClick(object sender, RoutedEventArgs e)
         {
             var ui = sender as Button;
@@ -155,76 +185,80 @@ namespace Tobi.Plugin.StructureTrailPane
             {
                 return;
             }
+            ui.ContextMenu.PlacementTarget = ui;
+            ui.ContextMenu.Placement = PlacementMode.Bottom;
+            //ui.ContextMenu.PlacementRectangle=ui.
+            ui.ContextMenu.IsOpen = true;
 
-            var node = (TreeNode)ui.Tag;
+            //var node = (TreeNode)ui.Tag;
 
-            var popup = new Popup { IsOpen = false, Width = 120, Height = 150 };
-            BreadcrumbPanel.Children.Add(popup);
-            popup.PlacementTarget = ui;
-            popup.LostFocus += OnPopupLostFocus;
-            popup.LostMouseCapture += OnPopupLostFocus;
-            popup.LostKeyboardFocus += OnPopupLostKeyboardFocus;
+            //var popup = new Popup { IsOpen = false, Width = 120, Height = 150 };
+            //BreadcrumbPanel.Children.Add(popup);
+            //popup.PlacementTarget = ui;
+            //popup.LostFocus += OnPopupLostFocus;
+            //popup.LostMouseCapture += OnPopupLostFocus;
+            //popup.LostKeyboardFocus += OnPopupLostKeyboardFocus;
 
-            var listOfNodes = new ListView();
-            listOfNodes.SelectionChanged += OnListOfNodesSelectionChanged;
+            //var listOfNodes = new ListView();
+            //listOfNodes.SelectionChanged += OnListOfNodesSelectionChanged;
 
-            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
-            {
-                listOfNodes.Items.Add(new TreeNodeWrapper()
-                {
-                    Popup = popup,
-                    TreeNode = child
-                });
-            }
+            //foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            //{
+            //    listOfNodes.Items.Add(new TreeNodeWrapper()
+            //    {
+            //        Popup = popup,
+            //        TreeNode = child
+            //    });
+            //}
 
-            var scroll = new ScrollViewer
-            {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Content = listOfNodes
-            };
+            //var scroll = new ScrollViewer
+            //{
+            //    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+            //    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            //    Content = listOfNodes
+            //};
 
-            popup.Child = scroll;
-            popup.IsOpen = true;
+            //popup.Child = scroll;
+            //popup.IsOpen = true;
 
-            FocusHelper.FocusBeginInvoke(listOfNodes);
+            //FocusHelper.FocusBeginInvoke(listOfNodes);
         }
 
-        private void OnPopupLostFocus(object sender, RoutedEventArgs e)
-        {
-            var ui = sender as Popup;
-            if (ui == null)
-            {
-                return;
-            }
-            ui.IsOpen = false;
-        }
+        //private void OnPopupLostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    var ui = sender as Popup;
+        //    if (ui == null)
+        //    {
+        //        return;
+        //    }
+        //    ui.IsOpen = false;
+        //}
 
-        private void OnPopupLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            var ui = sender as Popup;
-            if (ui == null)
-            {
-                return;
-            }
-            ui.IsOpen = false;
-        }
+        //private void OnPopupLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        //{
+        //    var ui = sender as Popup;
+        //    if (ui == null)
+        //    {
+        //        return;
+        //    }
+        //    ui.IsOpen = false;
+        //}
 
-        private void OnListOfNodesSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var ui = sender as ListView;
-            if (ui == null)
-            {
-                return;
-            }
-            var wrapper = (TreeNodeWrapper)ui.SelectedItem;
-            wrapper.Popup.IsOpen = false;
+        //private void OnListOfNodesSelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    var ui = sender as ListView;
+        //    if (ui == null)
+        //    {
+        //        return;
+        //    }
+        //    var wrapper = (TreeNodeWrapper)ui.SelectedItem;
+        //    wrapper.Popup.IsOpen = false;
 
-            m_UrakawaSession.PerformTreeNodeSelection(wrapper.TreeNode);
-            //selectNode(wrapper.TreeNode, true);
+        //    m_UrakawaSession.PerformTreeNodeSelection(wrapper.TreeNode);
+        //    //selectNode(wrapper.TreeNode, true);
 
-            CommandFocus.Execute();
-        }
+        //    CommandFocus.Execute();
+        //}
 
         //private void selectNode(TreeNode node, bool toggleIntersection)
         //{
@@ -377,7 +411,7 @@ namespace Tobi.Plugin.StructureTrailPane
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
 
-            m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(obj => CommandFocus.Execute(), EscapeEvent.THREAD_OPTION);
+            //m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(obj => CommandFocus.Execute(), EscapeEvent.THREAD_OPTION);
         }
 
         private void OnProjectUnLoaded(Project obj)
