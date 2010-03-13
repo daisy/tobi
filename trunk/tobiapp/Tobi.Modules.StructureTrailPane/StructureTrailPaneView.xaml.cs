@@ -435,12 +435,15 @@ namespace Tobi.Plugin.StructureTrailPane
         private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
             TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+            string audioInfo = treeNode.GetAudioMedia () != null || treeNode.GetFirstAncestorWithManagedAudio () != null ? "" : " No Audio "; // to do localize
             var qName = treeNode.GetXmlElementQName();
-            string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)) + treeNode.GetTextMediaFlattened();
+            string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)) + treeNode.GetTextMediaFlattened() ;
             if (str.Length > 100)
             {
-                str = str.Substring(0, 100) + ". . .";
+                str = str.Substring(0, 100) + ". . ." ;
             }
+            str = str + audioInfo;
             Console.WriteLine(@"}}}}}" + str);
 
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
