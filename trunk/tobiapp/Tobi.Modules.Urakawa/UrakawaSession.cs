@@ -175,7 +175,7 @@ namespace Tobi.Plugin.Urakawa
                 var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
 
                 if (oldTreeNodeSelection != treeNodeSelection)
-                    m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Publish(treeNodeSelection);
+                    m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Publish(new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldTreeNodeSelection, treeNodeSelection));
 
                 return treeNodeSelection;
             }

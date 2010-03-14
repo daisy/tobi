@@ -227,7 +227,7 @@ namespace Tobi.Plugin.AudioPane
             public bool FindInPlayStreamMarkers(TreeNode treeNode, out int index, out long bytesLeft, out long bytesRight)
             {
                 bytesRight = 0;
-                bytesLeft = -1;
+                bytesLeft = 0;
                 index = -1;
                 if (PlayStreamMarkers == null) return false;
 
@@ -249,7 +249,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 treeNode = null;
                 bytesRight = 0;
-                bytesLeft = -1;
+                bytesLeft = 0;
                 index = -1;
                 if (PlayStreamMarkers == null) return false;
 
@@ -278,7 +278,7 @@ namespace Tobi.Plugin.AudioPane
 
                 TreeNode treeNode = null;
                 long bytesRight = 0;
-                long bytesLeft = -1;
+                long bytesLeft = 0;
                 int index = -1;
                 
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)

@@ -61,6 +61,8 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
         {
+            ShowHideWaveFormLoadingMessage(true);
+
             if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels == 1)
             {
                 PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
@@ -643,18 +645,20 @@ namespace Tobi.Plugin.AudioPane
             }
             finally
             {
-                ShowHideWaveFormLoadingMessage(false);
-
                 m_ViewModel.IsWaveFormLoading = false;
 
                 if (!Dispatcher.CheckAccess())
                 {
+                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => ShowHideWaveFormLoadingMessage(false)));
+
                     //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                         (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
                 }
                 else
                 {
+                    ShowHideWaveFormLoadingMessage(false);
+
                     m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
                 }
             }

@@ -466,9 +466,12 @@ namespace Tobi.Plugin.StructureTrailPane
         //    }
         //}
 
-        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
+        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
-            TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+            Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
+
+            TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
             string audioInfo = treeNode.GetAudioMedia () != null || treeNode.GetFirstAncestorWithManagedAudio () != null ? "" : " No Audio "; // to do localize
             var qName = treeNode.GetXmlElementQName();
@@ -483,7 +486,7 @@ namespace Tobi.Plugin.StructureTrailPane
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
 
 
-            updateBreadcrumbPanel(treeNodeSelection);
+            updateBreadcrumbPanel(newTreeNodeSelection);
         }
 
         //private void OnSubTreeNodeSelected(TreeNode node)

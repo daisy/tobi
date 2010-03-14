@@ -491,15 +491,7 @@ namespace Tobi.Plugin.AudioPane
                 time = 0;
             }
 
-            if (time == LastPlayHeadTime)
-            {
-                if (View != null)
-                {
-                    View.RefreshUI_WaveFormPlayHead();
-                }
-                RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
-            }
-            else if (time >= 0)
+            if (time >= 0)
             {
                 LastPlayHeadTime = time;
             }
@@ -643,15 +635,13 @@ namespace Tobi.Plugin.AudioPane
 
             if (View != null)
             {
-                View.ShowHideWaveFormLoadingMessage(true);
-            }
-
-            if (View != null)
-            {
                 View.RefreshUI_LoadWaveForm(wasPlaying, play);
             }
             else
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
             }
         }
@@ -668,8 +658,6 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_StateToRestore != null)
             {
-                LastPlayHeadTime = m_StateToRestore.GetValueOrDefault().LastPlayHeadTime;
-
                 double begin = m_StateToRestore.GetValueOrDefault().SelectionBegin;
                 double end = m_StateToRestore.GetValueOrDefault().SelectionEnd;
 
@@ -682,7 +670,13 @@ namespace Tobi.Plugin.AudioPane
                     State.Selection.ResetAll();
                 }
 
+                double newPlayTime = m_StateToRestore.GetValueOrDefault().LastPlayHeadTime;
+
                 m_StateToRestore = null;
+
+                LastPlayHeadTime = newPlayTime;
+
+                return;
             }
 
             // ensure the stream is closed before we resume the player
@@ -913,7 +907,7 @@ namespace Tobi.Plugin.AudioPane
 
             State.ResetAll();
 
-            m_LastPlayHeadTime = -1;
+            m_LastPlayHeadTime = 0;
             IsWaveFormLoading = false;
 
             State.FilePath = path;
@@ -928,8 +922,6 @@ namespace Tobi.Plugin.AudioPane
                 IsWaveFormLoading = false;
                 return;
             }
-
-            //m_LastPlayHeadTime = 0; Set after waveform loaded
 
             loadAndPlay();
         }
@@ -978,7 +970,7 @@ namespace Tobi.Plugin.AudioPane
             if (!Dispatcher.CheckAccess())
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                  (Action<object, AudioPlayer.AudioPlaybackFinishEventArgs>) OnAudioPlaybackFinished_,
+                                  (Action<object, AudioPlayer.AudioPlaybackFinishEventArgs>)OnAudioPlaybackFinished_,
                                   sender, e);
                 return;
             }
@@ -989,7 +981,7 @@ namespace Tobi.Plugin.AudioPane
         private void OnAudioPlaybackFinished_(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
         {
 
-        //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             RaisePropertyChanged(() => IsPlaying);
 
@@ -1035,7 +1027,7 @@ namespace Tobi.Plugin.AudioPane
             if (!Dispatcher.CheckAccess())
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                  (Action<object, AudioPlayer.StateChangedEventArgs>) OnStateChanged_Player_, sender, e);
+                                  (Action<object, AudioPlayer.StateChangedEventArgs>)OnStateChanged_Player_, sender, e);
                 return;
             }
             OnStateChanged_Player_(sender, e);
@@ -1043,7 +1035,7 @@ namespace Tobi.Plugin.AudioPane
         private void OnStateChanged_Player_(object sender, AudioPlayer.StateChangedEventArgs e)
         {
 
-        //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
 
             CommandManager.InvalidateRequerySuggested();
 

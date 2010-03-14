@@ -176,9 +176,12 @@ namespace Tobi.Plugin.NavigationPane
         }
 
 
-        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
+        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
-            View.UpdatePageListSelection(treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
+            Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
+
+            View.UpdatePageListSelection(newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1);
         }
         //private void onTreeNodeSelected(TreeNode node)
         //{

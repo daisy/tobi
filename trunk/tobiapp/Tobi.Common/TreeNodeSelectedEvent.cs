@@ -4,7 +4,8 @@ using urakawa.core;
 
 namespace Tobi.Common
 {
-    public class TreeNodeSelectionChangedEvent : CompositePresentationEvent<Tuple<TreeNode, TreeNode>>
+    public class TreeNodeSelectionChangedEvent : CompositePresentationEvent<
+        Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>>
     {
         public static ThreadOption THREAD_OPTION = ThreadOption.PublisherThread;
     }
