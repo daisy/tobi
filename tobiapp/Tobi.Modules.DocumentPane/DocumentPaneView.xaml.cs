@@ -614,18 +614,21 @@ namespace Tobi.Plugin.DocumentPane
         //}
 
 
-        private void OnTreeNodeSelectionChanged(Tuple<TreeNode, TreeNode> treeNodeSelection)
+        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
-            TextElement textElement1 = FindTextElement(treeNodeSelection.Item1);
+            Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
+
+            TextElement textElement1 = FindTextElement(newTreeNodeSelection.Item1);
             if (textElement1 == null)
             {
                 Debug.Fail("TextElement not found ?");
                 return;
             }
             TextElement textElement2 = null;
-            if (treeNodeSelection.Item2 != null)
+            if (newTreeNodeSelection.Item2 != null)
             {
-                textElement2 = FindTextElement(treeNodeSelection.Item2);
+                textElement2 = FindTextElement(newTreeNodeSelection.Item2);
                 if (textElement2 == null)
                 {
                     Debug.Fail("TextElement not found ?");

@@ -171,6 +171,12 @@ namespace Tobi.Plugin.AudioPane
 
                     if (match)
                     {
+                        if (index == State.Audio.PlayStreamMarkers.Count - 1)
+                        {
+                            AudioCues.PlayBeep();
+                            return;
+                        }
+
                         if (IsAutoPlay)
                         {
                             if (View != null)
@@ -180,7 +186,6 @@ namespace Tobi.Plugin.AudioPane
                         }
 
                         LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesRight);
-                        return;
                     }
                     else
                     {
