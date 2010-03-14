@@ -238,7 +238,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (View != null)
             {
-                View.CancelWaveFormLoad();
+                View.CancelWaveFormLoad(true);
             }
 
             AudioPlayer_Stop();

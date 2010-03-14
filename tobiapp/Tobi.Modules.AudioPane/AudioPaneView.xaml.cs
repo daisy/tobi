@@ -161,7 +161,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            CancelWaveFormLoad();
+            CancelWaveFormLoad(true);
 
             double oldWidth = e.PreviousSize.Width;
 

@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -19,14 +20,16 @@ namespace Tobi.Plugin.AudioPane
     {
         private BackgroundWorker m_BackgroundLoader;
 
-        public void CancelWaveFormLoad()
+        private bool m_CancelInterruptDrawingToo;
+
+        public void CancelWaveFormLoad(bool interruptDrawingToo)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)CancelWaveFormLoad);
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<bool>)CancelWaveFormLoad, interruptDrawingToo);
                 return;
             }
 
@@ -34,6 +37,7 @@ namespace Tobi.Plugin.AudioPane
             if (m_BackgroundLoader == null) return;
             if (!m_BackgroundLoader.IsBusy) return;
 
+            m_CancelInterruptDrawingToo = interruptDrawingToo;
             m_BackgroundLoader.CancelAsync();
 
             long index = 0;
@@ -43,11 +47,13 @@ namespace Tobi.Plugin.AudioPane
                 Console.WriteLine(@"..............m_BackgroundLoader WAIT: " + index++);
                 m_ShellView.PumpDispatcherFrames(); // make sure we don't block the UI thread
             }
+
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private void OnWaveFormCancelButtonClick(object sender, RoutedEventArgs e)
         {
-            CancelWaveFormLoad();
+            CancelWaveFormLoad(false);
         }
 
 
@@ -61,6 +67,8 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
         {
+            m_CancelInterruptDrawingToo = false;
+
             ShowHideWaveFormLoadingMessage(true);
 
             if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels == 1)
@@ -171,6 +179,8 @@ namespace Tobi.Plugin.AudioPane
 
                     WaveFormProgress.IsIndeterminate = true;
 
+                    CommandManager.InvalidateRequerySuggested();
+
                     if (workException != null)
                     {
 #if DEBUG
@@ -194,6 +204,8 @@ namespace Tobi.Plugin.AudioPane
                 loadWaveForm(widthMagnified, heightMagnified, wasPlaying, play, bytesPerPixel_Magnified);
 
                 m_ViewModel.IsWaveFormLoading = false;
+
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -241,6 +253,8 @@ namespace Tobi.Plugin.AudioPane
             const bool bJoinInterSamples = false;
 
             if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) return;
+
+            Stopwatch stopWatch = null;
 
             const int tolerance = 5;
             try
@@ -311,7 +325,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
 
-                Stopwatch stopWatch = Stopwatch.StartNew();
+                stopWatch = Stopwatch.StartNew();
 
                 int read;
 
@@ -625,6 +639,9 @@ namespace Tobi.Plugin.AudioPane
                     if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) break;
                 }
 
+
+                if (stopWatch != null && stopWatch.IsRunning) stopWatch.Stop();
+
                 #endregion LOOP
 
                 if (!Dispatcher.CheckAccess())
@@ -635,6 +652,8 @@ namespace Tobi.Plugin.AudioPane
                         WaveFormProgress.IsIndeterminate = true;
                     }));
                 }
+
+                if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) return; // will execute the FINALLY block first 
 
                 drawWaveForm(audioStream, true,
                     sgcCh1, sgcCh2, geometryCh1, geometryCh2,
@@ -647,9 +666,13 @@ namespace Tobi.Plugin.AudioPane
             {
                 m_ViewModel.IsWaveFormLoading = false;
 
+                if (stopWatch != null && stopWatch.IsRunning) stopWatch.Stop();
+
                 if (!Dispatcher.CheckAccess())
                 {
-                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => ShowHideWaveFormLoadingMessage(false)));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => ShowHideWaveFormLoadingMessage(false)));
+
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(CommandManager.InvalidateRequerySuggested));
 
                     //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -660,6 +683,8 @@ namespace Tobi.Plugin.AudioPane
                     ShowHideWaveFormLoadingMessage(false);
 
                     m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
+
+                    CommandManager.InvalidateRequerySuggested();
                 }
             }
         }
@@ -776,20 +801,27 @@ namespace Tobi.Plugin.AudioPane
                     geoDraw2.Freeze();
                 }
             }
-            //
+            //if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
             GeometryDrawing geoDraw1_envelope = null;
             GeometryDrawing geoDraw2_envelope = null;
             if (m_ViewModel.IsEnvelopeVisible)
             {
-                createGeometry_envelope(freeze, out geoDraw1_envelope, out geoDraw2_envelope,
-                                        ref listTopPointsCh1, ref listTopPointsCh2,
-                                        ref listBottomPointsCh1, ref listBottomPointsCh2,
-                                        dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
-                                        heightMagnified, widthMagnified);
+                try
+                {
+                    createGeometry_envelope(freeze, out geoDraw1_envelope, out geoDraw2_envelope,
+                                            ref listTopPointsCh1, ref listTopPointsCh2,
+                                            ref listBottomPointsCh1, ref listBottomPointsCh2,
+                                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
+                                            heightMagnified, widthMagnified);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    ;
+                }
             }
             //
             GeometryDrawing geoDrawStreamSubs = null;
-#if DEBUG
+#if DEBUG && DRAW_SUBSTREAMS
             if (freeze)
             {
                 geoDrawStreamSubs = createGeometry_StreamSubs(heightMagnified, audioStream, bytesPerPixel_Magnified);
@@ -903,6 +935,7 @@ namespace Tobi.Plugin.AudioPane
 
             return drawGrp;
         }
+#if DEBUG && DRAW_SUBSTREAMS
 
         private Geometry createGeometry_StreamSubs_SubStream(SubStream subStream, double heightMagnified, double bytesPerPixel_Magnified, StreamGeometryContext sgcMarkers, long bytes)
         {
@@ -1012,7 +1045,7 @@ namespace Tobi.Plugin.AudioPane
 
             return geoDrawSubStreams;
         }
-
+#endif
         private GeometryDrawing createGeometry_Markers(double heightMagnified, double bytesPerPixel_Magnified)
         {
             Brush brushColorMarkers = new SolidColorBrush(m_ViewModel.ColorMarkers);
@@ -1126,6 +1159,8 @@ namespace Tobi.Plugin.AudioPane
                 var p2 = new Point();
                 foreach (Point p in listTopPointsCh1)
                 {
+                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+
                     index++;
 
                     p2.X = p.X;
@@ -1188,6 +1223,7 @@ namespace Tobi.Plugin.AudioPane
 
                     foreach (Point p in listTopPointsCh2)
                     {
+                        if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                         index++;
 
                         p2.X = p.X;
@@ -1233,6 +1269,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 foreach (Point p in listTopPointsCh1)
                 {
+                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                     pp.X = p.X;
                     pp.Y = p.Y;
 
@@ -1301,6 +1338,7 @@ namespace Tobi.Plugin.AudioPane
 
                     foreach (Point p in listTopPointsCh2)
                     {
+                        if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                         pp.X = p.X;
                         pp.Y = p.Y;
 
@@ -1369,6 +1407,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 foreach (Point p in listTopPointsCh1)
                 {
+                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                     pp.X = p.X;
                     pp.Y = p.Y;
 
@@ -1404,6 +1443,7 @@ namespace Tobi.Plugin.AudioPane
 
                     foreach (Point p in listTopPointsCh2)
                     {
+                        if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                         pp.X = p.X;
                         pp.Y = p.Y;
 
