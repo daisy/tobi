@@ -37,6 +37,6 @@
         void InitGraphicalCommandBindings();
         void SetSelectionTime(double begin, double end);
         void SetSelectionBytes(long begin, long end);
-        void CancelWaveFormLoad();
+        void CancelWaveFormLoad(bool interruptDrawingToo);
     }
 }

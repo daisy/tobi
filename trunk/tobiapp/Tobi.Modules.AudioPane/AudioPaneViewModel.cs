@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
@@ -304,7 +305,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (View != null)
             {
-                View.CancelWaveFormLoad();
+                View.CancelWaveFormLoad(false);
             }
             if (IsPlaying)
             {
@@ -491,7 +492,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (View != null)
                 {
-                    View.CancelWaveFormLoad();
+                    View.CancelWaveFormLoad(true);
                 }
 
                 if (AudioPlaybackStreamKeepAlive)
@@ -507,6 +508,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (m_CurrentAudioStreamProvider() == null)
                 {
+                    CommandManager.InvalidateRequerySuggested();
                     return;
                 }
 
@@ -537,6 +539,7 @@ namespace Tobi.Plugin.AudioPane
 
             //IsWaveFormLoading = false;
 
+            CommandManager.InvalidateRequerySuggested();
 
             if (mustLoadWaveForm)
             {
@@ -658,7 +661,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (View != null)
             {
-                View.CancelWaveFormLoad();
+                View.CancelWaveFormLoad(true);
             }
 
             if (AudioPlaybackStreamKeepAlive)
