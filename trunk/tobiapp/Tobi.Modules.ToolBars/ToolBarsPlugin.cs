@@ -86,7 +86,7 @@ namespace Tobi.Plugin.ToolBars
 
         public override string Description
         {
-            get { return Tobi_Plugin_ToolBars_Lang.TheVisualHostForCommandButtons; }   // TODO LOCALIZE TheVisualHostForCommandButtons
+            get { return Tobi_Plugin_ToolBars_Lang.VisualHostForCommandButtons; }   // TODO LOCALIZE VisualHostForCommandButtons
         }
     }
 }

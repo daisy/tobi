@@ -44,7 +44,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.AValidatorThatSpecializedInMetadata; }    // TODO LOCALIZE AValidatorThatSpecializedInMetadata
+            get { return Tobi_Plugin_Validator_Metadata_Lang.ValidatorSpecializingInMetadata; }    // TODO LOCALIZE AValidatorThatSpecializedInMetadata
         }
     }
 }

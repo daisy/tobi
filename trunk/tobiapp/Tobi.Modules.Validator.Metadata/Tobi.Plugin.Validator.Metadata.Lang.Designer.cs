@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A validator that specialized in metadata..
-        /// </summary>
-        public static string AValidatorThatSpecializedInMetadata {
-            get {
-                return ResourceManager.GetString("AValidatorThatSpecializedInMetadata", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to formatted as YYYY-MM-DD, YYYY-MM, or YYYY.
         /// </summary>
         public static string Date {
@@ -84,6 +75,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string DefNameMustBeHint {
             get {
                 return ResourceManager.GetString("DefNameMustBeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata error: duplicate items detected.
+        /// </summary>
+        public static string DuplicateItemsSelected {
+            get {
+                return ResourceManager.GetString("DuplicateItemsSelected", resourceCulture);
             }
         }
         
@@ -106,6 +106,69 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An entry for {0} was not found.
+        /// </summary>
+        public static string EntryNotFound {
+            get {
+                return ResourceManager.GetString("EntryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata error: general error.
+        /// </summary>
+        public static string GeneralError {
+            get {
+                return ResourceManager.GetString("GeneralError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata error: invalid formatting.
+        /// </summary>
+        public static string InvalidFormatting {
+            get {
+                return ResourceManager.GetString("InvalidFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value for the item is invalid:.
+        /// </summary>
+        public static string InvalidValue {
+            get {
+                return ResourceManager.GetString("InvalidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint: {0} must be {1}.
+        /// </summary>
+        public static string MetadataFormatError_Hint {
+            get {
+                return ResourceManager.GetString("MetadataFormatError_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May be repeated.
+        /// </summary>
+        public static string MetadataMayBeRepeated {
+            get {
+                return ResourceManager.GetString("MetadataMayBeRepeated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May not be repeated.
+        /// </summary>
+        public static string MetadataMayNotBeRepeated {
+            get {
+                return ResourceManager.GetString("MetadataMayNotBeRepeated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata Validator..
         /// </summary>
         public static string MetadataValidator {
@@ -117,9 +180,9 @@ namespace Tobi.Plugin.Validator.Metadata {
         /// <summary>
         ///   Looks up a localized string similar to MetadataValidator.
         /// </summary>
-        public static string MetadataValidator_Key {
+        public static string MetadataValidator1 {
             get {
-                return ResourceManager.GetString("MetadataValidator_Key", resourceCulture);
+                return ResourceManager.GetString("MetadataValidator1", resourceCulture);
             }
         }
         
@@ -133,11 +196,38 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Metadata error: missing a required item.
+        /// </summary>
+        public static string MissingRequiredItem {
+            get {
+                return ResourceManager.GetString("MissingRequiredItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be a {0}.
+        /// </summary>
+        public static string MustBeDatatype {
+            get {
+                return ResourceManager.GetString("MustBeDatatype", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to non-empty.
         /// </summary>
         public static string NonEmpty {
             get {
                 return ResourceManager.GetString("NonEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This metadata field cannot have more than one instance..
+        /// </summary>
+        public static string NotMoreThanOneInstance {
+            get {
+                return ResourceManager.GetString("NotMoreThanOneInstance", resourceCulture);
             }
         }
         
@@ -160,6 +250,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rules for {0}.
+        /// </summary>
+        public static string RulesForName {
+            get {
+                return ResourceManager.GetString("RulesForName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unspecified error in {0}..
         /// </summary>
         public static string UnspecifiedError {
@@ -174,6 +273,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string ValidatePublicationMetadata {
             get {
                 return ResourceManager.GetString("ValidatePublicationMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A validator that specialized in metadata..
+        /// </summary>
+        public static string ValidatorSpecializingInMetadata {
+            get {
+                return ResourceManager.GetString("ValidatorSpecializingInMetadata", resourceCulture);
             }
         }
     }

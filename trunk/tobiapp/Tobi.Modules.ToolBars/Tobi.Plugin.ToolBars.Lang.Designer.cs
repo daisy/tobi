@@ -70,20 +70,20 @@ namespace Tobi.Plugin.ToolBars {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The visual host for command buttons..
-        /// </summary>
-        public static string TheVisualHostForCommandButtons {
-            get {
-                return ResourceManager.GetString("TheVisualHostForCommandButtons", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Toolbar focus.
         /// </summary>
         public static string Toolbar_Focus {
             get {
                 return ResourceManager.GetString("Toolbar_Focus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The visual host for command buttons..
+        /// </summary>
+        public static string VisualHostForCommandButtons {
+            get {
+                return ResourceManager.GetString("VisualHostForCommandButtons", resourceCulture);
             }
         }
     }
