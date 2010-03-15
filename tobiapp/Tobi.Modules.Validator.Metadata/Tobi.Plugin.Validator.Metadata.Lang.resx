@@ -153,10 +153,16 @@
   <data name="MetadataMayNotBeRepeated" xml:space="preserve">
     <value>May not be repeated</value>
   </data>
-  <data name="MetadataValidator" xml:space="preserve">
+  <data name="MetadataValidatorPlugin_Description" xml:space="preserve">
+    <value>A validator that specialized in metadata.</value>
+  </data>
+  <data name="MetadataValidatorPlugin_Name" xml:space="preserve">
     <value>Metadata Validator.</value>
   </data>
-  <data name="MetadataValidator1" xml:space="preserve">
+  <data name="MetadataValidator_Description" xml:space="preserve">
+    <value>Validate publication metadata</value>
+  </data>
+  <data name="MetadataValidator_Name" xml:space="preserve">
     <value>MetadataValidator</value>
   </data>
   <data name="Missing" xml:space="preserve">
@@ -164,6 +170,9 @@
   </data>
   <data name="MissingRequiredItem" xml:space="preserve">
     <value>Metadata error: missing a required item</value>
+  </data>
+  <data name="MustBeDatatype" xml:space="preserve">
+    <value>Must be a {0}</value>
   </data>
   <data name="NonEmpty" xml:space="preserve">
     <value>non-empty</value>
@@ -177,13 +186,10 @@
   <data name="OpenMetadataEditor" xml:space="preserve">
     <value>This should open the metadata editor</value>
   </data>
+  <data name="RulesForName" xml:space="preserve">
+    <value>Rules for {0}</value>
+  </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error in {0}.</value>
-  </data>
-  <data name="ValidatePublicationMetadata" xml:space="preserve">
-    <value>Validate publication metadata</value>
-  </data>
-  <data name="ValidatorSpecializingInMetadata" xml:space="preserve">
-    <value>A validator that specialized in metadata.</value>
   </data>
 </root>

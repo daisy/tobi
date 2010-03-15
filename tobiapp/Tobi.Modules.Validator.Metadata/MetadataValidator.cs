@@ -56,12 +56,12 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator1;}       // TODO LOCALIZE MetadataValidator_Key
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Name;}       // TODO LOCALIZE MetadataValidator_Name
         }
 
         public override string Description
         {
-            get{ return Tobi_Plugin_Validator_Metadata_Lang.ValidatePublicationMetadata;}       // TODO LOCALIZE ValidatePublicationMetadata
+            get{ return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description;}       // TODO LOCALIZE MetadataValidator_Description
         }
 
         public override bool Validate()

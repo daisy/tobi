@@ -169,20 +169,38 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metadata Validator..
+        ///   Looks up a localized string similar to Validate publication metadata.
         /// </summary>
-        public static string MetadataValidator {
+        public static string MetadataValidator_Description {
             get {
-                return ResourceManager.GetString("MetadataValidator", resourceCulture);
+                return ResourceManager.GetString("MetadataValidator_Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to MetadataValidator.
         /// </summary>
-        public static string MetadataValidator1 {
+        public static string MetadataValidator_Name {
             get {
-                return ResourceManager.GetString("MetadataValidator1", resourceCulture);
+                return ResourceManager.GetString("MetadataValidator_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A validator that specialized in metadata..
+        /// </summary>
+        public static string MetadataValidatorPlugin_Description {
+            get {
+                return ResourceManager.GetString("MetadataValidatorPlugin_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata Validator..
+        /// </summary>
+        public static string MetadataValidatorPlugin_Name {
+            get {
+                return ResourceManager.GetString("MetadataValidatorPlugin_Name", resourceCulture);
             }
         }
         
@@ -264,24 +282,6 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string UnspecifiedError {
             get {
                 return ResourceManager.GetString("UnspecifiedError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Validate publication metadata.
-        /// </summary>
-        public static string ValidatePublicationMetadata {
-            get {
-                return ResourceManager.GetString("ValidatePublicationMetadata", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A validator that specialized in metadata..
-        /// </summary>
-        public static string ValidatorSpecializingInMetadata {
-            get {
-                return ResourceManager.GetString("ValidatorSpecializingInMetadata", resourceCulture);
             }
         }
     }

@@ -76,7 +76,7 @@
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>  <!-- TODO LOCALIZE MissingRequiredItem -->
       <TextBlock Margin="0,0,0,5">
         <TextBlock.Text>
-          <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" Path="Definition.Name"/>   
+          <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" Path="Definition.Name"/>   <!-- TODO LOCALIZE EntryNotFound-->
         </TextBlock.Text>
       </TextBlock>
         <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
