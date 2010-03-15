@@ -120,10 +120,10 @@
   <data name="ApplicationToolbar" xml:space="preserve">
     <value>Application toolbar.</value>
   </data>
-  <data name="TheVisualHostForCommandButtons" xml:space="preserve">
-    <value>The visual host for command buttons.</value>
-  </data>
   <data name="Toolbar_Focus" xml:space="preserve">
     <value>Toolbar focus</value>
+  </data>
+  <data name="VisualHostForCommandButtons" xml:space="preserve">
+    <value>The visual host for command buttons.</value>
   </data>
 </root>

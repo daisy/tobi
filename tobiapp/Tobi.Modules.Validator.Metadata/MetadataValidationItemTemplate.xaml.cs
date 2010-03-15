@@ -77,7 +77,7 @@ namespace Tobi.Plugin.Validator.Metadata
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool isRepeatable = (bool)value;
-            return isRepeatable ? "May be repeated" : "May not be repeated";
+            return isRepeatable ? Tobi_Plugin_Validator_Metadata_Lang.MetadataMayBeRepeated : Tobi_Plugin_Validator_Metadata_Lang.MetadataMayNotBeRepeated; // TODO LOCALIZE MetadataMayBeRepeated, MetadataMayNotBeRepeated
         }
     }
 

@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AValidatorThatSpecializedInMetadata" xml:space="preserve">
-    <value>A validator that specialized in metadata.</value>
-  </data>
   <data name="Date" xml:space="preserve">
     <value>formatted as YYYY-MM-DD, YYYY-MM, or YYYY</value>
   </data>
   <data name="DefNameMustBeHint" xml:space="preserve">
     <value>{0} must be {1}.</value>
+  </data>
+  <data name="DuplicateItemsSelected" xml:space="preserve">
+    <value>Metadata error: duplicate items detected</value>
   </data>
   <data name="DuplicateNotAllowed" xml:space="preserve">
     <value>Duplicate of {0} not allowed.</value>
@@ -132,17 +132,44 @@
   <data name="Empty" xml:space="preserve">
     <value>"[EMPTY]"</value>
   </data>
+  <data name="EntryNotFound" xml:space="preserve">
+    <value>An entry for {0} was not found</value>
+  </data>
+  <data name="GeneralError" xml:space="preserve">
+    <value>Metadata error: general error</value>
+  </data>
+  <data name="InvalidFormatting" xml:space="preserve">
+    <value>Metadata error: invalid formatting</value>
+  </data>
+  <data name="InvalidValue" xml:space="preserve">
+    <value>The value for the item is invalid:</value>
+  </data>
+  <data name="MetadataFormatError_Hint" xml:space="preserve">
+    <value>Hint: {0} must be {1}</value>
+  </data>
+  <data name="MetadataMayBeRepeated" xml:space="preserve">
+    <value>May be repeated</value>
+  </data>
+  <data name="MetadataMayNotBeRepeated" xml:space="preserve">
+    <value>May not be repeated</value>
+  </data>
   <data name="MetadataValidator" xml:space="preserve">
     <value>Metadata Validator.</value>
   </data>
-  <data name="MetadataValidator_Key" xml:space="preserve">
+  <data name="MetadataValidator1" xml:space="preserve">
     <value>MetadataValidator</value>
   </data>
   <data name="Missing" xml:space="preserve">
     <value>Missing {0}</value>
   </data>
+  <data name="MissingRequiredItem" xml:space="preserve">
+    <value>Metadata error: missing a required item</value>
+  </data>
   <data name="NonEmpty" xml:space="preserve">
     <value>non-empty</value>
+  </data>
+  <data name="NotMoreThanOneInstance" xml:space="preserve">
+    <value>This metadata field cannot have more than one instance.</value>
   </data>
   <data name="NumVal" xml:space="preserve">
     <value>a numeric value</value>
@@ -155,5 +182,8 @@
   </data>
   <data name="ValidatePublicationMetadata" xml:space="preserve">
     <value>Validate publication metadata</value>
+  </data>
+  <data name="ValidatorSpecializingInMetadata" xml:space="preserve">
+    <value>A validator that specialized in metadata.</value>
   </data>
 </root>
