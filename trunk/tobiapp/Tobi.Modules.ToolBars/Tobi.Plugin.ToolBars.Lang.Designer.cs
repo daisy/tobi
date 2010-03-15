@@ -61,15 +61,6 @@ namespace Tobi.Plugin.ToolBars {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application toolbar..
-        /// </summary>
-        public static string ApplicationToolbar {
-            get {
-                return ResourceManager.GetString("ApplicationToolbar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Toolbar focus.
         /// </summary>
         public static string Toolbar_Focus {
@@ -81,9 +72,18 @@ namespace Tobi.Plugin.ToolBars {
         /// <summary>
         ///   Looks up a localized string similar to The visual host for command buttons..
         /// </summary>
-        public static string VisualHostForCommandButtons {
+        public static string ToolbarsPlugin_Description {
             get {
-                return ResourceManager.GetString("VisualHostForCommandButtons", resourceCulture);
+                return ResourceManager.GetString("ToolbarsPlugin_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application toolbar..
+        /// </summary>
+        public static string ToolbarsPlugin_Name {
+            get {
+                return ResourceManager.GetString("ToolbarsPlugin_Name", resourceCulture);
             }
         }
     }
