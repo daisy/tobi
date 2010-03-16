@@ -473,7 +473,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
-            string audioInfo = treeNode.GetAudioMedia () != null || treeNode.GetFirstAncestorWithManagedAudio () != null ? "" : " No Audio "; // to do localize
+            string audioInfo = treeNode.GetAudioMedia () != null || treeNode.GetFirstAncestorWithManagedAudio () != null ? "" : Tobi_Plugin_StructureTrailPane_Lang.NoAudio; // TODO LOCALIZE NoAudio
             var qName = treeNode.GetXmlElementQName();
             string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)) + treeNode.GetTextMediaFlattened() ;
             if (str.Length > 100)

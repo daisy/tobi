@@ -117,19 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AggregatorValidator" xml:space="preserve">
-    <value>Aggregator Validator</value>
-  </data>
-  <data name="FrameworkToValidateDataModelofSDK" xml:space="preserve">
-    <value>A framework to validate the data model of an authored Urakawa SDK project.</value>
-  </data>
-  <data name="MainContentValidator" xml:space="preserve">
-    <value>This is the main content validator</value>
-  </data>
-  <data name="PublicationValidator" xml:space="preserve">
-    <value>Publication Validator.</value>
+  <data name="BindingMsg" xml:space="preserve">
+    <value>Binding Message</value>
   </data>
   <data name="ValidationCheck" xml:space="preserve">
     <value>Validation Check</value>
+  </data>
+  <data name="ValidatorPlugin_Description" xml:space="preserve">
+    <value>A framework to validate the data model of an authored Urakawa SDK project.</value>
+  </data>
+  <data name="ValidatorPlugin_Name" xml:space="preserve">
+    <value>Publication Validator.</value>
+  </data>
+  <data name="Validator_Description" xml:space="preserve">
+    <value>This is the main content validator</value>
+  </data>
+  <data name="Validator_Name" xml:space="preserve">
+    <value>Aggregator Validator</value>
   </data>
 </root>

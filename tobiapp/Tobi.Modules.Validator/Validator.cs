@@ -85,12 +85,12 @@ namespace Tobi.Plugin.Validator
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Lang.AggregatorValidator; }    // TODO LOCALIZE AggregatorValidator
+            get { return Tobi_Plugin_Validator_Lang.Validator_Name; }    // TODO LOCALIZE Validator_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Lang.MainContentValidator; }    // TODO LOCALIZE MainContentValidator
+            get { return Tobi_Plugin_Validator_Lang.Validator_Description; }    // TODO LOCALIZE Validator_Description
         }
 
         public override IEnumerable<ValidationItem> ValidationItems
