@@ -165,24 +165,33 @@ namespace Tobi.Plugin.AudioPane
 
         private AudioRecorder m_Recorder;
 
+        private List<InputDevice> m_InputDevices;
         public List<InputDevice> InputDevices
         {
             get
             {
-                return m_Recorder.InputDevices;
+
+                m_InputDevices = m_Recorder.InputDevices;
+                return m_InputDevices;
             }
         }
         public InputDevice InputDevice
         {
             get
             {
+                if (m_InputDevices != null)
+                    foreach (var inputDevice in m_InputDevices)
+                    {
+                        if (inputDevice.Name == m_Recorder.InputDevice.Name)
+                            return inputDevice;
+                    }
                 return m_Recorder.InputDevice;
             }
             set
             {
-                if (m_Recorder.CurrentState == AudioRecorder.State.Stopped && value != null && m_Recorder.InputDevice != value)
+                if (value != null && m_Recorder.InputDevice != value)
                 {
-                    m_Recorder.InputDevice = value;
+                    Settings.Default.Audio_InputDevice = value.Name;
                 }
             }
         }
@@ -235,7 +244,7 @@ namespace Tobi.Plugin.AudioPane
             {
 
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                  (Action<object, AudioRecorder.StateChangedEventArgs>) OnStateChanged_Recorder_, sender,
+                                  (Action<object, AudioRecorder.StateChangedEventArgs>)OnStateChanged_Recorder_, sender,
                                   e);
                 return;
             }
@@ -245,7 +254,7 @@ namespace Tobi.Plugin.AudioPane
         private void OnStateChanged_Recorder_(object sender, AudioRecorder.StateChangedEventArgs e)
         {
 
-        //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnStateChanged_Recorder", Category.Debug, Priority.Medium);
 
             CommandManager.InvalidateRequerySuggested();
 

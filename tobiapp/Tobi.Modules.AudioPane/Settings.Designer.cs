@@ -202,5 +202,29 @@ namespace Tobi.Plugin.AudioPane {
                 this["AudioWaveForm_Color_TimeText"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string Audio_OutputDevice {
+            get {
+                return ((string)(this["Audio_OutputDevice"]));
+            }
+            set {
+                this["Audio_OutputDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string Audio_InputDevice {
+            get {
+                return ((string)(this["Audio_InputDevice"]));
+            }
+            set {
+                this["Audio_InputDevice"] = value;
+            }
+        }
     }
 }
