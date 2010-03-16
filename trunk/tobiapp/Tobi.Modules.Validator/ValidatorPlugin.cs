@@ -99,12 +99,12 @@ namespace Tobi.Plugin.Validator
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Lang.PublicationValidator; }    // TODO LOCALIZE PublicationValidator
+            get { return Tobi_Plugin_Validator_Lang.ValidatorPlugin_Name; }    // TODO LOCALIZE ValidatorPlugin_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Lang.FrameworkToValidateDataModelofSDK; }    // TODO LOCALIZE  FrameworkToValidateDataModelofSDK
+            get { return Tobi_Plugin_Validator_Lang.ValidatorPlugin_Description; }    // TODO LOCALIZE  ValidatorPlugin_Description
         }
 
         private bool m_DialogIsShowing;

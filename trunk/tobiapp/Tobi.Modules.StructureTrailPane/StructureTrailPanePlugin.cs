@@ -96,12 +96,12 @@ namespace Tobi.Plugin.StructureTrailPane
 
         public override string Name
         {
-            get { return Tobi_Plugin_StructureTrailPane_Lang.DocumentPane; }    // TODO LOCALIZE DocumentPane
+            get { return Tobi_Plugin_StructureTrailPane_Lang.StructureTrailPanePlugin_Name; }    // TODO LOCALIZE StructureTrailPanePlugin_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_StructureTrailPane_Lang.ThePublicationDocumentViewer; }    // TODO LOCALIZE ThePublicationDocumentViewer
+            get { return Tobi_Plugin_StructureTrailPane_Lang.StructureTrailPanePlugin_Description; }    // TODO LOCALIZE StructureTrailPanePlugin_Description
         }
     }
 }

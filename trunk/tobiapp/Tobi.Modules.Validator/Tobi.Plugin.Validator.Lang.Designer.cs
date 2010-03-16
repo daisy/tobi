@@ -61,38 +61,11 @@ namespace Tobi.Plugin.Validator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aggregator Validator.
+        ///   Looks up a localized string similar to Binding Message.
         /// </summary>
-        public static string AggregatorValidator {
+        public static string BindingMsg {
             get {
-                return ResourceManager.GetString("AggregatorValidator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A framework to validate the data model of an authored Urakawa SDK project..
-        /// </summary>
-        public static string FrameworkToValidateDataModelofSDK {
-            get {
-                return ResourceManager.GetString("FrameworkToValidateDataModelofSDK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is the main content validator.
-        /// </summary>
-        public static string MainContentValidator {
-            get {
-                return ResourceManager.GetString("MainContentValidator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Publication Validator..
-        /// </summary>
-        public static string PublicationValidator {
-            get {
-                return ResourceManager.GetString("PublicationValidator", resourceCulture);
+                return ResourceManager.GetString("BindingMsg", resourceCulture);
             }
         }
         
@@ -102,6 +75,42 @@ namespace Tobi.Plugin.Validator {
         public static string ValidationCheck {
             get {
                 return ResourceManager.GetString("ValidationCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the main content validator.
+        /// </summary>
+        public static string Validator_Description {
+            get {
+                return ResourceManager.GetString("Validator_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aggregator Validator.
+        /// </summary>
+        public static string Validator_Name {
+            get {
+                return ResourceManager.GetString("Validator_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A framework to validate the data model of an authored Urakawa SDK project..
+        /// </summary>
+        public static string ValidatorPlugin_Description {
+            get {
+                return ResourceManager.GetString("ValidatorPlugin_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publication Validator..
+        /// </summary>
+        public static string ValidatorPlugin_Name {
+            get {
+                return ResourceManager.GetString("ValidatorPlugin_Name", resourceCulture);
             }
         }
     }

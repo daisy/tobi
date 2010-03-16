@@ -120,11 +120,11 @@
   <data name="Audio" xml:space="preserve">
     <value>Audio.</value>
   </data>
-  <data name="DocumentPane" xml:space="preserve">
-    <value>Document pane.</value>
-  </data>
   <data name="Document_Focus" xml:space="preserve">
     <value>Document pane focus</value>
+  </data>
+  <data name="NoAudio" xml:space="preserve">
+    <value>No Audio</value>
   </data>
   <data name="NoXML" xml:space="preserve">
     <value>[No XML].</value>
@@ -138,8 +138,11 @@
   <data name="Selected" xml:space="preserve">
     <value>, Selected.</value>
   </data>
-  <data name="ThePublicationDocumentViewer" xml:space="preserve">
+  <data name="StructureTrailPanePlugin_Description" xml:space="preserve">
     <value>The publication document viewer</value>
+  </data>
+  <data name="StructureTrailPanePlugin_Name" xml:space="preserve">
+    <value>Document pane.</value>
   </data>
   <data name="XMLChildren" xml:space="preserve">
     <value>XML Children.</value>
