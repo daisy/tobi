@@ -59,17 +59,17 @@
 
   <DataTemplate x:Key="ContentDocumentMissingDtdTemplate">
     <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Missing DTD"/>
-      <TextBlock Text="Tobi could not locate a DTD, so it cannot validate the document."/>
-      <TextBlock Text="The DTD identifier associated with this document:"/>
-      <TextBlock Text="{Binding DtdIdentifier}"/>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>  <!-- TODO LOCALIZE MissingDTD Key already added-->
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>   <!-- TODO LOCALIZE CannotValidateDoc-->
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>  <!-- TODO LOCALIZE DTDIdentifier-->
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.BindingDtdIdentifier}"/>  <!-- TODO LOCALIZE BindingDtdIdentifier-->
    </StackPanel>
   </DataTemplate>
 
   <DataTemplate x:Key="ContentDocumentUndefinedElementTemplate">
     <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Undefined element"/>
-      <TextBlock Text="An element definition was not found for:"/>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>   <!-- TODO LOCALIZE UndefinedElement key already added-->
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
                           Content="{Binding Target}" /> 
     </StackPanel>
@@ -77,12 +77,12 @@
 
   <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplate">
     <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Invalid element sequence"/>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
       <TextBlock TextWrapping="Wrap">
         <TextBlock.Text>
           <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>
+                   Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
         </TextBlock.Text>
       </TextBlock>
       
@@ -99,7 +99,7 @@
         <TextBlock.Text>
           <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:" 
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>
+                   Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE -->
         </TextBlock.Text>
       </TextBlock>
 
@@ -110,11 +110,11 @@
   </DataTemplate>
   <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplateOld">
     <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="Invalid element sequence"/>
-      <TextBlock Text="This element contain an invalid sequence of child elements:"/>
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence Key alredy added-->
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidChildElements}"/>  <!-- TODO LOCALIZE InvalidChildElements -->
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
                           Content="{Binding Target}" />
-      <TextBlock Text="Additionally, the error begins with this child element:">
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidChildElements_AdditionalMsg}">  <!-- TODO LOCALIZE InvalidChildElements_AdditionalMsg -->
         <TextBlock.Visibility>
           <Binding Path="BeginningOfError" Converter="{ContentDocument:NodeToVisibilityConverter}"/>
         </TextBlock.Visibility>
@@ -129,7 +129,7 @@
   </DataTemplate>
 
   <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
-      <TextBlock Text="{Binding Message}"/>
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.BindingMsg}"/>  <!-- TODO LOCALIZE BindingMsg-->
   </DataTemplate>
   
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">

@@ -61,20 +61,74 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content Document Validator..
+        ///   Looks up a localized string similar to Binding DtdIdentifier.
         /// </summary>
-        public static string ContentDocumentValidator {
+        public static string BindingDtdIdentifier {
             get {
-                return ResourceManager.GetString("ContentDocumentValidator", resourceCulture);
+                return ResourceManager.GetString("BindingDtdIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Binding Message.
+        /// </summary>
+        public static string BindingMsg {
+            get {
+                return ResourceManager.GetString("BindingMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tobi could not locate a DTD, so it cannot validate the document..
+        /// </summary>
+        public static string CannotValidateDoc {
+            get {
+                return ResourceManager.GetString("CannotValidateDoc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A validator that uses data from a DTD to validate elements in a document tree..
+        /// </summary>
+        public static string ContentDocumentValidator_Description {
+            get {
+                return ResourceManager.GetString("ContentDocumentValidator_Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Content Document Validator.
         /// </summary>
-        public static string ContentDocumentValidator_Key {
+        public static string ContentDocumentValidator_Name {
             get {
-                return ResourceManager.GetString("ContentDocumentValidator_Key", resourceCulture);
+                return ResourceManager.GetString("ContentDocumentValidator_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A validator that uses data from a DTD to validate elements in a document tree..
+        /// </summary>
+        public static string ContentDocumentValidatorPlugin_Description {
+            get {
+                return ResourceManager.GetString("ContentDocumentValidatorPlugin_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content Document Validator..
+        /// </summary>
+        public static string ContentDocumentValidatorPlugin_Name {
+            get {
+                return ResourceManager.GetString("ContentDocumentValidatorPlugin_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An element definition was not found for:.
+        /// </summary>
+        public static string DefinitionNotFound {
+            get {
+                return ResourceManager.GetString("DefinitionNotFound", resourceCulture);
             }
         }
         
@@ -88,11 +142,47 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The DTD identifier associated with this document:.
+        /// </summary>
+        public static string DTDIdentifier {
+            get {
+                return ResourceManager.GetString("DTDIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General document error.
         /// </summary>
         public static string GeneralDocumentError {
             get {
                 return ResourceManager.GetString("GeneralDocumentError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This element contain an invalid sequence of child elements:.
+        /// </summary>
+        public static string InvalidChildElements {
+            get {
+                return ResourceManager.GetString("InvalidChildElements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additionally, the error begins with this child element:.
+        /// </summary>
+        public static string InvalidChildElements_AdditionalMsg {
+            get {
+                return ResourceManager.GetString("InvalidChildElements_AdditionalMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid element sequence.
+        /// </summary>
+        public static string InvalidElementSequence {
+            get {
+                return ResourceManager.GetString("InvalidElementSequence", resourceCulture);
             }
         }
         
@@ -156,15 +246,6 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         public static string UnspecifiedError {
             get {
                 return ResourceManager.GetString("UnspecifiedError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A validator that uses data from a DTD to validate elements in a document tree..
-        /// </summary>
-        public static string ValidatorToValidateElementsInADocumentTree {
-            get {
-                return ResourceManager.GetString("ValidatorToValidateElementsInADocumentTree", resourceCulture);
             }
         }
     }
