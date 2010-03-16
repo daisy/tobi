@@ -117,13 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationPreferences" xml:space="preserve">
-    <value>Application preferences.</value>
-  </data>
-  <data name="ApplicationPreferences_Key" xml:space="preserve">
+  <data name="CmdFocus_ApplicationPref" xml:space="preserve">
     <value>Application preferences</value>
   </data>
-  <data name="DisplayAnEditor" xml:space="preserve">
+  <data name="CmdFocus_DisplayEditor" xml:space="preserve">
     <value>Display an editor for application preferences</value>
   </data>
   <data name="InvalidKeyboardShortcut" xml:space="preserve">
@@ -131,9 +128,6 @@
   </data>
   <data name="InvalidNumericValue" xml:space="preserve">
     <value>Invalid numeric value.</value>
-  </data>
-  <data name="ManagerAndUIEditorForAppPref" xml:space="preserve">
-    <value>A manager and user-interface editor for application preferences.</value>
   </data>
   <data name="NumericValueOutOfRange" xml:space="preserve">
     <value>Numeric value is out of range [0, 9999].</value>
@@ -146,6 +140,12 @@
   </data>
   <data name="Preferences_" xml:space="preserve">
     <value>Application configurable options</value>
+  </data>
+  <data name="SettingsPlugin_Description" xml:space="preserve">
+    <value>A manager and user-interface editor for application preferences.</value>
+  </data>
+  <data name="SettingsPlugin_Name" xml:space="preserve">
+    <value>Application preferences.</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>Shortcut already used by: {0}</value>
