@@ -58,12 +58,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Key; }       // TODO LOCALIZE ContentDocumentValidator_Key
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Name; }       // TODO LOCALIZE ContentDocumentValidator_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ValidatorToValidateElementsInADocumentTree; }     // TODO LOCALIZE Key already added ValidatorToValidateElementsInADocumentTree
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Description; }     // TODO LOCALIZE ContentDocumentValidator_Description
         }
 
         public override bool ShouldRunOnlyOnce

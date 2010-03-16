@@ -117,17 +117,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ContentDocumentValidator" xml:space="preserve">
+  <data name="BindingDtdIdentifier" xml:space="preserve">
+    <value>Binding DtdIdentifier</value>
+  </data>
+  <data name="BindingMsg" xml:space="preserve">
+    <value>Binding Message</value>
+  </data>
+  <data name="CannotValidateDoc" xml:space="preserve">
+    <value>Tobi could not locate a DTD, so it cannot validate the document.</value>
+  </data>
+  <data name="ContentDocumentValidatorPlugin_Description" xml:space="preserve">
+    <value>A validator that uses data from a DTD to validate elements in a document tree.</value>
+  </data>
+  <data name="ContentDocumentValidatorPlugin_Name" xml:space="preserve">
     <value>Content Document Validator.</value>
   </data>
-  <data name="ContentDocumentValidator_Key" xml:space="preserve">
+  <data name="ContentDocumentValidator_Description" xml:space="preserve">
+    <value>A validator that uses data from a DTD to validate elements in a document tree.</value>
+  </data>
+  <data name="ContentDocumentValidator_Name" xml:space="preserve">
     <value>Content Document Validator</value>
+  </data>
+  <data name="DefinitionNotFound" xml:space="preserve">
+    <value>An element definition was not found for:</value>
   </data>
   <data name="DocStructureError" xml:space="preserve">
     <value>Document structure error</value>
   </data>
+  <data name="DTDIdentifier" xml:space="preserve">
+    <value>The DTD identifier associated with this document:</value>
+  </data>
   <data name="GeneralDocumentError" xml:space="preserve">
     <value>General document error</value>
+  </data>
+  <data name="InvalidChildElements" xml:space="preserve">
+    <value>This element contain an invalid sequence of child elements:</value>
+  </data>
+  <data name="InvalidChildElements_AdditionalMsg" xml:space="preserve">
+    <value>Additionally, the error begins with this child element:</value>
+  </data>
+  <data name="InvalidElementSequence" xml:space="preserve">
+    <value>Invalid element sequence</value>
   </data>
   <data name="InvalidSequence" xml:space="preserve">
     <value>Element {0} contains an invalid sequence of child elements</value>
@@ -149,8 +179,5 @@
   </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error</value>
-  </data>
-  <data name="ValidatorToValidateElementsInADocumentTree" xml:space="preserve">
-    <value>A validator that uses data from a DTD to validate elements in a document tree.</value>
   </data>
 </root>

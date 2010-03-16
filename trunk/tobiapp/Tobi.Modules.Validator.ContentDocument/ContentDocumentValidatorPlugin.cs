@@ -31,12 +31,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator; }    // TODO LOCALIZE ContentDocumentValidator
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidatorPlugin_Name; }    // TODO LOCALIZE ContentDocumentValidatorPlugin_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ValidatorToValidateElementsInADocumentTree; }   // TODO LOCALIZE ValidatorToValidateElementsInADocumentTree
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidatorPlugin_Description; }   // TODO LOCALIZE ContentDocumentValidatorPlugin_Description
         }
     }
 }
