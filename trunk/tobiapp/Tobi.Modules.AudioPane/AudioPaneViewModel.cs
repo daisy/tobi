@@ -171,9 +171,42 @@ namespace Tobi.Plugin.AudioPane
 
         private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!e.PropertyName.StartsWith(@"AudioWaveForm_")) return;
+            if (!e.PropertyName.StartsWith(@"AudioWaveForm_")
+                && !e.PropertyName.StartsWith(@"Audio_")) return;
 
-            if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Resolution))
+            if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
+            {
+                if (m_Recorder.CurrentState == AudioRecorder.State.Stopped)
+                {
+                    m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
+
+                    if (m_Recorder.InputDevice.Name != Settings.Default.Audio_InputDevice)
+                        Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name;
+                    //Settings.Default.Save();
+                }
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_OutputDevice))
+            {
+                double time = -1;
+                if (m_Player.CurrentState == AudioPlayer.State.Playing)
+                {
+                    time = m_Player.CurrentTime;
+                    AudioPlayer_Stop();
+                }
+
+                m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
+                //m_Player.OutputDevice = value;
+
+                if (m_Player.OutputDevice.Name != Settings.Default.Audio_OutputDevice)
+                    Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name;
+                //Settings.Default.Save();
+
+                if (time >= 0 && State.Audio.HasContent)
+                {
+                    AudioPlayer_PlayFromTo(State.Audio.ConvertMillisecondsToBytes(time), -1);
+                }
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Resolution))
             {
                 WaveStepX = Settings.Default.AudioWaveForm_Resolution;
             }
@@ -329,14 +362,22 @@ namespace Tobi.Plugin.AudioPane
             Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
 
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
-            m_Player.SetOutputDevice(GetWindowsFormsHookControl(), @"fakename");
+
+            m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
+            Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name;
+            Settings.Default.Save();
+
             m_Player.StateChanged += OnStateChanged_Player;
             m_Player.AudioPlaybackFinished += OnAudioPlaybackFinished;
 
             //m_Player.ResetVuMeter += OnPlayerResetVuMeter;
 
             m_Recorder = new AudioRecorder();
-            m_Recorder.SetDevice(@"fakename");
+
+            m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
+            Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name;
+            Settings.Default.Save();
+
             m_Recorder.StateChanged += OnStateChanged_Recorder;
             m_Recorder.AudioRecordingFinished += OnAudioRecordingFinished;
             m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();

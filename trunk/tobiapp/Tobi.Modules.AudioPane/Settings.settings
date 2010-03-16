@@ -1,8 +1,6 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
+  <Profiles />
   <Settings>
     <Setting Name="AudioWaveForm_SkipDrawing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -48,6 +46,12 @@
     </Setting>
     <Setting Name="AudioWaveForm_Color_TimeText" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#ffffffff</Value>
+    </Setting>
+    <Setting Name="Audio_OutputDevice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Audio_InputDevice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
     </Setting>
   </Settings>
 </SettingsFile>

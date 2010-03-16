@@ -298,37 +298,32 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private List<OutputDevice> m_OutputDevices;
         public List<OutputDevice> OutputDevices
         {
             get
             {
-                return m_Player.OutputDevices;
+                m_OutputDevices = m_Player.OutputDevices;
+                return m_OutputDevices;
             }
         }
         public OutputDevice OutputDevice
         {
             get
             {
+                if (m_OutputDevices != null)
+                    foreach (var outputDevice in m_OutputDevices)
+                    {
+                        if (outputDevice.Name == m_Player.OutputDevice.Name)
+                            return outputDevice;
+                    }
                 return m_Player.OutputDevice;
             }
             set
             {
                 if (value != null && m_Player.OutputDevice != value)
                 {
-                    double time = -1;
-                    if (m_Player.CurrentState == AudioPlayer.State.Playing)
-                    {
-                        time = m_Player.CurrentTime;
-                        AudioPlayer_Stop();
-                    }
-
-                    m_Player.SetOutputDevice(GetWindowsFormsHookControl(), value);
-                    //m_Player.OutputDevice = value;
-
-                    if (time >= 0 && State.Audio.HasContent)
-                    {
-                        AudioPlayer_PlayFromTo(State.Audio.ConvertMillisecondsToBytes(time), -1);
-                    }
+                    Settings.Default.Audio_OutputDevice = value.Name;
                 }
             }
         }
