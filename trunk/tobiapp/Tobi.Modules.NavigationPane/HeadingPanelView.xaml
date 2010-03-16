@@ -4,11 +4,13 @@
                     xmlns:pres="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
                     xmlns:search="clr-namespace:Tobi.Plugin.NavigationPane.Search"
+           xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
+                     
 
 
   <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,2">
-    <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+    <TextBlock Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/> <!-- TODO LOCALIZE Find Key already added-->
     <UI:WatermarkTextBox  x:Name="SearchBox"
                                    TextChanged="OnSearchTextChanged"
                                    Watermark="search keywords"

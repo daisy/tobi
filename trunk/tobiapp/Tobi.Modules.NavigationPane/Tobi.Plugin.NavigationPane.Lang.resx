@@ -117,19 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Find" xml:space="preserve">
+    <value>Find:</value>
+  </data>
   <data name="HeadingEdit" xml:space="preserve">
     <value>Edit Heading</value>
   </data>
   <data name="HeadingEdit_" xml:space="preserve">
     <value>Please Enter The New Value For This Heading.</value>
   </data>
-  <data name="NavigationPane" xml:space="preserve">
+  <data name="HeadingNavigationPlugin_Description" xml:space="preserve">
+    <value>The Navigation panel</value>
+  </data>
+  <data name="HeadingNavigationPlugin_Name" xml:space="preserve">
     <value>Navigation pane.</value>
   </data>
-  <data name="NavigationPane1" xml:space="preserve">
-    <value>Navigation pane.</value>
+  <data name="NavigationPanePlugin_Description" xml:space="preserve">
+    <value>The Navigation panel</value>
   </data>
-  <data name="NavigationPane2" xml:space="preserve">
+  <data name="NavigationPanePlugin_Name" xml:space="preserve">
     <value>Navigation pane.</value>
   </data>
   <data name="Navigation_Focus" xml:space="preserve">
@@ -156,14 +162,11 @@
   <data name="PageFindPrev_FAILURE" xml:space="preserve">
     <value>No More Matches Found</value>
   </data>
-  <data name="TheNavigationPanel" xml:space="preserve">
+  <data name="PageNavigationPlugin_Description" xml:space="preserve">
     <value>The Navigation panel</value>
   </data>
-  <data name="TheNavigationPanel1" xml:space="preserve">
-    <value>The Navigation panel</value>
-  </data>
-  <data name="TheNavigationPanel2" xml:space="preserve">
-    <value>The Navigation panel</value>
+  <data name="PageNavigationPlugin_Name" xml:space="preserve">
+    <value>Navigation pane.</value>
   </data>
   <data name="TreeCollapse" xml:space="preserve">
     <value>Co_llapse</value>

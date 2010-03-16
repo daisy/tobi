@@ -61,29 +61,20 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application preferences..
-        /// </summary>
-        public static string ApplicationPreferences {
-            get {
-                return ResourceManager.GetString("ApplicationPreferences", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Application preferences.
         /// </summary>
-        public static string ApplicationPreferences_Key {
+        public static string CmdFocus_ApplicationPref {
             get {
-                return ResourceManager.GetString("ApplicationPreferences_Key", resourceCulture);
+                return ResourceManager.GetString("CmdFocus_ApplicationPref", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Display an editor for application preferences.
         /// </summary>
-        public static string DisplayAnEditor {
+        public static string CmdFocus_DisplayEditor {
             get {
-                return ResourceManager.GetString("DisplayAnEditor", resourceCulture);
+                return ResourceManager.GetString("CmdFocus_DisplayEditor", resourceCulture);
             }
         }
         
@@ -102,15 +93,6 @@ namespace Tobi.Plugin.Settings {
         public static string InvalidNumericValue {
             get {
                 return ResourceManager.GetString("InvalidNumericValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A manager and user-interface editor for application preferences..
-        /// </summary>
-        public static string ManagerAndUIEditorForAppPref {
-            get {
-                return ResourceManager.GetString("ManagerAndUIEditorForAppPref", resourceCulture);
             }
         }
         
@@ -147,6 +129,24 @@ namespace Tobi.Plugin.Settings {
         public static string Preferences_ {
             get {
                 return ResourceManager.GetString("Preferences_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A manager and user-interface editor for application preferences..
+        /// </summary>
+        public static string SettingsPlugin_Description {
+            get {
+                return ResourceManager.GetString("SettingsPlugin_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application preferences..
+        /// </summary>
+        public static string SettingsPlugin_Name {
+            get {
+                return ResourceManager.GetString("SettingsPlugin_Name", resourceCulture);
             }
         }
         
