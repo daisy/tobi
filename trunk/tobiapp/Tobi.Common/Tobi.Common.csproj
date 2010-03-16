@@ -156,7 +156,6 @@
       <DependentUpon>Tobi.Common.Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="TreeNodeSelectedEvent.cs" />
-    <Compile Include="TypeConstructedEvent.cs" />
     <Compile Include="UI\AutoGreyableImage.cs" />
     <Compile Include="UI\AutoPopulateNamedViews.cs" />
     <Compile Include="UI\BindingErrorAdornerTraceListener.cs" />

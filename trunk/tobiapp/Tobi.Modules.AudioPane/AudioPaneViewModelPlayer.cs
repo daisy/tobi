@@ -899,16 +899,22 @@ namespace Tobi.Plugin.AudioPane
             if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
             {
                 m_Player.Stop();
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                }
+            }
+
+            if (View != null)
+            {
+                View.CancelWaveFormLoad(true);
+            }
+
+            if (AudioPlaybackStreamKeepAlive)
+            {
+                ensurePlaybackStreamIsDead();
             }
 
             State.ResetAll();
 
             m_LastPlayHeadTime = 0;
-            IsWaveFormLoading = false;
+            //IsWaveFormLoading = false;
 
             State.FilePath = path;
 
@@ -919,7 +925,7 @@ namespace Tobi.Plugin.AudioPane
                 State.ResetAll();
 
                 m_LastPlayHeadTime = -1;
-                IsWaveFormLoading = false;
+                //IsWaveFormLoading = false;
                 return;
             }
 
