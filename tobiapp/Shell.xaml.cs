@@ -1085,9 +1085,9 @@ namespace Tobi
         }
 
         // DoEvent() equivalent
-        public void PumpDispatcherFrames()
+        public void PumpDispatcherFrames(DispatcherPriority prio)
         {
-            this.DoEvents(); // See DispatcherObjectExtensions
+            this.DoEvents(prio); // See DispatcherObjectExtensions
         }
     }
 }

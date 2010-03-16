@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.data;
 
@@ -18,9 +19,16 @@ namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneView
     {
-        private BackgroundWorker m_BackgroundLoader;
-
         private bool m_CancelInterruptDrawingToo;
+        private bool m_CancelRequested;
+
+        private Thread m_LoadThread;
+
+        //private static ManualResetEvent m_ManualResetEvent = new ManualResetEvent(true); // CANCEL does not wait by default (the event is signaled)
+        //private BackgroundWorker m_BackgroundLoader;
+        //private ReaderWriterLockSlim m_CancelLock = new ReaderWriterLockSlim();
+        //private object m_CancelLock = new object();
+        //private DispatcherFrame m_CancelDispatcherFrame;
 
         public void CancelWaveFormLoad(bool interruptDrawingToo)
         {
@@ -33,19 +41,72 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            if (!m_ViewModel.IsWaveFormLoading) return;
-            if (m_BackgroundLoader == null) return;
-            if (!m_BackgroundLoader.IsBusy) return;
+            if (m_LoadThread == null) return;
+
+            if (!m_LoadThread.IsAlive)
+            {
+                m_LoadThread = null;
+                m_CancelRequested = false;
+
+                int index_ = 0;
+                while (m_ViewModel.IsWaveFormLoading)
+                {
+                    //Console.WriteLine(@"..............CANCEL IsWaveFormLoading ZZ: " + index_++);
+
+                    m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
+                }
+
+                CommandManager.InvalidateRequerySuggested();
+                return;
+            }
 
             m_CancelInterruptDrawingToo = interruptDrawingToo;
-            m_BackgroundLoader.CancelAsync();
+            m_CancelRequested = true;
 
-            long index = 0;
-            while (m_BackgroundLoader != null || m_ViewModel.IsWaveFormLoading)
+            m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
+            //Thread.Sleep(20);
+
+            int index = 0;
+            while (m_LoadThread.IsAlive)
             {
-                Thread.Sleep(100);
-                Console.WriteLine(@"..............m_BackgroundLoader WAIT: " + index++);
-                m_ShellView.PumpDispatcherFrames(); // make sure we don't block the UI thread
+                //Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100): " + index++);
+                Thread.Sleep(20);
+
+                if (m_LoadThread.Join(100))
+                {
+                    //Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100) OK: " + index++);
+                    break;
+                }
+
+                m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
+
+                if (index++ == 3)
+                {
+                    //Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100) ABORT !: " + index++);
+                    m_LoadThread.Abort();
+                    break;
+                }
+            }
+
+            index = 0;
+            while (m_LoadThread.IsAlive)
+            {
+                //Console.WriteLine(@"..............CANCEL m_LoadThread.IsAlive: " + index++);
+
+                m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
+                //Thread.Sleep(20);
+            }
+
+            m_LoadThread = null;
+            m_CancelRequested = false;
+
+            index = 0;
+            while (m_ViewModel.IsWaveFormLoading)
+            {
+                //Console.WriteLine(@"..............CANCEL IsWaveFormLoading: " + index++);
+
+                m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
+                //Thread.Sleep(20);
             }
 
             CommandManager.InvalidateRequerySuggested();
@@ -67,8 +128,6 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
         {
-            m_CancelInterruptDrawingToo = false;
-
             ShowHideWaveFormLoadingMessage(true);
 
             if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels == 1)
@@ -98,25 +157,28 @@ namespace Tobi.Plugin.AudioPane
             if (Settings.Default.AudioWaveForm_SkipDrawing)
             {
                 m_ViewModel.IsWaveFormLoading = false;
-                m_BackgroundLoader = null;
+                //m_BackgroundLoader = null;
+
+                CommandManager.InvalidateRequerySuggested();
 
                 ShowHideWaveFormLoadingMessage(false);
-
-                m_ViewModel.IsWaveFormLoading = false;
 
                 m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
 
                 return;
             }
 
-            var zoom = (m_ShellView != null ? m_ShellView.MagnificationLevel : (Double)FindResource("MagnificationLevel"));
+            var zoom = (m_ShellView != null
+                            ? m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
 
             double widthMagnified = widthReal * zoom;
             double heightMagnified = heightReal * zoom;
 
             double bytesPerPixel_Magnified = m_ViewModel.State.Audio.DataLength / widthMagnified;
 
-            int byteDepth = m_ViewModel.State.Audio.PcmFormat.Data.BitDepth / 8; //bytes per sample (data for one channel only)
+            int byteDepth = m_ViewModel.State.Audio.PcmFormat.Data.BitDepth / 8;
+            //bytes per sample (data for one channel only)
 
             var samplesPerStep = (int)Math.Floor((bytesPerPixel_Magnified * m_ViewModel.WaveStepX) / byteDepth);
             samplesPerStep += (samplesPerStep % m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
@@ -125,88 +187,94 @@ namespace Tobi.Plugin.AudioPane
 
             var estimatedCapacity = (int)(widthMagnified / (bytesPerStep / bytesPerPixel_Magnified)) + 1;
 
-            if (true) //estimatedCapacity * m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 101) //501
+            //estimatedCapacity * m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 101) //501
+            //if (true)
+            //{
+            bool vertical = WaveFormProgress.Orientation == Orientation.Vertical;
+            double sizeProgress = (vertical ? WaveFormScroll.Height : WaveFormScroll.Width);
+            if (double.IsNaN(sizeProgress) || sizeProgress == 0)
             {
-                bool vertical = WaveFormProgress.Orientation == Orientation.Vertical;
-                double sizeProgress = (vertical ? WaveFormScroll.Height : WaveFormScroll.Width);
-                if (double.IsNaN(sizeProgress) || sizeProgress == 0)
-                {
-                    sizeProgress = (vertical ? WaveFormScroll.ActualHeight : WaveFormScroll.ActualWidth);
-                }
-
-                //WaveFormProgress.SmallChange = 100;
-
-                double numberOfVisibleXIncrements = sizeProgress / 20; // progressbar update will be triggered every 35 pixels, which will minimize the Dispatcher access while reading the audio bytes and therefore increase performance.
-                double progressStep = estimatedCapacity / numberOfVisibleXIncrements;
-
-                //WaveFormProgress.LargeChange = progressStep;
-                m_ProgressVisibleOffset = Math.Floor(progressStep);
-
-                WaveFormProgress.IsIndeterminate = false;
-                WaveFormProgress.Value = 0;
-                WaveFormProgress.Minimum = 0;
-                WaveFormProgress.Maximum = estimatedCapacity;
-
-                m_ViewModel.IsWaveFormLoading = true;
-
-                m_BackgroundLoader = new BackgroundWorker() { WorkerSupportsCancellation = true };
-                Exception workException = null;
-
-                // Executes on a separate thread
-                m_BackgroundLoader.DoWork += (sender, e) =>
-                                                 {
-#if DEBUG
-                                                     try
-                                                     {
-#endif
-                                                         loadWaveForm(widthMagnified, heightMagnified, wasPlaying,
-                                                                      play, bytesPerPixel_Magnified);
-#if DEBUG
-                                                     }
-                                                     catch (Exception ex)
-                                                     {
-                                                         Debugger.Break();
-                                                         throw ex;
-                                                     }
-#endif
-                                                 };
-
-                // Executes on the thread that created the background worker (synchronization context)
-                // which is the WPF dispatcher and which has a message pump on its own
-                m_BackgroundLoader.RunWorkerCompleted += (sender, e) =>
-                {
-                    workException = e.Error;
-
-                    WaveFormProgress.IsIndeterminate = true;
-
-                    CommandManager.InvalidateRequerySuggested();
-
-                    if (workException != null)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                        throw workException;
-                    }
-                    m_BackgroundLoader = null;
-                };
-                m_BackgroundLoader.RunWorkerAsync();
+                sizeProgress = (vertical ? WaveFormScroll.ActualHeight : WaveFormScroll.ActualWidth);
             }
-            else
+
+            //WaveFormProgress.SmallChange = 100;
+
+            double numberOfVisibleXIncrements = sizeProgress / 20;
+            // progressbar update will be triggered every 35 pixels, which will minimize the Dispatcher access while reading the audio bytes and therefore increase performance.
+            double progressStep = estimatedCapacity / numberOfVisibleXIncrements;
+
+            //WaveFormProgress.LargeChange = progressStep;
+            m_ProgressVisibleOffset = Math.Floor(progressStep);
+
+            WaveFormProgress.IsIndeterminate = false;
+            WaveFormProgress.Value = 0;
+            WaveFormProgress.Minimum = 0;
+            WaveFormProgress.Maximum = estimatedCapacity;
+
+            ThreadStart threadDelegate = delegate()
+                                    {
+                                        try
+                                        {
+                                            loadWaveForm(widthMagnified, heightMagnified, wasPlaying,
+                                                     play, bytesPerPixel_Magnified);
+
+                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
+                                        }
+                                        catch (ThreadAbortException ex)
+                                        {
+                                            // cancelled brutally...let's get out of here !
+                                            //Console.WriteLine("CATCH ThreadAbortException");
+                                        }
+                                        catch (Exception ex)
+                                        {
+#if DEBUG
+                                            Debugger.Break();
+#endif
+                                            Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                                                ExceptionHandler.Handle(ex, false, m_ShellView)));
+                                        }
+                                        finally
+                                        {
+                                            //Console.WriteLine(@">>>> SEND BEFORE IsWaveFormLoading");
+
+                                            Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(() =>
+                                            {
+                                                //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
+                                                m_ViewModel.IsWaveFormLoading = false;
+                                            }));
+
+                                            //Console.WriteLine(@">>>> SEND AFTER IsWaveFormLoading");
+
+                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                            {
+                                                WaveFormProgress.IsIndeterminate = true;
+
+                                                ShowHideWaveFormLoadingMessage(false);
+
+                                                CommandManager.InvalidateRequerySuggested();
+                                            }));
+                                        }
+                                    };
+
+            if (m_LoadThread != null)
             {
-#if DEBUG
-                Debugger.Break();
-#endif
-                m_BackgroundLoader = null;
-
-                m_ViewModel.IsWaveFormLoading = true;
-
-                loadWaveForm(widthMagnified, heightMagnified, wasPlaying, play, bytesPerPixel_Magnified);
-
-                m_ViewModel.IsWaveFormLoading = false;
-
-                CommandManager.InvalidateRequerySuggested();
+                //Console.WriteLine(@"CANCELLING !!!!!!!");
+                CancelWaveFormLoad(true);
             }
+            Debug.Assert(m_LoadThread == null);
+
+            m_LoadThread = new Thread(threadDelegate);
+            m_LoadThread.Name = "Waveform Refresh Thread";
+            m_LoadThread.Priority = ThreadPriority.Normal;
+            m_LoadThread.IsBackground = true;
+            m_LoadThread.Start();
+            while (!m_LoadThread.IsAlive) ;
+                //Console.WriteLine(@"!m_LoadThread.IsAlive");
+
+
+            //Console.WriteLine(@"IsWaveFormLoading = true");
+            m_ViewModel.IsWaveFormLoading = true;
         }
 
 
@@ -252,7 +320,7 @@ namespace Tobi.Plugin.AudioPane
             double x = 0.5;
             const bool bJoinInterSamples = false;
 
-            if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) return;
+            if (m_CancelRequested) return;
 
             Stopwatch stopWatch = null;
 
@@ -261,7 +329,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 Stream audioStream = m_ViewModel.AudioPlayer_GetPlayStream();
 
-                if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+                if (m_CancelRequested) return;
 
                 audioStream.Position = 0;
                 audioStream.Seek(0, SeekOrigin.Begin);
@@ -323,7 +391,7 @@ namespace Tobi.Plugin.AudioPane
 
                 double sumProgress = 0;
 
-                if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+                if (m_CancelRequested) return;
 
                 stopWatch = Stopwatch.StartNew();
 
@@ -338,7 +406,7 @@ namespace Tobi.Plugin.AudioPane
                     Buffer.BlockCopy(bytes, 0, samples, 0, read);
 #endif //USE_BLOCK_COPY
 
-                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) break;
+                    if (m_CancelRequested) break;
 
                     for (int channel = 0; channel < m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels; channel++)
                     {
@@ -600,7 +668,7 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
                     }
-
+                    if (m_CancelRequested) break;
 
                     stopWatch.Stop();
                     if (stopWatch.ElapsedMilliseconds >= 1000)
@@ -615,6 +683,8 @@ namespace Tobi.Plugin.AudioPane
                     }
                     stopWatch.Start();
 
+                    if (m_CancelRequested) break;
+
                     if (!Dispatcher.CheckAccess())
                     {
                         sumProgress++;
@@ -622,8 +692,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             sumProgress = 0;
 
-                            //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                            DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                             {
                                 WaveFormProgress.Value += m_ProgressVisibleOffset;
                             }));
@@ -636,7 +705,7 @@ namespace Tobi.Plugin.AudioPane
                         break;
                     }
 
-                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending) break;
+                    if (m_CancelRequested) break;
                 }
 
 
@@ -646,14 +715,13 @@ namespace Tobi.Plugin.AudioPane
 
                 if (!Dispatcher.CheckAccess())
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
                         WaveFormProgress.IsIndeterminate = true;
                     }));
                 }
 
-                if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) return; // will execute the FINALLY block first 
+                if (m_CancelRequested && m_CancelInterruptDrawingToo) return;
 
                 drawWaveForm(audioStream, true,
                     sgcCh1, sgcCh2, geometryCh1, geometryCh2,
@@ -664,36 +732,13 @@ namespace Tobi.Plugin.AudioPane
             }
             finally
             {
-                m_ViewModel.IsWaveFormLoading = false;
-
                 if (stopWatch != null && stopWatch.IsRunning) stopWatch.Stop();
-
-                if (!Dispatcher.CheckAccess())
-                {
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => ShowHideWaveFormLoadingMessage(false)));
-
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(CommandManager.InvalidateRequerySuggested));
-
-                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                        (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
-                }
-                else
-                {
-                    ShowHideWaveFormLoadingMessage(false);
-
-                    m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
-
-                    CommandManager.InvalidateRequerySuggested();
-                }
             }
         }
 
         private void drawWaveForm(Stream audioStream, bool freeze, StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2, List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2, double heightMagnified, double widthMagnified, double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance, double bytesPerPixel_Magnified)
         {
-            Console.WriteLine(@"Drawing waveform...");
-
-            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+            //Console.WriteLine(@"Drawing waveform...1");
 
             DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(audioStream, freeze,
                 sgcCh1, sgcCh2, geometryCh1, geometryCh2,
@@ -701,19 +746,17 @@ namespace Tobi.Plugin.AudioPane
                 heightMagnified, widthMagnified,
                 dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified);
 
-            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-
-            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
-
-            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
+            //Console.WriteLine(@"Drawing waveform...2");
 
             var drawImg = new DrawingImage(drawGrp);
             drawImg.Freeze();
             m_WaveFormImageSourceDrawingImage = drawImg;
 
+
             if (freeze)
             {
+                //Console.WriteLine(@"Drawing waveform...freeze1");
+
                 var drawingVisual = new DrawingVisual();
                 using (DrawingContext context = drawingVisual.RenderOpen())
                 {
@@ -724,11 +767,14 @@ namespace Tobi.Plugin.AudioPane
                 renderBitmap.Render(drawingVisual);
                 renderBitmap.Freeze();
 
+                //Console.WriteLine(@"Drawing waveform...freeze2");
+
                 GC.Collect();
 
                 if (!Dispatcher.CheckAccess())
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
+                    //Console.WriteLine(@"Drawing waveform...freeze3");
+
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
                         WaveFormImage.Source = renderBitmap;
@@ -750,9 +796,10 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
+                //Console.WriteLine(@"Drawing waveform...NOT Freeze1");
+
                 if (!Dispatcher.CheckAccess())
                 {
-                    //Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(RefreshUI_WaveFormChunkMarkers));
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
                         WaveFormImage.Source = drawImg;
@@ -763,8 +810,6 @@ namespace Tobi.Plugin.AudioPane
                     WaveFormImage.Source = drawImg;
                 }
             }
-
-            //if (m_BackgroundLoader.CancellationPending) return; // will run the code in the "finally" statement
         }
 
 
@@ -801,7 +846,8 @@ namespace Tobi.Plugin.AudioPane
                     geoDraw2.Freeze();
                 }
             }
-            //if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+
+
             GeometryDrawing geoDraw1_envelope = null;
             GeometryDrawing geoDraw2_envelope = null;
             if (m_ViewModel.IsEnvelopeVisible)
@@ -816,7 +862,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 catch (OperationCanceledException ex)
                 {
-                    ;
+                    //Console.WriteLine("OperationCanceledException");
                 }
             }
             //
@@ -1159,7 +1205,7 @@ namespace Tobi.Plugin.AudioPane
                 var p2 = new Point();
                 foreach (Point p in listTopPointsCh1)
                 {
-                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+                    if (m_CancelRequested && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
 
                     index++;
 
@@ -1223,7 +1269,7 @@ namespace Tobi.Plugin.AudioPane
 
                     foreach (Point p in listTopPointsCh2)
                     {
-                        if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+                        if (m_CancelRequested && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                         index++;
 
                         p2.X = p.X;
@@ -1269,7 +1315,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 foreach (Point p in listTopPointsCh1)
                 {
-                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+                    if (m_CancelRequested && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                     pp.X = p.X;
                     pp.Y = p.Y;
 
@@ -1338,7 +1384,7 @@ namespace Tobi.Plugin.AudioPane
 
                     foreach (Point p in listTopPointsCh2)
                     {
-                        if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+                        if (m_CancelRequested && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                         pp.X = p.X;
                         pp.Y = p.Y;
 
@@ -1407,7 +1453,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 foreach (Point p in listTopPointsCh1)
                 {
-                    if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+                    if (m_CancelRequested && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                     pp.X = p.X;
                     pp.Y = p.Y;
 
@@ -1443,7 +1489,7 @@ namespace Tobi.Plugin.AudioPane
 
                     foreach (Point p in listTopPointsCh2)
                     {
-                        if (m_BackgroundLoader != null && m_BackgroundLoader.CancellationPending && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
+                        if (m_CancelRequested && m_CancelInterruptDrawingToo) throw new OperationCanceledException();
                         pp.X = p.X;
                         pp.Y = p.Y;
 

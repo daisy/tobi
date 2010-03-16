@@ -98,7 +98,7 @@ namespace Tobi.Plugin.AudioPane
                         State.ResetAll();
 
                         m_LastPlayHeadTime = -1;
-                        IsWaveFormLoading = false;
+                        //IsWaveFormLoading = false;
                         return null;
                     }
                 }
@@ -277,7 +277,7 @@ namespace Tobi.Plugin.AudioPane
             State.ResetAll();
 
             m_LastPlayHeadTime = -1;
-            IsWaveFormLoading = false;
+            //IsWaveFormLoading = false;
 
             //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
 
@@ -520,11 +520,6 @@ namespace Tobi.Plugin.AudioPane
             if (IsAudioLoadedWithSubTreeNodes
                 && oldTreeNodeSelection.Item2 != newTreeNodeSelection.Item2)
             {
-                if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
-                {
-                    m_Player.Stop();
-                }
-
                 RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
             }
 
@@ -673,7 +668,7 @@ namespace Tobi.Plugin.AudioPane
 
             AudioClipboard = null;
             m_LastPlayHeadTime = -1;
-            IsWaveFormLoading = false;
+            //IsWaveFormLoading = false;
 
             //var shell = Container.Resolve<IShellView>();
             //shell.DocumentProject

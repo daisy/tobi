@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 using AudioLib;
 using Tobi.Common.MVVM;
 using System;
@@ -81,7 +82,7 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
-        void PumpDispatcherFrames();
+        void PumpDispatcherFrames(DispatcherPriority prio);
 
         bool RunModalCancellableProgressTask(bool inSeparateThread, string title, IDualCancellableProgressReporter reporter, Action actionCancelled, Action actionCompleted);
 

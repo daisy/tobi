@@ -854,17 +854,23 @@ namespace Tobi.Plugin.DocumentPane
 
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
-            Hyperlink data = new Hyperlink();
+            //Hyperlink data = new Hyperlink();
+            Underline data = new Underline();
             setTag(data, node);
+
+            data.Background = Brushes.LightSkyBlue;
+            data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("href");
 
             if (attr != null && !String.IsNullOrEmpty(attr.Value))
             {
-                data.NavigateUri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
-                data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
-                data.ToolTip = data.NavigateUri.ToString();
+                Uri uri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
+                //removed to avoid swallowing the mouse click
+                //data.NavigateUri = uri;
+                //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+                data.ToolTip = uri.ToString();
             }
 
             if (node.Children.Count == 0)
