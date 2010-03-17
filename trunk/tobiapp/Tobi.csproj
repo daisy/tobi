@@ -138,6 +138,7 @@
       <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
     <Compile Include="Shell_Settings.cs" />
+    <Compile Include="Shell_Win32Device.cs" />
     <Compile Include="Tobi.Lang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -82,6 +82,9 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
+        event EventHandler DeviceRemoved;
+        event EventHandler DeviceArrived;
+
         void PumpDispatcherFrames(DispatcherPriority prio);
 
         bool RunModalCancellableProgressTask(bool inSeparateThread, string title, IDualCancellableProgressReporter reporter, Action actionCancelled, Action actionCompleted);

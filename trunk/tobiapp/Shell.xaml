@@ -25,7 +25,7 @@
     
     WindowState="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellFullScreen, Converter={XAML:WindowStateFullScreenConverter}, Mode=TwoWay}"
     
-    Closing="OnClosing"
+    Closing="OnWindowClosing"
     Loaded="OnWindowLoaded"
         
     x:Name="MainWindow"
