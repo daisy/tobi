@@ -357,9 +357,27 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+
+        private void OnDeviceArrived(object sender, EventArgs e)
+        {
+#if DEBUG
+            Debugger.Break();
+#endif
+        }
+
+        private void OnDeviceRemoved(object sender, EventArgs e)
+        {
+#if DEBUG
+            Debugger.Break();
+#endif
+        }
+
         private void initializeAudioStuff()
         {
             Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
+
+            m_ShellView.DeviceArrived += new EventHandler(OnDeviceArrived);
+            m_ShellView.DeviceRemoved += new EventHandler(OnDeviceRemoved);
 
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
 

@@ -65,6 +65,39 @@ namespace Tobi.Plugin.Urakawa
                 Debug.Assert(!nodeHasDirectAudio);
                 Debug.Assert(nodeAncestorAudio == null);
             }
+
+            if (m_SubTreeNode == null)
+            {
+                if (nodeAncestorAudio != null || nodeHasDirectAudio || nodeDescendantAudio != null)
+                {
+                    Debug.Assert(nodeHasDirectAudio && nodeAncestorAudio == null && nodeDescendantAudio == null);
+                }
+                return;
+            }
+
+            TreeNode subnodeAncestorAudio = m_SubTreeNode.GetFirstAncestorWithManagedAudio();
+            bool subnodeHasDirectAudio = m_SubTreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+            TreeNode subnodeDescendantAudio = m_SubTreeNode.GetFirstDescendantWithManagedAudio();
+
+            if (subnodeAncestorAudio != null)
+            {
+                Debug.Assert(!subnodeHasDirectAudio);
+                Debug.Assert(subnodeDescendantAudio == null);
+
+                //Debug.Assert(m_TreeNode.is
+            }
+
+            if (subnodeHasDirectAudio)
+            {
+                Debug.Assert(subnodeAncestorAudio == null);
+                Debug.Assert(subnodeDescendantAudio == null);
+            }
+
+            if (subnodeDescendantAudio != null)
+            {
+                Debug.Assert(!subnodeHasDirectAudio);
+                Debug.Assert(subnodeAncestorAudio == null);
+            }
         }
 
         private void adjustTreeNodeIfAncestorAudio(TreeNode node)
@@ -108,7 +141,6 @@ namespace Tobi.Plugin.Urakawa
             lock (m_TreeNodeSelectionLock)
             {
                 var oldTreeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
-
 #if DEBUG
                 verifyTreeNodeSelection();
 #endif

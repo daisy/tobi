@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -291,8 +290,10 @@ namespace Tobi
 #endif
         }
 
-        protected void OnClosing(object sender, CancelEventArgs e)
+        protected void OnWindowClosing(object sender, CancelEventArgs e)
         {
+            resetDeviceHook();
+
             saveSettings();
 
             /*
