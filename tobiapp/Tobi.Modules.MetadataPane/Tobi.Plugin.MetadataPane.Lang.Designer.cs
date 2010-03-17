@@ -70,11 +70,20 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The publication metadata editor.
+        /// </summary>
+        public static string MetadataPanePlugin_Description {
+            get {
+                return ResourceManager.GetString("MetadataPanePlugin_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata editor panel..
         /// </summary>
-        public static string MetadataEditorPanel {
+        public static string MetadataPanePlugin_Name {
             get {
-                return ResourceManager.GetString("MetadataEditorPanel", resourceCulture);
+                return ResourceManager.GetString("MetadataPanePlugin_Name", resourceCulture);
             }
         }
         
@@ -97,11 +106,11 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The publication metadata editor.
+        ///   Looks up a localized string similar to Is primary identifier?.
         /// </summary>
-        public static string PublicationMetadataEditor {
+        public static string PrimaryIdentifier_CheckBox {
             get {
-                return ResourceManager.GetString("PublicationMetadataEditor", resourceCulture);
+                return ResourceManager.GetString("PrimaryIdentifier_CheckBox", resourceCulture);
             }
         }
         
@@ -138,6 +147,15 @@ namespace Tobi.Plugin.MetadataPane {
         public static string ShowMetadata_ {
             get {
                 return ResourceManager.GetString("ShowMetadata_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Summary of errors.
+        /// </summary>
+        public static string SummaryOfErrors {
+            get {
+                return ResourceManager.GetString("SummaryOfErrors", resourceCulture);
             }
         }
     }

@@ -103,12 +103,12 @@ namespace Tobi.Plugin.DocumentPane
 
         public override string Name
         {
-            get { return Tobi_Plugin_DocumentPane_Lang.DocumentPane; }      // TODO: LOCALIZE DocumentPane
+            get { return Tobi_Plugin_DocumentPane_Lang.DocumentPanePlugin_Name; }      // TODO: LOCALIZE DocumentPane_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_DocumentPane_Lang.PublicationDocumentViewer; }    // TODO: LOCALIZE PublicationDocumentViewer
+            get { return Tobi_Plugin_DocumentPane_Lang.DocumentPanePlugin_Description; }    // TODO: LOCALIZE DocumentPanePlugin_Description
         }
     }
 }

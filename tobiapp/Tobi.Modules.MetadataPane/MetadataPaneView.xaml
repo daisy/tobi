@@ -210,7 +210,7 @@
 
       <!-- validation issues -->
       <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
-        <TextBlock x:Name="LabelSummaryList" Text="Summary of errors" Margin="0,10,0,10" Focusable="False"/>
+        <TextBlock x:Name="LabelSummaryList" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.SummaryOfErrors}" Margin="0,10,0,10" Focusable="False"/> <!-- TODO LOCALIZE SummaryOfErrors-->
 
         <ScrollViewer
           
@@ -279,7 +279,7 @@
 
       <!-- DESCRIPTION -->
       <TextBlock Grid.Row="0" Grid.Column="0"
-           FontWeight="Bold" Text="Description:"
+           FontWeight="Bold" Text="Description:" 
            Focusable="True"/>
 
       <TextBlock Grid.Row="0" Grid.Column="1"
@@ -369,7 +369,7 @@
          Path="/IsPrimaryIdentifier"
          Mode="TwoWay"/>
         </CheckBox.IsChecked>
-        <TextBlock Text="Is primary identifier?" Focusable="False"/>
+        <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier_CheckBox}" Focusable="False"/>   <!-- TODO LOCALIZE PrimaryIdentifier_CheckBox-->
       </CheckBox>
 
     </Grid>

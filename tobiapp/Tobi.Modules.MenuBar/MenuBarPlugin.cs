@@ -62,12 +62,12 @@ namespace Tobi.Plugin.MenuBar
 
         public override string Name
         {
-            get { return Tobi_Plugin_MenuBar_Lang.ApplicationMenubar; }      // TODO LOCALIZE ApplicationMenubar
+            get { return Tobi_Plugin_MenuBar_Lang.MenubarPlugin_Name; }      // TODO LOCALIZE ApplicationMenubar
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_MenuBar_Lang.MenuContainingAppCommands; }     // TODO LOCALIZE  MenuContainingAppCommands
+            get { return Tobi_Plugin_MenuBar_Lang.MenubarPlugin_Description; }     // TODO LOCALIZE  MenubarPlugin_Description
         }
     }
 }
