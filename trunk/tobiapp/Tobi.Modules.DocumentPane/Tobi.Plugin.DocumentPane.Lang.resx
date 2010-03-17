@@ -129,7 +129,7 @@
   <data name="StructureUp_" xml:space="preserve">
     <value>Move the selection up one level in the document tree structure</value>
   </data>
-  <data name="DocumentPane" xml:space="preserve">
+  <data name="DocumentPanePlugin_Name" xml:space="preserve">
     <value>Document pane.</value>
   </data>
   <data name="Event_SwitchNext" xml:space="preserve">
@@ -153,7 +153,7 @@
   <data name="No_Document" xml:space="preserve">
     <value>No document.</value>
   </data>
-  <data name="PublicationDocumentViewer" xml:space="preserve">
+  <data name="DocumentPanePlugin_Description" xml:space="preserve">
     <value>The publication document viewer</value>
   </data>
   <data name="CreatingFlowDocument" xml:space="preserve">

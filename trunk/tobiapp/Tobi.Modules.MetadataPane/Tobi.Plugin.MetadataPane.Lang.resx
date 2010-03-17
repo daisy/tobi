@@ -120,7 +120,10 @@
   <data name="DialogOpen" xml:space="preserve">
     <value>The metadata editor modal dialog is opening.</value>
   </data>
-  <data name="MetadataEditorPanel" xml:space="preserve">
+  <data name="MetadataPanePlugin_Description" xml:space="preserve">
+    <value>The publication metadata editor</value>
+  </data>
+  <data name="MetadataPanePlugin_Name" xml:space="preserve">
     <value>Metadata editor panel.</value>
   </data>
   <data name="OpenMetadataEditor" xml:space="preserve">
@@ -129,8 +132,8 @@
   <data name="Optional" xml:space="preserve">
     <value>Optional.</value>
   </data>
-  <data name="PublicationMetadataEditor" xml:space="preserve">
-    <value>The publication metadata editor</value>
+  <data name="PrimaryIdentifier_CheckBox" xml:space="preserve">
+    <value>Is primary identifier?</value>
   </data>
   <data name="Recommended" xml:space="preserve">
     <value>Recommended.</value>
@@ -143,5 +146,8 @@
   </data>
   <data name="ShowMetadata_" xml:space="preserve">
     <value>Metadata viewer/editor</value>
+  </data>
+  <data name="SummaryOfErrors" xml:space="preserve">
+    <value>Summary of errors</value>
   </data>
 </root>
