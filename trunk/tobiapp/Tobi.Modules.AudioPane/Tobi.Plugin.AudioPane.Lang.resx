@@ -135,7 +135,7 @@
   <data name="Paste_" xml:space="preserve">
     <value>Paste from clipboard</value>
   </data>
-  <data name="AudioWaveformEditor" xml:space="preserve">
+  <data name="AudioPanePlugin_Name" xml:space="preserve">
     <value>Audio waveform editor.</value>
   </data>
   <data name="Audio_AutoPlay" xml:space="preserve">
@@ -378,10 +378,16 @@
   <data name="SelectAll_" xml:space="preserve">
     <value>Select all content</value>
   </data>
-  <data name="AudioWaveformEditorAndDisplay" xml:space="preserve">
+  <data name="AudioPanePlugin_Description" xml:space="preserve">
     <value>The audio waveform editor and display.</value>
   </data>
   <data name="WaveformLoaded" xml:space="preserve">
     <value>Waveform loaded.</value>
+  </data>
+  <data name="CmdTransaction_DeleteAudio" xml:space="preserve">
+    <value>Delete spanning audio portion</value>
+  </data>
+  <data name="CmdTransaction_DeleteAudioInSeveraTreenodes" xml:space="preserve">
+    <value>Delete a portion of audio that spans across several treenodes</value>
   </data>
 </root>
