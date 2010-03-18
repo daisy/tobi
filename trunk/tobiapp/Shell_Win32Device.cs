@@ -10,6 +10,8 @@ namespace Tobi
     {
         public event EventHandler DeviceArrived;
         public event EventHandler DeviceRemoved;
+        private long m_PreviousHandle = 0;
+        private bool m_WasPreviouslyTriggeredEvent_Arrived;
 
         private IntPtr HwndSourceHookWindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -20,19 +22,35 @@ namespace Tobi
                 {
                     case Win32.DBT_DEVICEARRIVAL:
                         {
+                        if (!m_WasPreviouslyTriggeredEvent_Arrived)
+                            {
+                            m_PreviousHandle = 0;
+                            }
+                        m_WasPreviouslyTriggeredEvent_Arrived = true;
+
                             var d = DeviceArrived;
-                            if (d != null)
+                            if (d != null
+                                && m_PreviousHandle != hwnd.ToInt64     () )
                             {
                                 d(this, EventArgs.Empty);
+                                m_PreviousHandle = hwnd.ToInt64 ();
                             }
                             break;
                         }
                     case Win32.DBT_DEVICEREMOVECOMPLETE:
                         {
+                        if (m_WasPreviouslyTriggeredEvent_Arrived)
+                            {
+                            m_PreviousHandle = 0;
+                            }
+                        m_WasPreviouslyTriggeredEvent_Arrived = false;
+
                             var d = DeviceRemoved;
-                            if (d != null)
+                            if (d != null
+                                && m_PreviousHandle != hwnd.ToInt64 ())
                             {
                                 d(this, EventArgs.Empty);
+                                m_PreviousHandle = hwnd.ToInt64 ();
                             }
                             break;
                         }
@@ -53,6 +71,7 @@ namespace Tobi
                         }
                 }
             }
+            
 
             return IntPtr.Zero;
         }
