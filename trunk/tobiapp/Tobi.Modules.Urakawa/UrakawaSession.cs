@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
-using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -17,7 +13,6 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
-using urakawa.daisy;
 using urakawa.data;
 using urakawa.events;
 
@@ -83,8 +78,6 @@ namespace Tobi.Plugin.Urakawa
             {
                 Debug.Assert(!subnodeHasDirectAudio);
                 Debug.Assert(subnodeDescendantAudio == null);
-
-                //Debug.Assert(m_TreeNode.is
             }
 
             if (subnodeHasDirectAudio)
@@ -98,30 +91,11 @@ namespace Tobi.Plugin.Urakawa
                 Debug.Assert(!subnodeHasDirectAudio);
                 Debug.Assert(subnodeAncestorAudio == null);
             }
-        }
 
-        private void adjustTreeNodeIfAncestorAudio(TreeNode node)
-        {
-            bool nodeHasDirectAudio = node.GetManagedAudioMediaOrSequenceMedia() != null;
-            TreeNode nodeDescendantAudio = node.GetFirstDescendantWithManagedAudio();
-            TreeNode nodeAncestorAudio = node.GetFirstAncestorWithManagedAudio();
-
-            // will be picked-up as-is by the waveform display
-            if (nodeHasDirectAudio || nodeDescendantAudio != null)
+            if (subnodeAncestorAudio != null || subnodeHasDirectAudio || subnodeDescendantAudio != null)
             {
-                m_TreeNode = node;
-                return;
+                Debug.Assert(subnodeHasDirectAudio && subnodeAncestorAudio == null && subnodeDescendantAudio == null);
             }
-
-            // we need to adjust the selection so that the waveform display represents some useful information
-            if (nodeAncestorAudio != null)
-            {
-                m_TreeNode = nodeAncestorAudio;
-                return;
-            }
-
-            // no audio at all => we just leave the selection as it is.
-            m_TreeNode = node;
         }
 
         public Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode node)
@@ -144,41 +118,63 @@ namespace Tobi.Plugin.Urakawa
 #if DEBUG
                 verifyTreeNodeSelection();
 #endif
+
+                bool nodeHasDirectAudio = node.GetManagedAudioMediaOrSequenceMedia() != null;
+                TreeNode nodeDescendantAudio = node.GetFirstDescendantWithManagedAudio();
+                TreeNode nodeAncestorAudio = node.GetFirstAncestorWithManagedAudio();
+
                 if (m_TreeNode == null) // brand new selection
                 {
-                    adjustTreeNodeIfAncestorAudio(node);
-                    if (m_TreeNode != node)
+                    if (nodeHasDirectAudio)
                     {
-                        m_SubTreeNode = node;
+                        m_TreeNode = node;
+                        m_SubTreeNode = null;
+                    }
+                    else if (nodeAncestorAudio != null)
+                    {
+                        m_TreeNode = nodeAncestorAudio;
+                        m_SubTreeNode = null;
+                    }
+                    else if (nodeDescendantAudio != null)
+                    {
+                        m_TreeNode = node;
+                        m_SubTreeNode = nodeDescendantAudio;
                     }
                     else
                     {
+                        m_TreeNode = node;
                         m_SubTreeNode = null;
                     }
                 }
-                else if (m_TreeNode == node)
+                else if (node == m_TreeNode)
                 {
                     if (m_SubTreeNode != null) // toggle
                     {
-                        adjustTreeNodeIfAncestorAudio(m_SubTreeNode);
-                        if (m_TreeNode == m_SubTreeNode)
-                        {
-                            m_SubTreeNode = null;
-                        }
+                        m_TreeNode = m_SubTreeNode;
+                        m_SubTreeNode = null;
                     }
+                }
+                else if (m_SubTreeNode != null && node == m_SubTreeNode)
+                {
+                    m_TreeNode = m_SubTreeNode;
+                    m_SubTreeNode = null;
                 }
                 else if (node.IsDescendantOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
                 {
-                    TreeNode oldTreeNode = m_TreeNode;
-                    adjustTreeNodeIfAncestorAudio(oldTreeNode);
-                    if (node == m_SubTreeNode) // toggle
+                    if (nodeHasDirectAudio)
                     {
-                        m_SubTreeNode = null;
+                        m_SubTreeNode = node;
                     }
-                    else
+                    else if (nodeAncestorAudio != null)
                     {
-                        m_SubTreeNode = node; // those 2 may be equal already, it doesn't matter.
+                        m_SubTreeNode = nodeAncestorAudio;
+                        Debug.Assert(nodeAncestorAudio.IsDescendantOf(m_TreeNode));
                     }
+                    else if (nodeDescendantAudio == null)
+                    {
+                        m_SubTreeNode = node;
+                    }
+                    else m_TreeNode = node;
                 }
                 else if (node.IsAncestorOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
                 {
@@ -186,19 +182,17 @@ namespace Tobi.Plugin.Urakawa
                     {
                         m_SubTreeNode = m_TreeNode;
                     }
-                    adjustTreeNodeIfAncestorAudio(node);
+                    m_TreeNode = node;
                 }
                 else
                 {
-                    adjustTreeNodeIfAncestorAudio(node);
-                    if (m_TreeNode != node)
+                    m_TreeNode = node;
+                    if (nodeDescendantAudio != null)
                     {
-                        m_SubTreeNode = node;
+                        m_SubTreeNode = nodeDescendantAudio;
                     }
                     else
-                    {
                         m_SubTreeNode = null;
-                    }
                 }
 
 #if DEBUG

@@ -39,9 +39,9 @@ namespace Tobi
 
                     case Win32.DBT_DEVNODES_CHANGED:
                         {
-#if DEBUG
-                            Debugger.Break();
-#endif
+//#if DEBUG
+//                            Debugger.Break();
+//#endif
                             break;
                         }
                     default:
