@@ -230,7 +230,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction("Delete spanning audio portion", "Delete a portion of audio that spans across several treenodes");
+                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.CmdTransaction_DeleteAudio, Tobi_Plugin_AudioPane_Lang.CmdTransaction_DeleteAudioInSeveraTreenodes); // TODO LOCALIZE CmdTransaction_DeleteAudio, CmdTransaction_DeleteAudioInSeveraTreenodes
 
                         foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
                         {
