@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ContextToOpenSaveDataModelOfSDKProject" xml:space="preserve">
+  <data name="UrakawaPlugin_Description" xml:space="preserve">
     <value>A context for opening and saving the data model of a Urakawa SDK project.</value>
   </data>
   <data name="OpenSaveAsQuestion" xml:space="preserve">
@@ -165,7 +165,7 @@
   <data name="Open" xml:space="preserve">
     <value>_Open / import</value>
   </data>
-  <data name="OpenXukFile" xml:space="preserve">
+  <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
     <value>Opening XUK file...</value>
   </data>
   <data name="Open_" xml:space="preserve">
@@ -182,7 +182,7 @@ Do you want to continue ?</value>
     <value>You are about to overwrite a folder.
 Do you want to continue ?</value>
   </data>
-  <data name="ParsingXMLDoc_BuildingDOM" xml:space="preserve">
+  <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
     <value>Parsing the XML content of the XUK file...</value>
   </data>
   <data name="Redo" xml:space="preserve">
@@ -223,7 +223,7 @@ Agree to save the document now ?</value>
     <value>If you close the document without saving,
 any changes will be lost !</value>
   </data>
-  <data name="UrakawaSDKSessionManager" xml:space="preserve">
+  <data name="UrakawaPlugin_Name" xml:space="preserve">
     <value>Urakawa SDK session manager.</value>
   </data>
   <data name="Importing" xml:space="preserve">
@@ -241,10 +241,10 @@ any changes will be lost !</value>
   <data name="Saved" xml:space="preserve">
     <value>Saved.</value>
   </data>
-  <data name="SaveXukFile" xml:space="preserve">
+  <data name="UrakawaSaveAction_ShortDesc" xml:space="preserve">
     <value>Saving XUK file...</value>
   </data>
-  <data name="SerializeDOMIntoXukFile" xml:space="preserve">
+  <data name="UrakawaSaveAction_LongDesc" xml:space="preserve">
     <value>Saving the document as XML into the XUK file...</value>
   </data>
 </root>

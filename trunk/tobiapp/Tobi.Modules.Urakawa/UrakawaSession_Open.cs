@@ -163,14 +163,14 @@ namespace Tobi.Plugin.Urakawa
 
                 var action = new OpenXukAction(project, fileUri)
                 {
-                    ShortDescription = Tobi_Plugin_Urakawa_Lang.OpenXukFile,                                // TODO LOCALIZE OpenXukFile
-                    LongDescription = Tobi_Plugin_Urakawa_Lang.ParsingXMLDoc_BuildingDOM                    // TODO LOCALIZE ParsingXMLDoc_BuildingDOM
+                    ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,                                // TODO LOCALIZE UrakawaOpenAction_ShortDesc
+                    LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc                    // TODO LOCALIZE UrakawaOpenAction_LongDesc
                 };
 
                 bool cancelled = false;
 
-                bool result = m_ShellView.RunModalCancellableProgressTask(true, 
-                    Tobi_Plugin_Urakawa_Lang.OpenXukFile, action, 
+                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc, action,     
                     ()=>
                         {
                             cancelled = true;

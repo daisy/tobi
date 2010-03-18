@@ -175,12 +175,12 @@ namespace Tobi.Plugin.Urakawa
 
         public override string Name
         {
-            get { return Tobi_Plugin_Urakawa_Lang.UrakawaSDKSessionManager; }    // TODO LOCALIZE UrakawaSDKSessionManager
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Name; }    // TODO LOCALIZE UrakawaPlugin_Name
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Urakawa_Lang.ContextToOpenSaveDataModelOfSDKProject; }    // TODO LOCALIZE ContextToOpenSaveDataModelOfSDKProject
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Description; }    // TODO LOCALIZE UrakawaPlugin_Description
         }
     }
 }
