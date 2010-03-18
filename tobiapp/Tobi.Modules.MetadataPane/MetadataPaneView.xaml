@@ -279,8 +279,8 @@
 
       <!-- DESCRIPTION -->
       <TextBlock Grid.Row="0" Grid.Column="0"
-           FontWeight="Bold" Text="Description:" 
-           Focusable="True"/>
+           FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Description }"   
+           Focusable="True"/>  <!-- TODO LOCALIZE Metadata_Description-->
 
       <TextBlock Grid.Row="0" Grid.Column="1"
            Text="{Binding Source={StaticResource MetadatasCVS},
@@ -341,8 +341,8 @@
 
       <!-- VALIDATION ERRORS -->
       <TextBlock Grid.Row="4" Grid.Column="0"
-            FontWeight="Bold" Text="Errors: "
-           Focusable="True"/>
+            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Error}"
+           Focusable="True"/>  <!-- TODO LOCALIZE Metadata_Error-->
       <TextBlock x:Name="errorText" Grid.Row="4" Grid.Column="1"
            TextWrapping="Wrap"
            Style="{StaticResource ValidationTextDetailsViewStyle}">

@@ -38,19 +38,19 @@
       <StackPanel>
         <TextBlock Style="{StaticResource MetadataHeadingStyle}">
           <TextBlock.Text>
-            <Binding StringFormat="Rules for {0}" Path="Name"/>  <!-- TODO LOCALIZE RulesForName -->
+            <Binding StringFormat="Rules for {0}" Path="Name"/>  <!-- TODO LOCALIZE MetadataDefinition_RulesForName -->
           </TextBlock.Text>
         </TextBlock>
         <TextBlock Text="{Binding Description}"/>
         <TextBlock>
           <TextBlock.Text>
-            <Binding StringFormat="Must be a {0}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>   <!-- TODO LOCALIZE MustBeDatatype -->
+            <Binding StringFormat="Must be a {0}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>   <!-- TODO LOCALIZE MetadataDefinition_MustBeDatatype -->
           </TextBlock.Text>
         </TextBlock>
 
         <TextBlock>
           <TextBlock.Text>
-            <Binding StringFormat="Is {0}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>
+            <Binding StringFormat="Is {0}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>  <!-- TODO LOCALIZE MetadataDefinition_Occurrance--> 
           </TextBlock.Text>
         </TextBlock>
 

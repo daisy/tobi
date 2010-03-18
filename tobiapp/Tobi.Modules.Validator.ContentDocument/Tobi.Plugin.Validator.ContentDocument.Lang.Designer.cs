@@ -70,20 +70,47 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Binding Message.
-        /// </summary>
-        public static string BindingMsg {
-            get {
-                return ResourceManager.GetString("BindingMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tobi could not locate a DTD, so it cannot validate the document..
         /// </summary>
         public static string CannotValidateDoc {
             get {
                 return ResourceManager.GetString("CannotValidateDoc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to view.
+        /// </summary>
+        public static string ClickToView {
+            get {
+                return ResourceManager.GetString("ClickToView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt;.
+        /// </summary>
+        public static string ContentDocument_DataTemplate {
+            get {
+                return ResourceManager.GetString("ContentDocument_DataTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The element &lt;{0}&gt; contains an invalid sequence of child elements..
+        /// </summary>
+        public static string ContentDocument_InvalidChildElements {
+            get {
+                return ResourceManager.GetString("ContentDocument_InvalidChildElements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following are permitted as children for &lt;{0}&gt;:.
+        /// </summary>
+        public static string ContentDocument_PermittedChildren {
+            get {
+                return ResourceManager.GetString("ContentDocument_PermittedChildren", resourceCulture);
             }
         }
         

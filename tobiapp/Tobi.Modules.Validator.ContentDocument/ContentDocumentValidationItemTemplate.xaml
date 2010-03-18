@@ -29,7 +29,7 @@
     <StackPanel Margin="5" Background="White">
       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
+          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_DataTemplate}" Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE ContentDocument_DataTemplate-->
         </TextBlock.Text>
       </TextBlock>
       
@@ -42,7 +42,7 @@
           <DataTemplate>
             <TextBlock>
               <TextBlock.Text>
-                <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
+                <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_DataTemplate}" Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE ContentDocument_DataTemplate Key already added-->
               </TextBlock.Text>
             </TextBlock>
           </DataTemplate>
@@ -50,7 +50,7 @@
       </ListBox>
       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
+          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_DataTemplate}" Converter="{ContentDocument:ElementNameConverter}"/>     <!-- TODO LOCALIZE ContentDocument_DataTemplate Key already added-->
         </TextBlock.Text>
       </TextBlock>
     </StackPanel>
@@ -80,15 +80,15 @@
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
       <TextBlock TextWrapping="Wrap">
         <TextBlock.Text>
-          <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
+          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_InvalidChildElements}"
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
+                   Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE ContentDocument_InvalidChildElements-->
         </TextBlock.Text>
       </TextBlock>
       
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnLinkClick">
-          <Run Text="Click to view"/>
+          <Run Text="x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView"/>   <!-- TODO LOCALIZE ClickToView -->
         </Hyperlink>
       </TextBlock>
 
@@ -97,9 +97,9 @@
 
       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:" 
+          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_PermittedChildren}" 
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE -->
+                   Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE ContentDocument_PermittedChildren -->
         </TextBlock.Text>
       </TextBlock>
 
@@ -129,7 +129,7 @@
   </DataTemplate>
 
   <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.BindingMsg}"/>  <!-- TODO LOCALIZE BindingMsg-->
+      <TextBlock Text="{Binding Message}"/> 
   </DataTemplate>
   
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">

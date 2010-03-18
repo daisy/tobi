@@ -70,6 +70,24 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description:.
+        /// </summary>
+        public static string Metadata_Description {
+            get {
+                return ResourceManager.GetString("Metadata_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors:.
+        /// </summary>
+        public static string Metadata_Error {
+            get {
+                return ResourceManager.GetString("Metadata_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The publication metadata editor.
         /// </summary>
         public static string MetadataPanePlugin_Description {
