@@ -191,12 +191,12 @@ namespace Tobi.Plugin.Urakawa
 
             var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
             {
-                ShortDescription = Tobi_Plugin_Urakawa_Lang.SaveXukFile,                               // TODO LOCALIZE SaveXukFile
-                LongDescription = Tobi_Plugin_Urakawa_Lang.SerializeDOMIntoXukFile       // TODO LOCALIZE SerializeDOMIntoXukFile
+                ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc,                               // TODO LOCALIZE UrakawaSaveAction_ShortDesc
+                LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc       // TODO LOCALIZE UrakawaSaveAction_LongDesc 
             };
 
             bool notCancelled = m_ShellView.RunModalCancellableProgressTask(true,
-                Tobi_Plugin_Urakawa_Lang.SaveXukFile, action,
+                Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc, action,
                 () =>
                 {
                     if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
