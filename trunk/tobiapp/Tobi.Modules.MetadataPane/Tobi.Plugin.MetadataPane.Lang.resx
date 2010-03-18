@@ -126,6 +126,12 @@
   <data name="MetadataPanePlugin_Name" xml:space="preserve">
     <value>Metadata editor panel.</value>
   </data>
+  <data name="Metadata_Description" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="Metadata_Error" xml:space="preserve">
+    <value>Errors:</value>
+  </data>
   <data name="OpenMetadataEditor" xml:space="preserve">
     <value>Open metadata editor</value>
   </data>

@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Validator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Binding Message.
-        /// </summary>
-        public static string BindingMsg {
-            get {
-                return ResourceManager.GetString("BindingMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Validation Check.
         /// </summary>
         public static string ValidationCheck {

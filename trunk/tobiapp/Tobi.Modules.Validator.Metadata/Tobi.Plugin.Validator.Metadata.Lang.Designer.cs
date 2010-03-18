@@ -142,6 +142,33 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Must be a {0}.
+        /// </summary>
+        public static string MetadataDefinition_MustBeDatatype {
+            get {
+                return ResourceManager.GetString("MetadataDefinition_MustBeDatatype", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is {0}.
+        /// </summary>
+        public static string MetadataDefinition_Occurrance {
+            get {
+                return ResourceManager.GetString("MetadataDefinition_Occurrance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rules for {0}.
+        /// </summary>
+        public static string MetadataDefinition_RulesForName {
+            get {
+                return ResourceManager.GetString("MetadataDefinition_RulesForName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hint: {0} must be {1}.
         /// </summary>
         public static string MetadataFormatError_Hint {
@@ -223,15 +250,6 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must be a {0}.
-        /// </summary>
-        public static string MustBeDatatype {
-            get {
-                return ResourceManager.GetString("MustBeDatatype", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to non-empty.
         /// </summary>
         public static string NonEmpty {
@@ -264,15 +282,6 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string OpenMetadataEditor {
             get {
                 return ResourceManager.GetString("OpenMetadataEditor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rules for {0}.
-        /// </summary>
-        public static string RulesForName {
-            get {
-                return ResourceManager.GetString("RulesForName", resourceCulture);
             }
         }
         

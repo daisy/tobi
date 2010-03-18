@@ -144,6 +144,15 @@
   <data name="InvalidValue" xml:space="preserve">
     <value>The value for the item is invalid:</value>
   </data>
+  <data name="MetadataDefinition_MustBeDatatype" xml:space="preserve">
+    <value>Must be a {0}</value>
+  </data>
+  <data name="MetadataDefinition_Occurrance" xml:space="preserve">
+    <value>Is {0}</value>
+  </data>
+  <data name="MetadataDefinition_RulesForName" xml:space="preserve">
+    <value>Rules for {0}</value>
+  </data>
   <data name="MetadataFormatError_Hint" xml:space="preserve">
     <value>Hint: {0} must be {1}</value>
   </data>
@@ -171,9 +180,6 @@
   <data name="MissingRequiredItem" xml:space="preserve">
     <value>Metadata error: missing a required item</value>
   </data>
-  <data name="MustBeDatatype" xml:space="preserve">
-    <value>Must be a {0}</value>
-  </data>
   <data name="NonEmpty" xml:space="preserve">
     <value>non-empty</value>
   </data>
@@ -185,9 +191,6 @@
   </data>
   <data name="OpenMetadataEditor" xml:space="preserve">
     <value>This should open the metadata editor</value>
-  </data>
-  <data name="RulesForName" xml:space="preserve">
-    <value>Rules for {0}</value>
   </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error in {0}.</value>

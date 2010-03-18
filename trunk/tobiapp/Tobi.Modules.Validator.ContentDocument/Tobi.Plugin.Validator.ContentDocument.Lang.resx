@@ -120,9 +120,6 @@
   <data name="BindingDtdIdentifier" xml:space="preserve">
     <value>Binding DtdIdentifier</value>
   </data>
-  <data name="BindingMsg" xml:space="preserve">
-    <value>Binding Message</value>
-  </data>
   <data name="CannotValidateDoc" xml:space="preserve">
     <value>Tobi could not locate a DTD, so it cannot validate the document.</value>
   </data>
@@ -179,5 +176,17 @@
   </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error</value>
+  </data>
+  <data name="ClickToView" xml:space="preserve">
+    <value>Click to view</value>
+  </data>
+  <data name="ContentDocument_DataTemplate" xml:space="preserve">
+    <value>&lt;{0}&gt;</value>
+  </data>
+  <data name="ContentDocument_InvalidChildElements" xml:space="preserve">
+    <value>The element &lt;{0}&gt; contains an invalid sequence of child elements.</value>
+  </data>
+  <data name="ContentDocument_PermittedChildren" xml:space="preserve">
+    <value>The following are permitted as children for &lt;{0}&gt;:</value>
   </data>
 </root>
