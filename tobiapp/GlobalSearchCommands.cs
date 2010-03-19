@@ -45,8 +45,8 @@ namespace Tobi
 
         private void InitializeCommands()
         {
-            CmdFindFocus = new RichCompositeCommand(Tobi_Lang.Find, //TODO: localize Find
-                "Edit the search criteria.",
+            CmdFindFocus = new RichCompositeCommand(Tobi_Lang.CmdFocus_ShortDesc_Find, //TODO LOCALIZE CmdFocus_ShortDesc_Find
+                Tobi_Lang.CmdFocus_LongDesc_Find,   // TODO LOCALIZE CmdFocus_LongDesc_Find
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-find"),
                 Settings_KeyGestures.Default,
@@ -54,8 +54,8 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindFocus);
 
-            CmdFindNext = new RichCompositeCommand(Tobi_Lang.FindNext, //TODO: localize FindNext
-                "Find The Next Item That Matches The Search Criteria.",
+            CmdFindNext = new RichCompositeCommand(Tobi_Lang.CmdFocus_ShortDesc_FindNext, //TODO LOCALIZE CmdFocus_ShortDesc_FindNext
+                Tobi_Lang.CmdFocus_LongDesc_FindNext,   // TODO LOCALIZE CmdFocus_LongDesc_FindNext
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 Settings_KeyGestures.Default,
@@ -63,8 +63,8 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindNext);
 
-            CmdFindPrevious = new RichCompositeCommand(Tobi_Lang.FindPrevious, //TODO: localize FindPrevious
-                "Find The Previous Item That Matches The Search Criteria.",
+            CmdFindPrevious = new RichCompositeCommand(Tobi_Lang.CmdFocus_ShortDesc_FindPrevious, //TODO LOCALIZE CmdFocus_ShortDesc_FindPrevious
+                Tobi_Lang.CmdFocus_LongDesc_FindPrevious,  // TODO LOCALIZE CmdFocus_LongDesc_FindPrevious
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 Settings_KeyGestures.Default,

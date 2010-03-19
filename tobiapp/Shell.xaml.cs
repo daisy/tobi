@@ -491,13 +491,13 @@ namespace Tobi
             {
                 if (m_UrakawaSession == null)
                 {
-                    return String.Format(@"Tobi {{{0}}} - " + Tobi_Lang.PleaseWait, ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey
+                    return String.Format(String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNull, Tobi_Lang.PleaseWait), ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey_UrakawaSessionIsNull, PleaseWait
                 }
-                return String.Format(@"Tobi {{{0}}} {1}[{2}]",
+                return String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
                     ApplicationConstants.APP_VERSION,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
                     (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
-                    );    // TODO LOCALIZE WindowsTitleKey2, NoDocument
+                    );    // TODO LOCALIZE WindowsTitleKey_UrakawaSessionIsNotNull, NoDocument
             }
         }
 

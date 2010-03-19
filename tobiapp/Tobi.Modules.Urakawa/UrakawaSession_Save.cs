@@ -363,7 +363,7 @@ namespace Tobi.Plugin.Urakawa
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
-            var details = new TextBoxReadOnlyCaretVisible("Path: " + path);
+            var details = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path));    // TODO LOCALIZE UrakawaSession_SavePath
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(

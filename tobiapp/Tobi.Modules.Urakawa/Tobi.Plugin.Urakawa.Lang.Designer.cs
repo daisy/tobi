@@ -441,5 +441,23 @@ namespace Tobi.Plugin.Urakawa {
                 return ResourceManager.GetString("UrakawaSaveAction_ShortDesc", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to open file.
+        /// </summary>
+        public static string UrakawaSession_OpenFile {
+            get {
+                return ResourceManager.GetString("UrakawaSession_OpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path:{0}.
+        /// </summary>
+        public static string UrakawaSession_SavePath {
+            get {
+                return ResourceManager.GetString("UrakawaSession_SavePath", resourceCulture);
+            }
+        }
     }
 }
