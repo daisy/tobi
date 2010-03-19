@@ -55,7 +55,7 @@ namespace Tobi.Plugin.StructureTrailPane
             bool firstTime = PathToCurrentTreeNode == null;
 
             TreeNode treeNodeSel = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
-            if (firstTime || !PathToCurrentTreeNode.Contains(treeNodeSel))
+            if (true) // this was too confusing for the user: firstTime || !PathToCurrentTreeNode.Contains(treeNodeSel))
             {
                 PathToCurrentTreeNode = new List<TreeNode>();
                 TreeNode treeNode = treeNodeSel;
