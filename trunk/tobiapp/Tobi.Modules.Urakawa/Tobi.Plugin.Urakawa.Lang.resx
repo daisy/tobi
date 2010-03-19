@@ -247,4 +247,10 @@ any changes will be lost !</value>
   <data name="UrakawaSaveAction_LongDesc" xml:space="preserve">
     <value>Saving the document as XML into the XUK file...</value>
   </data>
+  <data name="UrakawaSession_OpenFile" xml:space="preserve">
+    <value>open file</value>
+  </data>
+  <data name="UrakawaSession_SavePath" xml:space="preserve">
+    <value>Path:{0}</value>
+  </data>
 </root>

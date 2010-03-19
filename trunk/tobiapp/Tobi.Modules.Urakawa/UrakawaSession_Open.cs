@@ -129,7 +129,7 @@ namespace Tobi.Plugin.Urakawa
             }
 
             // Closing is REQUIRED ! 
-            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, "open file");
+            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, Tobi_Plugin_Urakawa_Lang.UrakawaSession_OpenFile);  // TODO LOCALIZE UrakawaSession_OpenFile
             if (PopupModalWindow.IsButtonEscCancel(button))
             {
                 return false;
