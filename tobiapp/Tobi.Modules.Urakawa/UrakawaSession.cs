@@ -116,88 +116,216 @@ namespace Tobi.Plugin.Urakawa
             {
                 var oldTreeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
 #if DEBUG
-                verifyTreeNodeSelection();
+                // After audio edits, the old selection may be invalid.
+                //verifyTreeNodeSelection();
 #endif
-
+                // performing a valid selection is based on branch logic, it depends on the position of the audio, if any
                 bool nodeHasDirectAudio = node.GetManagedAudioMediaOrSequenceMedia() != null;
                 TreeNode nodeDescendantAudio = node.GetFirstDescendantWithManagedAudio();
                 TreeNode nodeAncestorAudio = node.GetFirstAncestorWithManagedAudio();
 
                 if (m_TreeNode == null) // brand new selection
                 {
-                    if (nodeHasDirectAudio)
+                    if (nodeHasDirectAudio) // right on
                     {
                         m_TreeNode = node;
                         m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
-                    else if (nodeAncestorAudio != null)
+                    else if (nodeAncestorAudio != null) // shift up
                     {
                         m_TreeNode = nodeAncestorAudio;
                         m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
-                    else if (nodeDescendantAudio != null)
+                    else if (nodeDescendantAudio != null) // sub shift down
                     {
                         m_TreeNode = node;
                         m_SubTreeNode = nodeDescendantAudio;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
-                    else
+                    else // no audio on this branch, always legal position
                     {
                         m_TreeNode = node;
                         m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
+                    goto done;
                 }
-                else if (node == m_TreeNode)
+
+                // From here we know that m_TreeNode != null
+
+                if (node == m_TreeNode)
                 {
-                    if (m_SubTreeNode != null) // toggle
+                    if (nodeHasDirectAudio) // right on
+                    {
+                        m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
+                    }
+                    else if (nodeAncestorAudio != null) // shift up
+                    {
+                        m_TreeNode = nodeAncestorAudio;
+                        m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
+                    }
+                    else if (nodeDescendantAudio != null) // shift down
+                    {
+                        if (m_SubTreeNode == null)
+                        {
+                            m_TreeNode = nodeDescendantAudio;
+                            m_SubTreeNode = null;
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
+                        else
+                        {
+                            bool subtreenodeHasDirectAudio = m_SubTreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+                            if (subtreenodeHasDirectAudio)
+                            {
+                                m_TreeNode = m_SubTreeNode;
+                                m_SubTreeNode = null;
+#if DEBUG
+                                verifyTreeNodeSelection();
+#endif
+                            }
+                            else
+                            {
+                                TreeNode subtreenodeDescendantAudio = m_SubTreeNode.GetFirstDescendantWithManagedAudio();
+
+                                if (subtreenodeDescendantAudio == null)
+                                {
+                                    m_TreeNode = nodeDescendantAudio;
+                                    m_SubTreeNode = null;
+                                }
+                                else
+                                {
+                                    m_TreeNode = subtreenodeDescendantAudio;
+                                    m_SubTreeNode = null;
+                                }
+#if DEBUG
+                                verifyTreeNodeSelection();
+#endif
+                            }
+                        }
+                    }
+                    else // no audio on this branch, always legal position
+                    {
+                        if (m_SubTreeNode != null) // toggle
+                        {
+                            m_TreeNode = m_SubTreeNode;
+                            m_SubTreeNode = null;
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
+                    }
+                    goto done;
+                }
+
+                bool treenodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+                TreeNode treenodeDescendantAudio = m_TreeNode.GetFirstDescendantWithManagedAudio();
+                TreeNode treenodeAncestorAudio = m_TreeNode.GetFirstAncestorWithManagedAudio();
+
+                if (m_SubTreeNode != null && node == m_SubTreeNode)
+                {
+                    if (nodeHasDirectAudio) // shift down
                     {
                         m_TreeNode = m_SubTreeNode;
                         m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
+                    else // toggle
+                    {
+                        m_TreeNode = m_TreeNode; // unchanged
+                        m_SubTreeNode = null;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
+                    }
+                    goto done;
                 }
-                else if (m_SubTreeNode != null && node == m_SubTreeNode)
+
+                if (node.IsDescendantOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
                 {
-                    m_TreeNode = m_SubTreeNode;
-                    m_SubTreeNode = null;
-                }
-                else if (node.IsDescendantOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
-                {
-                    if (nodeHasDirectAudio)
+                    if (nodeHasDirectAudio) // right on
                     {
                         m_SubTreeNode = node;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
-                    else if (nodeAncestorAudio != null)
+                    else if (nodeAncestorAudio != null) // shift up
                     {
                         m_SubTreeNode = nodeAncestorAudio;
-                        Debug.Assert(nodeAncestorAudio.IsDescendantOf(m_TreeNode));
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
-                    else if (nodeDescendantAudio == null)
+                    else if (nodeDescendantAudio == null) // legal shift down
                     {
                         m_SubTreeNode = node;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
                     }
-                    else m_TreeNode = node;
+                    else
+                    {
+                        m_SubTreeNode = node;
+#if DEBUG
+                        verifyTreeNodeSelection();
+#endif
+                    }
+                    goto done;
                 }
-                else if (node.IsAncestorOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
+
+                if (node.IsAncestorOf(m_TreeNode)) // or: m_TreeNode.IsAncestorOf(node)
                 {
                     if (m_SubTreeNode == null)
                     {
                         m_SubTreeNode = m_TreeNode;
                     }
                     m_TreeNode = node;
+#if DEBUG
+                    verifyTreeNodeSelection();
+#endif
+                    goto done;
+                }
+
+                //FINAL ELSE:
+
+                m_TreeNode = node;
+                if (nodeDescendantAudio != null)
+                {
+                    m_SubTreeNode = nodeDescendantAudio;
+#if DEBUG
+                    verifyTreeNodeSelection();
+#endif
                 }
                 else
                 {
-                    m_TreeNode = node;
-                    if (nodeDescendantAudio != null)
-                    {
-                        m_SubTreeNode = nodeDescendantAudio;
-                    }
-                    else
-                        m_SubTreeNode = null;
+                    m_SubTreeNode = null;
+#if DEBUG
+                    verifyTreeNodeSelection();
+#endif
                 }
 
-#if DEBUG
-                verifyTreeNodeSelection();
-#endif
+            done:
+
                 var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
 
                 if (oldTreeNodeSelection != treeNodeSelection)
