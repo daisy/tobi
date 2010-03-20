@@ -174,6 +174,15 @@
   <data name="MetadataValidator_Name" xml:space="preserve">
     <value>MetadataValidator</value>
   </data>
+  <data name="Metadata_Optional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="Metadata_Recommended" xml:space="preserve">
+    <value>Recommended.</value>
+  </data>
+  <data name="Metadata_Required" xml:space="preserve">
+    <value>Required.</value>
+  </data>
   <data name="Missing" xml:space="preserve">
     <value>Missing {0}</value>
   </data>

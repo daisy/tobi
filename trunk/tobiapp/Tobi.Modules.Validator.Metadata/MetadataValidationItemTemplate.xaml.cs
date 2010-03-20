@@ -63,10 +63,10 @@ namespace Tobi.Plugin.Validator.Metadata
             if (value == null) return "";
             MetadataDefinition item = (MetadataDefinition)value;
             if (item.Occurrence == MetadataOccurrence.Required)
-                return "Required.  ";
+                return Tobi_Plugin_Validator_Metadata_Lang.Metadata_Required;          // TODO LOCALIZE Metadata_Required
             if (item.Occurrence == MetadataOccurrence.Recommended)
-                return "Recommended. ";
-            return "Optional. ";
+                return Tobi_Plugin_Validator_Metadata_Lang.Metadata_Recommended;        // TODO LOCALIZE Metadata_Recommended
+            return Tobi_Plugin_Validator_Metadata_Lang.Metadata_Optional;               // TODO LOCALIZE Metadata_Optional
         }
     }
 

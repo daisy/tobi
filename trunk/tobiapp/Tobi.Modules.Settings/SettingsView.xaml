@@ -25,7 +25,7 @@
 
   <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,4">
     <TextBlock
-      Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
+      Text="{x:Static Settings:Tobi_Plugin_Settings_Lang.Find}"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>     <!-- TODO LOCALIZE Find-->
 
     <UI:WatermarkTextBox Watermark="search keywords"
                                   HorizontalAlignment="Stretch"/>

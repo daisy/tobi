@@ -142,6 +142,33 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Optional.
+        /// </summary>
+        public static string Metadata_Optional {
+            get {
+                return ResourceManager.GetString("Metadata_Optional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended..
+        /// </summary>
+        public static string Metadata_Recommended {
+            get {
+                return ResourceManager.GetString("Metadata_Recommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required..
+        /// </summary>
+        public static string Metadata_Required {
+            get {
+                return ResourceManager.GetString("Metadata_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Must be a {0}.
         /// </summary>
         public static string MetadataDefinition_MustBeDatatype {

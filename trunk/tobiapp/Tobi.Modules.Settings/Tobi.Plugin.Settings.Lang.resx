@@ -123,6 +123,9 @@
   <data name="CmdFocus_DisplayEditor" xml:space="preserve">
     <value>Display an editor for application preferences</value>
   </data>
+  <data name="Find" xml:space="preserve">
+    <value>Find:</value>
+  </data>
   <data name="InvalidKeyboardShortcut" xml:space="preserve">
     <value>Invalid keyboard shortcut.</value>
   </data>
@@ -146,6 +149,9 @@
   </data>
   <data name="SettingsPlugin_Name" xml:space="preserve">
     <value>Application preferences.</value>
+  </data>
+  <data name="Settings_OriginalValue" xml:space="preserve">
+    <value />
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>Shortcut already used by: {0}</value>
