@@ -79,6 +79,15 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Find:.
+        /// </summary>
+        public static string Find {
+            get {
+                return ResourceManager.GetString("Find", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid keyboard shortcut..
         /// </summary>
         public static string InvalidKeyboardShortcut {
@@ -129,6 +138,15 @@ namespace Tobi.Plugin.Settings {
         public static string Preferences_ {
             get {
                 return ResourceManager.GetString("Preferences_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Settings_OriginalValue {
+            get {
+                return ResourceManager.GetString("Settings_OriginalValue", resourceCulture);
             }
         }
         

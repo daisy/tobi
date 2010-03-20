@@ -70,6 +70,15 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Content:.
+        /// </summary>
+        public static string Metadata_Content {
+            get {
+                return ResourceManager.GetString("Metadata_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description:.
         /// </summary>
         public static string Metadata_Description {
@@ -84,6 +93,24 @@ namespace Tobi.Plugin.MetadataPane {
         public static string Metadata_Error {
             get {
                 return ResourceManager.GetString("Metadata_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name:.
+        /// </summary>
+        public static string Metadata_Name {
+            get {
+                return ResourceManager.GetString("Metadata_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurrence:.
+        /// </summary>
+        public static string Metadata_Occurence {
+            get {
+                return ResourceManager.GetString("Metadata_Occurence", resourceCulture);
             }
         }
         

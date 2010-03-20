@@ -127,7 +127,7 @@ namespace Tobi.Plugin.Settings
 
             //IsChanged = Value != m_OriginalValue;
 
-            Message = IsChanged ? "(original: " + OriginalValue + ")" : null;
+            Message = IsChanged ? String.Format(Tobi_Plugin_Settings_Lang.Settings_OriginalValue, OriginalValue) : null;  // TODO LOCALIZE Settings_OriginalValue
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

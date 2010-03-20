@@ -290,8 +290,8 @@
 
       <!-- OCCURRENCE -->
       <TextBlock Grid.Row="1" Grid.Column="0"
-            FontWeight="Bold" Text="Occurrence: "
-           Focusable="True"/>
+            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Occurence}"
+           Focusable="True"/>  <!-- TODO LOCALIZE Metadata_Occurence-->
 
       <TextBlock Grid.Row="1" Grid.Column="1"
            Focusable="True"
@@ -302,7 +302,9 @@
 
       <!-- NAME DROP DOWN -->
       <TextBlock x:Name="LabelNames" Grid.Row="2" Grid.Column="0"
-            FontWeight="Bold" Text="Name: " Focusable="True"/>
+            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Name}" 
+                 Focusable="True"/>   <!-- TODO LOCALIZE Metadata_Name-->
+
 
       <ComboBox Grid.Row="2" Grid.Column="1"
           x:Name="namesComboBox"
@@ -327,8 +329,8 @@
 
       <!-- CONTENT -->
       <TextBlock Grid.Row="3" Grid.Column="0"
-            FontWeight="Bold" Text="Content: "
-           Focusable="True"/>
+            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Content}"
+           Focusable="True"/>    <!-- TODO LOCALIZE Metadata_Content-->
       <TextBox Grid.Row="3" Grid.Column="1"
 
          Height="20" VerticalAlignment="Top"
