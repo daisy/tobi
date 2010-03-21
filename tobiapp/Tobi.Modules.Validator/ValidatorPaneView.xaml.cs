@@ -87,7 +87,12 @@ namespace Tobi.Plugin.Validator
         */
 
         public IValidator SelectedValidator { get; set; }
-        public ValidationItem SelectedValidationItem { get; set; }
+        private ValidationItem m_SelectedValidationItem;
+        public ValidationItem SelectedValidationItem
+        {
+            get { return m_SelectedValidationItem; }
+            set { m_SelectedValidationItem = value; }
+        }
 
         private void SetupTabControl()
         {

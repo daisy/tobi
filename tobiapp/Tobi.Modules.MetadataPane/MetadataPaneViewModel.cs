@@ -104,10 +104,11 @@ namespace Tobi.Plugin.MetadataPane
             m_Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
-            if (project == null)
+            /*if (project == null)
             {
                 m_MetadataCollection = null;
-            }
+            }*/
+            m_MetadataCollection = null;
 
             RaisePropertyChanged(() => MetadataCollection);
         }
