@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Windows;
 
 namespace Tobi.Common.Validation
@@ -65,11 +67,17 @@ namespace Tobi.Common.Validation
         Warning
     } 
     
-    public class ValidationItem
+    public abstract class ValidationItem
     {
-        public string Message { get; set; }
+        public abstract string Message { get; }
         public ValidationSeverity Severity { get; set;}
         public IValidator Validator { get; set; }
+        //this is a longer string representing everything about the error
+        //it will be used by the validator-aggregator to copy the error detail to the clipboard
+        public abstract string CompleteSummary { get;}
+        //this function launches something that shows the error in context and maybe
+        //allows the user to fix it
+        public abstract void TakeAction();
     }
     public static class ValidationDataTemplateProperties
     {

@@ -1,4 +1,8 @@
-﻿using urakawa.metadata;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Windows;
+using Tobi.Common;
+using urakawa.metadata;
 using Tobi.Common.Validation;
 
 namespace Tobi.Plugin.Validator.Metadata
@@ -23,7 +27,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public urakawa.metadata.Metadata Target { get; set;}
 
-        public new string Message
+        public override string Message
         {
             get
             {
@@ -47,6 +51,20 @@ namespace Tobi.Plugin.Validator.Metadata
                 return description;
             }
         }
+        public override string CompleteSummary
+        {
+            get { return Message; }
+        }
+
+        public override void TakeAction()
+        {
+            //this message is just for testing
+            MessageBox.Show("This should open the metadadata editor");
+            //really, what we want is to open the metadata pane:
+            //CommandShowMetadataPane.Execute();
+            //but first, we need to get to that command
+        }
+
         public MetadataValidationError(MetadataDefinition definition)
         {
             Definition = definition;

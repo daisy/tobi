@@ -198,9 +198,6 @@
   <data name="NumVal" xml:space="preserve">
     <value>a numeric value</value>
   </data>
-  <data name="OpenMetadataEditor" xml:space="preserve">
-    <value>This should open the metadata editor</value>
-  </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error in {0}.</value>
   </data>
