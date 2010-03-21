@@ -50,7 +50,8 @@
     <!-- Left side: List of all validation items -->
     <TabControl Grid.Row="0" Grid.Column="0" x:Name="Tabs"
                 ItemsSource="{Binding Path=ValidatorAggregator.ObsValidators}"
-                SelectedItem="{Binding SelectedValidator}">
+                SelectedItem="{Binding SelectedValidator}"
+                >
 
       <TabControl.ItemTemplate>
         <DataTemplate>
@@ -60,15 +61,34 @@
 
       <TabControl.ContentTemplate>
         <DataTemplate>
-          <ListBox SelectedIndex="0" Margin="10" 
+          <ListBox SelectedIndex="0" Margin="10"
                    HorizontalContentAlignment="Stretch"
-                   ItemsSource="{Binding ValidationItems}"/>
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                   ListBoxItem.MouseDoubleClick="OnListItemDoubleClick"
+                   ItemsSource="{Binding ValidationItems}"
+                   SelectedItem="{Binding Mode=TwoWay, Path=SelectedValidationItem}"
+                   IsSynchronizedWithCurrentItem="True">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Message}"/>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>    
         </DataTemplate>
       </TabControl.ContentTemplate>
     </TabControl>
 
 
-
+    <StackPanel>
+      <ContentControl Grid.Column="1" Grid.Row="0" Content="{Binding Mode=OneWay, Path=SelectedValidationItem}"/>
+      
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnClipboardLinkClick">
+          <Run Text="Copy details to clipboard"/>
+        </Hyperlink>
+      </TextBlock>
+    
+    </StackPanel>
 
       <!--  maybe use a dynamic collection view source to keep the current tab in sync with the detail view?
     <ContentControl Margin="10,0,0,0" Grid.Column="1" Grid.Row="0"
