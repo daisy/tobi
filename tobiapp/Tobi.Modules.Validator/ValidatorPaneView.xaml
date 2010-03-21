@@ -10,6 +10,31 @@
   
   <DockPanel.Resources>
     <CollectionViewSource Source="{Binding Path=ValidationItems}" x:Key="ValidationItemsCVS"/>
+
+    <!-- Style  TargetType="{x:Type TabItem}">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type TabItem">
+            <Grid>
+              
+            </Grid>
+            <ListBox
+                   ItemsSource="{Binding ValidationItems}"
+                   IsSynchronizedWithCurrentItem="True"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                   ListBoxItem.MouseDoubleClick="OnListItemDoubleClick">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style -->
+    
+    
   </DockPanel.Resources>
   
   <Grid Height="Auto" Width="Auto">
@@ -23,18 +48,30 @@
     </Grid.RowDefinitions>
     
     <!-- Left side: List of all validation items -->
-    <ListBox Grid.Row="0" Grid.Column="0"
-             ItemsSource="{Binding Source={StaticResource ValidationItemsCVS}}"
-             IsSynchronizedWithCurrentItem="True"
-             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-      <ListBox.ItemTemplate>
+    <TabControl Grid.Row="0" Grid.Column="0" x:Name="Tabs"
+                ItemsSource="{Binding Path=ValidatorAggregator.ObsValidators}"
+                SelectedItem="{Binding SelectedValidator}">
+
+      <TabControl.ItemTemplate>
         <DataTemplate>
-          <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,0,0,5"/>  
+          <TextBlock Text="{Binding Mode=OneWay, Path=Validator.Name}"/>
         </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-    
+      </TabControl.ItemTemplate>
+
+      <TabControl.ContentTemplate>
+        <DataTemplate>
+          <ListBox SelectedIndex="0" Margin="10" 
+                   HorizontalContentAlignment="Stretch"
+                   ItemsSource="{Binding ValidationItems}"/>
+        </DataTemplate>
+      </TabControl.ContentTemplate>
+    </TabControl>
+
+
+
+
+      <!--  maybe use a dynamic collection view source to keep the current tab in sync with the detail view?
     <ContentControl Margin="10,0,0,0" Grid.Column="1" Grid.Row="0"
-                       Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />
+                       Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />-->
   </Grid>
 </DockPanel>

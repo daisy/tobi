@@ -1,4 +1,7 @@
-﻿using Tobi.Common.Validation;
+﻿using System;
+using System.ComponentModel.Composition;
+using Tobi.Common;
+using Tobi.Common.Validation;
 using urakawa.core;
 
 namespace Tobi.Plugin.Validator.ContentDocument
@@ -22,8 +25,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public TreeNode BeginningOfError { get; set; }
         public string DtdIdentifier { get; set; }
 
-        //todo: is there a problem overriding the base property Message {get; set;} with this new Message {get;} (no set method) ?
-        public new string Message
+                public override string Message
         {
             get
             {
@@ -56,6 +58,56 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 return Tobi_Plugin_Validator_ContentDocument_Lang.UnspecifiedError;                                                           // TODO LOCALIZE Key already added UnspecifiedError
             }
         }
+        public override string CompleteSummary
+        {
+            get
+            {
+                if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
+                {
+                    //return message plus target node snippet plus (optionally) dtd definition snippet
+                    return string.Format("{0}\n{1}\n{2}", Message, NodeNameSnippet(Target),
+                                               AllowedChildNodesConverter.GetCleanRegex(this.AllowedChildNodes));
+                }
+                if (ErrorType == ContentDocumentErrorType.MissingDtd)
+                {
+                    return string.Format("DTD resource not found for {0}", DtdIdentifier);    
+                }
+                if (ErrorType == ContentDocumentErrorType.UndefinedElement)
+                {
+                    return string.Format("Element definition not found for <{0}>",
+                                         ElementNameConverter.GetElementName(Target));
+                }
+
+                return "";
+            }
+            
+        }
+
+        [Import(typeof (IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false,
+            AllowRecomposition = false)] 
+        private IUrakawaSession m_UrakawaSession;
+       
+        //TODO: m_UrakawaSession is null ... am I importing it correctly?
+        public override void TakeAction()
+        {
+            m_UrakawaSession.PerformTreeNodeSelection(Target);
+        }
+
+        private static string NodeNameSnippet(TreeNode node)
+        {
+            string name = ElementNameConverter.GetElementName(node);
+            string snippet = string.Format("<{0}>\n", name);
+            foreach (var child in node.Children.ContentsAs_YieldEnumerable)
+            {
+                string childname = ElementNameConverter.GetElementName(child);
+                snippet += string.Format("\t<{0}>...\n", childname);
+
+            }
+            snippet += string.Format("</{0}>", name);
+            return snippet;
+
+        }
+
         public ContentDocumentValidationError()
         {
             Severity = ValidationSeverity.Error;

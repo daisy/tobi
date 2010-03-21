@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Windows.Documents;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
 using Tobi.Common.UI.XAML;
@@ -29,25 +32,25 @@ namespace Tobi.Plugin.Validator
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
 
-        private readonly Validator m_Validator;
+        public ValidatorAggregator ValidatorAggregator { get; private set;}
 
         [ImportingConstructor]
         public ValidatorPaneView(
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
-            [Import(typeof(Validator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-            Validator validator, 
+            [Import(typeof(ValidatorAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
+            ValidatorAggregator validator, 
             [ImportMany(ValidationDataTemplateProperties.TypeIdentifier, typeof(ResourceDictionary), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             IEnumerable<ResourceDictionary> resourceDictionaries)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
-            m_Validator = validator;
-            m_Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
+            ValidatorAggregator = validator;
+            //m_Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
 
-            ValidationItems = new ObservableCollection<ValidationItem>();
-            resetValidationItems(m_Validator);
+            //ValidationItems = new ObservableCollection<ValidationItem>();
+            //resetValidationItems(m_Validator);
             
             foreach (ResourceDictionary dict in resourceDictionaries)
             {
@@ -55,12 +58,14 @@ namespace Tobi.Plugin.Validator
             }
             
             DataContext = this;
+            
             InitializeComponent();
+            SetupTabControl();
         }
 
-        public ObservableCollection<ValidationItem> ValidationItems { get; set; }
+        /*public ObservableCollection<ValidationItem> ValidationItems { get; set; }
 
-        private void resetValidationItems(Validator validator)
+        private void resetValidationItems(ValidatorAggregator validator)
         {
             ValidationItems.Clear();
             
@@ -74,10 +79,53 @@ namespace Tobi.Plugin.Validator
                 ValidationItems.Add(validationItem);
             }
         }
-
+        
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
-            resetValidationItems((Validator)e.Validator);
+            resetValidationItems((ValidatorAggregator)e.Validator);
+        }
+        */
+
+        public IValidator SelectedValidator { get; set; }
+        public ValidationItem SelectedValidationItem { get; set; }
+
+        private void SetupTabControl()
+        {
+            return;
+
+            Tabs.Items.Clear();
+            foreach (ObservableValidatorWrapper v in ValidatorAggregator.ObsValidators)
+            {
+                TabItem tabItem = new TabItem();
+                tabItem.Header = v.Validator.Name;
+                tabItem.DataContext = v;
+                Tabs.Items.Add(tabItem);
+                
+            }
+            SelectedValidator = (IValidator)((TabItem)Tabs.Items[0]).DataContext;
+            
+        }
+
+        private void OnClipboardLinkClick(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Hyperlink;
+            var err = obj.DataContext as ValidationItem;
+            try
+            {
+                //this raises an exception the first time it is used
+                Clipboard.SetText(err.CompleteSummary);
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail(string.Format("Clipboad exception: {0}", ex.Message));
+            }
+        }
+
+        private void OnListItemDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var list = sender as ListBox;
+            var validationItem = list.SelectedItem as ValidationItem;
+            validationItem.TakeAction();
         }
     }
 
@@ -90,6 +138,15 @@ namespace Tobi.Plugin.Validator
             if (value == null) return "";
             var severity = (ValidationSeverity)value;
             return severity == ValidationSeverity.Error;
+        }
+    }
+
+    [ValueConversion(typeof(object), typeof(object))]
+    public class TestConverter : ValueConverterMarkupExtensionBase<TestConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value;
         }
     }
 }

@@ -27,32 +27,63 @@
   <DataTemplate x:Key="ContentDocumentNodeTemplate">
     <Border Style="{StaticResource ContentDocumentNodeBorderStyle}">
     <StackPanel Margin="5" Background="White">
-      <TextBlock>
+
+      <!--<TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_DataTemplate}" Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE ContentDocument_DataTemplate-->
+          <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
         </TextBlock.Text>
       </TextBlock>
       
-      <!-- <TextBlock Style="{StaticResource ContentDocumentNodeContentsStyle}" 
-                 Text="{Binding Converter={ContentDocument:ElementTextExcerptConverter}}"
-                 TextWrapping="Wrap"/>
-      -->
+      
       <ListBox ItemsSource="{Binding Converter={ContentDocument:DirectElementChildrenConverter}}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <TextBlock>
               <TextBlock.Text>
-                <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_DataTemplate}" Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE ContentDocument_DataTemplate Key already added-->
+                <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
               </TextBlock.Text>
             </TextBlock>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
-      <TextBlock>
+       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_DataTemplate}" Converter="{ContentDocument:ElementNameConverter}"/>     <!-- TODO LOCALIZE ContentDocument_DataTemplate Key already added-->
+          <Binding StringFormat="&lt;/{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
         </TextBlock.Text>
       </TextBlock>
+      -->
+
+      <!-- Document="{Binding Target,
+      Converter={ContentDocument:TreeNodeFlowDocumentConverter}}"
+      -->
+      <FlowDocumentScrollViewer x:Name="FlowDocScroll"
+                   
+                    IsTabStop="False"
+                    Focusable="False"
+                    Zoom="110"
+                    FontFamily="Palatino Linotype"
+                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                    Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
+
+        <FlowDocument x:Name="FlowDoc"
+                     AutomationProperties.Name="Feature not available"
+                     IsEnabled = "True"
+                     IsHyphenationEnabled = "False"
+                     IsOptimalParagraphEnabled = "False"
+                     ColumnWidth = "Infinity"
+                     IsColumnWidthFlexible="False"
+                     TextAlignment = "Left"
+                     Focusable="False"
+                     >
+          <Paragraph>Hello!</Paragraph>
+        </FlowDocument>
+                     
+
+      </FlowDocumentScrollViewer>
+
+
+
+       
     </StackPanel>
     </Border>
   </DataTemplate>
@@ -62,7 +93,7 @@
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>  <!-- TODO LOCALIZE MissingDTD Key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>   <!-- TODO LOCALIZE CannotValidateDoc-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>  <!-- TODO LOCALIZE DTDIdentifier-->
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.BindingDtdIdentifier}"/>  <!-- TODO LOCALIZE BindingDtdIdentifier-->
+      <TextBlock Text="{Binding DtdIdentifier}"/>
    </StackPanel>
   </DataTemplate>
 
@@ -71,7 +102,12 @@
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>   <!-- TODO LOCALIZE UndefinedElement key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
-                          Content="{Binding Target}" /> 
+                          Content="{Binding Target}" />
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnLinkClick">
+          <Run Text="Click to view"/>
+        </Hyperlink>
+      </TextBlock>
     </StackPanel>
   </DataTemplate>
 
@@ -80,15 +116,15 @@
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
       <TextBlock TextWrapping="Wrap">
         <TextBlock.Text>
-          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_InvalidChildElements}"
+          <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE ContentDocument_InvalidChildElements-->
+                   Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
         </TextBlock.Text>
       </TextBlock>
       
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnLinkClick">
-          <Run Text="x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView"/>   <!-- TODO LOCALIZE ClickToView -->
+          <Run Text="Click to view"/>
         </Hyperlink>
       </TextBlock>
 
@@ -97,9 +133,9 @@
 
       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocument_PermittedChildren}" 
+          <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:" 
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE ContentDocument_PermittedChildren -->
+                   Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE -->
         </TextBlock.Text>
       </TextBlock>
 
@@ -129,14 +165,13 @@
   </DataTemplate>
 
   <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
-      <TextBlock Text="{Binding Message}"/> 
+      <TextBlock Text="{Binding Message}"/>
   </DataTemplate>
   
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
-      <ContentPresenter x:Name="Presenter" 
-                        ContentTemplate="{StaticResource ContentDocumentGeneralErrorTemplate}" 
-                        Content="{TemplateBinding Content}" />
-    
+    <ContentPresenter x:Name="Presenter"
+                      ContentTemplate="{StaticResource ContentDocumentGeneralErrorTemplate}"
+                      Content="{TemplateBinding Content}"/>
       <DataTemplate.Triggers>
         <DataTrigger Binding="{Binding ErrorType}">
         	<DataTrigger.Value>

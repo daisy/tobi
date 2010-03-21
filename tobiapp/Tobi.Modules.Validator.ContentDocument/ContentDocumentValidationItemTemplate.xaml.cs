@@ -2,11 +2,8 @@
 using System.Collections;
 using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using Microsoft.Practices.Composite.Events;
-using Tobi.Common;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.core;
@@ -20,20 +17,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             InitializeComponent();
         }
-
-        //[Import(typeof(IEventAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-        //private IEventAggregator m_EventAggregator;
-
-        [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false, AllowRecomposition = false)]
-        private IUrakawaSession m_UrakawaSession;
-
+        
         private void OnLinkClick(object sender, RoutedEventArgs e)
         {
             var obj = sender as Hyperlink;
-            var node = ((ContentDocumentValidationError)obj.DataContext).Target as TreeNode;
-
-            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(node);
-            m_UrakawaSession.PerformTreeNodeSelection(node);
+            ((ValidationItem)obj.DataContext).TakeAction();
         }
     }
 
@@ -64,8 +52,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
-            TreeNode element = value as TreeNode;
-            string elementName = GetNearestElementName(element);
+            return GetElementName(value as TreeNode);
+        }
+        public static string GetElementName(TreeNode node)
+        {
+            string elementName = GetNearestElementName(node);
             if (string.IsNullOrEmpty(elementName)) return "";
             return elementName;
         }
@@ -132,16 +123,35 @@ namespace Tobi.Plugin.Validator.ContentDocument
     [ValueConversion(typeof(string), typeof(string))]
     public class AllowedChildNodesConverter : ValueConverterMarkupExtensionBase<AllowedChildNodesConverter>
     {
-        //todo: work on this regex string pretty print function
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return "";
             if (!(value is string)) return "";
 
-            string str = value as string;
-            if (string.IsNullOrEmpty(str)) return "";
+            return GetCleanRegex(value as string);
+            
+        }
+        //todo: work on this regex string pretty print function
+        public static string GetCleanRegex(string regex)
+        {
+            if (string.IsNullOrEmpty(regex)) return "";
 
-            return str.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
+            return regex.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
+        }
+    }
+    [ValueConversion(typeof(TreeNode), typeof(FlowDocument))]
+    public class TreeNodeFlowDocumentConverter : ValueConverterMarkupExtensionBase<TreeNodeFlowDocumentConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+
+            FlowDocument doc = new FlowDocument();
+            Paragraph para = new Paragraph();
+            para.Inlines.Add("Hello World!");
+            doc.Blocks.Add(para);
+            return doc;
         }
     }
 }

@@ -2,10 +2,10 @@
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Documents;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.metadata;
-
 
 namespace Tobi.Plugin.Validator.Metadata
 {
@@ -19,7 +19,8 @@ namespace Tobi.Plugin.Validator.Metadata
 
         private void OnLinkClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(Tobi_Plugin_Validator_Metadata_Lang.OpenMetadataEditor);                       // TODO LOCALIZE OpenMetadataEditor
+            var obj = sender as Hyperlink;
+            ((ValidationItem)obj.DataContext).TakeAction();
         }
     }
 

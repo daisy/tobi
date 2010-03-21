@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -9,8 +11,8 @@ using urakawa.events.undo;
 
 namespace Tobi.Plugin.Validator
 {
-    [Export(typeof(Validator)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class Validator : AbstractValidator, IPartImportsSatisfiedNotification
+    [Export(typeof(ValidatorAggregator)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class ValidatorAggregator : AbstractValidator, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -26,11 +28,14 @@ namespace Tobi.Plugin.Validator
         private readonly ILoggerFacade m_Logger;
 
         private readonly IUrakawaSession m_UrakawaSession;
-        public readonly IEnumerable<IValidator> m_Validators;
+        
+        //public readonly IEnumerable<IValidator> Validators;
+        public List<ObservableValidatorWrapper> ObsValidators{ get; private set;}
+        
         private bool m_RanOnce;
 
         [ImportingConstructor]
-        public Validator(
+        public ValidatorAggregator(
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
             [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
@@ -41,7 +46,13 @@ namespace Tobi.Plugin.Validator
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
             m_RanOnce = false;
-            m_Validators = validators;
+            //Validators = validators;
+            ObsValidators = new List<ObservableValidatorWrapper>();
+            foreach (IValidator v in validators)
+            {
+                ObsValidators.Add(new ObservableValidatorWrapper(v));
+            }
+            
             m_UrakawaSession = session;
             
             IsValid = true;
@@ -102,14 +113,14 @@ namespace Tobi.Plugin.Validator
                     yield return null;
                 }
 
-                foreach (IValidator validator in m_Validators)
+                foreach (ObservableValidatorWrapper ov in ObsValidators)
                 {
-                    if (validator.IsValid)
+                    if (ov.Validator.IsValid)
                     {
                         continue;
                     }
 
-                    foreach (ValidationItem item in validator.ValidationItems)
+                    foreach (ValidationItem item in ov.ValidationItems)
                     {
                         yield return item;
                     }
@@ -118,33 +129,75 @@ namespace Tobi.Plugin.Validator
                 yield break;
             }
         }
-
+        
         public override bool Validate()
         {
-            // Is LINQ really more readble for the average developer ?
-            //bool m_IsValid = Validators.Aggregate(true, (current, validator) => current && validator.Validate());
-
+            
             bool isValid = true;
             
-            foreach (IValidator validator in m_Validators)
+            foreach (ObservableValidatorWrapper ov in ObsValidators)
             {
                 bool result = true;
-                if (!validator.ShouldRunOnlyOnce || 
-                    (validator.ShouldRunOnlyOnce && !m_RanOnce))
+                if (!ov.Validator.ShouldRunOnlyOnce || 
+                    (ov.Validator.ShouldRunOnlyOnce && !m_RanOnce))
                 {
-                    result = validator.Validate();
+                    result = ov.Validator.Validate();
                     isValid = isValid && result;
                 }
                 
             }
+             
+            /*
+            foreach (IValidator v in Validators)
+            {
+                bool result = true;
+                if (!v.ShouldRunOnlyOnce ||
+                    (v.ShouldRunOnlyOnce && !m_RanOnce))
+                {
+                    result = v.Validate();
+                    isValid = isValid && result;
+                }
 
+            }
+            */
             IsValid = isValid;
 
             m_RanOnce = true;
 
-            
-
             return IsValid;
         }
+    }
+
+    //give each validator an observablecollection of items
+    public class ObservableValidatorWrapper
+    {
+        public IValidator Validator { get; private set; }
+        public ObservableCollection<ValidationItem> ValidationItems { get; private set; }
+       
+        public ObservableValidatorWrapper(IValidator validator)
+        {
+            Validator = validator;
+            ValidationItems = new ObservableCollection<ValidationItem>(Validator.ValidationItems);
+            Validator.ValidatorStateRefreshed += new EventHandler<ValidatorStateRefreshedEventArgs>(Validator_ValidatorStateRefreshed);
+            refreshValidationItems();
+        }
+        ~ObservableValidatorWrapper()
+        {
+            Validator.ValidatorStateRefreshed -= new EventHandler<ValidatorStateRefreshedEventArgs>(Validator_ValidatorStateRefreshed);
+        }
+        void Validator_ValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
+        {
+            refreshValidationItems();
+        }
+        private void refreshValidationItems()
+        {
+            ValidationItems.Clear();
+            foreach (ValidationItem v in Validator.ValidationItems)
+            {
+                ValidationItems.Add(v);
+            }
+            
+        }
+        
     }
 }
