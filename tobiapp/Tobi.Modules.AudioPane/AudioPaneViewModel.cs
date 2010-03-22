@@ -357,19 +357,28 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        public event EventHandler InputDeviceAdded;
+        public event EventHandler InputDeviceRemoved;
+
+        public event EventHandler OuputDeviceAdded;
+        public event EventHandler OuputDeviceRemoved;
 
         private void OnDeviceArrived(object sender, EventArgs e)
         {
-#if DEBUG
-            Debugger.Break();
-#endif
+            // TODO: raise the OuputDeviceAdded or InputDeviceAdded event if necessary
+            Console.WriteLine("=========>> OnDeviceArrived");
+//#if DEBUG
+//            Debugger.Break();
+//#endif
         }
 
         private void OnDeviceRemoved(object sender, EventArgs e)
         {
-#if DEBUG
-            Debugger.Break();
-#endif
+            // TODO: raise the OuputDeviceRemoved or InputDeviceRemoved event if necessary
+            Console.WriteLine("=========>> OnDeviceRemoved");
+//#if DEBUG
+//            Debugger.Break();
+//#endif
         }
 
         private void initializeAudioStuff()
