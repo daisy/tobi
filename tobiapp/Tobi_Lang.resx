@@ -123,61 +123,61 @@
   <data name="ExitConfirm" xml:space="preserve">
     <value>Are you sure you want to exit Tobi ?</value>
   </data>
-  <data name="Help" xml:space="preserve">
+  <data name="CmdHelp_ShortDesc" xml:space="preserve">
     <value>_Help</value>
   </data>
-  <data name="Help_" xml:space="preserve">
+  <data name="CmdHelp_LongDesc" xml:space="preserve">
     <value>Get help</value>
   </data>
   <data name="LangStringKey1" xml:space="preserve">
     <value>Hello</value>
   </data>
-  <data name="ManageShortcuts" xml:space="preserve">
+  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
     <value>_Keyboard shortcuts</value>
   </data>
-  <data name="ManageShortcuts_" xml:space="preserve">
+  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
     <value>View keyboard shortcuts</value>
   </data>
-  <data name="Menu_Exit" xml:space="preserve">
+  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
     <value>_Quit</value>
   </data>
-  <data name="Menu_Exit_" xml:space="preserve">
+  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
     <value>Exit the application</value>
   </data>
-  <data name="OpenTobiFolder" xml:space="preserve">
+  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
     <value>Application executable and log</value>
   </data>
-  <data name="OpenTobiFolder_" xml:space="preserve">
+  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
     <value>Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides).</value>
   </data>
-  <data name="OpenTobiIsolatedStorage" xml:space="preserve">
+  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
     <value>Private storage space</value>
   </data>
-  <data name="OpenTobiIsolatedStorage_" xml:space="preserve">
+  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
     <value>Open a file browser where Tobi's system files are located.</value>
   </data>
-  <data name="OpenTobiSettingsFolder" xml:space="preserve">
+  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
     <value>Settings / user preferences</value>
   </data>
-  <data name="OpenTobiSettingsFolder_" xml:space="preserve">
+  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
     <value>Open a file browser where the Tobi user settings are stored.</value>
   </data>
-  <data name="UI_DecreaseMagnification" xml:space="preserve">
+  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
     <value>_Decrease magnification</value>
   </data>
-  <data name="UI_DecreaseMagnification_" xml:space="preserve">
+  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
     <value>Decrease the UI magnification level</value>
   </data>
-  <data name="UI_IncreaseMagnification" xml:space="preserve">
+  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
     <value>_Increase magnification</value>
   </data>
-  <data name="UI_IncreaseMagnification_" xml:space="preserve">
+  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
     <value>Increase the UI magnification level</value>
   </data>
-  <data name="UI_ResetMagnification" xml:space="preserve">
+  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
     <value>_Reset magnification</value>
   </data>
-  <data name="UI_ResetMagnification_" xml:space="preserve">
+  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
     <value>Reset the UI magnification level</value>
   </data>
   <data name="Menu_Find" xml:space="preserve">
