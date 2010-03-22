@@ -166,10 +166,10 @@ namespace Tobi.Plugin.AudioPane
 
             EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Subscribe(str => StatusBarMessage = str, StatusBarMessageUpdateEvent.THREAD_OPTION);
 
-            Settings.Default.PropertyChanged += SettingsPropertyChanged;
+            Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
 
-        private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!e.PropertyName.StartsWith(@"AudioWaveForm_")
                 && !e.PropertyName.StartsWith(@"Audio_")) return;
@@ -283,7 +283,7 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
             Logger.Log("AudioPaneViewModel garbage collected.", Category.Debug, Priority.Medium);
 #endif
-            Settings.Default.PropertyChanged -= SettingsPropertyChanged;
+            Settings.Default.PropertyChanged -= OnSettingsPropertyChanged;
         }
 
         #endregion Construction
