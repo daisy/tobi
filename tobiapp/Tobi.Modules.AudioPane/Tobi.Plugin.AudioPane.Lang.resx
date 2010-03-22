@@ -217,7 +217,7 @@
     <value>Pause playback</value>
   </data>
   <data name="CmdAudioPlay_ShortDesc" xml:space="preserve">
-    <value>Start playback</value>
+    <value>Pla_y</value>
   </data>
   <data name="CmdAudioPlayPreviewLeft_ShortDesc" xml:space="preserve">
     <value>Preview _before</value>
@@ -386,5 +386,8 @@
   </data>
   <data name="CmdTransaction_DeleteAudioInSeveraTreenodes" xml:space="preserve">
     <value>Delete a portion of audio that spans across several treenodes</value>
+  </data>
+  <data name="CmdAudioPlay_LongDesc" xml:space="preserve">
+    <value>Start playback</value>
   </data>
 </root>
