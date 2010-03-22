@@ -60,7 +60,7 @@ namespace Tobi.Plugin.Validator
             DataContext = this;
             
             InitializeComponent();
-            SetupTabControl();
+            //SetupTabControl();
         }
 
         /*public ObservableCollection<ValidationItem> ValidationItems { get; set; }
@@ -86,35 +86,19 @@ namespace Tobi.Plugin.Validator
         }
         */
 
-        public IValidator SelectedValidator { get; set; }
-        private ValidationItem m_SelectedValidationItem;
-        public ValidationItem SelectedValidationItem
+        //public IValidator SelectedValidator { get; set; }
+        //private ValidationItem m_SelectedValidationItem;
+        /*public ValidationItem SelectedValidationItem
         {
             get { return m_SelectedValidationItem; }
             set { m_SelectedValidationItem = value; }
-        }
-
-        private void SetupTabControl()
-        {
-            return;
-
-            Tabs.Items.Clear();
-            foreach (ObservableValidatorWrapper v in ValidatorAggregator.ObsValidators)
-            {
-                TabItem tabItem = new TabItem();
-                tabItem.Header = v.Validator.Name;
-                tabItem.DataContext = v;
-                Tabs.Items.Add(tabItem);
-                
-            }
-            SelectedValidator = (IValidator)((TabItem)Tabs.Items[0]).DataContext;
-            
-        }
+        }*/
 
         private void OnClipboardLinkClick(object sender, RoutedEventArgs e)
         {
             var obj = sender as Hyperlink;
             var err = obj.DataContext as ValidationItem;
+            if (err == null) return;
             try
             {
                 //this raises an exception the first time it is used
@@ -146,12 +130,25 @@ namespace Tobi.Plugin.Validator
         }
     }
 
-    [ValueConversion(typeof(object), typeof(object))]
+    [ValueConversion(typeof(ValidationItem), typeof(ValidationItem))]
     public class TestConverter : ValueConverterMarkupExtensionBase<TestConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return value;
+            if (value == null)
+                return null;
+            if (!(value is ValidationItem))
+                return null;
+            return value as ValidationItem;
+        }
+    }
+
+    [ValueConversion(typeof(object), typeof(Visibility))]
+    public class VisibilityConverter : ValueConverterMarkupExtensionBase<VisibilityConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value == null ? Visibility.Hidden : Visibility.Visible;
         }
     }
 }
