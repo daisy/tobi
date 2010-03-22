@@ -63,9 +63,9 @@ namespace Tobi.Plugin.Validator {
         /// <summary>
         ///   Looks up a localized string similar to Validation Check.
         /// </summary>
-        public static string ValidationCheck {
+        public static string CmdValidationCheck_ShortDesc {
             get {
-                return ResourceManager.GetString("ValidationCheck", resourceCulture);
+                return ResourceManager.GetString("CmdValidationCheck_ShortDesc", resourceCulture);
             }
         }
         
