@@ -378,8 +378,8 @@ namespace Tobi.Common
 
 
 
-        public const string Audio_StartRecord = "St_art recording";
-        public const string Audio_StartRecord_ = "Start recording audio";
+        public const string CmdAudioStartRecord_ShortDesc = "St_art recording";
+        public const string CmdAudioStartRecord_LongDesc = "Start recording audio";
         //public static KeyGesture Audio_StartRecord_KEYS = new KeyGesture(Key.R, ModifierKeys.Control);
 
         public const string Audio_StopRecord = "St_op recording";

@@ -88,38 +88,38 @@ namespace Tobi.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Hide details.
-        /// </summary>
-        public static string DetailsCollapse {
-            get {
-                return ResourceManager.GetString("DetailsCollapse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hide detailed information.
         /// </summary>
-        public static string DetailsCollapse_ {
+        public static string CmdDetailsCollapse_LongDesc {
             get {
-                return ResourceManager.GetString("DetailsCollapse_", resourceCulture);
+                return ResourceManager.GetString("CmdDetailsCollapse_LongDesc", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Show details.
+        ///   Looks up a localized string similar to _Hide details.
         /// </summary>
-        public static string DetailsExpand {
+        public static string CmdDetailsCollapse_ShortDesc {
             get {
-                return ResourceManager.GetString("DetailsExpand", resourceCulture);
+                return ResourceManager.GetString("CmdDetailsCollapse_ShortDesc", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Display detailed information.
         /// </summary>
-        public static string DetailsExpand_ {
+        public static string CmdDetailsExpand_LongDesc {
             get {
-                return ResourceManager.GetString("DetailsExpand_", resourceCulture);
+                return ResourceManager.GetString("CmdDetailsExpand_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Show details.
+        /// </summary>
+        public static string CmdDetailsExpand_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdDetailsExpand_ShortDesc", resourceCulture);
             }
         }
         
