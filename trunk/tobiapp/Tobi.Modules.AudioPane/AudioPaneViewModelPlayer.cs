@@ -321,7 +321,8 @@ namespace Tobi.Plugin.AudioPane
             }
             set
             {
-                if (value != null && m_Player.OutputDevice != value)
+                if (value != null
+                    && (m_Player.OutputDevice == null || m_Player.OutputDevice.Name != value.Name))
                 {
                     Settings.Default.Audio_OutputDevice = value.Name;
                 }

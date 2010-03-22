@@ -189,7 +189,8 @@ namespace Tobi.Plugin.AudioPane
             }
             set
             {
-                if (value != null && m_Recorder.InputDevice != value)
+                if (value != null
+                    && (m_Recorder.InputDevice == null || m_Recorder.InputDevice.Name != value.Name))
                 {
                     Settings.Default.Audio_InputDevice = value.Name;
                 }
