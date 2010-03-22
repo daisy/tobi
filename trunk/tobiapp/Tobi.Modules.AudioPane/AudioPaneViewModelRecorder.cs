@@ -26,8 +26,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Recorder()
         {
             CommandStopRecord = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_StopRecord,
-                Tobi_Plugin_AudioPane_Lang.Audio_StopRecord_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecord_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecord_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
                 () =>
@@ -46,8 +46,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStopRecord);
             //
             CommandStartRecord = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_StartRecord,
-                UserInterfaceStrings.Audio_StartRecord_,
+                UserInterfaceStrings.CmdAudioStartRecord_ShortDesc,
+                UserInterfaceStrings.CmdAudioStartRecord_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-record"),
                 () =>
@@ -99,8 +99,8 @@ namespace Tobi.Plugin.AudioPane
 
             //
             CommandStartMonitor = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor,
-                Tobi_Plugin_AudioPane_Lang.Audio_StartMonitor_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStartMonitor_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStartMonitor_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("audio-input-microphone"),
                 () =>
@@ -137,8 +137,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStartMonitor);
             //
             CommandStopMonitor = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_StopMonitor,
-                Tobi_Plugin_AudioPane_Lang.Audio_StopMonitor_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopMonitor_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopMonitor_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-stop"),
                 () =>

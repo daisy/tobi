@@ -19,8 +19,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Navigation()
         {
             CommandGotoBegining = new RichDelegateCommand(
-                   Tobi_Plugin_AudioPane_Lang.Audio_GotoBegin,
-                   Tobi_Plugin_AudioPane_Lang.Audio_GotoBegin_,
+                   Tobi_Plugin_AudioPane_Lang.CmdAudioGotoBegin_ShortDesc,
+                   Tobi_Plugin_AudioPane_Lang.CmdAudioGotoBegin_LongDesc,
                    null, // KeyGesture obtained from settings (see last parameters below)
                    m_ShellView.LoadTangoIcon("go-first"),
                    () =>
@@ -53,8 +53,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandGotoBegining);
             //
             CommandGotoEnd = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_GotoEnd,
-                Tobi_Plugin_AudioPane_Lang.Audio_GotoEnd_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioGotoEnd_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioGotoEnd_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-last"),
                 () =>
@@ -89,8 +89,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandGotoEnd);
             //
             CommandStepBack = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_StepBack,
-                 Tobi_Plugin_AudioPane_Lang.Audio_StepBack_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStepBack_ShortDesc,
+                 Tobi_Plugin_AudioPane_Lang.CmdAudioStepBack_LongDesc,
                  null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-skip-backward"),
                 () =>
@@ -151,8 +151,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStepBack);
             //
             CommandStepForward = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_StepForward,
-                Tobi_Plugin_AudioPane_Lang.Audio_StepForward_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStepForward_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStepForward_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-skip-forward"),
                 () =>
@@ -201,8 +201,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStepForward);
             //
             CommandFastForward = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_FastForward,
-                Tobi_Plugin_AudioPane_Lang.Audio_FastForward_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFastForward_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFastForward_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-seek-forward"),
                 () =>
@@ -236,8 +236,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandFastForward);
             //
             CommandRewind = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_Rewind,
-                Tobi_Plugin_AudioPane_Lang.Audio_Rewind_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioRewind_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioRewind_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-seek-backward"),
                 () =>

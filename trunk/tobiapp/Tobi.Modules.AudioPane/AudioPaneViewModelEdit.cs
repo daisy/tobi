@@ -31,8 +31,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_Edit()
         {
             CopyCommand = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Copy,
-                Tobi_Plugin_AudioPane_Lang.Copy_,
+                Tobi_Plugin_AudioPane_Lang.CmdCopy_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdCopy_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-copy"),
                 () =>
@@ -88,8 +88,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CopyCommand);
             //
             CutCommand = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Cut,
-                Tobi_Plugin_AudioPane_Lang.Cut_,
+                Tobi_Plugin_AudioPane_Lang.CmdCut_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdCut_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-cut"),
                 () =>
@@ -113,8 +113,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CutCommand);
             //
             PasteCommand = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Paste,
-                Tobi_Plugin_AudioPane_Lang.Paste_,
+                Tobi_Plugin_AudioPane_Lang.CmdPaste_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdPaste_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"edit-paste"),
                 () =>
@@ -146,8 +146,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(PasteCommand);
             //
             CommandOpenFile = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_OpenFile,
-                Tobi_Plugin_AudioPane_Lang.Audio_OpenFile_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioOpenFile_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioOpenFile_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("document-open"),
                 () =>
@@ -163,8 +163,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandOpenFile);
             //
             CommandInsertFile = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_InsertFile,
-                Tobi_Plugin_AudioPane_Lang.Audio_InsertFile_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioInsertFile_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioInsertFile_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("folder-open"),
                 () =>
@@ -196,8 +196,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandInsertFile);
             //
             CommandDeleteAudioSelection = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_Delete,
-                Tobi_Plugin_AudioPane_Lang.Audio_Delete_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioDelete_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioDelete_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("audio-volume-muted"),
                 () =>

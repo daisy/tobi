@@ -28,8 +28,8 @@ namespace Tobi.Plugin.AudioPane
         private void initializeCommands_View()
         {
             CommandRefresh = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_Reload,
-                Tobi_Plugin_AudioPane_Lang.Audio_Reload_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioReload_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioReload_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null, //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 //shellView.LoadTangoIcon("view-refresh"),
@@ -45,8 +45,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandRefresh);
             //
             CommandZoomSelection = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_ZoomSelection,
-                Tobi_Plugin_AudioPane_Lang.Audio_ZoomSelection_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioZoomSelection_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioZoomSelection_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
                 //shellView.LoadTangoIcon("system-search"),
@@ -63,8 +63,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandZoomSelection);
             //
             CommandZoomFitFull = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_FitFull,
-                Tobi_Plugin_AudioPane_Lang.Audio_FitFull_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFitFull_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFitFull_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
                 ()=>
@@ -81,8 +81,8 @@ namespace Tobi.Plugin.AudioPane
             //
             //
             CommandAudioSettings = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_Settings,
-                Tobi_Plugin_AudioPane_Lang.Audio_Settings_,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
                 ()=>
@@ -108,7 +108,7 @@ namespace Tobi.Plugin.AudioPane
             //
 #if DEBUG
             CommandShowOptionsDialog = new RichDelegateCommand(
-                UserInterfaceStrings.Audio_ShowOptions,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioShowOptions_ShortDesc,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
@@ -121,7 +121,7 @@ namespace Tobi.Plugin.AudioPane
                     var pane = new AudioOptions { DataContext = this };
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.Audio_ShowOptions),
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.CmdAudioShowOptions_ShortDesc),
                                                            pane,
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
@@ -137,7 +137,7 @@ namespace Tobi.Plugin.AudioPane
 #endif //DEBUG
             //
             CommandFocus = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_Focus,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFocus_ShortDesc,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("audio-volume-low"),
@@ -154,7 +154,7 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandFocus);
             //
             CommandFocusStatusBar = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.Audio_FocusStatusBar,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFocusStatusBar_ShortDesc,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_utilities-terminal"),

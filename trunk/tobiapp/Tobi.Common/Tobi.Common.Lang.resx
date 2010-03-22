@@ -126,16 +126,16 @@
   <data name="CloseDialog" xml:space="preserve">
     <value>_Close</value>
   </data>
-  <data name="DetailsCollapse" xml:space="preserve">
+  <data name="CmdDetailsCollapse_ShortDesc" xml:space="preserve">
     <value>_Hide details</value>
   </data>
-  <data name="DetailsCollapse_" xml:space="preserve">
+  <data name="CmdDetailsCollapse_LongDesc" xml:space="preserve">
     <value>Hide detailed information</value>
   </data>
-  <data name="DetailsExpand" xml:space="preserve">
+  <data name="CmdDetailsExpand_ShortDesc" xml:space="preserve">
     <value>_Show details</value>
   </data>
-  <data name="DetailsExpand_" xml:space="preserve">
+  <data name="CmdDetailsExpand_LongDesc" xml:space="preserve">
     <value>Display detailed information</value>
   </data>
   <data name="Menu_Audio" xml:space="preserve">
