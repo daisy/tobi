@@ -1,6 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project>
-  <configuration createBackupFiles="False" hideEmptyRows="False" useSpellChecker="True" neutralLanguageCode="en-US">
+  <configuration createBackupFiles="False" hideEmptyRows="False" useSpellChecker="False" neutralLanguageCode="en-us">
+    <globalSetting name="ReadOnlyFileOverwriteBehaviour">0</globalSetting>
+    <globalSetting name="OmitEmptyItems">True</globalSetting>
+    <globalSetting name="ShowCommentsColumnInGrid">False</globalSetting>
+    <globalSetting name="IgnoreWindowsFormsResourcesWithDesignerFiles">True</globalSetting>
+    <globalSetting name="HideInternalDesignerRows">True</globalSetting>
+    <globalSetting name="UseShallowGridDataCumulation">True</globalSetting>
+    <globalSetting name="HideFileGroupFilesInTree">True</globalSetting>
+    <globalSetting name="NeutralLanguageFileNamePattern">[basename][optionaldefaulttypes].[extension]</globalSetting>
+    <globalSetting name="NonNeutralLanguageFileNamePattern">[basename][optionaldefaulttypes].[languagecode].[extension]</globalSetting>
+    <globalSetting name="BaseNameDotCount">0</globalSetting>
+    <globalSetting name="DefaultFileTypesToIgnore">.aspx;.ascx;.asmx;.master;.sitemap</globalSetting>
+    <globalSetting name="Project-UseCrypticWorkSheetNamesForExcelExport">False</globalSetting>
+    <globalSetting name="Project-PersistGridSettings">True</globalSetting>
+    <globalSetting name="ColorifyNullCells">True</globalSetting>
     <globalSetting name="Filter-ResourceEditorGrid">&lt;XtraSerializer version="1.0" application="View"&gt;
   &lt;property name="#LayoutVersion" /&gt;
   &lt;property name="ActiveFilterString" /&gt;
@@ -9,377 +23,317 @@
   &lt;property name="#LayoutVersion" /&gt;
 &lt;/XtraSerializer&gt;</globalSetting>
     <globalSetting name="projectMruItems">&lt;?xml version='1.0' encoding='utf-8'?&gt;&lt;items&gt;&lt;item type="0" checksum="1495344443" /&gt;&lt;/items&gt;</globalSetting>
-    <userSetting name="Administrator@DANIEL-FE913A11.filesInitialDir">Z:\Sources\daisy\tobi\trunk\tobiapp</userSetting>
+    <userSetting name="Administrator@DANIEL-FE913A11.filesInitialDir">Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Common</userSetting>
     <userSetting name="Administrator@DANIEL-FE913A11.FindText">
     </userSetting>
-    <userSetting name="Administrator@DANIEL-FE913A11.RecentFiles">Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\TaskDialog\TaskDialog\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\ServiceLocation\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\TaskDialog\Test\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\WPFToolkitVisualStudioDesign\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\WPFToolkitDesign\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization.Design\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\AvalonDock\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization.Expression.Design\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization\Properties\Resources.resx;Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization.VisualStudio.Design\Properties\Resources.resx</userSetting>
+    <userSetting name="Administrator@DANIEL-FE913A11.RecentFiles">Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi_Lang.resx</userSetting>
     <description>
     </description>
   </configuration>
   <fileGroups>
-    <fileGroup name="" projectFolderUniqueID="f9859906-7a1b-4928-9ea4-8558948ecdf3" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="Tobi.Lang.fr.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Lang.fr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="f9859906-7a1b-4928-9ea4-8558948ecdf3" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="Tobi.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="5d7fda37-7814-4d9b-a33e-c6469c298815" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="0b5dafe0-4275-4d7c-b965-cd46db18ac9c" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="ExternalLibs\CAL\Composite\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\CAL\Composite\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="b64a8769-ed62-45f9-a336-e60b1d1e3933" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="443cbad0-d37f-436a-80b6-37bab5d0040f" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="ExternalLibs\CAL\Composite.UnityExtensions\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\CAL\Composite.UnityExtensions\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="2483593c-e112-4b9f-8b3e-9927feb97f02" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="9579a8b3-43aa-493a-863e-b04454ff5d2c" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9724e6f4-6bf1-43a5-8efd-039607320de8" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="b4410502-f75a-4bf6-99ec-696bbd0e27f0" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="3c51c361-9fd4-4774-b147-7ce8df5f8c30" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="303349a8-3f33-466a-9e18-986412cebda7" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="150d7b65-8ee5-4fa3-81e6-b7b5319cc2cb" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="a61870db-c825-4462-a450-565223cc3657" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="ffcceaca-0dd9-4836-8747-1f5141e056c2" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.fr.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.fr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="ffcceaca-0dd9-4836-8747-1f5141e056c2" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="b706d9dd-8450-4160-9c91-2cf436f939bd" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="768c6b79-14ef-4577-9ef3-393c6fb08150" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="34318e22-9773-4797-ad6b-f34a3ed1e52b" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.Lang.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="b490f6a3-7736-4b81-a4c8-595ae4878bd9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="c960bf02-dc67-4a55-9c7c-62c91428a80f" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="ExternalLibs\CAL\Composite.Presentation\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\CAL\Composite.Presentation\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9f86b2e5-7710-4c44-a070-af33bd1064f6" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="07bb86aa-db5a-4c3f-bbbc-6c5cea0cd4d5" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.Lang.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\Arranger.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\Arranger.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\Fader.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\Fader.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\Graph\Graph.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\Graph\Graph.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\LcdPanel.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\LcdPanel.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\PanSlider.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\PanSlider.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\VolumeSlider.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\VolumeSlider.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\WaveViewer.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\audio\NAudio\Gui\WaveViewer.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="0e5031de-22a6-4a1b-809b-c5327002d220" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="c7672405-f142-4593-b518-fca1c99f6f2f" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="aa254885-a49f-494f-92c0-74692f2d6172" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="247c35ab-2bf5-4999-a9e0-1c52b9433fa2" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="a39280fa-862e-4b5b-9e89-ed27c6cdf8f4" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="049e01ef-dd47-40b2-b184-6468ae36eb55" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="ExternalLibs\CAL\Unity\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\CAL\Unity\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="038c7a17-330b-4fe4-9b1f-bb119e879d00" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="933453ef-f13a-4abe-9691-49896141ef45" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Common\Tobi.Common.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Common\Tobi.Common.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="1423493c-433d-4d61-8084-11f45cc8520b" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="bcb90b9e-a351-4f29-8bfc-30df25624cf7" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="ExternalLibs\MEF_Unity\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\MEF_Unity\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="4c66245a-3ec4-4092-bf7a-3eb66e880246" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="028ee5c1-45ba-492c-aa78-df99e5cb1f52" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.Validator\Tobi.Plugin.Validator.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Validator\Tobi.Plugin.Validator.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="850fbc7e-d3d7-461e-99e0-f5c85e7dbc01" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="a3419846-35fe-4814-820c-ebb82e175ac9" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="4f6f77ac-0901-49a2-a115-8f800dca7dc1" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="94591c96-c97a-4abc-b8fa-40147321a70e" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\dtds\DTDs.Lang.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\dtds\DTDs.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="dcd59f35-6cd9-4c72-b32d-04b778d493c1" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="fa2f0e4d-d78d-4386-85a4-a81e609a423b" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.Lang.resx" absoluteFilePath="Z:\Sources\daisy\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="72e05ef2-a731-4fc7-beba-92abc05bf4a4" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="007b2498-abb9-454d-91de-797b82830899" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.Settings\Tobi.Plugin.Settings.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Settings\Tobi.Plugin.Settings.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="3318b844-f6b7-48ca-bfc0-45182d013196" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="dc708b90-a8a9-4387-b0ff-f64e8b5787f3" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="cd17c216-5790-4a6e-8e90-6b8c76c6297f" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="01ca2722-0051-4607-af11-e8e41b6ebcfb" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="fecba54f-64d0-4796-939a-9df66d396971" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+    <fileGroup name="" projectFolderUniqueID="9775aa63-8cc8-4f21-bd43-921eb5da2115" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
       <file filePath="Tobi.Modules.MenuBarDebug\Tobi.Plugin.MenuBarDebug.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.MenuBarDebug\Tobi.Plugin.MenuBarDebug.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
     <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\AvalonDock\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\AvalonDock\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\ServiceLocation\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\ServiceLocation\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\TaskDialog\TaskDialog\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\TaskDialog\TaskDialog\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\TaskDialog\Test\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\TaskDialog\Test\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\WPFToolkit\DataVisualization\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\WPFToolkit\DataVisualization.Design\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization.Design\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\WPFToolkit\DataVisualization.Expression.Design\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization.Expression.Design\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\WPFToolkit\DataVisualization.VisualStudio.Design\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\DataVisualization.VisualStudio.Design\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\WPFToolkit\WPFToolkitDesign\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\WPFToolkitDesign\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
-      <file filePath="ExternalLibs\WPFToolkit\WPFToolkitVisualStudioDesign\Properties\Resources.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\ExternalLibs\WPFToolkit\WPFToolkitVisualStudioDesign\Properties\Resources.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <file filePath="Tobi_Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi_Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <remarks>
       </remarks>
     </fileGroup>
   </fileGroups>
   <projectFolders>
-    <projectFolder uniqueID="f9859906-7a1b-4928-9ea4-8558948ecdf3" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi" orderPosition="0">
+    <projectFolder uniqueID="2828ca6e-8619-4654-8593-36ade1f08d3a" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="9ef3c5a3-ce3a-4a37-99bb-7086456ef6ab" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Infrastructure" orderPosition="0">
+    <projectFolder uniqueID="5d208c13-bed8-4d17-babc-6c926a654fef" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Infrastructure" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="5d7fda37-7814-4d9b-a33e-c6469c298815" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Composite" orderPosition="0">
+    <projectFolder uniqueID="0b5dafe0-4275-4d7c-b965-cd46db18ac9c" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Composite" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="b64a8769-ed62-45f9-a336-e60b1d1e3933" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Composite.UnityExtensions" orderPosition="0">
+    <projectFolder uniqueID="443cbad0-d37f-436a-80b6-37bab5d0040f" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Composite.UnityExtensions" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="2483593c-e112-4b9f-8b3e-9927feb97f02" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.MenuBar" orderPosition="0">
+    <projectFolder uniqueID="9579a8b3-43aa-493a-863e-b04454ff5d2c" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.MenuBar" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="9724e6f4-6bf1-43a5-8efd-039607320de8" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.NavigationPane" orderPosition="0">
+    <projectFolder uniqueID="b4410502-f75a-4bf6-99ec-696bbd0e27f0" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.NavigationPane" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="3c51c361-9fd4-4774-b147-7ce8df5f8c30" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.DocumentPane" orderPosition="0">
+    <projectFolder uniqueID="303349a8-3f33-466a-9e18-986412cebda7" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.DocumentPane" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="150d7b65-8ee5-4fa3-81e6-b7b5319cc2cb" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.ToolBars" orderPosition="0">
+    <projectFolder uniqueID="a61870db-c825-4462-a450-565223cc3657" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.ToolBars" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="ffcceaca-0dd9-4836-8747-1f5141e056c2" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.AudioPane" orderPosition="0">
+    <projectFolder uniqueID="b706d9dd-8450-4160-9c91-2cf436f939bd" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.AudioPane" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="768c6b79-14ef-4577-9ef3-393c6fb08150" parentUniqueID="00000000-0000-0000-0000-000000000000" name="UrakawaSDK.core" orderPosition="0">
+    <projectFolder uniqueID="34318e22-9773-4797-ad6b-f34a3ed1e52b" parentUniqueID="00000000-0000-0000-0000-000000000000" name="UrakawaSDK.core" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="b490f6a3-7736-4b81-a4c8-595ae4878bd9" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Composite.Presentation" orderPosition="0">
+    <projectFolder uniqueID="c960bf02-dc67-4a55-9c7c-62c91428a80f" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Composite.Presentation" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="9f86b2e5-7710-4c44-a070-af33bd1064f6" parentUniqueID="00000000-0000-0000-0000-000000000000" name="AudioLib" orderPosition="0">
+    <projectFolder uniqueID="07bb86aa-db5a-4c3f-bbbc-6c5cea0cd4d5" parentUniqueID="00000000-0000-0000-0000-000000000000" name="AudioLib" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="9c5c649b-8046-4796-a3af-407ecb1210bc" parentUniqueID="00000000-0000-0000-0000-000000000000" name="NAudio" orderPosition="0">
+    <projectFolder uniqueID="10ac8e40-f0cc-4b0b-b000-cd7ce8f3abf9" parentUniqueID="00000000-0000-0000-0000-000000000000" name="NAudio" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="ab0da368-4e75-48b4-96fe-a01e41ef0b9c" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Mp3Sharp" orderPosition="0">
+    <projectFolder uniqueID="29559274-d429-4559-aff5-bef4f37c5923" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Mp3Sharp" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="0e5031de-22a6-4a1b-809b-c5327002d220" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.MetadataPane" orderPosition="0">
+    <projectFolder uniqueID="c7672405-f142-4593-b518-fca1c99f6f2f" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.MetadataPane" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="5468a8fb-565c-4346-8b5c-585a7ce63baf" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.ICSharpCode" orderPosition="0">
+    <projectFolder uniqueID="190a581d-d784-4112-bacc-a1c26ddae4d8" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.ICSharpCode" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="aa254885-a49f-494f-92c0-74692f2d6172" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Urakawa" orderPosition="0">
+    <projectFolder uniqueID="247c35ab-2bf5-4999-a9e0-1c52b9433fa2" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Urakawa" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="a39280fa-862e-4b5b-9e89-ed27c6cdf8f4" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Unity" orderPosition="0">
+    <projectFolder uniqueID="049e01ef-dd47-40b2-b184-6468ae36eb55" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.Unity" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="038c7a17-330b-4fe4-9b1f-bb119e879d00" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Common" orderPosition="0">
+    <projectFolder uniqueID="933453ef-f13a-4abe-9691-49896141ef45" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Common" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="1823e17a-5ffb-451a-843a-3997dd5b1266" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.MEF" orderPosition="0">
+    <projectFolder uniqueID="784e7b95-5477-442a-84b0-b0169a07024d" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.MEF" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="1423493c-433d-4d61-8084-11f45cc8520b" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.MEF_Unity" orderPosition="0">
+    <projectFolder uniqueID="bcb90b9e-a351-4f29-8bfc-30df25624cf7" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Lib.MEF_Unity" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="4c66245a-3ec4-4092-bf7a-3eb66e880246" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Validator" orderPosition="0">
+    <projectFolder uniqueID="028ee5c1-45ba-492c-aa78-df99e5cb1f52" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Validator" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="850fbc7e-d3d7-461e-99e0-f5c85e7dbc01" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Validator.Metadata" orderPosition="0">
+    <projectFolder uniqueID="a3419846-35fe-4814-820c-ebb82e175ac9" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Validator.Metadata" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="4f6f77ac-0901-49a2-a115-8f800dca7dc1" parentUniqueID="00000000-0000-0000-0000-000000000000" name="DTDs" orderPosition="0">
+    <projectFolder uniqueID="94591c96-c97a-4abc-b8fa-40147321a70e" parentUniqueID="00000000-0000-0000-0000-000000000000" name="DTDs" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="dcd59f35-6cd9-4c72-b32d-04b778d493c1" parentUniqueID="00000000-0000-0000-0000-000000000000" name="UrakawaSDK.daisy" orderPosition="0">
+    <projectFolder uniqueID="fa2f0e4d-d78d-4386-85a4-a81e609a423b" parentUniqueID="00000000-0000-0000-0000-000000000000" name="UrakawaSDK.daisy" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="72e05ef2-a731-4fc7-beba-92abc05bf4a4" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Settings" orderPosition="0">
+    <projectFolder uniqueID="007b2498-abb9-454d-91de-797b82830899" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Settings" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="beade752-7cc2-4e4c-be2e-b61ff1258ea9" parentUniqueID="00000000-0000-0000-0000-000000000000" name="DtdSharp" orderPosition="0">
+    <projectFolder uniqueID="03cc7d86-0b60-45ae-9ec9-168bab744273" parentUniqueID="00000000-0000-0000-0000-000000000000" name="DtdSharp" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="3318b844-f6b7-48ca-bfc0-45182d013196" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Validator.ContentDocument" orderPosition="0">
+    <projectFolder uniqueID="dc708b90-a8a9-4387-b0ff-f64e8b5787f3" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.Validator.ContentDocument" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="cd17c216-5790-4a6e-8e90-6b8c76c6297f" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.StructureTrailPane" orderPosition="0">
+    <projectFolder uniqueID="01ca2722-0051-4607-af11-e8e41b6ebcfb" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.StructureTrailPane" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />
     </projectFolder>
-    <projectFolder uniqueID="fecba54f-64d0-4796-939a-9df66d396971" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.MenuBarDebug" orderPosition="0">
+    <projectFolder uniqueID="9775aa63-8cc8-4f21-bd43-921eb5da2115" parentUniqueID="00000000-0000-0000-0000-000000000000" name="Tobi.Plugin.MenuBarDebug" orderPosition="0">
       <remarks>
       </remarks>
       <dynSettings />

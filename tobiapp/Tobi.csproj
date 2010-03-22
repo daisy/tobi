@@ -139,10 +139,10 @@
     </Compile>
     <Compile Include="Shell_Settings.cs" />
     <Compile Include="Shell_Win32Device.cs" />
-    <Compile Include="Tobi.Lang.Designer.cs">
+    <Compile Include="Tobi_Lang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Tobi.Lang.resx</DependentUpon>
+      <DependentUpon>Tobi_Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="TobiLoggerFacade.cs" />
     <Compile Include="Bootstrapper.cs" />
@@ -335,10 +335,10 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Tobi.Lang.fr.resx" />
-    <EmbeddedResource Include="Tobi.Lang.resx">
+    <EmbeddedResource Include="Tobi_Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi_Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tobi.Lang.Designer.cs</LastGenOutput>
+      <LastGenOutput>Tobi_Lang.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

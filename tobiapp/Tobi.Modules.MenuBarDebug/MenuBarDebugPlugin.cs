@@ -49,12 +49,12 @@ namespace Tobi.Plugin.MenuBarDebug
 
         public override string Name
         {
-            get { return Tobi_Plugin_MenuBarDebug_Lang.ApplicationMenubar; }      // TODO LOCALIZE ApplicationMenubar
+            get { return "MENU DEBUG"; }
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_MenuBarDebug_Lang.MenuContainingAppCommands; }     // TODO LOCALIZE  MenuContainingAppCommands
+            get { return "MENU DEBUG _"; }
         }
     }
 }
