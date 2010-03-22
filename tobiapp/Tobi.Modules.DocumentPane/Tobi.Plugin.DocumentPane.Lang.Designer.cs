@@ -61,6 +61,78 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select the next phrase.
+        /// </summary>
+        public static string CmdEventSwitchNext_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdEventSwitchNext_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Next phrase.
+        /// </summary>
+        public static string CmdEventSwitchNext_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdEventSwitchNext_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the previous phrase.
+        /// </summary>
+        public static string CmdEventSwitchPrevious_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdEventSwitchPrevious_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Previous phrase.
+        /// </summary>
+        public static string CmdEventSwitchPrevious_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdEventSwitchPrevious_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selection down one level in the document tree structure.
+        /// </summary>
+        public static string CmdStructureDown_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructureDown_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Narrow structure selection.
+        /// </summary>
+        public static string CmdStructureDown_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructureDown_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selection up one level in the document tree structure.
+        /// </summary>
+        public static string CmdStructureUp_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructureUp_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Expand structure selection.
+        /// </summary>
+        public static string CmdStructureUp_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructureUp_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Converting XUK markup ....
         /// </summary>
         public static string ConvertingXukToFlowDocument {
@@ -97,42 +169,6 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Next phrase.
-        /// </summary>
-        public static string Event_SwitchNext {
-            get {
-                return ResourceManager.GetString("Event_SwitchNext", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select the next phrase.
-        /// </summary>
-        public static string Event_SwitchNext_ {
-            get {
-                return ResourceManager.GetString("Event_SwitchNext_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Previous phrase.
-        /// </summary>
-        public static string Event_SwitchPrevious {
-            get {
-                return ResourceManager.GetString("Event_SwitchPrevious", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select the previous phrase.
-        /// </summary>
-        public static string Event_SwitchPrevious_ {
-            get {
-                return ResourceManager.GetString("Event_SwitchPrevious_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This feature is not available..
         /// </summary>
         public static string Feature_Not_Available {
@@ -156,42 +192,6 @@ namespace Tobi.Plugin.DocumentPane {
         public static string No_Document {
             get {
                 return ResourceManager.GetString("No_Document", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Narrow structure selection.
-        /// </summary>
-        public static string StructureDown {
-            get {
-                return ResourceManager.GetString("StructureDown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move the selection down one level in the document tree structure.
-        /// </summary>
-        public static string StructureDown_ {
-            get {
-                return ResourceManager.GetString("StructureDown_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Expand structure selection.
-        /// </summary>
-        public static string StructureUp {
-            get {
-                return ResourceManager.GetString("StructureUp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move the selection up one level in the document tree structure.
-        /// </summary>
-        public static string StructureUp_ {
-            get {
-                return ResourceManager.GetString("StructureUp_", resourceCulture);
             }
         }
     }

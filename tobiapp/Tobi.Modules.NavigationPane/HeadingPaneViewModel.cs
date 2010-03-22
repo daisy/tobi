@@ -58,8 +58,8 @@ namespace Tobi.Plugin.NavigationPane
 
             //
             CommandExpandAll = new RichDelegateCommand(
-                Tobi_Plugin_NavigationPane_Lang.TreeExpandAll,
-                Tobi_Plugin_NavigationPane_Lang.TreeExpandAll_,
+                Tobi_Plugin_NavigationPane_Lang.CmdTreeExpandAll_ShortDesc,
+                Tobi_Plugin_NavigationPane_Lang.CmdTreeExpandAll_LongDesc,
                 null,
                 m_ShellView.LoadTangoIcon("list-add"),
                 () => _headingsNavigator.ExpandAll(),
@@ -76,8 +76,8 @@ namespace Tobi.Plugin.NavigationPane
              */
             //
             CommandCollapseAll = new RichDelegateCommand(
-                Tobi_Plugin_NavigationPane_Lang.TreeCollapseAll,
-                Tobi_Plugin_NavigationPane_Lang.TreeCollapseAll_,
+                Tobi_Plugin_NavigationPane_Lang.CmdTreeCollapseAll_ShortDesc,
+                Tobi_Plugin_NavigationPane_Lang.CmdTreeCollapseAll_LongDesc,
                 null,
                 m_ShellView.LoadTangoIcon("list-remove"),
                 () => _headingsNavigator.CollapseAll(),

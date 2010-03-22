@@ -61,6 +61,24 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Metadata viewer/editor.
+        /// </summary>
+        public static string CmdShowMetadata_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdShowMetadata_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Edit metadata.
+        /// </summary>
+        public static string CmdShowMetadata_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdShowMetadata_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The metadata editor modal dialog is opening..
         /// </summary>
         public static string DialogOpen {
@@ -174,24 +192,6 @@ namespace Tobi.Plugin.MetadataPane {
         public static string Required {
             get {
                 return ResourceManager.GetString("Required", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Edit metadata.
-        /// </summary>
-        public static string ShowMetadata {
-            get {
-                return ResourceManager.GetString("ShowMetadata", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Metadata viewer/editor.
-        /// </summary>
-        public static string ShowMetadata_ {
-            get {
-                return ResourceManager.GetString("ShowMetadata_", resourceCulture);
             }
         }
         

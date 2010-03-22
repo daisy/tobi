@@ -138,7 +138,7 @@
   <data name="NavigationPanePlugin_Name" xml:space="preserve">
     <value>Navigation pane.</value>
   </data>
-  <data name="Navigation_Focus" xml:space="preserve">
+  <data name="CmdNavigationFocus_ShortDesc" xml:space="preserve">
     <value>Navigation pane focus</value>
   </data>
   <data name="NoHeading" xml:space="preserve">
@@ -171,10 +171,10 @@
   <data name="TreeCollapse" xml:space="preserve">
     <value>Co_llapse</value>
   </data>
-  <data name="TreeCollapseAll" xml:space="preserve">
+  <data name="CmdTreeCollapseAll_ShortDesc" xml:space="preserve">
     <value>_Collapse all</value>
   </data>
-  <data name="TreeCollapseAll_" xml:space="preserve">
+  <data name="CmdTreeCollapseAll_LongDesc" xml:space="preserve">
     <value>Collapse all children in the tree</value>
   </data>
   <data name="TreeCollapse_" xml:space="preserve">
@@ -189,10 +189,10 @@
   <data name="TreeExpand" xml:space="preserve">
     <value>Ex_pand</value>
   </data>
-  <data name="TreeExpandAll" xml:space="preserve">
+  <data name="CmdTreeExpandAll_ShortDesc" xml:space="preserve">
     <value>E_xpand all</value>
   </data>
-  <data name="TreeExpandAll_" xml:space="preserve">
+  <data name="CmdTreeExpandAll_LongDesc" xml:space="preserve">
     <value>Expand all children in the tree</value>
   </data>
   <data name="TreeExpand_" xml:space="preserve">

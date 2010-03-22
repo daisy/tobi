@@ -63,9 +63,9 @@ namespace Tobi.Plugin.ToolBars {
         /// <summary>
         ///   Looks up a localized string similar to Toolbar focus.
         /// </summary>
-        public static string Toolbar_Focus {
+        public static string CmdToolbarFocus_ShortDesc {
             get {
-                return ResourceManager.GetString("Toolbar_Focus", resourceCulture);
+                return ResourceManager.GetString("CmdToolbarFocus_ShortDesc", resourceCulture);
             }
         }
         

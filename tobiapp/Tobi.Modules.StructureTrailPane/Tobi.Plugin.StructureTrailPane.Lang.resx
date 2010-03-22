@@ -120,7 +120,7 @@
   <data name="Audio" xml:space="preserve">
     <value>Audio.</value>
   </data>
-  <data name="Document_Focus" xml:space="preserve">
+  <data name="CmdDocumentFocus_ShortDesc" xml:space="preserve">
     <value>Document pane focus</value>
   </data>
   <data name="NoAudio" xml:space="preserve">

@@ -72,9 +72,9 @@ namespace Tobi.Plugin.StructureTrailPane {
         /// <summary>
         ///   Looks up a localized string similar to Document pane focus.
         /// </summary>
-        public static string Document_Focus {
+        public static string CmdDocumentFocus_ShortDesc {
             get {
-                return ResourceManager.GetString("Document_Focus", resourceCulture);
+                return ResourceManager.GetString("CmdDocumentFocus_ShortDesc", resourceCulture);
             }
         }
         
