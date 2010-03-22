@@ -371,7 +371,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             //
             CommandFocus = new RichDelegateCommand(
-                Tobi_Plugin_StructureTrailPane_Lang.Document_Focus,
+                Tobi_Plugin_StructureTrailPane_Lang.CmdDocumentFocus_ShortDesc,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-select-all"),

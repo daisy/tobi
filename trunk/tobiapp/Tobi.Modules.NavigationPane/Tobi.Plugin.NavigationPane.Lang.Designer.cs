@@ -61,6 +61,51 @@ namespace Tobi.Plugin.NavigationPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigation pane focus.
+        /// </summary>
+        public static string CmdNavigationFocus_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdNavigationFocus_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse all children in the tree.
+        /// </summary>
+        public static string CmdTreeCollapseAll_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdTreeCollapseAll_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Collapse all.
+        /// </summary>
+        public static string CmdTreeCollapseAll_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdTreeCollapseAll_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all children in the tree.
+        /// </summary>
+        public static string CmdTreeExpandAll_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdTreeExpandAll_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E_xpand all.
+        /// </summary>
+        public static string CmdTreeExpandAll_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdTreeExpandAll_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find:.
         /// </summary>
         public static string Find {
@@ -102,15 +147,6 @@ namespace Tobi.Plugin.NavigationPane {
         public static string HeadingNavigationPlugin_Name {
             get {
                 return ResourceManager.GetString("HeadingNavigationPlugin_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Navigation pane focus.
-        /// </summary>
-        public static string Navigation_Focus {
-            get {
-                return ResourceManager.GetString("Navigation_Focus", resourceCulture);
             }
         }
         
@@ -232,24 +268,6 @@ namespace Tobi.Plugin.NavigationPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Collapse all.
-        /// </summary>
-        public static string TreeCollapseAll {
-            get {
-                return ResourceManager.GetString("TreeCollapseAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Collapse all children in the tree.
-        /// </summary>
-        public static string TreeCollapseAll_ {
-            get {
-                return ResourceManager.GetString("TreeCollapseAll_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Edit _Heading.
         /// </summary>
         public static string TreeEdit {
@@ -282,24 +300,6 @@ namespace Tobi.Plugin.NavigationPane {
         public static string TreeExpand_ {
             get {
                 return ResourceManager.GetString("TreeExpand_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to E_xpand all.
-        /// </summary>
-        public static string TreeExpandAll {
-            get {
-                return ResourceManager.GetString("TreeExpandAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expand all children in the tree.
-        /// </summary>
-        public static string TreeExpandAll_ {
-            get {
-                return ResourceManager.GetString("TreeExpandAll_", resourceCulture);
             }
         }
         

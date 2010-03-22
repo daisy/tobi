@@ -156,10 +156,10 @@
   <data name="Required" xml:space="preserve">
     <value>Required.</value>
   </data>
-  <data name="ShowMetadata" xml:space="preserve">
+  <data name="CmdShowMetadata_ShortDesc" xml:space="preserve">
     <value>_Edit metadata</value>
   </data>
-  <data name="ShowMetadata_" xml:space="preserve">
+  <data name="CmdShowMetadata_LongDesc" xml:space="preserve">
     <value>Metadata viewer/editor</value>
   </data>
   <data name="SummaryOfErrors" xml:space="preserve">

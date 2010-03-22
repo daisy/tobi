@@ -123,7 +123,7 @@
   <data name="ToolbarsPlugin_Name" xml:space="preserve">
     <value>Application toolbar.</value>
   </data>
-  <data name="Toolbar_Focus" xml:space="preserve">
+  <data name="CmdToolbarFocus_ShortDesc" xml:space="preserve">
     <value>Toolbar focus</value>
   </data>
 </root>

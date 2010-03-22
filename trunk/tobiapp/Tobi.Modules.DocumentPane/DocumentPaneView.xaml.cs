@@ -128,8 +128,8 @@ namespace Tobi.Plugin.DocumentPane
             //    );
 
             CommandStructureDown = new RichDelegateCommand(
-                Tobi_Plugin_DocumentPane_Lang.StructureDown,
-                Tobi_Plugin_DocumentPane_Lang.StructureDown_,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructureDown_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructureDown_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-bottom"),
                 () =>
@@ -167,8 +167,8 @@ namespace Tobi.Plugin.DocumentPane
             m_ShellView.RegisterRichCommand(CommandStructureDown);
             //
             CommandStructureUp = new RichDelegateCommand(
-                Tobi_Plugin_DocumentPane_Lang.StructureUp,
-                Tobi_Plugin_DocumentPane_Lang.StructureUp_,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructureUp_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructureUp_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-top"),
                 () =>
@@ -212,8 +212,8 @@ namespace Tobi.Plugin.DocumentPane
             //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)
             //    );
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
-                Tobi_Plugin_DocumentPane_Lang.Event_SwitchPrevious,
-                Tobi_Plugin_DocumentPane_Lang.Event_SwitchPrevious_,
+                Tobi_Plugin_DocumentPane_Lang.CmdEventSwitchPrevious_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdEventSwitchPrevious_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-first"),
                 () =>
@@ -275,8 +275,8 @@ namespace Tobi.Plugin.DocumentPane
             m_ShellView.RegisterRichCommand(CommandSwitchPhrasePrevious);
             //
             CommandSwitchPhraseNext = new RichDelegateCommand(
-                Tobi_Plugin_DocumentPane_Lang.Event_SwitchNext,
-                Tobi_Plugin_DocumentPane_Lang.Event_SwitchNext_,
+                Tobi_Plugin_DocumentPane_Lang.CmdEventSwitchNext_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdEventSwitchNext_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-last"),
                 () =>

@@ -117,31 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="StructureDown" xml:space="preserve">
+  <data name="CmdStructureDown_ShortDesc" xml:space="preserve">
     <value>_Narrow structure selection</value>
   </data>
-  <data name="StructureDown_" xml:space="preserve">
+  <data name="CmdStructureDown_LongDesc" xml:space="preserve">
     <value>Move the selection down one level in the document tree structure</value>
   </data>
-  <data name="StructureUp" xml:space="preserve">
+  <data name="CmdStructureUp_ShortDesc" xml:space="preserve">
     <value>_Expand structure selection</value>
   </data>
-  <data name="StructureUp_" xml:space="preserve">
+  <data name="CmdStructureUp_LongDesc" xml:space="preserve">
     <value>Move the selection up one level in the document tree structure</value>
   </data>
   <data name="DocumentPanePlugin_Name" xml:space="preserve">
     <value>Document pane.</value>
   </data>
-  <data name="Event_SwitchNext" xml:space="preserve">
+  <data name="CmdEventSwitchNext_ShortDesc" xml:space="preserve">
     <value>_Next phrase</value>
   </data>
-  <data name="Event_SwitchNext_" xml:space="preserve">
+  <data name="CmdEventSwitchNext_LongDesc" xml:space="preserve">
     <value>Select the next phrase</value>
   </data>
-  <data name="Event_SwitchPrevious" xml:space="preserve">
+  <data name="CmdEventSwitchPrevious_ShortDesc" xml:space="preserve">
     <value>_Previous phrase</value>
   </data>
-  <data name="Event_SwitchPrevious_" xml:space="preserve">
+  <data name="CmdEventSwitchPrevious_LongDesc" xml:space="preserve">
     <value>Select the previous phrase</value>
   </data>
   <data name="Feature_Not_Available" xml:space="preserve">

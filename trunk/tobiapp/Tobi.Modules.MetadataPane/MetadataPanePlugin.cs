@@ -44,8 +44,8 @@ namespace Tobi.Plugin.MetadataPane
 
 
             CommandShowMetadataPane = new RichDelegateCommand(
-                Tobi_Plugin_MetadataPane_Lang.ShowMetadata,
-                Tobi_Plugin_MetadataPane_Lang.ShowMetadata_,
+                Tobi_Plugin_MetadataPane_Lang.CmdShowMetadata_ShortDesc,
+                Tobi_Plugin_MetadataPane_Lang.CmdShowMetadata_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"accessories-text-editor"),
                 ShowDialog,
