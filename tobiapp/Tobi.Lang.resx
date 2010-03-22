@@ -198,19 +198,19 @@
   <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
     <value>Find...</value>
   </data>
-  <data name="CmdFocus_ShortDesc_FindNext" xml:space="preserve">
+  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
     <value>Find Next</value>
   </data>
-  <data name="CmdFocus_ShortDesc_FindPrevious" xml:space="preserve">
+  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
     <value>Find Previous</value>
   </data>
   <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
     <value>Edit the search criteria.</value>
   </data>
-  <data name="CmdFocus_LongDesc_FindNext" xml:space="preserve">
+  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
     <value>Find The Next Item That Matches The Search Criteria.</value>
   </data>
-  <data name="CmdFocus_LongDesc_FindPrevious" xml:space="preserve">
+  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
     <value>Find The Previous Item That Matches The Search Criteria.</value>
   </data>
   <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">

@@ -51,8 +51,8 @@ namespace Tobi.Plugin.Settings
             m_SettingsAggregator = settingsAggregator;
 
             CommandShowSettings = new RichDelegateCommand(
-                Tobi_Plugin_Settings_Lang.CmdFocus_ApplicationPref,                         // TODO LOCALIZE CmdFocus_ApplicationPref
-                Tobi_Plugin_Settings_Lang.CmdFocus_DisplayEditor,                                // TODO LOCALIZE CmdFocus_DisplayEditor
+                Tobi_Plugin_Settings_Lang.Cmd_ApplicationPref,                         // TODO LOCALIZE Cmd_ApplicationPref
+                Tobi_Plugin_Settings_Lang.Cmd_DisplayEditor,                                // TODO LOCALIZE Cmd_DisplayEditor
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"preferences-system"),
                 ShowDialog,
