@@ -335,7 +335,9 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Tobi_Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi_Lang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tobi_Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi_Lang.Designer.cs</LastGenOutput>
