@@ -27,8 +27,8 @@ namespace Tobi.Plugin.Urakawa
         {
             //
             SaveAsCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.SaveAs,
-                Tobi_Plugin_Urakawa_Lang.SaveAs_,
+                Tobi_Plugin_Urakawa_Lang.CmdSaveAs_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdSaveAs_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-save"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
@@ -52,7 +52,7 @@ namespace Tobi.Plugin.Urakawa
                         CreatePrompt = false,
                         DereferenceLinks = true,
                         OverwritePrompt = false,
-                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.SaveAs)
+                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdSaveAs_ShortDesc)
                     };
 
                     bool? result = false;
@@ -140,8 +140,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(SaveAsCommand);
             //
             SaveCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.Save,
-                Tobi_Plugin_Urakawa_Lang.Save_,
+                Tobi_Plugin_Urakawa_Lang.CmdSave_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdSave_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"drive-harddisk"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),

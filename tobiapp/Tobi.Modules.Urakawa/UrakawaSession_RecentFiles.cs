@@ -35,8 +35,8 @@ namespace Tobi.Plugin.Urakawa
 
         private void InitializeRecentFiles()
         {
-            ClearRecentFilesCommand = new RichDelegateCommand(Tobi_Plugin_Urakawa_Lang.Menu_ClearRecentFiles,
-                                                   Tobi_Plugin_Urakawa_Lang.Menu_ClearRecentFiles_,
+            ClearRecentFilesCommand = new RichDelegateCommand(Tobi_Plugin_Urakawa_Lang.CmdMenuClearRecentFiles_ShortDesc,
+                                                   Tobi_Plugin_Urakawa_Lang.CmdMenuClearRecentFiles_LongDesc,
                                                    null,
                                                    m_ShellView.LoadGnomeNeuIcon(@"Neu_view-refresh"),
                                                    ClearRecentFiles,

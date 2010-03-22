@@ -36,8 +36,8 @@ namespace Tobi.Plugin.Urakawa
             //shellView.RegisterRichCommand(NewCommand);
             //
             OpenCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.Open,
-                Tobi_Plugin_Urakawa_Lang.Open_,
+                Tobi_Plugin_Urakawa_Lang.CmdOpen_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdOpen_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"document-open"),
                 () =>
@@ -55,7 +55,7 @@ namespace Tobi.Plugin.Urakawa
                         CheckPathExists = false,
                         AddExtension = true,
                         DereferenceLinks = true,
-                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.Open)
+                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpen_ShortDesc)
                     };
 
                     bool? result = false;

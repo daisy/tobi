@@ -88,20 +88,182 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Close.
+        ///   Looks up a localized string similar to Close document.
         /// </summary>
-        public static string Close {
+        public static string CmdClose_LongDesc {
             get {
-                return ResourceManager.GetString("Close", resourceCulture);
+                return ResourceManager.GetString("CmdClose_LongDesc", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close document.
+        ///   Looks up a localized string similar to _Close.
         /// </summary>
-        public static string Close_ {
+        public static string CmdClose_ShortDesc {
             get {
-                return ResourceManager.GetString("Close_", resourceCulture);
+                return ResourceManager.GetString("CmdClose_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove files unused by the document.
+        /// </summary>
+        public static string CmdDataCleanup_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdDataCleanup_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Cleanup unused data.
+        /// </summary>
+        public static string CmdDataCleanup_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdDataCleanup_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export the current document  to DAISY....
+        /// </summary>
+        public static string CmdExport_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdExport_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string CmdExport_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdExport_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear the list of recently-opened files..
+        /// </summary>
+        public static string CmdMenuClearRecentFiles_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdMenuClearRecentFiles_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Clear.
+        /// </summary>
+        public static string CmdMenuClearRecentFiles_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdMenuClearRecentFiles_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open or import a document.
+        /// </summary>
+        public static string CmdOpen_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdOpen_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open / import.
+        /// </summary>
+        public static string CmdOpen_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdOpen_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open a file browser where the currently-loaded document is located..
+        /// </summary>
+        public static string CmdOpenDocumentFolder_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdOpenDocumentFolder_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current document.
+        /// </summary>
+        public static string CmdOpenDocumentFolder_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdOpenDocumentFolder_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redo last undone action.
+        /// </summary>
+        public static string CmdRedo_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdRedo_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Redo.
+        /// </summary>
+        public static string CmdRedo_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdRedo_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the current document.
+        /// </summary>
+        public static string CmdSave_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdSave_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Save.
+        /// </summary>
+        public static string CmdSave_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdSave_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the current document as....
+        /// </summary>
+        public static string CmdSaveAs_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdSaveAs_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to S_ave as....
+        /// </summary>
+        public static string CmdSaveAs_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdSaveAs_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo last action.
+        /// </summary>
+        public static string CmdUndo_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdUndo_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Undo.
+        /// </summary>
+        public static string CmdUndo_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdUndo_ShortDesc", resourceCulture);
             }
         }
         
@@ -111,42 +273,6 @@ namespace Tobi.Plugin.Urakawa {
         public static string CopyingDataFiles {
             get {
                 return ResourceManager.GetString("CopyingDataFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Cleanup unused data.
-        /// </summary>
-        public static string DataCleanup {
-            get {
-                return ResourceManager.GetString("DataCleanup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove files unused by the document.
-        /// </summary>
-        public static string DataCleanup_ {
-            get {
-                return ResourceManager.GetString("DataCleanup_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export....
-        /// </summary>
-        public static string Export {
-            get {
-                return ResourceManager.GetString("Export", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export the current document  to DAISY....
-        /// </summary>
-        public static string Export_ {
-            get {
-                return ResourceManager.GetString("Export_", resourceCulture);
             }
         }
         
@@ -165,60 +291,6 @@ namespace Tobi.Plugin.Urakawa {
         public static string Importing {
             get {
                 return ResourceManager.GetString("Importing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Clear.
-        /// </summary>
-        public static string Menu_ClearRecentFiles {
-            get {
-                return ResourceManager.GetString("Menu_ClearRecentFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear the list of recently-opened files..
-        /// </summary>
-        public static string Menu_ClearRecentFiles_ {
-            get {
-                return ResourceManager.GetString("Menu_ClearRecentFiles_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Open / import.
-        /// </summary>
-        public static string Open {
-            get {
-                return ResourceManager.GetString("Open", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open or import a document.
-        /// </summary>
-        public static string Open_ {
-            get {
-                return ResourceManager.GetString("Open_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current document.
-        /// </summary>
-        public static string OpenDocumentFolder {
-            get {
-                return ResourceManager.GetString("OpenDocumentFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open a file browser where the currently-loaded document is located..
-        /// </summary>
-        public static string OpenDocumentFolder_ {
-            get {
-                return ResourceManager.GetString("OpenDocumentFolder_", resourceCulture);
             }
         }
         
@@ -270,24 +342,6 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Redo.
-        /// </summary>
-        public static string Redo {
-            get {
-                return ResourceManager.GetString("Redo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Redo last undone action.
-        /// </summary>
-        public static string Redo_ {
-            get {
-                return ResourceManager.GetString("Redo_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please wait....
         /// </summary>
         public static string RunningTask {
@@ -297,65 +351,11 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Save.
-        /// </summary>
-        public static string Save {
-            get {
-                return ResourceManager.GetString("Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save the current document.
-        /// </summary>
-        public static string Save_ {
-            get {
-                return ResourceManager.GetString("Save_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to S_ave as....
-        /// </summary>
-        public static string SaveAs {
-            get {
-                return ResourceManager.GetString("SaveAs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save the current document as....
-        /// </summary>
-        public static string SaveAs_ {
-            get {
-                return ResourceManager.GetString("SaveAs_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Saved..
         /// </summary>
         public static string Saved {
             get {
                 return ResourceManager.GetString("Saved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Undo.
-        /// </summary>
-        public static string Undo {
-            get {
-                return ResourceManager.GetString("Undo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Undo last action.
-        /// </summary>
-        public static string Undo_ {
-            get {
-                return ResourceManager.GetString("Undo_", resourceCulture);
             }
         }
         

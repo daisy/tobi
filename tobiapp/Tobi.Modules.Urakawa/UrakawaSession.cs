@@ -484,8 +484,8 @@ namespace Tobi.Plugin.Urakawa
             initCommands_Export();
 
             OpenDocumentFolderCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.OpenDocumentFolder,
-                Tobi_Plugin_Urakawa_Lang.OpenDocumentFolder_,
+                Tobi_Plugin_Urakawa_Lang.CmdOpenDocumentFolder_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdOpenDocumentFolder_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon(@"Foxtrot_user-home"),
                 () =>
@@ -503,8 +503,8 @@ namespace Tobi.Plugin.Urakawa
             //
             //
             UndoCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.Undo,
-                Tobi_Plugin_Urakawa_Lang.Undo_,
+                Tobi_Plugin_Urakawa_Lang.CmdUndo_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdUndo_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-undo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
@@ -515,8 +515,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(UndoCommand);
             //
             RedoCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.Redo,
-                Tobi_Plugin_Urakawa_Lang.Redo_,
+                Tobi_Plugin_Urakawa_Lang.CmdRedo_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdRedo_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-redo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
@@ -527,8 +527,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(RedoCommand);
             //
             CloseCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.Close,
-                Tobi_Plugin_Urakawa_Lang.Close_,
+                Tobi_Plugin_Urakawa_Lang.CmdClose_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdClose_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"emblem-symbolic-link"),
                 () =>
@@ -547,8 +547,8 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(CloseCommand);
             //
             DataCleanupCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.DataCleanup,
-                Tobi_Plugin_Urakawa_Lang.DataCleanup_,
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
                 DataCleanup,

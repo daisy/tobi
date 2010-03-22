@@ -126,10 +126,10 @@
   <data name="OpenSaveAsQuestion_" xml:space="preserve">
     <value>Open saved document ?</value>
   </data>
-  <data name="OpenDocumentFolder" xml:space="preserve">
+  <data name="CmdOpenDocumentFolder_ShortDesc" xml:space="preserve">
     <value>Current document</value>
   </data>
-  <data name="OpenDocumentFolder_" xml:space="preserve">
+  <data name="CmdOpenDocumentFolder_LongDesc" xml:space="preserve">
     <value>Open a file browser where the currently-loaded document is located.</value>
   </data>
   <data name="CannotOpenLocalFile" xml:space="preserve">
@@ -138,37 +138,37 @@
   <data name="CannotOpenLocalFile_" xml:space="preserve">
     <value>Failed to open file!</value>
   </data>
-  <data name="Close" xml:space="preserve">
+  <data name="CmdClose_ShortDesc" xml:space="preserve">
     <value>_Close</value>
   </data>
-  <data name="Close_" xml:space="preserve">
+  <data name="CmdClose_LongDesc" xml:space="preserve">
     <value>Close document</value>
   </data>
-  <data name="DataCleanup" xml:space="preserve">
+  <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
     <value>_Cleanup unused data</value>
   </data>
-  <data name="DataCleanup_" xml:space="preserve">
+  <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
     <value>Remove files unused by the document</value>
   </data>
-  <data name="Export" xml:space="preserve">
+  <data name="CmdExport_ShortDesc" xml:space="preserve">
     <value>Export...</value>
   </data>
-  <data name="Export_" xml:space="preserve">
+  <data name="CmdExport_LongDesc" xml:space="preserve">
     <value>Export the current document  to DAISY...</value>
   </data>
-  <data name="Menu_ClearRecentFiles" xml:space="preserve">
+  <data name="CmdMenuClearRecentFiles_ShortDesc" xml:space="preserve">
     <value>_Clear</value>
   </data>
-  <data name="Menu_ClearRecentFiles_" xml:space="preserve">
+  <data name="CmdMenuClearRecentFiles_LongDesc" xml:space="preserve">
     <value>Clear the list of recently-opened files.</value>
   </data>
-  <data name="Open" xml:space="preserve">
+  <data name="CmdOpen_ShortDesc" xml:space="preserve">
     <value>_Open / import</value>
   </data>
   <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
     <value>Opening XUK file...</value>
   </data>
-  <data name="Open_" xml:space="preserve">
+  <data name="CmdOpen_LongDesc" xml:space="preserve">
     <value>Open or import a document</value>
   </data>
   <data name="Overwrite" xml:space="preserve">
@@ -185,31 +185,31 @@ Do you want to continue ?</value>
   <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
     <value>Parsing the XML content of the XUK file...</value>
   </data>
-  <data name="Redo" xml:space="preserve">
+  <data name="CmdRedo_ShortDesc" xml:space="preserve">
     <value>_Redo</value>
   </data>
-  <data name="Redo_" xml:space="preserve">
+  <data name="CmdRedo_LongDesc" xml:space="preserve">
     <value>Redo last undone action</value>
   </data>
   <data name="RunningTask" xml:space="preserve">
     <value>Please wait...</value>
   </data>
-  <data name="Save" xml:space="preserve">
+  <data name="CmdSave_ShortDesc" xml:space="preserve">
     <value>_Save</value>
   </data>
-  <data name="SaveAs" xml:space="preserve">
+  <data name="CmdSaveAs_ShortDesc" xml:space="preserve">
     <value>S_ave as...</value>
   </data>
-  <data name="SaveAs_" xml:space="preserve">
+  <data name="CmdSaveAs_LongDesc" xml:space="preserve">
     <value>Save the current document as...</value>
   </data>
-  <data name="Save_" xml:space="preserve">
+  <data name="CmdSave_LongDesc" xml:space="preserve">
     <value>Save the current document</value>
   </data>
-  <data name="Undo" xml:space="preserve">
+  <data name="CmdUndo_ShortDesc" xml:space="preserve">
     <value>_Undo</value>
   </data>
-  <data name="Undo_" xml:space="preserve">
+  <data name="CmdUndo_LongDesc" xml:space="preserve">
     <value>Undo last action</value>
   </data>
   <data name="UnsavedChanges" xml:space="preserve">
