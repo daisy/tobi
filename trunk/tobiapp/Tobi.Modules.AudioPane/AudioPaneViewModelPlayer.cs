@@ -153,7 +153,7 @@ namespace Tobi.Plugin.AudioPane
             //
             CommandPlay = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioPlay_ShortDesc,
-                Tobi_Plugin_AudioPane_Lang.CmdAudioPlay_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioPlay_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-playback-start"),
                 () =>

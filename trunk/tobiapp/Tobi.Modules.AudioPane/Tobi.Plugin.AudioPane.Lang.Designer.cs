@@ -342,6 +342,15 @@ namespace Tobi.Plugin.AudioPane {
         /// <summary>
         ///   Looks up a localized string similar to Start playback.
         /// </summary>
+        public static string CmdAudioPlay_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioPlay_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pla_y.
+        /// </summary>
         public static string CmdAudioPlay_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdAudioPlay_ShortDesc", resourceCulture);
