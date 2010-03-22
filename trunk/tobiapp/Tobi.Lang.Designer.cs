@@ -70,6 +70,42 @@ namespace Tobi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Find The Next Item That Matches The Search Criteria..
+        /// </summary>
+        public static string Cmd_LongDesc_FindNext {
+            get {
+                return ResourceManager.GetString("Cmd_LongDesc_FindNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find The Previous Item That Matches The Search Criteria..
+        /// </summary>
+        public static string Cmd_LongDesc_FindPrevious {
+            get {
+                return ResourceManager.GetString("Cmd_LongDesc_FindPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Next.
+        /// </summary>
+        public static string Cmd_ShortDesc_FindNext {
+            get {
+                return ResourceManager.GetString("Cmd_ShortDesc_FindNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Previous.
+        /// </summary>
+        public static string Cmd_ShortDesc_FindPrevious {
+            get {
+                return ResourceManager.GetString("Cmd_ShortDesc_FindPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit the search criteria..
         /// </summary>
         public static string CmdFocus_LongDesc_Find {
@@ -79,47 +115,11 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find The Next Item That Matches The Search Criteria..
-        /// </summary>
-        public static string CmdFocus_LongDesc_FindNext {
-            get {
-                return ResourceManager.GetString("CmdFocus_LongDesc_FindNext", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find The Previous Item That Matches The Search Criteria..
-        /// </summary>
-        public static string CmdFocus_LongDesc_FindPrevious {
-            get {
-                return ResourceManager.GetString("CmdFocus_LongDesc_FindPrevious", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Find....
         /// </summary>
         public static string CmdFocus_ShortDesc_Find {
             get {
                 return ResourceManager.GetString("CmdFocus_ShortDesc_Find", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find Next.
-        /// </summary>
-        public static string CmdFocus_ShortDesc_FindNext {
-            get {
-                return ResourceManager.GetString("CmdFocus_ShortDesc_FindNext", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find Previous.
-        /// </summary>
-        public static string CmdFocus_ShortDesc_FindPrevious {
-            get {
-                return ResourceManager.GetString("CmdFocus_ShortDesc_FindPrevious", resourceCulture);
             }
         }
         

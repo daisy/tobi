@@ -54,8 +54,8 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindFocus);
 
-            CmdFindNext = new RichCompositeCommand(Tobi_Lang.CmdFocus_ShortDesc_FindNext, //TODO LOCALIZE CmdFocus_ShortDesc_FindNext
-                Tobi_Lang.CmdFocus_LongDesc_FindNext,   // TODO LOCALIZE CmdFocus_LongDesc_FindNext
+            CmdFindNext = new RichCompositeCommand(Tobi_Lang.Cmd_ShortDesc_FindNext, //TODO LOCALIZE Cmd_ShortDesc_FindNext
+                Tobi_Lang.Cmd_LongDesc_FindNext,   // TODO LOCALIZE Cmd_LongDesc_FindNext
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 Settings_KeyGestures.Default,
@@ -63,8 +63,8 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindNext);
 
-            CmdFindPrevious = new RichCompositeCommand(Tobi_Lang.CmdFocus_ShortDesc_FindPrevious, //TODO LOCALIZE CmdFocus_ShortDesc_FindPrevious
-                Tobi_Lang.CmdFocus_LongDesc_FindPrevious,  // TODO LOCALIZE CmdFocus_LongDesc_FindPrevious
+            CmdFindPrevious = new RichCompositeCommand(Tobi_Lang.Cmd_ShortDesc_FindPrevious, //TODO LOCALIZE Cmd_ShortDesc_FindPrevious
+                Tobi_Lang.Cmd_LongDesc_FindPrevious,  // TODO LOCALIZE Cmd_LongDesc_FindPrevious
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 Settings_KeyGestures.Default,

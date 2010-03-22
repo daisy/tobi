@@ -63,18 +63,18 @@ namespace Tobi.Plugin.Settings {
         /// <summary>
         ///   Looks up a localized string similar to Application preferences.
         /// </summary>
-        public static string CmdFocus_ApplicationPref {
+        public static string Cmd_ApplicationPref {
             get {
-                return ResourceManager.GetString("CmdFocus_ApplicationPref", resourceCulture);
+                return ResourceManager.GetString("Cmd_ApplicationPref", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Display an editor for application preferences.
         /// </summary>
-        public static string CmdFocus_DisplayEditor {
+        public static string Cmd_DisplayEditor {
             get {
-                return ResourceManager.GetString("CmdFocus_DisplayEditor", resourceCulture);
+                return ResourceManager.GetString("Cmd_DisplayEditor", resourceCulture);
             }
         }
         
