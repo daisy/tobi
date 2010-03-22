@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project>
+  <configuration createBackupFiles="False" hideEmptyRows="False" useSpellChecker="True" neutralLanguageCode="en-US">
+    <globalSetting name="OmitEmptyItems">True</globalSetting>
+    <globalSetting name="ShowCommentsColumnInGrid">False</globalSetting>
+    <globalSetting name="IgnoreWindowsFormsResourcesWithDesignerFiles">True</globalSetting>
+    <globalSetting name="HideInternalDesignerRows">True</globalSetting>
+    <globalSetting name="NeutralLanguageFileNamePattern">[basename][optionaldefaulttypes].[extension]</globalSetting>
+    <globalSetting name="NonNeutralLanguageFileNamePattern">[basename][optionaldefaulttypes].[languagecode].[extension]</globalSetting>
+    <globalSetting name="BaseNameDotCount">2</globalSetting>
+    <globalSetting name="DefaultFileTypesToIgnore">.aspx;.ascx;.asmx;.master</globalSetting>
+    <userSetting name="Administrator@DANIEL-FE913A11.filesInitialDir">Z:\Sources\daisy\tobi\trunk\tobiapp</userSetting>
+    <userSetting name="Administrator@DANIEL-FE913A11.FindText">
+    </userSetting>
+    <userSetting name="Administrator@DANIEL-FE913A11.RecentFiles">Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Common\Tobi.Common.Lang.resx</userSetting>
+    <description>
+    </description>
+  </configuration>
+  <fileGroups>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <file filePath="Tobi.Lang.fr.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Lang.fr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Common\Tobi.Common.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Common\Tobi.Common.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.fr.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.fr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <file filePath="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.MenuBarDebug\Tobi.Plugin.MenuBarDebug.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.MenuBarDebug\Tobi.Plugin.MenuBarDebug.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.Settings\Tobi.Plugin.Settings.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Settings\Tobi.Plugin.Settings.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.Validator\Tobi.Plugin.Validator.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Validator\Tobi.Plugin.Validator.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" uniqueID="00000000-0000-0000-0000-000000000000">
+      <file filePath="Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.Lang.resx" absoluteFilePath="Z:\Sources\daisy\tobi\trunk\tobiapp\Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.Lang.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+  </fileGroups>
+  <projectFolders />
+</project>
