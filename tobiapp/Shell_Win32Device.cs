@@ -139,6 +139,10 @@ namespace Tobi
         {
             base.OnSourceInitialized(e);
 
+            //WindowInteropHelper wih = new WindowInteropHelper(this);
+            //int style = GetWindowLong(wih.Handle, GWL_STYLE);
+            //SetWindowLong(wih.Handle, GWL_STYLE, style & ~WS_SYSMENU);
+
             var source = PresentationSource.FromVisual(this) as HwndSource;
             if (source != null)
             {
@@ -162,6 +166,14 @@ namespace Tobi
     //dbt.h and winuser.h
     public class Win32
     {
+        //private const int GWL_STYLE = -16;
+        //private const int WS_SYSMENU = 0x00080000;
+
+        //[DllImport("user32.dll")]
+        //private extern static int SetWindowLong(IntPtr hwnd, int index, int value);
+        //[DllImport("user32.dll")]
+        //private extern static int GetWindowLong(IntPtr hwnd, int index);
+
         public const int WM_DEVICECHANGE = 0x0219, // MSG
                          DBT_DEVICEARRIVAL = 0x8000, // WPARAM
                          DBT_DEVICEREMOVECOMPLETE = 0x8004, // WPARAM

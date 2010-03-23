@@ -120,13 +120,13 @@ namespace Tobi.Common.UI
                     m_IsDetailsExpanded = value;
                     if (m_IsDetailsExpanded)
                     {
-                        ensureVisible(false);
                         Height += DetailsHeight;
                     }
                     else
                     {
                         Height -= DetailsHeight;
                     }
+                    ensureVisible();
 
                     m_PropertyChangeHandler.RaisePropertyChanged(() => IsDetailsExpanded);
                 }
@@ -150,7 +150,7 @@ namespace Tobi.Common.UI
 
         public void ShowModal()
         {
-            ensureVisible(true);
+            ensureVisible();
 
             ShowInTaskbar = false;
 
@@ -168,14 +168,14 @@ namespace Tobi.Common.UI
         {
             m_whenDoneAction = whenDoneAction;
 
-            ensureVisible(true);
+            ensureVisible();
 
             ShowInTaskbar = true;
 
             Show();
         }
 
-        private void ensureVisible(bool authorizeHorizontalAdjust)
+        private void ensureVisible()
         {
             // For some reason, WindowStartupLocation.CenterOwner doesn't work in non-modal display mode.
             WindowStartupLocation = WindowStartupLocation.Manual;
@@ -185,25 +185,28 @@ namespace Tobi.Common.UI
                 Owner.WindowState = WindowState.Normal;
             }
 
-            double finalLeft = Math.Max(0, (Owner == null ? 10 : Owner.Left) + ((Owner == null ? 800 : Owner.Width) - Width) / 2);
-            double finalTop = Math.Max(0, (Owner == null ? 10 : Owner.Top) + ((Owner == null ? 600 : Owner.Height) - Height) / 2);
+            double leftOwnerCentered = Math.Max(0, (Owner == null ? 10 : Owner.Left) + ((Owner == null ? 800 : Owner.Width) - Width) / 2);
+            double topOwnerCentered = Math.Max(0, (Owner == null ? 10 : Owner.Top) + ((Owner == null ? 600 : Owner.Height) - Height) / 2);
 
-            double availableWidth = SystemParameters.WorkArea.Width; //Screen.PrimaryScreen.Bounds.Width
-            double availableHeight = SystemParameters.WorkArea.Height; //Screen.PrimaryScreen.Bounds.Height
+            double availableScreenWidth = SystemParameters.WorkArea.Width; //Screen.PrimaryScreen.Bounds.Width
+            double availableScreenHeight = SystemParameters.WorkArea.Height; //Screen.PrimaryScreen.Bounds.Height
 
             if (Owner != null && Owner.WindowState == WindowState.Maximized)
             {
-                finalLeft = Math.Max(0, (availableWidth - Width) / 2);
-                finalTop = Math.Max(0, (availableHeight - Height) / 2);
+                leftOwnerCentered = Math.Max(0, (availableScreenWidth - Width) / 2);
+                topOwnerCentered = Math.Max(0, (availableScreenHeight - Height) / 2);
             }
 
-            double finalWidth = Math.Min(availableWidth, Width);
-            double finalHeight = Math.Min(availableHeight, Height);
+            double finalWidth = Math.Min(availableScreenWidth, Width);
+            double finalHeight = Math.Min(availableScreenHeight, Height);
+
+            double finalLeft = Left == -1 ? leftOwnerCentered : Math.Max(0, Left);
+            double finalTop = Top == -1 ? topOwnerCentered : Math.Max(0, Top);
 
             double right = finalLeft + finalWidth;
-            if (right > availableWidth)
+            if (right > availableScreenWidth)
             {
-                double extraWidth = right - availableWidth;
+                double extraWidth = right - availableScreenWidth;
                 finalLeft -= extraWidth;
                 if (finalLeft < 0)
                 {
@@ -213,9 +216,9 @@ namespace Tobi.Common.UI
             }
 
             double bottom = finalTop + finalHeight;
-            if (bottom > availableHeight)
+            if (bottom > availableScreenHeight)
             {
-                double extraHeight = bottom - availableHeight;
+                double extraHeight = bottom - availableScreenHeight;
                 finalTop -= extraHeight;
                 if (finalTop < 0)
                 {
@@ -223,10 +226,10 @@ namespace Tobi.Common.UI
                     finalTop = 0;
                 }
             }
-            bottom = finalTop + (finalHeight + DetailsHeight);
-            if (bottom > availableHeight)
+            bottom = finalTop + finalHeight; // + DetailsHeight);
+            if (bottom > availableScreenHeight)
             {
-                double extraHeight = bottom - availableHeight;
+                double extraHeight = bottom - availableScreenHeight;
                 finalTop -= extraHeight;
                 if (finalTop < 0)
                 {
@@ -234,11 +237,10 @@ namespace Tobi.Common.UI
                     finalTop = 0;
                 }
             }
-            if (authorizeHorizontalAdjust)
-            {
-                Left = finalLeft;
-                Width = finalWidth;
-            }
+
+            Left = finalLeft;
+            Width = finalWidth;
+
             Top = finalTop;
             Height = finalHeight;
         }
@@ -279,6 +281,8 @@ namespace Tobi.Common.UI
 
             var zoom = (ShellView != null ? ShellView.MagnificationLevel : (Double)FindResource("MagnificationLevel"));
 
+            Left = -1;
+            Top = -1;
             Width = zoom * width;
             Height = zoom * height;
 
