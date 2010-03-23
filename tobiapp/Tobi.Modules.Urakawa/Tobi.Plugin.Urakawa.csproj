@@ -94,6 +94,7 @@
     <Compile Include="UrakawaSession_Open.cs" />
     <Compile Include="UrakawaSession_RecentFiles.cs" />
     <Compile Include="UrakawaSession_Save.cs" />
+    <Compile Include="UrakawaSession_TreeNodeSelection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.csproj">
