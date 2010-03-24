@@ -25,7 +25,6 @@ namespace Tobi.Plugin.DocumentPane
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class DocumentPaneView : IPartImportsSatisfiedNotification // : INotifyPropertyChangedEx
     {
-
         public void OnImportsSatisfied()
         {
             trySearchCommands();
