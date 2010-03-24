@@ -687,7 +687,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             if (IsAudioLoadedWithSubTreeNodes
-                && oldTreeNodeSelection.Item2 != newTreeNodeSelection.Item2)
+                && oldTreeNodeSelection != newTreeNodeSelection)
             {
                 RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
             }

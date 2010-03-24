@@ -527,12 +527,12 @@ namespace Tobi.Plugin.NavigationPane
                         if (qname != null &&
                             (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
                         {
-                            sResult = nd.GetTextMediaFlattened();
+                            sResult = nd.GetTextMediaFlattened(true);
                         }
                     }
                 }
             }
-            else if (HeadingsNavigator.IsHeading(qName.LocalName)){sResult = node.GetTextMediaFlattened();}
+            else if (HeadingsNavigator.IsHeading(qName.LocalName)){sResult = node.GetTextMediaFlattened(true);}
             return sResult;
         }
         public bool IsExpanded
@@ -651,28 +651,28 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     return "DUMMY";
                 }
-                string str = (WrappedTreeNode_LevelHeading != null ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened()
+                string str = (WrappedTreeNode_LevelHeading != null ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened(true)
                     : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + Tobi_Plugin_NavigationPane_Lang.NoHeading);                   // TODO LOCALIZE  NoHeading, brackets not included.
                 return str.Trim();
             }
-            internal set
-            {
-                if (m_TreeNodeHeading == null || m_TreeNodeLevel == null) { return; }
-                if (m_TreeNodeHeading.GetTextMediaFlattened() == value) { return; }
-                if (m_TreeNodeHeading.GetTextMedia() != null)
-                {
-                    m_TreeNodeHeading.GetTextMedia().Text = value;
-                }
-                else
-                {
-                    if (m_TreeNodeHeading.Children.Count > 0)
-                    {
-                        m_TreeNodeHeading.Children.Get(0).GetTextMedia().Text = value;
-                    }
-                    else { return; }
-                }
-                RaisePropertyChanged(() => Title);
-            }
+            //internal set
+            //{
+            //    if (m_TreeNodeHeading == null || m_TreeNodeLevel == null) { return; }
+            //    if (m_TreeNodeHeading.GetTextMediaFlattened(true) == value) { return; }
+            //    if (m_TreeNodeHeading.GetTextMedia() != null)
+            //    {
+            //        m_TreeNodeHeading.GetTextMedia().Text = value;
+            //    }
+            //    else
+            //    {
+            //        if (m_TreeNodeHeading.Children.Count > 0)
+            //        {
+            //            m_TreeNodeHeading.Children.Get(0).GetTextMedia().Text = value;
+            //        }
+            //        else { return; }
+            //    }
+            //    RaisePropertyChanged(() => Title);
+            //}
         }
         public ObservableCollection<HeadingTreeNodeWrapper> Children
         {

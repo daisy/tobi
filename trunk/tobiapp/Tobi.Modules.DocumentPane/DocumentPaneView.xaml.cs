@@ -219,7 +219,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    TreeNode nodeToNavigate = node.GetPreviousSiblingWithText();
+                    TreeNode nodeToNavigate = node.GetPreviousSiblingWithText(true);
                     if (nodeToNavigate == null)
                         AudioCues.PlayBeep();
                     else
@@ -282,7 +282,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    TreeNode nodeToNavigate = node.GetNextSiblingWithText();
+                    TreeNode nodeToNavigate = node.GetNextSiblingWithText(true);
                     if (nodeToNavigate == null)
                         AudioCues.PlayBeep();
                     else
@@ -619,17 +619,24 @@ namespace Tobi.Plugin.DocumentPane
             TextElement textElement1 = FindTextElement(newTreeNodeSelection.Item1);
             if (textElement1 == null)
             {
-                Debug.Fail("TextElement not found ?");
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item1.ToString());
                 return;
             }
+
             TextElement textElement2 = null;
             if (newTreeNodeSelection.Item2 != null)
             {
                 textElement2 = FindTextElement(newTreeNodeSelection.Item2);
                 if (textElement2 == null)
                 {
-                    Debug.Fail("TextElement not found ?");
-                    return;
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item2.ToString());
+                return;
                 }
             }
 
@@ -858,16 +865,16 @@ namespace Tobi.Plugin.DocumentPane
         {
             TreeNode root = project.Presentations.Get(0).RootNode;
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
-            
-            Debug.Assert(root==nodeBook);
-            
+
+            Debug.Assert(root == nodeBook);
+
             if (nodeBook == null)
             {
                 Debug.Fail("No 'book' root element ??");
                 return;
             }
 
-            var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator,
+            var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator, m_ShellView,
                             OnMouseUpFlowDoc,
                             (textElem) =>
                             {
@@ -910,7 +917,7 @@ namespace Tobi.Plugin.DocumentPane
             var action = (Action)(() =>
                              {
                                  FlowDocReader.Document = TheFlowDocument;
-                                  //converter.m_FlowDoc;
+                                 //converter.m_FlowDoc;
                              });
             FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument)));
 
