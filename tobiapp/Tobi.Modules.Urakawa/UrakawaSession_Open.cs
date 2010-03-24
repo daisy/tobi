@@ -207,7 +207,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
 
-                    var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText();
+                    var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText(true);
                     if (treeNode != null)
                     {
                         m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",

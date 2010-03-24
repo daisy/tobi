@@ -36,7 +36,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 if (Target != null)
                 {
-                    targetText = Target.GetTextMediaFlattened();
+                    targetText = Target.GetTextMediaFlattened(false);
                     if (Target.GetXmlElementQName() != null)
                         targetNodeName = Target.GetXmlElementQName().LocalName;
                 }

@@ -17,6 +17,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.StructureTrailPane
@@ -473,18 +474,32 @@ namespace Tobi.Plugin.StructureTrailPane
 
             TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
-            string audioInfo = treeNode.GetAudioMedia () != null || treeNode.GetFirstAncestorWithManagedAudio () != null ? "" : Tobi_Plugin_StructureTrailPane_Lang.NoAudio; // TODO LOCALIZE NoAudio
-            var qName = treeNode.GetXmlElementQName();
-            string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)) + treeNode.GetTextMediaFlattened() ;
+            string audioInfo = treeNode.GetAudioMedia() != null || treeNode.GetFirstAncestorWithManagedAudio() != null ? "" : Tobi_Plugin_StructureTrailPane_Lang.NoAudio; // TODO LOCALIZE NoAudio
+            QualifiedName qName = treeNode.GetXmlElementQName();
+
+            //string imgAlt = null;
+            //if (qName != null && qName.LocalName.ToLower() == "img")
+            //{
+            //    XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("alt");
+            //    if (xmlAttr != null)
+            //    {
+            //        imgAlt = xmlAttr.Value;
+            //    }
+            //}
+            string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML :
+                String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)
+                //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
+                )
+                + " // " + treeNode.GetTextMediaFlattened(true);
             if (str.Length > 100)
             {
-                str = str.Substring(0, 100) + ". . ." ;
+                str = str.Substring(0, 100) + ". . .";
             }
-            str = str + audioInfo;
+            str += audioInfo;
             Console.WriteLine(@"}}}}}" + str);
 
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
-
+            m_FocusStartElement.ToolTip = str;
 
             updateBreadcrumbPanel(newTreeNodeSelection);
         }

@@ -40,7 +40,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             get
             {
-                string pageTxt = ((TreeNode)TextElement.Tag).GetTextMediaFlattened();
+                string pageTxt = ((TreeNode)TextElement.Tag).GetTextMediaFlattened(true);
                 if (!string.IsNullOrEmpty(pageTxt))
                 {
                     return pageTxt;

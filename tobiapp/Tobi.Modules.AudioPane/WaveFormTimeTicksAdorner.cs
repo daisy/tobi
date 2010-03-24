@@ -5,6 +5,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using urakawa.core;
+using urakawa.property.xml;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -29,7 +31,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_renderBrush = new SolidColorBrush(Colors.Black); // { Opacity = 0.8 };
             m_renderBrush.Freeze();
-            
+
             ResetBrushes();
 
             m_point1 = new Point(1, 1);
@@ -64,7 +66,7 @@ namespace Tobi.Plugin.AudioPane
         private SolidColorBrush m_renderBrush;
         private SolidColorBrush m_phraseBrush;
         private SolidColorBrush m_timeTextBrush;
-        
+
         private Point m_point1;
         private Point m_point2;
         private Point m_point3;
@@ -304,14 +306,27 @@ namespace Tobi.Plugin.AudioPane
                         }
 
                         double chunkWidthForText = widthChunk - tickHeight - tickHeight - 1;
-                        if (chunkWidthForText <=0)
+                        if (chunkWidthForText <= 0)
                         {
                             sumData += marker.m_LocalStreamDataLength;
                             pixelsLeft = pixelsRight;
                             continue;
                         }
 
-                        string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened();
+                        //QualifiedName qName = marker.m_TreeNode.GetXmlElementQName();
+                        //string imgAlt = null;
+                        //if (qName != null && qName.LocalName.ToLower() == "img")
+                        //{
+                        //    XmlAttribute xmlAttr = marker.m_TreeNode.GetXmlProperty().GetAttribute("alt");
+                        //    if (xmlAttr != null)
+                        //    {
+                        //        imgAlt = xmlAttr.Value;
+                        //    }
+                        //}
+                        //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
+
+                        string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened(true);
+
                         if (!String.IsNullOrEmpty(nodeTxt))
                         {
                             nodeTxt = nodeTxt.Replace("\r\n", "");

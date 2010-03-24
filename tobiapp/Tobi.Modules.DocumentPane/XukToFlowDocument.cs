@@ -14,6 +14,7 @@ using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.data;
 using urakawa.exception;
@@ -43,13 +44,14 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        protected ILoggerFacade Logger { private set; get; }
-        protected IEventAggregator EventAggregator { private set; get; }
+        protected readonly ILoggerFacade Logger;
+        protected readonly IEventAggregator EventAggregator;
+        protected readonly IShellView ShellView;
 
         private long m_nTreeNode;
 
         public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
-            ILoggerFacade logger, IEventAggregator aggregator,
+            ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView,
             DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
             DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
             DelegateOnRequestNavigate delegateOnRequestNavigate,
@@ -58,8 +60,10 @@ namespace Tobi.Plugin.DocumentPane
             m_FlowDoc = flowDocument;
 
             m_TreeNode = node;
+
             Logger = logger;
             EventAggregator = aggregator;
+            ShellView = shellView;
 
             m_DelegateOnMouseUpFlowDoc = delegateOnMouseUpFlowDoc;
             m_DelegateOnMouseDownTextElementWithNode = delegateOnMouseDownTextElementWithNode;
@@ -185,7 +189,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                string innerText = node.GetTextMediaFlattened();
+                string innerText = node.GetTextMediaFlattened(true);
                 if (!string.IsNullOrEmpty(innerText))
                 {
                     pageID = generatePageId(innerText);
@@ -380,8 +384,9 @@ namespace Tobi.Plugin.DocumentPane
                 data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 return;
             }
-
-            if (node.GetTextMedia() != null)
+            QualifiedName qname = node.GetXmlElementQName();
+            if (node.GetTextMedia() != null
+                || qname != null && qname.LocalName.ToLower() == "img")
             {
                 data.Foreground = brushFontNoAudio;
                 //data.Background = Brushes.LimeGreen;
@@ -1105,6 +1110,8 @@ namespace Tobi.Plugin.DocumentPane
 
             Image image = new Image();
 
+            bool useFourZeroFourPlaceholder = false;
+
             if (srcAttr.Value.StartsWith("http://"))
             {
                 //image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
@@ -1136,7 +1143,8 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                     //Debugger.Break();
 #endif
-                    return parent;
+                    useFourZeroFourPlaceholder = true;
+                    //return parent;
                 }
             }
             else
@@ -1184,8 +1192,16 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                     //Debugger.Break();
 #endif
-                    return parent;
+                    useFourZeroFourPlaceholder = true;
+                    //return parent;
                 }
+            }
+
+            if (useFourZeroFourPlaceholder)
+            {
+                VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
+                RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+                image.Source = bitmap;
             }
 
             image.Stretch = Stretch.Uniform;
@@ -1228,15 +1244,39 @@ namespace Tobi.Plugin.DocumentPane
             //figure.Width = image.Width;
             //addInline(parent, figure);
 
+            string imgAlt = null;
+
+            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
+            if (altAttr != null)
+            {
+                imgAlt = altAttr.Value;
+            }
+
+            if (!string.IsNullOrEmpty(imgAlt))
+            {
+                image.ToolTip = imgAlt;
+            }
+
             bool parentHasBlocks = parent is TableCell
                                    || parent is Section
                                    || parent is Floater
                                    || parent is Figure
                                    || parent is ListItem;
 
+            var imagePanel = new StackPanel();
+            imagePanel.Orientation = Orientation.Vertical;
+            //imagePanel.LastChildFill = true;
+            if (!string.IsNullOrEmpty(imgAlt))
+            {
+                var tb = new TextBlock(new Run("(" + imgAlt + ")"));
+                tb.HorizontalAlignment = HorizontalAlignment.Center;
+                imagePanel.Children.Add(tb);
+            }
+            imagePanel.Children.Add(image);
+
             if (parentHasBlocks)
             {
-                BlockUIContainer img = new BlockUIContainer(image);
+                BlockUIContainer img = new BlockUIContainer(imagePanel);
 
                 //img.BorderBrush = Brushes.RoyalBlue;
                 //img.BorderThickness = new Thickness(2.0);
@@ -1245,22 +1285,18 @@ namespace Tobi.Plugin.DocumentPane
 
                 addBlock(parent, img);
 
-
-                XmlAttribute altAttr = xmlProp.GetAttribute("alt");
-
-                if (altAttr != null && !string.IsNullOrEmpty(altAttr.Value))
-                {
-                    image.ToolTip = altAttr.Value;
-                    Paragraph paraAlt = new Paragraph(new Run("ALT: " + altAttr.Value));
-                    paraAlt.BorderBrush = Brushes.CadetBlue;
-                    paraAlt.BorderThickness = new Thickness(1.0);
-                    paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
-                    addBlock(parent, paraAlt);
-                }
+                //if (!string.IsNullOrEmpty(imgAlt))
+                //{
+                //    Paragraph paraAlt = new Paragraph(new Run("(" + imgAlt + ")"));
+                //    paraAlt.BorderBrush = Brushes.CadetBlue;
+                //    paraAlt.BorderThickness = new Thickness(1.0);
+                //    paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
+                //    addBlock(parent, paraAlt);
+                //}
             }
             else
             {
-                InlineUIContainer img = new InlineUIContainer(image);
+                InlineUIContainer img = new InlineUIContainer(imagePanel);
 
                 setTag(img, node);
 
@@ -1795,7 +1831,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (node.Presentation.XukedInTreeNodes <= 0) m_percentageProgress = -1;
                     else
                     {
-                        m_percentageProgress = (int) (100*m_nTreeNode/node.Presentation.XukedInTreeNodes);
+                        m_percentageProgress = (int)(100 * m_nTreeNode / node.Presentation.XukedInTreeNodes);
                         if (m_percentageProgress > 100)
                             m_percentageProgress = -1;
                     }
