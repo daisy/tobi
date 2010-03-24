@@ -11,7 +11,7 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
-        Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode node);
+        Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode);
         Tuple<TreeNode, TreeNode> GetTreeNodeSelection();
 
         /// <summary>

@@ -69,7 +69,7 @@
   <FlowDocumentScrollViewer x:Name="FlowDocReader"
                     IsTabStop="False"
                     Focusable="False"
-                            Zoom="110"
+                            Zoom="100"
                       FontFamily="Palatino Linotype"
                       Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
