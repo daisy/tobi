@@ -156,6 +156,14 @@ namespace Tobi.Plugin.Urakawa
 #endif
                             }
                         }
+                        else if (treenodeHasDirectAudio && clickedIsTreeNodeAncestor)
+                        {
+                            m_SubTreeNode = m_TreeNode;
+                            m_TreeNode = clickedNode;
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
                         else
                         {
                             m_TreeNode = clickedNode;
@@ -167,9 +175,45 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else // no audio on this branch, always legal position
                     {
-                        if (m_SubTreeNode != null) // toggle
+                        if (clickedIsSubTreeNode)// toggle
                         {
-                            m_TreeNode = m_SubTreeNode;
+                            m_SubTreeNode = null;
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
+                        else if (clickedIsTreeNode)// toggle
+                        {
+                            if (m_SubTreeNode != null)
+                            {
+                                m_TreeNode = m_SubTreeNode;
+                                m_SubTreeNode = null;
+                            }
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
+                        else if (clickedNode.IsDescendantOf(m_TreeNode))
+                        {
+                            m_SubTreeNode = clickedNode;
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
+                        else if (clickedNode.IsAncestorOf(m_TreeNode))
+                        {
+                            if (m_SubTreeNode == null)
+                            {
+                                m_SubTreeNode = m_TreeNode;
+                            }
+                            m_TreeNode = clickedNode;
+#if DEBUG
+                            verifyTreeNodeSelection();
+#endif
+                        }
+                        else
+                        {
+                            m_TreeNode = clickedNode;
                             m_SubTreeNode = null;
 #if DEBUG
                             verifyTreeNodeSelection();
