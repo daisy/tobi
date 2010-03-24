@@ -368,34 +368,11 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnDeviceArrived(object sender, EventArgs e)
         {
-        // implementing simple and fundalmental logic for now
-            bool isNewInputAudioDevice = false;
-            bool isNewOutputDevice = false;
 
-            if ( m_PreviousInputDevices.Count != m_Recorder.InputDevices.Count )
-                {
-                isNewInputAudioDevice = true ;
-                }
-            /*
-            foreach ( AudioLib.InputDevice prevDevice in m_PreviousInputDevices )
-                {
-                if ( prevDevice.Name != 
-m_Recorder.InputDevices            
-              
-                }
-              
-             */
-
-            
-            if (isNewInputAudioDevice)
-                {
-                m_PreviousInputDevices = m_Recorder.InputDevices;
-                }
-
-            if (m_PreviousOutputDevices.Count != m_Player.OutputDevices.Count)
-                {
-                m_PreviousOutputDevices = m_Player.OutputDevices;
-                }
+        if (IsAudioDeviceChanged ())
+            {
+            Console.WriteLine ( "Audio Device Arrived" );
+            }
 
             // TODO: raise the OuputDeviceAdded or InputDeviceAdded event if necessary
             Console.WriteLine("=========>> OnDeviceArrived");
@@ -406,6 +383,11 @@ m_Recorder.InputDevices
 
         private void OnDeviceRemoved(object sender, EventArgs e)
         {
+        if (IsAudioDeviceChanged ())
+            {
+            Console.WriteLine ( "Audio Device Removed" );
+            }
+
             // implementing simple and fundalmental logic for now
         bool isNewInputAudioDevice = false;
         bool isNewOutputDevice = false;
@@ -431,6 +413,72 @@ m_Recorder.InputDevices
 //            Debugger.Break();
 //#endif
         }
+
+
+        private bool IsAudioDeviceChanged ()
+            {
+            // implementing simple and fundalmental logic for now
+            bool isNewInputAudioDevice = false;
+            bool isNewOutputDevice = false;
+
+            if (m_PreviousInputDevices.Count != m_Recorder.InputDevices.Count)
+                {
+                isNewInputAudioDevice = true;
+                }
+
+            foreach (AudioLib.InputDevice d in m_Recorder.InputDevices)
+                {
+                bool isDevicePresent = false;
+                foreach (AudioLib.InputDevice prevDevice in m_PreviousInputDevices)
+                    {
+                    if (prevDevice.Name == d.Name)
+                        {
+                        isDevicePresent = true;
+                        break;
+                        }
+                    }
+                if (!isDevicePresent)
+                    {
+                    isNewInputAudioDevice = true;
+                    break;
+                    }
+                }
+
+
+
+
+            if (isNewInputAudioDevice)
+                {
+                m_PreviousInputDevices = m_Recorder.InputDevices;
+
+                }
+
+            if (m_PreviousOutputDevices.Count != m_Player.OutputDevices.Count)
+                {
+                m_PreviousOutputDevices = m_Player.OutputDevices;
+
+                }
+
+            foreach (AudioLib.OutputDevice d in m_Player.OutputDevices)
+                {
+                bool isDevicePresent = false;
+                foreach (AudioLib.OutputDevice prevDevice in m_PreviousOutputDevices)
+                    {
+                    if (prevDevice.Name == d.Name)
+                        {
+                        isDevicePresent = true;
+                        break;
+                        }
+                    }
+                if (!isDevicePresent)
+                    {
+                    isNewInputAudioDevice = true;
+                    break;
+                    }
+                }
+
+            return isNewInputAudioDevice || isNewOutputDevice;
+            }
 
         private void initializeAudioStuff()
         {
