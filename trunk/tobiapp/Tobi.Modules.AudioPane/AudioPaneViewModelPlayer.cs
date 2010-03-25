@@ -404,7 +404,8 @@ namespace Tobi.Plugin.AudioPane
                 return (IsAudioLoaded
                     //&& treeNodeSelection.Item1 != null
                     && State.Audio.PlayStreamMarkers != null
-                    && State.Audio.PlayStreamMarkers.Count > 1);
+                    //&& State.Audio.PlayStreamMarkers.Count > 1
+                    );
             }
         }
 
