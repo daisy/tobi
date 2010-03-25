@@ -369,116 +369,116 @@ namespace Tobi.Plugin.AudioPane
         private void OnDeviceArrived(object sender, EventArgs e)
         {
 
-        if (IsAudioDeviceChanged ())
+            if (IsAudioDeviceChanged())
             {
-            Console.WriteLine ( "Audio Device Arrived" );
+                Console.WriteLine("Audio Device Arrived");
             }
 
             // TODO: raise the OuputDeviceAdded or InputDeviceAdded event if necessary
             Console.WriteLine("=========>> OnDeviceArrived");
-//#if DEBUG
-//            Debugger.Break();
-//#endif
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
         }
 
         private void OnDeviceRemoved(object sender, EventArgs e)
         {
-        if (IsAudioDeviceChanged ())
+            if (IsAudioDeviceChanged())
             {
-            Console.WriteLine ( "Audio Device Removed" );
+                Console.WriteLine("Audio Device Removed");
             }
 
-            // implementing simple and fundalmental logic for now
-        bool isNewInputAudioDevice = false;
-        bool isNewOutputDevice = false;
-
-        if (m_PreviousInputDevices.Count != m_Recorder.InputDevices.Count)
-            {
-            isNewInputAudioDevice = true;
-            }
-        
-
-        if (isNewInputAudioDevice)
-            {
-            m_PreviousInputDevices = m_Recorder.InputDevices;
-            }
-
-        if (m_PreviousOutputDevices.Count != m_Player.OutputDevices.Count)
-            {
-            m_PreviousOutputDevices = m_Player.OutputDevices;
-            }
-            // TODO: raise the OuputDeviceRemoved or InputDeviceRemoved event if necessary
-            Console.WriteLine("=========>> OnDeviceRemoved");
-//#if DEBUG
-//            Debugger.Break();
-//#endif
-        }
-
-
-        private bool IsAudioDeviceChanged ()
-            {
             // implementing simple and fundalmental logic for now
             bool isNewInputAudioDevice = false;
             bool isNewOutputDevice = false;
 
             if (m_PreviousInputDevices.Count != m_Recorder.InputDevices.Count)
-                {
+            {
                 isNewInputAudioDevice = true;
-                }
+            }
+
+
+            if (isNewInputAudioDevice)
+            {
+                m_PreviousInputDevices = m_Recorder.InputDevices;
+            }
+
+            if (m_PreviousOutputDevices.Count != m_Player.OutputDevices.Count)
+            {
+                m_PreviousOutputDevices = m_Player.OutputDevices;
+            }
+            // TODO: raise the OuputDeviceRemoved or InputDeviceRemoved event if necessary
+            Console.WriteLine("=========>> OnDeviceRemoved");
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
+
+
+        private bool IsAudioDeviceChanged()
+        {
+            // implementing simple and fundalmental logic for now
+            bool isNewInputAudioDevice = false;
+            bool isNewOutputDevice = false;
+
+            if (m_PreviousInputDevices.Count != m_Recorder.InputDevices.Count)
+            {
+                isNewInputAudioDevice = true;
+            }
 
             foreach (AudioLib.InputDevice d in m_Recorder.InputDevices)
-                {
+            {
                 bool isDevicePresent = false;
                 foreach (AudioLib.InputDevice prevDevice in m_PreviousInputDevices)
-                    {
+                {
                     if (prevDevice.Name == d.Name)
-                        {
+                    {
                         isDevicePresent = true;
                         break;
-                        }
-                    }
-                if (!isDevicePresent)
-                    {
-                    isNewInputAudioDevice = true;
-                    break;
                     }
                 }
+                if (!isDevicePresent)
+                {
+                    isNewInputAudioDevice = true;
+                    break;
+                }
+            }
 
 
 
 
             if (isNewInputAudioDevice)
-                {
+            {
                 m_PreviousInputDevices = m_Recorder.InputDevices;
 
-                }
+            }
 
             if (m_PreviousOutputDevices.Count != m_Player.OutputDevices.Count)
-                {
+            {
                 m_PreviousOutputDevices = m_Player.OutputDevices;
 
-                }
+            }
 
             foreach (AudioLib.OutputDevice d in m_Player.OutputDevices)
-                {
+            {
                 bool isDevicePresent = false;
                 foreach (AudioLib.OutputDevice prevDevice in m_PreviousOutputDevices)
-                    {
+                {
                     if (prevDevice.Name == d.Name)
-                        {
+                    {
                         isDevicePresent = true;
                         break;
-                        }
-                    }
-                if (!isDevicePresent)
-                    {
-                    isNewInputAudioDevice = true;
-                    break;
                     }
                 }
+                if (!isDevicePresent)
+                {
+                    isNewInputAudioDevice = true;
+                    break;
+                }
+            }
 
             return isNewInputAudioDevice || isNewOutputDevice;
-            }
+        }
 
         private void initializeAudioStuff()
         {
@@ -627,6 +627,21 @@ namespace Tobi.Plugin.AudioPane
                         )
                     {
                         LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
+                    }
+                }
+            }
+            else
+            {
+                if (View != null)
+                {
+                    View.ResetWaveFormChunkMarkers();
+                }
+                if (placePlayHead)
+                {
+                    m_LastPlayHeadTime = -1;
+                    if (View != null)
+                    {
+                        View.RefreshUI_WaveFormPlayHead();
                     }
                 }
             }
@@ -897,7 +912,10 @@ namespace Tobi.Plugin.AudioPane
                 {
                     timeOffset = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
                 }
-                else return 0;
+                else
+                {
+                    return 0;
+                }
             }
 
             if (managedMedia == null)

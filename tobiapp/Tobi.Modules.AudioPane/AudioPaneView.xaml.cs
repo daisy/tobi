@@ -525,6 +525,12 @@ namespace Tobi.Plugin.AudioPane
             WaveFormImage.Source = drawImg;
         }
 
+        public void ResetWaveFormChunkMarkers()
+        {
+            WaveFormTimeRangePath.Data = null;
+            WaveFormTimeRangePath.InvalidateVisual();
+        }
+
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -545,9 +551,8 @@ namespace Tobi.Plugin.AudioPane
 
             WaveFormPlayHeadPath.Data = null;
             WaveFormPlayHeadPath.InvalidateVisual();
-
-            WaveFormTimeRangePath.Data = null;
-            WaveFormTimeRangePath.InvalidateVisual();
+            
+            ResetWaveFormChunkMarkers();
 
             PeakMeterPathCh2.Data = null;
             PeakMeterPathCh2.InvalidateVisual();

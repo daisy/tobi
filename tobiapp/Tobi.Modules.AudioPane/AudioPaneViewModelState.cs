@@ -283,13 +283,13 @@ namespace Tobi.Plugin.AudioPane
                 
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                 {
+                    treeNode = marker.m_TreeNode;
+
                     index++;
                     bytesRight += marker.m_LocalStreamDataLength;
                     if (byteOffset < bytesRight
                     || index == (PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                     {
-                        treeNode = marker.m_TreeNode;
-
                         long newMatch = matchFunc(bytesLeft, bytesRight, treeNode, index);
                         if (newMatch == -1) break;
                         byteOffset = newMatch;

@@ -9,6 +9,7 @@
     {
         // ReSharper disable InconsistentNaming
         void ResetAll();
+        void ResetWaveFormChunkMarkers();
         void RefreshUI_LoadWaveForm(bool wasPlaying, bool play);
         void RefreshUI_PeakMeter();
         void RefreshUI_PeakMeterBlackout(bool black);
