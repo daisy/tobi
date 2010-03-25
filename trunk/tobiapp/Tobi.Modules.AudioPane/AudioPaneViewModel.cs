@@ -669,15 +669,17 @@ namespace Tobi.Plugin.AudioPane
             if (State.Audio.PlayStreamMarkers == null // audio file may have been previously loaded, no relation to the document. 
                 || oldTreeNodeSelection.Item1 != newTreeNodeSelection.Item1)
             {
-                if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
-                {
-                    m_Player.Stop();
-                }
+                OnEscape(null);
 
-                if (View != null)
-                {
-                    View.CancelWaveFormLoad(true);
-                }
+                //if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
+                //{
+                //    m_Player.Stop();
+                //}
+
+                //if (View != null)
+                //{
+                //    View.CancelWaveFormLoad(true);
+                //}
 
                 if (AudioPlaybackStreamKeepAlive)
                 {
