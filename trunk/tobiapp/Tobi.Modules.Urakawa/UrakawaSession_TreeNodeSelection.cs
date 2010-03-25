@@ -177,7 +177,14 @@ namespace Tobi.Plugin.Urakawa
                     {
                         if (clickedIsSubTreeNode)// toggle
                         {
-                            m_SubTreeNode = null;
+                            if (treenodeDescendantAudio != null)
+                            {
+                                m_SubTreeNode = treenodeDescendantAudio;
+                            }
+                            else
+                            {
+                                m_SubTreeNode = null;
+                            }
 #if DEBUG
                             verifyTreeNodeSelection();
 #endif

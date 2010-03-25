@@ -245,11 +245,12 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                     return !IsWaveFormLoading
                            && !IsPlaying && !IsMonitoring && !IsRecording
                            && m_UrakawaSession.DocumentProject != null
-                           && treeNodeSelection.Item1 != null
+                        //&& treeNodeSelection.Item1 != null
+                           && State.Audio.PlayStreamMarkers != null
                            && IsAudioLoaded && IsSelectionSet;
                 },
                 Settings_KeyGestures.Default,

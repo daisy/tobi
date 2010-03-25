@@ -484,7 +484,8 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (m_Player.CurrentState == AudioPlayer.State.Stopped && time < 0)
             {
-                time = 0;
+                int debug = 10; // todo remove
+                //time = 0;
             }
 
             if (time >= 0)
@@ -670,7 +671,22 @@ namespace Tobi.Plugin.AudioPane
 
                 m_StateToRestore = null;
 
-                LastPlayHeadTime = newPlayTime;
+                if (newPlayTime < 0)
+                {
+                    m_LastPlayHeadTime = -1;
+                    //AudioPlayer_UpdateWaveFormPlayHead();
+                    if (View != null)
+                    {
+                        View.RefreshUI_WaveFormPlayHead();
+                    }
+
+                    //RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
+                }
+                else
+                {
+                    LastPlayHeadTime = newPlayTime;
+                    RefreshWaveFormChunkMarkers();
+                }
 
                 return;
             }
