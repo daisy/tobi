@@ -17,7 +17,41 @@ namespace Tobi.Plugin.AudioPane
     {
         private void UndoRedoManagerChanged(List<TreeNodeAudioStreamDeleteCommand> list, bool done)
         {
-            // TODO
+            if (list.Count == 1)
+            {
+                UndoRedoManagerChanged(list[0], done);
+                return;
+            }
+
+            Time timeBegin = Time.Zero;
+            Time timeEnd = Time.Zero;
+
+            foreach (var cmd in list)
+            {
+                if (cmd.SelectionData.m_LocalStreamLeftMark > 0)
+                {
+                    timeBegin.Add(new Time(cmd.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(cmd.SelectionData.m_LocalStreamLeftMark)));
+                }
+
+                if (cmd.SelectionData.m_LocalStreamRightMark <= 0)
+                {
+                    timeEnd.Add(new Time(cmd.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsTimeSpan));
+                }
+                else
+                {
+                    timeEnd.Add(new Time(
+                            cmd.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(cmd.SelectionData.m_LocalStreamRightMark)));
+                }
+            }
+
+            ManagedAudioMedia audioMedia = list[0].SelectionData.m_TreeNode.GetManagedAudioMedia();
+
+            HandleInsertDelete(list[0].CurrentTreeNode,
+                               list[0].SelectionData.m_TreeNode,
+                               timeBegin,
+                               timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
+                               audioMedia,
+                               !done);
         }
 
         private void UndoRedoManagerChanged(TreeNodeAudioStreamDeleteCommand command, bool done)
@@ -165,10 +199,27 @@ namespace Tobi.Plugin.AudioPane
             //                        : 0;
 
             Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
-
             Debug.Assert(treeNodeSelectionAfter.Item1 == currentTreeNode);
 
-            double timeOffset = getTimeOffset(treeNode, managedAudioMediaTarget);
+            double timeOffset = 0;
+            if (managedAudioMediaTarget == null)
+            {
+                TreeNode prev = treeNode.GetPreviousSiblingWithManagedAudio();
+                if (prev != null && prev.IsDescendantOf(currentTreeNode))
+                {
+                    timeOffset = getTimeOffset(prev, managedAudioMediaTarget);
+                    ManagedAudioMedia prevAudio = prev.GetManagedAudioMedia();
+                    Debug.Assert(prevAudio != null);
+                    if (prevAudio != null)
+                    {
+                        timeOffset += prevAudio.AudioMediaData.AudioDuration.AsMilliseconds;
+                    }
+                }
+            }
+            else
+            {
+                timeOffset = getTimeOffset(treeNode, managedAudioMediaTarget);
+            }
 
             if (done)
             {

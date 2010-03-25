@@ -162,6 +162,8 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioPlayer_Stop();
 
+                    if (LastPlayHeadTime < 0) m_LastPlayHeadTime = 0;
+
                     long byteLastPlayHeadTime = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
                     if (!IsSelectionSet)
