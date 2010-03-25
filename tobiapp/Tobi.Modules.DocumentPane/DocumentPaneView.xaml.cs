@@ -444,41 +444,7 @@ namespace Tobi.Plugin.DocumentPane
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            bool refresh = eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs;
-            if (!refresh)
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs;
-
-            if (eventt.Command is ManagedAudioMediaInsertDataCommand)
-            {
-                var command = (ManagedAudioMediaInsertDataCommand)eventt.Command;
-
-                //UndoRedoManagerChanged(command, done);
-                return;
-            }
-
-            if (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
-            {
-                var command = (TreeNodeSetManagedAudioMediaCommand)eventt.Command;
-
-                //UndoRedoManagerChanged(command, done);
-                return;
-            }
-
-            if (eventt.Command is TreeNodeAudioStreamDeleteCommand)
-            {
-                var command = (TreeNodeAudioStreamDeleteCommand)eventt.Command;
-
-                //UndoRedoManagerChanged(command, done);
-                return;
-            }
+            // TODO see Audio undo/redo
         }
 
         private void OnProjectUnLoaded(Project project)

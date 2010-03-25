@@ -417,28 +417,117 @@ namespace Tobi.Plugin.AudioPane
 
         private void insertAudioAtCursorOrSelectionReplace(ManagedAudioMedia manMedia)
         {
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode treeNode = (treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
+            if (treeNode == null) return;
+
             if (View != null)
             {
                 View.ResetAll();
             }
 
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-            //TreeNode treeNode = (treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
             if (State.Audio.PlayStreamMarkers == null)
             {
                 //Debug.Assert(State.Audio.PlayStream == null);
-                Debug.Assert(treeNodeSelection.Item1 != null);
-                Debug.Assert(treeNodeSelection.Item1.GetManagedAudioMediaOrSequenceMedia() == null);
-                Debug.Assert(treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null);
-                Debug.Assert(treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null);
+                var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
+                if (media != null)
+                {
+                    Debug.Fail("Waht ??");
+                    return;
+                }
+                Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
+                Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
 
-                var command = treeNodeSelection.Item1.Presentation.CommandFactory.
-                    CreateTreeNodeSetManagedAudioMediaCommand(treeNodeSelection.Item1, manMedia);
+                var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+                treeNode.Presentation.UndoRedoManager.Execute(command_);
 
-                treeNodeSelection.Item1.Presentation.UndoRedoManager.Execute(command);
+                return;
+            }
+
+            double timeInsert = 0;
+            bool transaction = false;
+            List<TreeNodeAndStreamSelection> selData = null;
+            if (IsSelectionSet)
+            {
+                timeInsert = State.Selection.SelectionBegin;
+
+                transaction = true;
+                treeNode.Presentation.UndoRedoManager.StartTransaction("Replace audio selection", "delete the current audio selection and insert new audio");
+
+                selData = getAudioSelectionData();
+
+                CommandDeleteAudioSelection.Execute();
             }
             else
             {
+                timeInsert = LastPlayHeadTime;
+
+                if (timeInsert < 0)
+                {
+                    var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
+                    if (media != null)
+                    {
+                        Debug.Fail("Waht ??");
+                        return;
+                    }
+                    Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
+                    Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
+
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
+                    var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+                    treeNode.Presentation.UndoRedoManager.Execute(command_);
+
+                    return;
+                }
+            }
+
+            long byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
+            double timeOffset = timeInsert;
+            TreeNode treeNodeTarget;
+            long bytesRight;
+            long bytesLeft;
+            int index;
+            bool match = State.Audio.FindInPlayStreamMarkers(byteOffset, out treeNodeTarget, out index, out bytesLeft, out bytesRight);
+            if (!match)
+            {
+                Debug.Fail("Waht ??");
+
+                if (transaction)
+                {
+                    treeNode.Presentation.UndoRedoManager.EndTransaction();
+                }
+                return;
+            }
+            
+            timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - bytesLeft);
+
+            if (selData != null && selData.Count > 0)
+            {
+            }
+
+            Media treeNodeAudio = treeNode.GetManagedAudioMedia();
+            Debug.Assert(treeNodeAudio != null);
+
+            Command command = treeNode.Presentation.CommandFactory.
+                   CreateManagedAudioMediaInsertDataCommand(
+                       treeNode, manMedia,
+                       new Time(timeOffset),
+                       treeNodeSelection.Item1);
+
+            if (AudioPlaybackStreamKeepAlive)
+            {
+                ensurePlaybackStreamIsDead();
+            }
+
+            treeNode.Presentation.UndoRedoManager.Execute(command);
+
+            if (transaction)
+            {
+                treeNode.Presentation.UndoRedoManager.EndTransaction();
             }
 
 
@@ -483,51 +572,7 @@ namespace Tobi.Plugin.AudioPane
             //        return;
             //    }
 
-            //    if (IsSelectionSet)
-            //    {
-            //        treeNode.Presentation.UndoRedoManager.StartTransaction("Replace audio selection", "delete the current audio selection and insert new audio");
 
-            //        var timeInsert = State.Selection.SelectionBegin;
-
-            //        CommandDeleteAudioSelection.Execute();
-
-            //        Command command;
-
-            //        Media newManMedia = treeNode.GetManagedAudioMedia();
-            //        if (newManMedia == null)
-            //        {
-            //            command = treeNode.Presentation.CommandFactory.
-            //                CreateTreeNodeSetManagedAudioMediaCommand(
-            //                treeNode, manMedia);
-            //        }
-            //        else
-            //        {
-            //            command = treeNode.Presentation.CommandFactory.
-            //               CreateManagedAudioMediaInsertDataCommand(
-            //                   treeNode, manMedia,
-            //                   new Time(timeInsert),
-            //                   treeNodeSelection.Item1);
-            //        }
-
-            //        treeNode.Presentation.UndoRedoManager.Execute(command);
-
-            //        treeNode.Presentation.UndoRedoManager.EndTransaction();
-            //    }
-            //    else
-            //    {
-            //        if (AudioPlaybackStreamKeepAlive)
-            //        {
-            //            ensurePlaybackStreamIsDead();
-            //        }
-
-            //        var command = treeNode.Presentation.CommandFactory.
-            //            CreateManagedAudioMediaInsertDataCommand(
-            //                treeNode, manMedia,
-            //                new Time(timeOffset),
-            //                treeNodeSelection.Item1);
-
-            //        treeNode.Presentation.UndoRedoManager.Execute(command);
-            //    }
 
             //    //managedAudioMedia.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new Time(recordingDuration));
             //    //recordingStream.Close();

@@ -219,15 +219,16 @@ namespace Tobi.Plugin.AudioPane
         {
             if (!Dispatcher.CheckAccess())
             {
+#if DEBUG
+            Debugger.Break();
+#endif
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, AudioRecorder.AudioRecordingFinishEventArgs>)OnAudioRecordingFinished_,
                                   sender, e);
                 return;
             }
 
-#if DEBUG
-            Debugger.Break();
-#endif
+            OnAudioRecordingFinished_(sender, e);
         }
         private void OnAudioRecordingFinished_(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
