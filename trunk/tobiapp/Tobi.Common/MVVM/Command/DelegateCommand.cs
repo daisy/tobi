@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Input;
 using Tobi.Common.UI;
 
@@ -82,6 +83,9 @@ namespace Tobi.Common.MVVM.Command
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
                     ExceptionHandler.Handle(ex, false, null);
                 }
             }

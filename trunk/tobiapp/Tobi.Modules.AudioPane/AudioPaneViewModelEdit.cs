@@ -491,9 +491,6 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            //
-            //m_CurrentAudioStreamProvider();
-
             long byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
             double timeOffset = timeInsert;
             TreeNode treeNodeTarget;
