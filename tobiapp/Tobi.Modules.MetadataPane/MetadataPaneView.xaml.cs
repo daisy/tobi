@@ -123,8 +123,7 @@ namespace Tobi.Plugin.MetadataPane
                                                    true, 700, 400, null, 0);
             
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
-                (Tobi_Plugin_MetadataPane_Lang.OpenMetadataEditor, Tobi_Plugin_MetadataPane_Lang.DialogOpen);            // TODO LOCALIZE OpenMetadataEditor
-                                                                                                     // TODO LOCALIZE DialogOpen
+                (Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_ShortDesc, Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_LongDesc);
 
             windowPopup.ShowModal();
 

@@ -381,11 +381,17 @@
   <data name="WaveformLoaded" xml:space="preserve">
     <value>Waveform loaded.</value>
   </data>
-  <data name="CmdTransaction_DeleteAudio" xml:space="preserve">
-    <value>Delete spanning audio portion</value>
+  <data name="TransactionDeleteAudio_ShortDesc" xml:space="preserve">
+    <value>Remove audio data</value>
   </data>
-  <data name="CmdTransaction_DeleteAudioInSeveraTreenodes" xml:space="preserve">
-    <value>Delete a portion of audio that spans across several treenodes</value>
+  <data name="TransactionDeleteAudio_LongDesc" xml:space="preserve">
+    <value>Delete audio data that potentially spans across several document fragments</value>
+  </data>
+  <data name="TransactionReplaceAudio_ShortDesc" xml:space="preserve">
+    <value>Replace audio data</value>
+  </data>
+  <data name="TransactionReplaceAudio_LongDesc" xml:space="preserve">
+    <value>Replace audio data with the supplied audio clip</value>
   </data>
   <data name="CmdAudioPlay_LongDesc" xml:space="preserve">
     <value>Start playback</value>

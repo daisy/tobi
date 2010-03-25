@@ -221,27 +221,28 @@ namespace Tobi.Plugin.AudioPane
 
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                    if (listOfTreeNodeAndStreamSelection.Count == 1)
+                    //if (listOfTreeNodeAndStreamSelection.Count == 1)
+                    //{
+                    //    var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
+                    //                CreateTreeNodeAudioStreamDeleteCommand(listOfTreeNodeAndStreamSelection[0], treeNodeSelection.Item1);
+
+                    //    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
+                    //}
+                    //else
+                    //{
+                    /// NOTE: WE NEED TO USE A WRAPPING TRANSACTION, EVEN IF COUNT == 1 ! (otherwise a super-transaction may prevent the processing of undo/redo refresh here in our client code)
+                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionDeleteAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionDeleteAudio_LongDesc);
+
+                    foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
                     {
                         var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
-                                    CreateTreeNodeAudioStreamDeleteCommand(listOfTreeNodeAndStreamSelection[0], treeNodeSelection.Item1);
+                                    CreateTreeNodeAudioStreamDeleteCommand(selection, treeNodeSelection.Item1);
 
                         m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
                     }
-                    else
-                    {
-                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.CmdTransaction_DeleteAudio, Tobi_Plugin_AudioPane_Lang.CmdTransaction_DeleteAudioInSeveraTreenodes); // TODO LOCALIZE CmdTransaction_DeleteAudio, CmdTransaction_DeleteAudioInSeveraTreenodes
 
-                        foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
-                        {
-                            var command = m_UrakawaSession.DocumentProject.Presentations.Get(0).CommandFactory.
-                                        CreateTreeNodeAudioStreamDeleteCommand(selection, treeNodeSelection.Item1);
-
-                            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.Execute(command);
-                        }
-
-                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
-                    }
+                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+                    //}
                 },
                 () =>
                 {
@@ -428,6 +429,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (State.Audio.PlayStreamMarkers == null)
             {
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                }
+
                 //Debug.Assert(State.Audio.PlayStream == null);
                 var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
                 if (media != null)
@@ -452,7 +458,7 @@ namespace Tobi.Plugin.AudioPane
                 timeInsert = State.Selection.SelectionBegin;
 
                 transaction = true;
-                treeNode.Presentation.UndoRedoManager.StartTransaction("Replace audio selection", "delete the current audio selection and insert new audio");
+                treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc);
 
                 selData = getAudioSelectionData();
 
@@ -464,6 +470,11 @@ namespace Tobi.Plugin.AudioPane
 
                 if (timeInsert < 0)
                 {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
                     var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
                     if (media != null)
                     {
@@ -473,17 +484,15 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
                     Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
 
-                    if (AudioPlaybackStreamKeepAlive)
-                    {
-                        ensurePlaybackStreamIsDead();
-                    }
-
                     var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
                     treeNode.Presentation.UndoRedoManager.Execute(command_);
 
                     return;
                 }
             }
+
+            //
+            //m_CurrentAudioStreamProvider();
 
             long byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
             double timeOffset = timeInsert;
@@ -502,19 +511,19 @@ namespace Tobi.Plugin.AudioPane
                 }
                 return;
             }
-            
+
             timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - bytesLeft);
 
             if (selData != null && selData.Count > 0)
             {
             }
 
-            Media treeNodeAudio = treeNode.GetManagedAudioMedia();
+            Media treeNodeAudio = treeNodeTarget.GetManagedAudioMedia();
             Debug.Assert(treeNodeAudio != null);
 
             Command command = treeNode.Presentation.CommandFactory.
                    CreateManagedAudioMediaInsertDataCommand(
-                       treeNode, manMedia,
+                       treeNodeTarget, manMedia,
                        new Time(timeOffset),
                        treeNodeSelection.Item1);
 
