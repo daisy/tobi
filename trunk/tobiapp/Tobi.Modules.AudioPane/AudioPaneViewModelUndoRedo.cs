@@ -360,13 +360,42 @@ namespace Tobi.Plugin.AudioPane
                     && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
 
                 var command = (CompositeCommand)eventt.Command;
-                Debug.Assert(command.ChildCommands.Count > 1);
+                //Debug.Assert(command.ChildCommands.Count > 1);
 
                 var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
                 if (list != null)
                 {
                     UndoRedoManagerChanged(list, done);
                     return;
+                }
+
+                if (command.ChildCommands.Count > 0)
+                {
+                    if (done)
+                    {
+                        var childCmd = command.ChildCommands.Get(command.ChildCommands.Count - 1);
+                        if (childCmd is ManagedAudioMediaInsertDataCommand)
+                        {
+                            cmd = childCmd;
+                        }
+                    }
+                    else
+                    {
+                        var childCmd = command.ChildCommands.Get(0);
+                        if (childCmd is CompositeCommand)
+                        {
+                            var list_ = ((CompositeCommand)childCmd).GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                            if (list_ != null)
+                            {
+                                UndoRedoManagerChanged(list_, done);
+                                return;
+                            }
+                        }
+                        else if (childCmd is TreeNodeAudioStreamDeleteCommand)
+                        {
+                            cmd = childCmd;
+                        }
+                    }
                 }
             }
 

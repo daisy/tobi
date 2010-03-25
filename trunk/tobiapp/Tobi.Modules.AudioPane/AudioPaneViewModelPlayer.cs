@@ -487,7 +487,6 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (m_Player.CurrentState == AudioPlayer.State.Stopped && time < 0)
             {
-                int debug = 10; // todo remove
                 //time = 0;
             }
 

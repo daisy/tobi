@@ -551,7 +551,7 @@ namespace Tobi.Plugin.AudioPane
 
             WaveFormPlayHeadPath.Data = null;
             WaveFormPlayHeadPath.InvalidateVisual();
-            
+
             ResetWaveFormChunkMarkers();
 
             PeakMeterPathCh2.Data = null;
@@ -630,14 +630,22 @@ namespace Tobi.Plugin.AudioPane
 
             using (StreamGeometryContext sgc = geometry.Open())
             {
-                sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
-                sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
-                sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
-                sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
-                sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
-                sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+                if (m_ViewModel.LastPlayHeadTime < 0)
+                {
+                    sgc.BeginFigure(new Point(pixels, height), true, false);
+                    sgc.LineTo(new Point(pixels, 0), true, false);
+                }
+                else
+                {
+                    sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
+                    sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
+                    sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
+                    sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
+                    sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+                    sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
+                    sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
+                    sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+                }
 
                 sgc.Close();
             }
