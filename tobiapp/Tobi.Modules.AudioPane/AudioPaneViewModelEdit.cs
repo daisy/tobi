@@ -379,7 +379,10 @@ namespace Tobi.Plugin.AudioPane
                     File.Delete(originalFilePath);
                 }
 
-                insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
+                if (managedAudioMedia.Duration.AsMilliseconds > 500)
+                    insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
+                else
+                    Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsMilliseconds + @"ms");
 
                 return;
             }

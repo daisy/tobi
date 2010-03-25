@@ -1318,9 +1318,7 @@ namespace Tobi.Plugin.AudioPane
                                   (Action<object, VuMeter.PeakMeterUpdateEventArgs>)OnPeakMeterUpdated_, sender, e);
                 return;
             }
-#if DEBUG
-            Debugger.Break();
-#endif
+            OnPeakMeterUpdated_(sender, e);
         }
         private void OnPeakMeterUpdated_(object sender, VuMeter.PeakMeterUpdateEventArgs e)
         {
