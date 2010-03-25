@@ -217,9 +217,6 @@ namespace Tobi.Plugin.AudioPane
                                         {
                                             loadWaveForm(widthMagnified, heightMagnified, wasPlaying,
                                                      play, bytesPerPixel_Magnified);
-
-                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                                (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
                                         }
                                         catch (ThreadAbortException ex)
                                         {
@@ -243,6 +240,9 @@ namespace Tobi.Plugin.AudioPane
                                                 //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
                                                 m_ViewModel.IsWaveFormLoading = false;
                                             }));
+
+                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
 
                                             //Console.WriteLine(@">>>> SEND AFTER IsWaveFormLoading");
 
