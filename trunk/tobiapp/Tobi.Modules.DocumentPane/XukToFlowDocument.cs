@@ -1268,8 +1268,11 @@ namespace Tobi.Plugin.DocumentPane
             //imagePanel.LastChildFill = true;
             if (!string.IsNullOrEmpty(imgAlt))
             {
-                var tb = new TextBlock(new Run("(" + imgAlt + ")"));
-                tb.HorizontalAlignment = HorizontalAlignment.Center;
+                var tb = new TextBlock(new Run("(" + imgAlt + ")"))
+                             {
+                                 HorizontalAlignment = HorizontalAlignment.Center,
+                                 TextWrapping = TextWrapping.Wrap
+                             };
                 imagePanel.Children.Add(tb);
             }
             imagePanel.Children.Add(image);

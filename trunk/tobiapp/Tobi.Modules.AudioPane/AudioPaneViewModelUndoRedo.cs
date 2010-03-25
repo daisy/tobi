@@ -241,7 +241,8 @@ namespace Tobi.Plugin.AudioPane
                 };
             }
 
-            if (treeNodeSelectionAfter.Item2 != treeNode)
+            if (treeNodeSelectionAfter.Item2 != treeNode
+                && treeNode != currentTreeNode)
             {
                 Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
                            Category.Debug, Priority.Medium);
@@ -257,46 +258,54 @@ namespace Tobi.Plugin.AudioPane
 
         private void UndoRedoManagerChanged(TreeNodeSetManagedAudioMediaCommand command, bool done)
         {
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            HandleInsertDelete(command.TreeNode,
+                               command.TreeNode,
+                               Time.Zero,
+                               command.ManagedAudioMedia.Duration.AsMilliseconds,
+                               command.TreeNode.GetManagedAudioMedia(),
+                               done);
+            return;
 
-            if (command.TreeNode != treeNodeSelection.Item1)
-            {
-                if (done)
-                {
-                    m_StateToRestore = new StateToRestore
-                    {
-                        SelectionBegin = 0,
-                        SelectionEnd = command.ManagedAudioMedia.Duration.AsMilliseconds,
-                        LastPlayHeadTime = 0
-                    };
-                }
+            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-                //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.TreeNode);
-                m_UrakawaSession.PerformTreeNodeSelection(command.TreeNode);
-            }
-            else
-            {
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                    m_CurrentAudioStreamProvider();
-                }
+            //if (command.TreeNode != treeNodeSelection.Item1)
+            //{
+            //    if (done)
+            //    {
+            //        m_StateToRestore = new StateToRestore
+            //        {
+            //            SelectionBegin = 0,
+            //            SelectionEnd = command.ManagedAudioMedia.Duration.AsMilliseconds,
+            //            LastPlayHeadTime = 0
+            //        };
+            //    }
 
-                if (done)
-                {
-                    double timeOffset = getTimeOffset(command.TreeNode, command.ManagedAudioMedia);
+            //    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            //    //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.TreeNode);
+            //    m_UrakawaSession.PerformTreeNodeSelection(command.TreeNode);
+            //}
+            //else
+            //{
+            //    if (AudioPlaybackStreamKeepAlive)
+            //    {
+            //        ensurePlaybackStreamIsDead();
+            //        m_CurrentAudioStreamProvider();
+            //    }
 
-                    m_StateToRestore = new StateToRestore
-                    {
-                        SelectionBegin = timeOffset,
-                        SelectionEnd = timeOffset + command.ManagedAudioMedia.Duration.AsMilliseconds,
-                        LastPlayHeadTime = timeOffset
-                    };
-                }
+            //    if (done)
+            //    {
+            //        double timeOffset = getTimeOffset(command.TreeNode, command.ManagedAudioMedia);
 
-                CommandRefresh.Execute();
-            }
+            //        m_StateToRestore = new StateToRestore
+            //        {
+            //            SelectionBegin = timeOffset,
+            //            SelectionEnd = timeOffset + command.ManagedAudioMedia.Duration.AsMilliseconds,
+            //            LastPlayHeadTime = timeOffset
+            //        };
+            //    }
+
+            //    CommandRefresh.Execute();
+            //}
         }
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
