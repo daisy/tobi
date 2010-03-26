@@ -605,6 +605,48 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         </Rectangle.Fill>
       </Rectangle>
 
+      <Line
+        x:Name="PeakMeterLinePeakFixedCh1"
+        Visibility="Visible"
+        Canvas.ZIndex="3"
+        
+            StrokeThickness="1"
+            Stroke="OrangeRed"
+        
+        RenderOptions.EdgeMode="Aliased"
+        SnapsToDevicePixels="True"
+
+        X1="0"
+        Y1="0"
+        
+        X2="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneTime}"
+        Y2="0"
+
+                 Canvas.Top="0"
+                 Canvas.Left="0"
+        ></Line>
+
+      <Line
+        x:Name="PeakMeterLinePeakFixedCh2"
+        Visibility="Visible"
+        Canvas.ZIndex="3"
+        
+            StrokeThickness="1"
+            Stroke="OrangeRed"
+        
+        RenderOptions.EdgeMode="Aliased"
+        SnapsToDevicePixels="True"
+
+        X1="0"
+        Y1="0"
+        
+        X2="{Binding ElementName=PeakMeterCanvas, Path=ActualWidth, Mode=OneTime}"
+        Y2="0"
+
+                 Canvas.Top="0"
+                 Canvas.Left="0"
+        ></Line>
+      
       <Path x:Name="PeakMeterPathCh1"
             Canvas.ZIndex="1"
             StrokeThickness="1"

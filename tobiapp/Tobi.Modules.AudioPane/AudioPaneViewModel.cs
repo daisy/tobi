@@ -1270,6 +1270,7 @@ namespace Tobi.Plugin.AudioPane
                 if (View != null)
                 {
                     View.RefreshUI_PeakMeterBlackout(true);
+                    View.ResetPeakLines();
                 }
                 return;
             }
@@ -1324,6 +1325,9 @@ namespace Tobi.Plugin.AudioPane
         }
         private void OnPeakMeterUpdated_(object sender, VuMeter.PeakMeterUpdateEventArgs e)
         {
+            PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
+            if (pcmInfo == null) return;
+
             if (IsRecording || IsMonitoring)
             {
                 if (View != null)
@@ -1338,8 +1342,6 @@ namespace Tobi.Plugin.AudioPane
             if (e.PeakDb != null && e.PeakDb.Length > 0)
             {
                 m_PeakMeterValues[0] = e.PeakDb[0];
-
-                PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
 
                 if (pcmInfo.Data.NumberOfChannels > 1)
                 {

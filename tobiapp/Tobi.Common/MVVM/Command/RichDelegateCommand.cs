@@ -125,7 +125,7 @@ namespace Tobi.Common.MVVM.Command
         public String ShortDescription
         {
             get;
-#if !DEBUG
+#if false && !DEBUG
         protected
 #endif
             set;
