@@ -343,6 +343,7 @@ namespace Tobi.Plugin.AudioPane
             InterruptAudioPlayerRecorder();
         }
 
+        private bool m_InterruptRecording;
         public void InterruptAudioPlayerRecorder()
         {
             if (IsPlaying)
@@ -357,6 +358,7 @@ namespace Tobi.Plugin.AudioPane
             }
             if (IsRecording)
             {
+                m_InterruptRecording = true;
                 CommandStopRecord.Execute();
                 return;
             }
