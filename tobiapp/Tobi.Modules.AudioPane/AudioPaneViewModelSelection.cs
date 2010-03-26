@@ -120,7 +120,7 @@ namespace Tobi.Plugin.AudioPane
                         AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                     }
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded && m_SelectionBeginTmp >= 0,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && IsAudioLoaded && m_SelectionBeginTmp >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_EndSelection));
 
@@ -141,7 +141,7 @@ namespace Tobi.Plugin.AudioPane
 
                     AudioCues.PlayTock();
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && IsAudioLoaded,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_BeginSelection));
 
@@ -167,7 +167,7 @@ namespace Tobi.Plugin.AudioPane
                     State.Selection.SetSelectionBytes(0, bytes);
                     AudioCues.PlayTock();
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded && LastPlayHeadTime >= 0,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && IsAudioLoaded && LastPlayHeadTime >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectLeft));
 
@@ -193,7 +193,7 @@ namespace Tobi.Plugin.AudioPane
                     State.Selection.SetSelectionBytes(bytes, State.Audio.DataLength);
                     AudioCues.PlayTockTock();
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded && LastPlayHeadTime >= 0,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && IsAudioLoaded && LastPlayHeadTime >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectRight));
 
@@ -221,7 +221,7 @@ namespace Tobi.Plugin.AudioPane
                     
                     AudioCues.PlayTockTock();
                 },
-                () => !IsWaveFormLoading,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && IsAudioLoaded,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectAll));
 
@@ -237,7 +237,7 @@ namespace Tobi.Plugin.AudioPane
 
                     State.Selection.ClearSelection();
                 },
-                () => !IsWaveFormLoading && IsSelectionSet,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && IsAudioLoaded && IsSelectionSet,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ClearSelection));
 
