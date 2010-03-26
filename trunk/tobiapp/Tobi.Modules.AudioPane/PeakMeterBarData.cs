@@ -75,18 +75,23 @@ namespace Tobi.Plugin.AudioPane
 
         public double DbToPixels(double totalPixels)
         {
+            return DbToPixels(totalPixels, ValueDb);
+        }
+
+        public double DbToPixels(double totalPixels, double dB)
+        {
             double pixels;
-            if (ValueDb < MinimumDb)
+            if (dB < MinimumDb)
             {
                 pixels = 0;
             }
-            else if (ValueDb > 0)
+            else if (dB > 0)
             {
                 pixels = totalPixels;
             }
             else
             {
-                pixels = (MinimumDb - ValueDb) * totalPixels / MinimumDb;
+                pixels = (MinimumDb - dB) * totalPixels / MinimumDb;
             }
             return pixels;
         }

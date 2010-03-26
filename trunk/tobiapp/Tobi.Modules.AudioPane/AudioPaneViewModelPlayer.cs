@@ -425,6 +425,7 @@ namespace Tobi.Plugin.AudioPane
             if (View != null)
             {
                 View.RefreshUI_PeakMeterBlackout(false);
+                View.ResetPeakLines();
             }
 
             PeakOverloadCountCh1 = 0;
