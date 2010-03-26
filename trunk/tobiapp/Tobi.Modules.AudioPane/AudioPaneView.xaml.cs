@@ -1044,6 +1044,8 @@ namespace Tobi.Plugin.AudioPane
             }
             if (m_WaveFormLoadingAdorner != null)
             {
+                if (m_WaveFormLoadingAdorner.Visibility != Visibility.Visible)
+                    m_WaveFormLoadingAdorner.Visibility = Visibility.Visible;
                 m_WaveFormLoadingAdorner.InvalidateVisual();
             }
         }
