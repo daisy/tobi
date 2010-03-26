@@ -157,6 +157,8 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 () =>
                 {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
                 },
@@ -182,6 +184,8 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 () =>
                 {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
                 },
@@ -265,6 +269,8 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 () =>
                 {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
                 },
@@ -328,6 +334,8 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 () =>
                 {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
                 },
