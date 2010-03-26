@@ -16,6 +16,7 @@ using urakawa;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -373,6 +374,20 @@ namespace Tobi.Plugin.DocumentPane
             };
         }
 
+        private TreeNode ensureTreeNodeIsNoteAnnotation(TreeNode treeNode)
+        {
+            if (treeNode == null) return null;
+            QualifiedName qname = treeNode.GetXmlElementQName();
+            if (qname == null) return null;
+
+            if (qname.LocalName == "annotation"
+                || qname.LocalName == "note")
+            {
+                return treeNode;
+            }
+            return ensureTreeNodeIsNoteAnnotation(treeNode.Parent);
+        }
+
         private void OnEscape(object obj)
         {
             if (!Dispatcher.CheckAccess())
@@ -386,7 +401,10 @@ namespace Tobi.Plugin.DocumentPane
             if (m_UrakawaSession.DocumentProject == null) return;
 
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-            TreeNode treeNode = selection.Item2 ?? selection.Item1;
+            TreeNode treeNode_ = selection.Item2 ?? selection.Item1;
+            if (treeNode_ == null) return;
+
+            TreeNode treeNode = ensureTreeNodeIsNoteAnnotation(treeNode_);
             if (treeNode == null) return;
 
             string uid = treeNode.GetXmlElementId();
@@ -425,7 +443,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textElement.Tag is TreeNode)
                 {
-                    m_UrakawaSession.PerformTreeNodeSelection((TreeNode) textElement.Tag);
+                    m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
                 }
                 else
                 {
