@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -715,6 +716,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (play)
             {
+                OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
                               State.Audio.PcmFormat.Copy().Data,
@@ -792,6 +794,7 @@ namespace Tobi.Plugin.AudioPane
 
                     State.Audio.EndOffsetOfPlayStream = State.Audio.DataLength;
 
+                    OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
                     m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                                   State.Audio.DataLength,
                                   State.Audio.PcmFormat.Copy().Data,
@@ -819,6 +822,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 // else: the stream is now open
 
+                OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
                 m_Player.PlayBytes(m_CurrentAudioStreamProvider,
                               State.Audio.DataLength,
                               State.Audio.PcmFormat.Copy().Data,

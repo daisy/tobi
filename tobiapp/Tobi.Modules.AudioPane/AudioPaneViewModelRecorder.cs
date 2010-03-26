@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -72,6 +73,7 @@ namespace Tobi.Plugin.AudioPane
                         State.Audio.PcmFormatRecordingMonitoring = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
+                    OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
                     m_Recorder.StartRecording(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
@@ -122,6 +124,7 @@ namespace Tobi.Plugin.AudioPane
                         State.Audio.PcmFormatRecordingMonitoring = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
                     }
 
+                    OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
                     m_Recorder.StartMonitoring(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);

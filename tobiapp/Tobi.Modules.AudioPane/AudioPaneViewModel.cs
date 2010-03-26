@@ -181,7 +181,7 @@ namespace Tobi.Plugin.AudioPane
                     m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
 
                     if (m_Recorder.InputDevice.Name != Settings.Default.Audio_InputDevice)
-                        Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name;
+                        Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
                     //Settings.Default.Save();
                 }
             }
@@ -198,7 +198,7 @@ namespace Tobi.Plugin.AudioPane
                 //m_Player.OutputDevice = value;
 
                 if (m_Player.OutputDevice.Name != Settings.Default.Audio_OutputDevice)
-                    Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name;
+                    Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
                 //Settings.Default.Save();
 
                 if (time >= 0 && State.Audio.HasContent)
@@ -340,6 +340,11 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.CancelWaveFormLoad(false);
             }
+            InterruptAudioPlayerRecorder();
+        }
+
+        public void InterruptAudioPlayerRecorder()
+        {
             if (IsPlaying)
             {
                 CommandPause.Execute();
@@ -368,7 +373,6 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnDeviceArrived(object sender, EventArgs e)
         {
-
             if (IsAudioDeviceChanged())
             {
                 Console.WriteLine("Audio Device Arrived");
@@ -489,8 +493,9 @@ namespace Tobi.Plugin.AudioPane
 
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
 
-            m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
-            Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name;
+            OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
+            //m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
+            //Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name;
             Settings.Default.Save();
 
             m_Player.StateChanged += OnStateChanged_Player;
@@ -501,8 +506,9 @@ namespace Tobi.Plugin.AudioPane
 
             m_Recorder = new AudioRecorder();
 
-            m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
-            Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name;
+            OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
+            //m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
+            //Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name;
             Settings.Default.Save();
 
             m_Recorder.StateChanged += OnStateChanged_Recorder;
@@ -669,7 +675,11 @@ namespace Tobi.Plugin.AudioPane
             if (State.Audio.PlayStreamMarkers == null // audio file may have been previously loaded, no relation to the document. 
                 || oldTreeNodeSelection.Item1 != newTreeNodeSelection.Item1)
             {
-                OnEscape(null);
+                if (View != null)
+                {
+                    View.CancelWaveFormLoad(false);
+                }
+                InterruptAudioPlayerRecorder();
 
                 //if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
                 //{
@@ -701,6 +711,10 @@ namespace Tobi.Plugin.AudioPane
                 m_LastPlayHeadTime = 0;
 
                 mustLoadWaveForm = true;
+            }
+            else
+            {
+                InterruptAudioPlayerRecorder();
             }
 
             if (IsAudioLoadedWithSubTreeNodes
@@ -841,10 +855,12 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+
             if (View != null)
             {
-                View.CancelWaveFormLoad(true);
+                View.CancelWaveFormLoad(false);
             }
+            InterruptAudioPlayerRecorder();
 
             if (AudioPlaybackStreamKeepAlive)
             {
