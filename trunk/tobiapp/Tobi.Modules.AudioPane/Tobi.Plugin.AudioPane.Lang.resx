@@ -369,6 +369,18 @@
   <data name="RecordingStopped" xml:space="preserve">
     <value>Recording stopped.</value>
   </data>
+  <data name="CmdAudioSelectLeft_ShortDesc" xml:space="preserve">
+    <value>_Select left</value>
+  </data>
+  <data name="CmdAudioSelectLeft_LongDesc" xml:space="preserve">
+    <value>Select audio on the left of the play cursor</value>
+  </data>
+  <data name="CmdAudioSelectRight_ShortDesc" xml:space="preserve">
+    <value>_Select right</value>
+  </data>
+  <data name="CmdAudioSelectRight_LongDesc" xml:space="preserve">
+    <value>Select audio on the right of the play cursor</value>
+  </data>
   <data name="CmdSelectAll_ShortDesc" xml:space="preserve">
     <value>_Select all</value>
   </data>

@@ -484,6 +484,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select audio on the left of the play cursor.
+        /// </summary>
+        public static string CmdAudioSelectLeft_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioSelectLeft_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Select left.
+        /// </summary>
+        public static string CmdAudioSelectLeft_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioSelectLeft_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select the entire audio phrase following the current one.
         /// </summary>
         public static string CmdAudioSelectNextChunk_LongDesc {
@@ -516,6 +534,24 @@ namespace Tobi.Plugin.AudioPane {
         public static string CmdAudioSelectPreviousChunk_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdAudioSelectPreviousChunk_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select audio on the right of the play cursor.
+        /// </summary>
+        public static string CmdAudioSelectRight_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioSelectRight_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Select right.
+        /// </summary>
+        public static string CmdAudioSelectRight_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioSelectRight_ShortDesc", resourceCulture);
             }
         }
         

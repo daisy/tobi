@@ -373,6 +373,30 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ALT ] Left")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_SelectLeft {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_SelectLeft"]));
+            }
+            set {
+                this["Keyboard_Audio_SelectLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT ALT ] Right")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_SelectRight {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_SelectRight"]));
+            }
+            set {
+                this["Keyboard_Audio_SelectRight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Oem4 ([)")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_BeginSelection {
             get {
