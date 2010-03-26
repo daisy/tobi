@@ -176,7 +176,8 @@ namespace Tobi.Plugin.AudioPane
 
             if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
             {
-                if (m_Recorder.CurrentState == AudioRecorder.State.Stopped)
+                if (m_Recorder.CurrentState == AudioRecorder.State.Stopped
+                    || m_Recorder.CurrentState == AudioRecorder.State.NotReady)
                 {
                     m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
 
