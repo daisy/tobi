@@ -581,7 +581,9 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private const double DB_DROP_PEAK_LINE = 2.5;
         private double m_PeakMeterLinePeakFixedCh1_Y, m_PeakMeterLinePeakFixedCh2_Y;
+        private double m_PeakMeterLinePeakDropCh1_Y, m_PeakMeterLinePeakDropCh2_Y;
         public void ResetPeakLines()
         {
             m_PeakMeterLinePeakFixedCh1_Y = -1000;
@@ -593,6 +595,16 @@ namespace Tobi.Plugin.AudioPane
             PeakMeterLinePeakFixedCh2.Y1 = m_PeakMeterLinePeakFixedCh2_Y;
             PeakMeterLinePeakFixedCh2.Y2 = PeakMeterLinePeakFixedCh2.Y1;
             PeakMeterLinePeakFixedCh2.Visibility = Visibility.Hidden;
+
+            m_PeakMeterLinePeakDropCh1_Y = -1000;
+            PeakMeterLinePeakDropCh1.Y1 = m_PeakMeterLinePeakDropCh1_Y;
+            PeakMeterLinePeakDropCh1.Y2 = PeakMeterLinePeakDropCh1.Y1;
+            PeakMeterLinePeakDropCh1.Visibility = Visibility.Hidden;
+
+            m_PeakMeterLinePeakDropCh2_Y = -1000;
+            PeakMeterLinePeakDropCh2.Y1 = m_PeakMeterLinePeakDropCh2_Y;
+            PeakMeterLinePeakDropCh2.Y2 = PeakMeterLinePeakDropCh2.Y1;
+            PeakMeterLinePeakDropCh2.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -766,6 +778,10 @@ namespace Tobi.Plugin.AudioPane
                 {
                     PeakMeterLinePeakFixedCh2.Visibility = Visibility.Hidden;
                 }
+                if (PeakMeterLinePeakDropCh2.Visibility != Visibility.Hidden)
+                {
+                    PeakMeterLinePeakDropCh2.Visibility = Visibility.Hidden;
+                }
             }
             double availableHeight = PeakMeterCanvas.ActualHeight;
 
@@ -823,6 +839,33 @@ namespace Tobi.Plugin.AudioPane
                 PeakMeterLinePeakFixedCh1.X2 = barWidth;
 
                 PeakMeterLinePeakFixedCh1.InvalidateVisual();
+
+                m_PeakMeterLinePeakDropCh1_Y -= DB_DROP_PEAK_LINE;
+                if (m_PeakMeterLinePeakDropCh1_Y < m_ViewModel.PeakMeterBarDataCh1.MinimumDb)
+                {
+                    m_PeakMeterLinePeakDropCh1_Y = m_ViewModel.PeakMeterBarDataCh1.MinimumDb;
+                }
+
+                if (m_ViewModel.PeakMeterBarDataCh1.ValueDb > m_PeakMeterLinePeakDropCh1_Y)
+                {
+                    m_PeakMeterLinePeakDropCh1_Y = m_ViewModel.PeakMeterBarDataCh1.ValueDb;
+                }
+
+                if (PeakMeterLinePeakDropCh1.Visibility != Visibility.Visible)
+                {
+                    PeakMeterLinePeakDropCh1.Visibility = Visibility.Visible;
+                }
+
+                pixels_ = m_ViewModel.PeakMeterBarDataCh1.DbToPixels(availableHeight, m_PeakMeterLinePeakDropCh1_Y);
+                diff_ = availableHeight - pixels_;
+
+                PeakMeterLinePeakDropCh1.Y1 = diff_;
+                PeakMeterLinePeakDropCh1.Y2 = PeakMeterLinePeakDropCh1.Y1;
+
+                PeakMeterLinePeakDropCh1.X1 = 0;
+                PeakMeterLinePeakDropCh1.X2 = barWidth;
+
+                PeakMeterLinePeakDropCh1.InvalidateVisual();
             }
 
             StreamGeometry geometry2 = null;
@@ -885,6 +928,33 @@ namespace Tobi.Plugin.AudioPane
                     PeakMeterLinePeakFixedCh2.X2 = barWidth + barWidth;
 
                     PeakMeterLinePeakFixedCh2.InvalidateVisual();
+
+                    m_PeakMeterLinePeakDropCh2_Y -= DB_DROP_PEAK_LINE;
+                    if (m_PeakMeterLinePeakDropCh2_Y < m_ViewModel.PeakMeterBarDataCh2.MinimumDb)
+                    {
+                        m_PeakMeterLinePeakDropCh2_Y = m_ViewModel.PeakMeterBarDataCh2.MinimumDb;
+                    }
+
+                    if (m_ViewModel.PeakMeterBarDataCh2.ValueDb > m_PeakMeterLinePeakDropCh2_Y)
+                    {
+                        m_PeakMeterLinePeakDropCh2_Y = m_ViewModel.PeakMeterBarDataCh2.ValueDb;
+                    }
+
+                    if (PeakMeterLinePeakDropCh2.Visibility != Visibility.Visible)
+                    {
+                        PeakMeterLinePeakDropCh2.Visibility = Visibility.Visible;
+                    }
+
+                    pixels_ = m_ViewModel.PeakMeterBarDataCh2.DbToPixels(availableHeight, m_PeakMeterLinePeakDropCh2_Y);
+                    diff_ = availableHeight - pixels_;
+
+                    PeakMeterLinePeakDropCh2.Y1 = diff_;
+                    PeakMeterLinePeakDropCh2.Y2 = PeakMeterLinePeakDropCh2.Y1;
+
+                    PeakMeterLinePeakDropCh2.X1 = barWidth;
+                    PeakMeterLinePeakDropCh2.X2 = barWidth + barWidth;
+
+                    PeakMeterLinePeakDropCh2.InvalidateVisual();
                 }
             }
 
@@ -909,6 +979,21 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //PeakMeterCanvas.InvalidateVisual();
+        }
+
+        private void ResetPeakLabels()
+        {
+            PCMFormatInfo format = m_ViewModel.State.Audio.GetCurrentPcmFormat();
+            if (format == null || format.Data.NumberOfChannels == 1)
+            {
+                PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
+                PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 2);
+            }
+            else
+            {
+                PeakOverloadLabelCh2.Visibility = Visibility.Visible;
+                PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 1);
+            }
         }
 
         /// <summary>
@@ -1153,6 +1238,7 @@ namespace Tobi.Plugin.AudioPane
         {
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
             ResetPeakLines();
+            ResetPeakLabels();
         }
 
         /// <summary>

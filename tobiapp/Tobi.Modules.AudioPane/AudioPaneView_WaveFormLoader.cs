@@ -130,16 +130,7 @@ namespace Tobi.Plugin.AudioPane
         {
             ShowHideWaveFormLoadingMessage(true);
 
-            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels == 1)
-            {
-                PeakOverloadLabelCh2.Visibility = Visibility.Collapsed;
-                PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 2);
-            }
-            else
-            {
-                PeakOverloadLabelCh2.Visibility = Visibility.Visible;
-                PeakOverloadLabelCh1.SetValue(Grid.ColumnSpanProperty, 1);
-            }
+            ResetPeakLabels();
 
             double widthReal = WaveFormCanvas.ActualWidth;
             if (double.IsNaN(widthReal) || widthReal == 0)
