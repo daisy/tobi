@@ -14,9 +14,15 @@ namespace Tobi.Plugin.AudioPane
     public partial class AudioPaneViewModel
     {
         public RichDelegateCommand CommandSelectAll { get; private set; }
+
+        public RichDelegateCommand CommandSelectLeft { get; private set; }
+        public RichDelegateCommand CommandSelectRight { get; private set; }
+
         public RichDelegateCommand CommandClearSelection { get; private set; }
+
         public RichDelegateCommand CommandBeginSelection { get; private set; }
         public RichDelegateCommand CommandEndSelection { get; private set; }
+
         public RichDelegateCommand CommandSelectNextChunk { get; private set; }
         public RichDelegateCommand CommandSelectPreviousChunk { get; private set; }
 
@@ -125,7 +131,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioBeginSelection_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Left1")),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandBeginSelection", Category.Debug, Priority.Medium);
 
@@ -140,6 +146,58 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_BeginSelection));
 
             m_ShellView.RegisterRichCommand(CommandBeginSelection);
+            //
+            CommandSelectLeft = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioSelectLeft_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioSelectLeft_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("format-indent-less"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandSelectLeft", Category.Debug, Priority.Medium);
+
+                    long bytes = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+
+                    if (bytes <= 0)
+                    {
+                        AudioCues.PlayAsterisk();
+                        return;
+                    }
+
+                    State.Selection.SetSelectionBytes(0, bytes);
+                    AudioCues.PlayTock();
+                },
+                () => !IsWaveFormLoading && IsAudioLoaded && LastPlayHeadTime >= 0,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectLeft));
+
+            m_ShellView.RegisterRichCommand(CommandSelectLeft);
+            //
+            CommandSelectRight = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioSelectRight_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioSelectRight_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("format-indent-more"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandSelectRight", Category.Debug, Priority.Medium);
+
+                    long bytes = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+
+                    if (bytes >= State.Audio.DataLength)
+                    {
+                        AudioCues.PlayAsterisk();
+                        return;
+                    }
+
+                    State.Selection.SetSelectionBytes(bytes, State.Audio.DataLength);
+                    AudioCues.PlayTockTock();
+                },
+                () => !IsWaveFormLoading && IsAudioLoaded && LastPlayHeadTime >= 0,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectRight));
+
+            m_ShellView.RegisterRichCommand(CommandSelectRight);
             //
             CommandSelectAll = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdSelectAll_ShortDesc,

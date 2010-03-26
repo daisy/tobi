@@ -210,6 +210,8 @@ namespace Tobi.Plugin.AudioPane
                 new[]
                  {
                      m_AudioPaneViewModel.CommandSelectAll,
+                     m_AudioPaneViewModel.CommandSelectLeft,
+                     m_AudioPaneViewModel.CommandSelectRight,
                      m_AudioPaneViewModel.CommandSelectPreviousChunk,
                      m_AudioPaneViewModel.CommandSelectNextChunk,
                      m_AudioPaneViewModel.CommandBeginSelection,
