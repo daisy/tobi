@@ -55,7 +55,8 @@ namespace Tobi.Plugin.DocumentPane
             DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
             DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
             DelegateOnRequestNavigate delegateOnRequestNavigate,
-            DelegateAddIdLinkTarget delegateAddIdLinkTarget)
+            DelegateAddIdLinkTarget delegateAddIdLinkTarget,
+            DelegateAddIdLinkSource delegateAddIdLinkSource)
         {
             m_FlowDoc = flowDocument;
 
@@ -69,10 +70,14 @@ namespace Tobi.Plugin.DocumentPane
             m_DelegateOnMouseDownTextElementWithNode = delegateOnMouseDownTextElementWithNode;
             m_DelegateOnRequestNavigate = delegateOnRequestNavigate;
             m_DelegateAddIdLinkTarget = delegateAddIdLinkTarget;
+            m_DelegateAddIdLinkSource = delegateAddIdLinkSource;
         }
 
         public delegate void DelegateAddIdLinkTarget(string name, TextElement data);
         private DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
+
+        public delegate void DelegateAddIdLinkSource(string name, TextElement data);
+        private DelegateAddIdLinkSource m_DelegateAddIdLinkSource;
 
         public readonly FlowDocument m_FlowDoc = new FlowDocument();
 
@@ -864,7 +869,7 @@ namespace Tobi.Plugin.DocumentPane
             setTag(data, node);
 
             data.Background = Brushes.LightSkyBlue;
-            data.Foreground = Brushes.Blue;
+            //data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("href");
@@ -922,10 +927,16 @@ namespace Tobi.Plugin.DocumentPane
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("idref");
 
-            if (attr != null && !String.IsNullOrEmpty(attr.Value))
+            if (attr != null && !String.IsNullOrEmpty(attr.Value) && attr.Value.Length > 1)
             {
-                data.NavigateUri = new Uri((attr.Value.StartsWith("#") ? "" : "#") + attr.Value, UriKind.Relative);
+                string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
+                data.NavigateUri = new Uri("#" + id, UriKind.Relative);
                 data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+
+                data.ToolTip = data.NavigateUri.ToString();
+                data.Name = IdToName(id);
+
+                m_DelegateAddIdLinkSource(data.Name, data);
             }
             else
             {
@@ -1420,7 +1431,7 @@ namespace Tobi.Plugin.DocumentPane
                                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                                     {
                                         data.Name = IdToName(attr.Value);
-                                        data.ToolTip = data.Name;
+                                        data.ToolTip = attr.Value;
                                         m_DelegateAddIdLinkTarget(data.Name, data);
                                     }
                                 }
