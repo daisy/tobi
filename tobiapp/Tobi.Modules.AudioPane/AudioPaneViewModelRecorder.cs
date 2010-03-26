@@ -223,7 +223,7 @@ namespace Tobi.Plugin.AudioPane
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
-            Debugger.Break();
+                Debugger.Break();
 #endif
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, AudioRecorder.AudioRecordingFinishEventArgs>)OnAudioRecordingFinished_,
@@ -235,6 +235,12 @@ namespace Tobi.Plugin.AudioPane
         }
         private void OnAudioRecordingFinished_(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
+            if (m_InterruptRecording)
+            {
+                m_InterruptRecording = false;
+                return;
+            }
+
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
                 openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
