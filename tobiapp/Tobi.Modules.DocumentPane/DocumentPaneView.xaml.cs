@@ -361,6 +361,7 @@ namespace Tobi.Plugin.DocumentPane
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
 
+            m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, EscapeEvent.THREAD_OPTION);
 
             var focusAware = new FocusActiveAwareAdapter(this);
             focusAware.IsActiveChanged += (sender, e) =>
@@ -371,6 +372,71 @@ namespace Tobi.Plugin.DocumentPane
                 //CommandFindPrev.IsActive = focusAware.IsActive;
             };
         }
+
+        private void OnEscape(object obj)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
+                return;
+            }
+            if (m_UrakawaSession.DocumentProject == null) return;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode treeNode = selection.Item2 ?? selection.Item1;
+            if (treeNode == null) return;
+
+            string uid = treeNode.GetXmlElementId();
+            if (string.IsNullOrEmpty(uid)) return;
+
+            string id = XukToFlowDocument.IdToName(uid);
+
+            TextElement textElement = null;
+            if (m_idLinkTargets.ContainsKey(id))
+            {
+                textElement = m_idLinkTargets[id];
+            }
+            if (textElement == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                textElement = TheFlowDocument.FindName(id) as TextElement;
+            }
+            if (textElement != null)
+            {
+                if (textElement.Tag is TreeNode)
+                {
+                    Debug.Assert(treeNode == (TreeNode)textElement.Tag);
+                }
+            }
+            if (m_idLinkSources.ContainsKey(id))
+            {
+                var list = m_idLinkSources[id];
+#if DEBUG
+                if (list.Count > 1) Debugger.Break();
+#endif //DEBUG
+                textElement = list[0];//TODO: popup list of choices when several reference sources
+            }
+            if (textElement != null)
+            {
+                if (textElement.Tag is TreeNode)
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection((TreeNode) textElement.Tag);
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
+                }
+            }
+        }
+
 
         private List<TreeNode> m_PathToTreeNode;
         private List<TreeNode> getPathToTreeNode(TreeNode treeNodeSel)
@@ -448,6 +514,7 @@ namespace Tobi.Plugin.DocumentPane
 
 
         private Dictionary<string, TextElement> m_idLinkTargets;
+        private Dictionary<string, List<TextElement>> m_idLinkSources;
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
@@ -473,6 +540,13 @@ namespace Tobi.Plugin.DocumentPane
                 m_idLinkTargets.Clear();
             }
             m_idLinkTargets = new Dictionary<string, TextElement>();
+
+            if (m_idLinkSources != null)
+            {
+                m_idLinkSources.Clear();
+            }
+            m_idLinkSources = new Dictionary<string, List<TextElement>>();
+
 
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
@@ -607,10 +681,10 @@ namespace Tobi.Plugin.DocumentPane
                 if (textElement2 == null)
                 {
 #if DEBUG
-                Debugger.Break();
+                    Debugger.Break();
 #endif //DEBUG
-                Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item2.ToString());
-                return;
+                    Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item2.ToString());
+                    return;
                 }
             }
 
@@ -865,7 +939,7 @@ namespace Tobi.Plugin.DocumentPane
                             },
                             (uri) =>
                             {
-                                m_Logger.Log("DocumentPaneView.OnRequestNavigate", Category.Debug, Priority.Medium);
+                                m_Logger.Log("DocumentPaneView.OnRequestNavigate: " + uri.ToString(), Category.Debug, Priority.Medium);
 
                                 if (uri.ToString().StartsWith("#"))
                                 {
@@ -876,8 +950,21 @@ namespace Tobi.Plugin.DocumentPane
                             (name, data) =>
                             {
                                 m_idLinkTargets.Add(name, data);
+                            },
+                            (name, data) =>
+                            {
+                                if (m_idLinkSources.ContainsKey(name))
+                                {
+                                    var list = m_idLinkSources[name];
+                                    list.Add(data);
+                                }
+                                else
+                                {
+                                    var list = new List<TextElement>(1) { data };
+                                    m_idLinkSources.Add(name, list);
+                                }
                             }
-                            );
+                );
 
             //try
             //{
@@ -1182,6 +1269,9 @@ namespace Tobi.Plugin.DocumentPane
             }
             if (textElement == null)
             {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
                 textElement = TheFlowDocument.FindName(id) as TextElement;
             }
             if (textElement != null)
