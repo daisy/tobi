@@ -84,6 +84,11 @@ namespace Tobi.Plugin.Urakawa
                 {
                     return;
                 }
+                lock (m_TreeNodeSelectionLock)
+                {
+                    m_TreeNode = null;
+                    m_SubTreeNode = null;
+                }
                 if (m_DocumentProject != null)
                 {
                     //m_DocumentProject.Changed -= OnDocumentProjectChanged;
