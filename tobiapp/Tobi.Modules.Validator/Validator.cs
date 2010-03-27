@@ -110,9 +110,12 @@ namespace Tobi.Plugin.Validator
             {
                 if (IsValid)
                 {
+                    //this awkwardly inserts a blank item
+                    //if I remove it, the list never gets populated
+                    //todo: fix this
                     yield return null;
                 }
-
+                
                 foreach (ObservableValidatorWrapper ov in ObsValidators)
                 {
                     if (ov.Validator.IsValid)
@@ -125,7 +128,7 @@ namespace Tobi.Plugin.Validator
                         yield return item;
                     }
                 }
-
+              
                 yield break;
             }
         }

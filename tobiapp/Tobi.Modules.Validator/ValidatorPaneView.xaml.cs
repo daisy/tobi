@@ -47,10 +47,10 @@ namespace Tobi.Plugin.Validator
             m_Logger = logger;
 
             ValidatorAggregator = validator;
-            //m_Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
+            ValidatorAggregator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
 
-            //ValidationItems = new ObservableCollection<ValidationItem>();
-            //resetValidationItems(m_Validator);
+            ValidationItems = new ObservableCollection<ValidationItem>();
+            resetValidationItems(ValidatorAggregator);
             
             foreach (ResourceDictionary dict in resourceDictionaries)
             {
@@ -60,11 +60,11 @@ namespace Tobi.Plugin.Validator
             DataContext = this;
             
             InitializeComponent();
-            //SetupTabControl();
         }
 
-        /*public ObservableCollection<ValidationItem> ValidationItems { get; set; }
-
+        public ObservableCollection<ValidationItem> ValidationItems
+        { get;set;}
+        
         private void resetValidationItems(ValidatorAggregator validator)
         {
             ValidationItems.Clear();
@@ -76,23 +76,17 @@ namespace Tobi.Plugin.Validator
 
             foreach (var validationItem in validator.ValidationItems)
             {
-                ValidationItems.Add(validationItem);
+                if (validationItem != null)
+                    ValidationItems.Add(validationItem);
             }
+            
         }
         
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
         {
             resetValidationItems((ValidatorAggregator)e.Validator);
         }
-        */
-
-        //public IValidator SelectedValidator { get; set; }
-        //private ValidationItem m_SelectedValidationItem;
-        /*public ValidationItem SelectedValidationItem
-        {
-            get { return m_SelectedValidationItem; }
-            set { m_SelectedValidationItem = value; }
-        }*/
+        
 
         private void OnClipboardLinkClick(object sender, RoutedEventArgs e)
         {
@@ -143,7 +137,7 @@ namespace Tobi.Plugin.Validator
         }
     }
 
-    [ValueConversion(typeof(object), typeof(Visibility))]
+    [ValueConversion(typeof(ValidationItem), typeof(Visibility))]
     public class VisibilityConverter : ValueConverterMarkupExtensionBase<VisibilityConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
