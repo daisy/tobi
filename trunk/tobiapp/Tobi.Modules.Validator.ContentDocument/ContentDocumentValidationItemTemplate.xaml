@@ -57,14 +57,14 @@
       Converter={ContentDocument:TreeNodeFlowDocumentConverter}}"
       -->
       <FlowDocumentScrollViewer x:Name="FlowDocScroll"
-                   
+                    Document="{Binding Converter={ContentDocument:TreeNodeFlowDocumentConverter}}"                  
                     IsTabStop="False"
                     Focusable="False"
                     Zoom="110"
                     FontFamily="Palatino Linotype"
                     Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                     Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
-
+<!--
         <FlowDocument x:Name="FlowDoc"
                      AutomationProperties.Name="Feature not available"
                      IsEnabled = "True"
@@ -78,7 +78,7 @@
           <Paragraph>Hello!</Paragraph>
         </FlowDocument>
                      
-
+-->
       </FlowDocumentScrollViewer>
 
 

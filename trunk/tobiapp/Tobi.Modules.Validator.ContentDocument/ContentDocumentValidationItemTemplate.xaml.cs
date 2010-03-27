@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Media;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.core;
@@ -52,26 +53,9 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
-            return GetElementName(value as TreeNode);
+            return ContentDocumentValidator.GetTreeNodeName(value as TreeNode);
         }
-        public static string GetElementName(TreeNode node)
-        {
-            string elementName = GetNearestElementName(node);
-            if (string.IsNullOrEmpty(elementName)) return "";
-            return elementName;
-        }
-        public static string GetNearestElementName(TreeNode node)
-        {
-            if (node.GetXmlElementQName() == null)
-            {
-                if (node.Parent != null)
-                    return GetNearestElementName(node.Parent);
-                else
-                    return "";
-            }
-            
-            return node.GetXmlElementQName().LocalName;
-        }
+        
     }
 
     [ValueConversion(typeof(TreeNode), typeof(string))]
@@ -82,18 +66,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
             TreeNode element = value as TreeNode;
-            string elementText = element.GetTextMediaFlattened(false);
-            if (elementText == null) return "";
-            if (elementText.Length > 100)
-                elementText = elementText.Substring(0, 100);
 
-            elementText += "...";
-            
-            //if this is a mixed content model node with previous sibling(s), add some ellipses before the text too
-            if (element.GetXmlElementQName() == null && element.PreviousSibling != null)
-                elementText = "...\n" + elementText;
-
-            return elementText;
+            return ContentDocumentValidator.GetTreeNodeTextExcerpt(element);
         }
     }
 
@@ -128,16 +102,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (value == null) return "";
             if (!(value is string)) return "";
 
-            return GetCleanRegex(value as string);
+            return ContentDocumentValidator.GetCleanRegex(value as string);
             
         }
-        //todo: work on this regex string pretty print function
-        public static string GetCleanRegex(string regex)
-        {
-            if (string.IsNullOrEmpty(regex)) return "";
-
-            return regex.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
-        }
+        
     }
     [ValueConversion(typeof(TreeNode), typeof(FlowDocument))]
     public class TreeNodeFlowDocumentConverter : ValueConverterMarkupExtensionBase<TreeNodeFlowDocumentConverter>
@@ -147,11 +115,83 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
 
+            string str = ContentDocumentValidator.GetNodeXml(value as TreeNode);
+
+            TreeNode node = value as TreeNode;
             FlowDocument doc = new FlowDocument();
-            Paragraph para = new Paragraph();
-            para.Inlines.Add("Hello World!");
-            doc.Blocks.Add(para);
+            doc.FontSize = 10;
+            doc.FontFamily = new FontFamily("Courier");
+            WriteNodeXml_Flat(node, doc);
             return doc;
         }
+
+        private void WriteNodeXml_Flat(TreeNode node, FlowDocument doc)
+        {
+            string nodeName = ContentDocumentValidator.GetTreeNodeName(node);
+            Paragraph openingNodePara = new Paragraph();
+            openingNodePara.Inlines.Add(new Bold(new Run(string.Format("<{0}>", nodeName))));
+            if (node.GetTextMedia() != null)
+            {
+                string txt;
+                if (node.GetTextMedia().Text.Length > 10)
+                {
+                    txt = node.GetTextMedia().Text.Substring(0, 10);
+                }
+                else
+                {
+                    txt = node.GetTextMedia().Text;
+                }
+                openingNodePara.Inlines.Add(new Run(txt));
+            }
+
+            doc.Blocks.Add(openingNodePara);
+
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            {
+                Paragraph childXmlPara = new Paragraph();
+                string childNodeText = ContentDocumentValidator.GetTreeNodeTextExcerpt(child);
+                string childNodeName = ContentDocumentValidator.GetTreeNodeName(child);
+                childXmlPara.Inlines.Add(new Bold(new Run(string.Format("<{0}>", childNodeName))));
+                childXmlPara.Inlines.Add(new Run(childNodeText));
+                childXmlPara.Inlines.Add(new Bold(new Run(string.Format("</{0}>", childNodeName))));
+                childXmlPara.TextIndent = 5;
+                doc.Blocks.Add(childXmlPara);
+            }
+            Paragraph closingNodePara = new Paragraph();
+            closingNodePara.Inlines.Add(new Bold(new Run(string.Format("</{0}>", nodeName))));
+            doc.Blocks.Add(closingNodePara);
+        }
+
+        private void WriteNodeXml_Deep(TreeNode node, FlowDocument doc, int level)
+        {
+            string nodeName = "";
+            Paragraph p = new Paragraph();
+            if (node.GetXmlElementQName() != null)
+            {
+                nodeName = node.GetXmlElementQName().LocalName;
+                p.Inlines.Add(new Bold(new Run(string.Format("<{0}>", nodeName))));
+            }
+            if (node.GetTextMedia() != null && !string.IsNullOrEmpty(node.GetTextMedia().Text))
+            {
+                p.Inlines.Add(new Run(node.GetTextMedia().Text));
+            }
+            p.TextIndent = level*5;
+            doc.Blocks.Add(p);
+            
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            {
+                WriteNodeXml_Deep(child, doc, level++);
+            }
+
+            if (!string.IsNullOrEmpty(nodeName))
+            {
+                Paragraph p2 = new Paragraph();
+                p2.Inlines.Add(new Bold(new Run(string.Format("</{0}>", nodeName))));
+                p2.TextIndent = level*5;
+                doc.Blocks.Add(p2);
+            }
+        }
+            
     }
+
 }

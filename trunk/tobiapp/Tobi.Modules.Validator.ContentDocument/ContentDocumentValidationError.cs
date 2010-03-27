@@ -30,19 +30,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
             get
             {
                 string targetNodeName = "";
-                string problemChildNodeName = "";
-                string targetText = "";
-                string problemChildText = "";
-
+                
                 if (Target != null)
                 {
-                    targetText = Target.GetTextMediaFlattened(false);
-                    if (Target.GetXmlElementQName() != null)
-                        targetNodeName = Target.GetXmlElementQName().LocalName;
+                    targetNodeName = ContentDocumentValidator.GetTreeNodeName(Target);
                 }
-                if (BeginningOfError != null && BeginningOfError.GetXmlElementQName() != null)
-                    problemChildNodeName = BeginningOfError.GetXmlElementQName().LocalName;
-
+                
                 if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
                 {
                     return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.InvalidSequence, targetNodeName);           // TODO LOCALIZE Key already added InvalidSequence
@@ -65,8 +58,9 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
                 {
                     //return message plus target node snippet plus (optionally) dtd definition snippet
-                    return string.Format("{0}\n{1}\n{2}", Message, NodeNameSnippet(Target),
-                                               AllowedChildNodesConverter.GetCleanRegex(this.AllowedChildNodes));
+                    return string.Format("{0}\n{1}\n{2}", Message, 
+                        ContentDocumentValidator.GetNodeXml(Target),
+                                               ContentDocumentValidator.GetCleanRegex(AllowedChildNodes));
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {
@@ -75,7 +69,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (ErrorType == ContentDocumentErrorType.UndefinedElement)
                 {
                     return string.Format("Element definition not found for <{0}>",
-                                         ElementNameConverter.GetElementName(Target));
+                                         ContentDocumentValidator.GetTreeNodeName(Target));
                 }
 
                 return "";
@@ -93,21 +87,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             m_UrakawaSession.PerformTreeNodeSelection(Target);
         }
 
-        private static string NodeNameSnippet(TreeNode node)
-        {
-            string name = ElementNameConverter.GetElementName(node);
-            string snippet = string.Format("<{0}>\n", name);
-            foreach (var child in node.Children.ContentsAs_YieldEnumerable)
-            {
-                string childname = ElementNameConverter.GetElementName(child);
-                snippet += string.Format("\t<{0}>...\n", childname);
-
-            }
-            snippet += string.Format("</{0}>", name);
-            return snippet;
-
-        }
-
+        
         public ContentDocumentValidationError()
         {
             Severity = ValidationSeverity.Error;

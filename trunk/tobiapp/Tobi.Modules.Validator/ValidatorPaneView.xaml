@@ -42,10 +42,12 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition/>
     </Grid.RowDefinitions>
+    
     
     <!-- Left side: List of all validation items -->
     <TabControl Grid.Row="0" Grid.Column="0" x:Name="Tabs"
@@ -60,40 +62,39 @@
 
       <TabControl.ContentTemplate>
         <DataTemplate>
-          <ListBox x:Name="ValidationItemsListBox" 
-                   SelectedIndex="0" 
-                   Margin="10"
+          <ListBox Name="ValidationItemsListBox" 
                    HorizontalContentAlignment="Stretch"
                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                    ListBoxItem.MouseDoubleClick="OnListItemDoubleClick"
                    ItemsSource="{Binding ValidationItems}"
-                   IsSynchronizedWithCurrentItem="True">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding Message}"/>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>    
+                   DisplayMemberPath="Message"/>    
         </DataTemplate>
       </TabControl.ContentTemplate>
     </TabControl>
 
+    <!-- middle: test list-->
+    <!--<ListBox Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ValidationItems}" DisplayMemberPath="Message"
+             Name="TestValidationItemsListBox"/>-->
 
-    <StackPanel Grid.Column="1" Grid.Row="0">
-      <ContentControl Content="{Binding ElementName=ValidationItemsListBox, Path=SelectedItem, Mode=OneWay,
+    <StackPanel Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+      <StackPanel.DataContext>
+        <Binding ElementName="ValidationItemsListBox"
+                 Path="SelectedItem"/>
+      </StackPanel.DataContext>
+      <ContentControl Content="{Binding Mode=OneWay,
                       Converter={Validator:TestConverter}}"/>
-      
-      <TextBlock Margin="0,3,0,3" Visibility="{Binding ElementName=ValidationItemsListBox, Path=SelectedItem, Mode=OneWay,
-                 Converter={Validator:VisibilityConverter}}">
+
+      <TextBlock Margin="0,3,0,3">
+        <!-- Visibility="{Binding  Mode=OneWay,
+                 Converter={Validator:VisibilityConverter}}" -->
         <Hyperlink Click="OnClipboardLinkClick">
           <Run Text="Copy details to clipboard"/>
         </Hyperlink>
       </TextBlock>
-    
+
     </StackPanel>
 
-      <!--  maybe use a dynamic collection view source to keep the current tab in sync with the detail view?
     <ContentControl Margin="10,0,0,0" Grid.Column="1" Grid.Row="0"
-                       Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />-->
+                       Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />
   </Grid>
 </DockPanel>
