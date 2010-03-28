@@ -31,26 +31,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             if (value == null) return "";
             if (!(value is MetadataDataType)) return "";
-
-            MetadataDataType item = (MetadataDataType)value;
-            if (item == MetadataDataType.String)
-                return "string";
-            if (item == MetadataDataType.ClockValue)
-                return "timestamp";
-            if (item == MetadataDataType.Double)
-                return "double (e.g. 10.56)";
-            if (item == MetadataDataType.Date)
-                return "date";
-            if (item == MetadataDataType.FileUri)
-                return "path to a file";
-            if (item == MetadataDataType.Integer)
-                return "integer";
-            if (item == MetadataDataType.LanguageCode)
-                return "language code";
-            if (item == MetadataDataType.Number)
-                return "number";
-
-            return "";
+            return MetadataValidationError.DataTypeToString((MetadataDataType)value);
         }
     }
 
@@ -62,12 +43,7 @@ namespace Tobi.Plugin.Validator.Metadata
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return "";
-            MetadataDefinition item = (MetadataDefinition)value;
-            if (item.Occurrence == MetadataOccurrence.Required)
-                return Tobi_Plugin_Validator_Metadata_Lang.Metadata_Required;          // TODO LOCALIZE Metadata_Required
-            if (item.Occurrence == MetadataOccurrence.Recommended)
-                return Tobi_Plugin_Validator_Metadata_Lang.Metadata_Recommended;        // TODO LOCALIZE Metadata_Recommended
-            return Tobi_Plugin_Validator_Metadata_Lang.Metadata_Optional;               // TODO LOCALIZE Metadata_Optional
+            return MetadataValidationError.OccurrenceToString(value as MetadataDefinition);
         }
     }
 
@@ -78,7 +54,7 @@ namespace Tobi.Plugin.Validator.Metadata
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool isRepeatable = (bool)value;
-            return isRepeatable ? Tobi_Plugin_Validator_Metadata_Lang.MetadataMayBeRepeated : Tobi_Plugin_Validator_Metadata_Lang.MetadataMayNotBeRepeated; // TODO LOCALIZE MetadataMayBeRepeated, MetadataMayNotBeRepeated
+            return MetadataValidationError.RepeatableToString(isRepeatable);
         }
     }
 

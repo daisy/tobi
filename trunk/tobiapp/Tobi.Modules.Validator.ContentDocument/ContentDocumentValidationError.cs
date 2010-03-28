@@ -57,10 +57,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
                 {
-                    //return message plus target node snippet plus (optionally) dtd definition snippet
-                    return string.Format("{0}\n{1}\n{2}", Message, 
+                    //return message plus target node snippet plus dtd definition snippet
+                    return string.Format("{0}\n{1}\n{2}\n{3}", 
+                        Message, 
                         ContentDocumentValidator.GetNodeXml(Target),
-                                               ContentDocumentValidator.GetCleanRegex(AllowedChildNodes));
+                        "The allowed child elements are:",                        
+                        ContentDocumentValidator.GetElementsListFromDtdRegex(AllowedChildNodes));
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {

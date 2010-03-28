@@ -361,12 +361,144 @@ namespace Tobi.Plugin.Validator.ContentDocument
             return nodeText;
         }
 
-        //todo: work on this regex string pretty print function
-        public static string GetCleanRegex(string regex)
+        
+        //list the allowed elements, given a regex representing DTD rules
+        //it would be easier to just construct this from DtdSharp objects, but there's a chance
+        //that DtdSharp was never used in the scenario where Tobi caches a parsed DTD and uses that instead of
+        //parsing with DtdSharp.  our cache contains a series of pairs, each representing
+        //an element name and a regex of its allowed content model.
+        public static string GetElementsListFromDtdRegex(string regex)
         {
             if (string.IsNullOrEmpty(regex)) return "";
 
-            return regex.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
+            //string cleaner = regex.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
+            string cleaner = regex.Replace("?:", "").Replace("#", "");
+
+            //this tree structure could also be used to tell the user what the proper sequence(s) should be
+            //it's not the most efficient way to only retrieve a unique list of element names
+            //however, we are dealing with small datasets, so it's not really an issue
+            DtdNode dtdExpressionAsTree = Treeify(cleaner);
+            
+            //get a list of the dtd items that are elements (not just groupings of other elements)
+            List<DtdNode> list = GetAllDtdElements(dtdExpressionAsTree);
+            
+            //keep track of already-seen items
+            Hashtable temp = new Hashtable();
+
+            //make a list of unique element names
+            string elementNames = "";
+            foreach(DtdNode node in list)
+            {
+                if (!temp.ContainsKey(node.ElementName))
+                {
+                    if (!string.IsNullOrEmpty(elementNames))
+                        elementNames += ", ";
+                    elementNames += node.ElementName;
+                    temp[node.ElementName] = true;
+                }
+            }
+            return elementNames;
+        }
+
+        private static List<DtdNode> GetAllDtdElements(DtdNode node)
+        {
+            List<DtdNode> list = new List<DtdNode>();
+            if (!string.IsNullOrEmpty(node.ElementName))
+            {
+                list.Add(node);
+            }
+            foreach (DtdNode child in node.Children)
+            {
+                list.AddRange(GetAllDtdElements(child));
+            }
+            return list;
+        }
+        private class DtdNode
+        {
+            public List<DtdNode> Children { get; set; }
+            public string ElementName { get; set; }
+            public string AdditionalInfo { get; set; }
+            public DtdNode Parent { get; set; }
+            public string ChildRelationship { get; set; }
+            public DtdNode()
+            {
+                AdditionalInfo = "";
+                Children = new List<DtdNode>();
+                ChildRelationship = "and";
+            }  
+      
+        }
+
+        private static DtdNode Treeify (string regex)
+        {
+            List<DtdNode> parentQ = new List<DtdNode>();
+            //for each open paren, start a new DtdTreeNode
+            string temp = "";
+            DtdNode node = null;
+            bool first = true;
+            DtdNode root = null;
+            for (int i = 0; i<regex.Length; i++)
+            {
+                if (regex[i] == '(')
+                {
+                    temp = "";
+                    node = new DtdNode();
+                    if (first) root = node;
+                    first = false;
+                    if (parentQ.Count > 0)
+                    {
+                        parentQ[parentQ.Count - 1].Children.Add(node);
+                        node.Parent = parentQ[parentQ.Count - 1];
+                    }
+                    parentQ.Add(node);
+                    
+                }
+                else if (regex[i] == ')')
+                {
+                    temp = "";
+                    parentQ.RemoveAt(parentQ.Count - 1);
+                }
+                else if (regex[i] == '?' || regex[i] == '+' || regex[i] == '*')
+                {
+                    node.AdditionalInfo += regex[i];
+                    temp = "";
+                }
+                else if (regex[i] == '|')
+                {
+                    if (node.Parent != null)
+                        node.Parent.ChildRelationship = "or";
+                }
+                else if (regex[i] == 'P')
+                {
+                    //look ahead for PCDATA
+                    string str = regex.Substring(i, 6);
+                    if (str == "PCDATA")
+                    {
+                        node = new DtdNode();
+                        node.ElementName = "PCDATA";
+                        if (parentQ.Count > 0)
+                        {
+                            parentQ[parentQ.Count - 1].Children.Add(node);
+                            node.Parent = parentQ[parentQ.Count - 1];
+                        }
+                        else
+                        {
+                            if (first) root = node;
+                            first = false;
+                        }
+
+                        i += 5;
+                    }
+                }
+                else
+                {
+                    temp += regex[i];
+                    node.ElementName = temp;
+                }
+
+            }
+
+            return root;
         }
 
         //returns a 1-child-deep "flat" xml representation
