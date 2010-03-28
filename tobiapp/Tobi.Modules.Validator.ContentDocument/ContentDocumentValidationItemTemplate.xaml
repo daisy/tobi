@@ -18,76 +18,25 @@
     <Setter Property="FontFamily" Value="Courier New"/>
   </Style>
   <Style x:Key="ContentDocumentNodeBorderStyle" TargetType="{x:Type Border}">
-    <Setter Property="CornerRadius" Value="8,8,8,8"/>
+    <Setter Property="CornerRadius" Value="5"/>
     <Setter Property="Margin" Value="5"/>
     <Setter Property="BorderBrush" Value="Black"/>
-    <Setter Property="BorderThickness" Value="2,2,2,2"/>
+    <Setter Property="BorderThickness" Value="2"/>
   </Style>
 
+  <!-- template representing the semi-flattened XML (direct children only) for a single node-->
   <DataTemplate x:Key="ContentDocumentNodeTemplate">
     <Border Style="{StaticResource ContentDocumentNodeBorderStyle}">
-    <StackPanel Margin="5" Background="White">
-
-      <!--<TextBlock>
-        <TextBlock.Text>
-          <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
-        </TextBlock.Text>
-      </TextBlock>
-      
-      
-      <ListBox ItemsSource="{Binding Converter={ContentDocument:DirectElementChildrenConverter}}">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock>
-              <TextBlock.Text>
-                <Binding StringFormat="&lt;{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
-              </TextBlock.Text>
-            </TextBlock>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-       <TextBlock>
-        <TextBlock.Text>
-          <Binding StringFormat="&lt;/{0}&gt;" Converter="{ContentDocument:ElementNameConverter}"/>
-        </TextBlock.Text>
-      </TextBlock>
-      -->
-
-      <!-- Document="{Binding Target,
-      Converter={ContentDocument:TreeNodeFlowDocumentConverter}}"
-      -->
       <FlowDocumentScrollViewer x:Name="FlowDocScroll"
                     Document="{Binding Converter={ContentDocument:TreeNodeFlowDocumentConverter}}"                  
                     IsTabStop="False"
                     Focusable="False"
-                    Zoom="110"
-                    FontFamily="Palatino Linotype"
-                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                    Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
-<!--
-        <FlowDocument x:Name="FlowDoc"
-                     AutomationProperties.Name="Feature not available"
-                     IsEnabled = "True"
-                     IsHyphenationEnabled = "False"
-                     IsOptimalParagraphEnabled = "False"
-                     ColumnWidth = "Infinity"
-                     IsColumnWidthFlexible="False"
-                     TextAlignment = "Left"
-                     Focusable="False"
-                     >
-          <Paragraph>Hello!</Paragraph>
-        </FlowDocument>
-                     
--->
-      </FlowDocumentScrollViewer>
-
-
-
+                    MaxHeight="120"/>
        
-    </StackPanel>
     </Border>
   </DataTemplate>
 
+  <!-- cannot find a dtd error -->
   <DataTemplate x:Key="ContentDocumentMissingDtdTemplate">
     <StackPanel>
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>  <!-- TODO LOCALIZE MissingDTD Key already added-->
@@ -97,8 +46,9 @@
    </StackPanel>
   </DataTemplate>
 
+  <!-- element definition not found error -->
   <DataTemplate x:Key="ContentDocumentUndefinedElementTemplate">
-    <StackPanel>
+    <StackPanel Margin="0,5">
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>   <!-- TODO LOCALIZE UndefinedElement key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
@@ -111,6 +61,7 @@
     </StackPanel>
   </DataTemplate>
 
+  <!-- invalid sequence of child elements error -->
   <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplate">
     <StackPanel>
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
@@ -139,39 +90,25 @@
         </TextBlock.Text>
       </TextBlock>
 
-      <TextBlock TextWrapping="Wrap" 
+      <Border Style="{StaticResource ContentDocumentNodeBorderStyle}" Margin="0,5">
+        <TextBlock TextWrapping="Wrap" Margin="3"
                  Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"/>
+      </Border>
       
     </StackPanel>
   </DataTemplate>
-  <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplateOld">
-    <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence Key alredy added-->
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidChildElements}"/>  <!-- TODO LOCALIZE InvalidChildElements -->
-      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
-                          Content="{Binding Target}" />
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidChildElements_AdditionalMsg}">  <!-- TODO LOCALIZE InvalidChildElements_AdditionalMsg -->
-        <TextBlock.Visibility>
-          <Binding Path="BeginningOfError" Converter="{ContentDocument:NodeToVisibilityConverter}"/>
-        </TextBlock.Visibility>
-      </TextBlock>
-      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
-                        Content="{Binding BeginningOfError}">
-        <ContentPresenter.Visibility>
-          <Binding Converter="{ContentDocument:NodeToVisibilityConverter}"/>
-        </ContentPresenter.Visibility>
-      </ContentPresenter>
-    </StackPanel>
-  </DataTemplate>
-
+  
+  <!-- general error -->
   <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
       <TextBlock Text="{Binding Message}"/>
   </DataTemplate>
   
+  <!-- this data template selects one of the others depending on the type of error -->
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
     <ContentPresenter x:Name="Presenter"
                       ContentTemplate="{StaticResource ContentDocumentGeneralErrorTemplate}"
-                      Content="{TemplateBinding Content}"/>
+                      Content="{TemplateBinding Content}"
+                      />
       <DataTemplate.Triggers>
         <DataTrigger Binding="{Binding ErrorType}">
         	<DataTrigger.Value>

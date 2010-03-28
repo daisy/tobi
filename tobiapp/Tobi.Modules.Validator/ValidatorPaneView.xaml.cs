@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Documents;
+using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
 using Tobi.Common.UI.XAML;
@@ -104,7 +105,8 @@ namespace Tobi.Plugin.Validator
             }
         }
 
-        private void OnListItemDoubleClick(object sender, RoutedEventArgs e)
+        
+        private void ValidationItemsListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var list = sender as ListBox;
             var validationItem = list.SelectedItem as ValidationItem;

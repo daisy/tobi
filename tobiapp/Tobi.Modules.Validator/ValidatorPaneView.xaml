@@ -9,7 +9,7 @@
   <!--<Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>-->
   
   <DockPanel.Resources>
-    <CollectionViewSource Source="{Binding Path=ValidationItems}" x:Key="ValidationItemsCVS"/>
+    <!--<CollectionViewSource Source="{Binding Path=ValidationItems}" x:Key="ValidationItemsCVS"/> -->
 
     <!-- Style  TargetType="{x:Type TabItem}">
       <Setter Property="Template">
@@ -65,28 +65,29 @@
           <ListBox Name="ValidationItemsListBox" 
                    HorizontalContentAlignment="Stretch"
                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                   ListBoxItem.MouseDoubleClick="OnListItemDoubleClick"
+                   ListBoxItem.MouseDoubleClick="ValidationItemsListBox_OnMouseDoubleClick"
                    ItemsSource="{Binding ValidationItems}"
                    DisplayMemberPath="Message"/>    
         </DataTemplate>
       </TabControl.ContentTemplate>
     </TabControl>
-
+    
     <!-- middle: test list-->
+    <!-- the display works when bound to this but not to the listbox inside the tab control (see above)-->
     <!--<ListBox Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ValidationItems}" DisplayMemberPath="Message"
-             Name="TestValidationItemsListBox"/>-->
+             Name="TestValidationItemsListBox" Margin="0,0,5,0"/> -->
 
     <StackPanel Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
       <StackPanel.DataContext>
         <Binding ElementName="ValidationItemsListBox"
                  Path="SelectedItem"/>
       </StackPanel.DataContext>
-      <ContentControl Content="{Binding Mode=OneWay,
-                      Converter={Validator:TestConverter}}"/>
 
-      <TextBlock Margin="0,3,0,3">
-        <!-- Visibility="{Binding  Mode=OneWay,
-                 Converter={Validator:VisibilityConverter}}" -->
+      <!-- this picks up the currently selected item-->
+      <ContentControl Content="{Binding}"/>
+
+      <TextBlock Margin="0,3,0,3"
+                 Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
         <Hyperlink Click="OnClipboardLinkClick">
           <Run Text="Copy details to clipboard"/>
         </Hyperlink>
@@ -94,7 +95,6 @@
 
     </StackPanel>
 
-    <ContentControl Margin="10,0,0,0" Grid.Column="1" Grid.Row="0"
-                       Content='{Binding Source={StaticResource ValidationItemsCVS}, Path=/}' />
+    
   </Grid>
 </DockPanel>

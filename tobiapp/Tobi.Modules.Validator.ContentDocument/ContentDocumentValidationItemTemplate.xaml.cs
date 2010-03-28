@@ -102,7 +102,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             if (value == null) return "";
             if (!(value is string)) return "";
 
-            return ContentDocumentValidator.GetCleanRegex(value as string);
+            return ContentDocumentValidator.GetElementsListFromDtdRegex(value as string);
             
         }
         
@@ -119,17 +119,20 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
             TreeNode node = value as TreeNode;
             FlowDocument doc = new FlowDocument();
-            doc.FontSize = 10;
-            doc.FontFamily = new FontFamily("Courier");
+            doc.FontSize = 12;
+            doc.FontFamily = new FontFamily("Courier New");
+            doc.Background = new SolidColorBrush(Colors.White);
+            doc.Foreground = new SolidColorBrush(Colors.Black);
             WriteNodeXml_Flat(node, doc);
+            
             return doc;
         }
 
         private void WriteNodeXml_Flat(TreeNode node, FlowDocument doc)
         {
             string nodeName = ContentDocumentValidator.GetTreeNodeName(node);
-            Paragraph openingNodePara = new Paragraph();
-            openingNodePara.Inlines.Add(new Bold(new Run(string.Format("<{0}>", nodeName))));
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(new Bold(new Run(string.Format("<{0}>", nodeName))));
             if (node.GetTextMedia() != null)
             {
                 string txt;
@@ -141,27 +144,30 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 {
                     txt = node.GetTextMedia().Text;
                 }
-                openingNodePara.Inlines.Add(new Run(txt));
+                paragraph.Inlines.Add(new Run(txt));
             }
 
-            doc.Blocks.Add(openingNodePara);
+            //doc.Blocks.Add(paragraph);
 
             foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
             {
-                Paragraph childXmlPara = new Paragraph();
+                //Paragraph childXmlPara = new Paragraph();
                 string childNodeText = ContentDocumentValidator.GetTreeNodeTextExcerpt(child);
                 string childNodeName = ContentDocumentValidator.GetTreeNodeName(child);
-                childXmlPara.Inlines.Add(new Bold(new Run(string.Format("<{0}>", childNodeName))));
-                childXmlPara.Inlines.Add(new Run(childNodeText));
-                childXmlPara.Inlines.Add(new Bold(new Run(string.Format("</{0}>", childNodeName))));
-                childXmlPara.TextIndent = 5;
-                doc.Blocks.Add(childXmlPara);
+                paragraph.Inlines.Add(new LineBreak());
+                //spaces = indent
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("  <{0}>", childNodeName))));
+                paragraph.Inlines.Add(new Run(childNodeText));
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("</{0}>", childNodeName))));
+                //doc.Blocks.Add(childXmlPara);
             }
-            Paragraph closingNodePara = new Paragraph();
-            closingNodePara.Inlines.Add(new Bold(new Run(string.Format("</{0}>", nodeName))));
-            doc.Blocks.Add(closingNodePara);
+            //Paragraph closingNodePara = new Paragraph();
+            paragraph.Inlines.Add(new LineBreak());
+            paragraph.Inlines.Add(new Bold(new Run(string.Format("</{0}>", nodeName))));
+            doc.Blocks.Add(paragraph);
         }
 
+        /*
         private void WriteNodeXml_Deep(TreeNode node, FlowDocument doc, int level)
         {
             string nodeName = "";
@@ -190,7 +196,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 p2.TextIndent = level*5;
                 doc.Blocks.Add(p2);
             }
-        }
+        }*/
             
     }
 
