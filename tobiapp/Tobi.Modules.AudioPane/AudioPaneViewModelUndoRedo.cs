@@ -17,6 +17,8 @@ namespace Tobi.Plugin.AudioPane
     {
         private void UndoRedoManagerChanged(List<TreeNodeAudioStreamDeleteCommand> list, bool done)
         {
+            Debug.Assert(list.Count > 0);
+
             if (list.Count == 1)
             {
                 UndoRedoManagerChanged(list[0], done);
@@ -44,17 +46,14 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            if (list.Count > 0)
-            {
-                ManagedAudioMedia audioMedia = list[0].SelectionData.m_TreeNode.GetManagedAudioMedia();
+            ManagedAudioMedia audioMedia = list[0].SelectionData.m_TreeNode.GetManagedAudioMedia();
 
-                HandleInsertDelete(list[0].CurrentTreeNode,
-                                   list[0].SelectionData.m_TreeNode,
-                                   timeBegin,
-                                   timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
-                                   audioMedia,
-                                   !done);
-            }
+            HandleInsertDelete(list[0].CurrentTreeNode,
+                               list[0].SelectionData.m_TreeNode,
+                               timeBegin,
+                               timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
+                               audioMedia,
+                               !done);
         }
 
         private void UndoRedoManagerChanged(TreeNodeAudioStreamDeleteCommand command, bool done)
@@ -370,7 +369,9 @@ namespace Tobi.Plugin.AudioPane
                     && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
 
                 var command = (CompositeCommand)eventt.Command;
-                //Debug.Assert(command.ChildCommands.Count > 1);
+
+                Debug.Assert(command.ChildCommands.Count > 0);
+                if (command.ChildCommands.Count == 0) return;
 
                 var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
                 if (list != null)
