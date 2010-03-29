@@ -483,7 +483,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
           <!--StrokeDashCap="Flat"
           StrokeDashArray="{Binding Source={x:Static DashStyles.Dot}, Path=Dashes}"-->
           <Rectangle.StrokeDashArray>
-            <System:Double>2</System:Double>
+            <System:Double>4</System:Double>
           </Rectangle.StrokeDashArray>
           <Rectangle.Fill>
             <SolidColorBrush Opacity="0.20" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
@@ -503,9 +503,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                    Width="0"
           Visibility="Hidden"
                Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}">
-          <!--<Rectangle.StrokeDashArray>
-            <System:Double>5</System:Double>
-          </Rectangle.StrokeDashArray>-->
+          <Rectangle.StrokeDashArray>
+            <System:Double>2</System:Double>
+          </Rectangle.StrokeDashArray>
           <Rectangle.Fill>
             <SolidColorBrush Opacity="0.35" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
           </Rectangle.Fill>

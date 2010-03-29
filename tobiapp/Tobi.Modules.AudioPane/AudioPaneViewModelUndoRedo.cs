@@ -341,7 +341,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.CancelWaveFormLoad(false);
             }
-            InterruptAudioPlayerRecorder();
+            InterruptAudioPlayerRecorder(false);
 
             if (View != null)
             {
