@@ -108,7 +108,6 @@
     <Compile Include="PagesPaneViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NavigationPanePlugin.cs" />
-    <Compile Include="Search.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="HeadingPanelView.xaml">
