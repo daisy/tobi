@@ -341,13 +341,13 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.CancelWaveFormLoad(false);
             }
-            InterruptAudioPlayerRecorder();
+            InterruptAudioPlayerRecorder(false);
         }
 
         private bool m_InterruptRecording;
-        public void InterruptAudioPlayerRecorder()
+        public void InterruptAudioPlayerRecorder(bool allowPlayback)
         {
-            if (IsPlaying)
+            if (!allowPlayback && IsPlaying)
             {
                 CommandPause.Execute();
                 return;
@@ -682,7 +682,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     View.CancelWaveFormLoad(false);
                 }
-                InterruptAudioPlayerRecorder();
+                InterruptAudioPlayerRecorder(false);
 
                 //if (m_Player.CurrentState != AudioPlayer.State.NotReady && m_Player.CurrentState != AudioPlayer.State.Stopped)
                 //{
@@ -717,7 +717,7 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
-                InterruptAudioPlayerRecorder();
+                InterruptAudioPlayerRecorder(true);
             }
 
             if (IsAudioLoadedWithSubTreeNodes
@@ -863,7 +863,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.CancelWaveFormLoad(false);
             }
-            InterruptAudioPlayerRecorder();
+            InterruptAudioPlayerRecorder(false);
 
             if (AudioPlaybackStreamKeepAlive)
             {
