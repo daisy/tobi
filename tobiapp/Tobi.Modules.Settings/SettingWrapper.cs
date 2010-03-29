@@ -9,7 +9,7 @@ namespace Tobi.Plugin.Settings
     {
         public readonly ApplicationSettingsBase m_settingBase;
         public readonly SettingsProperty m_settingProperty;
-
+        private bool m_isMatch;
         public SettingWrapper(ApplicationSettingsBase settingBase, SettingsProperty settingProperty)
         {
             m_settingBase = settingBase;
@@ -142,6 +142,17 @@ namespace Tobi.Plugin.Settings
         }
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        public bool SearchMatch
+        {
+            get { return m_isMatch; }
+            set
+            {
+                if (m_isMatch == value) { return; }
+                m_isMatch = value;
+                m_PropertyChangeHandler.RaisePropertyChanged(() => SearchMatch);
+            }
+        }
 
 
         //public string this[string propertyName]

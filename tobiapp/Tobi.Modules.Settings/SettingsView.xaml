@@ -6,6 +6,7 @@
            xmlns:System="clr-namespace:System;assembly=mscorlib"
            xmlns:Settings="clr-namespace:Tobi.Plugin.Settings"
            xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
            
            Unloaded="OnUnloaded_Panel">
@@ -27,7 +28,7 @@
     <TextBlock
       Text="{x:Static Settings:Tobi_Plugin_Settings_Lang.Find}"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>     <!-- TODO LOCALIZE Find-->
 
-    <UI:WatermarkTextBox Watermark="search keywords"
+    <UI:WatermarkTextBox x:Name="SearchBox" TextChanged="OnSearchTextChanged" Watermark="search keywords"
                                   HorizontalAlignment="Stretch"/>
   </DockPanel>
 
@@ -48,7 +49,7 @@
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
 AlternationCount="2"
-            >
+search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"            >
 
     <ListView.Resources>
 
@@ -385,6 +386,7 @@ AlternationCount="2"
           <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
           <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+          <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
 
           <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
           <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
@@ -394,7 +396,14 @@ AlternationCount="2"
           <Trigger Property="ItemsControl.AlternationIndex" Value="0">
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
           </Trigger>
-        </Style.Triggers>
+                    <Trigger Property="search:SearchOperations.IsMatch" Value="True">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="#FF99FF66"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
       </Style>
 
     </ListView.ItemContainerStyle>
