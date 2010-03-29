@@ -348,7 +348,7 @@ namespace Tobi.Plugin.AudioPane
                 View.CancelWaveFormLoad(true);
             }
 
-            AudioPlayer_Stop();
+            CommandPause.Execute();
 
             AudioCues.PlayTockTock();
 

@@ -27,7 +27,7 @@ namespace Tobi.Plugin.AudioPane
                    {
                        Logger.Log("AudioPaneViewModel.CommandGotoBegining", Category.Debug, Priority.Medium);
 
-                       AudioPlayer_Stop();
+                       CommandPause.Execute();
 
                        if (LastPlayHeadTime == 0)
                        {
@@ -46,7 +46,7 @@ namespace Tobi.Plugin.AudioPane
                            LastPlayHeadTime = 0;
                        }
                    },
-                   () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                   () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                    Settings_KeyGestures.Default,
                    PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoBegin));
 
@@ -61,7 +61,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandGotoEnd", Category.Debug, Priority.Medium);
 
-                    AudioPlayer_Stop();
+                    CommandPause.Execute();
 
                     double end = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
 
@@ -82,7 +82,7 @@ namespace Tobi.Plugin.AudioPane
                         LastPlayHeadTime = end;
                     }
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoEnd));
 
@@ -97,7 +97,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepBack", Category.Debug, Priority.Medium);
 
-                    AudioPlayer_Stop();
+                    CommandPause.Execute();
 
                     long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
@@ -144,7 +144,8 @@ namespace Tobi.Plugin.AudioPane
                         );
 
                 },
-                () => !IsWaveFormLoading && IsAudioLoadedWithSubTreeNodes && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                    && State.Audio.HasContent && State.Audio.PlayStreamMarkers != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepBack));
 
@@ -159,7 +160,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandStepForward", Category.Debug, Priority.Medium);
 
-                    AudioPlayer_Stop();
+                    CommandPause.Execute();
 
                     long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
 
@@ -209,7 +210,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandFastForward", Category.Debug, Priority.Medium);
 
-                    AudioPlayer_Stop();
+                    CommandPause.Execute();
 
                     double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
                     double max = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
@@ -229,7 +230,7 @@ namespace Tobi.Plugin.AudioPane
 
                     LastPlayHeadTime = newTime;
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoForward));
 
@@ -244,7 +245,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandRewind", Category.Debug, Priority.Medium);
 
-                    AudioPlayer_Stop();
+                    CommandPause.Execute();
 
                     double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
                     if (newTime < 0)
@@ -263,7 +264,7 @@ namespace Tobi.Plugin.AudioPane
 
                     LastPlayHeadTime = newTime;
                 },
-                () => !IsWaveFormLoading && IsAudioLoaded && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoBack));
 

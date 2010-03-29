@@ -188,11 +188,13 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_OutputDevice))
             {
-                double time = -1;
-                if (m_Player.CurrentState == AudioPlayer.State.Playing)
+                //double time = -1;
+                bool paused = false;
+                if (IsPlaying)
                 {
-                    time = m_Player.CurrentTime;
-                    AudioPlayer_Stop();
+                    //time = m_Player.CurrentTime;
+                    paused = true;
+                    CommandPause.Execute();
                 }
 
                 m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
@@ -202,9 +204,10 @@ namespace Tobi.Plugin.AudioPane
                     Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
                 //Settings.Default.Save();
 
-                if (time >= 0 && State.Audio.HasContent)
+                if (paused) //time >= 0 && State.Audio.HasContent)
                 {
-                    AudioPlayer_PlayFromTo(State.Audio.ConvertMillisecondsToBytes(time), -1);
+                    CommandPlay.Execute();
+                    //AudioPlayer_PlayFromTo(State.Audio.ConvertMillisecondsToBytes(time), -1);
                 }
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Resolution))
@@ -673,8 +676,6 @@ namespace Tobi.Plugin.AudioPane
             Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
-            bool mustLoadWaveForm = false;
-
             if (State.Audio.PlayStreamMarkers == null // audio file may have been previously loaded, no relation to the document. 
                 || oldTreeNodeSelection.Item1 != newTreeNodeSelection.Item1)
             {
@@ -713,18 +714,30 @@ namespace Tobi.Plugin.AudioPane
 
                 m_LastPlayHeadTime = 0;
 
-                mustLoadWaveForm = true;
+                if (State.Audio.HasContent && State.Audio.PlayStreamMarkers != null
+                    //&& oldTreeNodeSelection != newTreeNodeSelection
+                    )
+                {
+                    RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
+                }
+
+                CommandManager.InvalidateRequerySuggested();
+                loadAndPlay();
             }
             else
             {
                 InterruptAudioPlayerRecorder(true);
+
+                if (//State.Audio.HasContent && State.Audio.PlayStreamMarkers != null &&
+                    oldTreeNodeSelection != newTreeNodeSelection)
+                {
+                    RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
+                }
+
+                CommandManager.InvalidateRequerySuggested();
+                checkAndDoAutoPlay();
             }
 
-            if (IsAudioLoadedWithSubTreeNodes
-                && oldTreeNodeSelection != newTreeNodeSelection)
-            {
-                RefreshWaveFormChunkMarkersForCurrentSubTreeNode(true);
-            }
 
             //Logger.Log("AudioPaneViewModel.OnTreeNodeSelected", Category.Debug, Priority.Medium);
 
@@ -737,18 +750,17 @@ namespace Tobi.Plugin.AudioPane
 
             //IsWaveFormLoading = false;
 
-            CommandManager.InvalidateRequerySuggested();
 
-            if (mustLoadWaveForm)
-            {
-                loadAndPlay();
-            }
-            else
-            {
-                checkAndDoAutoPlay();
-                //bool wasPlaying = (m_Player.CurrentState == AudioPlayer.State.Playing);
-                //AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, IsAutoPlay);
-            }
+            //if (mustLoadWaveForm)
+            //{
+            //    loadAndPlay();
+            //}
+            //else
+            //{
+            //    checkAndDoAutoPlay();
+            //    //bool wasPlaying = (m_Player.CurrentState == AudioPlayer.State.Playing);
+            //    //AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, IsAutoPlay);
+            //}
         }
 
         //private void OnTreeNodeSelected(TreeNode node)
@@ -975,13 +987,13 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         [NotifyDependsOn("IsSelectionSet")]
         public bool TimeStringSelectionVisible
         {
             get
             {
-                return IsAudioLoaded && IsSelectionSet;
+                return State.Audio.HasContent && IsSelectionSet;
             }
         }
 
@@ -1027,13 +1039,13 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         [NotifyDependsOnEx("DataLength", typeof(StreamStateData))]
         public string TimeStringTotalWaveform
         {
             get
             {
-                if (!IsAudioLoaded)
+                if (!State.Audio.HasContent)
                 {
                     return "";
                 }
@@ -1076,18 +1088,18 @@ namespace Tobi.Plugin.AudioPane
 
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsRecording")]
-        [NotifyDependsOn("IsAudioLoaded")]
+        [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         public bool TimeStringCurrentVisible
         {
             get
             {
-                return IsAudioLoaded || IsRecording || IsMonitoring;
+                return State.Audio.HasContent || IsRecording || IsMonitoring;
             }
         }
 
-        private static readonly PropertyChangedEventArgs m_TimeStringCurrentArgs
-        = new PropertyChangedEventArgs("TimeStringCurrent");
+        private static readonly PropertyChangedEventArgs m_TimeStringCurrentArgs = new PropertyChangedEventArgs("TimeStringCurrent");
         [NotifyDependsOn("IsPlaying")]
+        [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
         [NotifyDependsOn("TimeStringCurrentVisible")]
         [NotifyDependsOn("TimeStringTotalWaveform")]
         [NotifyDependsOnFast("m_LastPlayHeadTimeArgs", "m_TimeStringCurrentArgs")]
@@ -1104,7 +1116,7 @@ namespace Tobi.Plugin.AudioPane
                 string strToDisplay = null;
 
 
-                if (!IsAudioLoaded)
+                if (!State.Audio.HasContent)
                 {
                     return "";
                 }
@@ -1113,7 +1125,7 @@ namespace Tobi.Plugin.AudioPane
                     strToDisplay = FormatTimeSpan_Units(m_Player.CurrentTime);
                 }
                 else if (LastPlayHeadTime >= 0 && (
-                                                 m_Player.CurrentState == AudioPlayer.State.Paused ||
+                                                 //m_Player.CurrentState == AudioPlayer.State.Paused ||
                                                  m_Player.CurrentState == AudioPlayer.State.Stopped
                                              ))
                 {
@@ -1214,7 +1226,7 @@ namespace Tobi.Plugin.AudioPane
                         View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
                     }
 
-                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.updateWaveFormPlayHead",
+                    Logger.Log("++++++ PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.LastPlayHeadTime",
                                    Category.Debug, Priority.Medium);
 
                     //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
@@ -1283,7 +1295,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void UpdatePeakMeter()
         {
-            if (m_Player.CurrentState != AudioPlayer.State.Playing
+            if (!IsPlaying
                 && (m_Recorder.CurrentState != AudioRecorder.State.Recording && m_Recorder.CurrentState != AudioRecorder.State.Monitoring))
             {
                 if (View != null)

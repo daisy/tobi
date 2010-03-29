@@ -80,7 +80,7 @@ namespace Tobi.Plugin.AudioPane
                            && !IsPlaying && !IsMonitoring && !IsRecording
                            && m_UrakawaSession.DocumentProject != null
                            && treeNodeSelection.Item1 != null
-                           && IsAudioLoaded && IsSelectionSet;
+                           && State.Audio.HasContent && IsSelectionSet;
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Copy));
@@ -105,7 +105,7 @@ namespace Tobi.Plugin.AudioPane
                            && !IsPlaying && !IsMonitoring && !IsRecording
                            && m_UrakawaSession.DocumentProject != null
                            && treeNodeSelection.Item1 != null
-                           && IsAudioLoaded && IsSelectionSet;
+                           && State.Audio.HasContent && IsSelectionSet;
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Cut));
@@ -252,7 +252,7 @@ namespace Tobi.Plugin.AudioPane
                            && m_UrakawaSession.DocumentProject != null
                         //&& treeNodeSelection.Item1 != null
                            && State.Audio.PlayStreamMarkers != null
-                           && IsAudioLoaded && IsSelectionSet;
+                           && State.Audio.HasContent && IsSelectionSet;
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Delete));
@@ -267,7 +267,7 @@ namespace Tobi.Plugin.AudioPane
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
-            AudioPlayer_Stop();
+            CommandPause.Execute();
 
             string filePath = str;
 
