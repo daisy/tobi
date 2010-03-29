@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Settings
@@ -58,7 +59,7 @@ namespace Tobi.Plugin.Settings
             resetList();
 
             InitializeComponent();
-
+            intializeCommands();
             // NEEDS to be after InitializeComponent() in order for the DataContext bridge to work.
             DataContext = this;
         }
@@ -317,16 +318,118 @@ namespace Tobi.Plugin.Settings
 
         //    ValidationErrorTreeSearch.CheckAllValidationErrors(depObj);
         //}
-
-        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        private string m_SearchTerm;
+        public string SearchTerm
         {
-            string sSearchTerm = SearchBox.Text;
-            foreach (SettingWrapper wrapper in AggregatedSettings)
+            get { return m_SearchTerm; }
+            set
             {
-                wrapper.SearchMatch = !string.IsNullOrEmpty(sSearchTerm) &&
-                   !string.IsNullOrEmpty(wrapper.Name) &&
-                   wrapper.Name.ToLower().Contains(sSearchTerm.ToLower());
+                if (m_SearchTerm == value) { return; }
+                m_SearchTerm = value;
+                FlagSearchMatches(AggregatedSettings, m_SearchTerm);
+                m_PropertyChangeHandler.RaisePropertyChanged(()=>SearchTerm);
             }
+        }
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e) { SearchTerm = SearchBox.Text; }
+
+        private void FindNext()
+        {
+            SettingWrapper nextMatch = FindNextSetting(AggregatedSettings);
+            if (nextMatch != null) { nextMatch.IsSelected = true; } else { AudioCues.PlayAsterisk(); }
+            
+        }
+        private void FindPrevious()
+        {
+            SettingWrapper nextMatch = FindPrevSetting(AggregatedSettings);
+            if (nextMatch != null) { nextMatch.IsSelected = true; } else { AudioCues.PlayAsterisk(); }
+        }
+        public static RichDelegateCommand CommandFindNext { get; private set; }
+        public static RichDelegateCommand CommandFindPrev { get; private set; }
+        private void intializeCommands()
+        {
+            m_Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
+
+            //
+            CommandFindNext = new RichDelegateCommand(
+                "Find Next Setting",
+                "Find The Next Setting That Matches The Specified Criteria.",
+                new KeyGesture(Key.F3), 
+                null,
+                FindNext,
+                () => !string.IsNullOrEmpty(SearchTerm),
+                null, null);
+            CommandFindPrev = new RichDelegateCommand(
+                "Find Previous Setting",
+                "Find The Previous Setting That Matches The Specified Criteria.",
+                new KeyGesture(Key.F3,ModifierKeys.Shift), 
+                null,
+                FindPrevious,
+                () => !string.IsNullOrEmpty(SearchTerm),
+                null, null);
+
+            InputBindings.Add(CommandFindNext.KeyBinding);
+            InputBindings.Add(CommandFindPrev.KeyBinding);
+        }
+
+        private static void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)
+        {
+            foreach (SettingWrapper wrapper in settingWrappers)
+            {
+                wrapper.SearchMatch = !string.IsNullOrEmpty(searchTerm) &&
+                   !string.IsNullOrEmpty(wrapper.Name) &&
+                   wrapper.Name.ToLower().Contains(searchTerm.ToLower());
+            }
+            
+        }
+        private static SettingWrapper FindNextSetting(List<SettingWrapper> settingWrappers)
+        {
+            SettingWrapper pResult = null;
+            int iStarting = -1;
+            for (int i = 0; i < settingWrappers.Count; i++)
+            {
+                if (settingWrappers[i].SearchMatch && iStarting == -1) { iStarting = i; }
+                if (!settingWrappers[i].IsSelected) { continue; }
+                iStarting = i;
+                break;
+            }
+            if (iStarting < 0) { return null; }
+            if (!settingWrappers[iStarting].IsSelected && settingWrappers[iStarting].SearchMatch) { pResult = settingWrappers[iStarting]; }
+            if (pResult == null)
+            {
+                for (int i = iStarting + 1; i < settingWrappers.Count; i++)
+                {
+                    if (!settingWrappers[i].SearchMatch)
+                        continue;
+                    pResult = settingWrappers[i];
+                    break;
+                }
+            }
+            return pResult;
+        }
+        private static SettingWrapper FindPrevSetting(List<SettingWrapper> settingWrappers)
+        {
+            SettingWrapper pResult = null;
+            int iStarting = -1;
+            for (int i = settingWrappers.Count - 1; i >= 0; i--)
+            {
+                if (settingWrappers[i].SearchMatch && iStarting == -1) { iStarting = i; }
+                if (!settingWrappers[i].IsSelected) { continue; }
+                iStarting = i;
+                break;
+            }
+            if (iStarting < 0) { return null; }
+            if (!settingWrappers[iStarting].IsSelected && settingWrappers[iStarting].SearchMatch) { pResult = settingWrappers[iStarting]; }
+            if (pResult == null)
+            {
+                for (int i = iStarting - 1; i >= 0; i--)
+                {
+                    if (!settingWrappers[i].SearchMatch)
+                        continue;
+                    pResult = settingWrappers[i];
+                    break;
+                }
+            }
+            return pResult;
         }
     }
 }
