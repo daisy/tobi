@@ -31,8 +31,8 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioReload_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioReload_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                null, //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
-                //shellView.LoadTangoIcon("view-refresh"),
+                //null, //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
+                m_ShellView.LoadTangoIcon("view-refresh"),
                 ()=>
                 {
                     Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);

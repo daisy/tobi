@@ -42,6 +42,7 @@ namespace Tobi.Plugin.Urakawa
                                                    ClearRecentFiles,
                                                    () => true,
                                                    null, null);
+            m_ShellView.RegisterRichCommand(ClearRecentFilesCommand);
 
             RecentFiles = new ObservableCollection<Uri>();
 
