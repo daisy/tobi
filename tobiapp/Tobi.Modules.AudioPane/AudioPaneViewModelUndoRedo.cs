@@ -44,14 +44,17 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            ManagedAudioMedia audioMedia = list[0].SelectionData.m_TreeNode.GetManagedAudioMedia();
+            if (list.Count > 0)
+            {
+                ManagedAudioMedia audioMedia = list[0].SelectionData.m_TreeNode.GetManagedAudioMedia();
 
-            HandleInsertDelete(list[0].CurrentTreeNode,
-                               list[0].SelectionData.m_TreeNode,
-                               timeBegin,
-                               timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
-                               audioMedia,
-                               !done);
+                HandleInsertDelete(list[0].CurrentTreeNode,
+                                   list[0].SelectionData.m_TreeNode,
+                                   timeBegin,
+                                   timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
+                                   audioMedia,
+                                   !done);
+            }
         }
 
         private void UndoRedoManagerChanged(TreeNodeAudioStreamDeleteCommand command, bool done)
