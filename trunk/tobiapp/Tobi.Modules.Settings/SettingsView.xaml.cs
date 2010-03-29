@@ -317,5 +317,16 @@ namespace Tobi.Plugin.Settings
 
         //    ValidationErrorTreeSearch.CheckAllValidationErrors(depObj);
         //}
+
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            string sSearchTerm = SearchBox.Text;
+            foreach (SettingWrapper wrapper in AggregatedSettings)
+            {
+                wrapper.SearchMatch = !string.IsNullOrEmpty(sSearchTerm) &&
+                   !string.IsNullOrEmpty(wrapper.Name) &&
+                   wrapper.Name.ToLower().Contains(sSearchTerm.ToLower());
+            }
+        }
     }
 }
