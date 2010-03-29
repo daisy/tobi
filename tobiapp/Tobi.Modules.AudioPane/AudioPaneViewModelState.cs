@@ -348,6 +348,22 @@ namespace Tobi.Plugin.AudioPane
                 {
                     m_viewModel.View.SetSelectionTime(SelectionBegin, SelectionEnd);
                 }
+
+                if (m_viewModel.IsAutoPlay)
+                {
+                    m_viewModel.m_LastPlayHeadTime = SelectionBegin;
+                    m_viewModel.CommandPlay.Execute();
+
+                    //long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
+
+                    //m_ViewModel.IsAutoPlay = false;
+                    //m_ViewModel.LastPlayHeadTime = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(bytesFrom);
+                    //m_ViewModel.IsAutoPlay = true;
+
+                    //long bytesTo = Convert.ToInt64(right * BytesPerPixel);
+
+                    //m_ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
+                }
             }
 
             public void SetSelectionBytes(long begin, long end)
@@ -358,6 +374,22 @@ namespace Tobi.Plugin.AudioPane
                 if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
                 {
                     m_viewModel.View.SetSelectionBytes(begin, end);
+                }
+
+                if (m_viewModel.IsAutoPlay)
+                {
+                    m_viewModel.m_LastPlayHeadTime = SelectionBegin;
+                    m_viewModel.CommandPlay.Execute();
+                    
+                    //long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
+
+                    //m_ViewModel.IsAutoPlay = false;
+                    //m_ViewModel.LastPlayHeadTime = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(bytesFrom);
+                    //m_ViewModel.IsAutoPlay = true;
+
+                    //long bytesTo = Convert.ToInt64(right * BytesPerPixel);
+
+                    //m_ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                 }
             }
 

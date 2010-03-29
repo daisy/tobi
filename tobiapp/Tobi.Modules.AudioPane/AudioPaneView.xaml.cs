@@ -368,7 +368,7 @@ namespace Tobi.Plugin.AudioPane
 
             Point p = e.GetPosition(WaveFormCanvas);
 
-            m_ViewModel.AudioPlayer_Stop();
+            m_ViewModel.CommandPause.Execute();
 
             if (e.ClickCount == 2)
             {

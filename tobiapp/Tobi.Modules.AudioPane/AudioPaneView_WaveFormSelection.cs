@@ -165,19 +165,6 @@ namespace Tobi.Plugin.AudioPane
             }
 
             m_ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
-
-            if (m_ViewModel.IsAutoPlay)
-            {
-                long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
-
-                m_ViewModel.IsAutoPlay = false;
-                m_ViewModel.LastPlayHeadTime = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(bytesFrom);
-                m_ViewModel.IsAutoPlay = true;
-
-                long bytesTo = Convert.ToInt64(right * BytesPerPixel);
-
-                m_ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
-            }
         }
 
         private void restoreSelection()
