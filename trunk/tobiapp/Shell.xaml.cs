@@ -454,7 +454,7 @@ namespace Tobi
                 //Uri iconUri = new Uri("Tobi.ico", UriKind.RelativeOrAbsolute);
                 Icon = BitmapFrame.Create(iconUri);
             }
-            finally
+            catch
             {
                 //ignore
             }
