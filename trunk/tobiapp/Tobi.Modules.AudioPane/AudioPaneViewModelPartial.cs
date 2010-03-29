@@ -329,6 +329,8 @@ namespace Tobi.Plugin.AudioPane
                 if (m_ColorTimeSelection == value) return;
                 m_ColorTimeSelection = value;
                 RaisePropertyChanged(() => ColorTimeSelection);
+
+                RaisePropertyChanged(() => ColorSelectionContourBrush);
             }
         }
 
@@ -425,6 +427,14 @@ namespace Tobi.Plugin.AudioPane
                     CommandRefresh.Execute();
                 }
                 RaisePropertyChanged(() => ColorWaveBars);
+            }
+        }
+
+        public SolidColorBrush ColorSelectionContourBrush
+        {
+            get
+            {
+                return new SolidColorBrush(ColorTimeSelection) {Opacity = 0.6};
             }
         }
 

@@ -125,6 +125,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void selectionFinished(double x)
         {
+            WaveFormTimeSelectionRectBackup.Visibility = Visibility.Hidden;
+
             if (Math.Abs(m_TimeSelectionLeftX - x) <= MIN_SELECTION_PIXELS)
             {
                 ClearSelection();
@@ -199,6 +201,10 @@ namespace Tobi.Plugin.AudioPane
         {
             m_SelectionBackup_X = m_TimeSelectionLeftX;
             m_SelectionBackup_Width = WaveFormTimeSelectionRect.Width;
+
+            WaveFormTimeSelectionRectBackup.Visibility = Visibility.Visible;
+            WaveFormTimeSelectionRectBackup.Width = m_SelectionBackup_Width;
+            WaveFormTimeSelectionRectBackup.SetValue(Canvas.LeftProperty, m_SelectionBackup_X);
         }
     }
 }

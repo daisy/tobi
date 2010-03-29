@@ -345,7 +345,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
-                    if (isShiftKeyDown())
+                    if (isShiftKeyDown() && m_ViewModel.State.Audio.HasContent)
                     {
                         m_TimeSelectionLeftX = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime) / BytesPerPixel;
                         selectionFinished(p.X);
