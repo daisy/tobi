@@ -347,7 +347,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     if (isShiftKeyDown() && m_ViewModel.State.Audio.HasContent)
                     {
-                        m_TimeSelectionLeftX = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime) / BytesPerPixel;
+                        m_TimeSelectionLeftX = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.PlayHeadTime) / BytesPerPixel;
                         selectionFinished(p.X);
                     }
                     else
@@ -636,7 +636,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.LastPlayHeadTime);
+            long bytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.PlayHeadTime);
 
             double pixels = bytes / BytesPerPixel;
 
@@ -658,7 +658,7 @@ namespace Tobi.Plugin.AudioPane
 
             using (StreamGeometryContext sgc = geometry.Open())
             {
-                if (m_ViewModel.LastPlayHeadTime < 0)
+                if (m_ViewModel.PlayHeadTime < 0)
                 {
                     sgc.BeginFigure(new Point(pixels, height), true, false);
                     sgc.LineTo(new Point(pixels, 0), true, false);

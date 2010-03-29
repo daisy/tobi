@@ -469,7 +469,7 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
-                timeInsert = LastPlayHeadTime;
+                timeInsert = PlayHeadTime;
 
                 if (timeInsert < 0)
                 {

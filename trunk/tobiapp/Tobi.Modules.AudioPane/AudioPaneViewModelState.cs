@@ -351,8 +351,13 @@ namespace Tobi.Plugin.AudioPane
 
                 if (m_viewModel.IsAutoPlay)
                 {
-                    m_viewModel.m_LastPlayHeadTime = SelectionBegin;
-                    m_viewModel.CommandPlay.Execute();
+                    m_viewModel.PlayHeadTime = SelectionBegin;
+
+
+                    //m_viewModel.m_LastSetPlayHeadTime = SelectionBegin;
+                    //m_viewModel.CommandPlay.Execute();
+
+
 
                     //long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
 
@@ -378,9 +383,13 @@ namespace Tobi.Plugin.AudioPane
 
                 if (m_viewModel.IsAutoPlay)
                 {
-                    m_viewModel.m_LastPlayHeadTime = SelectionBegin;
-                    m_viewModel.CommandPlay.Execute();
+                    m_viewModel.PlayHeadTime = SelectionBegin;
+
+                    //m_viewModel.m_LastSetPlayHeadTime = SelectionBegin;
+                    //m_viewModel.CommandPlay.Execute();
                     
+
+
                     //long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
 
                     //m_ViewModel.IsAutoPlay = false;

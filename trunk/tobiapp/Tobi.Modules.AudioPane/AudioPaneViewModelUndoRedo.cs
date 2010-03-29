@@ -109,7 +109,7 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(treeNodeSelectionAfter2.Item2 == command.SelectionData.m_TreeNode);
                 }
 
-                m_LastPlayHeadTime = -1;
+                m_LastSetPlayHeadTime = -1;
                 //AudioPlayer_UpdateWaveFormPlayHead();
                 if (View != null)
                 {
@@ -344,7 +344,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.CancelWaveFormLoad(false);
             }
-            InterruptAudioPlayerRecorder(false);
+            InterruptAudioPlayerRecorder();
 
             if (View != null)
             {
