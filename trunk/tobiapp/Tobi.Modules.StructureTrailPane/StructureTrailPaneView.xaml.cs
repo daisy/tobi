@@ -469,33 +469,72 @@ namespace Tobi.Plugin.StructureTrailPane
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
-            Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
+            //Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
-            TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
+            if (newTreeNodeSelection.Item1 == null) return;
 
-            string audioInfo = treeNode.GetAudioMedia() != null || treeNode.GetFirstAncestorWithManagedAudio() != null ? "" : Tobi_Plugin_StructureTrailPane_Lang.NoAudio; // TODO LOCALIZE NoAudio
-            QualifiedName qName = treeNode.GetXmlElementQName();
+            //TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
-            //string imgAlt = null;
-            //if (qName != null && qName.LocalName.ToLower() == "img")
-            //{
-            //    XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("alt");
-            //    if (xmlAttr != null)
-            //    {
-            //        imgAlt = xmlAttr.Value;
-            //    }
-            //}
-            string str = (qName == null ? Tobi_Plugin_StructureTrailPane_Lang.NoXML :
-                String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)
-                //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
-                )
-                + " // " + treeNode.GetTextMediaFlattened(true);
-            if (str.Length > 100)
+            QualifiedName qName1 = newTreeNodeSelection.Item1.GetXmlElementQName();
+            string qName1_ = (qName1 == null
+                                  ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
+                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName1.LocalName)
+                             //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
+                             );
+
+            string str = null;
+            if (newTreeNodeSelection.Item2 == null) // no sub-treenode
             {
-                str = str.Substring(0, 100) + ". . .";
+                string audioInfo1 = newTreeNodeSelection.Item1.GetAudioMedia() != null ||
+                                   newTreeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() != null
+                                       ? ""
+                                       : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
+
+                string text1 = newTreeNodeSelection.Item1.GetTextMediaFlattened(true);
+                if (!string.IsNullOrEmpty(text1)
+                     && text1.Length > 100)
+                {
+                    text1 = text1.Substring(0, 100) + ". . .";
+                }
+
+                str = qName1_ + " // " + text1 + audioInfo1;
+
+                // IMAGE ALT IS NOW IN THE FLATTENED TREENODE TEXT
+                //string imgAlt = null;
+                //if (qName != null && qName.LocalName.ToLower() == "img")
+                //{
+                //    XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("alt");
+                //    if (xmlAttr != null)
+                //    {
+                //        imgAlt = xmlAttr.Value;
+                //    }
+                //}
             }
-            str += audioInfo;
+            else
+            {
+                QualifiedName qName2 = newTreeNodeSelection.Item1.GetXmlElementQName();
+                string qName2_ = (qName2 == null
+                                      ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
+                                      : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName2.LocalName)
+                    //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
+                                 );
+
+                string audioInfo2 = newTreeNodeSelection.Item2.GetAudioMedia() != null ||
+                                   newTreeNodeSelection.Item2.GetFirstAncestorWithManagedAudio() != null
+                                       ? ""
+                                       : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
+
+                string text2 = newTreeNodeSelection.Item2.GetTextMediaFlattened(true);
+                if (!string.IsNullOrEmpty(text2)
+                     && text2.Length > 100)
+                {
+                    text2 = text2.Substring(0, 100) + ". . .";
+                }
+
+                str = qName1_ + " >> " + qName2_ + " // " + text2 + audioInfo2;
+            }
+
             Console.WriteLine(@"}}}}}" + str);
 
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
