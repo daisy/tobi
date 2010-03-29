@@ -153,6 +153,17 @@ namespace Tobi.Plugin.Settings
                 m_PropertyChangeHandler.RaisePropertyChanged(() => SearchMatch);
             }
         }
+        private bool m_isSelected;
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set
+            {
+                if (m_isSelected == value) { return; }
+                m_isSelected = value;
+                m_PropertyChangeHandler.RaisePropertyChanged(() => IsSelected);
+            }
+        }
 
 
         //public string this[string propertyName]
