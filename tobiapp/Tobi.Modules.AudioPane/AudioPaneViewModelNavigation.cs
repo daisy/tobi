@@ -29,7 +29,7 @@ namespace Tobi.Plugin.AudioPane
 
                        CommandPause.Execute();
 
-                       if (LastPlayHeadTime == 0)
+                       if (PlayHeadTime == 0)
                        {
                            AudioCues.PlayBeep();
                        }
@@ -43,7 +43,7 @@ namespace Tobi.Plugin.AudioPane
                                }
                            }
 
-                           LastPlayHeadTime = 0;
+                           PlayHeadTime = 0;
                        }
                    },
                    () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
@@ -65,7 +65,7 @@ namespace Tobi.Plugin.AudioPane
 
                     double end = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
 
-                    if (LastPlayHeadTime == end)
+                    if (PlayHeadTime == end)
                     {
                         AudioCues.PlayBeep();
                     }
@@ -79,7 +79,7 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
 
-                        LastPlayHeadTime = end;
+                        PlayHeadTime = end;
                     }
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
@@ -99,7 +99,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(PlayHeadTime);
 
                     long bytesLeftPrevious = -1;
 
@@ -117,7 +117,7 @@ namespace Tobi.Plugin.AudioPane
                                    }
                                }
 
-                               LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
+                               PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
                                AudioCues.PlayBeep();
                                return -1;
                            }
@@ -130,7 +130,7 @@ namespace Tobi.Plugin.AudioPane
                                }
                            }
 
-                           LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
+                           PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
 
                            return -1;
                        }
@@ -162,7 +162,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
+                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(PlayHeadTime);
 
                     long bytesRight;
                     long bytesLeft;
@@ -186,7 +186,7 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
 
-                        LastPlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesRight);
+                        PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesRight);
                     }
                     else
                     {
@@ -212,7 +212,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    double newTime = LastPlayHeadTime + m_TimeStepForwardRewind;
+                    double newTime = PlayHeadTime + m_TimeStepForwardRewind;
                     double max = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
                     if (newTime > max)
                     {
@@ -228,7 +228,7 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
 
-                    LastPlayHeadTime = newTime;
+                    PlayHeadTime = newTime;
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
@@ -247,7 +247,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    double newTime = LastPlayHeadTime - m_TimeStepForwardRewind;
+                    double newTime = PlayHeadTime - m_TimeStepForwardRewind;
                     if (newTime < 0)
                     {
                         newTime = 0;
@@ -262,7 +262,7 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
 
-                    LastPlayHeadTime = newTime;
+                    PlayHeadTime = newTime;
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
