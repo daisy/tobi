@@ -468,10 +468,11 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         </Path>
 
         <Rectangle
-          x:Name="WaveFormTimeSelectionRect"
+          x:Name="WaveFormTimeSelectionRectBackup"
           Canvas.ZIndex="2"
-              StrokeThickness="0"
-              Stroke="Lime"
+              StrokeThickness="1"
+              Stroke="{Binding Path=ColorSelectionContourBrush, Mode=OneWay}"
+          
           RenderOptions.EdgeMode="Aliased"
           SnapsToDevicePixels="True"
                    Canvas.Top="0"
@@ -479,13 +480,39 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                    Width="0"
           Visibility="Hidden"
                Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}">
+          <!--StrokeDashCap="Flat"
+          StrokeDashArray="{Binding Source={x:Static DashStyles.Dot}, Path=Dashes}"-->
+          <Rectangle.StrokeDashArray>
+            <System:Double>2</System:Double>
+          </Rectangle.StrokeDashArray>
           <Rectangle.Fill>
-            <SolidColorBrush Opacity="0.25" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
+            <SolidColorBrush Opacity="0.20" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
+          </Rectangle.Fill>
+        </Rectangle>
+        
+        <Rectangle
+          x:Name="WaveFormTimeSelectionRect"
+          Canvas.ZIndex="3"
+              StrokeThickness="1"
+              Stroke="{Binding Path=ColorSelectionContourBrush, Mode=OneWay}"
+          
+          RenderOptions.EdgeMode="Aliased"
+          SnapsToDevicePixels="True"
+                   Canvas.Top="0"
+                   Canvas.Left="0"
+                   Width="0"
+          Visibility="Hidden"
+               Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}">
+          <!--<Rectangle.StrokeDashArray>
+            <System:Double>5</System:Double>
+          </Rectangle.StrokeDashArray>-->
+          <Rectangle.Fill>
+            <SolidColorBrush Opacity="0.35" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
           </Rectangle.Fill>
         </Rectangle>
 
         <Path x:Name="WaveFormPlayHeadPath"
-              Canvas.ZIndex="3"
+              Canvas.ZIndex="4"
               StrokeThickness="1.2"
               RenderOptions.EdgeMode="Unspecified"
               SnapsToDevicePixels="True">
@@ -690,7 +717,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       
       <Path x:Name="PeakMeterPathCh1"
             Canvas.ZIndex="1"
-            StrokeThickness="1"
+            StrokeThickness="0"
             RenderOptions.EdgeMode="Aliased"
             SnapsToDevicePixels="True"
                 >
@@ -705,7 +732,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
       <Path x:Name="PeakMeterPathCh2"
           Canvas.ZIndex="1"
-          StrokeThickness="2"
+          StrokeThickness="0"
             RenderOptions.EdgeMode="Aliased"
             SnapsToDevicePixels="True"
                 >
