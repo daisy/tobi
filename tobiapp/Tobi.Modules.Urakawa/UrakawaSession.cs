@@ -462,7 +462,7 @@ namespace Tobi.Plugin.Urakawa
                                                        buttonset == PopupModalWindow.DialogButtonsSet.Cancel
                                                        || buttonset == PopupModalWindow.DialogButtonsSet.OkCancel
                                                        || buttonset == PopupModalWindow.DialogButtonsSet.YesNoCancel,
-                                                       300, 160, details, 40);
+                                                       350, 180, details, 40);
 
                 windowPopup.ShowModal();
 
