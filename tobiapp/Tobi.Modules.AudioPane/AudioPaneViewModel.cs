@@ -359,6 +359,7 @@ namespace Tobi.Plugin.AudioPane
             }
             if (IsRecording)
             {
+                m_RecordAndContinue = false;
                 m_InterruptRecording = true;
                 CommandStopRecord.Execute();
                 return;
