@@ -138,6 +138,9 @@
   <data name="AudioPanePlugin_Name" xml:space="preserve">
     <value>Audio waveform editor.</value>
   </data>
+  <data name="AudioAutoPlay" xml:space="preserve">
+    <value>Autoplay</value>
+  </data>
   <data name="CmdAudioAutoPlay_ShortDesc" xml:space="preserve">
     <value>_Toggle autoplay</value>
   </data>
@@ -311,6 +314,12 @@
   </data>
   <data name="CmdAudioStopMonitor_LongDesc" xml:space="preserve">
     <value>Stop the audio input monitoring</value>
+  </data>
+  <data name="CmdAudioStopRecordAndContinue_ShortDesc" xml:space="preserve">
+    <value>St_op recording and continue</value>
+  </data>
+  <data name="CmdAudioStopRecordAndContinue_LongDesc" xml:space="preserve">
+    <value>Stop the current recording and move to the next phrase</value>
   </data>
   <data name="CmdAudioStopRecord_ShortDesc" xml:space="preserve">
     <value>St_op recording</value>
