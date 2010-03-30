@@ -453,12 +453,15 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            double timeInsert = 0;
             bool transaction = false;
             List<TreeNodeAndStreamSelection> selData = null;
+            double timeInsert = 0;
+            long byteOffset = 0;
+
             if (IsSelectionSet)
             {
                 timeInsert = State.Selection.SelectionBegin;
+                byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
 
                 transaction = true;
                 treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc);
@@ -466,6 +469,25 @@ namespace Tobi.Plugin.AudioPane
                 selData = getAudioSelectionData();
 
                 CommandDeleteAudioSelection.Execute();
+
+                if (!State.Audio.HasContent)
+                {
+                    if (selData != null && selData.Count > 0)
+                    {
+                        TreeNode treeNode_ = selData[0].m_TreeNode;
+                        var command_ =
+                            treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode_,
+                                                                                                           manMedia);
+                        treeNode.Presentation.UndoRedoManager.Execute(command_);
+                    }
+                    else
+                    {
+                        Debug.Fail("WTF ??!");
+                    }
+
+                    treeNode.Presentation.UndoRedoManager.EndTransaction();
+                    return;
+                }
             }
             else
             {
@@ -492,9 +514,10 @@ namespace Tobi.Plugin.AudioPane
 
                     return;
                 }
+
+                byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
             }
 
-            long byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
             double timeOffset = timeInsert;
             TreeNode treeNodeTarget;
             long bytesRight;
