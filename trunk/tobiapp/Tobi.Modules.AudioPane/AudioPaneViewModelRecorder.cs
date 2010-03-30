@@ -38,8 +38,10 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecordAndContinue", Category.Debug, Priority.Medium);
-                    
+
+                    IsAutoPlay = false;
                     m_RecordAndContinue = true;
+                    m_InterruptRecording = false;
                     m_Recorder.StopRecording();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
@@ -87,6 +89,13 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartRecord", Category.Debug, Priority.Medium);
 
+                    if (IsWaveFormLoading && View != null)
+                    {
+                        View.CancelWaveFormLoad(true);
+                    }
+
+                    m_RecordAndContinue = false;
+
                     if (m_UrakawaSession.DocumentProject == null)
                     {
                         State.ResetAll();
@@ -116,7 +125,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                    return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                    return !IsPlaying && !IsMonitoring && !IsRecording //!IsWaveFormLoading
                         && (m_UrakawaSession.DocumentProject == null
                         ||
                            State.Audio.PlayStreamMarkers != null
@@ -269,6 +278,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_InterruptRecording)
             {
+                m_RecordAndContinue = false;
                 m_InterruptRecording = false;
                 return;
             }
@@ -278,6 +288,37 @@ namespace Tobi.Plugin.AudioPane
                 openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
             }
 
+            if (m_RecordAndContinue)
+            {
+                IsAutoPlay = false;
+
+                Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+                if (treeNode != null)
+                {
+                    TreeNode node = treeNode;
+                here:
+                    TreeNode next = node.GetNextSiblingWithText(true);
+                    if (next != null)
+                    {
+                        if (next.GetXmlElementQName() == null)
+                        {
+                            node = next;
+                            goto here; // ugly, but hey, it works for now. ;)
+                        }
+
+                        m_UrakawaSession.PerformTreeNodeSelection(next);
+
+                        m_RecordAndContinue = false;
+                        State.Audio.PcmFormatRecordingMonitoring = null;
+                        CommandStartRecord.Execute();
+
+                        return;
+                    }
+                }
+            }
+
+            m_RecordAndContinue = false;
             State.Audio.PcmFormatRecordingMonitoring = null;
         }
 
