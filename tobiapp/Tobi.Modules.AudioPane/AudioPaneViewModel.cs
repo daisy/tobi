@@ -1206,6 +1206,10 @@ namespace Tobi.Plugin.AudioPane
                         View.RefreshUI_WaveFormPlayHead();
                     }
                     RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
+                    if (IsAutoPlay)
+                    {
+                        CommandPlay.Execute();
+                    }
                     return;
                 }
 
@@ -1274,11 +1278,16 @@ namespace Tobi.Plugin.AudioPane
                         return;
                     }
 
-                    if (m_UpdatingTreeNodeSelection) return;
-
                     if (View != null)
                     {
                         View.RefreshUI_WaveFormChunkMarkers(bytesLeft, bytesRight);
+                    }
+
+                    if (m_UpdatingTreeNodeSelection) return;
+                    
+                    if (IsAutoPlay)
+                    {
+                        CommandPlay.Execute();
                     }
 
                     Logger.Log("++++++ PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.LastPlayHeadTime",
