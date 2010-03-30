@@ -145,7 +145,7 @@ namespace Tobi.Plugin.AudioPane
 
                 },
                 () => !IsWaveFormLoading && !IsRecording && !IsMonitoring
-                    && State.Audio.HasContent && State.Audio.PlayStreamMarkers != null,
+                    && State.Audio.HasContent && State.Audio.PlayStreamMarkers != null && State.Audio.PlayStreamMarkers.Count > 1,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepBack));
 
