@@ -311,7 +311,20 @@ namespace Tobi.Plugin.AudioPane
 
                         m_RecordAndContinue = false;
                         State.Audio.PcmFormatRecordingMonitoring = null;
-                        CommandStartRecord.Execute();
+
+                        Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();
+                        TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
+                        if (treeNodeNew != null)
+                        {
+                            if (treeNodeNew.GetManagedAudioMedia() == null)
+                            {
+                                CommandStartRecord.Execute();
+                            }
+                            else
+                            {
+                                CommandPlay.Execute();
+                            }
+                        }
 
                         return;
                     }

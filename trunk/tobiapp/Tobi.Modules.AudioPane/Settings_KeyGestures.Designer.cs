@@ -229,18 +229,6 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Space")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_AutoPlay {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_AutoPlay"]));
-            }
-            set {
-                this["Keyboard_Audio_AutoPlay"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] R")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StartStopRecord {
             get {
@@ -272,6 +260,18 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["Keyboard_Audio_StartStopMonitor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] Space")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_AutoPlay {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_AutoPlay"]));
+            }
+            set {
+                this["Keyboard_Audio_AutoPlay"] = value;
             }
         }
         
