@@ -147,7 +147,7 @@ namespace Tobi.Plugin.AudioPane
                     double playTime = PlayHeadTime;
 
                     m_Player.Stop();
-                    
+
                     SetPlayHeadTimeBypassAutoPlay(playTime);
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped);
@@ -1031,7 +1031,8 @@ namespace Tobi.Plugin.AudioPane
 
             if (State.Audio.EndOffsetOfPlayStream == State.Audio.DataLength
                 && IsAutoPlay
-                && !IsSelectionSet)
+                && !IsSelectionSet
+                && m_UrakawaSession.DocumentProject != null)
             {
                 Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 

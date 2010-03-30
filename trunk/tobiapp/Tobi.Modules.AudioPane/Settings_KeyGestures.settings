@@ -61,6 +61,9 @@
     <Setting Name="Keyboard_Audio_StartStopRecord" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] R</Value>
     </Setting>
+    <Setting Name="Keyboard_Audio_StopRecordAndContinue" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] R</Value>
+    </Setting>
     <Setting Name="Keyboard_Audio_StartStopMonitor" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] M</Value>
     </Setting>

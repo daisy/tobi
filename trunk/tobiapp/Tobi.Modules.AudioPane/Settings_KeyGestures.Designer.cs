@@ -253,6 +253,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] R")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StopRecordAndContinue {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_StopRecordAndContinue"]));
+            }
+            set {
+                this["Keyboard_Audio_StopRecordAndContinue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] M")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StartStopMonitor {
             get {

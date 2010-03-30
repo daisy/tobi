@@ -21,11 +21,42 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandStartRecord { get; private set; }
         public RichDelegateCommand CommandStopRecord { get; private set; }
+        public RichDelegateCommand CommandStopRecordAndContinue { get; private set; }
+
         public RichDelegateCommand CommandStartMonitor { get; private set; }
         public RichDelegateCommand CommandStopMonitor { get; private set; }
 
+        private bool m_RecordAndContinue = false;
+
         private void initializeCommands_Recorder()
         {
+            CommandStopRecordAndContinue = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecordAndContinue_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecordAndContinue_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("weather-clear-night"),//emblem-symbolic-link
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandStopRecordAndContinue", Category.Debug, Priority.Medium);
+                    
+                    m_RecordAndContinue = true;
+                    m_Recorder.StopRecording();
+
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
+
+                },
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    return !IsWaveFormLoading && IsRecording
+                           && m_UrakawaSession.DocumentProject != null;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StopRecordAndContinue));
+
+            m_ShellView.RegisterRichCommand(CommandStopRecordAndContinue);
+            //
             CommandStopRecord = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecord_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecord_LongDesc,
@@ -35,6 +66,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
 
+                    m_RecordAndContinue = false;
                     m_Recorder.StopRecording();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped); // TODO Localize RecordingStopped

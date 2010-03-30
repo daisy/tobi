@@ -768,7 +768,17 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" -->
 
 
-      <UI:TwoStateButtonRichCommand
+    <CheckBox Control.IsTabStop="true"
+                IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
+                Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAutoPlay}"
+                IsThreeState="False"
+              ToolTip="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.CmdAudioAutoPlay_LongDesc}"
+              VerticalAlignment="Center"
+    Margin="4,0,4,0"/>
+
+    <Separator/>
+    
+    <UI:TwoStateButtonRichCommand
   
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
@@ -781,7 +791,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         RichCommandTwo="{Binding CommandStartRecord}"
         InputBindingManager="{Binding InputBindingManager}"
               RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
-    
+
+    <UI:ButtonRichCommand
+        RichCommand="{Binding CommandStopRecordAndContinue}"/>
+
     <Separator/>
 
     <UI:ButtonRichCommand
@@ -812,7 +825,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandPlayPreviewRight}"
                                  />
-    
     <Separator/>
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"

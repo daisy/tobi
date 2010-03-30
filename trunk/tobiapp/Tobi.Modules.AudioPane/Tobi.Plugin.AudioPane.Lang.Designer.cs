@@ -88,6 +88,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autoplay.
+        /// </summary>
+        public static string AudioAutoPlay {
+            get {
+                return ResourceManager.GetString("AudioAutoPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The audio waveform editor and display..
         /// </summary>
         public static string AudioPanePlugin_Description {
@@ -669,6 +678,24 @@ namespace Tobi.Plugin.AudioPane {
         public static string CmdAudioStopRecord_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdAudioStopRecord_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop the current recording and move to the next phrase.
+        /// </summary>
+        public static string CmdAudioStopRecordAndContinue_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioStopRecordAndContinue_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to St_op recording and continue.
+        /// </summary>
+        public static string CmdAudioStopRecordAndContinue_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioStopRecordAndContinue_ShortDesc", resourceCulture);
             }
         }
         
