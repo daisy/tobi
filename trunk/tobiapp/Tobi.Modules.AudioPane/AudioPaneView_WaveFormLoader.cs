@@ -30,6 +30,8 @@ namespace Tobi.Plugin.AudioPane
         //private object m_CancelLock = new object();
         //private DispatcherFrame m_CancelDispatcherFrame;
 
+        private bool m_LoadThreadIsAlive = false;
+
         public void CancelWaveFormLoad(bool interruptDrawingToo)
         {
             if (!Dispatcher.CheckAccess())
@@ -43,7 +45,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_LoadThread == null) return;
 
-            if (!m_LoadThread.IsAlive)
+            if (!m_LoadThread.IsAlive && !m_LoadThreadIsAlive)
             {
                 m_LoadThread = null;
                 m_CancelRequested = false;
@@ -67,7 +69,7 @@ namespace Tobi.Plugin.AudioPane
             //Thread.Sleep(20);
 
             int index = 0;
-            while (m_LoadThread.IsAlive)
+            while (m_LoadThread.IsAlive || m_LoadThreadIsAlive)
             {
                 //Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100): " + index++);
                 Thread.Sleep(20);
@@ -89,7 +91,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             index = 0;
-            while (m_LoadThread.IsAlive)
+            while (m_LoadThread.IsAlive || m_LoadThreadIsAlive)
             {
                 //Console.WriteLine(@"..............CANCEL m_LoadThread.IsAlive: " + index++);
 
@@ -204,10 +206,15 @@ namespace Tobi.Plugin.AudioPane
 
             ThreadStart threadDelegate = delegate()
                                     {
+                                        m_LoadThreadIsAlive = true;
                                         try
                                         {
+                                            //Console.WriteLine(@"BEFORE loadWaveForm");
+
                                             loadWaveForm(widthMagnified, heightMagnified, wasPlaying,
                                                      play, bytesPerPixel_Magnified);
+
+                                            //Console.WriteLine(@"AFTER loadWaveForm");
                                         }
                                         catch (ThreadAbortException ex)
                                         {
@@ -216,6 +223,7 @@ namespace Tobi.Plugin.AudioPane
                                         }
                                         catch (Exception ex)
                                         {
+                                            //Console.WriteLine("CATCH All");
 #if DEBUG
                                             Debugger.Break();
 #endif
@@ -224,18 +232,19 @@ namespace Tobi.Plugin.AudioPane
                                         }
                                         finally
                                         {
-                                            //Console.WriteLine(@">>>> SEND BEFORE IsWaveFormLoading");
+                                            //Console.WriteLine(@">>>> SEND BEFORE 1");
 
                                             Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(() =>
                                             {
                                                 //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
                                                 m_ViewModel.IsWaveFormLoading = false;
                                             }));
+                                            //Console.WriteLine(@">>>> SEND BEFORE 2");
 
                                             Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                                                 (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
 
-                                            //Console.WriteLine(@">>>> SEND AFTER IsWaveFormLoading");
+                                            //Console.WriteLine(@">>>> SEND BEFORE 3");
 
                                             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                                             {
@@ -245,26 +254,49 @@ namespace Tobi.Plugin.AudioPane
 
                                                 CommandManager.InvalidateRequerySuggested();
                                             }));
+                                            //Console.WriteLine(@">>>> SEND AFTER 3");
                                         }
+                                        m_LoadThreadIsAlive = false;
                                     };
 
             if (m_LoadThread != null)
             {
-                //Console.WriteLine(@"CANCELLING !!!!!!!");
+                //Console.WriteLine(@"CancelWaveFormLoad !!!!!!!");
                 CancelWaveFormLoad(true);
             }
+
+            m_LoadThreadIsAlive = false;
+
             Debug.Assert(m_LoadThread == null);
 
-            m_LoadThread = new Thread(threadDelegate);
-            m_LoadThread.Name = "Waveform Refresh Thread";
-            m_LoadThread.Priority = ThreadPriority.Normal;
-            m_LoadThread.IsBackground = true;
+            m_LoadThread = new Thread(threadDelegate)
+                               {
+                                   Name = "Waveform Refresh Thread",
+                                   Priority = ThreadPriority.Normal,
+                                   IsBackground = true
+                               };
             m_LoadThread.Start();
-            while (!m_LoadThread.IsAlive) ;
-                //Console.WriteLine(@"!m_LoadThread.IsAlive");
 
+            //int count = 0;
+            while (!m_LoadThread.IsAlive && !m_LoadThreadIsAlive)
+            {
+                //Console.WriteLine(@" LOOP not m_LoadThread.IsAlive");
+                Thread.Sleep(50);
 
-            //Console.WriteLine(@"IsWaveFormLoading = true");
+                //count++;
+                //if (count > 3)
+                //{
+                //    //Console.WriteLine(@" LOOP COUNT not m_LoadThread.IsAlive");
+                //    count = 0;
+                //    if (!isAlive)
+                //    {
+                //        //Console.WriteLine(@" LOOP FORCE OUT m_LoadThread.IsAlive");
+                //        break;
+                //    }
+                //}
+            }
+            //Console.WriteLine(@"OK m_LoadThread.IsAlive");
+
             m_ViewModel.IsWaveFormLoading = true;
         }
 
