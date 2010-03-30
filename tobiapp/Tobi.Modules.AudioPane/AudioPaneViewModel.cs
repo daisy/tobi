@@ -13,13 +13,10 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa;
-using urakawa.command;
 using urakawa.core;
 using urakawa.daisy.import;
-using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
-using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
