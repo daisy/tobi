@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -13,7 +11,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Tobi.Common.UI;
 using urakawa.core;
-using urakawa.data;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -53,7 +50,7 @@ namespace Tobi.Plugin.AudioPane
                 int index_ = 0;
                 while (m_ViewModel.IsWaveFormLoading)
                 {
-                    //Console.WriteLine(@"..............CANCEL IsWaveFormLoading ZZ: " + index_++);
+                    Console.WriteLine(@"..............m_ViewModel.IsWaveFormLoading: " + index_++);
 
                     m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 }
@@ -71,7 +68,7 @@ namespace Tobi.Plugin.AudioPane
             int index = 0;
             while (m_LoadThread.IsAlive || m_LoadThreadIsAlive)
             {
-                //Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100): " + index++);
+                Console.WriteLine(@"..............(1) m_LoadThread.IsAlive || m_LoadThreadIsAlive: " + index++);
                 Thread.Sleep(20);
 
                 if (m_LoadThread.Join(100))
@@ -93,8 +90,7 @@ namespace Tobi.Plugin.AudioPane
             index = 0;
             while (m_LoadThread.IsAlive || m_LoadThreadIsAlive)
             {
-                //Console.WriteLine(@"..............CANCEL m_LoadThread.IsAlive: " + index++);
-
+                Console.WriteLine(@"..............(2) m_LoadThread.IsAlive || m_LoadThreadIsAlive: " + index++);
                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 //Thread.Sleep(20);
             }
@@ -105,7 +101,7 @@ namespace Tobi.Plugin.AudioPane
             index = 0;
             while (m_ViewModel.IsWaveFormLoading)
             {
-                //Console.WriteLine(@"..............CANCEL IsWaveFormLoading: " + index++);
+                Console.WriteLine(@"..............m_ViewModel.IsWaveFormLoading: " + index++);
 
                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 //Thread.Sleep(20);
@@ -238,6 +234,7 @@ namespace Tobi.Plugin.AudioPane
                                             {
                                                 //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
                                                 m_ViewModel.IsWaveFormLoading = false;
+                                                m_LoadThreadIsAlive = false;
                                             }));
                                             //Console.WriteLine(@">>>> SEND BEFORE 2");
 
@@ -277,10 +274,10 @@ namespace Tobi.Plugin.AudioPane
                                };
             m_LoadThread.Start();
 
-            //int count = 0;
+            int count = 0;
             while (!m_LoadThread.IsAlive && !m_LoadThreadIsAlive)
             {
-                //Console.WriteLine(@" LOOP not m_LoadThread.IsAlive");
+                Console.WriteLine(@"------------ !m_LoadThread.IsAlive && !m_LoadThreadIsAlive: " + count++);
                 Thread.Sleep(50);
 
                 //count++;
