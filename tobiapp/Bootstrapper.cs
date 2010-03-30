@@ -260,7 +260,16 @@ namespace Tobi
             {
                 try
                 {
-                    Container.RegisterCatalog(new DirectoryCatalog(directory));
+                    // We use the direct loading below to avoid UNC network drives issues.
+                    //Container.RegisterCatalog(new DirectoryCatalog(directory));
+
+                    var extensionsAggregateCatalog = new AggregateCatalog();
+                    foreach (string file in Directory.GetFiles(directory, "*.dll"))
+                    {
+                        var assembly = Assembly.LoadFrom(file);
+                        extensionsAggregateCatalog.Catalogs.Add(new AssemblyCatalog(assembly));
+                    }
+                    Container.RegisterCatalog(extensionsAggregateCatalog);
                 }
                 catch (Exception ex)
                 {
