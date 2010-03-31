@@ -4,6 +4,12 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="Document_Font" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)">Times New Roman</Value>
+    </Setting>
+    <Setting Name="Document_Zoom" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">110</Value>
+    </Setting>
     <Setting Name="Document_ButtonBarVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

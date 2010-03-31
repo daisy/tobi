@@ -746,15 +746,31 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     </Canvas>
   </Grid>
 
-  <UI:WrapPanelLastChildFill
-    LastChildFill="True"
-    Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
-      Orientation="Horizontal"
+  <Border
+          BorderThickness="1,1,1,1"
+          BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-
+          
+          Margin="0,0,0,0"
+          Padding="0,0,0,0"
+          
+    Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+           DockPanel.Dock="Bottom"
+          
    Visibility="{Binding Source={x:Static AudioPane:Settings.Default}, Path=Audio_ButtonBarVisible,
               Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
     
+          
+        Focusable="False"
+                HorizontalAlignment="Stretch"
+           VerticalAlignment="Bottom">
+    
+  <UI:WrapPanelLastChildFill
+    LastChildFill="True"
+      Orientation="Horizontal"
+      Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+
   Focusable="True"
   x:Name="FocusStart"
            KeyboardNavigation.DirectionalNavigation="Cycle"
@@ -891,6 +907,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             IsMoveToPointEnabled="True"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
+            TickPlacement="None"
             Value="1000"
             Minimum="800"
             Maximum="10000"
@@ -903,6 +920,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"/>
 
   </UI:WrapPanelLastChildFill>
+  </Border>
 
   <StatusBar
     

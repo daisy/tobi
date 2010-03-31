@@ -90,7 +90,6 @@ namespace Tobi.Plugin.Settings
             return Valid();
         }
     }
-
     public class TextValidationRule : DataContextValidationRuleBase
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)

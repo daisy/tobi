@@ -32,6 +32,11 @@ namespace Tobi.Plugin.Settings
                     var t4 = ((ContentPresenter)container).FindResource("SettingEditTemplate_Color") as DataTemplate;
                     return t4;
                 }
+                if (((SettingWrapper)item).ValueType == typeof(FontFamily))
+                {
+                    var t5 = ((ContentPresenter)container).FindResource("SettingEditTemplate_FontFamily") as DataTemplate;
+                    return t5;
+                }
             }
             var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;
             return defaultTemplate;

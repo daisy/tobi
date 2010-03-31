@@ -15,7 +15,9 @@
 
   <DockPanel.Resources>
     <FrameworkElement x:Key="dataContextBridge" />
+    
   </DockPanel.Resources>
+  
   <DockPanel.DataContext>
     <Binding
       Mode="OneWayToSource"
@@ -52,6 +54,25 @@ AlternationCount="2"
 search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"            >
 
     <ListView.Resources>
+
+        <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
+
+      <DataTemplate x:Key="FontFamilyComboCollapsed">
+        <!-- TextBlock Text="{Binding}" FontFamily="{Binding}"/ -->
+        <TextBlock Text="{Binding Path=Source}"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="FontFamilyComboExpanded">
+        <StackPanel Orientation="Vertical">
+          <TextBlock VerticalAlignment="Center" Height="Auto">
+            <ContentPresenter Content="{TemplateBinding Content}" />
+          </TextBlock>
+          <TextBlock FontFamily="{Binding Source}"
+              VerticalAlignment="Center" Height="Auto">
+            ABC DEF GHI JKL MNO PQR STU VWYZ 0123456789
+          </TextBlock>
+        </StackPanel>
+      </DataTemplate>
 
       <ToolTip x:Key="settingTooltip"
          DataContext="{Binding Path=PlacementTarget,
@@ -283,7 +304,61 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           </UI:ComboBoxColor.Style>
         </UI:ComboBoxColor>
     </DataTemplate>
-      
+
+      <DataTemplate x:Key="SettingEditTemplate_FontFamily" DataType="{x:Type FontFamily}">
+
+        <ComboBox x:Name="comboListOfFonts"
+                  ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}"
+                  
+                  Control.IsTabStop="true"
+          SelectedItem="{Binding Value, Mode=TwoWay}"
+                  
+                  AlternationCount="2"
+          >
+          <!--BorderBrush="{x:Null}"-->
+
+          <!--SelectionChanged="OnFontSelectionChanged"-->
+
+          <ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </ComboBox.Style>
+          
+          <ComboBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ComboBox.ItemsPanel>
+          <ComboBox.ItemContainerStyle>
+
+            <Style TargetType="{x:Type ComboBoxItem}">
+
+              <Style.Setters>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
+              </Style.Setters>
+
+              <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+
+          </ComboBox.ItemContainerStyle>
+          <!--<ComboBox.ItemTemplate>
+          </ComboBox.ItemTemplate>-->
+          <ComboBox.ItemTemplateSelector>
+            <Settings:FontFamilyDataTemplateSelector/>
+          </ComboBox.ItemTemplateSelector>
+
+        </ComboBox>
+      </DataTemplate>
+
 
       <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>
     </ListView.Resources>
