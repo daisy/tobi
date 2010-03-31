@@ -348,8 +348,7 @@ namespace Tobi.Plugin.DocumentPane
 
             InitializeComponent();
 
-            resetFlowDocument();
-
+            TheFlowDocument.Blocks.Clear();
             var run = new Run(" "); //UserInterfaceStrings.No_Document);
             //setTextDecoration_ErrorUnderline(run);
             TheFlowDocument.Blocks.Add(new Paragraph(run));
@@ -569,13 +568,20 @@ namespace Tobi.Plugin.DocumentPane
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
 
-            resetFlowDocument();
+            TheFlowDocument.Blocks.Clear();
 
             if (project == null)
             {
+#if false && DEBUG
+                FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("Testing FlowDocument (DEBUG) （１）このテキストDAISY図書は，レベル５まであります。")));
+#else
                 var run = new Run(" "); //UserInterfaceStrings.No_Document);
                 //setTextDecoration_ErrorUnderline(run);
                 TheFlowDocument.Blocks.Add(new Paragraph(run));
+#endif //DEBUG
+
+                GC.Collect();
+                GC.WaitForFullGCComplete();
                 return;
             }
             else
@@ -628,21 +634,23 @@ namespace Tobi.Plugin.DocumentPane
 
         }
 
-        private void resetFlowDocument()
-        {
-            //FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(UserInterfaceStrings.No_Document)))
-            //{
-            //    IsEnabled = false,
-            //    IsHyphenationEnabled = false,
-            //    IsOptimalParagraphEnabled = false,
-            //    ColumnWidth = Double.PositiveInfinity,
-            //    IsColumnWidthFlexible = false,
-            //    TextAlignment = TextAlignment.Center
-            //};
-            //FlowDocReader.Document.Blocks.Add(new Paragraph(new Run("Use 'new' or 'open' from the menu bar.")));
+        //private void resetFlowDocument()
+        //{
+        //    //FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(UserInterfaceStrings.No_Document)))
+        //    //{
+        //    //    IsEnabled = false,
+        //    //    IsHyphenationEnabled = false,
+        //    //    IsOptimalParagraphEnabled = false,
+        //    //    ColumnWidth = Double.PositiveInfinity,
+        //    //    IsColumnWidthFlexible = false,
+        //    //    TextAlignment = TextAlignment.Center
+        //    //};
+        //    //FlowDocReader.Document.Blocks.Add(new Paragraph(new Run("Use 'new' or 'open' from the menu bar.")));
 
-            TheFlowDocument.Blocks.Clear();
-        }
+        //    TheFlowDocument.Blocks.Clear();
+
+        //    GC.Collect();
+        //}
 
         //private TreeNode m_CurrentTreeNode;
         //public TreeNode CurrentTreeNode
@@ -927,6 +935,12 @@ namespace Tobi.Plugin.DocumentPane
         //    return result;
         //}
 
+        public DelegateOnMouseDownTextElementWithNode m_DelegateOnMouseDownTextElementWithNode;
+        public DelegateOnRequestNavigate m_DelegateOnRequestNavigate;
+
+        public DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
+        public DelegateAddIdLinkSource m_DelegateAddIdLinkSource;
+
         private void createFlowDocumentFromXuk(Project project)
         {
             TreeNode root = project.Presentations.Get(0).RootNode;
@@ -940,36 +954,42 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator, m_ShellView,
-                            OnMouseUpFlowDoc,
-                            (textElem) =>
-                            {
-                                //var obj = FindVisualTreeRoot(textElem);
+            if (m_DelegateOnMouseDownTextElementWithNode == null)
+            {
+                m_DelegateOnMouseDownTextElementWithNode = (textElem) =>
+                                                               {
+                                                                   //var obj = FindVisualTreeRoot(textElem);
 
-                                var node = textElem.Tag as TreeNode;
-                                if (node == null)
-                                {
-                                    return;
-                                }
+                                                                   var node = textElem.Tag as TreeNode;
+                                                                   if (node == null)
+                                                                   {
+                                                                       return;
+                                                                   }
 
-                                m_UrakawaSession.PerformTreeNodeSelection(node);
-                                //selectNode(node);
-                            },
-                            (uri) =>
-                            {
-                                m_Logger.Log("DocumentPaneView.OnRequestNavigate: " + uri.ToString(), Category.Debug, Priority.Medium);
+                                                                   m_UrakawaSession.PerformTreeNodeSelection(node);
+                                                                   //selectNode(node);
+                                                               };
+            }
 
-                                if (uri.ToString().StartsWith("#"))
-                                {
-                                    string id = uri.ToString().Substring(1);
-                                    BringIntoViewAndHighlight(id);
-                                }
-                            },
-                            (name, data) =>
-                            {
-                                m_idLinkTargets.Add(name, data);
-                            },
-                            (name, data) =>
+            if (m_DelegateOnRequestNavigate == null)
+            {
+                m_DelegateOnRequestNavigate = (uri) =>
+                                                  {
+                                                      m_Logger.Log(
+                                                          "DocumentPaneView.OnRequestNavigate: " + uri.ToString(),
+                                                          Category.Debug, Priority.Medium);
+
+                                                      if (uri.ToString().StartsWith("#"))
+                                                      {
+                                                          string id = uri.ToString().Substring(1);
+                                                          BringIntoViewAndHighlight(id);
+                                                      }
+                                                  };
+            }
+
+            if (m_DelegateAddIdLinkSource == null)
+            {
+                m_DelegateAddIdLinkSource =(name, data) =>
                             {
                                 if (m_idLinkSources.ContainsKey(name))
                                 {
@@ -981,7 +1001,23 @@ namespace Tobi.Plugin.DocumentPane
                                     var list = new List<TextElement>(1) { data };
                                     m_idLinkSources.Add(name, list);
                                 }
-                            }
+                            };
+            }
+            if (m_DelegateAddIdLinkTarget == null)
+            {
+                m_DelegateAddIdLinkTarget =(name, data) => m_idLinkTargets.Add(name, data);
+            }
+
+            // UGLY hack, necessary to avoid memory leaks due to Mouse event handlers
+            if (XukToFlowDocument.m_DocumentPaneView == null)
+            {
+                XukToFlowDocument.m_DocumentPaneView = this;
+            }
+
+            var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator, m_ShellView
+                            //OnMouseUpFlowDoc,
+                            //m_DelegateOnMouseDownTextElementWithNode,
+                            //m_DelegateOnRequestNavigate,
                 );
 
             //try
@@ -1008,6 +1044,8 @@ namespace Tobi.Plugin.DocumentPane
                 action
                 );
 
+            GC.Collect();
+            GC.WaitForFullGCComplete();
         }
 
         //private void selectNode(TreeNode node)
@@ -1045,235 +1083,36 @@ namespace Tobi.Plugin.DocumentPane
         //    }
         //}
 
-        private void OnMouseUpFlowDoc()
-        {
-            m_Logger.Log("DocumentPaneView.OnMouseUpFlowDoc", Category.Debug, Priority.Medium);
+        //private void OnMouseUpFlowDoc()
+        //{
+        //    m_Logger.Log("DocumentPaneView.OnMouseUpFlowDoc", Category.Debug, Priority.Medium);
 
-            TextSelection selection = FlowDocReader.Selection;
-            if (selection != null && !selection.IsEmpty)
-            {
-                TextPointer startPointer = selection.Start;
-                TextPointer endPointer = selection.End;
-                TextRange selectedRange = new TextRange(startPointer, endPointer);
+        //    TextSelection selection = FlowDocReader.Selection;
+        //    if (selection != null && !selection.IsEmpty)
+        //    {
+        //        TextPointer startPointer = selection.Start;
+        //        TextPointer endPointer = selection.End;
+        //        TextRange selectedRange = new TextRange(startPointer, endPointer);
 
 
-                TextPointer leftPointer = startPointer;
+        //        TextPointer leftPointer = startPointer;
 
-                while (leftPointer != null
-                    && (leftPointer.GetPointerContext(LogicalDirection.Backward) != TextPointerContext.ElementStart
-                    || !(leftPointer.Parent is Run)))
-                {
-                    leftPointer = leftPointer.GetNextContextPosition(LogicalDirection.Backward);
-                }
-                if (leftPointer == null
-                    || (leftPointer.GetPointerContext(LogicalDirection.Backward) != TextPointerContext.ElementStart
-                    || !(leftPointer.Parent is Run)))
-                {
-                    return;
-                }
+        //        while (leftPointer != null
+        //            && (leftPointer.GetPointerContext(LogicalDirection.Backward) != TextPointerContext.ElementStart
+        //            || !(leftPointer.Parent is Run)))
+        //        {
+        //            leftPointer = leftPointer.GetNextContextPosition(LogicalDirection.Backward);
+        //        }
+        //        if (leftPointer == null
+        //            || (leftPointer.GetPointerContext(LogicalDirection.Backward) != TextPointerContext.ElementStart
+        //            || !(leftPointer.Parent is Run)))
+        //        {
+        //            return;
+        //        }
 
-                //BringIntoViewAndHighlight((TextElement)leftPointer.Parent);
-            }
-        }
-        private TextElement FindTextElement(TreeNode node, InlineCollection ic)
-        {
-            foreach (Inline inline in ic)
-            {
-                if (inline is Figure)
-                {
-                    TextElement te = FindTextElement(node, (Figure)inline);
-                    if (te != null) return te;
-                }
-                else if (inline is Floater)
-                {
-                    TextElement te = FindTextElement(node, (Floater)inline);
-                    if (te != null) return te;
-                }
-                else if (inline is Run)
-                {
-                    TextElement te = FindTextElement(node, (Run)inline);
-                    if (te != null) return te;
-                }
-                else if (inline is LineBreak)
-                {
-                    TextElement te = FindTextElement(node, (LineBreak)inline);
-                    if (te != null) return te;
-                }
-                else if (inline is InlineUIContainer)
-                {
-                    TextElement te = FindTextElement(node, (InlineUIContainer)inline);
-                    if (te != null) return te;
-                }
-                else if (inline is Span)
-                {
-                    TextElement te = FindTextElement(node, (Span)inline);
-                    if (te != null) return te;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Fail("TextElement type not matched ??");
-                }
-            }
-
-            return null;
-        }
-
-        private TextElement FindTextElement(TreeNode node, Span span)
-        {
-            if (span.Tag == node) return span;
-            return FindTextElement(node, span.Inlines);
-        }
-
-        private TextElement FindTextElement(TreeNode node, TableCellCollection tcc)
-        {
-            foreach (TableCell tc in tcc)
-            {
-                TextElement te = FindTextElement(node, tc);
-                if (te != null) return te;
-            }
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, TableRowCollection trc)
-        {
-            foreach (TableRow tr in trc)
-            {
-                TextElement te = FindTextElement(node, tr);
-                if (te != null) return te;
-            }
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, TableRowGroupCollection trgc)
-        {
-            foreach (TableRowGroup trg in trgc)
-            {
-                TextElement te = FindTextElement(node, trg);
-                if (te != null) return te;
-            }
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, ListItemCollection lic)
-        {
-            foreach (ListItem li in lic)
-            {
-                TextElement te = FindTextElement(node, li);
-                if (te != null) return te;
-            }
-            return null;
-        }
-
-        private TextElement FindTextElement(TreeNode node, BlockCollection bc)
-        {
-            foreach (Block block in bc)
-            {
-                if (block is Section)
-                {
-                    TextElement te = FindTextElement(node, (Section)block);
-                    if (te != null) return te;
-                }
-                else if (block is Paragraph)
-                {
-                    TextElement te = FindTextElement(node, (Paragraph)block);
-                    if (te != null) return te;
-                }
-                else if (block is List)
-                {
-                    TextElement te = FindTextElement(node, (List)block);
-                    if (te != null) return te;
-                }
-                else if (block is Table)
-                {
-                    TextElement te = FindTextElement(node, (Table)block);
-                    if (te != null) return te;
-                }
-                else if (block is BlockUIContainer)
-                {
-                    TextElement te = FindTextElement(node, (BlockUIContainer)block);
-                    if (te != null) return te;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Fail("TextElement type not matched ??");
-                }
-            }
-
-            return null;
-        }
-
-        private TextElement FindTextElement(TreeNode node, TableCell tc)
-        {
-            if (tc.Tag == node) return tc;
-            return FindTextElement(node, tc.Blocks);
-        }
-
-        private TextElement FindTextElement(TreeNode node, Run r)
-        {
-            if (r.Tag == node) return r;
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, LineBreak lb)
-        {
-            if (lb.Tag == node) return lb;
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, InlineUIContainer iuc)
-        {
-            if (iuc.Tag == node) return iuc;
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, BlockUIContainer b)
-        {
-            if (b.Tag == node) return b;
-            return null;
-        }
-        private TextElement FindTextElement(TreeNode node, Floater f)
-        {
-            if (f.Tag == node) return f;
-            return FindTextElement(node, f.Blocks);
-        }
-        private TextElement FindTextElement(TreeNode node, Figure f)
-        {
-            if (f.Tag == node) return f;
-            return FindTextElement(node, f.Blocks);
-        }
-        private TextElement FindTextElement(TreeNode node, TableRow tr)
-        {
-            if (tr.Tag == node) return tr;
-            return FindTextElement(node, tr.Cells);
-        }
-        private TextElement FindTextElement(TreeNode node, TableRowGroup trg)
-        {
-            if (trg.Tag == node) return trg;
-            return FindTextElement(node, trg.Rows);
-        }
-        private TextElement FindTextElement(TreeNode node, ListItem li)
-        {
-            if (li.Tag == node) return li;
-            return FindTextElement(node, li.Blocks);
-        }
-        private TextElement FindTextElement(TreeNode node)
-        {
-            return FindTextElement(node, TheFlowDocument.Blocks);
-        }
-        private TextElement FindTextElement(TreeNode node, Section section)
-        {
-            if (section.Tag == node) return section;
-            return FindTextElement(node, section.Blocks);
-        }
-        private TextElement FindTextElement(TreeNode node, Paragraph para)
-        {
-            if (para.Tag == node) return para;
-            return FindTextElement(node, para.Inlines);
-        }
-        private TextElement FindTextElement(TreeNode node, List list)
-        {
-            if (list.Tag == node) return list;
-            return FindTextElement(node, list.ListItems);
-        }
-        private TextElement FindTextElement(TreeNode node, Table table)
-        {
-            if (table.Tag == node) return table;
-            return FindTextElement(node, table.RowGroups);
-        }
+        //        //BringIntoViewAndHighlight((TextElement)leftPointer.Parent);
+        //    }
+        //}
 
 
         public void BringIntoViewAndHighlight(string uid)
@@ -1652,6 +1491,14 @@ namespace Tobi.Plugin.DocumentPane
 
         //    }
         //    MessageBox.Show(str);
+        //}
+        //private void OnFontSelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (e.AddedItems != null && e.AddedItems.Count > 0)
+        //        Debug.Assert(comboListOfFonts.SelectedItem == e.AddedItems[0]);
+        //    //FlowDocReader.FontFamily = (FontFamily)comboListOfFonts.SelectedItem;
+        //    if (comboListOfFonts.SelectedItem != null)
+        //        TheFlowDocument.FontFamily = (FontFamily)comboListOfFonts.SelectedItem;
         //}
     }
 }

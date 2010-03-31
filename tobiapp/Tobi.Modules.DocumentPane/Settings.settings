@@ -4,6 +4,9 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="Document_ButtonBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="Document_Color_Font_Audio" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#ff000000</Value>
     </Setting>

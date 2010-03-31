@@ -26,8 +26,15 @@ using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
 {
+    public delegate void DelegateOnMouseDownTextElementWithNode(TextElement textElem);
+    public delegate void DelegateOnRequestNavigate(Uri uri);
+    public delegate void DelegateAddIdLinkTarget(string name, TextElement data);
+    public delegate void DelegateAddIdLinkSource(string name, TextElement data);
+
     public class XukToFlowDocument : DualCancellableProgressReporter
     {
+        public static DocumentPaneView m_DocumentPaneView;
+
         private int m_percentageProgress = 0;
         public override void DoWork()
         {
@@ -50,14 +57,27 @@ namespace Tobi.Plugin.DocumentPane
 
         private long m_nTreeNode;
 
-        public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
-            ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView,
-            DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
-            DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
-            DelegateOnRequestNavigate delegateOnRequestNavigate,
-            DelegateAddIdLinkTarget delegateAddIdLinkTarget,
-            DelegateAddIdLinkSource delegateAddIdLinkSource)
+        private static int COUNT = 0;
+        ~XukToFlowDocument()
         {
+            int debug = COUNT;
+//#if DEBUG
+//            Debugger.Break();
+//#endif
+        }
+
+        public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
+            ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView
+            //DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
+            //DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
+            //DelegateOnRequestNavigate delegateOnRequestNavigate,
+            //DelegateAddIdLinkTarget delegateAddIdLinkTarget,
+            //DelegateAddIdLinkSource delegateAddIdLinkSource
+            )
+        {
+            COUNT++;
+
+
             m_FlowDoc = flowDocument;
 
             m_TreeNode = node;
@@ -66,18 +86,17 @@ namespace Tobi.Plugin.DocumentPane
             EventAggregator = aggregator;
             ShellView = shellView;
 
-            m_DelegateOnMouseUpFlowDoc = delegateOnMouseUpFlowDoc;
-            m_DelegateOnMouseDownTextElementWithNode = delegateOnMouseDownTextElementWithNode;
-            m_DelegateOnRequestNavigate = delegateOnRequestNavigate;
-            m_DelegateAddIdLinkTarget = delegateAddIdLinkTarget;
-            m_DelegateAddIdLinkSource = delegateAddIdLinkSource;
+            //m_DelegateOnMouseUpFlowDoc = delegateOnMouseUpFlowDoc;
+            //m_DelegateOnMouseDownTextElementWithNode = delegateOnMouseDownTextElementWithNode;
+            //m_DelegateOnRequestNavigate = delegateOnRequestNavigate;
+
+            //m_DelegateAddIdLinkTarget = delegateAddIdLinkTarget;
+            //m_DelegateAddIdLinkSource = delegateAddIdLinkSource;
         }
 
-        public delegate void DelegateAddIdLinkTarget(string name, TextElement data);
-        private DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
+        //private DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
 
-        public delegate void DelegateAddIdLinkSource(string name, TextElement data);
-        private DelegateAddIdLinkSource m_DelegateAddIdLinkSource;
+        //private DelegateAddIdLinkSource m_DelegateAddIdLinkSource;
 
         public readonly FlowDocument m_FlowDoc = new FlowDocument();
 
@@ -95,16 +114,38 @@ namespace Tobi.Plugin.DocumentPane
         private delegate void DelegateSpanInitializer(Span span);
         private delegate void DelegateParagraphInitializer(Paragraph para);
 
-        public delegate void DelegateOnMouseUpFlowDoc();
-        private DelegateOnMouseUpFlowDoc m_DelegateOnMouseUpFlowDoc;
-        private void OnMouseUpFlowDoc(object sender, MouseButtonEventArgs e)
-        {
-            //e.Handled = true;
-            m_DelegateOnMouseUpFlowDoc();
-        }
+        //public delegate void DelegateOnMouseUpFlowDoc();
+        //private DelegateOnMouseUpFlowDoc m_DelegateOnMouseUpFlowDoc;
+        //private void OnMouseUpFlowDoc(object sender, MouseButtonEventArgs e)
+        //{
+        //    //e.Handled = true;
+        //    m_DelegateOnMouseUpFlowDoc();
+        //}
 
-        public delegate void DelegateOnMouseDownTextElementWithNode(TextElement textElem);
-        private DelegateOnMouseDownTextElementWithNode m_DelegateOnMouseDownTextElementWithNode;
+        //private DelegateOnMouseDownTextElementWithNode m_DelegateOnMouseDownTextElementWithNode;
+
+        //private void OnMouseDownTextElementWithNode(object sender, MouseButtonEventArgs e)
+        //{
+        //    //var src = e.Source;
+        //    //var obj = FindVisualTreeRoot((DependencyObject) src);
+
+        //    //e.Handled = true;
+        //    m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+        //}
+
+        //private void OnMouseDownTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
+        //{
+        //    //e.Handled = true;
+        //    m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+        //}
+
+        //private DelegateOnRequestNavigate m_DelegateOnRequestNavigate;
+
+        //private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        //{
+        //    //e.Handled = true;
+        //    m_DelegateOnRequestNavigate(e.Uri);
+        //}
 
 
         //DependencyObject FindVisualTreeRoot(DependencyObject initial)
@@ -134,30 +175,6 @@ namespace Tobi.Plugin.DocumentPane
 
         //    return result;
         //}
-
-        private void OnMouseDownTextElementWithNode(object sender, MouseButtonEventArgs e)
-        {
-            //var src = e.Source;
-            //var obj = FindVisualTreeRoot((DependencyObject) src);
-
-            //e.Handled = true;
-            m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-        }
-
-        private void OnMouseDownTextElementWithNodeAndAudio(object sender, MouseButtonEventArgs e)
-        {
-            //e.Handled = true;
-            m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-        }
-
-        public delegate void DelegateOnRequestNavigate(Uri uri);
-        private DelegateOnRequestNavigate m_DelegateOnRequestNavigate;
-
-        private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            //e.Handled = true;
-            m_DelegateOnRequestNavigate(e.Uri);
-        }
 
         private void formatCaptionCell(TableCell cell)
         {
@@ -364,7 +381,11 @@ namespace Tobi.Plugin.DocumentPane
                 data.Foreground = brushFontAudio;
                 //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.Hand;
-                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+
+                //data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                
                 return;
             }
 
@@ -376,7 +397,11 @@ namespace Tobi.Plugin.DocumentPane
                 data.Foreground = Brushes.Black;
                 //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.Cross;
-                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                
+                //data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+
                 return;
             }
 
@@ -386,7 +411,11 @@ namespace Tobi.Plugin.DocumentPane
                 data.Foreground = brushFontAudio;
                 //data.Background = Brushes.LightGoldenrodYellow;
                 data.Cursor = Cursors.SizeAll;
-                data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                
+                //data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+
                 return;
             }
             QualifiedName qname = node.GetXmlElementQName();
@@ -396,7 +425,10 @@ namespace Tobi.Plugin.DocumentPane
                 data.Foreground = brushFontNoAudio;
                 //data.Background = Brushes.LimeGreen;
                 data.Cursor = Cursors.Pen;
-                data.MouseDown += OnMouseDownTextElementWithNode;
+                
+                //data.MouseDown += OnMouseDownTextElementWithNode;
+                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
             }
         }
 
@@ -931,12 +963,15 @@ namespace Tobi.Plugin.DocumentPane
             {
                 string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
                 data.NavigateUri = new Uri("#" + id, UriKind.Relative);
-                data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+                
+                //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+                //data.RequestNavigate += (sender, e) => m_DelegateOnRequestNavigate(e.Uri);
+                data.RequestNavigate += (sender, e) => m_DocumentPaneView.m_DelegateOnRequestNavigate(e.Uri);
 
                 data.ToolTip = data.NavigateUri.ToString();
                 data.Name = IdToName(id);
 
-                m_DelegateAddIdLinkSource(data.Name, data);
+                m_DocumentPaneView.m_DelegateAddIdLinkSource(data.Name, data);
             }
             else
             {
@@ -1432,7 +1467,7 @@ namespace Tobi.Plugin.DocumentPane
                                     {
                                         data.Name = IdToName(attr.Value);
                                         data.ToolTip = attr.Value;
-                                        m_DelegateAddIdLinkTarget(data.Name, data);
+                                        m_DocumentPaneView.m_DelegateAddIdLinkTarget(data.Name, data);
                                     }
                                 }
                                 );
