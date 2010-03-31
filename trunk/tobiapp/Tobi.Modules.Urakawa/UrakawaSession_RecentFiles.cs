@@ -79,11 +79,12 @@ namespace Tobi.Plugin.Urakawa
 
         public void AddRecentFile(Uri fileURI)
         {
-            if (!RecentFiles.Contains(fileURI))
+            if (RecentFiles.Contains(fileURI))
             {
-                RecentFiles.Add(fileURI);
-                SaveRecentFiles();
+                RecentFiles.Remove(fileURI);
             }
+            RecentFiles.Add(fileURI);
+            SaveRecentFiles();
         }
 
 
