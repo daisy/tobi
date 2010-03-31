@@ -978,51 +978,51 @@ namespace Tobi.Plugin.DocumentPane
             if (m_DelegateOnMouseDownTextElementWithNode == null)
             {
                 m_DelegateOnMouseDownTextElementWithNode = (textElem) =>
-                                                               {
-                                                                   //var obj = FindVisualTreeRoot(textElem);
+                       {
+                           //var obj = FindVisualTreeRoot(textElem);
 
-                                                                   var node = textElem.Tag as TreeNode;
-                                                                   if (node == null)
-                                                                   {
-                                                                       return;
-                                                                   }
+                           var node = textElem.Tag as TreeNode;
+                           if (node == null)
+                           {
+                               return;
+                           }
 
-                                                                   m_UrakawaSession.PerformTreeNodeSelection(node);
-                                                                   //selectNode(node);
-                                                               };
+                           m_UrakawaSession.PerformTreeNodeSelection(node);
+                           //selectNode(node);
+                       };
             }
 
             if (m_DelegateOnRequestNavigate == null)
             {
                 m_DelegateOnRequestNavigate = (uri) =>
-                                                  {
-                                                      m_Logger.Log(
-                                                          "DocumentPaneView.OnRequestNavigate: " + uri.ToString(),
-                                                          Category.Debug, Priority.Medium);
+                      {
+                          m_Logger.Log(
+                              "DocumentPaneView.OnRequestNavigate: " + uri.ToString(),
+                              Category.Debug, Priority.Medium);
 
-                                                      if (uri.ToString().StartsWith("#"))
-                                                      {
-                                                          string id = uri.ToString().Substring(1);
-                                                          BringIntoViewAndHighlight(id);
-                                                      }
-                                                  };
+                          if (uri.ToString().StartsWith("#"))
+                          {
+                              string id = uri.ToString().Substring(1);
+                              BringIntoViewAndHighlight(id);
+                          }
+                      };
             }
 
             if (m_DelegateAddIdLinkSource == null)
             {
                 m_DelegateAddIdLinkSource =(name, data) =>
-                            {
-                                if (m_idLinkSources.ContainsKey(name))
-                                {
-                                    var list = m_idLinkSources[name];
-                                    list.Add(data);
-                                }
-                                else
-                                {
-                                    var list = new List<TextElement>(1) { data };
-                                    m_idLinkSources.Add(name, list);
-                                }
-                            };
+                    {
+                        if (m_idLinkSources.ContainsKey(name))
+                        {
+                            var list = m_idLinkSources[name];
+                            list.Add(data);
+                        }
+                        else
+                        {
+                            var list = new List<TextElement>(1) { data };
+                            m_idLinkSources.Add(name, list);
+                        }
+                    };
             }
             if (m_DelegateAddIdLinkTarget == null)
             {

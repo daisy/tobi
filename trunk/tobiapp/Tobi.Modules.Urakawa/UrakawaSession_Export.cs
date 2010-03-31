@@ -32,11 +32,15 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.Export", Category.Debug, Priority.Medium);
 
+                    string rootFolder = Path.GetDirectoryName(DocumentFilePath);
+
                     var dlg = new FolderBrowserDialog
-                    {
-                        ShowNewFolderButton = true,
-                        Description = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdExport_ShortDesc)
-                    };
+                      {
+                          RootFolder = Environment.SpecialFolder.MyComputer,
+                          SelectedPath = rootFolder,
+                          ShowNewFolderButton = true,
+                          Description = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdExport_ShortDesc)
+                      };
 
                     DialogResult result = DialogResult.Abort;
 
@@ -46,19 +50,32 @@ namespace Tobi.Plugin.Urakawa
                     {
                         return;
                     }
-
-                    if (Directory.Exists(dlg.SelectedPath))
+                    if (!Directory.Exists(dlg.SelectedPath))
                     {
-                        if (!askUserConfirmOverwriteFileFolder(dlg.SelectedPath, true))
+                        return;
+                    }
+
+                    string exportFolderName = Path.GetFileName(DocumentFilePath) + "__EXPORT";
+                    string exportDir = Path.Combine(dlg.SelectedPath, exportFolderName);
+
+                    if (Directory.Exists(exportDir))
+                    {
+                        if (!askUserConfirmOverwriteFileFolder(exportDir, true))
                         {
                             return;
                         }
 
-                        Directory.Delete(dlg.SelectedPath, true);
-                        Directory.CreateDirectory(dlg.SelectedPath);
+                        Directory.Delete(exportDir, true);
+                    }
+                    
+                    Directory.CreateDirectory(exportDir);
+
+                    if (!Directory.Exists(exportDir))
+                    {
+                        return;
                     }
 
-                    doExport(dlg.SelectedPath);
+                    doExport(exportDir);
                 },
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
