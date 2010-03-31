@@ -77,6 +77,11 @@ namespace Tobi.Plugin.AudioPane
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
         }
 
+        private void OnToolbarToggleVisible(object sender, MouseButtonEventArgs e)
+        {
+            Settings.Default.Audio_ButtonBarVisible = !Settings.Default.Audio_ButtonBarVisible;
+        }
+
         #region Construction
 
 

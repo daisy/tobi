@@ -1,4 +1,5 @@
-﻿<ItemsControl
+﻿<StackPanel
+  
   
    x:Class="Tobi.Plugin.ToolBars.ToolBarsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,43 +10,75 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}"
-  
+             
   xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
   
-  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation" xmlns:ToolBars="clr-namespace:Tobi.Plugin.ToolBars" Focusable="True"
+  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation" xmlns:ToolBars="clr-namespace:Tobi.Plugin.ToolBars"
+   DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  
+  Orientation="Vertical">
+
+  <TextBlock Text=""
+             Width="Auto"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+             
+             MouseDown="OnToolbarToggleVisible"
+             
+   Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+          
+             Style="{StaticResource VisibilityTogglerStyleHeight}"
+          />
+
+<StackPanel 
+  Orientation="Horizontal"
+  
+   Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}">
+  <TextBlock Text=""
+             Height="Auto"
+             VerticalAlignment="Stretch"
+             HorizontalAlignment="Center"
+             MouseDown="OnToolbarToggleVisible"
+             
+             Style="{StaticResource VisibilityTogglerStyleWidth}"
+          />
+
+
+  <ItemsControl
+  
+   Focusable="True"
   x:Name="FocusStart"
    
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}"
    
-   Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
-              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
    >
 
-  <!-- ItemsControl.Resources>
+    <!-- ItemsControl.Resources>
     ItemTemplateSelector="{StaticResource ToolbarTemplateSelector}"
     <local:ToolbarTemplateSelector x:Key="ToolbarTemplateSelector" />
     </ItemsControl.Resources -->
 
-  <ItemsControl.ItemsPanel>
-    <ItemsPanelTemplate>
-      <WrapPanel Orientation="Horizontal"
-                 KeyboardNavigation.DirectionalNavigation="Cycle"/>
-    </ItemsPanelTemplate>
-  </ItemsControl.ItemsPanel>
-  <ItemsControl.ItemTemplate>
-    <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
-      <!-- DataTemplate DataType="{x:Type UI:ScalableGreyableImageProvider}" -->
-      <UI:ButtonRichCommand RichCommand="{Binding .}" />
-      <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.ShortDescription}"/ -->
-      <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.IconProvider.IconXLarge, Mode=OneWay}"/ -->
-      <!-- ContentControl Content="{Binding Path=.IconProvider.IconXLarge}"/ -->
-      <!-- ContentControl Content="{Binding Path=.IconXLarge, Mode=OneWay}"/ -->
-    </DataTemplate> 
-  </ItemsControl.ItemTemplate>
-</ItemsControl>
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <WrapPanel Orientation="Horizontal"
+                   KeyboardNavigation.DirectionalNavigation="Cycle"/>
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate>
+      <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
+        <!-- DataTemplate DataType="{x:Type UI:ScalableGreyableImageProvider}" -->
+        <UI:ButtonRichCommand RichCommand="{Binding .}" />
+        <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.ShortDescription}"/ -->
+        <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.IconProvider.IconXLarge, Mode=OneWay}"/ -->
+        <!-- ContentControl Content="{Binding Path=.IconProvider.IconXLarge}"/ -->
+        <!-- ContentControl Content="{Binding Path=.IconXLarge, Mode=OneWay}"/ -->
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+  </ItemsControl>
 
-
+</StackPanel>
 <!-- WrapPanel
            Orientation="Horizontal"
            
@@ -299,3 +332,4 @@ KeyboardNavigation.TabNavigation="Continue">
     </ToolBar>
 
   </ToolBarTray -->
+</StackPanel>

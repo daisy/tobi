@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
@@ -1520,5 +1521,9 @@ namespace Tobi.Plugin.DocumentPane
         //    if (comboListOfFonts.SelectedItem != null)
         //        TheFlowDocument.FontFamily = (FontFamily)comboListOfFonts.SelectedItem;
         //}
+        private void OnToolbarToggleVisible(object sender, MouseButtonEventArgs e)
+        {
+            Settings.Default.Document_ButtonBarVisible = !Settings.Default.Document_ButtonBarVisible;
+        }
     }
 }
