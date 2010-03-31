@@ -25,6 +25,18 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Document_ButtonBarVisible {
+            get {
+                return ((bool)(this["Document_ButtonBarVisible"]));
+            }
+            set {
+                this["Document_ButtonBarVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#ff000000")]
         public global::System.Windows.Media.Color Document_Color_Font_Audio {
             get {

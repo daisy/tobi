@@ -4,9 +4,7 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-    xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane"
-           
-           LastChildFill="True"
+    xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" LastChildFill="True"
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
 
@@ -28,10 +26,18 @@
              Grid.Row="0" Grid.Column="1"/>
    
   </Grid -->
-
-  <WrapPanel DockPanel.Dock="Bottom"
+  <Border  DockPanel.Dock="Bottom"
         Focusable="False"
-               Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                HorizontalAlignment="Stretch"
+          BorderThickness="1,1,1,1"
+          BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+           
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}">
+    
+  <WrapPanel
+        Focusable="False"
                Orientation="Horizontal"
              HorizontalAlignment="Right"
              >
@@ -47,7 +53,105 @@
                                     HorizontalAlignment="Stretch"
                             Width="200"  Margin="0,0,4,0"/>
     </DockPanel -->
+    <WrapPanel.Resources>
+      <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
+    </WrapPanel.Resources>
+    
+    <StackPanel Orientation="Horizontal"
+                DataContext="{StaticResource familyCollection}">
+        
+      
+<ComboBox x:Name="comboListOfFonts"
+          ItemsSource="{Binding}"
+          IsSynchronizedWithCurrentItem="True"
+          Width="200"
+          AlternationCount="2"
+          >
+  <!--BorderBrush="{x:Null}"-->
 
+  <!--SelectionChanged="OnFontSelectionChanged"-->
+
+  <ComboBox.ItemsPanel>
+    <ItemsPanelTemplate>
+      <VirtualizingStackPanel />
+    </ItemsPanelTemplate>
+  </ComboBox.ItemsPanel>
+  <ComboBox.ItemContainerStyle>
+
+    <Style TargetType="{x:Type ComboBoxItem}">
+
+      <Style.Setters>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="AutomationProperties.Name" Value="{Binding Mode=OneWay}"/>
+      </Style.Setters>
+
+      <Style.Triggers>
+        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+          <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+  </ComboBox.ItemContainerStyle>
+<ComboBox.ItemTemplate>
+<DataTemplate>
+  <!-- TextBlock Text="{Binding}" FontFamily="{Binding}"/ -->
+
+  <!--<TextBlock Text="{Binding Path=Source}"/>-->
+  <Border>
+    <StackPanel Orientation="Vertical">
+      <TextBlock VerticalAlignment="Center">
+        <ContentPresenter Content="{TemplateBinding Content}" />
+      </TextBlock>
+      <TextBlock FontFamily="{Binding Source}"
+          VerticalAlignment="Center">
+        ABC DEF GHI JKL MNO PQR STU VWYZ 0123456789
+      </TextBlock>
+    </StackPanel>
+  </Border>
+</DataTemplate>
+</ComboBox.ItemTemplate>
+
+</ComboBox>
+
+      <!-- ComboBox ItemsSource="{Binding Path=FamilyTypefaces}"
+                Width="120"
+                AlternationCount="2">
+
+        <ComboBox.ItemContainerStyle>
+
+          <Style TargetType="{x:Type ComboBoxItem}">
+
+            <Style.Setters>
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="AutomationProperties.Name" Value="{Binding Path=Style, Mode=OneWay}"/>
+            </Style.Setters>
+
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+
+        </ComboBox.ItemContainerStyle>
+        <ComboBox.ItemTemplate>
+          <DataTemplate DataType="{x:Type FamilyTypeface}">
+            <WrapPanel>
+              <TextBlock Text="{Binding Path=Style}"/>
+              <TextBlock Text=" "/>
+              <TextBlock Text="{Binding Path=Weight}" />
+              <TextBlock Text=" "/>
+              <TextBlock Text="{Binding Path=Stretch}" />
+            </WrapPanel>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+
+      </ComboBox -->
+      </StackPanel>
+    
+    <Separator/>
+      
     <UI:ButtonRichCommand
                           RichCommand="{Binding CommandStructureUp}"
                                  />
@@ -66,15 +170,16 @@
     <!--<Button Click="TestButton_Click">Test visible</Button>-->
     
   </WrapPanel>
+  </Border>
   <FlowDocumentScrollViewer x:Name="FlowDocReader"
                     IsTabStop="False"
                     Focusable="False"
                             Zoom="100"
-                      FontFamily="Palatino Linotype"
                       Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                       >
 <!-- 
+
                             IsFindEnabled="False"
                       IsPrintEnabled="False"
                       
@@ -85,6 +190,9 @@
                       ViewingMode="Scroll" -->
     
       <FlowDocument x:Name="TheFlowDocument"
+                    
+                      FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
+                      
                    AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
            IsEnabled = "True"
            IsHyphenationEnabled = "False"
