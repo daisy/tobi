@@ -17,6 +17,21 @@ using Tobi.Common.UI;
 
 namespace Tobi.Plugin.Settings
 {
+    public class FontFamilyDataTemplateSelector : DataTemplateSelector
+    {
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            ContentPresenter presenter = (ContentPresenter)container;
+
+            if (presenter.TemplatedParent is ComboBox)
+            {
+                return (DataTemplate)presenter.FindResource("FontFamilyComboCollapsed");
+            }
+
+            // Templated parent is ComboBoxItem
+            return (DataTemplate)presenter.FindResource("FontFamilyComboExpanded");
+        }
+    }
     [Export(typeof(SettingsView)), PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class SettingsView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx
     {

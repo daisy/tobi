@@ -20,6 +20,21 @@ using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
 {
+    public class FontFamilyDataTemplateSelector : DataTemplateSelector
+    {
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            ContentPresenter presenter = (ContentPresenter)container;
+
+            if (presenter.TemplatedParent is ComboBox)
+            {
+                return (DataTemplate)presenter.FindResource("FontFamilyComboCollapsed");
+            }
+
+            // Templated parent is ComboBoxItem
+            return (DataTemplate)presenter.FindResource("FontFamilyComboExpanded");
+        }
+    }
     /// <summary>
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
@@ -347,6 +362,11 @@ namespace Tobi.Plugin.DocumentPane
             //
 
             InitializeComponent();
+
+
+            //var fontConverter = new FontFamilyConverter();
+            //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
+            //comboListOfFonts.SelectedItem = fontFamily;
 
             TheFlowDocument.Blocks.Clear();
             var run = new Run(" "); //UserInterfaceStrings.No_Document);

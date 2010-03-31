@@ -25,6 +25,30 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Times New Roman")]
+        public global::System.Windows.Media.FontFamily Document_Font {
+            get {
+                return ((global::System.Windows.Media.FontFamily)(this["Document_Font"]));
+            }
+            set {
+                this["Document_Font"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("110")]
+        public double Document_Zoom {
+            get {
+                return ((double)(this["Document_Zoom"]));
+            }
+            set {
+                this["Document_Zoom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Document_ButtonBarVisible {
             get {
