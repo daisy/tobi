@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
@@ -180,5 +182,9 @@ namespace Tobi.Plugin.ToolBars
         //    }
         //    return count;
         //}
+        private void OnToolbarToggleVisible(object sender, MouseButtonEventArgs e)
+        {
+            Settings.Default.ToolBarVisible = !Settings.Default.ToolBarVisible;
+        }
     }
 }

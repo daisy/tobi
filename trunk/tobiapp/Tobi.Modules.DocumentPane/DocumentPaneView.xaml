@@ -85,6 +85,22 @@
 
   <!--Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"-->
 
+  <TextBlock Text=""
+             
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
+             Width="Auto"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+             
+             
+             MouseDown="OnToolbarToggleVisible"
+             
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+         
+             Style="{StaticResource VisibilityTogglerStyleHeight}"
+          />
+  
   <Border  
           BorderThickness="1,1,1,1"
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
@@ -155,7 +171,15 @@
       <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
     </WrapPanel.Resources>
 
-
+      <TextBlock Text=""
+                 Height="Auto"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Center"
+                 
+                 MouseDown="OnToolbarToggleVisible"
+                 
+             Style="{StaticResource VisibilityTogglerStyleWidth}"
+          />
     <UI:ButtonRichCommand
                           RichCommand="{Binding CommandStructureUp}"
                                  />

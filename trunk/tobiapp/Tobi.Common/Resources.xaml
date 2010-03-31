@@ -30,6 +30,44 @@
 				   StrokeThickness = "1"
 				   Data            = "M 0,0 L 6,3 L 0,6 L 0,0"/>
 
+  <System:Double x:Key="VisibilityTogglerThickness">5</System:Double>
+  <System:Double x:Key="VisibilityTogglerThicknessEmphasis">10</System:Double>
+
+  <Style x:Key="VisibilityTogglerStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
+    <Setter Property="UIElement.Focusable" Value="False"/>
+    <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+  </Style>
+
+  <Style x:Key="VisibilityTogglerStyleWidth"
+         BasedOn="{StaticResource VisibilityTogglerStyle}"
+         TargetType="{x:Type TextBlock}">
+    <Style.Triggers>
+
+      <Trigger Property="UIElement.IsMouseOver" Value="True">
+
+        <Setter Property="FrameworkElement.Width" Value="{StaticResource VisibilityTogglerThicknessEmphasis}"/>
+
+      </Trigger>
+
+    </Style.Triggers>
+    <Setter Property="FrameworkElement.Width" Value="{StaticResource VisibilityTogglerThickness}"/>
+  </Style>
+  <Style x:Key="VisibilityTogglerStyleHeight"
+         BasedOn="{StaticResource VisibilityTogglerStyle}"
+         TargetType="{x:Type TextBlock}">
+    <Style.Triggers>
+
+      <Trigger Property="UIElement.IsMouseOver" Value="True">
+
+        <Setter Property="FrameworkElement.Height" Value="{StaticResource VisibilityTogglerThicknessEmphasis}"/>
+
+      </Trigger>
+
+    </Style.Triggers>
+    <Setter Property="FrameworkElement.Height" Value="{StaticResource VisibilityTogglerThickness}"/>
+  </Style>
+
   <Style TargetType="{x:Type GridSplitter}">
     
     <Style.Triggers>

@@ -746,6 +746,22 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     </Canvas>
   </Grid>
 
+
+  <TextBlock Text=""
+             
+    Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+             Width="Auto"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+             
+             MouseDown="OnToolbarToggleVisible"
+             
+   Visibility="{Binding Source={x:Static AudioPane:Settings.Default}, Path=Audio_ButtonBarVisible,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+          
+             Style="{StaticResource VisibilityTogglerStyleHeight}"
+          />
+
   <Border
           BorderThickness="1,1,1,1"
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
@@ -777,6 +793,15 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     >
 
+    <TextBlock Text=""
+               Height="Auto"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Center"
+               
+               MouseDown="OnToolbarToggleVisible"
+               
+             Style="{StaticResource VisibilityTogglerStyleWidth}"
+          />
     <!-- StackPanel
       
         Orientation="Horizontal"
