@@ -24,7 +24,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.3.1.0\</PublishUrl>
+    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.3.2.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -43,7 +43,7 @@
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.3.1.0</ApplicationVersion>
+    <ApplicationVersion>0.3.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -84,6 +84,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="Tobi.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
@@ -138,6 +139,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
     </Compile>
+    <Compile Include="ShellShortcut.cs" />
     <Compile Include="Shell_Settings.cs" />
     <Compile Include="Shell_Win32Device.cs" />
     <Compile Include="Tobi_Lang.Designer.cs">
