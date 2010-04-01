@@ -278,6 +278,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Tobi.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
