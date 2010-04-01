@@ -692,23 +692,39 @@ namespace Tobi.Plugin.DocumentPane
 
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
         {
-            //TODO:
-            return;
-
-
-            TextElement text = FindTextElement(node);
+            TextElement text = null;
+            if (m_lastHighlighted != null && m_lastHighlighted.Tag == node)
+            {
+                text = m_lastHighlighted;
+            }
+            if (m_lastHighlightedSub != null && m_lastHighlightedSub.Tag == node)
+            {
+                text = m_lastHighlightedSub;
+            }
+            if (text == null)
+            {
+                text = FindTextElement(node);
+            }
             if (text != null)
             {
                 Debug.Assert(node == text.Tag);
                 if (node == text.Tag)
                 {
                     XukToFlowDocument.SetTextElementAttributes(text, node);
+                    if (m_lastHighlighted == text)
+                    {
+                        m_lastHighlighted_Foreground = text.Foreground;
+                    }
+                    if (m_lastHighlightedSub == text)
+                    {
+                        m_lastHighlightedSub_Foreground = text.Foreground;
+                    }
                 }
             }
             ////ThreadPool.QueueUserWorkItem(obj =>
             //Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
             //{
-                
+
             //}));
         }
 
@@ -883,7 +899,19 @@ namespace Tobi.Plugin.DocumentPane
             Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
-            TextElement textElement1 = FindTextElement(newTreeNodeSelection.Item1);
+            TextElement textElement1 = null;
+            if (m_lastHighlighted != null && m_lastHighlighted.Tag == newTreeNodeSelection.Item1)
+            {
+                textElement1 = m_lastHighlighted;
+            }
+            if (m_lastHighlightedSub != null && m_lastHighlightedSub.Tag == newTreeNodeSelection.Item1)
+            {
+                textElement1 = m_lastHighlightedSub;
+            }
+            if (textElement1 == null)
+            {
+                textElement1 = FindTextElement(newTreeNodeSelection.Item1);
+            }
             if (textElement1 == null)
             {
 #if DEBUG
@@ -896,7 +924,18 @@ namespace Tobi.Plugin.DocumentPane
             TextElement textElement2 = null;
             if (newTreeNodeSelection.Item2 != null)
             {
-                textElement2 = FindTextElement(newTreeNodeSelection.Item2);
+                if (m_lastHighlighted != null && m_lastHighlighted.Tag == newTreeNodeSelection.Item2)
+                {
+                    textElement2 = m_lastHighlighted;
+                }
+                if (m_lastHighlightedSub != null && m_lastHighlightedSub.Tag == newTreeNodeSelection.Item2)
+                {
+                    textElement2 = m_lastHighlightedSub;
+                }
+                if (textElement2 == null)
+                {
+                    textElement2 = FindTextElement(newTreeNodeSelection.Item2);
+                }
                 if (textElement2 == null)
                 {
 #if DEBUG

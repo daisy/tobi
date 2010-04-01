@@ -181,7 +181,7 @@ namespace Tobi.Plugin.DocumentPane
             cell.BorderBrush = Brushes.BlueViolet;
             cell.BorderThickness = new Thickness(2);
             cell.Background = Brushes.LightYellow;
-            cell.Foreground = Brushes.Navy;
+            //cell.Foreground = Brushes.Navy;
         }
 
         private void formatListHeader(Paragraph data)
@@ -192,7 +192,7 @@ namespace Tobi.Plugin.DocumentPane
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
             data.Background = Brushes.Lavender;
-            data.Foreground = Brushes.DarkSlateBlue;
+            //data.Foreground = Brushes.DarkSlateBlue;
         }
 
         private void formatPageNumberAndSetId(TreeNode node, TextElement data)
@@ -237,20 +237,20 @@ namespace Tobi.Plugin.DocumentPane
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
             data.Background = Brushes.Orange;
-            data.Foreground = Brushes.DarkOrange;
+            //data.Foreground = Brushes.DarkOrange;
 
             formatPageNumberAndSetId(node, data);
         }
 
         private void formatPageNumberAndSetId_Para(TreeNode node, Paragraph data)
         {
-            data.BorderBrush = Brushes.Orange;
-            data.BorderThickness = new Thickness(2.0);
+            //data.BorderBrush = Brushes.Orange;
+            //data.BorderThickness = new Thickness(2.0);
             data.Padding = new Thickness(2.0);
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.LightYellow;
-            data.Foreground = Brushes.DarkOrange;
+            data.Background = Brushes.Orange;
+            //data.Foreground = Brushes.DarkOrange;
 
             formatPageNumberAndSetId(node, data);
         }
@@ -996,7 +996,7 @@ namespace Tobi.Plugin.DocumentPane
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
             data.Background = Brushes.LightSkyBlue;
-            data.Foreground = Brushes.Blue;
+            //data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("idref");
@@ -1528,21 +1528,15 @@ namespace Tobi.Plugin.DocumentPane
                             else
                             {
                                 return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                                 data =>
-                                                 {
-                                                     data.BorderBrush =
-                                                         Brushes.Green;
-                                                     data.BorderThickness =
-                                                         new Thickness(1.0);
-                                                     data.Padding =
-                                                         new Thickness(2.0);
-                                                     data.FontWeight =
-                                                         FontWeights.Light;
-                                                     data.FontSize =
-                                                         m_FlowDoc.FontSize / 1.2;
-                                                     data.Foreground =
-                                                         Brushes.DarkGreen;
-                                                 });
+                                 data =>
+                                 {
+                                     data.BorderBrush = Brushes.Green;
+                                     data.BorderThickness = new Thickness(1.0);
+                                     data.Padding = new Thickness(2.0);
+                                     data.FontWeight = FontWeights.Light;
+                                     data.FontSize = m_FlowDoc.FontSize / 1.2;
+                                     //data.Foreground = Brushes.DarkGreen;
+                                 });
                             }
                         }
                     case "h1":
@@ -1590,7 +1584,7 @@ namespace Tobi.Plugin.DocumentPane
                                 {
                                     data.FontSize = m_FlowDoc.FontSize * 1.2;
                                     data.FontWeight = FontWeights.Heavy;
-                                    data.Foreground = Brushes.Navy;
+                                    //data.Foreground = Brushes.Navy;
                                 });
                         }
                     case "pagenum":
