@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -14,6 +15,7 @@ using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.Composite.Modularity;
 using System.Windows;
 using Microsoft.Practices.Unity;
+using MSjogren.Samples.ShellLink;
 using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Plugin.AudioPane;
@@ -79,11 +81,102 @@ namespace Tobi
             m_Logger.Log(@"[" + ApplicationConstants.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[Tobi version: " + ApplicationConstants.APP_VERSION + @"]", Category.Info, Priority.High);
 
+            string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
             m_Logger.Log(@"[Tobi app data folder: " + ExternalFilesDataManager.STORAGE_FOLDER_PATH + @"]", Category.Info, Priority.High);
-            m_Logger.Log(@"[Tobi exe/log folder: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[Tobi exe/log folder: " + appFolder + @"]", Category.Info, Priority.High);
 
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             m_Logger.Log(@"[Tobi user config folder: " + Path.GetDirectoryName(config.FilePath) + @"]", Category.Info, Priority.High);
+
+            string logPath = Path.Combine(appFolder, "Tobi.log");
+            string iconPath = Path.Combine(appFolder, "Tobi.ico");
+            string shortcutToLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Shortcut to Tobi log.lnk");
+            if (File.Exists(shortcutToLogPath))
+            {
+                try
+                {
+                    File.Delete(shortcutToLogPath);
+                }
+                catch(Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif // DEBUG
+                    return;
+                }
+            }
+            try
+            {
+                using (var shortcut = new ShellShortcut(shortcutToLogPath))
+                {
+                    shortcut.Arguments = "";
+                    shortcut.Description = "Shortcut to the Tobi log file";
+                    shortcut.IconPath = iconPath;
+                    shortcut.Path = logPath;
+                    shortcut.WorkingDirectory = appFolder;
+                    shortcut.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif // DEBUG
+                return;
+            }
+
+
+            
+//    WshShellClass wsh = new WshShellClass();
+//            IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(
+//                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\shorcut.lnk") as IWshRuntimeLibrary.IWshShortcut;
+//            shortcut.Arguments = "c:\\app\\settings1.xml";
+//            shortcut.TargetPath = "c:\\app\\myftp.exe";
+//            // not sure about what this is for
+//            shortcut.WindowStyle = 1; 
+//            shortcut.Description = "my shortcut description";
+//            shortcut.WorkingDirectory = "c:\\app";
+//            shortcut.IconLocation = "specify icon location";
+//            shortcut.Save();
+
+
+
+
+//private void appShortcutToDesktop(string linkName)
+//{
+//    string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+//    using (StreamWriter writer = new StreamWriter(deskDir + "\\" + linkName + ".url"))
+//    {
+//        string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
+//        writer.WriteLine("[InternetShortcut]");
+//        writer.WriteLine("URL=file:///" + app);
+//        writer.WriteLine("IconIndex=0");
+//        string icon = app.Replace('\\', '/');
+//        writer.WriteLine("IconFile=" + icon);
+//        writer.Flush();
+//    }
+//}
+
+
+
+
+
+//Set Shell = CreateObject("WScript.Shell")
+//DesktopPath = Shell.SpecialFolders("Desktop")
+//Set link = Shell.CreateShortcut(DesktopPath & "\test.lnk")
+//link.Arguments = "1 2 3"
+//link.Description = "test shortcut"
+//link.HotKey = "CTRL+ALT+SHIFT+X"
+//link.IconLocation = "app.exe,1"
+//link.TargetPath = "c:\blah\app.exe"
+//link.WindowStyle = 3
+//link.WorkingDirectory = "c:\blah"
+//link.Save
+
+
+
         }
 
         /// <summary>
