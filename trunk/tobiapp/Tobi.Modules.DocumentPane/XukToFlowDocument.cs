@@ -366,27 +366,18 @@ namespace Tobi.Plugin.DocumentPane
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
-
-        private void setTag(TextElement data, TreeNode node)
+        public static bool SetTextElementAttributes(TextElement data, TreeNode node)
         {
-            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
-            Brush brushFontNoAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_NoAudio);
-
-            data.Tag = node;
-            data.Foreground = Brushes.Red;
-
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
-                data.Foreground = brushFontAudio;
-                //data.Background = Brushes.LightGoldenrodYellow;
-                data.Cursor = Cursors.Hand;
+                SetTextElementAttributesForTreeNodeWithAudio(data);
 
-                //data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                
-                return;
+                ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+
+                return true;
             }
 
             SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
@@ -394,42 +385,89 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                data.Foreground = Brushes.Black;
-                //data.Background = Brushes.LightGoldenrodYellow;
-                data.Cursor = Cursors.Cross;
-                
-                //data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                SetTextElementAttributesForTreeNodeWithSequenceAudio(data);
 
-                return;
+                ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+
+                return true;
             }
 
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
             {
-                data.Foreground = brushFontAudio;
-                //data.Background = Brushes.LightGoldenrodYellow;
-                data.Cursor = Cursors.SizeAll;
-                
-                //data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                SetTextElementAttributesForTreeNodeWithAncestorAudio(data);
 
-                return;
+                ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
+                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+
+                return true;
             }
+
             QualifiedName qname = node.GetXmlElementQName();
             if (node.GetTextMedia() != null
                 || qname != null && qname.LocalName.ToLower() == "img")
             {
-                data.Foreground = brushFontNoAudio;
-                //data.Background = Brushes.LimeGreen;
-                data.Cursor = Cursors.Pen;
+                SetTextElementAttributesForTreeNodeWithNoAudio(data);
+
+                ////data.MouseDown += OnMouseDownTextElementWithNode;
+                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 
-                //data.MouseDown += OnMouseDownTextElementWithNode;
-                //data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                return true;
+            }
+            return false;
+        }
+
+        private void setTag(TextElement data, TreeNode node)
+        {
+            data.Tag = node;
+            data.Foreground = Brushes.Red;
+
+            Boolean needMouseHandler = SetTextElementAttributes(data, node);
+
+            if (needMouseHandler)
+            {
                 data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
             }
+        }
+
+        public static void SetTextElementAttributesForTreeNodeWithNoAudio(TextElement data)
+        {
+            Brush brushFontNoAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_NoAudio);
+
+            data.Foreground = brushFontNoAudio;
+            //data.Background = Brushes.LimeGreen;
+            data.Cursor = Cursors.Pen;
+        }
+
+        public static void SetTextElementAttributesForTreeNodeWithSequenceAudio(TextElement data)
+        {
+            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            
+            data.Foreground = brushFontAudio;
+            //data.Background = Brushes.LightGoldenrodYellow;
+            data.Cursor = Cursors.Cross;
+        }
+
+        public static void SetTextElementAttributesForTreeNodeWithAudio(TextElement data)
+        {
+            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            
+            data.Foreground = brushFontAudio;
+            //data.Background = Brushes.LightGoldenrodYellow;
+            data.Cursor = Cursors.Hand;
+        }
+
+        public static void SetTextElementAttributesForTreeNodeWithAncestorAudio(TextElement data)
+        {
+            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            
+            data.Foreground = brushFontAudio;
+            //data.Background = Brushes.LightGoldenrodYellow;
+            data.Cursor = Cursors.SizeAll;
         }
 
         public static string IdToName(string id)

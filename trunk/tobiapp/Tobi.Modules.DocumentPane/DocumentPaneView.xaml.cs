@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -15,6 +16,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
@@ -582,20 +584,160 @@ namespace Tobi.Plugin.DocumentPane
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-            // TODO see Audio undo/redo
+
+            if (!(eventt is DoneEventArgs
+                           || eventt is UnDoneEventArgs
+                           || eventt is ReDoneEventArgs
+                           || eventt is TransactionEndedEventArgs))
+            {
+                Debug.Fail("This should never happen !!");
+                return;
+            }
+
+            if (eventt is DoneEventArgs && m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            {
+                m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                return;
+            }
+
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
+            }
+
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+
+            Command cmd = eventt.Command;
+
+            if (eventt.Command is CompositeCommand)
+            {
+                Debug.Assert(!(eventt is DoneEventArgs)
+                    && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
+
+                var command = (CompositeCommand)eventt.Command;
+
+                Debug.Assert(command.ChildCommands.Count > 0);
+                if (command.ChildCommands.Count == 0) return;
+
+                var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                if (list != null)
+                {
+                    foreach (var treeNodeAudioStreamDeleteCommand in list)
+                    {
+                        findAndUpdateTreeNodeAudioStatus(treeNodeAudioStreamDeleteCommand.SelectionData.m_TreeNode);
+                    }
+                    return;
+                }
+
+                if (command.ChildCommands.Count > 0)
+                {
+                    if (done)
+                    {
+                        var childCmd = command.ChildCommands.Get(command.ChildCommands.Count - 1);
+                        if (childCmd is ManagedAudioMediaInsertDataCommand)
+                        {
+                            cmd = childCmd;
+                        }
+                    }
+                    else
+                    {
+                        var childCmd = command.ChildCommands.Get(0);
+                        if (childCmd is CompositeCommand)
+                        {
+                            var list_ = ((CompositeCommand)childCmd).GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                            if (list_ != null)
+                            {
+                                foreach (var treeNodeAudioStreamDeleteCommand in list_)
+                                {
+                                    findAndUpdateTreeNodeAudioStatus(treeNodeAudioStreamDeleteCommand.SelectionData.m_TreeNode);
+                                }
+                                return;
+                            }
+                        }
+                        else if (childCmd is TreeNodeAudioStreamDeleteCommand)
+                        {
+                            cmd = childCmd;
+                        }
+                    }
+                }
+            }
+
+            if (cmd is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)cmd;
+                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
+                return;
+            }
+
+            if (cmd is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
+                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
+                return;
+            }
+
+            if (cmd is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
+                findAndUpdateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
+                return;
+            }
+        }
+
+        private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
+        {
+            TextElement text = FindTextElement(node);
+            if (text != null)
+            {
+                Debug.Assert(node == text.Tag);
+                if (node == text.Tag)
+                {
+                    XukToFlowDocument.SetTextElementAttributes(text, node);
+                }
+            }
+            ////ThreadPool.QueueUserWorkItem(obj =>
+            //Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
+            //{
+                
+            //}));
         }
 
         private void OnProjectUnLoaded(Project project)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                return;
+            }
+
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
 
             OnProjectLoaded(null);
         }
 
         private void OnProjectLoaded(Project project)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
+                return;
+            }
+
             m_PathToTreeNode = null;
 
             if (m_idLinkTargets != null)
@@ -635,6 +777,7 @@ namespace Tobi.Plugin.DocumentPane
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
             }
 
             createFlowDocumentFromXuk(project);

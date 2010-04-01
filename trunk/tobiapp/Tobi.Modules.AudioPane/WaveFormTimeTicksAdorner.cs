@@ -244,7 +244,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
-            if (treeNodeSelection.Item1 != null)
+            if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
             {
                 //drawingContext.Pop(); //PushOpacity
 

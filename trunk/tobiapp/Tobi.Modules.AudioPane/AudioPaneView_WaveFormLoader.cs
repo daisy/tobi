@@ -54,7 +54,11 @@ namespace Tobi.Plugin.AudioPane
 
                     m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
 
-                    if (index_ > 50) break;
+                    //if (index_ > 50)
+                    //{
+                    //    Console.WriteLine(@"..............BREAK m_ViewModel.IsWaveFormLoading: " + index_++);
+                    //    break;
+                    //}
                 }
 
                 CommandManager.InvalidateRequerySuggested();
@@ -83,7 +87,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (index++ == 3)
                 {
-                    //Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100) ABORT !: " + index++);
+                    Console.WriteLine(@"..............CANCEL m_LoadThread.Join(100) ABORT !: " + index++);
                     m_LoadThread.Abort();
                     break;
                 }
@@ -96,7 +100,11 @@ namespace Tobi.Plugin.AudioPane
                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 //Thread.Sleep(20);
 
-                if (index > 50) break;
+                //if (index > 50)
+                //{
+                //    Console.WriteLine(@"..............BREAK (2) m_LoadThread.IsAlive || m_LoadThreadIsAlive: " + index++);
+                //    break;
+                //}
             }
 
             m_LoadThread = null;
@@ -109,7 +117,11 @@ namespace Tobi.Plugin.AudioPane
 
                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 //Thread.Sleep(20);
-                if (index > 50) break;
+                //if (index > 50)
+                //{
+                //    Console.WriteLine(@"..............BREAK m_ViewModel.IsWaveFormLoading: " + index++);
+                //    break;
+                //}
             }
 
             CommandManager.InvalidateRequerySuggested();
@@ -274,7 +286,7 @@ namespace Tobi.Plugin.AudioPane
             m_LoadThread = new Thread(threadDelegate)
                                {
                                    Name = "Waveform Refresh Thread",
-                                   Priority = ThreadPriority.AboveNormal,
+                                   Priority = ThreadPriority.Lowest,
                                    IsBackground = true
                                };
             m_LoadThread.Start();
@@ -287,6 +299,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (count > 10)
                 {
+                    Console.WriteLine(@"------------ BREAK !m_LoadThread.IsAlive && !m_LoadThreadIsAlive: " + count++);
                     m_ViewModel.IsWaveFormLoading = false;
                     return;
                 }
