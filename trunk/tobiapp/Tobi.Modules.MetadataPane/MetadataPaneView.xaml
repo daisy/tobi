@@ -9,105 +9,14 @@
     LastChildFill="True">
   <!-- ALL RESOURCES -->
   <DockPanel.Resources>
-    <!-- CONVERTERS -->
-    <!-- local:IsNotRequiredOccurrenceConverter x:Key="isNotRequiredOccurrenceConverter"/ -->
-    <!-- local:ErrorsToListConverter x:Key="errorsToListConverter"/ -->
-    <!-- local:DescriptiveErrorTextConverter x:Key="descriptiveErrorTextConverter"/ -->
-    <!-- local:OccurrenceDescriptionConverter x:Key="occurrenceDescriptionConverter"/ -->
-    <!-- local:LowerCaseConverter x:Key="lowerCaseConverter"/ -->
-    <!-- local:AvailableMetadataNamesConverter x:Key="availableMetadataNamesConverter"/ -->
-    <!-- local:FullDescriptionConverter x:Key="fullDescriptionConverter"/ -->
-    <!-- local:PrimaryIdentifierConverter x:Key="primaryIdentifierConverter"/ -->
 
-
-    <!-- COLLECTION VIEW SOURCE for Metadata objects-->
-    <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
-
-
-    <!-- STYLES-->
-    <Style TargetType="{x:Type Button}">
-      <Setter Property="MinWidth" Value="50"/>
-      <Setter Property="Margin" Value="10"/>
-      <Setter Property="HorizontalAlignment" Value="Left"/>
-    </Style>
-
-    <!-- text block styles-->
-
-    <!-- default text block style sets focusable true for screen-reader compatibility -->
-    <!-- Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Focusable" Value="True"/>
-        </Style -->
-
-    <Style x:Key="NameStyle" TargetType="{x:Type TextBlock}">
-      <Setter Property="Margin" Value="0,0,0,3"/>
-      <Setter Property="Focusable" Value="False"/>
-    </Style>
-
-    <Style x:Key="RequiredNameStyle" TargetType="{x:Type TextBlock}"
-       BasedOn="{StaticResource NameStyle}">
-      <Setter Property="FontWeight" Value="Bold"/>
-    </Style>
-
-    <!--  For the Name combo box -->
-    <Style TargetType="{x:Type ComboBoxItem}">
-      <Setter Property="AutomationProperties.Name" Value="{Binding}"/>
-      <Setter Property="Focusable" Value="True"/>
-      <Setter Property="ToolTip" Value="{Binding}"/>
-    </Style>
-
-    <Style x:Key="DescriptionStyle" TargetType="{x:Type TextBlock}">
-      <Setter Property="AutomationProperties.Name" Value="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition.Description}"/>
-      <Setter Property="Focusable" Value="True"/>
-      <Setter Property="ToolTip" Value="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition.Description}"/>
-    </Style>
-
-    <Style x:Key="OccurrenceStyle" TargetType="{x:Type TextBlock}">
-      <Setter Property="AutomationProperties.Name" Value="{Binding Definition,
-                                      Converter={local:OccurrenceDescriptionConverter}}"/>
-      <Setter Property="Focusable" Value="True"/>
-      <Setter Property="ToolTip" Value="{Binding Definition,
-                                      Converter={local:OccurrenceDescriptionConverter}}"/>
-    </Style>
-
-    <!-- details view: errors -->
-    <Style x:Key="ValidationTextDetailsViewStyle" TargetType="{x:Type TextBlock}">
-      <Setter Property="Focusable" Value="True"/>
-      <Setter Property="AutomationProperties.Name">
-        <Setter.Value>
-          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
-            <Binding Source="{StaticResource MetadatasCVS}"
-               Path="/"/>
-            <Binding RelativeSource="{RelativeSource FindAncestor,
-                                                  AncestorType={x:Type local:MetadataPaneView}}"
-                             Path="DataContext.ValidationItems"/>
-          </MultiBinding>
-        </Setter.Value>
-      </Setter>
-      <Setter Property="ToolTip">
-        <Setter.Value>
-          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
-            <Binding Source="{StaticResource MetadatasCVS}"
-               Path="/"/>
-            <Binding RelativeSource="{RelativeSource FindAncestor,
-                                                  AncestorType={x:Type local:MetadataPaneView}}"
-                             Path="DataContext.ValidationItems"/>
-          </MultiBinding>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
-    <!-- for the validation errors list box -->
-    <Style TargetType="{x:Type ListBoxItem}">
-      <Setter Property="AutomationProperties.Name" Value="{Binding}"/>
-      <Setter Property="ToolTip" Value="{Binding}"/>
-      <Style.Triggers>
-        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-          <Setter Property="Background"
-                  Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-
+    <!-- COLLECTION VIEW SOURCE for Metadata objects, sorted by required vs recommended/optional -->
+    <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS">
+      <CollectionViewSource.SortDescriptions>
+        <scm:SortDescription PropertyName="Definition.Occurrence" Direction="Ascending"/>
+        <scm:SortDescription PropertyName="Name" />
+      </CollectionViewSource.SortDescriptions>
+    </CollectionViewSource>
 
     <Style TargetType="{x:Type ListView}">
       <Setter Property="BorderBrush" Value="Black"/>
@@ -132,251 +41,111 @@
       </Style.Triggers>
     </Style>
 
-    <!-- NAME -->
-    <DataTemplate x:Key="NameTemplate">
-      <TextBlock Text="{Binding Name}" Style="{StaticResource NameStyle}" x:Name="nameText"
-           TextWrapping="Wrap"/>
-
-      <DataTemplate.Triggers>
-        <DataTrigger Binding="{Binding IsRequired, Mode=OneWay}" Value="True">
-          <Setter Property="Style" Value="{StaticResource RequiredNameStyle}"
-            TargetName="nameText"/>
-        </DataTrigger>
-      </DataTemplate.Triggers>
+    <DataTemplate x:Key="AddNewPopup">
+      <StackPanel>
+        <TextBlock Text="Content"/>
+        <TextBox Text="{Binding Mode=TwoWay, Path=Content}"/>
+      </StackPanel>
     </DataTemplate>
 
-    <!-- CONTENT -->
-    <DataTemplate x:Key="ContentTemplate">
-      <TextBlock x:Name="textBlock" Text="{Binding Content}" TextWrapping="Wrap"/>
-    </DataTemplate>
-
-
+    
   </DockPanel.Resources>
 
-  <!-- GUI CONTROLS -->
   <Grid Height="Auto" Width="Auto">
     <!-- split the screen into two columns of equal size -->
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="5*"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
 
-    <!-- Left side: List of all metadata, and a summary of validation errors -->
-    <Grid Grid.Column="0">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition/>
-        <ColumnDefinition/>
-        <ColumnDefinition/>
-      </Grid.ColumnDefinitions>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="5*"/>
-        <RowDefinition Height="2*"/>
-        <RowDefinition Height="3*"/>
-      </Grid.RowDefinitions>
-
-      <UI:SortableListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-      ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
-      IsSynchronizedWithCurrentItem="True"
+    <ListView
+      Grid.Row="0"
       AlternationCount="2"
+      ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       HorizontalContentAlignment="Stretch"
-      x:Name="MetadataListView"
-      SelectionChanged="MetadataListView_SelectionChanged">
-        <ListView.View>
-          <GridView>
-            <GridView.Columns>
-              <GridViewColumn Header="Name"
-                CellTemplate="{StaticResource NameTemplate}"
-                UI:SortableListView.SortPropertyName="Name"/>
-              <GridViewColumn Header="Content"
-                CellTemplate="{StaticResource ContentTemplate}"
-                UI:SortableListView.SortPropertyName="Content"/>
-
-            </GridView.Columns>
-          </GridView>
-        </ListView.View>
-      </UI:SortableListView>
-
-      <!-- buttons -->
-      <Button Click="Add_Metadata_Button_Click" Grid.Row="1" Grid.Column="0" Content="_Add"/>
-      <Button Click="Remove_Metadata_Button_Click" Grid.Row="1" Grid.Column="1" Content="_Remove"
-              x:Name="removeButton">
-        <Button.IsEnabled>
-          <Binding Source="{StaticResource MetadatasCVS}"
-         Path="/"
-         Converter="{local:IsNotRequiredOccurrenceConverter}"/>
-        </Button.IsEnabled>
-      </Button>
-
-      <!-- validation issues -->
-      <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
-        <TextBlock x:Name="LabelSummaryList" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.SummaryOfErrors}" Margin="0,10,0,10" Focusable="False"/> <!-- TODO LOCALIZE SummaryOfErrors-->
-
-        <ScrollViewer
+      IsSynchronizedWithCurrentItem="True">
+      <ListView.View>
+        <GridView>
           
-           HorizontalContentAlignment="Stretch"
-                   VerticalContentAlignment="Stretch"
-  VerticalScrollBarVisibility="Visible"
-  HorizontalScrollBarVisibility="Auto"
-  CanContentScroll="True"
-  IsDeferredScrollingEnabled="False"
-  Focusable="False">
+          <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto"/>
+          
+          <GridViewColumn Header="Content"  Width="Auto">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBox x:Name="contentText" 
+                         Text="{Binding 
+                         Mode=TwoWay, 
+                         Path=Content, 
+                         UpdateSourceTrigger=PropertyChanged}"
+                         />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          
+          <GridViewColumn  Width="Auto" Header="Occurrence" DisplayMemberBinding="{Binding Definition, 
+                          Converter={local:OccurrenceDescriptionConverter}}"/>
 
-          <ListBox x:Name="errorsList"
-           IsTabStop="True"
-           Focusable="True"
-           AutomationProperties.Name="{Binding ElementName=LabelSummaryList, Path=Text}"
-           AutomationProperties.LabeledBy="{Binding ElementName=LabelSummaryList}"
-           AlternationCount="2"
-           MouseDoubleClick="errorsList_MouseDoubleClick"
-           
-           HorizontalContentAlignment="Stretch"
-                   VerticalContentAlignment="Stretch"
-                         
-      SelectionMode="Single"
-       DisplayMemberPath="Message"
-           ItemsSource="{Binding Path=ValidationItems, Mode=OneWay}">
+          <GridViewColumn Header="Errors">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <!-- default: show no text -->
+                <TextBlock x:Name="errorText" Text="" TextWrapping="Wrap"  MinWidth="150"/>
 
-            <!-- Converter={StaticResource errorsToListConverter} -->
+                <DataTemplate.Triggers>
+                  <DataTrigger Value="False">
+                      <DataTrigger.Binding>
+                        <!-- if there is an error -->
+                        <MultiBinding Converter="{local:ValidityConverter}">
+                          <MultiBinding.Bindings>
+                            <Binding/>
+                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
+                                     Path="DataContext.ValidationItems"/>
+                          </MultiBinding.Bindings>
+                        </MultiBinding>
+                      </DataTrigger.Binding>
+                      
+                      <!-- set the error text -->
+                      <Setter TargetName="errorText" Property="Text">
+                        <Setter.Value>
 
-            <ListBox.ItemContainerStyle>
-              <Style TargetType="{x:Type ListBoxItem}">
+                          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
+                            <Binding/>
+                            <Binding RelativeSource="{RelativeSource FindAncestor,
+                                       AncestorType={x:Type local:MetadataPaneView}}"
+                                     Path="DataContext.ValidationItems"/>
+                          </MultiBinding>
+                        </Setter.Value>
+                      </Setter>
+                      
+                    </DataTrigger>
+                  </DataTemplate.Triggers>
+                
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn> 
+          
+          <GridViewColumn  Width="Auto">
+            <GridViewColumn.CellTemplate>
+              
+              <DataTemplate>
+                <Button Content="Delete" Click="DeleteButton_OnClick"/>
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+        
+        </GridView>
+      </ListView.View>
+    </ListView>
+    
+    <Button Content="Add a new metadata item" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"/>
 
-                <Setter Property="FontWeight" Value="Normal" />
-
-                <Style.Triggers>
-                  <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="FontWeight" Value="Bold" />
-                  </Trigger>
-                </Style.Triggers>
-              </Style>
-            </ListBox.ItemContainerStyle>
-            <!-- ListBox.ItemTemplate>
-                    <DataTemplate>
-                      </DataTemplate>
-                      </ListBox.ItemTemplate -->
-          </ListBox>
-          </ScrollViewer>
-        </StackPanel>
-    </Grid>
-
-    <!-- Right side: Editing details -->
-    <Grid Grid.Column="1" Margin="15,0,0,0">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="3*"/>
-      </Grid.ColumnDefinitions>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="*"/>
-        <!-- empty spacer row at the bottom; don't know if there's a better way to do this -->
-        <RowDefinition Height="2*"/>
-      </Grid.RowDefinitions>
-
-      <!-- DESCRIPTION -->
-      <TextBlock Grid.Row="0" Grid.Column="0"
-           FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Description }"   
-           Focusable="True"/>  <!-- TODO LOCALIZE Metadata_Description-->
-
-      <TextBlock Grid.Row="0" Grid.Column="1"
-           Text="{Binding Source={StaticResource MetadatasCVS},
-                                      Path=/Definition.Description}"
-           TextWrapping="Wrap"
-           Style="{StaticResource DescriptionStyle}"/>
-
-      <!-- OCCURRENCE -->
-      <TextBlock Grid.Row="1" Grid.Column="0"
-            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Occurence}"
-           Focusable="True"/>  <!-- TODO LOCALIZE Metadata_Occurence-->
-
-      <TextBlock Grid.Row="1" Grid.Column="1"
-           Focusable="True"
-           Text="{Binding Source={StaticResource MetadatasCVS}, 
-                                      Path=Definition,
-                                      Converter={local:OccurrenceDescriptionConverter}}"
-           TextWrapping="Wrap" />
-
-      <!-- NAME DROP DOWN -->
-      <TextBlock x:Name="LabelNames" Grid.Row="2" Grid.Column="0"
-            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Name}" 
-                 Focusable="True"/>   <!-- TODO LOCALIZE Metadata_Name-->
-
-
-      <ComboBox Grid.Row="2" Grid.Column="1"
-          x:Name="namesComboBox"
-          AutomationProperties.LabeledBy="{Binding ElementName=LabelNames}"
-          Height="20" VerticalAlignment="Top"
-          HorizontalContentAlignment="Stretch"
-          SelectedItem="{Binding Source={StaticResource MetadatasCVS}, 
-                                             Path=Name, 
-                                             Converter={local:LowerCaseConverter}}"
-          SelectionChanged="ComboBox_SelectionChanged">
-        <ComboBox.ItemsSource>
-          <MultiBinding Converter="{local:AvailableMetadataNamesConverter}"
-              UpdateSourceTrigger="PropertyChanged">
-            <Binding RelativeSource="{RelativeSource FindAncestor,
-                                                  AncestorType={x:Type local:MetadataPaneView}}"
-                     Path="DataContext.AvailableMetadataNames"/>
-            <Binding Source="{StaticResource MetadatasCVS}" Path="Name"/>
-          </MultiBinding>
-        </ComboBox.ItemsSource>
-      </ComboBox>
-
-
-      <!-- CONTENT -->
-      <TextBlock Grid.Row="3" Grid.Column="0"
-            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Content}"
-           Focusable="True"/>    <!-- TODO LOCALIZE Metadata_Content-->
-      <TextBox Grid.Row="3" Grid.Column="1"
-
-         Height="20" VerticalAlignment="Top"
-         Text="{Binding Source={StaticResource MetadatasCVS},
-                                    Path=Content, 
-                                    Mode=TwoWay,
-	                                UpdateSourceTrigger=PropertyChanged}"
-        HorizontalContentAlignment="Stretch"
-        TextWrapping="Wrap"/>
-
-      <!-- VALIDATION ERRORS -->
-      <TextBlock Grid.Row="4" Grid.Column="0"
-            FontWeight="Bold" Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Metadata_Error}"
-           Focusable="True"/>  <!-- TODO LOCALIZE Metadata_Error-->
-      <TextBlock x:Name="errorText" Grid.Row="4" Grid.Column="1"
-           TextWrapping="Wrap"
-           Style="{StaticResource ValidationTextDetailsViewStyle}">
-        <TextBlock.Text>
-          <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
-            <Binding Source="{StaticResource MetadatasCVS}"
-               Path="/"/>
-            <Binding RelativeSource="{RelativeSource FindAncestor,
-                                                  AncestorType={x:Type local:MetadataPaneView}}"
-                             Path="DataContext.ValidationItems"/>
-          </MultiBinding>
-        </TextBlock.Text>
-      </TextBlock>
-
-      <!-- PRIMARY IDENTIFIER CHECKBOX -->
-      <CheckBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="primaryIdentifierCheckBox">
-        <CheckBox.Visibility>
-          <Binding Source="{StaticResource MetadatasCVS}"
-         Path="/"
-         Converter="{local:PrimaryIdentifierConverter}"/>
-        </CheckBox.Visibility>
-        <CheckBox.IsChecked>
-          <Binding Source="{StaticResource MetadatasCVS}"
-         Path="/IsPrimaryIdentifier"
-         Mode="TwoWay"/>
-        </CheckBox.IsChecked>
-        <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier_CheckBox}" Focusable="False"/>   <!-- TODO LOCALIZE PrimaryIdentifier_CheckBox-->
-      </CheckBox>
-
-    </Grid>
-
+    <StackPanel Grid.Row="2">
+      <TextBlock Text="Description:" FontWeight="Bold"/>
+      <TextBlock TextWrapping="Wrap" Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition.Description}"/>
+    </StackPanel>
+    
   </Grid>
-
 </DockPanel>
 

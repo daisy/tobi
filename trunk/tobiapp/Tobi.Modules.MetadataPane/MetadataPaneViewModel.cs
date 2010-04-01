@@ -86,6 +86,8 @@ namespace Tobi.Plugin.MetadataPane
                 //if (!((MetadataValidationError)validationItem).Definition.IsReadOnly)
                 ValidationItems.Add(validationItem);
             }
+
+            RaisePropertyChanged(() => ValidationItems);
         }
 
         private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)

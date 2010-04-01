@@ -180,4 +180,36 @@ namespace Tobi.Plugin.MetadataPane
             return System.Windows.Visibility.Hidden;
         }
     }
+
+
+    [ValueConversion(typeof(NotifyingMetadataItem), typeof(bool))]
+    public class ValidityConverter : ValueConverterMarkupExtensionBase<ValidityConverter>
+    {
+        //return true if valid
+        //Expected: NotifyingMetadataItem and list of ValidationItems
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values[0] == null || values[1] == null) return true;
+            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is IEnumerable<ValidationItem>)) 
+                return true;
+
+            NotifyingMetadataItem metadataItem = (NotifyingMetadataItem)values[0];
+            IEnumerable<ValidationItem> validationItems = (IEnumerable<ValidationItem>) values[1];
+            
+            
+            foreach (ValidationItem item in validationItems)
+            {
+                if (item is MetadataValidationError)
+                {
+                    var metadataError = item as MetadataValidationError;
+                    if (metadataError.Target == metadataItem.UrakawaMetadata)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
 }
