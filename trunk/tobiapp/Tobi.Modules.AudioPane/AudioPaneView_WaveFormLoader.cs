@@ -286,7 +286,7 @@ namespace Tobi.Plugin.AudioPane
             m_LoadThread = new Thread(threadDelegate)
                                {
                                    Name = "Waveform Refresh Thread",
-                                   Priority = ThreadPriority.Lowest,
+                                   Priority = ThreadPriority.Normal,
                                    IsBackground = true
                                };
             m_LoadThread.Start();

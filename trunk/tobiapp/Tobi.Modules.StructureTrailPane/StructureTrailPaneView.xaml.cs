@@ -91,7 +91,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     BorderThickness = new Thickness(0.0),
                     BorderBrush = null,
                     Background = Brushes.Transparent,
-                    Foreground = (withMedia ? Brushes.Blue : Brushes.CadetBlue),
+                    Foreground = (withMedia ? SystemColors.HighlightBrush : SystemColors.ControlDarkBrush),
                     Cursor = Cursors.Hand,
                     Style = m_ButtonStyle
                 };
@@ -117,7 +117,7 @@ namespace Tobi.Plugin.StructureTrailPane
                         BorderBrush = null,
                         BorderThickness = new Thickness(0.0),
                         Background = Brushes.Transparent,
-                        Foreground = Brushes.Black,
+                        Foreground = SystemColors.ControlDarkDarkBrush, //ActiveBorderBrush,
                         Cursor = Cursors.Cross,
                         FontWeight = FontWeights.ExtraBold,
                         Style = m_ButtonStyle,
@@ -432,11 +432,15 @@ namespace Tobi.Plugin.StructureTrailPane
             }
 
             BreadcrumbPanel.Children.Clear();
+            BreadcrumbPanel.Background = SystemColors.ControlBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
-            BreadcrumbPanel.Children.Add(new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)));
+            var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document))
+                         {Margin = new Thickness(4, 2, 0, 2)};
+            BreadcrumbPanel.Children.Add(tb);
 
             PathToCurrentTreeNode = null;
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Tobi_Plugin_StructureTrailPane_Lang.No_Document);
+            m_FocusStartElement.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
 
             if (project == null) return;
 
@@ -458,10 +462,11 @@ namespace Tobi.Plugin.StructureTrailPane
             }
 
             BreadcrumbPanel.Children.Clear();
+            BreadcrumbPanel.Background = SystemColors.WindowBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
             PathToCurrentTreeNode = null;
-            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("No selection");
+            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(". . .");
 
             if (project == null) return;
 

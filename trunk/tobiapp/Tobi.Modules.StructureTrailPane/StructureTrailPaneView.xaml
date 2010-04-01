@@ -7,17 +7,18 @@
     xmlns:StructureTrailPane="clr-namespace:Tobi.Plugin.StructureTrailPane"
            
           Focusable="False"
-          BorderThickness="1,1,1,1"
+          BorderThickness="1,1,1,2"
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
            
-        Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+  <!--WindowBrushKey-->
 
-    <WrapPanel
+  <WrapPanel
       
       Focusable="False"
       
       KeyboardNavigation.DirectionalNavigation="Cycle"
-             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
              x:Name="BreadcrumbPanel" Orientation="Horizontal"
              >
     </WrapPanel>

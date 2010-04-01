@@ -692,6 +692,10 @@ namespace Tobi.Plugin.DocumentPane
 
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
         {
+            //TODO:
+            return;
+
+
             TextElement text = FindTextElement(node);
             if (text != null)
             {
