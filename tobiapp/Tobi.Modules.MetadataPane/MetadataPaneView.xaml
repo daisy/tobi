@@ -130,11 +130,27 @@
             <GridViewColumn.CellTemplate>
               
               <DataTemplate>
-                <Button Content="Delete" Click="DeleteButton_OnClick"/>
+                <Button x:Name="deleteButton" Content="Delete" Click="DeleteButton_OnClick"/>
+                <!-- the delete button is not enabled for required items-->
+                <DataTemplate.Triggers>
+                  <DataTrigger Value="False"
+                               Binding="{Binding Converter={local:IsNotRequiredOccurrenceConverter}}">
+
+                    <Setter TargetName="deleteButton" Property="Visibility" Value="Hidden"/>
+
+                  </DataTrigger>
+                </DataTemplate.Triggers>
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
-        
+          <GridViewColumn Header="Is primary identifier?">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <CheckBox Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
+                        IsChecked="{Binding IsPrimaryIdentifier, Mode=TwoWay}"/>
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
         </GridView>
       </ListView.View>
     </ListView>
