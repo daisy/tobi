@@ -67,7 +67,7 @@ namespace Tobi
                 File.Delete(ApplicationConstants.LOG_FILE_PATH);
                 Console.WriteLine("File deleted [" + ApplicationConstants.LOG_FILE_PATH + "].");
 
-                Thread.Sleep(200);
+                Thread.Sleep(100);
             }
 
 #if (BITFACTORY)

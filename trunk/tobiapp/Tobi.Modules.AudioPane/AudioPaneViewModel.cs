@@ -1398,10 +1398,7 @@ namespace Tobi.Plugin.AudioPane
 
             UpdatePeakMeter();
 
-            bool oldVal = IsAutoPlay;
-            IsAutoPlay = false;
             AudioPlayer_UpdateWaveFormPlayHead();
-            IsAutoPlay = oldVal;
         }
 
         #region Event / Callbacks
