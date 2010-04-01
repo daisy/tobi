@@ -197,7 +197,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private void formatPageNumberAndSetId(TreeNode node, TextElement data)
         {
-            setTag(data, node);
+            //setTag(data, node);
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("id");
@@ -708,6 +708,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (qname.LocalName == "pagenum")
                     {
                         data.Tag = null;
+                        setTag(para, node);
                         formatPageNumberAndSetId_Para(node, para);
                     }
                     else if (qname.LocalName == "hd")
@@ -728,6 +729,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     data.Tag = null;
                     Paragraph para = new Paragraph();
+                    setTag(para, node);
                     formatPageNumberAndSetId_Para(node, para);
                     data.Blocks.Add(para);
                     return para;
@@ -766,9 +768,10 @@ namespace Tobi.Plugin.DocumentPane
                         Paragraph para = new Paragraph(new Run(textMedia.Text));
                         TableCell cell = new TableCell(para);
 
+                        setTag(para, node);
+
                         if (qname.LocalName == "caption")
                         {
-                            setTag(para, node);
                             formatCaptionCell(cell);
                         }
                         else
@@ -817,9 +820,10 @@ namespace Tobi.Plugin.DocumentPane
                         Paragraph para = new Paragraph();
                         TableCell cell = new TableCell(para);
 
+                        setTag(para, node);
+
                         if (qname.LocalName == "caption")
                         {
-                            setTag(para, node);
                             formatCaptionCell(cell);
                         }
                         else
