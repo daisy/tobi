@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,68 +51,7 @@ namespace Tobi.Plugin.MetadataPane
             InitializeComponent();
         }
 
-        private void Add_Metadata_Button_Click(object sender, RoutedEventArgs e)
-        {
-            m_ViewModel.AddEmptyMetadata();
-            ObservableCollection<NotifyingMetadataItem> metadataItems =
-                m_ViewModel.MetadataCollection.Metadatas;
-            if (metadataItems.Count > 0)
-            {
-                NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
-                CollectionViewSource cvs = (CollectionViewSource) this.FindResource("MetadatasCVS");
-                cvs.View.MoveCurrentTo(metadata);
-            }
-            namesComboBox.Focus();
-        }
-        
-        private void Remove_Metadata_Button_Click(object sender, RoutedEventArgs e)
-        {
-            CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
-            NotifyingMetadataItem metadata = (NotifyingMetadataItem)cvs.View.CurrentItem;
-            m_ViewModel.RemoveMetadata(metadata);
-        }
-
-        //select the corresponding metadata from the item double-clicked in the errors list
-        private void errorsList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (errorsList.SelectedItem != null && 
-                errorsList.SelectedItem is MetadataValidationError)
-            {
-                MetadataValidationError error = (MetadataValidationError) errorsList.SelectedItem;
-                if (error.ErrorType == MetadataErrorType.FormatError)
-                {
-                    NotifyingMetadataItem metadataItem = m_ViewModel.MetadataCollection.Find(error.Target);
-                    CollectionViewSource cvs = (CollectionViewSource) this.FindResource("MetadatasCVS");
-                    if (metadataItem != null) cvs.View.MoveCurrentTo(metadataItem);
-                }
-            }
-
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0 && e.AddedItems[0] != null)
-            {
-                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
-                NotifyingMetadataItem metadata = (NotifyingMetadataItem)cvs.View.CurrentItem;
-
-                //checkbox visibility
-                PrimaryIdentifierConverter primaryIdentifierConverter = new PrimaryIdentifierConverter();
-                primaryIdentifierCheckBox.Visibility = 
-                    (System.Windows.Visibility)primaryIdentifierConverter.Convert(metadata, null, null, null);
-                
-                //the remove button's enabled-ness
-                IsNotRequiredOccurrenceConverter requiredOccurrenceConverter = new IsNotRequiredOccurrenceConverter();
-                removeButton.IsEnabled = (bool)requiredOccurrenceConverter.Convert(metadata, null, null, null);
-            
-            }
-        }
-
-        private void MetadataListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            m_ViewModel.SelectionChanged();
-        }
-
+ 
         public void Popup()
         {
             var windowPopup = new PopupModalWindow(m_ShellView,
@@ -137,6 +77,13 @@ namespace Tobi.Plugin.MetadataPane
             {
                 m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
             }
+        }
+
+        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            NotifyingMetadataItem metadata = button.DataContext as NotifyingMetadataItem;
+            m_ViewModel.RemoveMetadata(metadata);
         }
     }
 }

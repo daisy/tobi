@@ -145,16 +145,16 @@
     <value>The metadata edits.</value>
   </data>
   <data name="Optional" xml:space="preserve">
-    <value>Optional.</value>
+    <value>Optional</value>
   </data>
   <data name="PrimaryIdentifier_CheckBox" xml:space="preserve">
     <value>Is primary identifier?</value>
   </data>
   <data name="Recommended" xml:space="preserve">
-    <value>Recommended.</value>
+    <value>Recommended</value>
   </data>
   <data name="Required" xml:space="preserve">
-    <value>Required.</value>
+    <value>Required</value>
   </data>
   <data name="CmdShowMetadata_ShortDesc" xml:space="preserve">
     <value>_Edit metadata</value>

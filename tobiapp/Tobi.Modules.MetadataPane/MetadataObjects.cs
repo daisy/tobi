@@ -71,6 +71,8 @@ namespace Tobi.Plugin.MetadataPane
                     (UrakawaMetadata, value);
                 UrakawaMetadata.Presentation.UndoRedoManager.Execute(cmd);
 
+                //the definition changes when the name changes
+                Definition = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(Name, true);
                 //when you change the name, you can't be sure that it's the primary identifier anymore
                 IsPrimaryIdentifier = false;
             }
