@@ -376,6 +376,7 @@ namespace Tobi.Plugin.AudioPane
         {
             CharEnumerator enumtor = text.GetEnumerator();
             int n = 0;
+            enumtor.MoveNext();
             while (textIsPunctuation(enumtor.Current))
             {
                 n++;
