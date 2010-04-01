@@ -13,6 +13,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.commands;
 using urakawa.core;
@@ -106,6 +107,8 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CommandStructureUp { get; private set; }
         public RichDelegateCommand CommandStructureDown { get; private set; }
 
+        public RichDelegateCommand CommandFocus { get; private set; }
+
         private readonly ILoggerFacade m_Logger;
 
         private readonly IEventAggregator m_EventAggregator;
@@ -143,6 +146,28 @@ namespace Tobi.Plugin.DocumentPane
             //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
             //    );
 
+            CommandFocus = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdTxtFocus_ShortDesc,
+                null,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("edit-select-all"),
+                () =>
+                {
+                    if (FocusCollapsed.IsVisible)
+                    {
+                        FocusHelper.FocusBeginInvoke(FocusCollapsed);
+                    }
+                    else
+                    {
+                        FocusHelper.FocusBeginInvoke(FocusExpanded);
+                    }
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Txt));
+
+            m_ShellView.RegisterRichCommand(CommandFocus);
+            //
             CommandStructureDown = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdStructureDown_ShortDesc,
                 Tobi_Plugin_DocumentPane_Lang.CmdStructureDown_LongDesc,
@@ -1010,7 +1035,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (m_DelegateAddIdLinkSource == null)
             {
-                m_DelegateAddIdLinkSource =(name, data) =>
+                m_DelegateAddIdLinkSource = (name, data) =>
                     {
                         if (m_idLinkSources.ContainsKey(name))
                         {
@@ -1026,7 +1051,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             if (m_DelegateAddIdLinkTarget == null)
             {
-                m_DelegateAddIdLinkTarget =(name, data) => m_idLinkTargets.Add(name, data);
+                m_DelegateAddIdLinkTarget = (name, data) => m_idLinkTargets.Add(name, data);
             }
 
             // UGLY hack, necessary to avoid memory leaks due to Mouse event handlers
@@ -1036,9 +1061,9 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator, m_ShellView
-                            //OnMouseUpFlowDoc,
-                            //m_DelegateOnMouseDownTextElementWithNode,
-                            //m_DelegateOnRequestNavigate,
+                //OnMouseUpFlowDoc,
+                //m_DelegateOnMouseDownTextElementWithNode,
+                //m_DelegateOnRequestNavigate,
                 );
 
             //try
@@ -1524,6 +1549,15 @@ namespace Tobi.Plugin.DocumentPane
         private void OnToolbarToggleVisible(object sender, MouseButtonEventArgs e)
         {
             Settings.Default.Document_ButtonBarVisible = !Settings.Default.Document_ButtonBarVisible;
+        }
+
+        private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return || e.Key == Key.Space)
+            {
+                Settings.Default.Document_ButtonBarVisible = !Settings.Default.Document_ButtonBarVisible;
+                FocusHelper.FocusBeginInvoke(Settings.Default.Document_ButtonBarVisible ? FocusExpanded : FocusCollapsed);
+            }
         }
     }
 }

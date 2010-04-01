@@ -86,13 +86,13 @@
   <!--Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"-->
 
   <TextBlock Text=""
-             
+             x:Name="FocusCollapsed"
     Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
              Width="Auto"
              VerticalAlignment="Center"
              HorizontalAlignment="Stretch"
              
-             
+             KeyDown="OnToolbarToggleVisibleKeyboard"
              MouseDown="OnToolbarToggleVisible"
              
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,
@@ -141,12 +141,12 @@
       </DataTemplate>
 
     </Border.Resources>
-    
+
     <UI:WrapPanelLastChildFill
+      
       LastChildFill="True"
                Orientation="Horizontal"
       
-        Focusable="False"
                 HorizontalAlignment="Stretch"
            VerticalAlignment="Bottom"
           
@@ -171,11 +171,16 @@
       <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
     </WrapPanel.Resources>
 
-      <TextBlock Text=""
+      <TextBlock 
+             x:Name="FocusExpanded"
+        Focusable="True"
+             
+             Text=""
                  Height="Auto"
                  VerticalAlignment="Stretch"
                  HorizontalAlignment="Center"
                  
+             KeyDown="OnToolbarToggleVisibleKeyboard"
                  MouseDown="OnToolbarToggleVisible"
                  
              Style="{StaticResource VisibilityTogglerStyleWidth}"

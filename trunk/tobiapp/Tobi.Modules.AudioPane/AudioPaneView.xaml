@@ -749,11 +749,13 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
   <TextBlock Text=""
              
+             x:Name="FocusCollapsed"
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
              Width="Auto"
              VerticalAlignment="Center"
              HorizontalAlignment="Stretch"
              
+             KeyDown="OnToolbarToggleVisibleKeyboard"
              MouseDown="OnToolbarToggleVisible"
              
    Visibility="{Binding Source={x:Static AudioPane:Settings.Default}, Path=Audio_ButtonBarVisible,
@@ -787,17 +789,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       Orientation="Horizontal"
       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
 
-  Focusable="True"
-  x:Name="FocusStart"
            KeyboardNavigation.DirectionalNavigation="Cycle"
 
     >
 
-    <TextBlock Text=""
+    <TextBlock 
+  Focusable="True"
+             x:Name="FocusExpanded"
+  Text=""
                Height="Auto"
                VerticalAlignment="Stretch"
                HorizontalAlignment="Center"
                
+             KeyDown="OnToolbarToggleVisibleKeyboard"
                MouseDown="OnToolbarToggleVisible"
                
              Style="{StaticResource VisibilityTogglerStyleWidth}"

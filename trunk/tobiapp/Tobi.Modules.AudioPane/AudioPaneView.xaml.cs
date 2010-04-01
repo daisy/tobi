@@ -82,6 +82,14 @@ namespace Tobi.Plugin.AudioPane
             Settings.Default.Audio_ButtonBarVisible = !Settings.Default.Audio_ButtonBarVisible;
         }
 
+        private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return || e.Key == Key.Space)
+            {
+                Settings.Default.Audio_ButtonBarVisible = !Settings.Default.Audio_ButtonBarVisible;
+                FocusHelper.FocusBeginInvoke(Settings.Default.Audio_ButtonBarVisible ? FocusExpanded : FocusCollapsed);
+            }
+        }
         #region Construction
 
 
@@ -1419,7 +1427,14 @@ namespace Tobi.Plugin.AudioPane
 
         public void BringIntoFocus()
         {
-            FocusHelper.FocusBeginInvoke(FocusStart);
+            if (FocusCollapsed.IsVisible)
+            {
+                FocusHelper.FocusBeginInvoke(FocusCollapsed);
+            }
+            else
+            {
+                FocusHelper.FocusBeginInvoke(FocusExpanded);
+            }
         }
 
         public void BringIntoFocusStatusBar()

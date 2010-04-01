@@ -18,11 +18,14 @@
   
   Orientation="Vertical">
 
-  <TextBlock Text=""
+  <TextBlock 
+             x:Name="FocusCollapsed"
+             Text=""
              Width="Auto"
              VerticalAlignment="Center"
              HorizontalAlignment="Stretch"
              
+             KeyDown="OnToolbarToggleVisibleKeyboard"
              MouseDown="OnToolbarToggleVisible"
              
    Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
@@ -36,10 +39,16 @@
   
    Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
               Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}">
-  <TextBlock Text=""
+  <TextBlock 
+   Focusable="True"
+  x:Name="FocusExpanded"
+   
+   Text=""
              Height="Auto"
              VerticalAlignment="Stretch"
              HorizontalAlignment="Center"
+             
+             KeyDown="OnToolbarToggleVisibleKeyboard"
              MouseDown="OnToolbarToggleVisible"
              
              Style="{StaticResource VisibilityTogglerStyleWidth}"
@@ -48,9 +57,7 @@
 
   <ItemsControl
   
-   Focusable="True"
-  x:Name="FocusStart"
-   
+   Focusable="False"
    prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}"
    
    >
@@ -63,7 +70,8 @@
     <ItemsControl.ItemsPanel>
       <ItemsPanelTemplate>
         <WrapPanel Orientation="Horizontal"
-                   KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                   KeyboardNavigation.DirectionalNavigation="Cycle"
+                   />
       </ItemsPanelTemplate>
     </ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate>
