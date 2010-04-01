@@ -96,6 +96,7 @@ namespace Tobi.Plugin.AudioPane
 
                 Debug.Assert(treeNodeSelectionAfter.Item1 == command.CurrentTreeNode);
 
+
                 if (command.SelectionData.m_TreeNode.IsDescendantOf(command.CurrentTreeNode)
                     && treeNodeSelectionAfter.Item2 != command.SelectionData.m_TreeNode)
                 {
@@ -201,7 +202,10 @@ namespace Tobi.Plugin.AudioPane
             //                        : 0;
 
             Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
-            Debug.Assert(treeNodeSelectionAfter.Item1 == currentTreeNode);
+            if(treeNodeSelectionAfter.Item1 != currentTreeNode)
+            {
+                CommandRefresh.Execute();
+            }
 
             double timeOffset = 0;
             if (managedAudioMediaTarget == null)
