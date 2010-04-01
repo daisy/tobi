@@ -53,6 +53,8 @@ namespace Tobi.Plugin.AudioPane
                     Console.WriteLine(@"..............m_ViewModel.IsWaveFormLoading: " + index_++);
 
                     m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
+
+                    if (index_ > 100) break;
                 }
 
                 CommandManager.InvalidateRequerySuggested();
@@ -93,6 +95,8 @@ namespace Tobi.Plugin.AudioPane
                 Console.WriteLine(@"..............(2) m_LoadThread.IsAlive || m_LoadThreadIsAlive: " + index++);
                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 //Thread.Sleep(20);
+
+                if (index > 100) break;
             }
 
             m_LoadThread = null;
@@ -105,6 +109,7 @@ namespace Tobi.Plugin.AudioPane
 
                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Normal);
                 //Thread.Sleep(20);
+                if (index > 100) break;
             }
 
             CommandManager.InvalidateRequerySuggested();
@@ -278,8 +283,9 @@ namespace Tobi.Plugin.AudioPane
             while (!m_LoadThread.IsAlive && !m_LoadThreadIsAlive)
             {
                 Console.WriteLine(@"------------ !m_LoadThread.IsAlive && !m_LoadThreadIsAlive: " + count++);
-                Thread.Sleep(50);
+                Thread.Sleep(20);
 
+                if (count > 100) break;
                 //count++;
                 //if (count > 3)
                 //{

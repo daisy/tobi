@@ -511,7 +511,8 @@ namespace Tobi.Plugin.AudioPane
 
             if (time >= 0)
             {
-                PlayHeadTime = time;
+                SetPlayHeadTimeBypassAutoPlay(time);
+                //PlayHeadTime = time;
             }
         }
 
