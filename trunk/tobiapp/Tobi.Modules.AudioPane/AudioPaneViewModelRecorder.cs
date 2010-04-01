@@ -125,15 +125,15 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
+                    TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
                     return !IsPlaying && !IsMonitoring && !IsRecording //!IsWaveFormLoading
                         && (m_UrakawaSession.DocumentProject == null
                         ||
                            State.Audio.PlayStreamMarkers != null
                            ||
-                           treeNodeSelection.Item1 != null
-                           && treeNodeSelection.Item1.GetXmlElementQName() != null
-                           && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
+                           node != null
+                           && node.GetXmlElementQName() != null
+                           && node.GetFirstAncestorWithManagedAudio() == null
                            );
                 },
                 Settings_KeyGestures.Default,
