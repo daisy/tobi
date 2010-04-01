@@ -31,6 +31,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void initializeCommands_Recorder()
         {
+            Stopwatch stopWatchRecorder = null;
+
             CommandStopRecordAndContinue = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecordAndContinue_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecordAndContinue_LongDesc,
@@ -40,17 +42,29 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecordAndContinue", Category.Debug, Priority.Medium);
 
+                    if (stopWatchRecorder != null)
+                    {
+                        stopWatchRecorder.Stop();
+                        if (stopWatchRecorder.ElapsedMilliseconds <= 100)
+                        {
+                            Console.WriteLine("stopWatchRecorder.ElapsedMilliseconds<=100, skipping stop record");
+                            stopWatchRecorder.Start();
+                            return;
+                        }
+                        Console.WriteLine("stopWatchRecorder.ElapsedMilliseconds, elapsed record :" + stopWatchRecorder.ElapsedMilliseconds);
+                    }
+                    stopWatchRecorder = null;
+
                     IsAutoPlay = false;
                     m_RecordAndContinue = true;
                     m_InterruptRecording = false;
                     m_Recorder.StopRecording();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
-
                 },
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
                     return !IsWaveFormLoading && IsRecording
                            && m_UrakawaSession.DocumentProject != null;
@@ -69,11 +83,23 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecord", Category.Debug, Priority.Medium);
 
+                    if (stopWatchRecorder != null)
+                    {
+                        stopWatchRecorder.Stop();
+                        if (stopWatchRecorder.ElapsedMilliseconds <= 50)
+                        {
+                            Console.WriteLine("stopWatchRecorder.ElapsedMilliseconds<=50, skipping stop record");
+                            stopWatchRecorder.Start();
+                            return;
+                        }
+                        Console.WriteLine("stopWatchRecorder.ElapsedMilliseconds, elapsed record :" + stopWatchRecorder.ElapsedMilliseconds);
+                    }
+                    stopWatchRecorder = null;
+
                     m_RecordAndContinue = false;
                     m_Recorder.StopRecording();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped); // TODO Localize RecordingStopped
-
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -89,6 +115,12 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartRecord", Category.Debug, Priority.Medium);
+
+                    if (stopWatchRecorder != null)
+                    {
+                        Console.WriteLine("stopWatchRecorder != null, skipping start record");
+                        return;
+                    }
 
                     if (IsWaveFormLoading && View != null)
                     {
@@ -116,6 +148,8 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
+
+                    stopWatchRecorder = Stopwatch.StartNew();
                     m_Recorder.StartRecording(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
@@ -129,11 +163,10 @@ namespace Tobi.Plugin.AudioPane
                     return !IsPlaying && !IsMonitoring && !IsRecording //!IsWaveFormLoading
                         && (m_UrakawaSession.DocumentProject == null
                         ||
-                           State.Audio.PlayStreamMarkers != null
-                           ||
                            node != null
                            && node.GetXmlElementQName() != null
                            && node.GetFirstAncestorWithManagedAudio() == null
+                           && node.GetFirstDescendantWithManagedAudio() == null
                            );
                 },
                 Settings_KeyGestures.Default,
@@ -337,6 +370,8 @@ namespace Tobi.Plugin.AudioPane
                                 goto tryNext;
                             }
                         }
+
+                        m_StateToRestore = null;
 
                         m_UrakawaSession.PerformTreeNodeSelection(next);
 
