@@ -37,10 +37,7 @@ namespace Tobi.Plugin.AudioPane
                        {
                            if (IsAutoPlay)
                            {
-                               if (View != null)
-                               {
-                                   View.ClearSelection();
-                               }
+                               State.Selection.ClearSelection();
                            }
 
                            PlayHeadTime = 0;
@@ -73,10 +70,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         if (IsAutoPlay)
                         {
-                            if (View != null)
-                            {
-                                View.ClearSelection();
-                            }
+                            State.Selection.ClearSelection();
                         }
 
                         PlayHeadTime = end;
@@ -111,10 +105,7 @@ namespace Tobi.Plugin.AudioPane
                            {
                                if (IsAutoPlay)
                                {
-                                   if (View != null)
-                                   {
-                                       View.ClearSelection();
-                                   }
+                                   State.Selection.ClearSelection();
                                }
 
                                PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
@@ -124,10 +115,7 @@ namespace Tobi.Plugin.AudioPane
 
                            if (IsAutoPlay)
                            {
-                               if (View != null)
-                               {
-                                   View.ClearSelection();
-                               }
+                               State.Selection.ClearSelection();
                            }
 
                            PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
@@ -180,10 +168,7 @@ namespace Tobi.Plugin.AudioPane
 
                         if (IsAutoPlay)
                         {
-                            if (View != null)
-                            {
-                                View.ClearSelection();
-                            }
+                            State.Selection.ClearSelection();
                         }
 
                         PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesRight);
@@ -222,10 +207,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (IsAutoPlay)
                     {
-                        if (View != null)
-                        {
-                            View.ClearSelection();
-                        }
+                        State.Selection.ClearSelection();
                     }
 
                     PlayHeadTime = newTime;
@@ -256,10 +238,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (IsAutoPlay)
                     {
-                        if (View != null)
-                        {
-                            View.ClearSelection();
-                        }
+                        State.Selection.ClearSelection();
                     }
 
                     PlayHeadTime = newTime;
