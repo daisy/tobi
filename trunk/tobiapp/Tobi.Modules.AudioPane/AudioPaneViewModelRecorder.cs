@@ -375,17 +375,12 @@ namespace Tobi.Plugin.AudioPane
         private bool textOnlyContainsPunctuation(string text)
         {
             CharEnumerator enumtor = text.GetEnumerator();
-            int n = 0;
-            enumtor.MoveNext();
-            while (textIsPunctuation(enumtor.Current))
+            while (enumtor.MoveNext())
             {
-                n++;
-                enumtor.MoveNext();
+                if (!textIsPunctuation(enumtor.Current))
+                    return false;
             }
-            return n == text.Length;
-
-            //return text == "." || text == "," || text == "?" || text == "!" || text == "'" || text == "\"" ||
-            //       text == "(" || text == ")" || text == "{" || text == "}" || text == "[" || text == "]";
+            return true;
         }
 
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
