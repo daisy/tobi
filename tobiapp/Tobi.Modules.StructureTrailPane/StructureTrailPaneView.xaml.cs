@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -9,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -16,7 +18,10 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.command;
+using urakawa.commands;
 using urakawa.core;
+using urakawa.events.undo;
 using urakawa.property.xml;
 using urakawa.xuk;
 
@@ -415,23 +420,55 @@ namespace Tobi.Plugin.StructureTrailPane
             //m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(obj => CommandFocus.Execute(), EscapeEvent.THREAD_OPTION);
         }
 
-        private void OnProjectUnLoaded(Project obj)
+        private void OnProjectUnLoaded(Project project)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                return;
+            }
+
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
             BreadcrumbPanel.Children.Add(new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)));
 
             PathToCurrentTreeNode = null;
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Tobi_Plugin_StructureTrailPane_Lang.No_Document);
+
+            if (project == null) return;
+
+            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
         }
 
         private void OnProjectLoaded(Project project)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
+                return;
+            }
+
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
 
             PathToCurrentTreeNode = null;
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("No selection");
+
+            if (project == null) return;
+
+            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
         }
 
         //private TreeNode m_CurrentTreeNode;
@@ -467,11 +504,8 @@ namespace Tobi.Plugin.StructureTrailPane
         //    }
         //}
 
-        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
+        private void refreshData(Tuple<TreeNode, TreeNode> newTreeNodeSelection)
         {
-            //Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
-            Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
-
             if (newTreeNodeSelection.Item1 == null) return;
 
             //TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
@@ -480,7 +514,7 @@ namespace Tobi.Plugin.StructureTrailPane
             string qName1_ = (qName1 == null
                                   ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
                                   : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName1.LocalName)
-                             //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
+                //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
                              );
 
             string str = null;
@@ -513,7 +547,7 @@ namespace Tobi.Plugin.StructureTrailPane
             }
             else
             {
-                QualifiedName qName2 = newTreeNodeSelection.Item1.GetXmlElementQName();
+                QualifiedName qName2 = newTreeNodeSelection.Item2.GetXmlElementQName();
                 string qName2_ = (qName2 == null
                                       ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
                                       : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName2.LocalName)
@@ -543,82 +577,118 @@ namespace Tobi.Plugin.StructureTrailPane
             updateBreadcrumbPanel(newTreeNodeSelection);
         }
 
-        //private void OnSubTreeNodeSelected(TreeNode node)
-        //{
-        //    if (node == null || CurrentTreeNode == null)
-        //    {
-        //        return;
-        //    }
-        //    if (CurrentSubTreeNode == node)
-        //    {
-        //        return;
-        //    }
-        //    if (!node.IsDescendantOf(CurrentTreeNode))
-        //    {
-        //        return;
-        //    }
-        //    CurrentSubTreeNode = node;
+        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
+        {
+            //Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
-        //    updateBreadcrumbPanel(node);
-        //}
+            refreshData(newTreeNodeSelection);
+        }
 
-        //private void OnTreeNodeSelected(TreeNode node)
-        //{
-        //    if (node == null)
-        //    {
-        //        return;
-        //    }
-        //    if (CurrentTreeNode == node)
-        //    {
-        //        return;
-        //    }
+        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        {
+            m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
-        //    TreeNode subTreeNode = null;
+            if (!(eventt is DoneEventArgs
+                           || eventt is UnDoneEventArgs
+                           || eventt is ReDoneEventArgs
+                           || eventt is TransactionEndedEventArgs))
+            {
+                Debug.Fail("This should never happen !!");
+                return;
+            }
 
-        //    if (CurrentTreeNode != null)
-        //    {
-        //        if (CurrentSubTreeNode == CurrentTreeNode)
-        //        {
-        //            if (node.IsAncestorOf(CurrentTreeNode))
-        //            {
-        //                subTreeNode = CurrentTreeNode;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (node.IsAncestorOf(CurrentSubTreeNode))
-        //            {
-        //                subTreeNode = CurrentSubTreeNode;
-        //            }
-        //            else if (node.IsDescendantOf(CurrentTreeNode))
-        //            {
-        //                subTreeNode = node;
-        //            }
-        //        }
-        //    }
+            if (eventt is DoneEventArgs && m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            {
+                m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                return;
+            }
 
-        //    if (subTreeNode == node)
-        //    {
-        //        CurrentTreeNode = node;
-        //        CurrentSubTreeNode = CurrentTreeNode;
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
+            }
 
-        //        updateBreadcrumbPanel(node);
-        //    }
-        //    else
-        //    {
-        //        CurrentTreeNode = node;
-        //        CurrentSubTreeNode = CurrentTreeNode;
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-        //        updateBreadcrumbPanel(node);
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
 
-        //        if (subTreeNode != null)
-        //        {
-        //            m_Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] StructureTrailPaneView.OnTreeNodeSelected",
-        //                       Category.Debug, Priority.Medium);
+            Command cmd = eventt.Command;
 
-        //            m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(subTreeNode);
-        //        }
-        //    }
-        //}
+            if (eventt.Command is CompositeCommand)
+            {
+                Debug.Assert(!(eventt is DoneEventArgs)
+                    && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
+
+                var command = (CompositeCommand)eventt.Command;
+
+                Debug.Assert(command.ChildCommands.Count > 0);
+                if (command.ChildCommands.Count == 0) return;
+
+                var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                if (list != null)
+                {
+                    refreshData(newTreeNodeSelection);
+                    return;
+                }
+
+                if (command.ChildCommands.Count > 0)
+                {
+                    if (done)
+                    {
+                        var childCmd = command.ChildCommands.Get(command.ChildCommands.Count - 1);
+                        if (childCmd is ManagedAudioMediaInsertDataCommand)
+                        {
+                            cmd = childCmd;
+                        }
+                    }
+                    else
+                    {
+                        var childCmd = command.ChildCommands.Get(0);
+                        if (childCmd is CompositeCommand)
+                        {
+                            var list_ = ((CompositeCommand)childCmd).GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                            if (list_ != null)
+                            {
+                                refreshData(newTreeNodeSelection);
+                                return;
+                            }
+                        }
+                        else if (childCmd is TreeNodeAudioStreamDeleteCommand)
+                        {
+                            cmd = childCmd;
+                        }
+                    }
+                }
+            }
+
+            if (cmd is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)cmd;
+
+                refreshData(newTreeNodeSelection);
+                return;
+            }
+
+            if (cmd is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
+
+                refreshData(newTreeNodeSelection);
+                return;
+            }
+
+            if (cmd is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
+
+                refreshData(newTreeNodeSelection);
+                return;
+            }
+        }
     }
 }
