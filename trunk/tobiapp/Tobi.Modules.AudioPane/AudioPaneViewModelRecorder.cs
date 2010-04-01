@@ -11,6 +11,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
 using urakawa.media.data.audio;
+using urakawa.xuk;
 using InputDevice = AudioLib.InputDevice;
 
 namespace Tobi.Plugin.AudioPane
@@ -301,13 +302,39 @@ namespace Tobi.Plugin.AudioPane
                     TreeNode next = node.GetNextSiblingWithText(true);
                     if (next != null)
                     {
-                        if (next.GetXmlElementQName() == null)
+                        QualifiedName qName = next.GetXmlElementQName();
+                        if (qName == null)
                         {
                             node = next;
                             goto here; // ugly, but hey, it works for now. ;)
                         }
 
-                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                        string elementName = qName.LocalName.ToLower();
+                        if (elementName == "sent" || elementName == "p")
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(next);
+                        }
+                        else
+                        {
+                            TreeNode nodeSent = next.GetFirstAncestorWithXmlElement("sent");
+                            if (nodeSent == null)
+                            {
+                                TreeNode nodeP = next.GetFirstAncestorWithXmlElement("p");
+                                if (nodeP != null)
+                                {
+                                    m_UrakawaSession.PerformTreeNodeSelection(nodeP);
+                                }
+                                else
+                                {
+                                    m_UrakawaSession.PerformTreeNodeSelection(next);
+                                }
+                            }
+                            else
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection(nodeSent);
+                            }
+                        }
+
 
                         m_RecordAndContinue = false;
                         State.Audio.PcmFormatRecordingMonitoring = null;
