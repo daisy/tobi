@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:UI="clr-namespace:Tobi.Common.UI"
-    xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML">
+    xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML" xmlns:Common="clr-namespace:Tobi.Common">
 
   <!-- SolidColorBrush x:Key="SystemColorsHighlight" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"></SolidColorBrush>
 
@@ -35,7 +35,8 @@
 
   <Style x:Key="VisibilityTogglerStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
-    <Setter Property="UIElement.Focusable" Value="False"/>
+    <Setter Property="UIElement.Focusable" Value="True"/>
+    <Setter Property="FrameworkElement.ToolTip" Value="{x:Static Common:Tobi_Common_Lang.ToggleVisibility}"/>
     <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
   </Style>
 
@@ -45,8 +46,15 @@
     <Style.Triggers>
 
       <Trigger Property="UIElement.IsMouseOver" Value="True">
-
+        
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         <Setter Property="FrameworkElement.Width" Value="{StaticResource VisibilityTogglerThicknessEmphasis}"/>
+
+      </Trigger>
+
+      <Trigger Property="UIElement.IsFocused" Value="True">
+
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
 
       </Trigger>
 
@@ -60,7 +68,14 @@
 
       <Trigger Property="UIElement.IsMouseOver" Value="True">
 
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         <Setter Property="FrameworkElement.Height" Value="{StaticResource VisibilityTogglerThicknessEmphasis}"/>
+
+      </Trigger>
+
+      <Trigger Property="UIElement.IsFocused" Value="True">
+
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
 
       </Trigger>
 

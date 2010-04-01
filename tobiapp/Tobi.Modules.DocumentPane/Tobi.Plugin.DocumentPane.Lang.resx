@@ -162,4 +162,7 @@
   <data name="ConvertingXukToFlowDocument" xml:space="preserve">
     <value>Converting XUK markup ...</value>
   </data>
+  <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
+    <value>Text viewer focus</value>
+  </data>
 </root>

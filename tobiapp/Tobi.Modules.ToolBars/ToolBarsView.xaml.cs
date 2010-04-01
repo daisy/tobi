@@ -75,7 +75,17 @@ namespace Tobi.Plugin.ToolBars
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("applications-accessories"),
-                () => FocusHelper.Focus(FocusStart),
+                () =>
+                {
+                    if (FocusCollapsed.IsVisible)
+                    {
+                        FocusHelper.FocusBeginInvoke(FocusCollapsed);
+                    }
+                    else
+                    {
+                        FocusHelper.FocusBeginInvoke(FocusExpanded);
+                    }
+                },
                 () => true,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Toolbar));
@@ -185,6 +195,14 @@ namespace Tobi.Plugin.ToolBars
         private void OnToolbarToggleVisible(object sender, MouseButtonEventArgs e)
         {
             Settings.Default.ToolBarVisible = !Settings.Default.ToolBarVisible;
+        }
+        private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return || e.Key == Key.Space)
+            {
+                Settings.Default.ToolBarVisible = !Settings.Default.ToolBarVisible;
+                FocusHelper.FocusBeginInvoke(Settings.Default.ToolBarVisible ? FocusExpanded : FocusCollapsed);
+            }
         }
     }
 }

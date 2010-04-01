@@ -375,7 +375,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 Tobi_Plugin_StructureTrailPane_Lang.CmdDocumentFocus_ShortDesc,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("edit-select-all"),
+                m_ShellView.LoadGnomeNeuIcon("Neu_format-indent-more"),
                 () => FocusHelper.FocusBeginInvoke(m_FocusStartElement),
                 () => true,
                 Settings_KeyGestures.Default,

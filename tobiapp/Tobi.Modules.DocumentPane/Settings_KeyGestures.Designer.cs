@@ -70,5 +70,17 @@ namespace Tobi.Plugin.DocumentPane {
                 this["Keyboard_StructureSelectDown"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F10")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Focus_Txt {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Focus_Txt"]));
+            }
+            set {
+                this["Keyboard_Focus_Txt"] = value;
+            }
+        }
     }
 }
