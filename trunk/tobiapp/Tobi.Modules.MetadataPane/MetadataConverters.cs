@@ -45,13 +45,24 @@ namespace Tobi.Plugin.MetadataPane
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            string occurrence = "";
+            string repeatable = "";
             if (value == null) return "";
             MetadataDefinition item = (MetadataDefinition)value;
+
             if (item.Occurrence == MetadataOccurrence.Required)
-                return Tobi_Plugin_MetadataPane_Lang.Required;         // TODO LOCALIZE Required
-            if (item.Occurrence == MetadataOccurrence.Recommended)
-                return Tobi_Plugin_MetadataPane_Lang.Recommended;       // TODO LOCALIZE Recommended
-            return Tobi_Plugin_MetadataPane_Lang.Optional;              // TODO LOCALIZE Optional
+                occurrence = Tobi_Plugin_MetadataPane_Lang.Required; 
+            else if (item.Occurrence == MetadataOccurrence.Recommended)
+                occurrence = Tobi_Plugin_MetadataPane_Lang.Recommended;       // TODO LOCALIZE Recommended
+            else
+                occurrence = Tobi_Plugin_MetadataPane_Lang.Optional;              // TODO LOCALIZE Optional
+
+            if (item.IsRepeatable)
+                repeatable = "more than one allowed";
+            else
+                repeatable = "only one allowed";
+
+            return string.Format("{0}; {1}.", occurrence, repeatable);
         }
     }
 
@@ -85,7 +96,7 @@ namespace Tobi.Plugin.MetadataPane
     [ValueConversion(typeof(object), typeof(string))]
     public class DescriptiveErrorTextConverter : ValueConverterMarkupExtensionBase<DescriptiveErrorTextConverter>
     {
-        private const string NoErrors = "None";
+        private const string NoErrors = "";
         //Expected: NotifyingMetadataItem and list of ValidationItems
         public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -211,6 +222,28 @@ namespace Tobi.Plugin.MetadataPane
             }
 
             return true;
+        }
+    }
+
+    [ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
+    public class IsRequiredAndUniqueConverter : ValueConverterMarkupExtensionBase<IsRequiredAndUniqueConverter>
+    {
+        //expected: NotifyingMetadataItem and ObservableCollection<NotifyingMetadataItem>
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values[0] == null || values[1] == null) return false;
+            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is ObservableCollection<NotifyingMetadataItem>)) 
+                return false;
+
+            NotifyingMetadataItem item = (NotifyingMetadataItem)values[0];
+            MetadataCollection metadatas = item.ParentCollection;
+
+            if (!item.IsRequired) return false;
+
+            int matches = metadatas.Metadatas.Count(m => (m.Definition == item.Definition));
+
+            if (matches > 0) return true;
+            else return false;
         }
     }
 }

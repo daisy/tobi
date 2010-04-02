@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Linq;
 using Tobi.Common.MVVM;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -17,7 +20,19 @@ namespace Tobi.Plugin.MetadataPane
         public MetadataDefinition Definition { get; set;}
         public Metadata UrakawaMetadata { get; private set; }
         public MetadataCollection ParentCollection{get; private set;}
-        
+        private bool m_CanEditOrDelete;
+        public bool CanEditOrDelete
+        {
+            get
+            {
+                m_CanEditOrDelete = ParentCollection.CanEditOrDelete(this);
+                return m_CanEditOrDelete;
+            }
+            set
+            {
+                m_CanEditOrDelete = value;
+            }
+        }
         public NotifyingMetadataItem(Metadata metadata, MetadataCollection parentCollection,
             MetadataDefinition definition)
         {
@@ -25,6 +40,7 @@ namespace Tobi.Plugin.MetadataPane
             UrakawaMetadata.Changed += OnMetadataChanged;
             ParentCollection = parentCollection;
             Definition = definition;
+            ParentCollection.Changed += OnParentCollectionChanged;
         }
 
         ~NotifyingMetadataItem()
@@ -86,11 +102,16 @@ namespace Tobi.Plugin.MetadataPane
             RaisePropertyChanged(() => Definition);
             RaisePropertyChanged(() => IsRequired);
             RaisePropertyChanged(() => IsPrimaryIdentifier);
+            RaisePropertyChanged(() => CanEditOrDelete);
         }
-
+        void OnParentCollectionChanged(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(() => CanEditOrDelete);
+        }
         internal void RemoveEvents()
         {
             UrakawaMetadata.Changed -= OnMetadataChanged;
+            ParentCollection.Changed -= OnParentCollectionChanged;
         }
 
         public bool IsPrimaryIdentifier
@@ -130,7 +151,16 @@ namespace Tobi.Plugin.MetadataPane
                 }
             }
         }
-        
+
+        //indicates that the data model changed in some way (add/delete/edit)
+        public event EventHandler<EventArgs> Changed;
+        protected void NotifyChanged(EventArgs args)
+        {
+            EventHandler<EventArgs> d = Changed;
+            if (d != null) d(this, args);
+        }
+
+
         public MetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
         {
             m_Metadatas = new ObservableCollection<NotifyingMetadataItem>();
@@ -138,6 +168,19 @@ namespace Tobi.Plugin.MetadataPane
             {
                 addItem(metadata);
             }
+        }
+
+        //analyzes the whole collection and decides if the given item can be edited or deleted
+        public bool CanEditOrDelete(NotifyingMetadataItem item)
+        {
+            if (!item.IsRequired) return true;
+            if (item.Definition == null) return true;
+
+            int count = Metadatas.Count(meta => meta.Definition == item.Definition);
+
+            if (count > 1) return true;
+
+            return false;
         }
 
         #region sdk-events
@@ -150,6 +193,8 @@ namespace Tobi.Plugin.MetadataPane
                     //reflect the removal in this observable collection
                     this.Metadatas.Remove(metadata);
                     metadata.RemoveEvents();
+                    metadata.UrakawaMetadata.Changed -= new EventHandler<DataModelChangedEventArgs>(UrakawaMetadata_Changed);
+                    NotifyChanged(new EventArgs());
                     break;
                 }
             }
@@ -159,6 +204,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             //reflect the addition in this observable collection                    
             addItem(ev.m_AddedObject);
+            
         }
         #endregion sdk-events
 
@@ -174,7 +220,15 @@ namespace Tobi.Plugin.MetadataPane
                 newItem.BindPropertyChangedToAction(()=> newItem.IsPrimaryIdentifier, 
                     ()=> notifyOfPrimaryIdentifierChange(newItem));
                 m_Metadatas.Add(newItem);
+                newItem.UrakawaMetadata.Changed += new EventHandler<DataModelChangedEventArgs>(UrakawaMetadata_Changed);
+                NotifyChanged(new EventArgs());
             }
+        }
+        
+        //need to track any change in the collection, since it affects the CanEditOrDelete property of NotifyingMetadataItem
+        void UrakawaMetadata_Changed(object sender, DataModelChangedEventArgs e)
+        {
+            NotifyChanged(new EventArgs());
         }
 
         //when a new metadata object assumes the role of primary identifier,

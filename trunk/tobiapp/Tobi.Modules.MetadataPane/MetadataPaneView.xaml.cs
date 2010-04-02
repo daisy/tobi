@@ -25,6 +25,8 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
 
+        private NotifyingMetadataItem m_NewlyAddedMetadataItem;
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -47,7 +49,7 @@ namespace Tobi.Plugin.MetadataPane
             m_Logger.Log("MetadataPaneView.ctor", Category.Debug, Priority.Medium);
 
             DataContext = m_ViewModel;
-
+            m_NewlyAddedMetadataItem = null;
             InitializeComponent();
         }
 
@@ -85,5 +87,19 @@ namespace Tobi.Plugin.MetadataPane
             NotifyingMetadataItem metadata = button.DataContext as NotifyingMetadataItem;
             m_ViewModel.RemoveMetadata(metadata);
         }
+
+        private void AddButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            m_ViewModel.AddEmptyMetadata();
+            ObservableCollection<NotifyingMetadataItem> metadataItems =
+                m_ViewModel.MetadataCollection.Metadatas;
+            if (metadataItems.Count > 0)
+            {
+                NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
+                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
+                cvs.View.MoveCurrentTo(metadata);
+            }
+        }
+
     }
 }

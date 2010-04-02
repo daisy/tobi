@@ -178,7 +178,8 @@ namespace Tobi.Plugin.MetadataPane
             Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
 
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
-            metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "",  Value = MetadataOccurrenceValidator.MagicStringEmpty};
+            metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "",  
+                Value = SupportedMetadata_Z39862005.MagicStringEmpty};
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
                 (metadata);
             presentation.UndoRedoManager.Execute(cmd);
