@@ -10,12 +10,11 @@
   <!-- ALL RESOURCES -->
   <DockPanel.Resources>
 
-    <!-- COLLECTION VIEW SOURCE for Metadata objects, sorted by required vs recommended/optional -->
+    <!-- COLLECTION VIEW SOURCE for Metadata objects -->
     <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS">
-      <CollectionViewSource.SortDescriptions>
+      <!-- CollectionViewSource.SortDescriptions>
         <scm:SortDescription PropertyName="Definition.Occurrence" Direction="Ascending"/>
-        <scm:SortDescription PropertyName="Name" />
-      </CollectionViewSource.SortDescriptions>
+      </CollectionViewSource.SortDescriptions -->
     </CollectionViewSource>
 
     <Style TargetType="{x:Type ListView}">
@@ -41,13 +40,29 @@
       </Style.Triggers>
     </Style>
 
-    <DataTemplate x:Key="AddNewPopup">
-      <StackPanel>
-        <TextBlock Text="Content"/>
-        <TextBox Text="{Binding Mode=TwoWay, Path=Content}"/>
-      </StackPanel>
+
+    <!-- display the name field; do not allow editing -->
+    <DataTemplate x:Key="FixedNameTemplate">
+      <TextBlock Text="{Binding Path=Name, Converter={local:LowerCaseConverter}}" Width="Auto"/>
     </DataTemplate>
 
+    <!-- display the name field and provide a combo box for editing the value -->
+    
+    <DataTemplate x:Key="ChooseNameTemplate">
+      <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="100"
+      x:Name="namesComboBox"
+      SelectedItem="{Binding Path=Name, Converter={local:LowerCaseConverter}}">
+        <ComboBox.ItemsSource>
+          <MultiBinding Converter="{local:AvailableMetadataNamesConverter}"
+              UpdateSourceTrigger="PropertyChanged">
+            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
+                     Path="DataContext.AvailableMetadataNames"/>
+            <Binding Path="Name"/>
+          </MultiBinding>
+        </ComboBox.ItemsSource>
+      </ComboBox>
+
+    </DataTemplate>
     
   </DockPanel.Resources>
 
@@ -56,10 +71,10 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="5*"/>
       <RowDefinition Height="*"/>
-      <RowDefinition Height="*"/>
+      <RowDefinition Height="1.5*"/>
     </Grid.RowDefinitions>
 
-    <ListView
+    <UI:SortableListView
       Grid.Row="0"
       AlternationCount="2"
       ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
@@ -68,10 +83,32 @@
       IsSynchronizedWithCurrentItem="True">
       <ListView.View>
         <GridView>
+
+          <GridViewColumn Header="Name" Width="Auto" 
+                          UI:SortableListView.SortPropertyName="Name">
+            <GridViewColumn.CellTemplate>
+              <!-- template to decide how to display the name  -->
+              <DataTemplate>
+                <ContentPresenter x:Name="Presenter"
+                                ContentTemplate="{StaticResource ChooseNameTemplate}"
+                                Content="{Binding}"/>
+
+                <DataTemplate.Triggers>
+
+                  <!-- the trigger changes the template to a fixed uneditable field -->
+                  <!-- unique instances of required metadata items cannot be edited -->
+                  <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
+                    <Setter TargetName="Presenter"
+                        Property="ContentTemplate"
+                        Value="{StaticResource FixedNameTemplate}" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
           
-          <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto"/>
-          
-          <GridViewColumn Header="Content"  Width="Auto">
+          <GridViewColumn Header="Content"  Width="Auto" UI:SortableListView.SortPropertyName="Content">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
                 <TextBox x:Name="contentText" 
@@ -83,9 +120,9 @@
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
-          
-          <GridViewColumn  Width="Auto" Header="Occurrence" DisplayMemberBinding="{Binding Definition, 
-                          Converter={local:OccurrenceDescriptionConverter}}"/>
+
+          <!-- GridViewColumn  Width="Auto" Header="Occurrence" DisplayMemberBinding="{Binding Definition, 
+                          Converter={local:OccurrenceDescriptionConverter}}"/-->
 
           <GridViewColumn Header="Errors">
             <GridViewColumn.CellTemplate>
@@ -131,18 +168,17 @@
               
               <DataTemplate>
                 <Button x:Name="deleteButton" Content="Delete" Click="DeleteButton_OnClick"/>
-                <!-- the delete button is not enabled for required items-->
                 <DataTemplate.Triggers>
-                  <DataTrigger Value="False"
-                               Binding="{Binding Converter={local:IsNotRequiredOccurrenceConverter}}">
-
+                  
+                  <!-- the delete button is not enabled for required items-->
+                  <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
                     <Setter TargetName="deleteButton" Property="Visibility" Value="Hidden"/>
-
                   </DataTrigger>
                 </DataTemplate.Triggers>
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
+          
           <GridViewColumn Header="Is primary identifier?">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
@@ -153,13 +189,16 @@
           </GridViewColumn>
         </GridView>
       </ListView.View>
-    </ListView>
+    </UI:SortableListView>
     
-    <Button Content="Add a new metadata item" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"/>
+    <Button Content="Add a new metadata item" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"
+            Click="AddButton_OnClick"/>
 
     <StackPanel Grid.Row="2">
       <TextBlock Text="Description:" FontWeight="Bold"/>
       <TextBlock TextWrapping="Wrap" Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition.Description}"/>
+      <TextBlock TextWrapping="Wrap" Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition,
+                 Converter={local:OccurrenceDescriptionConverter}}"/>
     </StackPanel>
     
   </Grid>

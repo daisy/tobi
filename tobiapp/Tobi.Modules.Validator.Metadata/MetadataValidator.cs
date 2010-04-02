@@ -421,7 +421,7 @@ namespace Tobi.Plugin.Validator.Metadata
     {
         private MetadataValidator m_ParentValidator;
         private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
-        public static string MagicStringEmpty { get { return Tobi_Plugin_Validator_Metadata_Lang.Empty;}}                // TODO LOCALIZE Empty
+        
         public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {
             m_ParentValidator = parentValidator;
@@ -433,7 +433,7 @@ namespace Tobi.Plugin.Validator.Metadata
             //check both an empty string and our "magic" string value that is
             //used upon creation of a new metadata item
             if (!string.IsNullOrEmpty(metadata.NameContentAttribute.Value) && 
-                    metadata.NameContentAttribute.Value != MagicStringEmpty)
+                    metadata.NameContentAttribute.Value != SupportedMetadata_Z39862005.MagicStringEmpty)
             {
                 return true;
             }

@@ -1,56 +1,19 @@
 ﻿<DockPanel LastChildFill="True"
            x:Class="Tobi.Plugin.Validator.ValidatorPaneView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-   xmlns:Validator="clr-namespace:Tobi.Plugin.Validator" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
-  <!-- DockPanel.Resources>
-    <Validator:SeverityConverter x:Key="SeverityConverter"/>
-  </DockPanel.Resources -->
-  <!--<Button HorizontalAlignment="Stretch" DockPanel.Dock="Top" Click="OnClick_ValidateButton" Content="Validate"/>-->
-  
-  <DockPanel.Resources>
-    <!--<CollectionViewSource Source="{Binding Path=ValidationItems}" x:Key="ValidationItemsCVS"/> -->
-
-    <!-- Style  TargetType="{x:Type TabItem}">
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type TabItem">
-            <Grid>
-              
-            </Grid>
-            <ListBox
-                   ItemsSource="{Binding ValidationItems}"
-                   IsSynchronizedWithCurrentItem="True"
-                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                   ListBoxItem.MouseDoubleClick="OnListItemDoubleClick">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,0,0,5"/>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style -->
-    
-    
-  </DockPanel.Resources>
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator">
   
   <Grid Height="Auto" Width="Auto">
     <!-- split the screen into two columns of equal size -->
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="2*"/>
     </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition/>
-    </Grid.RowDefinitions>
-    
     
     <!-- Left side: List of all validation items -->
-    <TabControl Grid.Row="0" Grid.Column="0" x:Name="Tabs"
+    <TabControl Grid.Column="0" 
+                x:Name="Tabs"
                 ItemsSource="{Binding Path=ValidatorAggregator.ObsValidators}"
                 IsSynchronizedWithCurrentItem="True">
 
@@ -77,7 +40,7 @@
     <!--<ListBox Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ValidationItems}" DisplayMemberPath="Message"
              Name="TestValidationItemsListBox" Margin="0,0,5,0"/> -->
 
-    <StackPanel Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+    <StackPanel Grid.Column="1">
       <StackPanel.DataContext>
         <Binding ElementName="ValidationItemsListBox"
                  Path="SelectedItem"/>
@@ -92,9 +55,7 @@
           <Run Text="Copy details to clipboard"/>
         </Hyperlink>
       </TextBlock>
-
     </StackPanel>
 
-    
   </Grid>
 </DockPanel>
