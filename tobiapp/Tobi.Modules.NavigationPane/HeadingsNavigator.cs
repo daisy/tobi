@@ -103,21 +103,19 @@ namespace Tobi.Plugin.NavigationPane
             {
                 AudioCues.PlayAsterisk();
             }
-
         }
         public void FindPrevious()
         {
-            HeadingTreeNodeWrapper nextMatch = FindPrevMatch(m_roots);
-            if (nextMatch != null)
+            HeadingTreeNodeWrapper prevMatch = FindPrevMatch(m_roots);
+            if (prevMatch != null)
             {
-                //nextMatch.IsSelected = true;
-                m_View.SelectTreeNodeWrapper(nextMatch);
+                //prevMatch.IsSelected = true;
+                m_View.SelectTreeNodeWrapper(prevMatch);
             }
             else
             {
                 AudioCues.PlayAsterisk();
             }
-
         }
 
         private static HeadingTreeNodeWrapper FindNextMatch(ObservableCollection<HeadingTreeNodeWrapper> nodes)
