@@ -71,7 +71,6 @@
 
     <TextBlock 
                Focusable="True"
-               Control.IsTabStop="True"
                VerticalAlignment="Center"
                TextTrimming="None"
                FontWeight="UltraBold"
