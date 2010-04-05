@@ -97,7 +97,7 @@ namespace Tobi.Plugin.NavigationPane
             if (nextMatch != null)
             {
                 //nextMatch.IsSelected = true;
-                m_View.SelectTreeNodeWrapper(nextMatch);
+                m_View.SelectTreeNodeWrapper(nextMatch, true);
             }
             else
             {
@@ -110,7 +110,7 @@ namespace Tobi.Plugin.NavigationPane
             if (prevMatch != null)
             {
                 //prevMatch.IsSelected = true;
-                m_View.SelectTreeNodeWrapper(prevMatch);
+                m_View.SelectTreeNodeWrapper(prevMatch, true);
             }
             else
             {
@@ -127,7 +127,6 @@ namespace Tobi.Plugin.NavigationPane
                 if ((nodes[i].HasMatches || nodes[i].SearchMatch) && iStarting == -1)
                 {
                     iStarting = i;
-                    break;
                 }
                 if (!nodes[i].IsSelected && !nodes[i].ChildSelected)
                 {
@@ -187,7 +186,6 @@ namespace Tobi.Plugin.NavigationPane
                 if ((nodes[i].HasMatches || nodes[i].SearchMatch) && iStarting == -1)
                 {
                     iStarting = i;
-                    break;
                 }
                 if (!nodes[i].IsSelected && !nodes[i].ChildSelected)
                 {
