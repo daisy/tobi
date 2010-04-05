@@ -7,9 +7,7 @@
            xmlns:Settings="clr-namespace:Tobi.Plugin.Settings"
            xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
            xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
-           xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
-           
-           Unloaded="OnUnloaded_Panel">
+           xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" Unloaded="OnUnloaded_Panel">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
@@ -479,7 +477,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
             <Trigger Property="search:SearchOperations.IsMatch" Value="True">
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Color="#FF99FF66"/>
+                      <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>

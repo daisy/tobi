@@ -203,7 +203,7 @@ namespace Tobi.Plugin.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
-            _markersNavigator = new MarkersNavigator(this);
+            _markersNavigator = new MarkersNavigator(View);
             View.LoadProject();
 
             RaisePropertyChanged(() => SelectedTreeNode);

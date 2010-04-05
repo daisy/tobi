@@ -3,6 +3,7 @@ using System.Media;
 using System.Windows.Documents;
 using System.Windows;
 using Tobi.Common;
+using Tobi.Common.UI;
 using urakawa;
 
 namespace Tobi.Plugin.NavigationPane
@@ -11,11 +12,11 @@ namespace Tobi.Plugin.NavigationPane
     {
         private ObservableCollection<Page> m_Pages = new ObservableCollection<Page>();
         private string m_searchString = string.Empty;
-        private readonly Project m_project;
+        private readonly PagePanelView m_view;
 
-        public PagesNavigator(Project project)
+        public PagesNavigator(PagePanelView view)
         {
-            m_project = project;
+            m_view = view;
         }
 
         public void AddPage (TextElement data)
@@ -52,6 +53,7 @@ namespace Tobi.Plugin.NavigationPane
             if (nextMatch != null)
             {
                 nextMatch.IsSelected = true;
+                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
             }
             else
             {
@@ -64,6 +66,7 @@ namespace Tobi.Plugin.NavigationPane
             if (nextMatch != null)
             {
                 nextMatch.IsSelected = true;
+                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
             }
             else
             {
