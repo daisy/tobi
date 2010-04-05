@@ -162,11 +162,17 @@
   <data name="PageFindPrev_FAILURE" xml:space="preserve">
     <value>No More Matches Found</value>
   </data>
+  <data name="MarkersNavigationPlugin_Description" xml:space="preserve">
+    <value>The markers navigation plugin</value>
+  </data>
+  <data name="MarkersNavigationPlugin_Name" xml:space="preserve">
+    <value>Markers navigation plugin</value>
+  </data>
   <data name="PageNavigationPlugin_Description" xml:space="preserve">
-    <value>The Navigation panel</value>
+    <value>The page navigation plugin</value>
   </data>
   <data name="PageNavigationPlugin_Name" xml:space="preserve">
-    <value>Navigation pane.</value>
+    <value>Page navigation plugin</value>
   </data>
   <data name="TreeCollapse" xml:space="preserve">
     <value>Co_llapse</value>
@@ -215,5 +221,17 @@
   </data>
   <data name="TreeFindPrev_FAILURE" xml:space="preserve">
     <value>No More Matches Found</value>
+  </data>
+  <data name="Headings" xml:space="preserve">
+    <value>Headings</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="Marks" xml:space="preserve">
+    <value>Marks</value>
+  </data>
+  <data name="Mark" xml:space="preserve">
+    <value>Mark</value>
   </data>
 </root>

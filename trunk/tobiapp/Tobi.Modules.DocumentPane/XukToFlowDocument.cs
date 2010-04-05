@@ -1836,6 +1836,11 @@ namespace Tobi.Plugin.DocumentPane
         {
             m_nTreeNode++;
 
+            if (node.IsMarked)
+            {
+                EventAggregator.GetEvent<MarkedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
+            }
+
             TextElement parentNext = parent;
 
             QualifiedName qname = node.GetXmlElementQName();

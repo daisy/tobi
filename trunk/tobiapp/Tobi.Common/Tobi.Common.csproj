@@ -123,6 +123,7 @@
     <Compile Include="IShellView.cs" />
     <Compile Include="IToolbarsView.cs" />
     <Compile Include="IUrakawaSession.cs" />
+    <Compile Include="MarkedTreeNodeFoundByFlowDocumentParserEvent.cs" />
     <Compile Include="MVVM\ActiveAware.cs" />
     <Compile Include="MVVM\Command\DelegateCommand.cs" />
     <Compile Include="MVVM\Command\IInputBindingManager.cs" />

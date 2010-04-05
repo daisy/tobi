@@ -41,7 +41,7 @@
         VirtualizingStackPanel.VirtualizationMode="Recycling"
         Focusable="True"
         IsTabStop="True"
-        AutomationProperties.Name="{x:Static local:HeadingPanelView.View_Name}">
+        AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Headings}">
 
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
