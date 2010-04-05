@@ -1,0 +1,455 @@
+﻿using System.Collections.ObjectModel;
+using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
+using urakawa.core;
+using urakawa.xuk;
+
+namespace Tobi.Plugin.NavigationPane
+{
+
+    public class HeadingTreeNodeWrapper : PropertyChangedNotifyBase
+    {
+        private TreeNode m_TreeNodeLevel;
+        private TreeNode m_TreeNodeHeading;
+
+        private HeadingTreeNodeWrapper m_parent;
+
+        private HeadingsNavigator m_navigator;
+        private ObservableCollection<HeadingTreeNodeWrapper> m_children;
+        private bool m_isExpanded;
+        private bool m_isMatch;
+        private bool m_isSelected;
+        private HeadingTreeNodeWrapper m_dummyNode;
+
+        public RichDelegateCommand CommandExpandAll { get; private set; }
+        //public RichDelegateCommand CommandExpand { get; private set; }
+        public RichDelegateCommand CommandCollapseAll { get; private set; }
+        //public RichDelegateCommand CommandCollapse { get; private set; }
+        //public RichDelegateCommand CommandEditText { get; private set; }
+
+        public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
+        {
+            CommandExpandAll = HeadingPaneViewModel.CommandExpandAll;
+            //CommandExpand = HeadingPaneViewModel.CommandExpand;
+            CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
+            //CommandCollapse = HeadingPaneViewModel.CommandCollapse;
+            //            CommandEditText = HeadingPaneViewModel.CommandEditText;
+
+            m_parent = parent;
+            m_navigator = navigator;
+            m_isExpanded = false;
+
+            m_TreeNodeHeading = null;
+            m_TreeNodeLevel = null;
+
+
+            if (node == null)
+            {
+                return;
+            }
+
+            QualifiedName qName = node.GetXmlElementQName();
+
+            if (qName == null)
+            {
+                return;
+            }
+
+            if (HeadingsNavigator.IsLevel(qName.LocalName))
+            {
+                m_TreeNodeLevel = node; //WrappedTreeNode_Level
+            }
+            else if (HeadingsNavigator.IsHeading(qName.LocalName))
+            {
+                m_TreeNodeHeading = node; //WrappedTreeNode_LevelHeading
+            }
+
+            if (WrappedTreeNode_Level != null && WrappedTreeNode_Level.Children.Count > 0)
+            {
+                TreeNode nd = WrappedTreeNode_Level.Children.Get(0);
+                if (nd != null)
+                {
+                    QualifiedName qname = nd.GetXmlElementQName();
+                    if (qname != null && qname.LocalName == "pagenum" && WrappedTreeNode_Level.Children.Count > 1)
+                    {
+                        nd = WrappedTreeNode_Level.Children.Get(1);
+                        if (nd != null)
+                        {
+                            qname = nd.GetXmlElementQName();
+                        }
+                    }
+                    if (qname != null &&
+                        (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
+                    {
+                        m_TreeNodeHeading = nd;
+                    }
+                }
+            }
+        }
+
+        public HeadingTreeNodeWrapper FindTreeNodeWrapper(TreeNode node)
+        {
+            if (WrappedTreeNode_Level == node || WrappedTreeNode_LevelHeading == node)
+            {
+                return this;
+            }
+            IsExpanded = true;
+            foreach (HeadingTreeNodeWrapper child in Children)
+            {
+                HeadingTreeNodeWrapper wrapperChild = child.FindTreeNodeWrapper(node);
+                if (wrapperChild != null)
+                    return wrapperChild;
+            }
+            return null;
+        }
+
+        private void LoadChildren()
+        {
+            if (WrappedTreeNode_Level == null)
+            {
+                return;
+            }
+            if (m_children == null)
+            {
+                m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
+
+                int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
+
+                for (int index = 0; index < n; index++)
+                {
+                    TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
+
+                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading == node)
+                    {
+                        continue;
+                    }
+
+                    m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
+                }
+
+                //if (m_children.Count == 0)
+                //{
+                //    m_children = null;
+                //    return;
+                //}
+
+                RaisePropertyChanged(() => Children);
+            }
+            if (!string.IsNullOrEmpty(m_navigator.SearchTerm))
+            {
+                HeadingsNavigator.SearchNodes(m_children, m_navigator.SearchTerm);
+            }
+        }
+
+        public int ChildrenCount
+        {
+            get
+            {
+                if (WrappedTreeNode_Level == null)
+                {
+                    return 0;
+                }
+
+                int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
+                int childrenCount = 0;
+                for (int index = 0; index < n; index++)
+                {
+                    TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
+
+                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading == node)
+                    {
+                        continue;
+                    }
+
+                    childrenCount++;
+                }
+
+                return childrenCount;
+            }
+        }
+
+        public bool HasChildren
+        {
+            get
+            {
+                return ChildrenCount > 0;
+            }
+        }
+        public bool HasMatches
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_navigator.SearchTerm) || WrappedTreeNode_Level == null)
+                {
+                    return false;
+                }
+                return CheckMatches(WrappedTreeNode_Level);
+            }
+        }
+        private bool CheckMatches(TreeNode baseNode)
+        {
+            bool bResult = false;
+            int n = m_navigator.GetChildCount(baseNode);
+            for (int index = 0; index < n; index++)
+            {
+                TreeNode node = m_navigator.GetChild(baseNode, index);
+                if (WrappedTreeNode_LevelHeading != null && WrappedTreeNode_LevelHeading == node)
+                {
+                    continue;
+                }
+                //string sText = GetNodeText(node);
+                string sText = Title;
+
+                if (string.IsNullOrEmpty(sText))
+                {
+                    continue;
+                }
+                bResult |= sText.ToLower().Contains(m_navigator.SearchTerm.ToLower());
+                if (!bResult)
+                {
+                    bResult |= CheckMatches(node);
+                }
+                if (bResult)
+                {
+                    break;
+                }
+            }
+            return bResult;
+        }
+        //private static string GetNodeText(TreeNode node)
+        //{
+        //    string sResult = string.Empty;
+        //    QualifiedName qName = node.GetXmlElementQName();
+        //    if (qName == null) { return sResult; }
+        //    if (HeadingsNavigator.IsLevel(qName.LocalName))
+        //    {
+        //        if (node.Children.Count > 0)
+        //        {
+        //            TreeNode nd = node.Children.Get(0);
+        //            if (nd != null)
+        //            {
+        //                QualifiedName qname = nd.GetXmlElementQName();
+        //                if (qname != null && qname.LocalName == "pagenum" && node.Children.Count > 1)
+        //                {
+        //                    nd = node.Children.Get(1);
+        //                    if (nd != null)
+        //                    {
+        //                        qname = nd.GetXmlElementQName();
+        //                    }
+        //                }
+        //                if (qname != null &&
+        //                    (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
+        //                {
+        //                    sResult = nd.GetTextMediaFlattened(true);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (HeadingsNavigator.IsHeading(qName.LocalName))
+        //    {
+        //        sResult = node.GetTextMediaFlattened(true);
+        //    }
+        //    return sResult;
+        //}
+        public bool IsExpanded
+        {
+            get
+            {
+                return m_isExpanded;
+            }
+            set
+            {
+                if (value == m_isExpanded) { return; }
+                m_isExpanded = value;
+
+                if (m_isExpanded)
+                {
+                    if (m_parent != null)
+                    {
+                        m_parent.IsExpanded = true;
+                    }
+                    LoadChildren();
+                }
+                else
+                {
+                    m_children = null;
+                    //RaisePropertyChanged(() => Children);
+                    //                    m_childSelected = false;
+                }
+
+                RaisePropertyChanged(() => IsExpanded);
+            }
+        }
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set
+            {
+                if (m_isSelected == value) { return; }
+                m_isSelected = value;
+                
+                if (m_parent != null && m_isSelected)
+                {
+                    if (!m_parent.IsExpanded)
+                    {
+                        m_parent.IsExpanded = true;
+                    }
+                }
+                RaisePropertyChanged(() => IsSelected);
+            }
+        }
+        public bool ChildSelected
+        {
+            get
+            {
+                bool bResult = false;
+                if (m_children != null)
+                {
+                    foreach (HeadingTreeNodeWrapper child in m_children)
+                    {
+                        bResult |= (child.IsSelected || child.ChildSelected);
+                        if (bResult)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return bResult;
+            }
+        }
+
+
+        internal HeadingTreeNodeWrapper GetChildMatch()
+        {
+            HeadingTreeNodeWrapper htnwResult = null;
+            if (m_children == null)
+            {
+                LoadChildren();
+            }
+            foreach (HeadingTreeNodeWrapper child in m_children)
+            {
+                if (child.SearchMatch)
+                {
+                    htnwResult = child;
+                    break;
+                }
+                if (!child.HasMatches)
+                {
+                    continue;
+                }
+                htnwResult = child.GetChildMatch();
+                break;
+            }
+            return htnwResult;
+        }
+        internal HeadingTreeNodeWrapper GetPreviousChildMatch()
+        {
+            HeadingTreeNodeWrapper htnwResult = null;
+            if (m_children == null)
+            {
+                LoadChildren();
+            }
+            for (int i = m_children.Count - 1; i >= 0; i--)
+            {
+                if (m_children[i].HasMatches)
+                {
+                    htnwResult = m_children[i].GetPreviousChildMatch();
+                    break;
+                }
+                if (!m_children[i].SearchMatch)
+                {
+                    continue;
+                }
+                htnwResult = m_children[i];
+                break;
+            }
+            return htnwResult;
+        }
+        public TreeNode WrappedTreeNode_Level
+        {
+            get
+            {
+                return m_TreeNodeLevel;
+            }
+        }
+        public TreeNode WrappedTreeNode_LevelHeading
+        {
+            get
+            {
+                return m_TreeNodeHeading;
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                if (WrappedTreeNode_Level == null && WrappedTreeNode_LevelHeading == null)
+                {
+                    return "DUMMY";
+                }
+                string str = (WrappedTreeNode_LevelHeading != null
+                    ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened(true)
+                    : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + Tobi_Plugin_NavigationPane_Lang.NoHeading);
+                return str.Trim();
+            }
+            //internal set
+            //{
+            //    if (m_TreeNodeHeading == null || m_TreeNodeLevel == null) { return; }
+            //    if (m_TreeNodeHeading.GetTextMediaFlattened(true) == value) { return; }
+            //    if (m_TreeNodeHeading.GetTextMedia() != null)
+            //    {
+            //        m_TreeNodeHeading.GetTextMedia().Text = value;
+            //    }
+            //    else
+            //    {
+            //        if (m_TreeNodeHeading.Children.Count > 0)
+            //        {
+            //            m_TreeNodeHeading.Children.Get(0).GetTextMedia().Text = value;
+            //        }
+            //        else { return; }
+            //    }
+            //    RaisePropertyChanged(() => Title);
+            //}
+        }
+        public ObservableCollection<HeadingTreeNodeWrapper> Children
+        {
+            get
+            {
+                if (WrappedTreeNode_Level == null)
+                {
+                    return new ObservableCollection<HeadingTreeNodeWrapper>();
+                }
+                if (IsExpanded)
+                {
+                    if (m_children == null)
+                    {
+                        LoadChildren();
+                    }
+                    return m_children;
+                }
+                var col = new ObservableCollection<HeadingTreeNodeWrapper>();
+                if (HasChildren)
+                {
+                    if (m_dummyNode == null)
+                    {
+                        m_dummyNode = new HeadingTreeNodeWrapper(null, null, null);
+                    }
+                    col.Add(m_dummyNode);
+                }
+                return col;
+            }
+        }
+
+        public bool SearchMatch
+        {
+            get { return m_isMatch; }
+            set
+            {
+                if (m_isMatch == value) { return; }
+                m_isMatch = value;
+                RaisePropertyChanged(() => SearchMatch);
+            }
+        }
+    }
+}

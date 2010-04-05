@@ -48,7 +48,7 @@
                     <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_TreeItem" />
                     <EventSetter Event="KeyDown" Handler="OnKeyDown_TreeViewItem" />
                     <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
-                  <!-- Setter Property="local:TreeViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" / -->
+                  <Setter Property="local:TreeViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
 
                   <Setter Property="HorizontalContentAlignment"
                       Value="{Binding Path=HorizontalContentAlignment,

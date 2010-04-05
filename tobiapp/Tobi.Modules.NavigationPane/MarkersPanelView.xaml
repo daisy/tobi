@@ -64,19 +64,21 @@
                             Mode=OneWay}">
 
     <CheckBox  DockPanel.Dock="Right"
+               Focusable="True"
+               IsTabStop="True"
                VerticalAlignment="Center"
                 IsChecked="{Binding Path=CurrentTreeNodeIsMarked, Mode=TwoWay}"
-                Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Mark}"
+                Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marked}"
                 IsThreeState="False"
-              ToolTip="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Mark}"
-    Margin="2,4,4,4"/>
+    Margin="4,4,4,4"/>
 
     <TextBlock 
                VerticalAlignment="Center"
                TextTrimming="None"
                FontWeight="UltraBold"
-         Padding="4,4,2,4"
-               Text="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"/>
+         Padding="4,4,4,4"
+               Text="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
+               ToolTip="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"/>
 
   </DockPanel>
 
@@ -152,12 +154,14 @@
 
         <Style TargetType="{x:Type ListViewItem}">
 
-          <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+          <Setter Property="ToolTip" Value="{Binding Description}" />
+          
+          <Setter Property="AutomationProperties.Name" Value="{Binding Description}"/>
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
           <!-- Setter Property="FontSize" Value="15" / -->
           <Setter Property="FontWeight" Value="Normal" />
           <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
-          <!-- Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" / -->
+          <Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
           <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
 

@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HeadingTreeNodeWrapper.cs" />
     <Compile Include="ListViewItemBehavior.cs" />
     <Compile Include="MarkedTreeNode.cs" />
     <Compile Include="PagesNavigator.cs" />

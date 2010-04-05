@@ -24,7 +24,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.3.3.0\</PublishUrl>
+    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.3.4.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -43,7 +43,7 @@
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.3.3.0</ApplicationVersion>
+    <ApplicationVersion>0.3.4.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
