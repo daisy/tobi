@@ -53,7 +53,7 @@ namespace Tobi.Plugin.NavigationPane
             get { return Tobi_Plugin_NavigationPane_Lang.Headings; }
         }
 
-        public void SelectTreeNode(TreeNode node)
+        public void SelectTreeNode(TreeNode node, bool focus)
         {
             if (m_ignoreTreeNodeSelectedEvent)
             {
@@ -63,15 +63,20 @@ namespace Tobi.Plugin.NavigationPane
 
             HeadingTreeNodeWrapper nodeTOC = m_ViewModel.HeadingsNavigator.GetAncestorContainer(node);
 
-            SelectTreeNodeWrapper(nodeTOC);
+            SelectTreeNodeWrapper(nodeTOC, focus);
         }
 
-        public void SelectTreeNodeWrapper(HeadingTreeNodeWrapper nodeTOC)
+        public void SelectTreeNodeWrapper(HeadingTreeNodeWrapper nodeTOC, bool focus)
         {
             if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
             //m_ignoreHeadingSelected = true;
 
             m_SelectedTreeViewItem = TreeView.SelectItem(nodeTOC, false);
+
+            if (m_SelectedTreeViewItem != null && focus)
+            {
+                FocusHelper.FocusBeginInvoke(m_SelectedTreeViewItem);
+            }
         }
 
         public void LoadProject()
@@ -151,7 +156,12 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (m_ViewModel.HeadingsNavigator == null) { return; }
+            m_ViewModel.HeadingsNavigator.ExpandAll();
+
+            if (m_ViewModel.HeadingsNavigator == null)
+            {
+                return;
+            }
             m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
 

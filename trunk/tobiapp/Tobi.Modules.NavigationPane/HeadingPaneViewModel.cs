@@ -224,7 +224,7 @@ namespace Tobi.Plugin.NavigationPane
             Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
-            View.SelectTreeNode(newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1);
+            View.SelectTreeNode(newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1, false);
         }
         //private void onSubTreeNodeSelected(TreeNode node)
         //{
