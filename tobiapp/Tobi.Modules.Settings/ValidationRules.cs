@@ -25,6 +25,7 @@ namespace Tobi.Plugin.Settings
         protected ValidationResult NotValid(string msg)
         {
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            currentSetting.IsValid = false;
             currentSetting.Message = msg;
             return new ValidationResult(false, msg);
         }
@@ -32,6 +33,7 @@ namespace Tobi.Plugin.Settings
         protected ValidationResult Valid(string message)
         {
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            currentSetting.IsValid = true;
             currentSetting.Message = message;
             return new ValidationResult(true, null);
         }
@@ -84,7 +86,7 @@ namespace Tobi.Plugin.Settings
             }
             if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
             {
-                return Valid(String.Format(Tobi_Plugin_Settings_Lang.ShortcutAlreadyUsed, strSettingsAlreadyUsingKeyG));     // TODO LOCALIZE ShortcutAlreadyUsed
+                return NotValid(String.Format(Tobi_Plugin_Settings_Lang.ShortcutAlreadyUsed, strSettingsAlreadyUsingKeyG)); 
             }
 
             return Valid();

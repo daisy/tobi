@@ -19,6 +19,8 @@ namespace Tobi.Plugin.Settings
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
             m_OriginalValue = Value;
+            
+            IsValid = true;
         }
 
         private string m_Message;
@@ -107,6 +109,11 @@ namespace Tobi.Plugin.Settings
             }
         }
 
+        public bool IsValid
+        {
+            get; set;
+        }
+
         //private bool m_IsChanged;
         //public bool IsChanged
         //{
@@ -127,7 +134,12 @@ namespace Tobi.Plugin.Settings
 
             //IsChanged = Value != m_OriginalValue;
 
-            Message = IsChanged ? String.Format(Tobi_Plugin_Settings_Lang.Settings_OriginalValue, OriginalValue) : null;  // TODO LOCALIZE Settings_OriginalValue
+            if (IsValid)
+            {
+                Message = IsChanged
+                              ? String.Format(Tobi_Plugin_Settings_Lang.Settings_OriginalValue, OriginalValue)
+                              : null;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

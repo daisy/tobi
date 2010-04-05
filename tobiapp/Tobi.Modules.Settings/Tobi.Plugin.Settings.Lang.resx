@@ -151,7 +151,7 @@
     <value>Application preferences.</value>
   </data>
   <data name="Settings_OriginalValue" xml:space="preserve">
-    <value />
+    <value>Original: {0}</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>Shortcut already used by: {0}</value>
@@ -164,5 +164,17 @@
   </data>
   <data name="ValueNotEmpty" xml:space="preserve">
     <value>Value cannot be empty.</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="Current" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
   </data>
 </root>
