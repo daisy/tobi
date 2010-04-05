@@ -419,18 +419,18 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           </GridViewColumn.CellTemplate>
         </GridViewColumn>
 
-        <GridViewColumn Header="Default"
+        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Default}"
                         UI:SortableListView.SortPropertyName="DefaultValue"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
 
-        <GridViewColumn Header="Current"
-                        DisplayMemberBinding="{Binding OriginalValue, Mode=OneWay}"/>
+        <!-- GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Current}"
+                        DisplayMemberBinding="{Binding OriginalValue, Mode=OneWay}"/ -->
 
-        <GridViewColumn Header="Edit"
+        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Edit}"
                         Width="150"
                         CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
-        <GridViewColumn Header="Info"
+        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Info}"
                         UI:SortableListView.SortPropertyName="Message"
                         Width="400">
 
