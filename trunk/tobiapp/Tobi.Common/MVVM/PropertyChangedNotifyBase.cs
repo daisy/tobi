@@ -216,7 +216,7 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-#if DEBUG
+#if false && DEBUG
             foreach (string argzBump in m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged))
             {
                 if (argzBump != null
@@ -240,7 +240,7 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-#if DEBUG
+#if false && DEBUG
             foreach (PropertyChangedEventArgs argzBump in m_DependentPropsCache.Handle(argz, RaisePropertyChanged))
             {
                 if (argzBump != null
