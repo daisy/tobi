@@ -77,11 +77,9 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-
-        public const string View_Name = "Pages";
         public string ViewName
         {
-            get { return View_Name; }
+            get { return Tobi_Plugin_NavigationPane_Lang.Pages; }
         }
 
         public void LoadProject()

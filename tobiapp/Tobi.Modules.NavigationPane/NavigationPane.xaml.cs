@@ -21,6 +21,7 @@ namespace Tobi.Plugin.NavigationPane
         private readonly IShellView m_ShellView;
         private readonly PagePanelView m_PagePaneView;
         private readonly HeadingPanelView m_HeadingPaneView;
+        private readonly MarkersPanelView m_MarkersPaneView;
 
         [ImportingConstructor]
         public NavigationPane(
@@ -30,12 +31,15 @@ namespace Tobi.Plugin.NavigationPane
             [Import(typeof(PagePanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             PagePanelView pagesView,
             [Import(typeof(HeadingPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            HeadingPanelView tocView)
+            HeadingPanelView tocView,
+            [Import(typeof(MarkersPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            MarkersPanelView markersView)
         {
             m_RegionManager = regionManager;
             m_ShellView = shellView;
             m_PagePaneView = pagesView;
             m_HeadingPaneView = tocView;
+            m_MarkersPaneView = markersView;
 
             InitializeComponent();
 
@@ -63,6 +67,11 @@ namespace Tobi.Plugin.NavigationPane
                                             if (view == m_HeadingPaneView.ViewControl)
                                             {
                                                 ui = m_HeadingPaneView.ViewFocusStart;
+                                                break;
+                                            }
+                                            if (view == m_MarkersPaneView.ViewControl)
+                                            {
+                                                ui = m_MarkersPaneView.ViewFocusStart;
                                                 break;
                                             }
                                             //TODO: what about extensions ??
