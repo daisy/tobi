@@ -231,7 +231,7 @@
   <data name="Marks" xml:space="preserve">
     <value>Marks</value>
   </data>
-  <data name="Mark" xml:space="preserve">
-    <value>Mark</value>
+  <data name="Marked" xml:space="preserve">
+    <value>Marked</value>
   </data>
 </root>

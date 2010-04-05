@@ -210,7 +210,7 @@ namespace Tobi.Plugin.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
-            _headingsNavigator = new HeadingsNavigator(project, m_ShellView);
+            _headingsNavigator = new HeadingsNavigator(project, View);
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)

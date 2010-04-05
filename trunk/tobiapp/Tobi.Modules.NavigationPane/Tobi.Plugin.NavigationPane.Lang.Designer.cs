@@ -160,11 +160,11 @@ namespace Tobi.Plugin.NavigationPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mark.
+        ///   Looks up a localized string similar to Marked.
         /// </summary>
-        public static string Mark {
+        public static string Marked {
             get {
-                return ResourceManager.GetString("Mark", resourceCulture);
+                return ResourceManager.GetString("Marked", resourceCulture);
             }
         }
         

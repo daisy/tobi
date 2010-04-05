@@ -216,19 +216,17 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-#if false && DEBUG
             foreach (string argzBump in m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged))
             {
                 if (argzBump != null
                     && (PresentationTraceSources.DataBindingSource.Switch.Level == SourceLevels.All
                         || PresentationTraceSources.DataBindingSource.Switch.Level >= SourceLevels.Error))
                 {
+#if false && DEBUG
                     Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (STRING): " + propertyName + @" --> " + argzBump);
+#endif
                 }
             }
-#else
-            m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
-#endif
         }
 
         public void RaisePropertyChanged(PropertyChangedEventArgs argz)
@@ -240,19 +238,17 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-#if false && DEBUG
             foreach (PropertyChangedEventArgs argzBump in m_DependentPropsCache.Handle(argz, RaisePropertyChanged))
             {
                 if (argzBump != null
                     && (PresentationTraceSources.DataBindingSource.Switch.Level == SourceLevels.All
                         || PresentationTraceSources.DataBindingSource.Switch.Level >= SourceLevels.Error))
                 {
+#if false && DEBUG
                     Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (PROP): " + argz.PropertyName + @" --> " + argzBump.PropertyName);
+#endif
                 }
             }
-#else
-            m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
-#endif
         }
 
 

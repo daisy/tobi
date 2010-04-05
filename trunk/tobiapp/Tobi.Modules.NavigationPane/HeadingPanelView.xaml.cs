@@ -62,6 +62,12 @@ namespace Tobi.Plugin.NavigationPane
             }
 
             HeadingTreeNodeWrapper nodeTOC = m_ViewModel.HeadingsNavigator.GetAncestorContainer(node);
+
+            SelectTreeNodeWrapper(nodeTOC);
+        }
+
+        public void SelectTreeNodeWrapper(HeadingTreeNodeWrapper nodeTOC)
+        {
             if (nodeTOC == null || TreeView.SelectedItem == nodeTOC) return;
             //m_ignoreHeadingSelected = true;
 
