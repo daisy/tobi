@@ -154,7 +154,7 @@ namespace Tobi.Plugin.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
-            _pagesNavigator = new PagesNavigator(project);
+            _pagesNavigator = new PagesNavigator(View);
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -136,6 +137,14 @@ namespace Tobi.Plugin.NavigationPane
         {
             if (ViewModel.MarkersNavigator == null) { return; }
             ViewModel.MarkersNavigator.SearchTerm = SearchBox.Text;
+        }
+
+        internal ListViewItem m_LastListItemSelected;
+
+        private void OnSelected_ListItem(object sender, RoutedEventArgs e)
+        {
+            Debug.Assert(sender == e.Source);
+            m_LastListItemSelected = (ListViewItem)sender;
         }
     }
 }

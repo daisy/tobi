@@ -36,7 +36,7 @@
                     xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
                     xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
-           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common">
   <!-- DockPanel.Resources>
         <search:SearchTermConverter x:Key="SearchTermConverter" />
     </DockPanel.Resources -->
@@ -133,7 +133,7 @@
                   <Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
                     <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
                     <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
-
+                  <EventSetter Event="Selected" Handler="OnSelected_ListItem" />
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="FontWeight" Value="Bold" />
@@ -141,7 +141,7 @@
                         <Trigger Property="search:SearchOperations.IsMatch" Value="True">
                             <Setter Property="Background">
                               <Setter.Value>
-                                <SolidColorBrush Color="#FF99FF66"/>
+                                <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
                                 <!-- LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                         <GradientStop Color="White" Offset="0"/>
                                         <GradientStop Color="#FF78C4FF" Offset="1"/>

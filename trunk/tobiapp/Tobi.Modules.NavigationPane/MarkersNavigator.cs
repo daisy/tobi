@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Tobi.Common;
+using Tobi.Common.UI;
 using urakawa.core;
 
 namespace Tobi.Plugin.NavigationPane
@@ -9,11 +10,11 @@ namespace Tobi.Plugin.NavigationPane
         private ObservableCollection<MarkedTreeNode> m_MarkedTreeNodes = new ObservableCollection<MarkedTreeNode>();
         private string m_searchString = string.Empty;
 
-        private MarkersPaneViewModel m_MarkersPaneViewModel;
+        private readonly MarkersPanelView m_view;
 
-        public MarkersNavigator(MarkersPaneViewModel markersPaneViewModel)
+        public MarkersNavigator(MarkersPanelView view)
         {
-            m_MarkersPaneViewModel = markersPaneViewModel;
+            m_view = view;
         }
 
         public void AddMarkedTreeNode(TreeNode node)
@@ -69,6 +70,7 @@ namespace Tobi.Plugin.NavigationPane
             if (nextMatch != null)
             {
                 nextMatch.IsSelected = true;
+                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
             }
             else
             {
@@ -81,6 +83,7 @@ namespace Tobi.Plugin.NavigationPane
             if (nextMatch != null)
             {
                 nextMatch.IsSelected = true;
+                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
             }
             else
             {

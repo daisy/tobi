@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -178,6 +180,12 @@ namespace Tobi.Plugin.NavigationPane
         //    }
         //}
 
+        internal ListViewItem m_LastListItemSelected;
 
+        private void OnSelected_ListItem(object sender, RoutedEventArgs e)
+        {
+            Debug.Assert(sender == e.Source);
+            m_LastListItemSelected = (ListViewItem)sender;
+        }
     }
 }

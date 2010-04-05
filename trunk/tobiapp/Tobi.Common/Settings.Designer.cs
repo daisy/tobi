@@ -25,6 +25,18 @@ namespace Tobi.Common {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF99FF66")]
+        public global::System.Windows.Media.Color SearchHits_Color {
+            get {
+                return ((global::System.Windows.Media.Color)(this["SearchHits_Color"]));
+            }
+            set {
+                this["SearchHits_Color"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool EnableAudioCues {
             get {
