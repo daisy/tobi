@@ -142,7 +142,7 @@ namespace Tobi.Common.MVVM
                     propertyName,
                     typez.FullName);
 
-                Console.WriteLine(msg); 
+                Console.WriteLine(msg);
                 Debug.Fail(msg);
             }
         }
@@ -189,9 +189,9 @@ namespace Tobi.Common.MVVM
                 m_cachePropertyChangedEventArgs.Add(propertyName, argz);
             }*/
 
-//#if DEBUG
-//            VerifyPropertyName(propertyName);
-//#endif
+            //#if DEBUG
+            //            VerifyPropertyName(propertyName);
+            //#endif
 
             PropertyChangedEventArgs argz;
             lock (m_EventArgsCache_LOCK)
@@ -216,15 +216,18 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-            string argzBump = m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
-
-#if false && DEBUG
-            if (argzBump != null
-                && (PresentationTraceSources.DataBindingSource.Switch.Level == SourceLevels.All
-                    || PresentationTraceSources.DataBindingSource.Switch.Level >= SourceLevels.Error))
+#if DEBUG
+            foreach (string argzBump in m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged))
             {
-                Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (STRING): " + propertyName + @" --> " + argzBump);
+                if (argzBump != null
+                    && (PresentationTraceSources.DataBindingSource.Switch.Level == SourceLevels.All
+                        || PresentationTraceSources.DataBindingSource.Switch.Level >= SourceLevels.Error))
+                {
+                    Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (STRING): " + propertyName + @" --> " + argzBump);
+                }
             }
+#else
+            m_DependentPropsCache.Handle(argz.PropertyName, RaisePropertyChanged);
 #endif
         }
 
@@ -237,17 +240,22 @@ namespace Tobi.Common.MVVM
                 return;
             }
 
-            PropertyChangedEventArgs argzBump = m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
-
-#if false && DEBUG
-            if (argzBump != null)
+#if DEBUG
+            foreach (PropertyChangedEventArgs argzBump in m_DependentPropsCache.Handle(argz, RaisePropertyChanged))
             {
-                Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (PROP): " + argz.PropertyName + @" --> " + argzBump.PropertyName);
+                if (argzBump != null
+                    && (PresentationTraceSources.DataBindingSource.Switch.Level == SourceLevels.All
+                        || PresentationTraceSources.DataBindingSource.Switch.Level >= SourceLevels.Error))
+                {
+                    Console.WriteLine(@"^^^^ RaisePropertyChanged BUMP (PROP): " + argz.PropertyName + @" --> " + argzBump.PropertyName);
+                }
             }
+#else
+            m_DependentPropsCache.Handle(argz, RaisePropertyChanged);
 #endif
         }
 
-        
+
         public static string GetMemberName<T>(System.Linq.Expressions.Expression<Func<T>> expression)
         {
             return Reflect.GetProperty(expression).Name;
@@ -372,54 +380,51 @@ namespace Tobi.Common.MVVM
             public PropertyChangedEventArgs dependentPropertyChangeEventArgs;
         }
 
-        public PropertyChangedEventArgs Handle(PropertyChangedEventArgs dependency, Action<PropertyChangedEventArgs> action)
+        public IEnumerable<PropertyChangedEventArgs> Handle(PropertyChangedEventArgs dependency, Action<PropertyChangedEventArgs> action)
         {
             if (IsEmpty)
             {
-                return null;
+                yield break;
             }
 
             CacheItem current = m_First;
             do
             {
-                if (current.data.dependencyPropertyChangeEventArgs != null)
+                if (current.data.dependencyPropertyChangeEventArgs != null
+                     && current.data.dependencyPropertyChangeEventArgs.PropertyName == dependency.PropertyName)
                 {
-                    if (current.data.dependencyPropertyChangeEventArgs == dependency)
-                    {
-                        action(current.data.dependentPropertyChangeEventArgs);
+                    action(current.data.dependentPropertyChangeEventArgs);
 
-                        return current.data.dependentPropertyChangeEventArgs;
-                    }
+                    yield return current.data.dependentPropertyChangeEventArgs;
                 }
+
                 current = current.nextItem;
             } while (current != null);
 
-            return null;
+            yield break;
         }
 
-        public string Handle(string dependency, Action<string> action)
+        public IEnumerable<string> Handle(string dependency, Action<string> action)
         {
             if (IsEmpty)
             {
-                return null;
+                yield break;
             }
 
             CacheItem current = m_First;
             do
             {
-                if (current.data.dependencyPropertyName != null)
+                if (!string.IsNullOrEmpty(current.data.dependencyPropertyName)
+                    && current.data.dependencyPropertyName == dependency)
                 {
-                    if (current.data.dependencyPropertyName == dependency)
-                    {
-                        action(current.data.dependentPropertyName);
+                    action(current.data.dependentPropertyName);
 
-                        return current.data.dependentPropertyName;
-                    }
+                    yield return current.data.dependentPropertyName;
                 }
                 current = current.nextItem;
             } while (current != null);
 
-            return null;
+            yield break;
         }
 
         public bool IsEmpty
@@ -455,13 +460,13 @@ namespace Tobi.Common.MVVM
         {
             var item = new CacheItem
                            {
-                data = new CacheData
-                           {
-                    dependencyPropertyName = dependency,
-                    dependentPropertyName = dependent
-                },
-                nextItem = null
-            };
+                               data = new CacheData
+                                          {
+                                              dependencyPropertyName = dependency,
+                                              dependentPropertyName = dependent
+                                          },
+                               nextItem = null
+                           };
 
             add(item);
         }
@@ -470,13 +475,13 @@ namespace Tobi.Common.MVVM
         {
             var item = new CacheItem
                            {
-                data = new CacheData
-                           {
-                    dependencyPropertyChangeEventArgs = dependency,
-                    dependentPropertyChangeEventArgs = dependent
-                },
-                nextItem = null
-            };
+                               data = new CacheData
+                                          {
+                                              dependencyPropertyChangeEventArgs = dependency,
+                                              dependentPropertyChangeEventArgs = dependent
+                                          },
+                               nextItem = null
+                           };
 
             add(item);
         }
