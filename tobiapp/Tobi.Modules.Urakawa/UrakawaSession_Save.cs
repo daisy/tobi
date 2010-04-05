@@ -108,7 +108,7 @@ namespace Tobi.Plugin.Urakawa
                                 cancelled = false;
                             });
 
-                        Debug.Assert(outcome==!cancelled);
+                        Debug.Assert(outcome == !cancelled);
 
                         if (askUserOpenSavedAs(dlg.FileName))
                         {
@@ -188,6 +188,8 @@ namespace Tobi.Plugin.Urakawa
 
             var uri = new Uri(m_SaveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
             //DocumentProject.OpenXuk(uri);
+
+            DocumentProject.SetPrettyFormat(Settings.Default.XUK_PrettyFormat);
 
             var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
             {

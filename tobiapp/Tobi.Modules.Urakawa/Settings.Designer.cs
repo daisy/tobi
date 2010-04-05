@@ -34,5 +34,17 @@ namespace Tobi.Plugin.Urakawa {
                 this["AudioExportEncodeToMp3"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool XUK_PrettyFormat {
+            get {
+                return ((bool)(this["XUK_PrettyFormat"]));
+            }
+            set {
+                this["XUK_PrettyFormat"] = value;
+            }
+        }
     }
 }
