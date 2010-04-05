@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
@@ -48,31 +49,41 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
+            Tuple<TreeNode, TreeNode> nodes = ComputeLevelNodes(node);
+            m_TreeNodeLevel = nodes.Item1;
+            m_TreeNodeHeading = nodes.Item2;
+        }
+
+        private static Tuple<TreeNode, TreeNode> ComputeLevelNodes(TreeNode node)
+        {
             QualifiedName qName = node.GetXmlElementQName();
 
             if (qName == null)
             {
-                return;
+                return new Tuple<TreeNode, TreeNode>();
             }
+
+            TreeNode level = null;
+            TreeNode heading = null;
 
             if (HeadingsNavigator.IsLevel(qName.LocalName))
             {
-                m_TreeNodeLevel = node; //WrappedTreeNode_Level
+                level = node;
             }
             else if (HeadingsNavigator.IsHeading(qName.LocalName))
             {
-                m_TreeNodeHeading = node; //WrappedTreeNode_LevelHeading
+                heading = node;
             }
 
-            if (WrappedTreeNode_Level != null && WrappedTreeNode_Level.Children.Count > 0)
+            if (level != null && level.Children.Count > 0)
             {
-                TreeNode nd = WrappedTreeNode_Level.Children.Get(0);
+                TreeNode nd = level.Children.Get(0);
                 if (nd != null)
                 {
                     QualifiedName qname = nd.GetXmlElementQName();
-                    if (qname != null && qname.LocalName == "pagenum" && WrappedTreeNode_Level.Children.Count > 1)
+                    if (qname != null && qname.LocalName == "pagenum" && level.Children.Count > 1)
                     {
-                        nd = WrappedTreeNode_Level.Children.Get(1);
+                        nd = level.Children.Get(1);
                         if (nd != null)
                         {
                             qname = nd.GetXmlElementQName();
@@ -81,10 +92,12 @@ namespace Tobi.Plugin.NavigationPane
                     if (qname != null &&
                         (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
                     {
-                        m_TreeNodeHeading = nd;
+                        heading = nd;
                     }
                 }
             }
+
+            return new Tuple<TreeNode, TreeNode>(level, heading);
         }
 
         public HeadingTreeNodeWrapper FindTreeNodeWrapper(TreeNode node)
@@ -197,8 +210,8 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     continue;
                 }
-                //string sText = GetNodeText(node);
-                string sText = Title;
+                var tuple = ComputeLevelNodes(node);
+                string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
 
                 if (string.IsNullOrEmpty(sText))
                 {
@@ -216,41 +229,51 @@ namespace Tobi.Plugin.NavigationPane
             }
             return bResult;
         }
-        //private static string GetNodeText(TreeNode node)
-        //{
-        //    string sResult = string.Empty;
-        //    QualifiedName qName = node.GetXmlElementQName();
-        //    if (qName == null) { return sResult; }
-        //    if (HeadingsNavigator.IsLevel(qName.LocalName))
-        //    {
-        //        if (node.Children.Count > 0)
-        //        {
-        //            TreeNode nd = node.Children.Get(0);
-        //            if (nd != null)
-        //            {
-        //                QualifiedName qname = nd.GetXmlElementQName();
-        //                if (qname != null && qname.LocalName == "pagenum" && node.Children.Count > 1)
-        //                {
-        //                    nd = node.Children.Get(1);
-        //                    if (nd != null)
-        //                    {
-        //                        qname = nd.GetXmlElementQName();
-        //                    }
-        //                }
-        //                if (qname != null &&
-        //                    (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
-        //                {
-        //                    sResult = nd.GetTextMediaFlattened(true);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    else if (HeadingsNavigator.IsHeading(qName.LocalName))
-        //    {
-        //        sResult = node.GetTextMediaFlattened(true);
-        //    }
-        //    return sResult;
-        //}
+
+        private static string ComputeNodeText(TreeNode level, TreeNode heading)
+        {
+            if (level == null && heading == null)
+            {
+                return "!??!";
+            }
+            string str = (heading != null
+                ? "[" + heading.GetXmlElementQName().LocalName + "] " + heading.GetTextMediaFlattened(true)
+                : "[" + level.GetXmlElementQName().LocalName + Tobi_Plugin_NavigationPane_Lang.NoHeading);
+            return str.Trim();
+
+            //string sResult = string.Empty;
+            //QualifiedName qName = node.GetXmlElementQName();
+            //if (qName == null) { return sResult; }
+            //if (HeadingsNavigator.IsLevel(qName.LocalName))
+            //{
+            //    if (node.Children.Count > 0)
+            //    {
+            //        TreeNode nd = node.Children.Get(0);
+            //        if (nd != null)
+            //        {
+            //            QualifiedName qname = nd.GetXmlElementQName();
+            //            if (qname != null && qname.LocalName == "pagenum" && node.Children.Count > 1)
+            //            {
+            //                nd = node.Children.Get(1);
+            //                if (nd != null)
+            //                {
+            //                    qname = nd.GetXmlElementQName();
+            //                }
+            //            }
+            //            if (qname != null &&
+            //                (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
+            //            {
+            //                sResult = nd.GetTextMediaFlattened(true);
+            //            }
+            //        }
+            //    }
+            //}
+            //else if (HeadingsNavigator.IsHeading(qName.LocalName))
+            //{
+            //    sResult = node.GetTextMediaFlattened(true);
+            //}
+            //return sResult;
+        }
         public bool IsExpanded
         {
             get
@@ -287,7 +310,7 @@ namespace Tobi.Plugin.NavigationPane
             {
                 if (m_isSelected == value) { return; }
                 m_isSelected = value;
-                
+
                 if (m_parent != null && m_isSelected)
                 {
                     if (!m_parent.IsExpanded)
@@ -384,14 +407,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             get
             {
-                if (WrappedTreeNode_Level == null && WrappedTreeNode_LevelHeading == null)
-                {
-                    return "DUMMY";
-                }
-                string str = (WrappedTreeNode_LevelHeading != null
-                    ? "[" + WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName + "] " + WrappedTreeNode_LevelHeading.GetTextMediaFlattened(true)
-                    : "[" + WrappedTreeNode_Level.GetXmlElementQName().LocalName + Tobi_Plugin_NavigationPane_Lang.NoHeading);
-                return str.Trim();
+                return ComputeNodeText(WrappedTreeNode_Level, WrappedTreeNode_LevelHeading);
             }
             //internal set
             //{
