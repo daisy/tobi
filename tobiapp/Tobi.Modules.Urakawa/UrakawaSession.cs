@@ -95,6 +95,9 @@ namespace Tobi.Plugin.Urakawa
                     m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
                     m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
                     m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionStarted -= OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
                 }
 
                 //IsDirty = false;
@@ -105,6 +108,9 @@ namespace Tobi.Plugin.Urakawa
                     m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                     m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                     m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionStarted += OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
                 }
                 RaisePropertyChanged(() => DocumentProject);
                 RaisePropertyChanged(() => IsDirty);
