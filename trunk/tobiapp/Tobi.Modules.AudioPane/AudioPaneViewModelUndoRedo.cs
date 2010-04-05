@@ -333,6 +333,15 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+            if (!(eventt.Command is ManagedAudioMediaInsertDataCommand)
+                && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
+                && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
+                && !(eventt.Command is CompositeCommand)
+                )
+            {
+                return;
+            }
+
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
@@ -374,7 +383,7 @@ namespace Tobi.Plugin.AudioPane
 
                 var command = (CompositeCommand)eventt.Command;
 
-                Debug.Assert(command.ChildCommands.Count > 0);
+                //Debug.Assert(command.ChildCommands.Count > 0);
                 if (command.ChildCommands.Count == 0) return;
 
                 var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();

@@ -622,7 +622,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 var command = (CompositeCommand)eventt.Command;
 
-                Debug.Assert(command.ChildCommands.Count > 0);
+                //Debug.Assert(command.ChildCommands.Count > 0);
                 if (command.ChildCommands.Count == 0) return;
 
                 var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
