@@ -91,7 +91,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (m_DtdRegex == null || m_DtdRegex.DtdRegexTable == null ||
                     m_DtdRegex.DtdRegexTable.Count == 0)
                 {
-                    ContentDocumentValidationError error = new ContentDocumentValidationError
+                    ContentDocumentValidationError error = new ContentDocumentValidationError(m_Session)
                                                                {
                                                                    ErrorType = ContentDocumentErrorType.MissingDtd,
                                                                    DtdIdentifier = m_DtdIdentifier
@@ -170,7 +170,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (dtdStream == null)
                 {
                     m_Dtd = null;
-                    ContentDocumentValidationError error = new ContentDocumentValidationError
+                    ContentDocumentValidationError error = new ContentDocumentValidationError(m_Session)
                                                                {
                                                                    ErrorType = ContentDocumentErrorType.MissingDtd,
                                                                    DtdIdentifier = m_DtdIdentifier
@@ -236,7 +236,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 ContentDocumentValidationError error;
                 if (regex == null)
                 {
-                    error = new ContentDocumentValidationError
+                    error = new ContentDocumentValidationError(m_Session)
                                                                {
                                                                    Target = node,
                                                                    ErrorType = ContentDocumentErrorType.UndefinedElement
@@ -252,7 +252,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     return true;
                 }
 
-                error = new ContentDocumentValidationError
+                error = new ContentDocumentValidationError(m_Session)
                                                            {
                                                                Target = node,
                                                                ErrorType = ContentDocumentErrorType.InvalidElementSequence,

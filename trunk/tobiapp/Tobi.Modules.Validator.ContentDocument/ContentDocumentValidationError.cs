@@ -79,19 +79,16 @@ namespace Tobi.Plugin.Validator.ContentDocument
             
         }
 
-        [Import(typeof (IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false,
-            AllowRecomposition = false)] 
-        private IUrakawaSession m_UrakawaSession;
-       
-        //TODO: m_UrakawaSession is null ... am I importing it correctly?
         public override void TakeAction()
         {
             m_UrakawaSession.PerformTreeNodeSelection(Target);
         }
 
-        
-        public ContentDocumentValidationError()
+        private IUrakawaSession m_UrakawaSession;
+       
+        public ContentDocumentValidationError(IUrakawaSession session)
         {
+            m_UrakawaSession = session;
             Severity = ValidationSeverity.Error;
         }
     }
