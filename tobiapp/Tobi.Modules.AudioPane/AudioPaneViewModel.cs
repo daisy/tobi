@@ -74,6 +74,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_AudioStreamProvider_File = () =>
             {
+                TotalDocumentAudioDuration = 0;
                 if (State.Audio.PlayStream == null)
                 {
                     if (String.IsNullOrEmpty(State.FilePath))
@@ -99,6 +100,7 @@ namespace Tobi.Plugin.AudioPane
                         return null;
                     }
                 }
+                TotalDocumentAudioDuration = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
                 return State.Audio.PlayStream;
             };
 
@@ -162,6 +164,7 @@ namespace Tobi.Plugin.AudioPane
             };
 
             EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Subscribe(str => StatusBarMessage = str, StatusBarMessageUpdateEvent.THREAD_OPTION);
+            EventAggregator.GetEvent<TotalAudioDurationComputedByFlowDocumentParserEvent>().Subscribe(dur => TotalDocumentAudioDuration = dur.AsMilliseconds, TotalAudioDurationComputedByFlowDocumentParserEvent.THREAD_OPTION);
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
@@ -770,7 +773,7 @@ namespace Tobi.Plugin.AudioPane
                 m_UpdatingTreeNodeSelection = false;
 
                 CommandManager.InvalidateRequerySuggested();
-                
+
                 //if (IsAutoPlay)
                 //{
                 //    CommandPlay.Execute();
@@ -889,6 +892,8 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
                 return;
             }
+
+            TotalDocumentAudioDuration = 0;
 
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
@@ -1158,10 +1163,10 @@ namespace Tobi.Plugin.AudioPane
                 {
                     return "";
                 }
-                
+
                 if (IsPlaying
                     || PlayHeadTime >= 0 && (
-                                                 //m_Player.CurrentState == AudioPlayer.State.Paused ||
+                    //m_Player.CurrentState == AudioPlayer.State.Paused ||
                                                  IsStopped
                                              ))
                 {
@@ -1183,6 +1188,30 @@ namespace Tobi.Plugin.AudioPane
             if (wasAutoPlay) IsAutoPlay = false;
             PlayHeadTime = timeMS;
             if (wasAutoPlay) IsAutoPlay = true;
+        }
+
+        [NotifyDependsOn("TotalDocumentAudioDuration")]
+        public string TotalDocumentAudioDurationString
+        {
+            get { return Tobi_Plugin_AudioPane_Lang.TotalDuration + FormatTimeSpan_Units(TotalDocumentAudioDuration); }
+        }
+
+        private double m_TotalDocumentAudioDuration;
+        public double TotalDocumentAudioDuration
+        {
+            get
+            {
+                return m_TotalDocumentAudioDuration;
+            }
+            set
+            {
+                if (m_TotalDocumentAudioDuration == value)
+                {
+                    return;
+                }
+                m_TotalDocumentAudioDuration = value;
+                RaisePropertyChanged(() => TotalDocumentAudioDuration);
+            }
         }
 
         private static readonly PropertyChangedEventArgs m_LastPlayHeadTimeArgs = new PropertyChangedEventArgs(@"PlayHeadTime");
@@ -1281,7 +1310,7 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     if (m_UpdatingTreeNodeSelection) return;
-                    
+
                     if (IsAutoPlay)
                     {
                         CommandPlay.Execute();

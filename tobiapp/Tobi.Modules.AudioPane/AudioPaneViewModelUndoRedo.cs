@@ -202,7 +202,7 @@ namespace Tobi.Plugin.AudioPane
             //                        : 0;
 
             Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
-            if(treeNodeSelectionAfter.Item1 != currentTreeNode)
+            if (treeNodeSelectionAfter.Item1 != currentTreeNode)
             {
                 CommandRefresh.Execute();
             }
@@ -314,6 +314,71 @@ namespace Tobi.Plugin.AudioPane
             //}
         }
 
+        private void updateTotalDuration(Command cmd, bool done)
+        {
+            if (cmd is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)cmd;
+
+                if (done)
+                {
+                    TotalDocumentAudioDuration += command.ManagedAudioMediaSource.Duration.AsMilliseconds;
+                }
+                else
+                {
+                    TotalDocumentAudioDuration -= command.ManagedAudioMediaSource.Duration.AsMilliseconds;
+                }
+            }
+            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
+
+                if (done)
+                {
+                    TotalDocumentAudioDuration += command.ManagedAudioMedia.Duration.AsMilliseconds;
+                }
+                else
+                {
+                    TotalDocumentAudioDuration -= command.ManagedAudioMedia.Duration.AsMilliseconds;
+                }
+            }
+            else if (cmd is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
+
+                Time timeBegin = command.SelectionData.m_LocalStreamLeftMark == -1
+                    ? Time.Zero
+                    : new Time(command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamLeftMark));
+
+                Time timeEnd = command.SelectionData.m_LocalStreamRightMark == -1
+                    ? new Time(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsTimeSpan)
+                    : new Time(command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamRightMark));
+
+                Time diff = timeEnd.GetDifference(timeBegin);
+
+                if (done)
+                {
+                    ManagedAudioMedia manMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
+                    if (manMedia == null)
+                    {
+                        Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsMilliseconds == diff.AsMilliseconds);
+                    }
+                    TotalDocumentAudioDuration -= diff.AsMilliseconds;
+                }
+                else
+                {
+                    TotalDocumentAudioDuration += diff.AsMilliseconds;
+                }
+            }
+            else if (cmd is CompositeCommand)
+            {
+                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                {
+                    updateTotalDuration(childCommand, done);
+                }
+            }
+        }
+
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
@@ -375,6 +440,8 @@ namespace Tobi.Plugin.AudioPane
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
 
             Command cmd = eventt.Command;
+
+            updateTotalDuration(cmd, done);
 
             if (eventt.Command is CompositeCommand)
             {

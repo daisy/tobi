@@ -20,6 +20,7 @@ using urakawa.exception;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
+using urakawa.media.timing;
 using urakawa.property.xml;
 using urakawa.xuk;
 
@@ -39,6 +40,9 @@ namespace Tobi.Plugin.DocumentPane
         private int m_percentageProgress = 0;
         public override void DoWork()
         {
+            m_totalAudioDuration = Time.Zero;
+            m_nTreeNode = 0;
+
             m_percentageProgress = -1;
             reportProgress(m_percentageProgress, Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument);
 
@@ -58,6 +62,8 @@ namespace Tobi.Plugin.DocumentPane
             //    if (m_StopWatch != null) m_StopWatch.Stop();
             //    m_StopWatch = null;
             //}
+
+            EventAggregator.GetEvent<TotalAudioDurationComputedByFlowDocumentParserEvent>().Publish(m_totalAudioDuration);
         }
 
         protected readonly ILoggerFacade Logger;
@@ -65,6 +71,7 @@ namespace Tobi.Plugin.DocumentPane
         protected readonly IShellView ShellView;
 
         private long m_nTreeNode;
+        private static Time m_totalAudioDuration;
 
         private static int COUNT = 0;
         ~XukToFlowDocument()
@@ -380,6 +387,8 @@ namespace Tobi.Plugin.DocumentPane
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
+                m_totalAudioDuration.Add(media.Duration);
+
                 SetTextElementAttributesForTreeNodeWithAudio(data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
@@ -1846,7 +1855,7 @@ namespace Tobi.Plugin.DocumentPane
             m_nTreeNode++;
 
             if (node.IsMarked)
-            {
+            {                
                 EventAggregator.GetEvent<MarkedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
 
