@@ -581,6 +581,32 @@ namespace Tobi.Plugin.DocumentPane
         private Dictionary<string, TextElement> m_idLinkTargets;
         private Dictionary<string, List<TextElement>> m_idLinkSources;
 
+        private void findAndUpdateTreeNodeAudioStatus(Command cmd, bool done)
+        {
+            if (cmd is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)cmd;
+                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
+            }
+            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
+                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
+            }
+            else if (cmd is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
+                findAndUpdateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
+            }
+            else if (cmd is CompositeCommand)
+            {
+                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                {
+                    findAndUpdateTreeNodeAudioStatus(childCommand, done);
+                }
+            }
+        }
+
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
@@ -609,85 +635,11 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
 
             Command cmd = eventt.Command;
 
-            if (eventt.Command is CompositeCommand)
-            {
-                Debug.Assert(!(eventt is DoneEventArgs)
-                    && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
-
-                var command = (CompositeCommand)eventt.Command;
-
-                //Debug.Assert(command.ChildCommands.Count > 0);
-                if (command.ChildCommands.Count == 0) return;
-
-                var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
-                if (list != null)
-                {
-                    foreach (var treeNodeAudioStreamDeleteCommand in list)
-                    {
-                        findAndUpdateTreeNodeAudioStatus(treeNodeAudioStreamDeleteCommand.SelectionData.m_TreeNode);
-                    }
-                    return;
-                }
-
-                if (command.ChildCommands.Count > 0)
-                {
-                    if (done)
-                    {
-                        var childCmd = command.ChildCommands.Get(command.ChildCommands.Count - 1);
-                        if (childCmd is ManagedAudioMediaInsertDataCommand)
-                        {
-                            cmd = childCmd;
-                        }
-                    }
-                    else
-                    {
-                        var childCmd = command.ChildCommands.Get(0);
-                        if (childCmd is CompositeCommand)
-                        {
-                            var list_ = ((CompositeCommand)childCmd).GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
-                            if (list_ != null)
-                            {
-                                foreach (var treeNodeAudioStreamDeleteCommand in list_)
-                                {
-                                    findAndUpdateTreeNodeAudioStatus(treeNodeAudioStreamDeleteCommand.SelectionData.m_TreeNode);
-                                }
-                                return;
-                            }
-                        }
-                        else if (childCmd is TreeNodeAudioStreamDeleteCommand)
-                        {
-                            cmd = childCmd;
-                        }
-                    }
-                }
-            }
-
-            if (cmd is ManagedAudioMediaInsertDataCommand)
-            {
-                var command = (ManagedAudioMediaInsertDataCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
-                return;
-            }
-
-            if (cmd is TreeNodeSetManagedAudioMediaCommand)
-            {
-                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
-                return;
-            }
-
-            if (cmd is TreeNodeAudioStreamDeleteCommand)
-            {
-                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
-                return;
-            }
+            findAndUpdateTreeNodeAudioStatus(cmd, done);
         }
 
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)

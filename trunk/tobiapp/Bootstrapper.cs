@@ -2,12 +2,13 @@
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -77,9 +78,15 @@ namespace Tobi
             Debug.WriteLine(@"DEBUG -- Testing redirection from System.Diagnostics.Debug.WriteLine() to the application logger. This message should not appear in RELEASE mode (only when DEBUG flag is set).");
             Trace.WriteLine(@"TRACE -- Testing redirection from System.Diagnostics.Trace.WriteLine() to the application logger. This message should not appear in RELEASE mode (and in DEBUG mode only when TRACE flag is set).");
 
-            m_Logger.Log(@"[" + DateTime.Now + @"]", Category.Info, Priority.High);
+            //System.Globalization.CultureInfo.ClearCachedData();
+            TimeZoneInfo.ClearCachedData();
+
+            m_Logger.Log(@"[" + DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K") + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[" + ApplicationConstants.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[Tobi version: " + ApplicationConstants.APP_VERSION + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[OS version: " + ApplicationConstants.OS_INFORMATION + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[ClickOnce: " + (ApplicationDeployment.IsNetworkDeployed ? "yes" : "no") + @"]", Category.Info, Priority.High);
+            
 
             string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -98,12 +105,11 @@ namespace Tobi
                 {
                     File.Delete(shortcutToLogPath);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 #if DEBUG
                     Debugger.Break();
 #endif // DEBUG
-                    return;
                 }
             }
             try
@@ -120,60 +126,120 @@ namespace Tobi
             }
             catch (Exception ex)
             {
+                m_Logger.Log(@"Can't create Tobi desktop shortcut!", Category.Exception, Priority.High);
+                ExceptionHandler.LogException(ex);
 #if DEBUG
                 Debugger.Break();
 #endif // DEBUG
-                return;
             }
 
+            //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
-            
-//    WshShellClass wsh = new WshShellClass();
-//            IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(
-//                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\shorcut.lnk") as IWshRuntimeLibrary.IWshShortcut;
-//            shortcut.Arguments = "c:\\app\\settings1.xml";
-//            shortcut.TargetPath = "c:\\app\\myftp.exe";
-//            // not sure about what this is for
-//            shortcut.WindowStyle = 1; 
-//            shortcut.Description = "my shortcut description";
-//            shortcut.WorkingDirectory = "c:\\app";
-//            shortcut.IconLocation = "specify icon location";
-//            shortcut.Save();
+            string url = ApplicationConstants.TOBI_ANON_USAGE_URI;
+
+            url += "?version=" + Uri.EscapeDataString(ApplicationConstants.APP_VERSION);
+            url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" : "false");
+            url += "&datetime=" + Uri.EscapeDataString(DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K"));
+            url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
+
+            // THIS BREAKS PRIVACY
+            //string ipAddress = "";
+            //IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
+            //IPAddress[] ipAddresses = ipHostEntry.AddressList;
+            //for (int i = 0; i < ipAddresses.Length; i++)
+            //{
+            //    if (ipAddresses[i].AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+            //    {
+            //        if (!IPAddress.IsLoopback(ipAddresses[i]))
+            //        {
+            //            ipAddress += string.Format("_{0}", ipAddresses[i]);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        ipAddress += string.Format("__{0}", ipAddresses[i]);
+            //    }
+            //}
+            //if (!string.IsNullOrEmpty(ipAddress))
+            //{
+            //    url += "&localip=" + Uri.EscapeDataString(ipAddress);
+            //}
+
+            if (Settings.Default.EnableAnonymousUsageReport)
+            {
+                var webClient = new WebClient {UseDefaultCredentials = true};
+                StreamReader streamReader = null;
+                try
+                {
+                    streamReader = new StreamReader(webClient.OpenRead(url));
+                    string str = streamReader.ReadToEnd();
+                    m_Logger.Log(str, Category.Info, Priority.High);
+                }
+                catch (Exception ex)
+                {
+                    m_Logger.Log(@"Can't query Tobi anonymous usage logger !", Category.Exception, Priority.High);
+                    ExceptionHandler.LogException(ex);
+                    //#if DEBUG
+                    //                Debugger.Break();
+                    //#endif // DEBUG
+                }
+                finally
+                {
+                    if (streamReader != null)
+                        streamReader.Close();
+                }
+            }
+            else
+            {
+                m_Logger.Log(@"Tobi anonymous usage logger has been DISABLED by user.", Category.Warn, Priority.High);
+            }
+
+            //    WshShellClass wsh = new WshShellClass();
+            //            IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(
+            //                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\shorcut.lnk") as IWshRuntimeLibrary.IWshShortcut;
+            //            shortcut.Arguments = "c:\\app\\settings1.xml";
+            //            shortcut.TargetPath = "c:\\app\\myftp.exe";
+            //            // not sure about what this is for
+            //            shortcut.WindowStyle = 1; 
+            //            shortcut.Description = "my shortcut description";
+            //            shortcut.WorkingDirectory = "c:\\app";
+            //            shortcut.IconLocation = "specify icon location";
+            //            shortcut.Save();
 
 
 
 
-//private void appShortcutToDesktop(string linkName)
-//{
-//    string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            //private void appShortcutToDesktop(string linkName)
+            //{
+            //    string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
-//    using (StreamWriter writer = new StreamWriter(deskDir + "\\" + linkName + ".url"))
-//    {
-//        string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
-//        writer.WriteLine("[InternetShortcut]");
-//        writer.WriteLine("URL=file:///" + app);
-//        writer.WriteLine("IconIndex=0");
-//        string icon = app.Replace('\\', '/');
-//        writer.WriteLine("IconFile=" + icon);
-//        writer.Flush();
-//    }
-//}
-
-
+            //    using (StreamWriter writer = new StreamWriter(deskDir + "\\" + linkName + ".url"))
+            //    {
+            //        string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            //        writer.WriteLine("[InternetShortcut]");
+            //        writer.WriteLine("URL=file:///" + app);
+            //        writer.WriteLine("IconIndex=0");
+            //        string icon = app.Replace('\\', '/');
+            //        writer.WriteLine("IconFile=" + icon);
+            //        writer.Flush();
+            //    }
+            //}
 
 
 
-//Set Shell = CreateObject("WScript.Shell")
-//DesktopPath = Shell.SpecialFolders("Desktop")
-//Set link = Shell.CreateShortcut(DesktopPath & "\test.lnk")
-//link.Arguments = "1 2 3"
-//link.Description = "test shortcut"
-//link.HotKey = "CTRL+ALT+SHIFT+X"
-//link.IconLocation = "app.exe,1"
-//link.TargetPath = "c:\blah\app.exe"
-//link.WindowStyle = 3
-//link.WorkingDirectory = "c:\blah"
-//link.Save
+
+
+            //Set Shell = CreateObject("WScript.Shell")
+            //DesktopPath = Shell.SpecialFolders("Desktop")
+            //Set link = Shell.CreateShortcut(DesktopPath & "\test.lnk")
+            //link.Arguments = "1 2 3"
+            //link.Description = "test shortcut"
+            //link.HotKey = "CTRL+ALT+SHIFT+X"
+            //link.IconLocation = "app.exe,1"
+            //link.TargetPath = "c:\blah\app.exe"
+            //link.WindowStyle = 3
+            //link.WorkingDirectory = "c:\blah"
+            //link.Save
 
 
 
@@ -460,6 +526,7 @@ namespace Tobi
                 {
                     //new AssemblyCatalog(Assembly.GetAssembly(typeof(HeadingNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                     //new AssemblyCatalog(Assembly.GetAssembly(typeof(PageNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
+                    //new AssemblyCatalog(Assembly.GetAssembly(typeof(MarkersNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                     new AssemblyCatalog(Assembly.GetAssembly(typeof(NavigationPanePlugin)))
                 }));
             }

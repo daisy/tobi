@@ -1032,6 +1032,16 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                             Converter={StaticResource boolToVisConverter},
                             Mode=OneWay}" 
         VerticalAlignment="Center" Text="{Binding TimeStringSelection, Mode=OneWay}"/>
+
+      <TextBlock
+        
+        Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        VerticalAlignment="Center" Text=" | "/>
+
+      <TextBlock 
+                 Focusable="True"
+        FontWeight="Normal"
+        VerticalAlignment="Center" Text="{Binding TotalDocumentAudioDurationString, Mode=OneWay}"/>
     </StackPanel>
       
     </StatusBarItem>

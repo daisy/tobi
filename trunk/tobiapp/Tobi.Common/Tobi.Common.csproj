@@ -69,6 +69,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider">
@@ -157,6 +158,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Tobi.Common.Lang.resx</DependentUpon>
     </Compile>
+    <Compile Include="TotalAudioDurationComputedByFlowDocumentParserEvent.cs" />
     <Compile Include="TreeNodeSelectedEvent.cs" />
     <Compile Include="UI\AutoGreyableImage.cs" />
     <Compile Include="UI\AutoPopulateNamedViews.cs" />

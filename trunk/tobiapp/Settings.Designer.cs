@@ -37,6 +37,18 @@ namespace Tobi {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableAnonymousUsageReport {
+            get {
+                return ((bool)(this["EnableAnonymousUsageReport"]));
+            }
+            set {
+                this["EnableAnonymousUsageReport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("800")]
         public double WindowShellWidth {
             get {

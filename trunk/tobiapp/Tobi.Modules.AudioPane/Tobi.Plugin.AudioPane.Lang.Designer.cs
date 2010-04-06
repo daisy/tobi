@@ -916,6 +916,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total: .
+        /// </summary>
+        public static string TotalDuration {
+            get {
+                return ResourceManager.GetString("TotalDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete audio data that potentially spans across several document fragments.
         /// </summary>
         public static string TransactionDeleteAudio_LongDesc {
