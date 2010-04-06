@@ -34,7 +34,7 @@ namespace Tobi.Plugin.DocumentPane
     {
         public static DocumentPaneView m_DocumentPaneView;
 
-        private Stopwatch m_StopWatch;
+        //private Stopwatch m_StopWatch;
 
         private int m_percentageProgress = 0;
         public override void DoWork()
@@ -42,8 +42,8 @@ namespace Tobi.Plugin.DocumentPane
             m_percentageProgress = -1;
             reportProgress(m_percentageProgress, Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument);
 
-            if (m_StopWatch != null) m_StopWatch.Stop();
-            m_StopWatch = null;
+            //if (m_StopWatch != null) m_StopWatch.Stop();
+            //m_StopWatch = null;
 
             try
             {
@@ -53,11 +53,11 @@ namespace Tobi.Plugin.DocumentPane
             {
                 return;
             }
-            finally
-            {
-                if (m_StopWatch != null) m_StopWatch.Stop();
-                m_StopWatch = null;
-            }
+            //finally
+            //{
+            //    if (m_StopWatch != null) m_StopWatch.Stop();
+            //    m_StopWatch = null;
+            //}
         }
 
         protected readonly ILoggerFacade Logger;
@@ -1937,24 +1937,15 @@ namespace Tobi.Plugin.DocumentPane
                         if (m_percentageProgress > 100)
                             m_percentageProgress = -1;
                     }
-                    if (m_StopWatch != null) m_StopWatch.Stop();
-                    if (m_StopWatch == null || m_StopWatch.ElapsedMilliseconds >= 300)
-                    {
-                        string str = Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
-                                                +
-                                                (node.Presentation.XukedInTreeNodes <= 0
-                                                     ? m_nTreeNode.ToString()
-                                                     : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
-                                                + "]";
-                        Console.WriteLine(str);
-                        reportProgress(m_percentageProgress,
-                                       str);
 
-                        if (m_StopWatch == null) m_StopWatch = new Stopwatch();
-                        
-                        m_StopWatch.Reset();
-                    }
-                    m_StopWatch.Start();
+                    string str = Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
+                                            +
+                                            (node.Presentation.XukedInTreeNodes <= 0
+                                                 ? m_nTreeNode.ToString()
+                                                 : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
+                                            + "]";
+                    //Console.WriteLine(str);
+                    reportProgress(m_percentageProgress, str);
 
                     walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }
