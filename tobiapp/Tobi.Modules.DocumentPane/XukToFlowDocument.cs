@@ -9,7 +9,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -35,11 +34,16 @@ namespace Tobi.Plugin.DocumentPane
     {
         public static DocumentPaneView m_DocumentPaneView;
 
+        private Stopwatch m_StopWatch;
+
         private int m_percentageProgress = 0;
         public override void DoWork()
         {
             m_percentageProgress = -1;
             reportProgress(m_percentageProgress, Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument);
+
+            if (m_StopWatch != null) m_StopWatch.Stop();
+            m_StopWatch = null;
 
             try
             {
@@ -48,6 +52,11 @@ namespace Tobi.Plugin.DocumentPane
             catch (ProgressCancelledException ex)
             {
                 return;
+            }
+            finally
+            {
+                if (m_StopWatch != null) m_StopWatch.Stop();
+                m_StopWatch = null;
             }
         }
 
@@ -61,9 +70,9 @@ namespace Tobi.Plugin.DocumentPane
         ~XukToFlowDocument()
         {
             int debug = COUNT;
-//#if DEBUG
-//            Debugger.Break();
-//#endif
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
         }
 
         public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
@@ -415,7 +424,7 @@ namespace Tobi.Plugin.DocumentPane
                 ////data.MouseDown += OnMouseDownTextElementWithNode;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                
+
                 return true;
             }
             return false;
@@ -446,7 +455,7 @@ namespace Tobi.Plugin.DocumentPane
         public static void SetTextElementAttributesForTreeNodeWithSequenceAudio(TextElement data)
         {
             Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
-            
+
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
             data.Cursor = Cursors.Cross;
@@ -455,7 +464,7 @@ namespace Tobi.Plugin.DocumentPane
         public static void SetTextElementAttributesForTreeNodeWithAudio(TextElement data)
         {
             Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
-            
+
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
             data.Cursor = Cursors.Hand;
@@ -464,7 +473,7 @@ namespace Tobi.Plugin.DocumentPane
         public static void SetTextElementAttributesForTreeNodeWithAncestorAudio(TextElement data)
         {
             Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
-            
+
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
             data.Cursor = Cursors.SizeAll;
@@ -1005,7 +1014,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
                 data.NavigateUri = new Uri("#" + id, UriKind.Relative);
-                
+
                 //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
                 //data.RequestNavigate += (sender, e) => m_DelegateOnRequestNavigate(e.Uri);
                 data.RequestNavigate += (sender, e) => m_DocumentPaneView.m_DelegateOnRequestNavigate(e.Uri);
@@ -1918,17 +1927,34 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         throw new ProgressCancelledException(@"dummy");
                     }
-                    if (node.Presentation.XukedInTreeNodes <= 0) m_percentageProgress = -1;
+                    if (node.Presentation.XukedInTreeNodes <= 0)
+                    {
+                        m_percentageProgress = -1;
+                    }
                     else
                     {
                         m_percentageProgress = (int)(100 * m_nTreeNode / node.Presentation.XukedInTreeNodes);
                         if (m_percentageProgress > 100)
                             m_percentageProgress = -1;
                     }
-                    reportProgress(m_percentageProgress,
-                        Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
-                        + (node.Presentation.XukedInTreeNodes <= 0 ? m_nTreeNode.ToString() : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
-                        + "]");
+                    if (m_StopWatch != null) m_StopWatch.Stop();
+                    if (m_StopWatch == null || m_StopWatch.ElapsedMilliseconds >= 300)
+                    {
+                        string str = Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
+                                                +
+                                                (node.Presentation.XukedInTreeNodes <= 0
+                                                     ? m_nTreeNode.ToString()
+                                                     : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
+                                                + "]";
+                        Console.WriteLine(str);
+                        reportProgress(m_percentageProgress,
+                                       str);
+
+                        if (m_StopWatch == null) m_StopWatch = new Stopwatch();
+                        
+                        m_StopWatch.Reset();
+                    }
+                    m_StopWatch.Start();
 
                     walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }
