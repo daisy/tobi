@@ -29,6 +29,7 @@ using Tobi.Plugin.StructureTrailPane;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
 using Tobi.Plugin.Validator;
+using Tobi.Plugin.Validator.AudioContent;
 using Tobi.Plugin.Validator.ContentDocument;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa.ExternalFiles;
@@ -491,6 +492,14 @@ namespace Tobi
             try
             {
                 Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioContentValidatorPlugin))));
             }
             catch (Exception ex)
             {

@@ -125,6 +125,7 @@
     <Compile Include="IToolbarsView.cs" />
     <Compile Include="IUrakawaSession.cs" />
     <Compile Include="MarkedTreeNodeFoundByFlowDocumentParserEvent.cs" />
+    <Compile Include="NoAudioContentFoundByFlowDocumentParserEvent.cs" />
     <Compile Include="MVVM\ActiveAware.cs" />
     <Compile Include="MVVM\Command\DelegateCommand.cs" />
     <Compile Include="MVVM\Command\IInputBindingManager.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="UserInterfaceStrings.cs" />
     <Compile Include="Validation\IValidator.cs" />
     <Compile Include="Validation\ValidationEvents.cs" />
+    <Compile Include="Validation\ValidatorUtilities.cs" />
     <Compile Include="WeakReferencedEventHandlerHelper.cs" />
     <Compile Include="_UnusedCode\BindableRun.cs" />
     <Compile Include="_UnusedCode\BindableRunTextMedia.cs" />
