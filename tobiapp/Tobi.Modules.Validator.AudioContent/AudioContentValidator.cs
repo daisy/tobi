@@ -154,7 +154,9 @@ namespace Tobi.Plugin.Validator.AudioContent
                 {
                     var valItem = vItem as AudioContentValidationError;
                     if (valItem == null) continue;
-                    if (valItem.Target == node)
+
+                    if (valItem.Target == node
+                        || valItem.Target.IsDescendantOf(node))
                     {
                         toRemove.Add(vItem);
                     }
