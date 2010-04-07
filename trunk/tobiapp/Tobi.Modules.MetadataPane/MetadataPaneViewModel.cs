@@ -142,7 +142,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             get
             {
-                if (m_UrakawaSession.DocumentProject == null || m_UrakawaSession.DocumentProject.Presentations.Count <= 0)
+                if (m_UrakawaSession.DocumentProject == null)
                 {
                     m_MetadataCollection = null;
                 }

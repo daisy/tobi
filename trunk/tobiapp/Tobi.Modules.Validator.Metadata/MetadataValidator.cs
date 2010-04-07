@@ -1,21 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Threading;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using System.ComponentModel.Composition;
+using urakawa;
+using urakawa.command;
+using urakawa.commands;
+using urakawa.events.undo;
 using urakawa.metadata.daisy;
 using urakawa.metadata;
 using System;
 
 namespace Tobi.Plugin.Validator.Metadata
-{   
+{
     /// <summary>
     /// The main validator class
     /// </summary>
-    [Export(typeof(IValidator))]
-    [Export(typeof(MetadataValidator))]
-    [PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(MetadataValidator)), PartCreationPolicy(CreationPolicy.Shared)]
     public class MetadataValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
@@ -29,6 +34,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         private readonly ILoggerFacade m_Logger;
         protected readonly IUrakawaSession m_Session;
+
         private ResourceDictionary m_ValidationItemTemplate;
 
         ///<summary>
@@ -40,66 +46,152 @@ namespace Tobi.Plugin.Validator.Metadata
         [ImportingConstructor]
         public MetadataValidator(
             ILoggerFacade logger,
+            IEventAggregator eventAggregator,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
             IUrakawaSession session)
+            : base(eventAggregator)
         {
             m_Logger = logger;
             m_Session = session;
 
             m_DataTypeValidator = new MetadataDataTypeValidator(this);
             m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
-            m_ValidationItems = new List<ValidationItem>();
             m_ValidationItemTemplate = new MetadataValidationItemTemplate();
 
             m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
         }
 
+        protected override void OnProjectLoaded(Project project)
+        {
+            base.OnProjectLoaded(project);
+
+            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+
+            Validate();
+        }
+
+        protected override void OnProjectUnLoaded(Project project)
+        {
+            base.OnProjectUnLoaded(project);
+
+            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+        }
+
+        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        {
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
+            }
+
+            m_Logger.Log("MetadataValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+
+            if (!(eventt is DoneEventArgs
+                           || eventt is UnDoneEventArgs
+                           || eventt is ReDoneEventArgs
+                           || eventt is TransactionEndedEventArgs
+                           || eventt is TransactionCancelledEventArgs
+                           ))
+            {
+                Debug.Fail("This should never happen !!");
+                return;
+            }
+
+            //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            //{
+            //    Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+            //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+            //    return;
+            //}
+
+            //bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+
+            Command cmd = eventt.Command;
+
+            if (cmd is CompositeCommand)
+            {
+                if (isAllCommandsMetadata((CompositeCommand)cmd))
+                {
+                    Validate();
+                }
+            }
+            else if (isCommandMetadata(cmd))
+            {
+                Validate();
+            }
+        }
+
+        private bool isAllCommandsMetadata(CompositeCommand comp)
+        {
+            foreach (var cmd in comp.ChildCommands.ContentsAs_YieldEnumerable)
+            {
+                if (!isCommandMetadata(cmd))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool isCommandMetadata(Command cmd)
+        {
+            return cmd is MetadataAddCommand
+                || cmd is MetadataRemoveCommand
+                || cmd is MetadataSetContentCommand
+                || cmd is MetadataSetIdCommand
+                || cmd is MetadataSetNameCommand;
+        }
+
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Name;}       // TODO LOCALIZE MetadataValidator_Name
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Name; }       // TODO LOCALIZE MetadataValidator_Name
         }
 
         public override string Description
         {
-            get{ return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description;}       // TODO LOCALIZE MetadataValidator_Description
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description; }       // TODO LOCALIZE MetadataValidator_Description
         }
 
         public override bool Validate()
         {
             bool isValid = true;
 
-            if (m_Session.DocumentProject != null &&
-                m_Session.DocumentProject.Presentations.Count > 0)
+            if (m_Session.DocumentProject != null)
             {
                 List<urakawa.metadata.Metadata> metadatas =
                     m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
 
-                m_ValidationItems = new List<ValidationItem>();
+                resetToValid();
                 isValid = _validate(metadatas);
             }
 
-            IsValid = isValid;
             return isValid;
         }
 
-        public override IEnumerable<ValidationItem> ValidationItems
-        {
-            get { return m_ValidationItems;}
-        }
-
-
         //TODO: un-hardcode this
-        public MetadataDefinitionSet MetadataDefinitions = 
+        public MetadataDefinitionSet MetadataDefinitions =
             SupportedMetadata_Z39862005.DefinitionSet;
 
         private MetadataDataTypeValidator m_DataTypeValidator;
         private MetadataOccurrenceValidator m_OccurrenceValidator;
-        private List<ValidationItem> m_ValidationItems;
-        
+
+
         private bool _validate(List<urakawa.metadata.Metadata> metadatas)
         {
             bool isValid = true;
-            
+
             //validate each item by itself
             foreach (urakawa.metadata.Metadata metadata in metadatas)
             {
@@ -124,42 +216,47 @@ namespace Tobi.Plugin.Validator.Metadata
             //and check that the definitions don't match and the error types don't match
             //theoretically, there should only be one error type per definition (e.g. format, duplicate, etc)
 
-            if (m_ValidationItems.Find
-                (
-                        delegate(ValidationItem e)
-                        {
-                            MetadataValidationError err = e as MetadataValidationError;
-                            if (err == null) return false;
+            ValidationItem valItem = null;
 
-                            bool sameItem = false;
-                            if (err.ErrorType == error.ErrorType)
-                            {
-                                //does this error's target metadata item already have an error
-                                //of this type associated with it?
-                                sameItem = err.Target != null && (err.Target == error.Target);
-                            }
-                            //does this error's type and target metadata definition already exist?
-                            bool sameDef = (err.Definition == error.Definition);
-                            bool sameType = (err.ErrorType == error.ErrorType);
-
-                            if (sameItem || (sameDef && sameType)) return true; // && err.ErrorType != MetadataErrorType.MissingItemError
-                            else return false;
-                        }
-                ) == null)
+            foreach (var e in ValidationItems)
             {
-                m_ValidationItems.Add(error);
+                MetadataValidationError err = e as MetadataValidationError;
+                if (err == null) continue;
+
+                bool sameItem = false;
+                if (err.ErrorType == error.ErrorType)
+                {
+                    //does this error's target metadata item already have an error
+                    //of this type associated with it?
+                    sameItem = err.Target != null && (err.Target == error.Target);
+                }
+                //does this error's type and target metadata definition already exist?
+                bool sameDef = (err.Definition == error.Definition);
+                bool sameType = (err.ErrorType == error.ErrorType);
+
+                if (sameItem || (sameDef && sameType))
+                {
+                    valItem = err;
+                    break; // && err.ErrorType != MetadataErrorType.MissingItemError
+                }
+            }
+
+            if (valItem == null)
+            {
+                addValidationItem(error);
             }
         }
+
         private bool _validateItem(urakawa.metadata.Metadata metadata)
         {
-            MetadataDefinition metadataDefinition = 
+            MetadataDefinition metadataDefinition =
                 MetadataDefinitions.GetMetadataDefinition(metadata.NameContentAttribute.Name);
-			
+
             if (metadataDefinition == null)
             {
                 metadataDefinition = MetadataDefinitions.UnrecognizedItemFallbackDefinition;
             }
-            
+
             //check the occurrence requirement
             bool meetsOccurrenceRequirement = m_OccurrenceValidator.Validate(metadata, metadataDefinition);
             //check the data type
@@ -421,7 +518,7 @@ namespace Tobi.Plugin.Validator.Metadata
     {
         private MetadataValidator m_ParentValidator;
         private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
-        
+
         public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {
             m_ParentValidator = parentValidator;
@@ -432,7 +529,7 @@ namespace Tobi.Plugin.Validator.Metadata
             //neither required nor optional fields may be empty
             //check both an empty string and our "magic" string value that is
             //used upon creation of a new metadata item
-            if (!string.IsNullOrEmpty(metadata.NameContentAttribute.Value) && 
+            if (!string.IsNullOrEmpty(metadata.NameContentAttribute.Value) &&
                     metadata.NameContentAttribute.Value != SupportedMetadata_Z39862005.MagicStringEmpty)
             {
                 return true;

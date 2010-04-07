@@ -18,7 +18,7 @@ namespace Tobi.Plugin.Validator.AudioContent
             {
                 return string.Format("{0}\n{1}", 
                         Message, 
-                        "dummy" //ValidatorUtilities.GetNodeXml(Target, true)
+                        ValidatorUtilities.GetNodeXml(Target, true)
                         );
             }
             

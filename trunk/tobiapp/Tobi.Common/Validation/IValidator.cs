@@ -2,39 +2,105 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Windows;
+using Microsoft.Practices.Composite.Events;
+using urakawa;
 
 namespace Tobi.Common.Validation
 {
+    [InheritedExport(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
     public abstract class AbstractValidator : IValidator
     {
-        public event EventHandler<ValidatorStateRefreshedEventArgs> ValidatorStateRefreshed;
-        
         public abstract string Name { get; }
         public abstract string Description { get; }
-        public abstract bool Validate();
-        public abstract IEnumerable<ValidationItem> ValidationItems { get; }
 
-        public virtual bool ShouldRunOnlyOnce
+        public abstract bool Validate();
+
+        public event EventHandler<ValidatorStateRefreshedEventArgs> ValidatorStateRefreshed;
+        
+        private ObservableCollection<ValidationItem> m_ValidationItems = new ObservableCollection<ValidationItem>();
+        public ObservableCollection<ValidationItem> ValidationItems
         {
-            get { return false; }
+            get
+            {
+                return m_ValidationItems;
+            }
         }
 
-        private bool m_IsValid;
+        protected void resetToValid()
+        {
+            if (m_ValidationItems.Count > 0)
+            {
+                m_ValidationItems.Clear();
+                notifyValidationStateChanged();
+            }
+        }
+
+        protected void addValidationItem(ValidationItem valItem)
+        {
+            m_ValidationItems.Add(valItem);
+            notifyValidationStateChanged();
+        }
+
+        protected void addValidationItems(IEnumerable<ValidationItem> valItems)
+        {
+            foreach (var valItem in valItems)
+            {
+                m_ValidationItems.Add(valItem);
+            }
+            notifyValidationStateChanged();
+        }
+
+        protected void removeValidationItem(ValidationItem valItem)
+        {
+            m_ValidationItems.Remove(valItem);
+            notifyValidationStateChanged();
+        }
+
+        protected void removeValidationItems(IEnumerable<ValidationItem> valItems)
+        {
+            foreach (var valItem in valItems)
+            {
+                m_ValidationItems.Remove(valItem);
+            }
+            notifyValidationStateChanged();
+        }
+
+        protected void notifyValidationStateChanged()
+        {
+            EventHandler<ValidatorStateRefreshedEventArgs> eventHandler = ValidatorStateRefreshed;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new ValidatorStateRefreshedEventArgs(this));
+            }
+        }
+
+        protected readonly IEventAggregator m_EventAggregator;
+
+        protected AbstractValidator(IEventAggregator eventAggregator)
+        {
+            m_EventAggregator = eventAggregator;
+
+            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
+
+            resetToValid();
+        }
+
+        protected virtual void OnProjectLoaded(Project project)
+        {
+            resetToValid();
+        }
+
+        protected virtual void OnProjectUnLoaded(Project project)
+        {
+            resetToValid();
+        }
+
         public bool IsValid
         {
-            get { return m_IsValid; }
-            protected set
+            get
             {
-                if (value == m_IsValid)
-                {
-                    return;
-                }
-
-                EventHandler<ValidatorStateRefreshedEventArgs> ev = ValidatorStateRefreshed;
-                if (ev != null) ev(this, new ValidatorStateRefreshedEventArgs(this));
-
-                m_IsValid = value;
+                return m_ValidationItems.Count == 0;
             }
         }
     }
@@ -53,12 +119,12 @@ namespace Tobi.Common.Validation
     {
         event EventHandler<ValidatorStateRefreshedEventArgs> ValidatorStateRefreshed;
 
-        string Name { get; }
-        string Description { get; }
         bool Validate();
         bool IsValid { get; }
-        IEnumerable<ValidationItem> ValidationItems { get; }
-        bool ShouldRunOnlyOnce { get;}
+        ObservableCollection<ValidationItem> ValidationItems { get; }
+        
+        string Name { get; }
+        string Description { get; }
     }
 
     public enum ValidationSeverity

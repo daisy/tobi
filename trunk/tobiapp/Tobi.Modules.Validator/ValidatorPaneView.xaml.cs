@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -33,7 +32,8 @@ namespace Tobi.Plugin.Validator
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
 
-        public ValidatorAggregator ValidatorAggregator { get; private set;}
+        private readonly ValidatorAggregator m_ValidatorAggregator;
+        //public ValidatorAggregator ValidatorAggregator { get; private set;}
 
         [ImportingConstructor]
         public ValidatorPaneView(
@@ -47,47 +47,30 @@ namespace Tobi.Plugin.Validator
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
-            ValidatorAggregator = validator;
-            ValidatorAggregator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
-
-            ValidationItems = new ObservableCollection<ValidationItem>();
-            resetValidationItems(ValidatorAggregator);
+            m_ValidatorAggregator = validator;
             
             foreach (ResourceDictionary dict in resourceDictionaries)
             {
                 Application.Current.Resources.MergedDictionaries.Add(dict);
             }
-            
-            DataContext = this;
+
+            DataContext = m_ValidatorAggregator;
+            //DataContext = this;
             
             InitializeComponent();
+
+            //foreach (var validator in m_ValidatorAggregator.Validators)
+            //{
+                
+            //}
         }
 
-        public ObservableCollection<ValidationItem> ValidationItems
-        { get;set;}
-        
-        private void resetValidationItems(ValidatorAggregator validator)
+        private void ValidationItemsListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ValidationItems.Clear();
-            
-            if (validator.ValidationItems == null)
-            {
-                return;
-            }
-
-            foreach (var validationItem in validator.ValidationItems)
-            {
-                if (validationItem != null)
-                    ValidationItems.Add(validationItem);
-            }
-            
+            var list = sender as ListBox;
+            var validationItem = list.SelectedItem as ValidationItem;
+            validationItem.TakeAction();
         }
-        
-        private void OnValidatorStateRefreshed(object sender, ValidatorStateRefreshedEventArgs e)
-        {
-            resetValidationItems((ValidatorAggregator)e.Validator);
-        }
-        
 
         private void OnClipboardLinkClick(object sender, RoutedEventArgs e)
         {
@@ -103,14 +86,6 @@ namespace Tobi.Plugin.Validator
             {
                 Debug.Fail(string.Format("Clipboad exception: {0}", ex.Message));
             }
-        }
-
-        
-        private void ValidationItemsListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var list = sender as ListBox;
-            var validationItem = list.SelectedItem as ValidationItem;
-            validationItem.TakeAction();
         }
     }
 
