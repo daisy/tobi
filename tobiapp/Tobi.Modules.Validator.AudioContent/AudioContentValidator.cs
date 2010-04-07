@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -14,7 +13,6 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
 using urakawa.media;
-using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.xuk;
 
@@ -27,7 +25,6 @@ namespace Tobi.Plugin.Validator.AudioContent
     /// <summary>
     /// The main validator class
     /// </summary>
-    [Export(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
     public class AudioContentValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
@@ -41,7 +38,6 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         private readonly ILoggerFacade m_Logger;
         protected readonly IUrakawaSession m_Session;
-        private readonly IEventAggregator m_EventAggregator;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -55,29 +51,31 @@ namespace Tobi.Plugin.Validator.AudioContent
             IEventAggregator eventAggregator,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
             IUrakawaSession session)
+            : base(eventAggregator)
         {
             m_Logger = logger;
             m_Session = session;
-            m_EventAggregator = eventAggregator;
 
-            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
-            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Subscribe(OnNoAudioContentFoundByFlowDocumentParserEvent, NoAudioContentFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
-            m_ValidationItems = new List<ValidationItem>();
             m_Logger.Log(@"AudioContentValidator initialized", Category.Debug, Priority.Medium);
         }
 
-        private void OnProjectLoaded(Project project)
+        protected override void OnProjectLoaded(Project project)
         {
+            // WE MUST PREVENT THE BASE CLASS TO RESET THE VALIDATION ITEMS (WHICH WE JUST RECEIVED FROM THE FLOWDOC PARSER)
+            //base.OnProjectLoaded(project);
+
             project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
             //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
         }
 
-        private void OnProjectUnLoaded(Project project)
+        protected override void OnProjectUnLoaded(Project project)
         {
+            base.OnProjectUnLoaded(project);
+
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
@@ -128,7 +126,7 @@ namespace Tobi.Plugin.Validator.AudioContent
             if (isAudioMissing)
             {
                 bool alreadyInList = false;
-                foreach (var vItem in m_ValidationItems)
+                foreach (var vItem in ValidationItems)
                 {
                     var valItem = vItem as AudioContentValidationError;
                     if (valItem == null) continue;
@@ -145,15 +143,14 @@ namespace Tobi.Plugin.Validator.AudioContent
                         Target = node,
                         Validator = this
                     };
-                    m_ValidationItems.Add(validationItem);
-                    IsValid = false;
+                    addValidationItem(validationItem);
                 }
             }
             else
             {
                 var toRemove = new List<ValidationItem>();
 
-                foreach (var vItem in m_ValidationItems)
+                foreach (var vItem in ValidationItems)
                 {
                     var valItem = vItem as AudioContentValidationError;
                     if (valItem == null) continue;
@@ -163,16 +160,7 @@ namespace Tobi.Plugin.Validator.AudioContent
                     }
                 }
 
-                foreach (var validationItem in toRemove)
-                {
-                    m_ValidationItems.Remove(validationItem);
-                }
-                toRemove.Clear();
-
-                if (m_ValidationItems.Count <= 0)
-                {
-                    IsValid = true;
-                }
+                removeValidationItems(toRemove);
             }
         }
 
@@ -201,42 +189,6 @@ namespace Tobi.Plugin.Validator.AudioContent
                 }
             }
         }
-        //private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
-        //{
-        //    TreeNode node = null;
-
-        //    //see if there was a change in the audio media for the affected nodes
-        //    if (e.Command is ManagedAudioMediaInsertDataCommand)
-        //    {
-        //        node = (e.Command as ManagedAudioMediaInsertDataCommand).TreeNode;
-        //        var error =
-        //            (AudioContentValidationError)m_ValidationItems.Find(v => (v as AudioContentValidationError).Target == node);
-        //        if (error != null)
-        //        {
-        //            m_ValidationItems.Remove(error);
-        //            //TODO: raise validator refreshed event
-        //        }
-
-        //    }
-        //    else if (e.Command is TreeNodeAudioStreamDeleteCommand)
-        //    {
-        //        //is CurrentTreeNode correct?  want to know the tree node that had its audio deleted.
-        //        node = (e.Command as TreeNodeAudioStreamDeleteCommand).CurrentTreeNode;
-        //        WalkTreeAndFlagMissingAudio(node);
-        //    }
-        //    else if (e.Command is TreeNodeSetManagedAudioMediaCommand)
-        //    {
-        //        node = (e.Command as TreeNodeSetManagedAudioMediaCommand).TreeNode;
-        //        AudioContentValidationError error =
-        //           (AudioContentValidationError)m_ValidationItems.Find(v => (v as AudioContentValidationError).Target == node);
-        //        if (error != null)
-        //        {
-        //            m_ValidationItems.Remove(error);
-        //            //TODO: raise validator refreshed event
-        //        }
-        //    }
-
-        //}
 
         public override string Name
         {
@@ -248,18 +200,6 @@ namespace Tobi.Plugin.Validator.AudioContent
             get { return "A validator that shows which text nodes are missing audio content"; }
         }
 
-        public override bool ShouldRunOnlyOnce
-        {
-            get { return true; }
-        }
-
-        public override IEnumerable<ValidationItem> ValidationItems
-        {
-            get { return m_ValidationItems; }
-        }
-
-        private List<ValidationItem> m_ValidationItems;
-
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
         {
             var error = new AudioContentValidationError(m_Session)
@@ -267,25 +207,11 @@ namespace Tobi.Plugin.Validator.AudioContent
                 Target = treeNode,
                 Validator = this
             };
-            m_ValidationItems.Add(error);
-            IsValid = false;
+            addValidationItem(error);
         }
 
         public override bool Validate()
         {
-            //if (m_Session.DocumentProject == null) return true;
-
-            //if (m_Session.DocumentProject != null &&
-            //    m_Session.DocumentProject.Presentations.Count > 0)
-            //{
-            //    m_ValidationItems = new List<ValidationItem>();
-
-            //    //this expensive operation could be replaced by creating and hooking into events from the XukToFlowDocument process
-            //    WalkTreeAndFlagMissingAudio(m_Session.DocumentProject.Presentations.Get(0).RootNode);
-
-            //}
-
-            IsValid = m_ValidationItems.Count <= 0;
             return IsValid;
         }
 

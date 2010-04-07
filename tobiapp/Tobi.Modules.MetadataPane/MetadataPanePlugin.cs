@@ -99,7 +99,7 @@ namespace Tobi.Plugin.MetadataPane
 
         bool CanShowDialog()
         {
-            return m_UrakawaSession.DocumentProject != null && m_UrakawaSession.DocumentProject.Presentations.Count > 0;
+            return m_UrakawaSession.DocumentProject != null;
         }
 
         void ShowDialog()

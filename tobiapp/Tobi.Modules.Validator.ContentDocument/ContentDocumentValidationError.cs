@@ -31,8 +31,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 
                 if (Target != null)
                 {
-                    //targetNodeName = ValidatorUtilities.GetTreeNodeName(Target);
-                    targetNodeName = "dummy";
+                    targetNodeName = ValidatorUtilities.GetTreeNodeName(Target);
                 }
                 
                 if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
@@ -59,7 +58,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     //return message plus target node snippet plus dtd definition snippet
                     return string.Format("{0}\n{1}\n{2}\n{3}", 
                         Message, 
-                        "dummy", //ValidatorUtilities.GetNodeXml(Target, true),
+                        ValidatorUtilities.GetNodeXml(Target, true),
                         "The allowed child elements are:",                        
                         ContentDocumentValidator.GetElementsListFromDtdRegex(AllowedChildNodes));
                 }
@@ -70,7 +69,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (ErrorType == ContentDocumentErrorType.UndefinedElement)
                 {
                     return string.Format("Element definition not found for <{0}>",
-                                         "dummy" //ValidatorUtilities.GetTreeNodeName(Target)
+                                         ValidatorUtilities.GetTreeNodeName(Target)
                                          );
                 }
 

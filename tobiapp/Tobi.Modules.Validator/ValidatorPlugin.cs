@@ -111,7 +111,9 @@ namespace Tobi.Plugin.Validator
 
         private bool CanShowDialog()
         {
-            return !m_DialogIsShowing && m_UrakawaSession.DocumentProject != null && m_UrakawaSession.DocumentProject.Presentations.Count > 0;
+            return !m_DialogIsShowing
+                //TODO RESTORE && m_UrakawaSession.DocumentProject != null
+                ;
         }
 
         private void ShowDialog()

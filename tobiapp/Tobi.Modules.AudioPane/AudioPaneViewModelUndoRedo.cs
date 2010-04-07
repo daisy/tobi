@@ -391,7 +391,8 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
-                Debug.Fail("This should never happen !");
+                //fine, could be other types of commands
+                //Debug.Fail("This should never happen !");
             }
         }
 

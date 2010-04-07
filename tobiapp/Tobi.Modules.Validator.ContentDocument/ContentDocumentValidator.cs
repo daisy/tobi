@@ -4,9 +4,11 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Text.RegularExpressions;
 using DtdSharp;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
+using urakawa;
 using urakawa.core;
 using urakawa.ExternalFiles;
 
@@ -19,7 +21,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
     /// <summary>
     /// The main validator class
     /// </summary>
-    [Export(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
     public class ContentDocumentValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
@@ -43,15 +44,29 @@ namespace Tobi.Plugin.Validator.ContentDocument
         [ImportingConstructor]
         public ContentDocumentValidator(
             ILoggerFacade logger,
+            IEventAggregator eventAggregator,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
             IUrakawaSession session)
+            : base(eventAggregator)
         {
             m_Logger = logger;
             m_Session = session;
-            m_ValidationItems = new List<ValidationItem>();
+
             m_DtdRegex = new DtdSharpToRegex();
 
             m_Logger.Log(@"ContentDocumentValidator initialized", Category.Debug, Priority.Medium);
+        }
+
+        protected override void OnProjectLoaded(Project project)
+        {
+            base.OnProjectLoaded(project);
+
+            Validate();
+        }
+
+        protected override void OnProjectUnLoaded(Project project)
+        {
+            base.OnProjectUnLoaded(project);
         }
 
         public override string Name
@@ -64,27 +79,14 @@ namespace Tobi.Plugin.Validator.ContentDocument
             get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Description; }     // TODO LOCALIZE ContentDocumentValidator_Description
         }
 
-        public override bool ShouldRunOnlyOnce
-        {
-            get { return true; }
-        }
-
-        public override IEnumerable<ValidationItem> ValidationItems
-        {
-            get { return m_ValidationItems; }
-        }
-
-        private List<ValidationItem> m_ValidationItems;
-
         public override bool Validate()
         {
             if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
                 UseDtd(DTDs.DTDs.DTBOOK_2005_3);
 
-            if (m_Session.DocumentProject != null &&
-                m_Session.DocumentProject.Presentations.Count > 0)
+            if (m_Session.DocumentProject != null)
             {
-                m_ValidationItems = new List<ValidationItem>();
+                resetToValid();
 
                 if (m_DtdRegex == null || m_DtdRegex.DtdRegexTable == null ||
                     m_DtdRegex.DtdRegexTable.Count == 0)
@@ -94,12 +96,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
                                                                    ErrorType = ContentDocumentErrorType.MissingDtd,
                                                                    DtdIdentifier = m_DtdIdentifier
                                                                };
-                    m_ValidationItems.Add(error);
-                    IsValid = false;
+                    addValidationItem(error);
                 }
                 else
                 {
-                    IsValid = ValidateNode(m_Session.DocumentProject.Presentations.Get(0).RootNode);
+                    ValidateNode(m_Session.DocumentProject.Presentations.Get(0).RootNode);
                 }
             }
             return IsValid;
@@ -173,7 +174,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                                                                    ErrorType = ContentDocumentErrorType.MissingDtd,
                                                                    DtdIdentifier = m_DtdIdentifier
                                                                };
-                    m_ValidationItems.Add(error);
+                    addValidationItem(error);
                     return;
                 }
 
@@ -224,6 +225,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             }
             return result;
         }
+
         //check a single node
         private bool ValidateNodeContent(TreeNode node)
         {
@@ -239,7 +241,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                                                                    Target = node,
                                                                    ErrorType = ContentDocumentErrorType.UndefinedElement
                                                                };
-                    m_ValidationItems.Add(error);
+                    addValidationItem(error);
                     return false;
                 }
 
@@ -259,8 +261,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 //look for more details about this error -- which child element is causing problems?
                 RevalidateChildren(regex, childrenNames, error);
-
-                m_ValidationItems.Add(error);
+                
+                addValidationItem(error);
                 return false;
             }
 
