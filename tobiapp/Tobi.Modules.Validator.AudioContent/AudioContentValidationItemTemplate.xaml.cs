@@ -55,7 +55,7 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         private void WriteNodeXml_Flat(TreeNode node, FlowDocument doc)
         {
-            string nodeName = ValidatorUtilities.GetTreeNodeName(node);
+            string nodeName = "dummy"; //ValidatorUtilities.GetTreeNodeName(node);
             Paragraph paragraph = new Paragraph();
             paragraph.Inlines.Add(new Bold(new Run(string.Format("<{0}>", nodeName))));
             if (node.GetTextMedia() != null)
@@ -77,8 +77,8 @@ namespace Tobi.Plugin.Validator.AudioContent
             foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
             {
                 //Paragraph childXmlPara = new Paragraph();
-                string childNodeText = ValidatorUtilities.GetTreeNodeTextExcerpt(child);
-                string childNodeName = ValidatorUtilities.GetTreeNodeName(child);
+                string childNodeText = "dummy"; //ValidatorUtilities.GetTreeNodeTextExcerpt(child);
+                string childNodeName = "dummy"; //ValidatorUtilities.GetTreeNodeName(child);
                 paragraph.Inlines.Add(new LineBreak());
                 //spaces = indent
                 paragraph.Inlines.Add(new Bold(new Run(string.Format("  <{0}>", childNodeName))));
@@ -102,7 +102,7 @@ namespace Tobi.Plugin.Validator.AudioContent
         {
             if (value == null) return "";
             if (!(value is TreeNode)) return "";
-            return ValidatorUtilities.GetTreeNodeName(value as TreeNode);
+            return "dummy"; //ValidatorUtilities.GetTreeNodeName(value as TreeNode);
         }
         
     }
