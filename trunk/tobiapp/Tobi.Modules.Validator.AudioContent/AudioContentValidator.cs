@@ -1,15 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa;
+using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.media;
 using urakawa.media.data;
+using urakawa.media.data.audio;
+using urakawa.xuk;
 
 #if USE_ISOLATED_STORAGE
 using System.IO.IsolatedStorage;
@@ -35,7 +42,7 @@ namespace Tobi.Plugin.Validator.AudioContent
         private readonly ILoggerFacade m_Logger;
         protected readonly IUrakawaSession m_Session;
         private readonly IEventAggregator m_EventAggregator;
-        
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -55,17 +62,18 @@ namespace Tobi.Plugin.Validator.AudioContent
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
+            m_EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Subscribe(OnNoAudioContentFoundByFlowDocumentParserEvent, NoAudioContentFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
             m_ValidationItems = new List<ValidationItem>();
             m_Logger.Log(@"AudioContentValidator initialized", Category.Debug, Priority.Medium);
         }
-        
+
         private void OnProjectLoaded(Project project)
         {
             project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
         }
 
         private void OnProjectUnLoaded(Project project)
@@ -73,45 +81,162 @@ namespace Tobi.Plugin.Validator.AudioContent
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
+        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
-            TreeNode node = null;
-
-            //see if there was a change in the audio media for the affected nodes
-            if (e.Command is ManagedAudioMediaInsertDataCommand)
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
             {
-                node = (e.Command as ManagedAudioMediaInsertDataCommand).TreeNode;
-                AudioContentValidationError error =
-                    (AudioContentValidationError)m_ValidationItems.Find(v => (v as AudioContentValidationError).Target == node);
-                if (error != null)
-                {
-                    m_ValidationItems.Remove(error);
-                    //TODO: raise validator refreshed event
-                }
-
-            }
-            else if (e.Command is TreeNodeAudioStreamDeleteCommand)
-            {
-                //is CurrentTreeNode correct?  want to know the tree node that had its audio deleted.
-                node = (e.Command as TreeNodeAudioStreamDeleteCommand).CurrentTreeNode;
-                WalkTreeAndFlagMissingAudio(node);
-            }
-            else if (e.Command is TreeNodeSetManagedAudioMediaCommand)
-            {
-                node = (e.Command as TreeNodeSetManagedAudioMediaCommand).TreeNode;
-                AudioContentValidationError error =
-                   (AudioContentValidationError)m_ValidationItems.Find(v => (v as AudioContentValidationError).Target == node);
-                if (error != null)
-                {
-                    m_ValidationItems.Remove(error);
-                    //TODO: raise validator refreshed event
-                }
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
             }
 
+            m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+
+            if (!(eventt is DoneEventArgs
+                           || eventt is UnDoneEventArgs
+                           || eventt is ReDoneEventArgs
+                //|| eventt is TransactionEndedEventArgs
+                           ))
+            {
+                Debug.Fail("This should never happen !!");
+                return;
+            }
+
+            //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            //{
+            //    Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+            //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+            //    return;
+            //}
+
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs; // || eventt is TransactionEndedEventArgs;
+
+            Command cmd = eventt.Command;
+
+            updateTreeNodeAudioStatus(cmd, done);
         }
+
+        private void updateTreeNodeAudioStatus(TreeNode node)
+        {
+            bool isAudioMissing = IsAudioMissingForTreeNode(node);
+
+            if (isAudioMissing)
+            {
+                bool alreadyInList = false;
+                foreach (var vItem in m_ValidationItems)
+                {
+                    var valItem = vItem as AudioContentValidationError;
+                    if (valItem == null) continue;
+                    if (valItem.Target == node)
+                    {
+                        alreadyInList = true;
+                        break;
+                    }
+                }
+                if (!alreadyInList)
+                {
+                    var validationItem = new AudioContentValidationError(m_Session)
+                    {
+                        Target = node,
+                        Validator = this
+                    };
+                    m_ValidationItems.Add(validationItem);
+                    IsValid = false;
+                }
+            }
+            else
+            {
+                var toRemove = new List<ValidationItem>();
+
+                foreach (var vItem in m_ValidationItems)
+                {
+                    var valItem = vItem as AudioContentValidationError;
+                    if (valItem == null) continue;
+                    if (valItem.Target == node)
+                    {
+                        toRemove.Add(vItem);
+                    }
+                }
+
+                foreach (var validationItem in toRemove)
+                {
+                    m_ValidationItems.Remove(validationItem);
+                }
+                toRemove.Clear();
+
+                if (m_ValidationItems.Count <= 0)
+                {
+                    IsValid = true;
+                }
+            }
+        }
+
+        private void updateTreeNodeAudioStatus(Command cmd, bool done)
+        {
+            if (cmd is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)cmd;
+                updateTreeNodeAudioStatus(command.TreeNode);
+            }
+            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
+                updateTreeNodeAudioStatus(command.TreeNode);
+            }
+            else if (cmd is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
+                updateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
+            }
+            else if (cmd is CompositeCommand)
+            {
+                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                {
+                    updateTreeNodeAudioStatus(childCommand, done);
+                }
+            }
+        }
+        //private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
+        //{
+        //    TreeNode node = null;
+
+        //    //see if there was a change in the audio media for the affected nodes
+        //    if (e.Command is ManagedAudioMediaInsertDataCommand)
+        //    {
+        //        node = (e.Command as ManagedAudioMediaInsertDataCommand).TreeNode;
+        //        var error =
+        //            (AudioContentValidationError)m_ValidationItems.Find(v => (v as AudioContentValidationError).Target == node);
+        //        if (error != null)
+        //        {
+        //            m_ValidationItems.Remove(error);
+        //            //TODO: raise validator refreshed event
+        //        }
+
+        //    }
+        //    else if (e.Command is TreeNodeAudioStreamDeleteCommand)
+        //    {
+        //        //is CurrentTreeNode correct?  want to know the tree node that had its audio deleted.
+        //        node = (e.Command as TreeNodeAudioStreamDeleteCommand).CurrentTreeNode;
+        //        WalkTreeAndFlagMissingAudio(node);
+        //    }
+        //    else if (e.Command is TreeNodeSetManagedAudioMediaCommand)
+        //    {
+        //        node = (e.Command as TreeNodeSetManagedAudioMediaCommand).TreeNode;
+        //        AudioContentValidationError error =
+        //           (AudioContentValidationError)m_ValidationItems.Find(v => (v as AudioContentValidationError).Target == node);
+        //        if (error != null)
+        //        {
+        //            m_ValidationItems.Remove(error);
+        //            //TODO: raise validator refreshed event
+        //        }
+        //    }
+
+        //}
 
         public override string Name
         {
@@ -135,47 +260,87 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         private List<ValidationItem> m_ValidationItems;
 
-        public override bool Validate()
-        {  
-            if (m_Session.DocumentProject != null &&
-                m_Session.DocumentProject.Presentations.Count > 0)
+        private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
+        {
+            var error = new AudioContentValidationError(m_Session)
             {
-                m_ValidationItems = new List<ValidationItem>();
+                Target = treeNode,
+                Validator = this
+            };
+            m_ValidationItems.Add(error);
+            IsValid = false;
+        }
 
-                //this expensive operation could be replaced by creating and hooking into events from the XukToFlowDocument process
-                WalkTreeAndFlagMissingAudio(m_Session.DocumentProject.Presentations.Get(0).RootNode);
-                
-            }
+        public override bool Validate()
+        {
+            //if (m_Session.DocumentProject == null) return true;
+
+            //if (m_Session.DocumentProject != null &&
+            //    m_Session.DocumentProject.Presentations.Count > 0)
+            //{
+            //    m_ValidationItems = new List<ValidationItem>();
+
+            //    //this expensive operation could be replaced by creating and hooking into events from the XukToFlowDocument process
+            //    WalkTreeAndFlagMissingAudio(m_Session.DocumentProject.Presentations.Get(0).RootNode);
+
+            //}
 
             IsValid = m_ValidationItems.Count <= 0;
             return IsValid;
         }
 
-        private void WalkTreeAndFlagMissingAudio(TreeNode node)
+        private bool IsAudioMissingForTreeNode(TreeNode node)
         {
-            if (node.Children.Count > 0)
+            ManagedAudioMedia media = node.GetManagedAudioMedia();
+            if (media != null)
             {
-                foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
-                {
-                    WalkTreeAndFlagMissingAudio(child);
-                }
+                return false;
             }
-            else
+
+            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
+            if (seqManagedAudioMedia != null)
             {
-                if (node.GetFirstAncestorWithManagedAudio() == null)
-                {
-                    AudioContentValidationError error = new AudioContentValidationError(m_Session);
-                    error.Target = node;
-                    error.Validator = this;
-                    m_ValidationItems.Add(error);
-
-                    //TODO: raise validator refreshed event
-                }
-
+                return false;
             }
+
+            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
+            if (ancerstor != null)
+            {
+                return false;
+            }
+
+            QualifiedName qname = node.GetXmlElementQName();
+            if (node.GetTextMedia() != null
+                || qname != null && qname.LocalName.ToLower() == "img")
+            {
+                return true;
+            }
+
+            return false;
         }
 
+        //private void WalkTreeAndFlagMissingAudio(TreeNode node)
+        //{
+        //    if (node.Children.Count > 0)
+        //    {
+        //        foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+        //        {
+        //            WalkTreeAndFlagMissingAudio(child);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (node.GetFirstAncestorWithManagedAudio() == null)
+        //        {
+        //            AudioContentValidationError error = new AudioContentValidationError(m_Session);
+        //            error.Target = node;
+        //            error.Validator = this;
+        //            m_ValidationItems.Add(error);
 
-        
+        //            //TODO: raise validator refreshed event
+        //        }
+
+        //    }
+        //}
     }
 }

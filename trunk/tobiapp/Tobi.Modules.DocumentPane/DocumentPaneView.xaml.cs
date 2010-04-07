@@ -663,7 +663,8 @@ namespace Tobi.Plugin.DocumentPane
                 Debug.Assert(node == text.Tag);
                 if (node == text.Tag)
                 {
-                    XukToFlowDocument.SetTextElementAttributes(text, node);
+                    bool noAudio;
+                    XukToFlowDocument.SetTextElementAttributes(text, node, out noAudio);
                     if (m_lastHighlighted == text)
                     {
                         m_lastHighlighted_Foreground = text.Foreground;

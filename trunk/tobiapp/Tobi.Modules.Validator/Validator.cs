@@ -9,7 +9,6 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa;
-using urakawa.core;
 using urakawa.events.undo;
 
 namespace Tobi.Plugin.Validator
@@ -77,7 +76,7 @@ namespace Tobi.Plugin.Validator
             project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
             m_RanOnce = false;
             Validate();
         }
@@ -89,7 +88,7 @@ namespace Tobi.Plugin.Validator
             project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
         }
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
@@ -147,19 +146,16 @@ namespace Tobi.Plugin.Validator
         
         public override bool Validate()
         {
-            
             bool isValid = true;
             
             foreach (ObservableValidatorWrapper ov in ObsValidators)
             {
                 bool result = true;
-                if (!ov.Validator.ShouldRunOnlyOnce || 
-                    (ov.Validator.ShouldRunOnlyOnce && !m_RanOnce))
+                if (!ov.Validator.ShouldRunOnlyOnce || !m_RanOnce)
                 {
                     result = ov.Validator.Validate();
                     isValid = isValid && result;
                 }
-                
             }
            
             IsValid = isValid;
@@ -198,7 +194,6 @@ namespace Tobi.Plugin.Validator
             {
                 ValidationItems.Add(v);
             }
-            
         }
     }
 }

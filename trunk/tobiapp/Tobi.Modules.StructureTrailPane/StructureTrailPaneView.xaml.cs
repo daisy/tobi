@@ -629,7 +629,6 @@ namespace Tobi.Plugin.StructureTrailPane
             }
 
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
             refreshData(newTreeNodeSelection);
         }
     }

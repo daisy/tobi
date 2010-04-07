@@ -382,8 +382,10 @@ namespace Tobi.Plugin.DocumentPane
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
-        public static bool SetTextElementAttributes(TextElement data, TreeNode node)
+        public static bool SetTextElementAttributes(TextElement data, TreeNode node, out bool noAudio)
         {
+            noAudio = false;
+
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
@@ -434,6 +436,8 @@ namespace Tobi.Plugin.DocumentPane
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
 
+                noAudio = true;
+                
                 return true;
             }
             return false;
@@ -444,7 +448,12 @@ namespace Tobi.Plugin.DocumentPane
             data.Tag = node;
             data.Foreground = Brushes.Red;
 
-            Boolean needMouseHandler = SetTextElementAttributes(data, node);
+            bool noAudio;
+            Boolean needMouseHandler = SetTextElementAttributes(data, node, out noAudio);
+            if (noAudio)
+            {
+                EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
+            }
 
             if (needMouseHandler)
             {

@@ -26,13 +26,13 @@ namespace Tobi.Common.Validation
             get { return m_IsValid; }
             protected set
             {
-                EventHandler<ValidatorStateRefreshedEventArgs> ev = ValidatorStateRefreshed;
-                if (ev != null) ev(this, new ValidatorStateRefreshedEventArgs(this));
-
                 if (value == m_IsValid)
                 {
                     return;
                 }
+
+                EventHandler<ValidatorStateRefreshedEventArgs> ev = ValidatorStateRefreshed;
+                if (ev != null) ev(this, new ValidatorStateRefreshedEventArgs(this));
 
                 m_IsValid = value;
             }
@@ -79,9 +79,9 @@ namespace Tobi.Common.Validation
         //allows the user to fix it
         public abstract void TakeAction();
     }
+
     public static class ValidationDataTemplateProperties
     {
         public const string TypeIdentifier = "ValidationItemDataTemplate";
-
     }
 }
