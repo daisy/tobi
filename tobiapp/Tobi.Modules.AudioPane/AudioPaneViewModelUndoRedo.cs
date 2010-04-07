@@ -356,13 +356,15 @@ namespace Tobi.Plugin.AudioPane
 
                 Time diff = timeEnd.GetDifference(timeBegin);
 
+                ManagedAudioMedia manMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
+                if (manMedia == null)
+                {
+                    Debug.Assert(done);
+                    Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsMilliseconds == diff.AsMilliseconds);
+                }
+
                 if (done)
                 {
-                    ManagedAudioMedia manMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
-                    if (manMedia == null)
-                    {
-                        Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsMilliseconds == diff.AsMilliseconds);
-                    }
                     TotalDocumentAudioDuration -= diff.AsMilliseconds;
                 }
                 else
@@ -372,15 +374,37 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (cmd is CompositeCommand)
             {
-                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                if (done)
                 {
-                    updateTotalDuration(childCommand, done);
+                    foreach (var childCommand in ((CompositeCommand) cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                    {
+                        updateTotalDuration(childCommand, done);
+                    }
                 }
+                else
+                {
+                    foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerableReversed)
+                    {
+                        updateTotalDuration(childCommand, done);
+                    }
+                }
+            }
+            else
+            {
+                Debug.Fail("This should never happen !");
             }
         }
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
+            }
             Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
@@ -389,12 +413,6 @@ namespace Tobi.Plugin.AudioPane
                            || eventt is TransactionEndedEventArgs))
             {
                 Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            if (eventt is DoneEventArgs && m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 
@@ -407,13 +425,20 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            if (!Dispatcher.CheckAccess())
+            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
+            }
+
+            if (eventt is DoneEventArgs)
+            {
+                Debug.Assert(!(eventt.Command is CompositeCommand));
+            }
+            if (eventt.Command is CompositeCommand)
+            {
+                Debug.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs);
             }
 
 
@@ -437,18 +462,21 @@ namespace Tobi.Plugin.AudioPane
                 View.ResetAll();
             }
 
+
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+            Debug.Assert(done == !(eventt is UnDoneEventArgs));
+
+
+            updateTotalDuration(eventt.Command, done);
+
 
             Command cmd = eventt.Command;
-
-            updateTotalDuration(cmd, done);
-
-            if (eventt.Command is CompositeCommand)
+            if (cmd is CompositeCommand)
             {
                 Debug.Assert(!(eventt is DoneEventArgs)
                     && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
 
-                var command = (CompositeCommand)eventt.Command;
+                var command = (CompositeCommand)cmd;
 
                 //Debug.Assert(command.ChildCommands.Count > 0);
                 if (command.ChildCommands.Count == 0) return;
