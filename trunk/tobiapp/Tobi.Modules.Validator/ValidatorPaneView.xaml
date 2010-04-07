@@ -12,7 +12,7 @@
     </Grid.ColumnDefinitions>
     
     <!-- Left side: List of all validation items -->
-    <TabControl Grid.Column="0" 
+    <!--<TabControl Grid.Column="0" 
                 x:Name="Tabs"
                 ItemsSource="{Binding Path=ValidatorAggregator.ObsValidators}"
                 IsSynchronizedWithCurrentItem="True">
@@ -33,12 +33,12 @@
                    DisplayMemberPath="Message"/>    
         </DataTemplate>
       </TabControl.ContentTemplate>
-    </TabControl>
+    </TabControl>-->
     
     <!-- middle: test list-->
     <!-- the display works when bound to this but not to the listbox inside the tab control (see above)-->
-    <!--<ListBox Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ValidationItems}" DisplayMemberPath="Message"
-             Name="TestValidationItemsListBox" Margin="0,0,5,0"/> -->
+    <ListBox Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ValidationItems}" DisplayMemberPath="Message"
+             Name="ValidationItemsListBox" Margin="0,0,5,0"/> 
 
     <StackPanel Grid.Column="1">
       <StackPanel.DataContext>

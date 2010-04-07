@@ -9,6 +9,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa;
+using urakawa.core;
 using urakawa.events.undo;
 
 namespace Tobi.Plugin.Validator
@@ -160,20 +161,7 @@ namespace Tobi.Plugin.Validator
                 }
                 
             }
-             
-            /*
-            foreach (IValidator v in Validators)
-            {
-                bool result = true;
-                if (!v.ShouldRunOnlyOnce ||
-                    (v.ShouldRunOnlyOnce && !m_RanOnce))
-                {
-                    result = v.Validate();
-                    isValid = isValid && result;
-                }
-
-            }
-            */
+           
             IsValid = isValid;
 
             m_RanOnce = true;
@@ -212,6 +200,5 @@ namespace Tobi.Plugin.Validator
             }
             
         }
-        
     }
 }
