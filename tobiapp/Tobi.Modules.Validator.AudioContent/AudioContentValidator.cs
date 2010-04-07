@@ -89,7 +89,7 @@ namespace Tobi.Plugin.Validator.AudioContent
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+               Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
 
