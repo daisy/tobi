@@ -228,26 +228,6 @@ namespace Tobi.Plugin.NavigationPane
         }
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
-            m_Logger.Log("MarkersPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                  || eventt is UnDoneEventArgs
-                  || eventt is ReDoneEventArgs
-                  //|| eventt is TransactionEndedEventArgs
-                  ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            //if (eventt is DoneEventArgs &&
-            //    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            //{
-            //    m_Logger.Log("MarkersPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)",
-            //                 Category.Debug, Priority.Medium);
-            //    return;
-            //}
-
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
@@ -258,16 +238,31 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            if (eventt.Command is TreeNodeSetIsMarkedCommand)
-            {
-                RaisePropertyChanged(() => SelectedTreeNode);
-                var cmd = (TreeNodeSetIsMarkedCommand) eventt.Command;
+            m_Logger.Log("MarkersPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
-                if (cmd.TreeNode.IsMarked)
-                    _markersNavigator.AddMarkedTreeNode(cmd.TreeNode);
-                else
-                    _markersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
+            if (!(eventt is DoneEventArgs
+                  || eventt is UnDoneEventArgs
+                  || eventt is ReDoneEventArgs
+                 //|| eventt is TransactionEndedEventArgs
+                 ))
+            {
+                Debug.Fail("This should never happen !!");
+                return;
             }
+
+            if (!(eventt.Command is TreeNodeSetIsMarkedCommand))
+            {
+                return;
+            }
+
+            RaisePropertyChanged(() => SelectedTreeNode);
+
+            var cmd = (TreeNodeSetIsMarkedCommand) eventt.Command;
+
+            if (cmd.TreeNode.IsMarked)
+                _markersNavigator.AddMarkedTreeNode(cmd.TreeNode);
+            else
+                _markersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
         }
 
         private void onMarkedTreeNodeFoundByFlowDocumentParser(TreeNode data)

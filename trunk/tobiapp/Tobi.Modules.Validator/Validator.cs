@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -91,6 +93,15 @@ namespace Tobi.Plugin.Validator
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
         {
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, e);
+                return;
+            }
+
             Validate();
         }
 

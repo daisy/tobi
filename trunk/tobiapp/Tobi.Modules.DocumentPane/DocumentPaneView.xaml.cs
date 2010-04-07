@@ -609,6 +609,15 @@ namespace Tobi.Plugin.DocumentPane
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                return;
+            }
+
             m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
@@ -620,18 +629,10 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            if (eventt is DoneEventArgs && m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
+                Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
-            }
-
-            if (!Dispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
 
