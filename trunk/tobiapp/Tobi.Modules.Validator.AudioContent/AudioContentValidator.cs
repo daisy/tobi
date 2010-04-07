@@ -164,7 +164,7 @@ namespace Tobi.Plugin.Validator.AudioContent
             {
                 if (node.GetFirstAncestorWithManagedAudio() == null)
                 {
-                    AudioContentValidationError error = new AudioContentValidationError();
+                    AudioContentValidationError error = new AudioContentValidationError(m_Session);
                     error.Target = node;
                     error.Validator = this;
                     m_ValidationItems.Add(error);
