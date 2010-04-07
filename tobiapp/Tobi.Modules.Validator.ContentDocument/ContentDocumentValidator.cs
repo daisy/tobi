@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows;
 using DtdSharp;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
