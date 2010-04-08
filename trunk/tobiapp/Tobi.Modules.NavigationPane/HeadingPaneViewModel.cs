@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Windows;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Events;
@@ -90,7 +91,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => m_ShellView.ActiveAware.IsActive && View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -189,17 +190,20 @@ namespace Tobi.Plugin.NavigationPane
         {
             View = view;
 
-            var focusAware = new FocusActiveAwareAdapter(View);
-            focusAware.IsActiveChanged += (sender, e) =>
-            {
-                // ALWAYS ACTIVE ! CommandFindFocus.IsActive = focusAware.IsActive;
-                CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
-                CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
-            };
-
-            //IActiveAware activeAware = View as IActiveAware;
-            //if (activeAware != null) { activeAware.IsActiveChanged += ActiveAwareIsActiveChanged; }
+            ActiveAware = new FocusActiveAwareAdapter(View);
+            ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
+            m_ShellView.ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
         }
+
+        public IActiveAware ActiveAware { get; private set; }
+
+        private void refreshCommandsIsActive()
+        {
+            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+            CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;   
+        }
+
         //private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
         //{
         //    IActiveAware activeAware = (sender as IActiveAware);

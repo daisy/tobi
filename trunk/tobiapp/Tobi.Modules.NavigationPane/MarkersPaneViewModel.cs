@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -55,7 +56,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => m_ShellView.ActiveAware.IsActive && View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -185,16 +186,18 @@ namespace Tobi.Plugin.NavigationPane
         {
             View = view;
 
-            var focusAware = new FocusActiveAwareAdapter(View);
-            focusAware.IsActiveChanged += (sender, e) =>
-            {
-                // ALWAYS ACTIVE ! CommandFindFocusMarkers.IsActive = focusAware.IsActive;
-                CommandFindNextMarkers.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
-                CommandFindPrevMarkers.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
-            };
+            ActiveAware = new FocusActiveAwareAdapter(View);
+            ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
+            m_ShellView.ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
+        }
 
-            //IActiveAware activeAware = View as IActiveAware;
-            //if (activeAware != null) { activeAware.IsActiveChanged += ActiveAwareIsActiveChanged; }
+        public IActiveAware ActiveAware { get; private set; }
+
+        private void refreshCommandsIsActive()
+        {
+            CommandFindFocusMarkers.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindNextMarkers.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+            CommandFindPrevMarkers.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }
 
         //private void ActiveAwareIsActiveChanged(object sender, EventArgs e)

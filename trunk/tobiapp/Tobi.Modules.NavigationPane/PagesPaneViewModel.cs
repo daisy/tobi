@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -51,7 +52,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => m_ShellView.ActiveAware.IsActive && View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -134,18 +135,19 @@ namespace Tobi.Plugin.NavigationPane
         {
             View = view;
 
-            var focusAware = new FocusActiveAwareAdapter(View);
-            focusAware.IsActiveChanged += (sender, e) =>
-            {
-                // ALWAYS ACTIVE ! CommandFindFocusPage.IsActive = focusAware.IsActive;
-                CommandFindNextPage.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
-                CommandFindPrevPage.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
-            };
-
-            //IActiveAware activeAware = View as IActiveAware;
-            //if (activeAware != null) { activeAware.IsActiveChanged += ActiveAwareIsActiveChanged; }
+            ActiveAware = new FocusActiveAwareAdapter(View);
+            ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
+            m_ShellView.ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
         }
 
+        public IActiveAware ActiveAware { get; private set; }
+
+        private void refreshCommandsIsActive()
+        {
+            CommandFindFocusPage.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindNextPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+            CommandFindPrevPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+        }
         //private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
         //{
         //    IActiveAware activeAware = (sender as IActiveAware);

@@ -108,7 +108,11 @@ namespace Tobi.Common.UI
             {
                 if (!ActiveAware.IsActive)
                 {
-                    Debugger.Break();
+                    Console.WriteLine("@@@@ popup lost focus");
+                }
+                else
+                {
+                    Console.WriteLine("@@@@ popup gained focus");
                 }
                 CommandManager.InvalidateRequerySuggested();
             };
