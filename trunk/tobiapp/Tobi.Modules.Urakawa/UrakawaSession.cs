@@ -339,7 +339,11 @@ namespace Tobi.Plugin.Urakawa
                     if (!listOfDataProviderFiles.Contains(fileName))
                     {
                         var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-                        File.Move(filePath, filePathDest);
+                        Debug.Assert(!File.Exists(filePathDest));
+                        if (!File.Exists(filePathDest))
+                        {
+                            File.Move(filePath, filePathDest);
+                        }
                     }
                 }
 
