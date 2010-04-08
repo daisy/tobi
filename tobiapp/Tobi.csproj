@@ -85,10 +85,6 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Tobi.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Tobi.Infrastructure\bin\Debug\Tobi.Infrastructure.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <HintPath>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll</HintPath>
     </Reference>
@@ -227,6 +223,10 @@
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Infrastructure\Tobi.Infrastructure.csproj">
+      <Project>{698E4C51-9506-4CC5-94E2-31F5FD90532E}</Project>
+      <Name>Tobi.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.csproj">
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Plugin.AudioPane</Name>
@@ -270,6 +270,10 @@
     <ProjectReference Include="Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata.csproj">
       <Project>{341678A8-F3B5-43BF-8505-69B4ED969B53}</Project>
       <Name>Tobi.Plugin.Validator.Metadata</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator.MissingAudio\Tobi.Plugin.Validator.MissingAudio.csproj">
+      <Project>{EB2751C7-1A3D-441B-9EA3-96B7022900B8}</Project>
+      <Name>Tobi.Plugin.Validator.MissingAudio</Name>
     </ProjectReference>
     <ProjectReference Include="Tobi.Modules.Validator\Tobi.Plugin.Validator.csproj">
       <Project>{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}</Project>
