@@ -288,6 +288,13 @@ namespace Tobi.Plugin.Settings
                 m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
                 m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
                 m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
+
+                if (m_OwnerWindow != null)
+                {
+                    m_OwnerWindow.InputBindings.Remove(m_GlobalSearchCommand.CmdFindFocus.KeyBinding);
+                    m_OwnerWindow.InputBindings.Remove(m_GlobalSearchCommand.CmdFindNext.KeyBinding);
+                    m_OwnerWindow.InputBindings.Remove(m_GlobalSearchCommand.CmdFindPrevious.KeyBinding);
+                }
             }
 
             foreach (var settingsProvider in m_SettingsAggregator.Settings)
@@ -392,10 +399,6 @@ namespace Tobi.Plugin.Settings
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
             m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
-
-            InputBindings.Add(m_GlobalSearchCommand.CmdFindFocus.KeyBinding);
-            InputBindings.Add(m_GlobalSearchCommand.CmdFindNext.KeyBinding);
-            InputBindings.Add(m_GlobalSearchCommand.CmdFindPrevious.KeyBinding);
         }
 
         public RichDelegateCommand CommandFindFocus { get; private set; }
@@ -451,6 +454,12 @@ namespace Tobi.Plugin.Settings
                 m_OwnerWindow = value;
                 if (m_OwnerWindow == null) return;
                 m_OwnerWindow.ActiveAware.IsActiveChanged += OnOwnerWindowIsActiveChanged;
+
+                if (m_GlobalSearchCommand == null) return;
+
+                m_OwnerWindow.InputBindings.Add(m_GlobalSearchCommand.CmdFindFocus.KeyBinding);
+                m_OwnerWindow.InputBindings.Add(m_GlobalSearchCommand.CmdFindNext.KeyBinding);
+                m_OwnerWindow.InputBindings.Add(m_GlobalSearchCommand.CmdFindPrevious.KeyBinding);
             }
         }
 
