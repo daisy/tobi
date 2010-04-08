@@ -8,7 +8,7 @@
     <ProjectGuid>{EB2751C7-1A3D-441B-9EA3-96B7022900B8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tobi.Plugin.Validator.AudioContent</RootNamespace>
+    <RootNamespace>Tobi.Plugin.Validator.MissingAudio</RootNamespace>
     <AssemblyName>Tobi.Plugin.Validator.AudioContent</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

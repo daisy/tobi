@@ -29,7 +29,7 @@ using Tobi.Plugin.StructureTrailPane;
 using Tobi.Plugin.ToolBars;
 using Tobi.Plugin.Urakawa;
 using Tobi.Plugin.Validator;
-using Tobi.Plugin.Validator.AudioContent;
+using Tobi.Plugin.Validator.MissingAudio;
 using Tobi.Plugin.Validator.ContentDocument;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa.ExternalFiles;

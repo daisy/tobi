@@ -20,12 +20,12 @@ using urakawa.xuk;
 using System.IO.IsolatedStorage;
 #endif //USE_ISOLATED_STORAGE
 
-namespace Tobi.Plugin.Validator.AudioContent
+namespace Tobi.Plugin.Validator.MissingAudio
 {
     /// <summary>
     /// The main validator class
     /// </summary>
-    public class AudioContentValidator : AbstractValidator, IPartImportsSatisfiedNotification
+    public class MissingAudioValidator : AbstractValidator, IPartImportsSatisfiedNotification
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -46,7 +46,7 @@ namespace Tobi.Plugin.Validator.AudioContent
         ///<param name="logger">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         ///<param name="session">normally obtained from the MEF composition container, it's a Tobi-specific service</param>
         [ImportingConstructor]
-        public AudioContentValidator(
+        public MissingAudioValidator(
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
@@ -58,7 +58,7 @@ namespace Tobi.Plugin.Validator.AudioContent
 
             m_EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Subscribe(OnNoAudioContentFoundByFlowDocumentParserEvent, NoAudioContentFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
-            m_Logger.Log(@"AudioContentValidator initialized", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"MissingAudioValidator initialized", Category.Debug, Priority.Medium);
         }
 
         protected override void OnProjectLoaded(Project project)
@@ -93,7 +93,7 @@ namespace Tobi.Plugin.Validator.AudioContent
                 return;
             }
 
-            m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            m_Logger.Log("MissingAudioValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
@@ -136,7 +136,7 @@ namespace Tobi.Plugin.Validator.AudioContent
                 bool alreadyInList = false;
                 foreach (var vItem in ValidationItems)
                 {
-                    var valItem = vItem as AudioContentValidationError;
+                    var valItem = vItem as MissingAudioValidationError;
                     
                     Debug.Assert(valItem != null);
                     if (valItem == null) continue;
@@ -149,7 +149,7 @@ namespace Tobi.Plugin.Validator.AudioContent
                 }
                 if (!alreadyInList)
                 {
-                    var validationItem = new AudioContentValidationError(m_Session)
+                    var validationItem = new MissingAudioValidationError(m_Session)
                     {
                         Target = node,
                         Validator = this
@@ -160,7 +160,7 @@ namespace Tobi.Plugin.Validator.AudioContent
                     foreach (var vItem in ValidationItems)
                     {
                         i++;
-                        var valItem = vItem as AudioContentValidationError;
+                        var valItem = vItem as MissingAudioValidationError;
 
                         Debug.Assert(valItem != null);
                         if (valItem == null) continue;
@@ -184,7 +184,7 @@ namespace Tobi.Plugin.Validator.AudioContent
 
                 foreach (var vItem in ValidationItems)
                 {
-                    var valItem = vItem as AudioContentValidationError;
+                    var valItem = vItem as MissingAudioValidationError;
 
                     Debug.Assert(valItem != null);
                     if (valItem == null) continue;
@@ -227,12 +227,12 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         public override string Name
         {
-            get { return "Audio Content Validator"; }
+            get { return "Missing Audio Validator"; }
         }
 
         public override string Description
         {
-            get { return "A validator that shows which text nodes are missing audio content"; }
+            get { return "Find text missing audio content"; }
         }
 
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
@@ -240,7 +240,7 @@ namespace Tobi.Plugin.Validator.AudioContent
             Debug.Assert(bTreeNodeNeedsAudio(treeNode));
             Debug.Assert(!bTreeNodeHasOrInheritsAudio(treeNode));
 
-            var error = new AudioContentValidationError(m_Session)
+            var error = new MissingAudioValidationError(m_Session)
             {
                 Target = treeNode,
                 Validator = this

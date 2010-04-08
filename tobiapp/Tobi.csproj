@@ -263,9 +263,9 @@
       <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
       <Name>Tobi.Plugin.Urakawa</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.Validator.AudioContent\Tobi.Plugin.Validator.AudioContent.csproj">
+    <ProjectReference Include="Tobi.Modules.Validator.AudioContent\Tobi.Plugin.Validator.MissingAudio.csproj">
       <Project>{EB2751C7-1A3D-441B-9EA3-96B7022900B8}</Project>
-      <Name>Tobi.Plugin.Validator.AudioContent</Name>
+      <Name>Tobi.Plugin.Validator.MissingAudio</Name>
     </ProjectReference>
     <ProjectReference Include="Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument.csproj">
       <Project>{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}</Project>

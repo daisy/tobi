@@ -2,12 +2,12 @@
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 
-namespace Tobi.Plugin.Validator.AudioContent
+namespace Tobi.Plugin.Validator.MissingAudio
 {
     ///<summary>
     /// The validation framework includes a top-level UI to display all publication errors as they are detected.
     ///</summary>
-    public sealed class AudioContentValidatorPlugin : AbstractTobiPlugin
+    public sealed class MissingAudioValidatorPlugin : AbstractTobiPlugin
     {
         private readonly ILoggerFacade m_Logger;
 
@@ -17,7 +17,7 @@ namespace Tobi.Plugin.Validator.AudioContent
         ///</summary>
         ///<param name="logger">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         [ImportingConstructor]
-        public AudioContentValidatorPlugin(
+        public MissingAudioValidatorPlugin(
             ILoggerFacade logger
             )
         {
@@ -26,17 +26,17 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         public override void Dispose()
         {
-            m_Logger.Log(@"AudioContentValidatorPlugin unloaded", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"MissingAudioValidatorPlugin unloaded", Category.Debug, Priority.Medium);
         }
 
         public override string Name
         {
-            get { return "Audio Content Validator"; }
+            get { return "Missing Audio Validator"; }
         }
 
         public override string Description
         {
-            get { return "A validator that shows which text nodes are missing audio content"; }
+            get { return "Find text missing audio content"; }
         }
     }
 }

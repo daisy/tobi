@@ -232,7 +232,7 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MetadataValidator.
+        ///   Looks up a localized string similar to Metadata Validator.
         /// </summary>
         public static string MetadataValidator_Name {
             get {

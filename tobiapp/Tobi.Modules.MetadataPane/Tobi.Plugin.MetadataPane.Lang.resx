@@ -121,7 +121,7 @@
     <value>The publication metadata editor</value>
   </data>
   <data name="MetadataPanePlugin_Name" xml:space="preserve">
-    <value>Metadata editor panel.</value>
+    <value>Metadata editor panel</value>
   </data>
   <data name="Metadata_Content" xml:space="preserve">
     <value>Content:</value>
@@ -139,10 +139,10 @@
     <value>Occurrence:</value>
   </data>
   <data name="TransactionMetadataEdit_ShortDesc" xml:space="preserve">
-    <value>Metadata editor.</value>
+    <value>Metadata editor</value>
   </data>
   <data name="TransactionMetadataEdit_LongDesc" xml:space="preserve">
-    <value>The metadata edits.</value>
+    <value>The metadata edits</value>
   </data>
   <data name="Optional" xml:space="preserve">
     <value>Optional</value>

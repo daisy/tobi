@@ -133,7 +133,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metadata editor panel..
+        ///   Looks up a localized string similar to Metadata editor panel.
         /// </summary>
         public static string MetadataPanePlugin_Name {
             get {
@@ -187,7 +187,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The metadata edits..
+        ///   Looks up a localized string similar to The metadata edits.
         /// </summary>
         public static string TransactionMetadataEdit_LongDesc {
             get {
@@ -196,7 +196,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metadata editor..
+        ///   Looks up a localized string similar to Metadata editor.
         /// </summary>
         public static string TransactionMetadataEdit_ShortDesc {
             get {
