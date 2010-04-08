@@ -85,19 +85,19 @@ namespace Tobi.Plugin.NavigationPane
                 null, null);
 
             CommandFindFocus = new RichDelegateCommand(
-                @"DUMMY TXT",
-                @"DUMMY TXT",
+                @"HEADINGS CommandFindFocus DUMMY TXT",
+                @"HEADINGS CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => m_ShellView.ActiveAware.IsActive && View != null && View.SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
 
             CommandFindNext = new RichDelegateCommand(
-                @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext,
-                @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
+                @"HEADINGS CommandFindNext DUMMY TXT", //UserInterfaceStrings.TreeFindNext,
+                @"HEADINGS CommandFindNext DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => _headingsNavigator.FindNext(),
@@ -107,8 +107,8 @@ namespace Tobi.Plugin.NavigationPane
                 );
 
             CommandFindPrev = new RichDelegateCommand(
-                @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev,
-                @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
+                @"HEADINGS CommandFindPrev DUMMY TXT", //UserInterfaceStrings.TreeFindPrev,
+                @"HEADINGS CommandFindPrev DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => _headingsNavigator.FindPrevious(),
@@ -170,9 +170,14 @@ namespace Tobi.Plugin.NavigationPane
         [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IGlobalSearchCommands m_GlobalSearchCommand;
 
+        private bool m_GlobalSearchCommandDone = false;
         private void trySearchCommands()
         {
-            if (m_GlobalSearchCommand == null) { return; }
+            if (m_GlobalSearchCommand == null || m_GlobalSearchCommandDone)
+            {
+                return;
+            }
+            m_GlobalSearchCommandDone = true;
 
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
@@ -188,8 +193,8 @@ namespace Tobi.Plugin.NavigationPane
             focusAware.IsActiveChanged += (sender, e) =>
             {
                 // ALWAYS ACTIVE ! CommandFindFocus.IsActive = focusAware.IsActive;
-                CommandFindNext.IsActive = focusAware.IsActive;
-                CommandFindPrev.IsActive = focusAware.IsActive;
+                CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
+                CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
             };
 
             //IActiveAware activeAware = View as IActiveAware;

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Threading;
 using AudioLib;
+using Microsoft.Practices.Composite;
 using Tobi.Common.MVVM;
 using System;
 using System.Windows.Media;
@@ -298,6 +299,8 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
+        IActiveAware ActiveAware { get; }
+
         event EventHandler DeviceRemoved;
         event EventHandler DeviceArrived;
 

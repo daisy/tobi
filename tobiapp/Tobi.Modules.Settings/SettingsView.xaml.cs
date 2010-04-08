@@ -39,6 +39,8 @@ namespace Tobi.Plugin.Settings
         public void OnImportsSatisfied()
 #pragma warning restore 1591
         {
+            trySearchCommands();
+
             //#if DEBUG
             //            Debugger.Break();
             //#endif
@@ -281,10 +283,19 @@ namespace Tobi.Plugin.Settings
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
+            if (m_GlobalSearchCommand != null)
+            {
+                m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
+                m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
+                m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
+            }
+
             foreach (var settingsProvider in m_SettingsAggregator.Settings)
             {
                 settingsProvider.PropertyChanged -= Settings_PropertyChanged;
             }
+
+            //DataContext = null;
         }
 
         private void resetList()
@@ -358,33 +369,84 @@ namespace Tobi.Plugin.Settings
             SettingWrapper nextMatch = FindPrevSetting(AggregatedSettings);
             if (nextMatch != null) { nextMatch.IsSelected = true; } else { AudioCues.PlayAsterisk(); }
         }
-        public static RichDelegateCommand CommandFindNext { get; private set; }
-        public static RichDelegateCommand CommandFindPrev { get; private set; }
+
+        ~SettingsView()
+        {
+#if DEBUG
+            m_Logger.Log("SettingsView garbage collected.", Category.Debug, Priority.Medium);
+#endif
+        }
+
+        [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IGlobalSearchCommands m_GlobalSearchCommand;
+
+        private bool m_GlobalSearchCommandDone = false;
+        private void trySearchCommands()
+        {
+            if (m_GlobalSearchCommand == null || m_GlobalSearchCommandDone)
+            {
+                return;
+            }
+            m_GlobalSearchCommandDone = true;
+
+            m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+            m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
+            m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
+
+            InputBindings.Add(m_GlobalSearchCommand.CmdFindFocus.KeyBinding);
+            InputBindings.Add(m_GlobalSearchCommand.CmdFindNext.KeyBinding);
+            InputBindings.Add(m_GlobalSearchCommand.CmdFindPrevious.KeyBinding);
+        }
+
+        public RichDelegateCommand CommandFindFocus { get; private set; }
+        public RichDelegateCommand CommandFindNext { get; private set; }
+        public RichDelegateCommand CommandFindPrev { get; private set; }
         private void intializeCommands()
         {
             m_Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
-
+            //
+            CommandFindFocus = new RichDelegateCommand(
+                @"SETTINGS CommandFindFocus DUMMY TXT",
+                @"SETTINGS CommandFindFocus DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
+                null,
+                () => FocusHelper.Focus(SearchBox),
+                () => OwnerWindow.ActiveAware.IsActive && SearchBox.Visibility == Visibility.Visible,
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
+                );
             //
             CommandFindNext = new RichDelegateCommand(
-                "Find Next Setting",
-                "Find The Next Setting That Matches The Specified Criteria.",
-                new KeyGesture(Key.F3), 
+                @"SETTINGS CommandFindNext DUMMY TXT",
+                @"SETTINGS CommandFindNext DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 FindNext,
                 () => !string.IsNullOrEmpty(SearchTerm),
-                null, null);
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
+                );
             CommandFindPrev = new RichDelegateCommand(
-                "Find Previous Setting",
-                "Find The Previous Setting That Matches The Specified Criteria.",
-                new KeyGesture(Key.F3,ModifierKeys.Shift), 
+                @"SETTINGS CommandFindPrevious DUMMY TXT",
+                @"SETTINGS CommandFindPrevious DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 FindPrevious,
                 () => !string.IsNullOrEmpty(SearchTerm),
-                null, null);
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
+                );
 
-            InputBindings.Add(CommandFindNext.KeyBinding);
-            InputBindings.Add(CommandFindPrev.KeyBinding);
+            //var focusAware = new FocusActiveAwareAdapter(this);
+            OwnerWindow.ActiveAware.IsActiveChanged += (sender, e) =>
+            {
+                // ALWAYS ACTIVE ! CommandFindFocusPage.IsActive = focusAware.IsActive;
+                CommandFindNext.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
+                CommandFindPrev.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
+            };
         }
+
+        public PopupModalWindow OwnerWindow { get; set; }
 
         private static void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)
         {
@@ -394,8 +456,8 @@ namespace Tobi.Plugin.Settings
                    !string.IsNullOrEmpty(wrapper.Name) &&
                    wrapper.Name.ToLower().Contains(searchTerm.ToLower());
             }
-            
         }
+
         private static SettingWrapper FindNextSetting(List<SettingWrapper> settingWrappers)
         {
             SettingWrapper pResult = null;
@@ -421,6 +483,7 @@ namespace Tobi.Plugin.Settings
             }
             return pResult;
         }
+
         private static SettingWrapper FindPrevSetting(List<SettingWrapper> settingWrappers)
         {
             SettingWrapper pResult = null;

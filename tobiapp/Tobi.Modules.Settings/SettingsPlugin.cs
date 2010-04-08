@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
@@ -124,12 +125,15 @@ namespace Tobi.Plugin.Settings
         {
             m_Logger.Log("SettingsPlugin.ShowDialog", Category.Debug, Priority.Medium);
 
+            var view = m_Container.Resolve<SettingsView>();
+            
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Settings_Lang.Preferences),
-                                                   m_Container.Resolve<SettingsView>(),
+                                                   view,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 800, 500, null, 0);
+            view.OwnerWindow = windowPopup;
 
             m_SettingsAggregator.SaveAll(); // Not strictly necessary..but just to make double-sure we've got the current settings in persistent storage.
 
@@ -150,6 +154,12 @@ namespace Tobi.Plugin.Settings
                                           {
                                               m_SettingsAggregator.ReloadAll();
                                           }
+
+                                          view = null;
+
+                                          // TODO: view is not collected ! (at least in VS debugger)
+                                          GC.Collect();
+                                          GC.WaitForFullGCComplete();
                                       };
 
             m_DialogIsShowing = true;
