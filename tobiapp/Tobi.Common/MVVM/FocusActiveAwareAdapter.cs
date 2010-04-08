@@ -5,8 +5,11 @@ namespace Tobi.Common.MVVM
 {
     public class FocusActiveAwareAdapter : ActiveAware
     {
+        private readonly UIElement m_UIElement;
         public FocusActiveAwareAdapter(UIElement uiElement)
         {
+            m_UIElement = uiElement;
+
             uiElement.AddHandler(UIElement.GotFocusEvent,
                 new RoutedEventHandler(OnGotFocus),
                 true);
@@ -43,22 +46,18 @@ namespace Tobi.Common.MVVM
         {
             if (e.OriginalSource == sender)
             {
-                Console.WriteLine("OnGotFocus same source");
+                //Console.WriteLine("OnGotFocus same source");
             }
-
-            //Console.WriteLine("OnGotFocus IsActive TRUE");
-            IsActive = true;
+            computeIsActive();
         }
 
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource == sender)
             {
-                Console.WriteLine("OnLostFocus same source");
+                //Console.WriteLine("OnLostFocus same source");
             }
-
-            //Console.WriteLine("OnLostFocus IsActive FALSE");
-            IsActive = false;
+            computeIsActive();
         }
 
         public FocusActiveAwareAdapter(FrameworkElement frameworkElement)
@@ -67,13 +66,18 @@ namespace Tobi.Common.MVVM
             //loaded and unloaded can occur multiple times in the life cycle of a WPF element
             frameworkElement.Loaded += delegate
             {
-                IsActive = frameworkElement.IsKeyboardFocusWithin || frameworkElement.IsFocused;
+                computeIsActive();
             };
 
             frameworkElement.Unloaded += delegate
             {
                 IsActive = false;
             };
+        }
+
+        private void computeIsActive()
+        {
+            IsActive = m_UIElement.IsKeyboardFocusWithin || m_UIElement.IsFocused;
         }
     }
 }

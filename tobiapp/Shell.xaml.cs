@@ -109,7 +109,14 @@ namespace Tobi
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
             ActiveAware = new FocusActiveAwareAdapter(this);
-            ActiveAware.IsActiveChanged += (sender, e) => CommandManager.InvalidateRequerySuggested();
+            ActiveAware.IsActiveChanged += (sender, e) =>
+                   {
+                       if (!ActiveAware.IsActive)
+                       {
+                           Debugger.Break();
+                       }
+                       CommandManager.InvalidateRequerySuggested();
+                   };
 
             initCommands();
 
