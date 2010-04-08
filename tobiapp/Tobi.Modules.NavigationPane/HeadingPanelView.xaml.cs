@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -125,7 +126,6 @@ namespace Tobi.Plugin.NavigationPane
             //}
 
             m_ignoreTreeNodeSelectedEvent = true;
-
             m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
 
             m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
@@ -146,9 +146,17 @@ namespace Tobi.Plugin.NavigationPane
             // do nothing here (to avoid selecting in the document and audio views whilst navigating/exploring the TOC).
         }
 
-        private void OnMouseDoubleClick_TreeItem(object sender, MouseButtonEventArgs e)
+        //private void OnMouseDoubleClick_TreeItem(object sender, MouseButtonEventArgs e)
+        //{
+        //    handleTreeViewCurrentSelection();
+        //}
+
+        private void OnMouseDown_TreeItem(object sender, MouseButtonEventArgs e)
         {
-            handleTreeViewCurrentSelection();
+            if (e.ClickCount == 2)
+            {
+                handleTreeViewCurrentSelection();
+            }
         }
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
@@ -160,5 +168,6 @@ namespace Tobi.Plugin.NavigationPane
             m_ViewModel.HeadingsNavigator.ExpandAll();
             m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
+
     }
 }

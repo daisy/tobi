@@ -103,7 +103,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => HeadingsNavigator.FindNext(),
-                () => HeadingsNavigator != null,
+                () => HeadingsNavigator != null && !string.IsNullOrEmpty(HeadingsNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -114,7 +114,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => HeadingsNavigator.FindPrevious(),
-                () => HeadingsNavigator != null,
+                () => HeadingsNavigator != null && !string.IsNullOrEmpty(HeadingsNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)
                 );

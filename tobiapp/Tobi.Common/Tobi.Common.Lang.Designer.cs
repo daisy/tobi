@@ -124,6 +124,15 @@ namespace Tobi.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Find: .
+        /// </summary>
+        public static string Find {
+            get {
+                return ResourceManager.GetString("Find", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Audio.
         /// </summary>
         public static string Menu_Audio {
