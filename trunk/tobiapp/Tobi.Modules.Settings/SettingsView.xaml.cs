@@ -353,7 +353,7 @@ namespace Tobi.Plugin.Settings
                 if (m_SearchTerm == value) { return; }
                 m_SearchTerm = value;
                 FlagSearchMatches(AggregatedSettings, m_SearchTerm);
-                m_PropertyChangeHandler.RaisePropertyChanged(()=>SearchTerm);
+                m_PropertyChangeHandler.RaisePropertyChanged(() => SearchTerm);
             }
         }
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e) { SearchTerm = SearchBox.Text; }
@@ -362,7 +362,7 @@ namespace Tobi.Plugin.Settings
         {
             SettingWrapper nextMatch = FindNextSetting(AggregatedSettings);
             if (nextMatch != null) { nextMatch.IsSelected = true; } else { AudioCues.PlayAsterisk(); }
-            
+
         }
         private void FindPrevious()
         {
@@ -436,17 +436,31 @@ namespace Tobi.Plugin.Settings
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
                 );
-
-            //var focusAware = new FocusActiveAwareAdapter(this);
-            OwnerWindow.ActiveAware.IsActiveChanged += (sender, e) =>
-            {
-                // ALWAYS ACTIVE ! CommandFindFocusPage.IsActive = focusAware.IsActive;
-                CommandFindNext.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
-                CommandFindPrev.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
-            };
         }
 
-        public PopupModalWindow OwnerWindow { get; set; }
+        private PopupModalWindow m_OwnerWindow;
+        public PopupModalWindow OwnerWindow
+        {
+            get { return m_OwnerWindow; }
+            set
+            {
+                if (m_OwnerWindow != null)
+                {
+                    m_OwnerWindow.ActiveAware.IsActiveChanged -= OnOwnerWindowIsActiveChanged;
+                }
+                m_OwnerWindow = value;
+                if (m_OwnerWindow == null) return;
+                m_OwnerWindow.ActiveAware.IsActiveChanged += OnOwnerWindowIsActiveChanged;
+            }
+        }
+
+        private void OnOwnerWindowIsActiveChanged(object sender, EventArgs e)
+        {
+            //var focusAware = new FocusActiveAwareAdapter(this);
+            // ALWAYS ACTIVE ! CommandFindFocusPage.IsActive = focusAware.IsActive;
+            CommandFindNext.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
+            CommandFindPrev.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
+        }
 
         private static void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)
         {
