@@ -11,20 +11,14 @@ using urakawa.core;
 namespace Tobi.Plugin.Validator.MissingAudio
 {
     /// <summary>
-    /// Interaction logic for AudioContentValidationItemTemplate.xaml
+    /// Interaction logic for MissingAudioValidationItemTemplate.xaml
     /// </summary>
     [Export(ValidationDataTemplateProperties.TypeIdentifier, typeof(ResourceDictionary)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class AudioContentValidationItemTemplate : ResourceDictionary
+    public partial class MissingAudioValidationItemTemplate : ResourceDictionary
     {
-        public AudioContentValidationItemTemplate()
+        public MissingAudioValidationItemTemplate()
         {
             InitializeComponent();
-        }
-
-        private void OnLinkClick(object sender, RoutedEventArgs e)
-        {
-            var obj = sender as Hyperlink;
-            ((ValidationItem)obj.DataContext).TakeAction();
         }
     }
 
