@@ -27,16 +27,41 @@
       Source="{StaticResource dataContextBridge}"/>
   </DockPanel.DataContext>
 
+  <DockPanel LastChildFill="True"
+             DockPanel.Dock="Top"
+             Margin="0,0,0,2"
+             >
 
-  <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,4">
+    <UI:ButtonRichCommand
+      Control.TabIndex="4"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindNextGlobal}"/>
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="3"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
     <TextBlock
-      Text="{x:Static Settings:Tobi_Plugin_Settings_Lang.Find}"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>     <!-- TODO LOCALIZE Find-->
+      Text="{x:Static Common:Tobi_Common_Lang.Find}"
+      DockPanel.Dock="Left"
+                 HorizontalAlignment="Left" VerticalAlignment="Center"
+                 Margin="0,0,4,0"/>
 
-    <UI:WatermarkTextBox x:Name="SearchBox"
-                         TextChanged="OnSearchTextChanged"
-                         Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
-                                  HorizontalAlignment="Stretch"/>
+    <UI:WatermarkTextBox
+      Control.TabIndex="2"
+      x:Name="SearchBox"
+                                     TextChanged="OnSearchTextChanged"
+                                     Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"/>
+
   </DockPanel>
+
 
   <UI:SortableListView
     x:Name="SettingsList"

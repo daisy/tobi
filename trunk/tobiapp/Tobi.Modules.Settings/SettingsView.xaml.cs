@@ -48,6 +48,7 @@ namespace Tobi.Plugin.Settings
 
         private readonly ILoggerFacade m_Logger;
         private readonly IShellView m_ShellView;
+        private readonly IUrakawaSession m_Session;
 
         public readonly ISettingsAggregator m_SettingsAggregator;
 
@@ -62,6 +63,8 @@ namespace Tobi.Plugin.Settings
             ILoggerFacade logger,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session,
             [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             ISettingsAggregator settingsAggregator)
         {
@@ -70,6 +73,7 @@ namespace Tobi.Plugin.Settings
 
             m_Logger = logger;
             m_ShellView = shellView;
+            m_Session = session;
 
             m_SettingsAggregator = settingsAggregator;
 
@@ -290,6 +294,9 @@ namespace Tobi.Plugin.Settings
                 OwnerWindow = (PopupModalWindow)win;
         }
 
+        public RichDelegateCommand CmdFindNextGlobal { get; private set; }
+        public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
+
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
             if (m_GlobalSearchCommand != null)
@@ -408,6 +415,12 @@ namespace Tobi.Plugin.Settings
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
             m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
+
+            CmdFindNextGlobal = m_GlobalSearchCommand.CmdFindNext;
+            m_PropertyChangeHandler.RaisePropertyChanged(() => CmdFindNextGlobal);
+
+            CmdFindPreviousGlobal = m_GlobalSearchCommand.CmdFindPrevious;
+            m_PropertyChangeHandler.RaisePropertyChanged(() => CmdFindPreviousGlobal);
         }
 
         public RichDelegateCommand CommandFindFocus { get; private set; }

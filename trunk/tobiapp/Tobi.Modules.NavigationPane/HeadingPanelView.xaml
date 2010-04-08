@@ -30,7 +30,7 @@
       RichCommand="{Binding CmdFindPreviousGlobal}"/>
 
     <TextBlock
-      Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"
+      Text="{x:Static Common:Tobi_Common_Lang.Find}"
       DockPanel.Dock="Left"
                  HorizontalAlignment="Left" VerticalAlignment="Center"
                  Margin="0,0,4,0"/>
@@ -65,8 +65,13 @@
 
       <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
+          
+          <!-- THIS CODE GENERATES 1 EVENT PER DEPTH OR TREE NODE !!!
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_TreeItem" />
+          -->
+          
           <EventSetter Event="KeyDown" Handler="OnKeyDown_TreeViewItem" />
+          
           <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
           <Setter Property="local:TreeViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
 
@@ -106,8 +111,9 @@
         <HierarchicalDataTemplate DataType="{x:Type local:HeadingTreeNodeWrapper}"
                                   ItemsSource="{Binding Children}">
 
-          <TextBlock Text="{Binding Path=Title}">
-            <TextBlock.ContextMenu>
+          <TextBlock Text="{Binding Path=Title}"
+                     MouseDown="OnMouseDown_TreeItem">
+              <TextBlock.ContextMenu>
               <ContextMenu>
                 <ContextMenu.Resources>
                   <Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">

@@ -70,7 +70,7 @@
       RichCommand="{Binding CmdFindPreviousGlobal}"/>
 
     <TextBlock
-      Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"
+      Text="{x:Static Common:Tobi_Common_Lang.Find}"
       DockPanel.Dock="Left"
                  HorizontalAlignment="Left" VerticalAlignment="Center"
                  Margin="0,0,4,0"/>

@@ -66,7 +66,7 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null, () => PagesNavigator.FindNext(),
-                () => PagesNavigator != null,
+                () => PagesNavigator != null && !string.IsNullOrEmpty(PagesNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
                 );
@@ -76,7 +76,7 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null, () => PagesNavigator.FindPrevious(),
-                () => PagesNavigator != null,
+                () => PagesNavigator != null && !string.IsNullOrEmpty(PagesNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindPrev)
                 );

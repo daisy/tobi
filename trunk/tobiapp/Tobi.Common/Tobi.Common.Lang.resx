@@ -126,6 +126,9 @@
   <data name="SearchKeywords" xml:space="preserve">
     <value>search keywords</value>
   </data>
+  <data name="Find" xml:space="preserve">
+    <value>Find: </value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>_Cancel</value>
   </data>
