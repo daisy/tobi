@@ -113,7 +113,11 @@ namespace Tobi
                    {
                        if (!ActiveAware.IsActive)
                        {
-                           Debugger.Break();
+                           Console.WriteLine("@@@@ shell lost focus");
+                       }
+                       else
+                       {
+                           Console.WriteLine("@@@@ shell gained focus");
                        }
                        CommandManager.InvalidateRequerySuggested();
                    };

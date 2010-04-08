@@ -76,7 +76,9 @@ namespace Tobi.Plugin.Settings
             resetList();
 
             InitializeComponent();
+
             intializeCommands();
+
             // NEEDS to be after InitializeComponent() in order for the DataContext bridge to work.
             DataContext = this;
         }
@@ -281,6 +283,13 @@ namespace Tobi.Plugin.Settings
         //    }
         //}
 
+        private void OnLoaded_Panel(object sender, RoutedEventArgs e)
+        {
+            var win = Window.GetWindow(this);
+            if (win is PopupModalWindow)
+                OwnerWindow = (PopupModalWindow)win;
+        }
+
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
             if (m_GlobalSearchCommand != null)
@@ -414,7 +423,7 @@ namespace Tobi.Plugin.Settings
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => FocusHelper.Focus(SearchBox),
-                () => OwnerWindow.ActiveAware.IsActive && SearchBox.Visibility == Visibility.Visible,
+                () => SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
                 );
@@ -445,7 +454,7 @@ namespace Tobi.Plugin.Settings
         public PopupModalWindow OwnerWindow
         {
             get { return m_OwnerWindow; }
-            set
+            private set
             {
                 if (m_OwnerWindow != null)
                 {
@@ -465,10 +474,11 @@ namespace Tobi.Plugin.Settings
 
         private void OnOwnerWindowIsActiveChanged(object sender, EventArgs e)
         {
-            //var focusAware = new FocusActiveAwareAdapter(this);
-            // ALWAYS ACTIVE ! CommandFindFocusPage.IsActive = focusAware.IsActive;
-            CommandFindNext.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
-            CommandFindPrev.IsActive = OwnerWindow.ActiveAware.IsActive; // && focusAware.IsActive;
+            CommandFindFocus.IsActive = OwnerWindow.ActiveAware.IsActive;
+            CommandFindNext.IsActive = OwnerWindow.ActiveAware.IsActive;
+            CommandFindPrev.IsActive = OwnerWindow.ActiveAware.IsActive;
+
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private static void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)

@@ -133,7 +133,7 @@ namespace Tobi.Plugin.Settings
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 800, 500, null, 0);
-            view.OwnerWindow = windowPopup;
+            //view.OwnerWindow = windowPopup;
 
             m_SettingsAggregator.SaveAll(); // Not strictly necessary..but just to make double-sure we've got the current settings in persistent storage.
 

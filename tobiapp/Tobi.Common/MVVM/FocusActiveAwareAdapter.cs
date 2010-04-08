@@ -10,12 +10,20 @@ namespace Tobi.Common.MVVM
         {
             m_UIElement = uiElement;
 
-            uiElement.AddHandler(UIElement.GotFocusEvent,
-                new RoutedEventHandler(OnGotFocus),
+            //m_UIElement.AddHandler(UIElement.GotFocusEvent,
+            //    new RoutedEventHandler(OnGotFocus),
+            //    true);
+
+            //m_UIElement.AddHandler(UIElement.LostFocusEvent,
+            //    new RoutedEventHandler(OnLostFocus),
+            //    true);
+
+            m_UIElement.AddHandler(UIElement.LostKeyboardFocusEvent,
+                new RoutedEventHandler(OnLostKeyboardFocus),
                 true);
 
-            uiElement.AddHandler(UIElement.LostFocusEvent,
-                new RoutedEventHandler(OnLostFocus),
+            m_UIElement.AddHandler(UIElement.GotKeyboardFocusEvent,
+                new RoutedEventHandler(OnGotKeyboardFocus),
                 true);
 
             //uiElement.IsKeyboardFocusWithinChanged += delegate
@@ -42,11 +50,29 @@ namespace Tobi.Common.MVVM
             //};
         }
 
+        private void OnGotKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == sender)
+            {
+                //Console.WriteLine("OnGotFocus same source");
+            }
+            computeIsActive();
+        }
+
         private void OnGotFocus(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource == sender)
             {
                 //Console.WriteLine("OnGotFocus same source");
+            }
+            computeIsActive();
+        }
+
+        private void OnLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == sender)
+            {
+                //Console.WriteLine("OnLostFocus same source");
             }
             computeIsActive();
         }
@@ -77,7 +103,7 @@ namespace Tobi.Common.MVVM
 
         private void computeIsActive()
         {
-            IsActive = m_UIElement.IsKeyboardFocusWithin || m_UIElement.IsFocused;
+            IsActive = m_UIElement.IsKeyboardFocusWithin; // || m_UIElement.IsFocused;
         }
     }
 }
