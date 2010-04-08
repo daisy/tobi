@@ -271,10 +271,6 @@
       <Project>{341678A8-F3B5-43BF-8505-69B4ED969B53}</Project>
       <Name>Tobi.Plugin.Validator.Metadata</Name>
     </ProjectReference>
-    <ProjectReference Include="Tobi.Modules.Validator.MissingAudio\Tobi.Plugin.Validator.MissingAudio.csproj">
-      <Project>{EB2751C7-1A3D-441B-9EA3-96B7022900B8}</Project>
-      <Name>Tobi.Plugin.Validator.MissingAudio</Name>
-    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.Validator\Tobi.Plugin.Validator.csproj">
       <Project>{F5302B20-CB41-4E2E-AB1D-AB4EC0AB8DB4}</Project>
       <Name>Tobi.Plugin.Validator</Name>
