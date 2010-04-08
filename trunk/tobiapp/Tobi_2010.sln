@@ -89,7 +89,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.StructureTrailP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.MenuBarDebug", "Tobi.Modules.MenuBarDebug\Tobi.Plugin.MenuBarDebug.csproj", "{74D1ED8A-5830-407C-9878-1ABFFC12E08F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Validator.AudioContent", "Tobi.Modules.Validator.AudioContent\Tobi.Plugin.Validator.AudioContent.csproj", "{EB2751C7-1A3D-441B-9EA3-96B7022900B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Validator.MissingAudio", "Tobi.Modules.Validator.MissingAudio\Tobi.Plugin.Validator.MissingAudio.csproj", "{EB2751C7-1A3D-441B-9EA3-96B7022900B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
