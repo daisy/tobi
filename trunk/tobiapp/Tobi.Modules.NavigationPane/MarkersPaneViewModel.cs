@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
@@ -20,7 +21,6 @@ namespace Tobi.Plugin.NavigationPane
     [Export(typeof(MarkersPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
     public class MarkersPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
-        private MarkersNavigator _markersNavigator;
         #region Construction
 
         //        protected IUnityContainer Container { get; private set; }
@@ -56,7 +56,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => View != null && View.SearchBox.Visibility == Visibility.Visible && View.SearchBox.IsEnabled,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -65,8 +65,8 @@ namespace Tobi.Plugin.NavigationPane
                 @"MARKERS CommandFindNext DUMMY TXT", //UserInterfaceStrings.MarkersFindNext,
                 @"MARKERS CommandFindNext DUMMY TXT", //UserInterfaceStrings.MarkersFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => _markersNavigator.FindNext(),
-                () => _markersNavigator != null,
+                null, () => MarkersNavigator.FindNext(),
+                () => MarkersNavigator != null,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_MarkersFindNext)
                 );
@@ -75,22 +75,16 @@ namespace Tobi.Plugin.NavigationPane
                 @"MARKERS CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev,
                 @"MARKERS CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => _markersNavigator.FindPrevious(),
-                () => _markersNavigator != null,
+                null, () => MarkersNavigator.FindPrevious(),
+                () => MarkersNavigator != null,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_MarkersFindPrev)
                 );
-
-            //m_ShellView.RegisterRichCommand(CommandFindNextMarkers);
-            //m_ShellView.RegisterRichCommand(CommandFindPrevMarkers);
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(onProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(onProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
 
             m_EventAggregator.GetEvent<MarkedTreeNodeFoundByFlowDocumentParserEvent>().Subscribe(onMarkedTreeNodeFoundByFlowDocumentParser, MarkedTreeNodeFoundByFlowDocumentParserEvent.THREAD_OPTION);
-
-            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
 
             m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
         }
@@ -98,6 +92,18 @@ namespace Tobi.Plugin.NavigationPane
         public RichDelegateCommand CommandFindFocusMarkers { get; private set; }
         public RichDelegateCommand CommandFindNextMarkers { get; private set; }
         public RichDelegateCommand CommandFindPrevMarkers { get; private set; }
+
+        public RichDelegateCommand CmdFindNextGlobal { get; private set; }
+        public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
+
+        [NotifyDependsOn("MarkersNavigator")]
+        public bool IsSearchEnabled
+        {
+            get
+            {
+                return m_UrakawaSession.DocumentProject != null;
+            }
+        }
 
         ~MarkersPaneViewModel()
         {
@@ -128,10 +134,31 @@ namespace Tobi.Plugin.NavigationPane
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocusMarkers);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNextMarkers);
             m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrevMarkers);
+
+            CmdFindNextGlobal = m_GlobalSearchCommand.CmdFindNext;
+            RaisePropertyChanged(() => CmdFindNextGlobal);
+
+            CmdFindPreviousGlobal = m_GlobalSearchCommand.CmdFindPrevious;
+            RaisePropertyChanged(() => CmdFindPreviousGlobal);
         }
 
+        [NotifyDependsOn("MarkersNavigator")]
+        public ObservableCollection<MarkedTreeNode> MarkersNavigator_MarkedTreeNodes
+        {
+            get
+            {
+                return MarkersNavigator == null ? null : MarkersNavigator.MarkedTreeNodes;
+            }
+        }
+
+        private MarkersNavigator _markersNavigator;
         public MarkersNavigator MarkersNavigator
         {
+            private set
+            {
+                _markersNavigator = value;
+                RaisePropertyChanged(() => MarkersNavigator);
+            }
             get { return _markersNavigator; }
         }
 
@@ -211,7 +238,7 @@ namespace Tobi.Plugin.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
-            _markersNavigator = new MarkersNavigator(View);
+            MarkersNavigator = new MarkersNavigator(View);
             View.LoadProject();
 
             RaisePropertyChanged(() => SelectedTreeNode);
@@ -225,7 +252,7 @@ namespace Tobi.Plugin.NavigationPane
         private void onProjectUnLoaded(Project project)
         {
             View.UnloadProject();
-            _markersNavigator = null;
+            MarkersNavigator = null;
 
             RaisePropertyChanged(() => SelectedTreeNode);
 
@@ -242,7 +269,7 @@ namespace Tobi.Plugin.NavigationPane
                 Debugger.Break();
 #endif
                 Dispatcher.Invoke(DispatcherPriority.Normal,
-                                  (Action<object, UndoRedoManagerEventArgs>) OnUndoRedoManagerChanged, sender, eventt);
+                                  (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
 
@@ -251,7 +278,7 @@ namespace Tobi.Plugin.NavigationPane
             if (!(eventt is DoneEventArgs
                   || eventt is UnDoneEventArgs
                   || eventt is ReDoneEventArgs
-                 //|| eventt is TransactionEndedEventArgs
+                //|| eventt is TransactionEndedEventArgs
                  ))
             {
                 Debug.Fail("This should never happen !!");
@@ -265,12 +292,12 @@ namespace Tobi.Plugin.NavigationPane
 
             RaisePropertyChanged(() => SelectedTreeNode);
 
-            var cmd = (TreeNodeSetIsMarkedCommand) eventt.Command;
+            var cmd = (TreeNodeSetIsMarkedCommand)eventt.Command;
 
             if (cmd.TreeNode.IsMarked)
-                _markersNavigator.AddMarkedTreeNode(cmd.TreeNode);
+                MarkersNavigator.AddMarkedTreeNode(cmd.TreeNode);
             else
-                _markersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
+                MarkersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
         }
 
         private void onMarkedTreeNodeFoundByFlowDocumentParser(TreeNode data)
@@ -283,7 +310,7 @@ namespace Tobi.Plugin.NavigationPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onMarkedTreeNodeFoundByFlowDocumentParser, data);
                 return;
             }
-            _markersNavigator.AddMarkedTreeNode(data);
+            MarkersNavigator.AddMarkedTreeNode(data);
         }
 
 

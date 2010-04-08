@@ -32,7 +32,9 @@
     <TextBlock
       Text="{x:Static Settings:Tobi_Plugin_Settings_Lang.Find}"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>     <!-- TODO LOCALIZE Find-->
 
-    <UI:WatermarkTextBox x:Name="SearchBox" TextChanged="OnSearchTextChanged" Watermark="search keywords"
+    <UI:WatermarkTextBox x:Name="SearchBox"
+                         TextChanged="OnSearchTextChanged"
+                         Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
                                   HorizontalAlignment="Stretch"/>
   </DockPanel>
 

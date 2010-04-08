@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
@@ -19,7 +20,6 @@ namespace Tobi.Plugin.NavigationPane
     [Export(typeof(PagesPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
     public class PagesPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
-        private PagesNavigator _pagesNavigator;
         #region Construction
 
         //        protected IUnityContainer Container { get; private set; }
@@ -27,6 +27,8 @@ namespace Tobi.Plugin.NavigationPane
         private readonly ILoggerFacade m_Logger;
 
         private readonly IShellView m_ShellView;
+
+        private readonly IUrakawaSession m_session;
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -36,13 +38,15 @@ namespace Tobi.Plugin.NavigationPane
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            IShellView view)
+            IShellView view,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session)
         {
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
             m_ShellView = view;
-
+            m_session = session;
 
             m_Logger.Log("PagesPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
@@ -52,7 +56,7 @@ namespace Tobi.Plugin.NavigationPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => View != null && View.SearchBox.Visibility == Visibility.Visible && View.SearchBox.IsEnabled,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -61,8 +65,8 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext,
                 @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => _pagesNavigator.FindNext(),
-                () => _pagesNavigator != null,
+                null, () => PagesNavigator.FindNext(),
+                () => PagesNavigator != null,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
                 );
@@ -71,29 +75,36 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev,
                 @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => _pagesNavigator.FindPrevious(),
-                () => _pagesNavigator != null,
+                null, () => PagesNavigator.FindPrevious(),
+                () => PagesNavigator != null,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindPrev)
                 );
-
-            //m_ShellView.RegisterRichCommand(CommandFindNextPage);
-            //m_ShellView.RegisterRichCommand(CommandFindPrevPage);
 
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(onProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(onProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
 
             m_EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Subscribe(onPageFoundByFlowDocumentParser, PageFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
-            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(onTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(onSubTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-
             m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
         }
+
+        [NotifyDependsOn("PagesNavigator")]
+        public bool IsSearchEnabled
+        {
+            get
+            {
+                return m_session.DocumentProject != null;
+            }
+        }
+
 
         public RichDelegateCommand CommandFindFocusPage { get; private set; }
         public RichDelegateCommand CommandFindNextPage { get; private set; }
         public RichDelegateCommand CommandFindPrevPage { get; private set; }
+
+        public RichDelegateCommand CmdFindNextGlobal { get; private set; }
+        public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
 
         ~PagesPaneViewModel()
         {
@@ -124,12 +135,14 @@ namespace Tobi.Plugin.NavigationPane
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocusPage);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNextPage);
             m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrevPage);
+
+            CmdFindNextGlobal = m_GlobalSearchCommand.CmdFindNext;
+            RaisePropertyChanged(() => CmdFindNextGlobal);
+
+            CmdFindPreviousGlobal = m_GlobalSearchCommand.CmdFindPrevious;
+            RaisePropertyChanged(() => CmdFindPreviousGlobal);
         }
 
-        public PagesNavigator PagesNavigator
-        {
-            get { return _pagesNavigator; }
-        }
         protected PagePanelView View { get; private set; }
         public void SetView(PagePanelView view)
         {
@@ -148,25 +161,38 @@ namespace Tobi.Plugin.NavigationPane
             CommandFindNextPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindPrevPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }
-        //private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
-        //{
-        //    IActiveAware activeAware = (sender as IActiveAware);
-        //    if (activeAware == null) { return; }
-        //    CommandFindNextPage.IsActive = activeAware.IsActive;
-        //    CommandFindPrevPage.IsActive = activeAware.IsActive;
-        //}
 
-        #region Events
+        [NotifyDependsOn("PagesNavigator")]
+        public ObservableCollection<Page> PagesNavigator_Pages
+        {
+            get
+            {
+                return PagesNavigator == null ? null : PagesNavigator.Pages;
+            }
+        }
+
+        private PagesNavigator _pagesNavigator;
+        public PagesNavigator PagesNavigator
+        {
+            private set
+            {
+                _pagesNavigator = value;
+                RaisePropertyChanged(() => PagesNavigator);
+            }
+            get { return _pagesNavigator; }
+        }
+
         private void onProjectLoaded(Project project)
         {
-            _pagesNavigator = new PagesNavigator(View);
+            PagesNavigator = new PagesNavigator(View);
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)
         {
+            PagesNavigator = null;
             View.UnloadProject();
-            _pagesNavigator = null;
         }
+
         private void onPageFoundByFlowDocumentParser(TextElement data)
         {
             if (!Dispatcher.CheckAccess())
@@ -177,9 +203,8 @@ namespace Tobi.Plugin.NavigationPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TextElement>)onPageFoundByFlowDocumentParser, data);
                 return;
             }
-            _pagesNavigator.AddPage(data);
+            PagesNavigator.AddPage(data);
         }
-
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
@@ -188,18 +213,10 @@ namespace Tobi.Plugin.NavigationPane
 
             View.UpdatePageListSelection(newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1);
         }
-        //private void onTreeNodeSelected(TreeNode node)
-        //{
-        //    View.UpdatePageListSelection(node);
-        //}
-        //private void onSubTreeNodeSelected(TreeNode node)
-        //{
-        //    View.UpdatePageListSelection(node);
-        //}
+
         public void OnImportsSatisfied()
         {
             trySearchCommands();
         }
-        #endregion
     }
 }

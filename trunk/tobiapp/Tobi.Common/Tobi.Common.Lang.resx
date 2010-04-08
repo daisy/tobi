@@ -123,6 +123,9 @@
   <data name="Apply" xml:space="preserve">
     <value>_Apply</value>
   </data>
+  <data name="SearchKeywords" xml:space="preserve">
+    <value>search keywords</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>_Cancel</value>
   </data>

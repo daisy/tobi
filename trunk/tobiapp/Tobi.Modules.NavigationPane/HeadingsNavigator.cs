@@ -10,19 +10,18 @@ namespace Tobi.Plugin.NavigationPane
 
     public class HeadingsNavigator : AbstractFilterNavigator
     {
-        private string m_searchString = string.Empty;
-        public HeadingsNavigator(Project project)
-        {
-            m_Project = project;
-        }
-        public HeadingsNavigator(Project project, HeadingPanelView view)
-        {
-            m_Project = project;
-            m_View = view;
-        }
-        private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
         private readonly Project m_Project;
-        public readonly HeadingPanelView m_View;
+        public HeadingPaneViewModel ViewModel { get; private set; }
+
+        public HeadingsNavigator(Project project, HeadingPaneViewModel viewModel)
+        {
+            m_Project = project;
+            ViewModel = viewModel;
+        }
+
+        private string m_searchString = string.Empty;
+
+        private ObservableCollection<HeadingTreeNodeWrapper> m_roots;
 
         //public void ExpandAllThreaded()
         //{
@@ -93,11 +92,13 @@ namespace Tobi.Plugin.NavigationPane
 
         public void FindNext()
         {
+            ExpandAll();
+
             HeadingTreeNodeWrapper nextMatch = FindNextMatch(m_roots);
             if (nextMatch != null)
             {
                 //nextMatch.IsSelected = true;
-                m_View.SelectTreeNodeWrapper(nextMatch, true);
+                ViewModel.View.SelectTreeNodeWrapper(nextMatch, true);
             }
             else
             {
@@ -106,11 +107,13 @@ namespace Tobi.Plugin.NavigationPane
         }
         public void FindPrevious()
         {
+            ExpandAll();
+
             HeadingTreeNodeWrapper prevMatch = FindPrevMatch(m_roots);
             if (prevMatch != null)
             {
                 //prevMatch.IsSelected = true;
-                m_View.SelectTreeNodeWrapper(prevMatch, true);
+                ViewModel.View.SelectTreeNodeWrapper(prevMatch, true);
             }
             else
             {

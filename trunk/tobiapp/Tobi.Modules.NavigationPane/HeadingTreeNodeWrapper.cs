@@ -23,19 +23,10 @@ namespace Tobi.Plugin.NavigationPane
         private HeadingTreeNodeWrapper m_dummyNode;
 
         public RichDelegateCommand CommandExpandAll { get; private set; }
-        //public RichDelegateCommand CommandExpand { get; private set; }
         public RichDelegateCommand CommandCollapseAll { get; private set; }
-        //public RichDelegateCommand CommandCollapse { get; private set; }
-        //public RichDelegateCommand CommandEditText { get; private set; }
 
         public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
         {
-            CommandExpandAll = HeadingPaneViewModel.CommandExpandAll;
-            //CommandExpand = HeadingPaneViewModel.CommandExpand;
-            CommandCollapseAll = HeadingPaneViewModel.CommandCollapseAll;
-            //CommandCollapse = HeadingPaneViewModel.CommandCollapse;
-            //            CommandEditText = HeadingPaneViewModel.CommandEditText;
-
             m_parent = parent;
             m_navigator = navigator;
             m_isExpanded = false;
@@ -44,10 +35,13 @@ namespace Tobi.Plugin.NavigationPane
             m_TreeNodeLevel = null;
 
 
-            if (node == null)
+            if (node == null || m_navigator == null)
             {
                 return;
             }
+
+            CommandExpandAll = m_navigator.ViewModel.CommandExpandAll;
+            CommandCollapseAll = m_navigator.ViewModel.CommandCollapseAll;
 
             Tuple<TreeNode, TreeNode> nodes = ComputeLevelNodes(node);
             m_TreeNodeLevel = nodes.Item1;

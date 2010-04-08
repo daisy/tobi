@@ -31,6 +31,9 @@
 
                     xmlns="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
     -->
+
+<!--DataContext="{Binding Path=ViewModel, RelativeSource={x:Static RelativeSource.Self}}"-->
+
 <DockPanel x:Class="Tobi.Plugin.NavigationPane.MarkersPanelView"
            
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -39,22 +42,49 @@
                     xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
                     xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
-           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" DataContext="{Binding Path=ViewModel, RelativeSource={x:Static RelativeSource.Self}}"
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
            
            LastChildFill="True" >
   <DockPanel.Resources>
     <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
   </DockPanel.Resources>
 
-  <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,2">
-    <TextBlock Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"
-               DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
-    <UI:WatermarkTextBox  x:Name="SearchBox"
-                                   TextChanged="SearchBox_TextChanged"
-                                   Watermark="search keywords"
-                                  HorizontalAlignment="Stretch"/>
-  </DockPanel>
+  <DockPanel LastChildFill="True"
+             DockPanel.Dock="Top"
+             Margin="0,0,0,2"
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}">
 
+    <UI:ButtonRichCommand
+      Control.TabIndex="4"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindNextGlobal}"/>
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="3"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+    <TextBlock
+      Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"
+      DockPanel.Dock="Left"
+                 HorizontalAlignment="Left" VerticalAlignment="Center"
+                 Margin="0,0,4,0"/>
+
+    <UI:WatermarkTextBox
+      Control.TabIndex="2"
+      x:Name="SearchBox"
+                                     TextChanged="SearchBox_TextChanged"
+                                     Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"/>
+
+  </DockPanel>
+  
   <DockPanel  DockPanel.Dock="Bottom"
               LastChildFill="True"
               Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
@@ -134,7 +164,7 @@
       Focusable="False">
     <pres:ListView
         x:Name="ListView"
-        ItemsSource="{Binding MarkedTreeNodes}"
+        ItemsSource="{Binding MarkersNavigator_MarkedTreeNodes}"
         VirtualizingStackPanel.IsVirtualizing="False"
         VirtualizingStackPanel.VirtualizationMode="Recycling"
         SelectionMode="Single"
