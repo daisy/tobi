@@ -17,7 +17,7 @@ namespace Tobi.Common.Validation
 
         public event EventHandler<ValidatorStateRefreshedEventArgs> ValidatorStateRefreshed;
         
-        private ObservableCollection<ValidationItem> m_ValidationItems = new ObservableCollection<ValidationItem>();
+        private readonly ObservableCollection<ValidationItem> m_ValidationItems = new ObservableCollection<ValidationItem>();
         public ObservableCollection<ValidationItem> ValidationItems
         {
             get
@@ -33,6 +33,12 @@ namespace Tobi.Common.Validation
                 m_ValidationItems.Clear();
                 notifyValidationStateChanged();
             }
+        }
+
+        protected void insertValidationItem(int i, ValidationItem valItem)
+        {
+            m_ValidationItems.Insert(i, valItem);
+            notifyValidationStateChanged();
         }
 
         protected void addValidationItem(ValidationItem valItem)

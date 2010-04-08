@@ -89,7 +89,7 @@ namespace Tobi.Plugin.Validator.AudioContent
 #if DEBUG
                 Debugger.Break();
 #endif
-               Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
 
@@ -137,7 +137,10 @@ namespace Tobi.Plugin.Validator.AudioContent
                 foreach (var vItem in ValidationItems)
                 {
                     var valItem = vItem as AudioContentValidationError;
+                    
+                    Debug.Assert(valItem != null);
                     if (valItem == null) continue;
+
                     if (valItem.Target == node)
                     {
                         alreadyInList = true;
@@ -151,7 +154,28 @@ namespace Tobi.Plugin.Validator.AudioContent
                         Target = node,
                         Validator = this
                     };
-                    addValidationItem(validationItem);
+
+                    bool inserted = false;
+                    int i = -1;
+                    foreach (var vItem in ValidationItems)
+                    {
+                        i++;
+                        var valItem = vItem as AudioContentValidationError;
+
+                        Debug.Assert(valItem != null);
+                        if (valItem == null) continue;
+
+                        if (node.IsBefore(valItem.Target))
+                        {
+                            insertValidationItem(i, validationItem);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted)
+                    {
+                        addValidationItem(validationItem);
+                    }
                 }
             }
             else
@@ -161,6 +185,8 @@ namespace Tobi.Plugin.Validator.AudioContent
                 foreach (var vItem in ValidationItems)
                 {
                     var valItem = vItem as AudioContentValidationError;
+
+                    Debug.Assert(valItem != null);
                     if (valItem == null) continue;
 
                     if (valItem.Target == node)
