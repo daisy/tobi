@@ -121,9 +121,17 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         private void updateTreeNodeAudioStatus(TreeNode node)
         {
-            bool isAudioMissing = IsAudioMissingForTreeNode(node);
+            foreach (var childTreeNode in node.Children.ContentsAs_YieldEnumerable)
+            {
+                updateTreeNodeAudioStatus(childTreeNode);
+            }
 
-            if (isAudioMissing)
+            if (!bTreeNodeNeedsAudio(node))
+            {
+                return;
+            }
+
+            if (!bTreeNodeHasOrInheritsAudio(node))
             {
                 bool alreadyInList = false;
                 foreach (var vItem in ValidationItems)
@@ -155,8 +163,7 @@ namespace Tobi.Plugin.Validator.AudioContent
                     var valItem = vItem as AudioContentValidationError;
                     if (valItem == null) continue;
 
-                    if (valItem.Target == node
-                        || valItem.Target.IsDescendantOf(node))
+                    if (valItem.Target == node)
                     {
                         toRemove.Add(vItem);
                     }
@@ -204,6 +211,9 @@ namespace Tobi.Plugin.Validator.AudioContent
 
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
         {
+            Debug.Assert(bTreeNodeNeedsAudio(treeNode));
+            Debug.Assert(!bTreeNodeHasOrInheritsAudio(treeNode));
+
             var error = new AudioContentValidationError(m_Session)
             {
                 Target = treeNode,
@@ -217,26 +227,8 @@ namespace Tobi.Plugin.Validator.AudioContent
             return IsValid;
         }
 
-        private bool IsAudioMissingForTreeNode(TreeNode node)
+        private bool bTreeNodeNeedsAudio(TreeNode node)
         {
-            ManagedAudioMedia media = node.GetManagedAudioMedia();
-            if (media != null)
-            {
-                return false;
-            }
-
-            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
-            if (seqManagedAudioMedia != null)
-            {
-                return false;
-            }
-
-            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
-            if (ancerstor != null)
-            {
-                return false;
-            }
-
             QualifiedName qname = node.GetXmlElementQName();
             if (node.GetTextMedia() != null
                 || qname != null && qname.LocalName.ToLower() == "img")
@@ -247,28 +239,27 @@ namespace Tobi.Plugin.Validator.AudioContent
             return false;
         }
 
-        //private void WalkTreeAndFlagMissingAudio(TreeNode node)
-        //{
-        //    if (node.Children.Count > 0)
-        //    {
-        //        foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
-        //        {
-        //            WalkTreeAndFlagMissingAudio(child);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (node.GetFirstAncestorWithManagedAudio() == null)
-        //        {
-        //            AudioContentValidationError error = new AudioContentValidationError(m_Session);
-        //            error.Target = node;
-        //            error.Validator = this;
-        //            m_ValidationItems.Add(error);
+        private bool bTreeNodeHasOrInheritsAudio(TreeNode node)
+        {
+            ManagedAudioMedia media = node.GetManagedAudioMedia();
+            if (media != null)
+            {
+                return true;
+            }
 
-        //            //TODO: raise validator refreshed event
-        //        }
+            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
+            if (seqManagedAudioMedia != null)
+            {
+                return true;
+            }
 
-        //    }
-        //}
+            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
+            if (ancerstor != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }
