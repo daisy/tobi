@@ -40,12 +40,14 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger = logger;
 
             m_ViewModel = viewModel;
-            m_ViewModel.SetView(this);
+            DataContext = m_ViewModel;
 
             m_ignoreTreeNodeSelectedEvent = false;
             //m_ignoreHeadingSelected = false;
 
             InitializeComponent();
+
+            m_ViewModel.SetView(this);
         }
 
         public string ViewName
@@ -82,15 +84,11 @@ namespace Tobi.Plugin.NavigationPane
         public void LoadProject()
         {
             m_SelectedTreeViewItem = null;
-            TreeView.DataContext = m_ViewModel.HeadingsNavigator;
-//            TreeView.ContextMenu = (ContextMenu)TreeView.Resources["TreeViewContext"];
         }
 
         public void UnloadProject()
         {
             m_SelectedTreeViewItem = null;
-            TreeView.DataContext = null;
-            TreeView.ContextMenu = null;
             SearchBox.Text = "";
         }
 
@@ -133,7 +131,6 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
 
             m_UrakawaSession.PerformTreeNodeSelection(treeNode);
-            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 
         private void OnKeyDown_TreeViewItem(object sender, KeyEventArgs e)
@@ -163,31 +160,5 @@ namespace Tobi.Plugin.NavigationPane
             m_ViewModel.HeadingsNavigator.ExpandAll();
             m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
-
-        //#region IActiveAware implementation
-        //private bool _isActive;
-        //public bool IsActive
-        //{
-        //    get { return _isActive; }
-        //    set
-        //    {
-        //        if (_isActive == value) { return; }
-        //        _isActive = value;
-        //        OnIsActiveChanged(EventArgs.Empty);
-        //    }
-        //}
-
-        //event EventHandler isActiveChanged;
-        //public event EventHandler IsActiveChanged
-        //{
-        //    add { isActiveChanged += value; }
-        //    remove { isActiveChanged -= value; }
-        //}
-        //protected void OnIsActiveChanged(EventArgs e)
-        //{
-        //    if (isActiveChanged != null) { isActiveChanged(this, e); }
-        //}
-        
-        //#endregion
     }
 }

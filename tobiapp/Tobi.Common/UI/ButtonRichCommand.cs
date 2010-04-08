@@ -154,6 +154,8 @@ namespace Tobi.Common.UI
             }
         }
 
+        public bool UseSmallerIcon { get; set; }
+
         public static void RefreshButtonFromItsRichCommand(ButtonBase button, bool showTextLabel)
         {
             var command = button.Command as RichDelegateCommand;
@@ -178,11 +180,15 @@ namespace Tobi.Common.UI
                 //button.Content = image;
                 iconProvider.IconMargin_Medium = new Thickness(2, 2, 2, 2);
 
+                var richButt = button as ButtonRichCommand;
+
                 var binding = new Binding
                                   {
                                       Mode = BindingMode.OneWay,
                                       Source = iconProvider,
-                                      Path = new PropertyPath(PropertyChangedNotifyBase.GetMemberName(() => iconProvider.IconMedium))
+                                      Path = new PropertyPath(
+                                          richButt != null && richButt.UseSmallerIcon ? PropertyChangedNotifyBase.GetMemberName(() => iconProvider.IconSmall) : PropertyChangedNotifyBase.GetMemberName(() => iconProvider.IconMedium)
+                                          )
                                   };
 
                 var expr = button.SetBinding(Button.ContentProperty, binding);

@@ -41,8 +41,10 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger = logger;
 
             ViewModel = viewModel;
-            ViewModel.SetView(this);
+            DataContext = ViewModel;
+
             InitializeComponent();
+            ViewModel.SetView(this);
         }
         private void onMarkersSelected(object sender, SelectionChangedEventArgs e)
         {
@@ -86,11 +88,11 @@ namespace Tobi.Plugin.NavigationPane
 
         public void LoadProject()
         {
-            ListView.DataContext = ViewModel.MarkersNavigator;
+            m_LastListItemSelected = null;
         }
         public void UnloadProject()
         {
-            ListView.DataContext = null;
+            m_LastListItemSelected = null;
             SearchBox.Text = "";
         }
 

@@ -40,8 +40,11 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger = logger;
 
             m_ViewModel = viewModel;
-            m_ViewModel.SetView(this);
+            DataContext = m_ViewModel;
+
             InitializeComponent();
+
+            m_ViewModel.SetView(this);
         }
         private void onPageSelected(object sender, SelectionChangedEventArgs e)
         {
@@ -86,11 +89,11 @@ namespace Tobi.Plugin.NavigationPane
 
         public void LoadProject()
         {
-            ListView.DataContext = m_ViewModel.PagesNavigator;
+            m_LastListItemSelected = null;
         }
         public void UnloadProject()
         {
-            ListView.DataContext = null;
+            m_LastListItemSelected = null;
             SearchBox.Text = "";
         }
 
@@ -117,7 +120,6 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
 
             m_UrakawaSession.PerformTreeNodeSelection(treeNode);
-            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 
         private void OnKeyUp_ListItem(object sender, KeyEventArgs e)
@@ -138,31 +140,7 @@ namespace Tobi.Plugin.NavigationPane
             if (m_ViewModel.PagesNavigator == null) { return; }
             m_ViewModel.PagesNavigator.SearchTerm = SearchBox.Text;
         }
-        //#region IActiveAware implementation
-        //private bool _isActive;
-        //public bool IsActive
-        //{
-        //    get { return _isActive; }
-        //    set
-        //    {
-        //        if (_isActive == value) { return; }
-        //        _isActive = value;
-        //        OnIsActiveChanged(EventArgs.Empty);
-        //    }
-        //}
 
-        //event EventHandler isActiveChanged;
-        //public event EventHandler IsActiveChanged
-        //{
-        //    add { isActiveChanged += value; }
-        //    remove { isActiveChanged -= value; }
-        //}
-        //protected void OnIsActiveChanged(EventArgs e)
-        //{
-        //    if (isActiveChanged != null) { isActiveChanged(this, e); }
-        //}
-        
-        //#endregion
         //private void OnMouseDoubleClick_List(object sender, MouseButtonEventArgs e)
         //{
         //    //grab the original element that was doubleclicked on and search from child to parent until

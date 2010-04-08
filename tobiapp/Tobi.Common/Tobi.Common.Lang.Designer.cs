@@ -286,6 +286,15 @@ namespace Tobi.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to search keywords.
+        /// </summary>
+        public static string SearchKeywords {
+            get {
+                return ResourceManager.GetString("SearchKeywords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Toggle visibility.
         /// </summary>
         public static string ToggleVisibility {

@@ -498,10 +498,12 @@ namespace Tobi.Plugin.Urakawa
 
             m_Logger.Log(@"-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.close", Category.Debug, Priority.Medium);
 
-            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(DocumentProject);
+            var oldProject = DocumentProject;
 
             DocumentFilePath = null;
             DocumentProject = null;
+
+            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(oldProject);
 
             return result;
         }

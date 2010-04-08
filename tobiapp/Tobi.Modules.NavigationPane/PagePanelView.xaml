@@ -30,7 +30,9 @@
 </ListBox>
     -->
 <DockPanel x:Class="Tobi.Plugin.NavigationPane.PagePanelView"
-                    xmlns="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+           
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    
                     xmlns:pres="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
@@ -41,21 +43,42 @@
         <search:SearchTermConverter x:Key="SearchTermConverter" />
     </DockPanel.Resources -->
 
-  <DockPanel LastChildFill="True"  DockPanel.Dock="Top" Margin="0,0,0,2">
-    <TextBlock Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>  <!-- TODO LOCALIZE Find-->
-    <UI:WatermarkTextBox  x:Name="SearchBox"
-                                   TextChanged="SearchBox_TextChanged"
-                                   Watermark="search keywords"
-                                  HorizontalAlignment="Stretch"/>
+  <DockPanel LastChildFill="True"
+             DockPanel.Dock="Top"
+             Margin="0,0,0,2"
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}">
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="4"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindNextGlobal}"/>
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="3"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+    <TextBlock
+      Text="{x:Static NavigationPane:Tobi_Plugin_NavigationPane_Lang.Find}"
+      DockPanel.Dock="Left"
+                 HorizontalAlignment="Left" VerticalAlignment="Center"
+                 Margin="0,0,4,0"/>
+
+    <UI:WatermarkTextBox
+      Control.TabIndex="2"
+      x:Name="SearchBox"
+                                     TextChanged="SearchBox_TextChanged"
+                                     Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"/>
+
   </DockPanel>
 
 
-  <!-- TextBox x:Name="SearchBox"
-             BorderThickness="0"
-             HorizontalAlignment="Stretch"
-             TextChanged="SearchBox_TextChanged"
-             DockPanel.Dock="Top" / -->
-  
 <!--    <ListBox x:Name="ListView" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              DataContext="{Binding Path=ViewModel,
@@ -96,8 +119,11 @@
         </ListBox.ItemContainerStyle>
     </ListBox>
     -->
-    <pres:ScrollViewer 
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+
+
+  <!--DataContext="{Binding Path=ViewModel.PagesNavigator, RelativeSource={x:Static RelativeSource.Self}}"-->
+  
+  <pres:ScrollViewer 
         VerticalScrollBarVisibility="Visible"
         HorizontalScrollBarVisibility="Auto"
         CanContentScroll="True"
@@ -106,8 +132,7 @@
         DockPanel.Dock="Top">
         <pres:ListView      
             x:Name="ListView" 
-            DataContext="{Binding Path=ViewModel.PagesNavigator, RelativeSource={x:Static RelativeSource.Self}}"
-            ItemsSource="{Binding Pages}"
+            ItemsSource="{Binding PagesNavigator_Pages}"
             VirtualizingStackPanel.IsVirtualizing="False"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             SelectionMode="Single"
