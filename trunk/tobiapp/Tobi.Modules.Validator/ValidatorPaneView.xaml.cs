@@ -81,11 +81,18 @@ namespace Tobi.Plugin.Validator
             {
                 //this raises an exception the first time it is used
                 Clipboard.SetText(err.CompleteSummary);
+                MessageBox.Show("Contents copied to clipboard.");
             }
             catch (Exception ex)
             {
                 Debug.Fail(string.Format("Clipboad exception: {0}", ex.Message));
             }
+        }
+
+        private void OnViewLinkClick(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Hyperlink;
+            ((ValidationItem)obj.DataContext).TakeAction();
         }
     }
 

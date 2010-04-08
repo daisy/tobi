@@ -19,17 +19,10 @@
 
   <DataTemplate x:Key="MetadataItemTemplate">
     <Border Style="{StaticResource MetadataItemBorderStyle}">
-      <StackPanel Margin="5" Background="White">
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Text="{Binding Path=NameContentAttribute.Name}"/>
-          <TextBlock Text="=" Padding="5,0,5,0"/>
-          <TextBlock Text="{Binding Path=NameContentAttribute.Value}" TextWrapping="Wrap"/>
-        </StackPanel>
-        <TextBlock Margin="0,3,0,3">
-          <Hyperlink Click="OnLinkClick">
-            <Run Text="Click to edit"/>
-          </Hyperlink>
-        </TextBlock>
+      <StackPanel Orientation="Horizontal" Margin="5">
+        <TextBlock Text="{Binding Path=NameContentAttribute.Name}"/>
+        <TextBlock Text="=" Padding="5,0,5,0"/>
+        <TextBlock Text="{Binding Path=NameContentAttribute.Value}" TextWrapping="Wrap"/>
       </StackPanel>
     </Border>
   </DataTemplate>

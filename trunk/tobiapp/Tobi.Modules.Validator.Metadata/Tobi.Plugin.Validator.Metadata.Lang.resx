@@ -172,7 +172,7 @@
     <value>Validate publication metadata</value>
   </data>
   <data name="MetadataValidator_Name" xml:space="preserve">
-    <value>MetadataValidator</value>
+    <value>Metadata Validator</value>
   </data>
   <data name="Metadata_Optional" xml:space="preserve">
     <value>Optional</value>

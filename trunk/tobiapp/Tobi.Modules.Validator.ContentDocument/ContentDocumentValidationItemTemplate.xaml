@@ -53,11 +53,7 @@
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
                           Content="{Binding Target}" />
-      <TextBlock Margin="0,3,0,3">
-        <Hyperlink Click="OnLinkClick">
-          <Run Text="Click to view"/>
-        </Hyperlink>
-      </TextBlock>
+      
     </StackPanel>
   </DataTemplate>
 
@@ -71,12 +67,6 @@
                    Path="Target"
                    Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
         </TextBlock.Text>
-      </TextBlock>
-      
-      <TextBlock Margin="0,3,0,3">
-        <Hyperlink Click="OnLinkClick">
-          <Run Text="Click to view"/>
-        </Hyperlink>
       </TextBlock>
 
       <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"

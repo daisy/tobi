@@ -1,7 +1,7 @@
-﻿<ResourceDictionary x:Class="Tobi.Plugin.Validator.AudioContent.AudioContentValidationItemTemplate"
+﻿<ResourceDictionary x:Class="Tobi.Plugin.Validator.MissingAudio.AudioContentValidationItemTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:AudioContent="clr-namespace:Tobi.Plugin.Validator.AudioContent">
+    xmlns:AudioContent="clr-namespace:Tobi.Plugin.Validator.MissingAudio">
 
   <Style x:Key="AudioContentHeadingStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FontWeight" Value="Bold"/>
@@ -37,7 +37,7 @@
   </DataTemplate>
 
   
-  <DataTemplate DataType="{x:Type AudioContent:AudioContentValidationError}">
+  <DataTemplate DataType="{x:Type AudioContent:MissingAudioValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource AudioContentHeadingStyle}" Text="Missing audio content"/>
       <TextBlock TextWrapping="Wrap">
@@ -48,15 +48,10 @@
         </TextBlock.Text>
       </TextBlock>
 
-      <TextBlock Margin="0,3,0,3">
-        <Hyperlink Click="OnLinkClick">
-          <Run Text="Click to view"/>
-        </Hyperlink>
-      </TextBlock>
-
       <ContentPresenter ContentTemplate="{StaticResource AudioContentNodeTemplate}"
                           Content="{Binding Target}" />
 
+      
     </StackPanel>
 
   </DataTemplate>

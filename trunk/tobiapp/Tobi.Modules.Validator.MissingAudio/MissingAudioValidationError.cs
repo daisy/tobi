@@ -2,9 +2,9 @@
 using Tobi.Common.Validation;
 using urakawa.core;
 
-namespace Tobi.Plugin.Validator.AudioContent
+namespace Tobi.Plugin.Validator.MissingAudio
 {
-    public class AudioContentValidationError : ValidationItem
+    public class MissingAudioValidationError : ValidationItem
     {
         public TreeNode Target { get; set;}
         
@@ -31,7 +31,7 @@ namespace Tobi.Plugin.Validator.AudioContent
             m_UrakawaSession.PerformTreeNodeSelection(Target);
         }
 
-        public AudioContentValidationError(IUrakawaSession session)
+        public MissingAudioValidationError(IUrakawaSession session)
         {
             m_UrakawaSession = session;
             Severity = ValidationSeverity.Error;

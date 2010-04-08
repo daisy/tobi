@@ -8,7 +8,7 @@ using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.core;
 
-namespace Tobi.Plugin.Validator.AudioContent
+namespace Tobi.Plugin.Validator.MissingAudio
 {
     /// <summary>
     /// Interaction logic for AudioContentValidationItemTemplate.xaml
