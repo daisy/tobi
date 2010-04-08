@@ -20,6 +20,8 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.media;
+using urakawa.media.data.audio;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
@@ -643,8 +645,53 @@ namespace Tobi.Plugin.DocumentPane
             findAndUpdateTreeNodeAudioStatus(cmd, done);
         }
 
+        private bool bTreeNodeNeedsAudio(TreeNode node)
+        {
+            QualifiedName qname = node.GetXmlElementQName();
+            if (node.GetTextMedia() != null
+                || qname != null && qname.LocalName.ToLower() == "img")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool bTreeNodeHasOrInheritsAudio(TreeNode node)
+        {
+            ManagedAudioMedia media = node.GetManagedAudioMedia();
+            if (media != null)
+            {
+                return true;
+            }
+
+            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
+            if (seqManagedAudioMedia != null)
+            {
+                return true;
+            }
+
+            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
+            if (ancerstor != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
         {
+            foreach (var childTreeNode in node.Children.ContentsAs_YieldEnumerable)
+            {
+                findAndUpdateTreeNodeAudioStatus(childTreeNode);
+            }
+
+            if (!bTreeNodeNeedsAudio(node))
+            {
+                return;
+            }
+
             TextElement text = null;
             if (m_lastHighlighted != null && m_lastHighlighted.Tag == node)
             {
@@ -665,6 +712,9 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     bool noAudio;
                     XukToFlowDocument.SetTextElementAttributes(text, node, out noAudio);
+
+                    Debug.Assert(noAudio == !bTreeNodeHasOrInheritsAudio(node));
+
                     if (m_lastHighlighted == text)
                     {
                         m_lastHighlighted_Foreground = text.Foreground;
