@@ -50,19 +50,19 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger.Log("MarkersPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
             CommandFindFocusMarkers = new RichDelegateCommand(
-                @"DUMMY TXT",
-                @"DUMMY TXT",
+                @"MARKERS CommandFindFocus DUMMY TXT",
+                @"MARKERS CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => m_ShellView.ActiveAware.IsActive && View != null && View.SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
 
             CommandFindNextMarkers = new RichDelegateCommand(
-                @"DUMMY TXT", //UserInterfaceStrings.MarkersFindNext,
-                @"DUMMY TXT", //UserInterfaceStrings.MarkersFindNext_,
+                @"MARKERS CommandFindNext DUMMY TXT", //UserInterfaceStrings.MarkersFindNext,
+                @"MARKERS CommandFindNext DUMMY TXT", //UserInterfaceStrings.MarkersFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null, () => _markersNavigator.FindNext(),
                 () => _markersNavigator != null,
@@ -71,8 +71,8 @@ namespace Tobi.Plugin.NavigationPane
                 );
 
             CommandFindPrevMarkers = new RichDelegateCommand(
-                @"DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev,
-                @"DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev_,
+                @"MARKERS CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev,
+                @"MARKERS CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null, () => _markersNavigator.FindPrevious(),
                 () => _markersNavigator != null,
@@ -115,9 +115,14 @@ namespace Tobi.Plugin.NavigationPane
         [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IGlobalSearchCommands m_GlobalSearchCommand;
 
+        private bool m_GlobalSearchCommandDone = false;
         private void trySearchCommands()
         {
-            if (m_GlobalSearchCommand == null) { return; }
+            if (m_GlobalSearchCommand == null || m_GlobalSearchCommandDone)
+            {
+                return;
+            }
+            m_GlobalSearchCommandDone = true;
 
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocusMarkers);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNextMarkers);
@@ -184,8 +189,8 @@ namespace Tobi.Plugin.NavigationPane
             focusAware.IsActiveChanged += (sender, e) =>
             {
                 // ALWAYS ACTIVE ! CommandFindFocusMarkers.IsActive = focusAware.IsActive;
-                CommandFindNextMarkers.IsActive = focusAware.IsActive;
-                CommandFindPrevMarkers.IsActive = focusAware.IsActive;
+                CommandFindNextMarkers.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
+                CommandFindPrevMarkers.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
             };
 
             //IActiveAware activeAware = View as IActiveAware;

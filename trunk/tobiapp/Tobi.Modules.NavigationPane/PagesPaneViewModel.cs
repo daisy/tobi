@@ -1,13 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -48,19 +46,19 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger.Log("PagesPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
 
             CommandFindFocusPage = new RichDelegateCommand(
-                @"DUMMY TXT",
-                @"DUMMY TXT",
+                @"PAGES CommandFindFocus DUMMY TXT",
+                @"PAGES CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible,
+                () => m_ShellView.ActiveAware.IsActive && View != null && View.SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
 
             CommandFindNextPage = new RichDelegateCommand(
-                @"DUMMY TXT", //UserInterfaceStrings.PageFindNext,
-                @"DUMMY TXT", //UserInterfaceStrings.PageFindNext_,
+                @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext,
+                @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null, () => _pagesNavigator.FindNext(),
                 () => _pagesNavigator != null,
@@ -69,8 +67,8 @@ namespace Tobi.Plugin.NavigationPane
                 );
 
             CommandFindPrevPage = new RichDelegateCommand(
-                @"DUMMY TXT", //UserInterfaceStrings.PageFindPrev,
-                @"DUMMY TXT", //UserInterfaceStrings.PageFindPrev_,
+                @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev,
+                @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null, () => _pagesNavigator.FindPrevious(),
                 () => _pagesNavigator != null,
@@ -113,9 +111,14 @@ namespace Tobi.Plugin.NavigationPane
         [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IGlobalSearchCommands m_GlobalSearchCommand;
 
+        private bool m_GlobalSearchCommandDone = false;
         private void trySearchCommands()
         {
-            if (m_GlobalSearchCommand == null) { return; }
+            if (m_GlobalSearchCommand == null || m_GlobalSearchCommandDone)
+            {
+                return;
+            }
+            m_GlobalSearchCommandDone = true;
 
             m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocusPage);
             m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNextPage);
@@ -135,8 +138,8 @@ namespace Tobi.Plugin.NavigationPane
             focusAware.IsActiveChanged += (sender, e) =>
             {
                 // ALWAYS ACTIVE ! CommandFindFocusPage.IsActive = focusAware.IsActive;
-                CommandFindNextPage.IsActive = focusAware.IsActive;
-                CommandFindPrevPage.IsActive = focusAware.IsActive;
+                CommandFindNextPage.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
+                CommandFindPrevPage.IsActive = m_ShellView.ActiveAware.IsActive && focusAware.IsActive;
             };
 
             //IActiveAware activeAware = View as IActiveAware;

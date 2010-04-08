@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Microsoft.Practices.Composite;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI.XAML;
@@ -91,6 +92,8 @@ namespace Tobi.Common.UI
             //AddInputBinding(CommandDetailsCollapse.KeyBinding);
         }
 
+        public IActiveAware ActiveAware { get; private set; }
+
         private PopupModalWindow(IShellView shellView)
         {
             ShellView = shellView;
@@ -99,6 +102,9 @@ namespace Tobi.Common.UI
 
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
+
+            ActiveAware = new FocusActiveAwareAdapter(this);
+            ActiveAware.IsActiveChanged += (sender, e) => CommandManager.InvalidateRequerySuggested();
 
             InitializeComponent();
 

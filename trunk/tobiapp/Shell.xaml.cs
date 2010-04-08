@@ -12,6 +12,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AudioLib;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -85,6 +86,7 @@ namespace Tobi
         private readonly ILoggerFacade m_Logger;
         private readonly IEventAggregator m_EventAggregator;
 
+        public IActiveAware ActiveAware { get; private set; }
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -103,10 +105,13 @@ namespace Tobi
 
             m_Exiting = false;
 
-            initCommands();
-
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
+
+            ActiveAware = new FocusActiveAwareAdapter(this);
+            ActiveAware.IsActiveChanged += (sender, e) => CommandManager.InvalidateRequerySuggested();
+
+            initCommands();
 
             m_InConstructor = true;
 

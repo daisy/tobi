@@ -70,9 +70,14 @@ namespace Tobi.Plugin.DocumentPane
         [Import(typeof(IGlobalSearchCommands), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
         private IGlobalSearchCommands m_GlobalSearchCommand;
 
+        private bool m_GlobalSearchCommandDone = false;
         private void trySearchCommands()
         {
-            if (m_GlobalSearchCommand == null) { return; }
+            if (m_GlobalSearchCommand == null || m_GlobalSearchCommandDone)
+            {
+                return;
+            }
+            m_GlobalSearchCommandDone = true;
 
             //m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
 

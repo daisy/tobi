@@ -156,12 +156,11 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            m_ViewModel.HeadingsNavigator.ExpandAll();
-
             if (m_ViewModel.HeadingsNavigator == null)
             {
                 return;
             }
+            m_ViewModel.HeadingsNavigator.ExpandAll();
             m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
 
