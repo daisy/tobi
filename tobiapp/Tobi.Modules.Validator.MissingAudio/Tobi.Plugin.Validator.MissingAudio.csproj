@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tobi.Plugin.Validator.MissingAudio</RootNamespace>
-    <AssemblyName>Tobi.Plugin.Validator.AudioContent</AssemblyName>
+    <AssemblyName>Tobi.Plugin.Validator.MissingAudio</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
@@ -40,14 +40,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Compile Include="AudioContentValidationError.cs" />
-    <Compile Include="AudioContentValidationItemTemplate.xaml.cs">
-      <DependentUpon>AudioContentValidationItemTemplate.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AudioContentValidator.cs" />
-    <Compile Include="AudioContentValidatorPlugin.cs" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core.csproj">
       <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
@@ -88,7 +80,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AudioContentValidationItemTemplate.xaml">
+    <Compile Include="MissingAudioValidationError.cs" />
+    <Compile Include="MissingAudioValidationItemTemplate.xaml.cs">
+      <DependentUpon>MissingAudioValidationItemTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MissingAudioValidator.cs" />
+    <Compile Include="MissingAudioValidatorPlugin.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MissingAudioValidationItemTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

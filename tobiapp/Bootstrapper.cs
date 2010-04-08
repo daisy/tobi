@@ -499,7 +499,7 @@ namespace Tobi
             }
             try
             {
-                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(AudioContentValidatorPlugin))));
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(MissingAudioValidatorPlugin))));
             }
             catch (Exception ex)
             {
