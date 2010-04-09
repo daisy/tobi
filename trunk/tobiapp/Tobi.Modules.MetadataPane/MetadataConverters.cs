@@ -15,7 +15,7 @@ namespace Tobi.Plugin.MetadataPane
 {
     //all classes here represent value converters used by XAML
 
-    [ValueConversion(typeof(NotifyingMetadataItem), typeof(bool))]
+    /*[ValueConversion(typeof(NotifyingMetadataItem), typeof(bool))]
     public class IsNotRequiredOccurrenceConverter : ValueConverterMarkupExtensionBase<IsNotRequiredOccurrenceConverter>
     {
         //return false if required
@@ -38,9 +38,9 @@ namespace Tobi.Plugin.MetadataPane
             }
             return true;
         }
-    }
+    }*/
 
-    [ValueConversion(typeof(MetadataDefinition), typeof(string))]
+    /*[ValueConversion(typeof(MetadataDefinition), typeof(string))]
     public class OccurrenceDescriptionConverter : ValueConverterMarkupExtensionBase<OccurrenceDescriptionConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -64,7 +64,7 @@ namespace Tobi.Plugin.MetadataPane
 
             return string.Format("{0}; {1}.", occurrence, repeatable);
         }
-    }
+    }*/
 
     //public class ErrorsToListConverter : IValueConverter
     //{
@@ -225,7 +225,7 @@ namespace Tobi.Plugin.MetadataPane
         }
     }
 
-    [ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
+    /*[ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
     public class IsRequiredAndUniqueConverter : ValueConverterMarkupExtensionBase<IsRequiredAndUniqueConverter>
     {
         //expected: NotifyingMetadataItem and ObservableCollection<NotifyingMetadataItem>
@@ -245,5 +245,5 @@ namespace Tobi.Plugin.MetadataPane
             if (matches > 0) return true;
             else return false;
         }
-    }
+    }*/
 }

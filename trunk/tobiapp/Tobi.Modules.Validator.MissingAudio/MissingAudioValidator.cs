@@ -232,7 +232,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         public override string Description
         {
-            get { return "Find text missing audio content"; }
+            get { return "Find text with missing audio content"; }
         }
 
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)

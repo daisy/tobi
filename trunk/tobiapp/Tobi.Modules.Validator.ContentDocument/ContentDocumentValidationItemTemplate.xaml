@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary x:Class="Tobi.Plugin.Validator.ContentDocument.ContentDocumentValidationItemTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ContentDocument="clr-namespace:Tobi.Plugin.Validator.ContentDocument">
+    xmlns:ContentDocument="clr-namespace:Tobi.Plugin.Validator.ContentDocument" 
+    xmlns:Common="clr-namespace:Tobi.Common.Validation;assembly=Tobi.Common">
 
   <Style x:Key="ContentDocumentHeadingStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FontWeight" Value="Bold"/>
@@ -9,30 +10,16 @@
     <Setter Property="Margin" Value="0,0,0,5"/>
   </Style>
 
-  <Style x:Key="ContentDocumentNodeContentsStyle" TargetType="{x:Type TextBlock}">
-    <Setter Property="Margin" Value="5,0,5,0"/>
-    <Setter Property="FontFamily" Value="Courier New"/>
-  </Style>
-  <Style x:Key="ContentDocumentNodeNameStyle" TargetType="{x:Type TextBlock}">
-    <Setter Property="FontWeight" Value="Bold"/>
-    <Setter Property="FontFamily" Value="Courier New"/>
-  </Style>
-  <Style x:Key="ContentDocumentNodeBorderStyle" TargetType="{x:Type Border}">
-    <Setter Property="CornerRadius" Value="5"/>
-    <Setter Property="Margin" Value="5"/>
-    <Setter Property="BorderBrush" Value="Black"/>
-    <Setter Property="BorderThickness" Value="2"/>
-  </Style>
-
   <!-- template representing the semi-flattened XML (direct children only) for a single node-->
-  <DataTemplate x:Key="ContentDocumentNodeTemplate">
-    <Border Style="{StaticResource ContentDocumentNodeBorderStyle}">
-      <FlowDocumentScrollViewer x:Name="FlowDocScroll"
-                    Document="{Binding Converter={ContentDocument:TreeNodeFlowDocumentConverter}}"                  
-                    IsTabStop="False"
-                    Focusable="False"
-                    MaxHeight="120"/>
-       
+  <DataTemplate x:Key="NodeTemplate">
+    <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+            BorderThickness="2">
+      <FlowDocumentScrollViewer
+                      Document="{Binding Converter={Common:TreeNodeFlowDocumentConverter}}"
+                      IsTabStop="False"
+                      Focusable="False"
+                      MaxHeight="120"/>
+
     </Border>
   </DataTemplate>
 
@@ -51,7 +38,7 @@
     <StackPanel Margin="0,5">
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>   <!-- TODO LOCALIZE UndefinedElement key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
-      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
+      <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
       
     </StackPanel>
@@ -65,22 +52,23 @@
         <TextBlock.Text>
           <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
+                   Converter="{Common:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
         </TextBlock.Text>
       </TextBlock>
 
-      <ContentPresenter ContentTemplate="{StaticResource ContentDocumentNodeTemplate}"
+      <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
       <TextBlock>
         <TextBlock.Text>
           <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:" 
                    Path="Target"
-                   Converter="{ContentDocument:ElementNameConverter}"/>   <!-- TODO LOCALIZE -->
+                   Converter="{Common:ElementNameConverter}"/>   <!-- TODO LOCALIZE -->
         </TextBlock.Text>
       </TextBlock>
 
-      <Border Style="{StaticResource ContentDocumentNodeBorderStyle}" Margin="0,5">
+      <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+              BorderThickness="2">
         <TextBlock TextWrapping="Wrap" Margin="3"
                  Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"/>
       </Border>

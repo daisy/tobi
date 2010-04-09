@@ -123,7 +123,7 @@
   <data name="DefNameMustBeHint" xml:space="preserve">
     <value>{0} must be {1}.</value>
   </data>
-  <data name="DuplicateItemsSelected" xml:space="preserve">
+  <data name="DuplicateItemsDetected" xml:space="preserve">
     <value>Metadata error: duplicate items detected</value>
   </data>
   <data name="DuplicateNotAllowed" xml:space="preserve">
@@ -161,12 +161,6 @@
   </data>
   <data name="MetadataMayNotBeRepeated" xml:space="preserve">
     <value>May not be repeated</value>
-  </data>
-  <data name="MetadataValidatorPlugin_Description" xml:space="preserve">
-    <value>A validator that specialized in metadata.</value>
-  </data>
-  <data name="MetadataValidatorPlugin_Name" xml:space="preserve">
-    <value>Metadata Validator.</value>
   </data>
   <data name="MetadataValidator_Description" xml:space="preserve">
     <value>Validate publication metadata</value>

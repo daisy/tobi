@@ -9,21 +9,18 @@
     <Setter Property="Margin" Value="0,0,0,5"/>
   </Style>
 
-  
-  <Style x:Key="MetadataItemBorderStyle" TargetType="{x:Type Border}">
-    <Setter Property="CornerRadius" Value="8,8,8,8"/>
-    <Setter Property="Margin" Value="5"/>
-    <Setter Property="BorderBrush" Value="Black"/>
-    <Setter Property="BorderThickness" Value="2,2,2,2"/>
-  </Style>
-
   <DataTemplate x:Key="MetadataItemTemplate">
-    <Border Style="{StaticResource MetadataItemBorderStyle}">
-      <StackPanel Orientation="Horizontal" Margin="5">
-        <TextBlock Text="{Binding Path=NameContentAttribute.Name}"/>
-        <TextBlock Text="=" Padding="5,0,5,0"/>
-        <TextBlock Text="{Binding Path=NameContentAttribute.Value}" TextWrapping="Wrap"/>
-      </StackPanel>
+    <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" BorderThickness="2">
+      <TextBlock TextWrapping="Wrap" Padding="5" 
+                 Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                 Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
+        <TextBlock.Text>
+          <MultiBinding  StringFormat="{}{0} = {1}">
+            <Binding Path="NameContentAttribute.Name"/>
+            <Binding Path="NameContentAttribute.Value"/>
+          </MultiBinding>
+        </TextBlock.Text>
+      </TextBlock>
     </Border>
   </DataTemplate>
 
@@ -57,7 +54,8 @@
 
   <DataTemplate x:Key="MetadataDuplicateItemErrorTemplate">
     <StackPanel>
-      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsSelected}"/>   <!-- TODO LOCALIZE DuplicateItemsSelected -->
+      <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
+                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>   <!-- TODO LOCALIZE DuplicateItemsDetected -->
       <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.NotMoreThanOneInstance}" Margin="0,0,0,5"/>  <!--TODO LOCALIZE NotMoreThanOneInstance -->
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding Definition}" />
