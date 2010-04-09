@@ -81,9 +81,9 @@ namespace Tobi.Plugin.Validator.Metadata {
         /// <summary>
         ///   Looks up a localized string similar to Metadata error: duplicate items detected.
         /// </summary>
-        public static string DuplicateItemsSelected {
+        public static string DuplicateItemsDetected {
             get {
-                return ResourceManager.GetString("DuplicateItemsSelected", resourceCulture);
+                return ResourceManager.GetString("DuplicateItemsDetected", resourceCulture);
             }
         }
         
@@ -237,24 +237,6 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string MetadataValidator_Name {
             get {
                 return ResourceManager.GetString("MetadataValidator_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A validator that specialized in metadata..
-        /// </summary>
-        public static string MetadataValidatorPlugin_Description {
-            get {
-                return ResourceManager.GetString("MetadataValidatorPlugin_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Metadata Validator..
-        /// </summary>
-        public static string MetadataValidatorPlugin_Name {
-            get {
-                return ResourceManager.GetString("MetadataValidatorPlugin_Name", resourceCulture);
             }
         }
         

@@ -123,14 +123,8 @@
   <data name="CannotValidateDoc" xml:space="preserve">
     <value>Tobi could not locate a DTD, so it cannot validate the document.</value>
   </data>
-  <data name="ContentDocumentValidatorPlugin_Description" xml:space="preserve">
-    <value>A validator that uses data from a DTD to validate elements in a document tree.</value>
-  </data>
-  <data name="ContentDocumentValidatorPlugin_Name" xml:space="preserve">
-    <value>Content Document Validator.</value>
-  </data>
   <data name="ContentDocumentValidator_Description" xml:space="preserve">
-    <value>A validator that uses data from a DTD to validate elements in a document tree.</value>
+    <value>Validate elements in a document tree against their DTD definitions</value>
   </data>
   <data name="ContentDocumentValidator_Name" xml:space="preserve">
     <value>Content Document Validator</value>

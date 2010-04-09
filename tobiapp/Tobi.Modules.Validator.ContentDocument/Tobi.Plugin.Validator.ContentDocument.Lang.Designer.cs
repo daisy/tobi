@@ -115,7 +115,7 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A validator that uses data from a DTD to validate elements in a document tree..
+        ///   Looks up a localized string similar to Validate elements in a document tree against their DTD definitions.
         /// </summary>
         public static string ContentDocumentValidator_Description {
             get {
@@ -129,24 +129,6 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         public static string ContentDocumentValidator_Name {
             get {
                 return ResourceManager.GetString("ContentDocumentValidator_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A validator that uses data from a DTD to validate elements in a document tree..
-        /// </summary>
-        public static string ContentDocumentValidatorPlugin_Description {
-            get {
-                return ResourceManager.GetString("ContentDocumentValidatorPlugin_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Content Document Validator..
-        /// </summary>
-        public static string ContentDocumentValidatorPlugin_Name {
-            get {
-                return ResourceManager.GetString("ContentDocumentValidatorPlugin_Name", resourceCulture);
             }
         }
         

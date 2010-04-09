@@ -5,20 +5,15 @@
     xmlns:local="clr-namespace:Tobi.Plugin.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-    xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
-    LastChildFill="True">
+    xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework" xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata;assembly=Tobi.Plugin.Validator.Metadata" LastChildFill="True">
   <!-- ALL RESOURCES -->
   <DockPanel.Resources>
 
     <!-- COLLECTION VIEW SOURCE for Metadata objects -->
-    <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS">
-      <!-- CollectionViewSource.SortDescriptions>
-        <scm:SortDescription PropertyName="Definition.Occurrence" Direction="Ascending"/>
-      </CollectionViewSource.SortDescriptions -->
-    </CollectionViewSource>
+    <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
 
     <Style TargetType="{x:Type ListView}">
-      <Setter Property="BorderBrush" Value="Black"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
     </Style>
 
     <Style TargetType="{x:Type ListViewItem}">
@@ -167,12 +162,15 @@
             <GridViewColumn.CellTemplate>
               
               <DataTemplate>
-                <Button x:Name="deleteButton" Content="Delete" Click="DeleteButton_OnClick"/>
+                <Button x:Name="deleteButton" Content="Delete" Click="DeleteButton_OnClick"
+                        ToolTip="Delete this item"
+                        ToolTipService.ShowOnDisabled="True" />
                 <DataTemplate.Triggers>
                   
                   <!-- the delete button is not enabled for required items-->
                   <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
-                    <Setter TargetName="deleteButton" Property="Visibility" Value="Hidden"/>
+                    <Setter TargetName="deleteButton" Property="IsEnabled" Value="False"/>
+                    <Setter TargetName="deleteButton" Property="ToolTip" Value="Cannot delete required item (unless there are duplicates)"/>
                   </DataTrigger>
                 </DataTemplate.Triggers>
               </DataTemplate>
@@ -198,7 +196,7 @@
       <TextBlock Text="Description:" FontWeight="Bold"/>
       <TextBlock TextWrapping="Wrap" Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition.Description}"/>
       <TextBlock TextWrapping="Wrap" Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition,
-                 Converter={local:OccurrenceDescriptionConverter}}"/>
+                 Converter={Metadata:OccurrenceDescriptionConverter}}"/>
     </StackPanel>
     
   </Grid>

@@ -10,7 +10,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
         
         public override string Message
         {
-            get { return "node is missing audio"; }
+            get { return string.Format("Element <{0}> is missing audio", ValidatorUtilities.GetTreeNodeName(Target)); }
         }
         public override string CompleteSummary
         {
@@ -21,7 +21,6 @@ namespace Tobi.Plugin.Validator.MissingAudio
                         ValidatorUtilities.GetNodeXml(Target, true)
                         );
             }
-            
         }
 
         private IUrakawaSession m_UrakawaSession;

@@ -1,4 +1,10 @@
-﻿using urakawa.core;
+﻿using System;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Media;
+using Tobi.Common.UI.XAML;
+using urakawa.core;
 
 namespace Tobi.Common.Validation
 {
@@ -105,6 +111,89 @@ namespace Tobi.Common.Validation
             return nodeText;
         }
 
+    }
+    //The purpose of this code is to format a text fragment of a XUK tree to look like XML
+    //it is displayed as a flow document
+    [ValueConversion(typeof(TreeNode), typeof(FlowDocument))]
+    public class TreeNodeFlowDocumentConverter : ValueConverterMarkupExtensionBase<TreeNodeFlowDocumentConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+
+            TreeNode node = value as TreeNode;
+            FlowDocument doc = new FlowDocument();
+            doc.FontSize = 12;
+            doc.FontFamily = new FontFamily("Courier New");
+            doc.Background = SystemColors.WindowBrush;
+            doc.Foreground = SystemColors.WindowTextBrush;
+            WriteNodeXml_Flat(node, doc);
+
+            return doc;
+        }
+
+        private void WriteNodeXml_Flat(TreeNode node, FlowDocument doc)
+        {
+            string nodeName = ValidatorUtilities.GetTreeNodeName(node);
+            Paragraph paragraph = new Paragraph();
+            bool emptyElement = false;
+            if (node.Children.Count == 0 && node.GetTextMedia() == null)
+            {
+                emptyElement = true;
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("<{0}/>", nodeName))));
+            }
+            else
+            {
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("<{0}>", nodeName))));
+            }
+            if (node.GetTextMedia() != null)
+            {
+                string txt;
+                if (node.GetTextMedia().Text.Length > 10)
+                {
+                    txt = node.GetTextMedia().Text.Substring(0, 10);
+                }
+                else
+                {
+                    txt = node.GetTextMedia().Text;
+                }
+                paragraph.Inlines.Add(new Run(txt));
+            }
+
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            {
+                string childNodeText = ValidatorUtilities.GetTreeNodeTextExcerpt(child);
+                string childNodeName = ValidatorUtilities.GetTreeNodeName(child);
+                paragraph.Inlines.Add(new LineBreak());
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("  <{0}>", childNodeName))));
+                paragraph.Inlines.Add(new Run(childNodeText));
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("</{0}>", childNodeName))));
+            }
+            if (node.Children.Count > 0)
+            {
+                paragraph.Inlines.Add(new LineBreak());
+            }
+            else
+            {
+                if (node.GetTextMedia() != null)
+                    paragraph.Inlines.Add(new Run("..."));
+            }
+            if (!emptyElement)
+                paragraph.Inlines.Add(new Bold(new Run(string.Format("</{0}>", nodeName))));
+            doc.Blocks.Add(paragraph);
+        }
+    }
+
+    [ValueConversion(typeof(TreeNode), typeof(string))]
+    public class ElementNameConverter : ValueConverterMarkupExtensionBase<ElementNameConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+            return ValidatorUtilities.GetTreeNodeName(value as TreeNode);
+        }
     }
 
 }
