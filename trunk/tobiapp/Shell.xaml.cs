@@ -7,6 +7,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
@@ -461,6 +462,14 @@ namespace Tobi
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (Tobi.Common.Settings.Default.WpfSoftwareRender)
+            {
+                HwndSource hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+                HwndTarget hwndTarget = hwndSource.CompositionTarget;
+
+                hwndTarget.RenderMode = RenderMode.SoftwareOnly;
+            }
+
             //SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
 
             try

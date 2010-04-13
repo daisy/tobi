@@ -60,6 +60,11 @@ namespace Tobi
 #if DEBUG
             //System.Diagnostics.Debugger.Launch();
 #endif
+            if (Tobi.Common.Settings.Default.WpfSoftwareRender)
+            {
+                //TOD: WPF 4 per-process option
+                //RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            }
 
             //TODO: See Mono.Options for managing command line parameters.
 

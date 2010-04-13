@@ -8,6 +8,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite;
 using Tobi.Common.MVVM;
@@ -384,6 +385,14 @@ namespace Tobi.Common.UI
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (Tobi.Common.Settings.Default.WpfSoftwareRender)
+            {
+                HwndSource hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+                HwndTarget hwndTarget = hwndSource.CompositionTarget;
+
+                hwndTarget.RenderMode = RenderMode.SoftwareOnly;
+            }
+
             try
             {
                 Uri iconUri = new Uri("pack://application:,,,/Tobi;component/Tobi.ico", UriKind.Absolute);
