@@ -60,12 +60,13 @@ namespace Tobi
 #if DEBUG
             //System.Diagnostics.Debugger.Launch();
 #endif
+
+#if CLR40
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
             {
-                //TOD: WPF 4 per-process option
-                //RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
-
+#endif
             //TODO: See Mono.Options for managing command line parameters.
 
             // Ignore 0 index:
@@ -196,7 +197,7 @@ c.Execute();
                 new FrameworkPropertyMetadata { DefaultValue = 20 }
                 );
 
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            //AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
             SplashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "TobiSplashScreen.png");
             SplashScreen.Show(false);
