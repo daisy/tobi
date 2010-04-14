@@ -178,7 +178,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
         private void EnsureCollectionIsWritable(ICollection<object> collection)
         {
             bool isReadOnly = true;
-                
+
             try
             {
                 if (collection != null)

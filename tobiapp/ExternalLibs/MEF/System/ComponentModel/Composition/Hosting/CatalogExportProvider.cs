@@ -21,7 +21,7 @@ namespace System.ComponentModel.Composition.Hosting
         private readonly CompositionLock _lock;
         private Dictionary<ComposablePartDefinition, ComposablePart> _activatedParts = new Dictionary<ComposablePartDefinition, ComposablePart>();
         private HashSet<ComposablePartDefinition> _rejectedParts = new HashSet<ComposablePartDefinition>();
-        private Microsoft.Internal.Collections.ConditionalWeakTable<object, List<ComposablePart>> _conditionalReferencesForRecomposableParts = new Microsoft.Internal.Collections.ConditionalWeakTable<object, List<ComposablePart>>();
+        private ConditionalWeakTable<object, List<ComposablePart>> _conditionalReferencesForRecomposableParts = new ConditionalWeakTable<object, List<ComposablePart>>();
         private HashSet<IDisposable> _partsToDispose = new HashSet<IDisposable>();
         private ComposablePartCatalog _catalog;
         private volatile bool _isDisposed = false;
