@@ -89,7 +89,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.MenuBarDebug", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Validator.MissingAudio", "Tobi.Modules.Validator.MissingAudio\Tobi.Plugin.Validator.MissingAudio.csproj", "{EB2751C7-1A3D-441B-9EA3-96B7022900B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Unity", "ExternalLibs\CAL\Unity\Lib.Unity.csproj", "{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Unity2", "ExternalLibs\CAL\Unity2\Lib.Unity2.csproj", "{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -400,16 +400,13 @@ Global
 		{EB2751C7-1A3D-441B-9EA3-96B7022900B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB2751C7-1A3D-441B-9EA3-96B7022900B8}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{EB2751C7-1A3D-441B-9EA3-96B7022900B8}.test|Any CPU.Build.0 = Release|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.test|Any CPU.ActiveCfg = Release|Any CPU
-		{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}.test|Any CPU.Build.0 = Release|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}.test|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
