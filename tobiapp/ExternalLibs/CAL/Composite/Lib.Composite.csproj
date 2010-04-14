@@ -211,6 +211,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unity2\Lib.Unity2.csproj">
+      <Project>{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}</Project>
+      <Name>Lib.Unity2</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
