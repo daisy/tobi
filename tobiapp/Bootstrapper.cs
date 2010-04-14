@@ -9,6 +9,7 @@ using System.Net;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -33,6 +34,7 @@ using Tobi.Plugin.Validator.MissingAudio;
 using Tobi.Plugin.Validator.ContentDocument;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa.ExternalFiles;
+using System.Threading;
 
 namespace Tobi
 {
@@ -87,7 +89,12 @@ namespace Tobi
             m_Logger.Log(@"[Tobi version: " + ApplicationConstants.APP_VERSION + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[OS version: " + ApplicationConstants.OS_INFORMATION + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[ClickOnce: " + (ApplicationDeployment.IsNetworkDeployed ? "yes" : "no") + @"]", Category.Info, Priority.High);
-            
+
+            //0 => No graphics hardware acceleration available for the application on the device.
+            //1 => Partial graphics hardware acceleration available on the video card. This corresponds to a DirectX version that is greater than or equal to 7.0 and less than 9.0.
+            //2 => A rendering tier value of 2 means that most of the graphics features of WPF should use hardware acceleration provided the necessary system resources have not been exhausted. This corresponds to a DirectX version that is greater than or equal to 9.0.
+            int renderingTier = (RenderCapability.Tier >> 16);
+            m_Logger.Log(@"[Bootstrapper RenderCapability.Tier: " + renderingTier + @"]", Category.Info, Priority.High);
 
             string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -142,6 +149,7 @@ namespace Tobi
             url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" : "false");
             url += "&datetime=" + Uri.EscapeDataString(DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K"));
             url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
+            url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
 
             // THIS BREAKS PRIVACY
             //string ipAddress = "";
