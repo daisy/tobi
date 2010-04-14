@@ -9,3 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("System.ComponentModel.Composition.UnitTests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("System.ComponentModel.Composition.UnitTestFramework")]
 [assembly: ComVisibleAttribute(false)]
+
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif
