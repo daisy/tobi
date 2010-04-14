@@ -41,5 +41,5 @@ using System.Security;
 [assembly: NeutralResourcesLanguage("en")]
 
 #if NET40
-[assembly: SecurityRules(SecurityRuleSet.Level1)]
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
 #endif

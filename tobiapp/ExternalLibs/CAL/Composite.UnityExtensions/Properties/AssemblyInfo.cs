@@ -46,6 +46,6 @@ using System;
 [assembly: CLSCompliant(true)]
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
-#if !NET_3_5 // NET_4_0 || BOOTSTRAP_NET_4_0
-//[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
 #endif

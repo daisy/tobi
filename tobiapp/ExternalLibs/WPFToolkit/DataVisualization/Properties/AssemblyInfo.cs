@@ -25,3 +25,7 @@ using System.Windows;
 [assembly: SecurityCritical]
 
 [assembly: ComVisibleAttribute(false)]
+
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif

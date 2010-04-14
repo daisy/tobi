@@ -30,3 +30,7 @@ using System.Windows;
 [assembly: AssemblyFileVersion("3.5.40619.1")]
 
 [assembly: ComVisibleAttribute(false)]
+
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif

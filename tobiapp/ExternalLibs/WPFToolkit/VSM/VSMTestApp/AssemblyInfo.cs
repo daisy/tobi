@@ -6,3 +6,7 @@ using System.Resources;
 [assembly: NeutralResourcesLanguageAttribute("en-US" , UltimateResourceFallbackLocation.MainAssembly)]
 
 [assembly: ComVisibleAttribute(false)]
+
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif

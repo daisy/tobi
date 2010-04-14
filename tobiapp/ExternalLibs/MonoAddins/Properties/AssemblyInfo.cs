@@ -20,3 +20,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("0.4.0.0")]
 
 [assembly: ComVisibleAttribute(false)]
+
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif
