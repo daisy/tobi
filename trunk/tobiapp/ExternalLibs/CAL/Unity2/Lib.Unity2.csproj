@@ -23,9 +23,9 @@
     <OutputPath>.\bin\Debug</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>4</WarningLevel><NoWarn>618;1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>618</NoWarn>
+    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,9 +33,9 @@
     <OutputPath>.\bin\Release</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>4</WarningLevel><NoWarn>1591;618</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>618</NoWarn>
+    
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
