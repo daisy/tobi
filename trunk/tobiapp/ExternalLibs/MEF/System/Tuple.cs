@@ -1,7 +1,7 @@
 ﻿// -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-#if !CLR40
+#if !CLR40 && !NET40
 using System;
 
 namespace System

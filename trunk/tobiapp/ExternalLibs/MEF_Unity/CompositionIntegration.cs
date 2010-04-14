@@ -8,6 +8,7 @@ using MefContrib.Integration.Unity.Exporters;
 using MefContrib.Integration.Unity.Extensions;
 using MefContrib.Integration.Unity.Properties;
 using Microsoft.Practices.ObjectBuilder2;
+using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.ObjectBuilder;
 
@@ -80,7 +81,13 @@ namespace MefContrib.Integration.Unity
             TypeRegistrationTrackerExtension.RegisterIfMissing(Container);
 
             m_CompositionContainer = PrepareCompositionContainer();
+#if NET40
+            //IServiceLocator locator = ServiceLocator.Current;
+            Context.Container.RegisterInstance(typeof(CompositionContainer), m_CompositionContainer);
+#else
             Context.Locator.Add(typeof(CompositionContainer), m_CompositionContainer);
+#endif
+
 
             Context.Strategies.AddNew<CompositionLifetimeStrategy>(UnityBuildStage.Lifetime);
             Context.Strategies.AddNew<CompositionStrategy>(UnityBuildStage.Initialization);
@@ -154,7 +161,13 @@ namespace MefContrib.Integration.Unity
 
                 if (attributes.Length == 0)
                 {
-                    var container = context.Locator.Get<CompositionContainer>();
+                    CompositionContainer container = null;
+#if NET40
+                    IServiceLocator locator = ServiceLocator.Current;
+                    container = locator.GetInstance<CompositionContainer>();
+#else
+                    container = context.Locator.Get<CompositionContainer>();
+#endif
                     container.SatisfyImportsOnce(AttributedModelServices.CreatePart(context.Existing));
                 }
             }
@@ -168,7 +181,13 @@ namespace MefContrib.Integration.Unity
         {
             public override void PreBuildUp(IBuilderContext context)
             {
-                var container = context.Locator.Get<CompositionContainer>();
+                CompositionContainer container = null;
+#if NET40
+                IServiceLocator locator = ServiceLocator.Current;
+                container = locator.GetInstance<CompositionContainer>();
+#else
+                container = context.Locator.Get<CompositionContainer>();
+#endif
                 var buildKey = (NamedTypeBuildKey)context.BuildKey;
 
                 try
@@ -211,7 +230,7 @@ namespace MefContrib.Integration.Unity
 
             if (m_AggregateCatalog != null)
                 m_AggregateCatalog.Dispose();
-            
+
             if (m_AggregateFallbackCatalog != null)
                 m_AggregateFallbackCatalog.Dispose();
 

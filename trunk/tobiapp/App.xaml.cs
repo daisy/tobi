@@ -1,22 +1,17 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.Deployment.Application;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Microsoft.Practices.Composite.Logging;
 using Microsoft.Test;
-using Tobi.Common;
 using Tobi.Common.UI;
 
 namespace Tobi
@@ -61,7 +56,7 @@ namespace Tobi
             //System.Diagnostics.Debugger.Launch();
 #endif
 
-#if CLR40
+#if NET40
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
             {
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
@@ -109,7 +104,16 @@ Command c = new RunCommand();
 CommandLineParser.ParseArguments(c, args); 
 c.Execute();
              */
-
+            //TODO with ClickOnce activation through file association
+            if (true || ApplicationDeployment.IsNetworkDeployed)
+            {
+                if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null
+                    && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData.Length > 0)
+                {
+                    string path = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData[0];
+                    Console.WriteLine(@"APP PARAMETER: " + path);
+                }
+            }
             base.OnStartup(e);
         }
 

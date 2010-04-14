@@ -150,7 +150,13 @@ namespace Microsoft.Practices.Composite.UnityExtensions
 
             if (useDefaultConfiguration)
             {
+#if NET40
+                var locator = new UnityServiceLocator(Container);
+                ServiceLocator.SetLocatorProvider(() => locator);
+#else
                 RegisterTypeIfMissing(typeof(IServiceLocator), typeof(UnityServiceLocatorAdapter), true);
+                ServiceLocator.SetLocatorProvider(() => this.Container.Resolve<IServiceLocator>());
+#endif
                 RegisterTypeIfMissing(typeof(IModuleInitializer), typeof(ModuleInitializer), true);
                 RegisterTypeIfMissing(typeof(IModuleManager), typeof(ModuleManager), true);
                 RegisterTypeIfMissing(typeof(RegionAdapterMappings), typeof(RegionAdapterMappings), true);
@@ -158,8 +164,6 @@ namespace Microsoft.Practices.Composite.UnityExtensions
                 RegisterTypeIfMissing(typeof(IEventAggregator), typeof(EventAggregator), true);
                 RegisterTypeIfMissing(typeof(IRegionViewRegistry), typeof(RegionViewRegistry), true);
                 RegisterTypeIfMissing(typeof(IRegionBehaviorFactory), typeof(RegionBehaviorFactory), true);
-
-                ServiceLocator.SetLocatorProvider(() => this.Container.Resolve<IServiceLocator>());
             }
         }
 
@@ -195,7 +199,7 @@ namespace Microsoft.Practices.Composite.UnityExtensions
 
             if (defaultRegionBehaviorTypesDictionary != null)
             {
-                defaultRegionBehaviorTypesDictionary.AddIfMissing(AutoPopulateRegionBehavior.BehaviorKey, 
+                defaultRegionBehaviorTypesDictionary.AddIfMissing(AutoPopulateRegionBehavior.BehaviorKey,
                     typeof(AutoPopulateRegionBehavior));
 
                 defaultRegionBehaviorTypesDictionary.AddIfMissing(BindRegionContextToDependencyObjectBehavior.BehaviorKey,

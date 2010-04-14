@@ -54,7 +54,11 @@ namespace Tobi.Plugin.NavigationPane
 
             if (qName == null)
             {
+#if NET40
+                return new Tuple<TreeNode, TreeNode>(null, null);
+#else
                 return new Tuple<TreeNode, TreeNode>();
+#endif
             }
 
             TreeNode level = null;

@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
-using Microsoft.Practices.Composite.Presentation.Events;
-using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.Validation;
@@ -40,7 +38,6 @@ namespace Tobi.Plugin.MetadataPane
         
         [ImportingConstructor]
         public MetadataPaneViewModel(
-            IUnityContainer container,
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
