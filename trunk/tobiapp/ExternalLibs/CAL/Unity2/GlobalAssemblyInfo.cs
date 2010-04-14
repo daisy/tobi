@@ -40,4 +40,6 @@ using System.Security;
 
 [assembly: NeutralResourcesLanguage("en")]
 
+#if NET40
 [assembly: SecurityRules(SecurityRuleSet.Level1)]
+#endif
