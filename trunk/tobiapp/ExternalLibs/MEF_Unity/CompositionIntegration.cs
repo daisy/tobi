@@ -81,7 +81,7 @@ namespace MefContrib.Integration.Unity
             TypeRegistrationTrackerExtension.RegisterIfMissing(Container);
 
             m_CompositionContainer = PrepareCompositionContainer();
-#if NET40
+#if true || NET40
             //IServiceLocator locator = ServiceLocator.Current;
             Context.Container.RegisterInstance(typeof(CompositionContainer), m_CompositionContainer);
 #else
@@ -162,7 +162,7 @@ namespace MefContrib.Integration.Unity
                 if (attributes.Length == 0)
                 {
                     CompositionContainer container = null;
-#if NET40
+#if true || NET40
                     IServiceLocator locator = ServiceLocator.Current;
                     container = locator.GetInstance<CompositionContainer>();
 #else
@@ -182,7 +182,7 @@ namespace MefContrib.Integration.Unity
             public override void PreBuildUp(IBuilderContext context)
             {
                 CompositionContainer container = null;
-#if NET40
+#if true || NET40
                 IServiceLocator locator = ServiceLocator.Current;
                 container = locator.GetInstance<CompositionContainer>();
 #else
