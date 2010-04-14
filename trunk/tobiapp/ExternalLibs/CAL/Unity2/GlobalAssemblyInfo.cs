@@ -11,6 +11,8 @@
 
 using System;
 using System.Reflection;
+using System.Resources;
+using System.Runtime.InteropServices;
 using System.Security;
 [assembly: CLSCompliant(true)]
 [assembly: AssemblyProduct("Microsoft Unity Application Block")]
@@ -30,3 +32,12 @@ using System.Security;
 
 [assembly: AssemblyVersion("2.0.315.0")]
 [assembly: AssemblyFileVersion("2.0.315.0")]
+
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
+
+[assembly: NeutralResourcesLanguage("en")]
+
+[assembly: SecurityRules(SecurityRuleSet.Level1)]

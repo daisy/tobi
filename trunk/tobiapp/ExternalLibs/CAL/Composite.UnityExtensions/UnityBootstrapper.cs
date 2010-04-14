@@ -150,7 +150,7 @@ namespace Microsoft.Practices.Composite.UnityExtensions
 
             if (useDefaultConfiguration)
             {
-#if NET40
+#if true || NET40
                 var locator = new UnityServiceLocator(Container);
                 ServiceLocator.SetLocatorProvider(() => locator);
 #else
