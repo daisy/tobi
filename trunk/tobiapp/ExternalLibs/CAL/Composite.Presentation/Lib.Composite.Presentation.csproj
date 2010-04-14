@@ -182,6 +182,10 @@
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Unity2\Lib.Unity2.csproj">
+      <Project>{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}</Project>
+      <Name>Lib.Unity2</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
