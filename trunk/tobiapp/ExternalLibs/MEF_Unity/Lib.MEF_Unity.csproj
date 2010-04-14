@@ -83,9 +83,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CAL\Unity\Lib.Unity.csproj">
-      <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
-      <Name>Lib.Unity</Name>
+    <ProjectReference Include="..\CAL\Unity2\Lib.Unity2.csproj">
+      <Project>{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}</Project>
+      <Name>Lib.Unity2</Name>
     </ProjectReference>
     <ProjectReference Include="..\MEF\Lib.MEF.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
