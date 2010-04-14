@@ -35,23 +35,30 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\Debug\MefContrib.Integration.Unity.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CAL\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Core">
     </Reference>
   </ItemGroup>
@@ -78,9 +85,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CAL\Unity\Lib.Unity_NET4.csproj">
+    <ProjectReference Include="..\CAL\Unity2\Lib.Unity2_NET4.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
-      <Name>Lib.Unity</Name>
+      <Name>Lib.Unity2_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\MEF\Lib.MEF_NET4.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>

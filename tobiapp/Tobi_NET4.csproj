@@ -54,20 +54,22 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;LINQ;CLR40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;LINQ;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Tobi.XML</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -200,9 +202,9 @@
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
     </ProjectReference>
-    <ProjectReference Include="ExternalLibs\CAL\Unity\Lib.Unity_NET4.csproj">
+    <ProjectReference Include="ExternalLibs\CAL\Unity2\Lib.Unity2_NET4.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
-      <Name>Lib.Unity</Name>
+      <Name>Lib.Unity2_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="ExternalLibs\MEF\Lib.MEF_NET4.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
@@ -319,6 +321,9 @@
     <Resource Include="TobiSplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Lame.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="hi.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -336,12 +341,12 @@
   <ItemGroup>
     <PublishFile Include="fr\Tobi.resources">
       <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
   </ItemGroup>
@@ -354,6 +359,14 @@
       <LastGenOutput>Tobi_Lang.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".xuk">
+      <Visible>False</Visible>
+      <Description>Tobi project file</Description>
+      <Progid>Tobi.Document</Progid>
+      <DefaultIcon>Shortcut.ico</DefaultIcon>
+    </FileAssociation>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

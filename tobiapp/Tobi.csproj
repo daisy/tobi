@@ -339,6 +339,9 @@
     <Content Include="tocktock.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Lame.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -351,6 +354,14 @@
       <LastGenOutput>Tobi_Lang.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+<ItemGroup>
+    <FileAssociation Include=".xuk">
+      <Visible>False</Visible>
+      <Description>Tobi project file</Description>
+      <Progid>Tobi.Document</Progid>
+      <DefaultIcon>Shortcut.ico</DefaultIcon>
+    </FileAssociation>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

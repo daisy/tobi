@@ -40,6 +40,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -93,6 +95,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Core">
     </Reference>
     <Reference Include="System.Data" />
@@ -120,9 +123,9 @@
       <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
       <Name>Lib.Composite</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\CAL\Unity\Lib.Unity_NET4.csproj">
+    <ProjectReference Include="..\ExternalLibs\CAL\Unity2\Lib.Unity2_NET4.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
-      <Name>Lib.Unity</Name>
+      <Name>Lib.Unity2_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF_NET4.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>

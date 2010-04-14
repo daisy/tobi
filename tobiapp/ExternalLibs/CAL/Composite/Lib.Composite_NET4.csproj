@@ -62,23 +62,19 @@
       <HintPath>..\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework">
-      
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Core">
-      
     </Reference>
     <Reference Include="System.Xml.Linq">
-      
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
-      
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase">
-      
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +206,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unity2\Lib.Unity2_NET4.csproj">
+      <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
+      <Name>Lib.Unity2_NET4</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
