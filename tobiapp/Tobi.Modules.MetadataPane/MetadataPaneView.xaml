@@ -12,6 +12,10 @@
     <!-- COLLECTION VIEW SOURCE for Metadata objects -->
     <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
 
+    <Style TargetType="{x:Type TextBlock}">
+      <Setter Property="Focusable" Value="True"/>
+    </Style>
+    
     <Style TargetType="{x:Type ListView}">
       <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
     </Style>
@@ -42,14 +46,14 @@
     </DataTemplate>
 
     <!-- display the name field and provide a combo box for editing the value -->
-    
     <DataTemplate x:Key="ChooseNameTemplate">
+      
       <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="100"
       x:Name="namesComboBox"
       SelectedItem="{Binding Path=Name, Converter={local:LowerCaseConverter}}">
+        
         <ComboBox.ItemsSource>
-          <MultiBinding Converter="{local:AvailableMetadataNamesConverter}"
-              UpdateSourceTrigger="PropertyChanged">
+          <MultiBinding Converter="{local:AvailableMetadataNamesConverter}" UpdateSourceTrigger="PropertyChanged">
             <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
                      Path="DataContext.AvailableMetadataNames"/>
             <Binding Path="Name"/>
@@ -75,7 +79,8 @@
       ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       HorizontalContentAlignment="Stretch"
-      IsSynchronizedWithCurrentItem="True">
+      IsSynchronizedWithCurrentItem="True"
+      x:Name="MetadataList">
       <ListView.View>
         <GridView>
 
@@ -115,9 +120,6 @@
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
-
-          <!-- GridViewColumn  Width="Auto" Header="Occurrence" DisplayMemberBinding="{Binding Definition, 
-                          Converter={local:OccurrenceDescriptionConverter}}"/-->
 
           <GridViewColumn Header="Errors">
             <GridViewColumn.CellTemplate>

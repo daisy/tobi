@@ -54,8 +54,8 @@ namespace Tobi.Plugin.Validator.Metadata
             m_Logger = logger;
             m_Session = session;
 
-            m_DataTypeValidator = new MetadataDataTypeValidator(this);
-            m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
+            m_DataTypeValidator = new MetadataDataTypeValidator(this, m_EventAggregator);
+            m_OccurrenceValidator = new MetadataOccurrenceValidator(this, m_EventAggregator);
             m_ValidationItemTemplate = new MetadataValidationItemTemplate();
 
             m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
@@ -204,12 +204,7 @@ namespace Tobi.Plugin.Validator.Metadata
             return isValid;
         }
 
-        //TODO: probably do not need this function anymore
-        //validate a single item (do not look at the entire set - do not look for repetitions)
-        public bool Validate(urakawa.metadata.Metadata metadata)
-        {
-            return _validateItem(metadata);
-        }
+        
         internal void ReportError(MetadataValidationError error)
         {
             //prevent duplicate errors: check that the items aren't identical
@@ -234,7 +229,7 @@ namespace Tobi.Plugin.Validator.Metadata
                 bool sameDef = (err.Definition == error.Definition);
                 bool sameType = (err.ErrorType == error.ErrorType);
 
-                if (sameItem || (sameDef && sameType))
+                if (sameItem || (sameDef && sameType && error.Target == null))
                 {
                     valItem = err;
                     break; // && err.ErrorType != MetadataErrorType.MissingItemError
@@ -250,7 +245,7 @@ namespace Tobi.Plugin.Validator.Metadata
         private bool _validateItem(urakawa.metadata.Metadata metadata)
         {
             MetadataDefinition metadataDefinition =
-                MetadataDefinitions.GetMetadataDefinition(metadata.NameContentAttribute.Name);
+                MetadataDefinitions.GetMetadataDefinition(metadata.NameContentAttribute.Name, true);
 
             if (metadataDefinition == null)
             {
@@ -286,7 +281,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
                     if (metadata == null)
                     {
-                        MetadataValidationError err = new MetadataValidationError(metadataDefinition);
+                        MetadataValidationError err = new MetadataValidationError(metadataDefinition, m_EventAggregator);
                         err.ErrorType = MetadataErrorType.MissingItemError;
                         ReportError(err);
                         isValid = false;
@@ -308,7 +303,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
                     if (list.Count > 1)
                     {
-                        MetadataValidationError err = new MetadataValidationError(metadataDefinition);
+                        MetadataValidationError err = new MetadataValidationError(metadataDefinition, m_EventAggregator);
                         err.ErrorType = MetadataErrorType.DuplicateItemError;
                         ReportError(err);
                         isValid = false;
@@ -326,10 +321,12 @@ namespace Tobi.Plugin.Validator.Metadata
         //Complete sentences purposefully left out.
         private const string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";             // TODO LOCALIZE Date
         private const string m_NumericHint = "a numeric value";                                    // TODO LOCALIZE NumVal
+        private readonly IEventAggregator m_EventAggregator;
 
-        public MetadataDataTypeValidator(MetadataValidator parentValidator)
+        public MetadataDataTypeValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)
         {
             m_ParentValidator = parentValidator;
+            m_EventAggregator = eventAggregator;
         }
         public bool Validate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
@@ -361,7 +358,7 @@ namespace Tobi.Plugin.Validator.Metadata
         }
         private bool _validateDate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            MetadataValidationError err = new MetadataValidationError(definition);
+            MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
             err.ErrorType = MetadataErrorType.FormatError;
             err.Hint = m_DateHint;
             err.Target = metadata;
@@ -453,7 +450,7 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch (Exception)
             {
-                MetadataValidationError err = new MetadataValidationError(definition);
+                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
                 err.ErrorType = MetadataErrorType.FormatError;
                 err.Hint = m_NumericHint;
                 err.Target = metadata;
@@ -471,7 +468,7 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch (Exception)
             {
-                MetadataValidationError err = new MetadataValidationError(definition);
+                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
                 err.ErrorType = MetadataErrorType.FormatError;
                 err.Hint = m_NumericHint;
                 err.Target = metadata;
@@ -494,7 +491,7 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch
             {
-                MetadataValidationError err = new MetadataValidationError(definition);
+                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
                 err.ErrorType = MetadataErrorType.FormatError;
                 err.Hint = m_NumericHint;
                 err.Target = metadata;
@@ -518,10 +515,12 @@ namespace Tobi.Plugin.Validator.Metadata
     {
         private MetadataValidator m_ParentValidator;
         private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
+        private readonly IEventAggregator m_EventAggregator;
 
-        public MetadataOccurrenceValidator(MetadataValidator parentValidator)
+        public MetadataOccurrenceValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)
         {
             m_ParentValidator = parentValidator;
+            m_EventAggregator = eventAggregator;
         }
 
         public bool Validate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
@@ -536,7 +535,7 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             else
             {
-                MetadataValidationError err = new MetadataValidationError(definition);
+                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
                 err.ErrorType = MetadataErrorType.FormatError;
                 err.Hint = m_NonEmptyHint;
                 err.Target = metadata;

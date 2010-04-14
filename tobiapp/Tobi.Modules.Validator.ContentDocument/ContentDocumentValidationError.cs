@@ -55,25 +55,32 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 if (ErrorType == ContentDocumentErrorType.InvalidElementSequence)
                 {
-                    //return message plus target node snippet plus dtd definition snippet
-                    return string.Format("{0}\n{1}\n{2}\n{3}", 
-                        Message, 
-                        ValidatorUtilities.GetNodeXml(Target, true),
-                        "The allowed child elements are:",                        
+                    return string.Format(@"Invalid Element Sequence
+Element <{0}> contains an invalid sequence of child elements.
+{1}
+The following are permitted as children for <{0}>:
+{2}", 
+                        ValidatorUtilities.GetTreeNodeName(Target), 
+                        ValidatorUtilities.GetNodeXml(Target, true),              
                         ContentDocumentValidator.GetElementsListFromDtdRegex(AllowedChildNodes));
                 }
                 if (ErrorType == ContentDocumentErrorType.MissingDtd)
                 {
-                    return string.Format("DTD resource not found for {0}", DtdIdentifier);    
+                    return string.Format(@"Missing DTD
+Tobi could not locate a DTD, so it cannot validate the document.
+The DTD identifier associated with this document is:
+{0}", DtdIdentifier);    
                 }
                 if (ErrorType == ContentDocumentErrorType.UndefinedElement)
                 {
-                    return string.Format("Element definition not found for <{0}>",
-                                         ValidatorUtilities.GetTreeNodeName(Target)
-                                         );
+                    return string.Format(@"Undefined element
+An element definition was not found for:
+{0}",
+    ValidatorUtilities.GetNodeXml(Target, true));
                 }
 
-                return "";
+                //catch-all
+                return Message;
             }
             
         }

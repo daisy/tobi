@@ -29,7 +29,8 @@
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>  <!-- TODO LOCALIZE MissingDTD Key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>   <!-- TODO LOCALIZE CannotValidateDoc-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>  <!-- TODO LOCALIZE DTDIdentifier-->
-      <TextBlock Text="{Binding DtdIdentifier}"/>
+      <TextBlock Text="{Binding DtdIdentifier}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                 Margin="5" FontFamily="Courier New" Width="Auto" Padding="3"/>
    </StackPanel>
   </DataTemplate>
 
@@ -40,7 +41,14 @@
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
-      
+
+      <!-- TODO: this doesn't work -->
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnViewLinkClick">
+          <Run Text="Click to view"/>
+        </Hyperlink>
+      </TextBlock>
+
     </StackPanel>
   </DataTemplate>
 
@@ -72,6 +80,12 @@
         <TextBlock TextWrapping="Wrap" Margin="3"
                  Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"/>
       </Border>
+
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnViewLinkClick">
+          <Run Text="Click to view"/>
+        </Hyperlink>
+      </TextBlock>
       
     </StackPanel>
   </DataTemplate>

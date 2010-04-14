@@ -59,6 +59,11 @@
       <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.NotMoreThanOneInstance}" Margin="0,0,0,5"/>  <!--TODO LOCALIZE NotMoreThanOneInstance -->
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding Definition}" />
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnEditLinkClick">
+          <Run Text="Click to edit metadata"/>
+        </Hyperlink>
+      </TextBlock>
     </StackPanel>
   </DataTemplate>
 
@@ -72,6 +77,11 @@
       </TextBlock>
         <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding Definition}" />
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnAddLinkClick">
+          <Run Text="Click to add and edit"/>
+        </Hyperlink>
+      </TextBlock>
     </StackPanel>
   </DataTemplate>
 
@@ -92,6 +102,12 @@
       
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding Definition}" />
+
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnEditLinkClick">
+          <Run Text="Click to edit metadata"/>
+        </Hyperlink>
+      </TextBlock>
       
     </StackPanel>
   </DataTemplate>

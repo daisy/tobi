@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Windows;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using Tobi.Plugin.Validator.Metadata;
 
 namespace Tobi.Plugin.MetadataPane
 {
@@ -16,9 +20,9 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
         private readonly MetadataPaneView m_MetadataPaneView;
-
+        private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
-
+        
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -30,6 +34,7 @@ namespace Tobi.Plugin.MetadataPane
         [ImportingConstructor]
         public MetadataPanePlugin(
             ILoggerFacade logger,
+            IEventAggregator eventAggregator,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession session,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
@@ -41,7 +46,7 @@ namespace Tobi.Plugin.MetadataPane
             m_UrakawaSession = session;
             m_ShellView = shellView;
             m_MetadataPaneView = view;
-
+            m_EventAggregator = eventAggregator;
 
             CommandShowMetadataPane = new RichDelegateCommand(
                 Tobi_Plugin_MetadataPane_Lang.CmdShowMetadata_ShortDesc,
@@ -55,6 +60,8 @@ namespace Tobi.Plugin.MetadataPane
 
             m_ShellView.RegisterRichCommand(CommandShowMetadataPane);
 
+            m_EventAggregator.GetEvent<LaunchMetadataEditorEvent>().Subscribe(OnLaunchMetadataEditor, LaunchMetadataEditorEvent.THREAD_OPTION);
+            
 
             //m_Logger.Log(@"Metadata plugin initializing...", Category.Debug, Priority.Medium);
         }
@@ -70,6 +77,8 @@ namespace Tobi.Plugin.MetadataPane
         }
 
         private int m_MenuBarId_1;
+        private MetadataValidationError m_ErrorWithFocus;
+
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
@@ -104,9 +113,15 @@ namespace Tobi.Plugin.MetadataPane
 
         void ShowDialog()
         {
+            m_MetadataPaneView.ErrorWithFocus = m_ErrorWithFocus;
             m_MetadataPaneView.Popup();
         }
-
+        void OnLaunchMetadataEditor(MetadataValidationError error)
+        {
+            m_ErrorWithFocus = error;
+            CommandShowMetadataPane.Execute();
+            
+        }
         public override string Name
         {
             get { return Tobi_Plugin_MetadataPane_Lang.MetadataPanePlugin_Name; }      // TODO LOCALIZE MetadataPanePlugin_Name
