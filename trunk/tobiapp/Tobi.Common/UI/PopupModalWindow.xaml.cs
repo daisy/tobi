@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Composite;
 using Tobi.Common.MVVM;
@@ -385,6 +386,8 @@ namespace Tobi.Common.UI
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine(@"Popup WpfSoftwareRender => " + Tobi.Common.Settings.Default.WpfSoftwareRender);
+
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
             {
                 HwndSource hwndSource = PresentationSource.FromVisual(this) as HwndSource;
@@ -392,6 +395,13 @@ namespace Tobi.Common.UI
 
                 hwndTarget.RenderMode = RenderMode.SoftwareOnly;
             }
+
+            //0 => No graphics hardware acceleration available for the application on the device.
+            //1 => Partial graphics hardware acceleration available on the video card. This corresponds to a DirectX version that is greater than or equal to 7.0 and less than 9.0.
+            //2 => A rendering tier value of 2 means that most of the graphics features of WPF should use hardware acceleration provided the necessary system resources have not been exhausted. This corresponds to a DirectX version that is greater than or equal to 9.0.
+            int renderingTier = (RenderCapability.Tier >> 16);
+
+            Console.WriteLine(@"Popup RenderCapability.Tier => " + renderingTier);
 
             try
             {

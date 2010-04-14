@@ -57,10 +57,22 @@ namespace Tobi
 #endif
 
 #if NET40
+            //http://blogs.msdn.com/jgoldb/archive/2010/04/12/what-s-new-for-performance-in-wpf-in-net-4.aspx
+            //http://blogs.msdn.com/jgoldb/archive/2007/10/10/performance-improvements-in-wpf-in-net-3-5-3-0-sp1.aspx
+            
+            Console.WriteLine(@"Shell WpfSoftwareRender => " + Tobi.Common.Settings.Default.WpfSoftwareRender);
+
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
             {
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
+
+            //0 => No graphics hardware acceleration available for the application on the device.
+            //1 => Partial graphics hardware acceleration available on the video card. This corresponds to a DirectX version that is greater than or equal to 7.0 and less than 9.0.
+            //2 => A rendering tier value of 2 means that most of the graphics features of WPF should use hardware acceleration provided the necessary system resources have not been exhausted. This corresponds to a DirectX version that is greater than or equal to 9.0.
+            int renderingTier = (RenderCapability.Tier >> 16);
+
+            Console.WriteLine(@"Shell RenderCapability.Tier => " + renderingTier);
 #endif
             //TODO: See Mono.Options for managing command line parameters.
 

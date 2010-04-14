@@ -69,6 +69,11 @@ namespace Tobi.Common.UI
             BorderThickness = new Thickness(1);
             Padding = new Thickness(6);
             SnapsToDevicePixels = true;
+#if NET40
+            ////TODO:
+            //TextBox.CaretBrush
+            //TextBox.SelectionBrush
+#endif
         }
     }
 }
