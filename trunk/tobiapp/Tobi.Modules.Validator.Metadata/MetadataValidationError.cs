@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.Windows;
-using Tobi.Common;
+﻿using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Presentation.Events;
 using urakawa.metadata;
 using Tobi.Common.Validation;
 
@@ -57,45 +55,65 @@ namespace Tobi.Plugin.Validator.Metadata
                 return description;
             }
         }
-        /*
-         * relative to description:
-         * <Binding StringFormat="Rules for {0}" Path="Name"/>  <!-- TODO LOCALIZE MetadataDefinition_RulesForName -->
-          <Binding StringFormat="Must be a {0}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>   <!-- TODO LOCALIZE MetadataDefinition_MustBeDatatype -->
-          <Binding StringFormat="Is {0}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>  <!-- TODO LOCALIZE MetadataDefinition_Occurrance--> 
-          <Binding Path="IsRepeatable" Converter="{Metadata:IsRepeatableToStringConverter}"/>
-*/
+     
         public override string CompleteSummary
         {
             get
             {
+                string definition = "";
                 if (Definition != null)
                 {
-                    string definition = string.Format("Rules for {0}:\nMust be a {1}\nIs {2}\n{3}",
-                        Definition.Name, 
-                        DataTypeToString(Definition.DataType),
-                        OccurrenceToString(Definition),
-                        RepeatableToString(Definition.IsRepeatable));
-
-                    return string.Format("{0}\n{1}", Message, definition);
+                    definition = string.Format("Rules for {0}\n{1}\nMust be a {2}\nIs {3}\n{4}",
+                                               Definition.Name,
+                                               Definition.Description,
+                                               DataTypeToString(Definition.DataType),
+                                               OccurrenceToString(Definition),
+                                               RepeatableToString(Definition.IsRepeatable));
                 }
+
                 
+                if (ErrorType == MetadataErrorType.DuplicateItemError)
+                {
+                    return string.Format(@"Metadata error: duplicate items detected
+This metadata field cannot have more than one instance.
+{0}", definition);
+                }
+                if (ErrorType == MetadataErrorType.FormatError)
+                {
+                    return string.Format(@"Metadata error: invalid formatting
+The value for the item is invalid.
+{0} = {1}
+Hint: {0} must be {2}
+{3}", 
+    Target.NameContentAttribute.Name, 
+    Target.NameContentAttribute.Value,
+    Hint, 
+    definition);
+                }
+                if (ErrorType == MetadataErrorType.MissingItemError)
+                {
+                    string name = "";
+                    if (Definition != null) name = Definition.Name;
+
+                    return string.Format(@"Metadata error: missing a required item
+An entry for {0} was not found.
+{1}", name, definition);
+                }
+                //catch-all
                 return Message;
-                
             }
         }
 
         public override void TakeAction()
         {
-            //this message is just for testing
-            MessageBox.Show("This should open the metadadata editor");
-            //really, what we want is to open the metadata pane:
-            //CommandShowMetadataPane.Execute();
-            //but first, we need to get to that command
+            m_EventAggregator.GetEvent<LaunchMetadataEditorEvent>().Publish(this);
         }
 
-        public MetadataValidationError(MetadataDefinition definition)
+        private IEventAggregator m_EventAggregator;
+        public MetadataValidationError(MetadataDefinition definition, IEventAggregator eventAggregator)
         {
             Definition = definition;
+            m_EventAggregator = eventAggregator;
         }
 
         public static string RepeatableToString(bool value)
@@ -134,4 +152,8 @@ namespace Tobi.Plugin.Validator.Metadata
         }
     }
 
+    public class LaunchMetadataEditorEvent : CompositePresentationEvent<MetadataValidationError>
+    {
+        public static ThreadOption THREAD_OPTION = ThreadOption.PublisherThread;
+    }
 }

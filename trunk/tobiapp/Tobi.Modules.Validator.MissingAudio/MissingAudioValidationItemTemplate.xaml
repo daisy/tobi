@@ -9,7 +9,7 @@
       <TextBlock FontWeight="Bold" Text="Missing audio content"/>
       <TextBlock TextWrapping="Wrap">
         <TextBlock.Text>
-          <Binding StringFormat="The element &lt;{0}&gt; has no associated audio contents."
+          <Binding StringFormat="The element &lt;{0}&gt; has no associated audio content."
                    Path="Target"
                    Converter="{Common:ElementNameConverter}"/>
         </TextBlock.Text>
@@ -31,7 +31,12 @@
           </DataTemplate>
         </ContentPresenter.ContentTemplate>
       </ContentPresenter>
-      
+
+      <TextBlock Margin="0,3,0,3">
+        <Hyperlink Click="OnViewLinkClick">
+          <Run Text="Click to view"/>
+        </Hyperlink>
+      </TextBlock>
     </StackPanel>
 
   </DataTemplate>

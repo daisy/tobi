@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
+using Tobi.Common;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.metadata;
@@ -15,6 +16,19 @@ namespace Tobi.Plugin.Validator.Metadata
         public MetadataValidationItemTemplate()
         {
             InitializeComponent();
+        }
+
+        private void OnEditLinkClick(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Hyperlink;
+            ((ValidationItem)obj.DataContext).TakeAction();
+        }
+
+        private void OnAddLinkClick(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Hyperlink;
+            MetadataValidationError err = (MetadataValidationError)obj.DataContext;
+            err.TakeAction();
         }
     }
 

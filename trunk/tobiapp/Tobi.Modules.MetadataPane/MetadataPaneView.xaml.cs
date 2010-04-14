@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Logging;
 using System.Windows;
@@ -8,6 +9,7 @@ using System.Collections.ObjectModel;
 using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Plugin.Validator.Metadata;
+using urakawa.metadata;
 
 namespace Tobi.Plugin.MetadataPane
 {
@@ -26,6 +28,7 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IShellView m_ShellView;
 
         private NotifyingMetadataItem m_NewlyAddedMetadataItem;
+        public MetadataValidationError ErrorWithFocus { get; set;}
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -50,6 +53,7 @@ namespace Tobi.Plugin.MetadataPane
 
             DataContext = m_ViewModel;
             m_NewlyAddedMetadataItem = null;
+            ErrorWithFocus = null;
             InitializeComponent();
         }
 
@@ -67,6 +71,9 @@ namespace Tobi.Plugin.MetadataPane
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_ShortDesc, Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_LongDesc);
 
+            //highlight an item that has an error
+            if (ErrorWithFocus != null) FocusOnError();
+            
             windowPopup.ShowModal();
 
             //if the user presses "Ok", then save the changes.  otherwise, don't save them.
@@ -78,6 +85,72 @@ namespace Tobi.Plugin.MetadataPane
             else
             {
                 m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
+            }
+        }
+
+        //Sometimes the metadata dialog will be launched with the intention of highlighting a specific error
+        private void FocusOnError()
+        {
+            if (ErrorWithFocus == null) return;
+
+            //for missing item errors, add the missing item type
+            if (ErrorWithFocus.ErrorType == MetadataErrorType.MissingItemError)
+            {
+                AddMissingItem(ErrorWithFocus.Definition.Name);
+            }
+            else
+            {
+                //for other errors, highlight the metadata item containing the error
+                if (ErrorWithFocus.Target == null) return;
+                SetSelectedListItem(ErrorWithFocus.Target);
+            }
+            ErrorWithFocus = null;
+        }
+
+        //add a metadata item and bring focus to it
+        private void AddMissingItem(string name)
+        {
+            m_ViewModel.AddEmptyMetadata();
+            ObservableCollection<NotifyingMetadataItem> metadataItems =
+                m_ViewModel.MetadataCollection.Metadatas;
+            if (metadataItems.Count > 0)
+            {
+                NotifyingMetadataItem selection = metadataItems[metadataItems.Count - 1];
+                selection.Name = name;
+                SetSelectedListItem(selection);
+            }
+        }
+
+        private void SetSelectedListItem(Metadata metadata)
+        {
+            ObservableCollection<NotifyingMetadataItem> metadatas =
+                    ((MetadataPaneViewModel)DataContext).MetadataCollection.Metadatas;
+            IEnumerator<NotifyingMetadataItem> enumerator = metadatas.GetEnumerator();
+            NotifyingMetadataItem selection = null;
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current.UrakawaMetadata == metadata)
+                {
+                    selection = enumerator.Current;
+                    break;
+                }
+            }
+
+            if (selection != null) SetSelectedListItem(selection);
+
+        }
+        //set the selected item in the list
+        //TODO: fix
+        private void SetSelectedListItem(NotifyingMetadataItem selection)
+        {   
+            if (selection != null)
+            {
+                MetadataList.SelectedItem = selection;
+                MetadataList.Focus();
+
+                CollectionViewSource cvs = (CollectionViewSource)FindResource("MetadatasCVS");
+                if (cvs != null) cvs.View.MoveCurrentTo(selection);
+            
             }
         }
 
@@ -96,8 +169,7 @@ namespace Tobi.Plugin.MetadataPane
             if (metadataItems.Count > 0)
             {
                 NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
-                CollectionViewSource cvs = (CollectionViewSource)this.FindResource("MetadatasCVS");
-                cvs.View.MoveCurrentTo(metadata);
+                SetSelectedListItem(metadata);
             }
         }
 

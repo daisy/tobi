@@ -133,7 +133,7 @@
     <value>"[EMPTY]"</value>
   </data>
   <data name="EntryNotFound" xml:space="preserve">
-    <value>An entry for {0} was not found</value>
+    <value>An entry for {0} was not found.</value>
   </data>
   <data name="GeneralError" xml:space="preserve">
     <value>Metadata error: general error</value>
@@ -172,10 +172,10 @@
     <value>Optional</value>
   </data>
   <data name="Metadata_Recommended" xml:space="preserve">
-    <value>Recommended.</value>
+    <value>Recommended</value>
   </data>
   <data name="Metadata_Required" xml:space="preserve">
-    <value>Required.</value>
+    <value>Required</value>
   </data>
   <data name="Missing" xml:space="preserve">
     <value>Missing {0}</value>

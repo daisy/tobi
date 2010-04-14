@@ -27,14 +27,26 @@ namespace Tobi.Common.Validation
         {
             string xml = "";
             string nodeName = GetTreeNodeName(node);
-            xml = string.Format("<{0}>", nodeName);
+            bool emptyElement = false;
+            if (node.Children.Count == 0 && node.GetTextMedia() == null)
+            {
+                emptyElement = true;
+                xml = string.Format("<{0}/>", nodeName);
+            }
+            else
+            {
+                xml = string.Format("<{0}>", nodeName);
+            }
 
             if (node.GetTextMedia() != null)
             {
                 if (node.GetTextMedia().Text.Length > 10)
                 {
                     xml += node.GetTextMedia().Text.Substring(0, 10);
-                    xml += "...";
+                    if (node.Children.Count == 0 && node.GetTextMedia() != null)
+                    {
+                        xml += ("...");
+                    }
                 }
                 else
                 {
@@ -49,7 +61,13 @@ namespace Tobi.Common.Validation
                 xml += string.Format("\n\t<{0}>{1}</{0}>", childNodeName, childNodeText);
             }
 
-            xml += string.Format("\n</{0}>", nodeName);
+            if (!emptyElement)
+            {
+                if (node.Children.Count == 0)
+                    xml += string.Format("</{0}>", nodeName);
+                else
+                    xml += string.Format("\n<{0}>", nodeName);
+            }
             return xml;
         }
 
@@ -195,5 +213,4 @@ namespace Tobi.Common.Validation
             return ValidatorUtilities.GetTreeNodeName(value as TreeNode);
         }
     }
-
 }

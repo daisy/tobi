@@ -16,8 +16,10 @@ namespace Tobi.Plugin.Validator.MissingAudio
         {
             get
             {
-                return string.Format("{0}\n{1}", 
-                        Message, 
+                return string.Format(@"Missing audio content
+The element <{0}> has no associated audio content.
+{1}", 
+                        ValidatorUtilities.GetTreeNodeName(Target), 
                         ValidatorUtilities.GetNodeXml(Target, true)
                         );
             }

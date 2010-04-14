@@ -18,6 +18,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             InitializeComponent();
         }
+
+        private void OnViewLinkClick(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Hyperlink;
+            ((ValidationItem)obj.DataContext).TakeAction();
+        }
     }
 
     /*[ValueConversion(typeof(ContentDocumentErrorType), typeof(string))]

@@ -20,5 +20,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
         {
             InitializeComponent();
         }
+
+        private void OnViewLinkClick(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Hyperlink;
+            ((ValidationItem)obj.DataContext).TakeAction();
+        }
     }
 }

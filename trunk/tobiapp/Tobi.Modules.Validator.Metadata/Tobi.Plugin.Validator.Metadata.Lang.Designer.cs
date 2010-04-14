@@ -106,7 +106,7 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An entry for {0} was not found.
+        ///   Looks up a localized string similar to An entry for {0} was not found..
         /// </summary>
         public static string EntryNotFound {
             get {
@@ -151,7 +151,7 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recommended..
+        ///   Looks up a localized string similar to Recommended.
         /// </summary>
         public static string Metadata_Recommended {
             get {
@@ -160,7 +160,7 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Required..
+        ///   Looks up a localized string similar to Required.
         /// </summary>
         public static string Metadata_Required {
             get {
