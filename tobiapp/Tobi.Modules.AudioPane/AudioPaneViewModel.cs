@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
