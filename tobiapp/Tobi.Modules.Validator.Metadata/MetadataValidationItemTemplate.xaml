@@ -3,15 +3,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata">
 
+
+  <Style TargetType="{x:Type TextBlock}">
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
+
   <Style x:Key="MetadataHeadingStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
     <Setter Property="Margin" Value="0,0,0,5"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
+
   <DataTemplate x:Key="MetadataItemTemplate">
-    <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" BorderThickness="2">
-      <TextBlock TextWrapping="Wrap" Padding="5" 
+    <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+            BorderThickness="2">
+      <TextBlock Padding="5" 
                  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                  Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
         <TextBlock.Text>
@@ -72,7 +80,8 @@
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>  <!-- TODO LOCALIZE MissingRequiredItem -->
       <TextBlock Margin="0,0,0,5">
         <TextBlock.Text>
-          <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" Path="Definition.Name"/>   <!-- TODO LOCALIZE EntryNotFound-->
+          <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" 
+                   Path="Definition.Name"/>   <!-- TODO LOCALIZE EntryNotFound-->
         </TextBlock.Text>
       </TextBlock>
         <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
@@ -87,7 +96,8 @@
 
   <DataTemplate x:Key="MetadataFormatErrorTemplate">
     <StackPanel>
-      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>  <!-- TODO LOCALIZE InvalidFormatting -->
+      <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
+                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>  <!-- TODO LOCALIZE InvalidFormatting -->
       <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidValue}"/>  <!-- TODO LOCALIZE InvalidValue -->
       <ContentPresenter ContentTemplate="{StaticResource MetadataItemTemplate}"
                           Content="{Binding Target}" />
@@ -114,7 +124,8 @@
 
   <DataTemplate x:Key="MetadataGeneralErrorTemplate">
     <StackPanel>
-      <TextBlock Text= "{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.GeneralError}" Style="{StaticResource MetadataHeadingStyle}"/>  <!-- TODO LOCALIZE GeneralError -->
+      <TextBlock Text= "{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.GeneralError}" 
+                 Style="{StaticResource MetadataHeadingStyle}"/>  <!-- TODO LOCALIZE GeneralError -->
       <TextBlock Text="{Binding Message}"/>
     </StackPanel>
   </DataTemplate>

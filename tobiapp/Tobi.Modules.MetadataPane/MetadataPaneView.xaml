@@ -116,7 +116,13 @@
                          Mode=TwoWay, 
                          Path=Content, 
                          UpdateSourceTrigger=PropertyChanged}"
-                         />
+                         GotMouseCapture="OnContentTextMouseFocus"/>
+                <!-- 
+                     MouseDown="ContentText_OnMouseDown"
+                     GotMouseCapture="OnContentTextMouseFocus"
+                     GotKeyboardFocus="OnContentTextKeyboardFocus"
+                     MouseLeftButtonDown="ContentText_OnMouseLeftButtonDown"
+                -->
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>

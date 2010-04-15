@@ -11,6 +11,11 @@
            ItemsSource="{Binding Path=Validators}"
            mc:Ignorable="d"
            >
+  <TabControl.Resources>
+    <Style TargetType="{x:Type TextBlock}">
+      <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+  </TabControl.Resources>
   <TabControl.ItemTemplate>
     <DataTemplate>
       <TextBlock Text="{Binding Mode=OneWay, Path=Name}"
@@ -23,7 +28,7 @@
       <Grid Height="Auto" Width="Auto">
 
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="120"/>
+          <ColumnDefinition Width="200"/>
           <ColumnDefinition Width="Auto"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -33,13 +38,26 @@
 
         <ListBox Grid.Column="0" Grid.Row="0"
                  ItemsSource="{Binding ValidationItems}"
-                 DisplayMemberPath="Message"
                  x:Name="ValidationItemsListBox"
                  Margin="0,0,0,0"
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ListBoxItem.MouseDoubleClick="ValidationItemsListBox_OnMouseDoubleClick"
-                 />
+                 >
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <BulletDecorator Width="Auto" Margin="0,0,0,2">
+                <BulletDecorator.Bullet>
+                  <Ellipse Fill="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+                           Width="4"
+                           Height="4"/>
+                </BulletDecorator.Bullet>
+                <TextBlock Padding="4, 0, 0, 0" Text="{Binding Message}"/>
+              </BulletDecorator>
+             </DataTemplate>
+          </ListBox.ItemTemplate>
+        
+        </ListBox>
 
         <GridSplitter
             Grid.Column="1" Grid.Row="0"

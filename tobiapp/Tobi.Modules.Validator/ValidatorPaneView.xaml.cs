@@ -89,11 +89,48 @@ namespace Tobi.Plugin.Validator
             }
         }
 
-       /* private void OnViewLinkClick(object sender, RoutedEventArgs e)
+        public void SelectItemInListFromDocumentNodeSelection(object target)
         {
-            var obj = sender as Hyperlink;
-            ((ValidationItem)obj.DataContext).TakeAction();
-        }*/
+            if (target == null) return;
+
+            //get the visible tab
+            TabItem visible = (TabItem) Tabs.SelectedItem;
+            
+            //does this tab's validator repsond to document content nodes?
+            IValidator validator = (IValidator) visible.DataContext;
+            //TODO: this is a total hack.  need a new IValidator property that says whether it is a document
+            //content validator or something else
+            if (validator.Name == "Content Document Validator" ||
+                validator.Name == "Missing Audio Validator")
+            {
+                ValidationItem selection = null;
+                //look for a validationitem that has our target as its error.Target
+                foreach (ValidationItem item in validator.ValidationItems)
+                {
+                    /*if (item.Target == target)
+                    {
+                       selection = item;
+                       break;
+                    }*/
+                    //TODO:  ValidationItem does not have a default Target member
+                    //only specific ValidationItem-derived classes define that
+                    //we probably need a new ValidationItem class hierarchy
+                    //which changes pretty much everything
+                }
+                //select it
+                if (selection != null)
+                {
+                    SelectValidationItem(selection);
+                }
+            }
+        }
+
+        private void SelectValidationItem(ValidationItem selection)
+        {
+            if (selection == null) return;
+            ListBox list = (ListBox)FindResource("ValidationItemsListBox");
+            if (list != null) list.SelectedItem = selection;
+        }
     }
 
 

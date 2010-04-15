@@ -3,11 +3,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:MissingAudio="clr-namespace:Tobi.Plugin.Validator.MissingAudio" 
     xmlns:Common="clr-namespace:Tobi.Common.Validation;assembly=Tobi.Common">
+
+  <Style TargetType="{x:Type TextBlock}">
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
+
+  <Style x:Key="MissingAudioHeadingStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="FontWeight" Value="Bold"/>
+    <!-- left, top, right, bottom -->
+    <Setter Property="Margin" Value="0,0,0,5"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
   
   <DataTemplate DataType="{x:Type MissingAudio:MissingAudioValidationError}">
     <StackPanel>
-      <TextBlock FontWeight="Bold" Text="Missing audio content"/>
-      <TextBlock TextWrapping="Wrap">
+      <TextBlock Style="{StaticResource MissingAudioHeadingStyle}" Text="Missing audio content"/>
+      <TextBlock>
         <TextBlock.Text>
           <Binding StringFormat="The element &lt;{0}&gt; has no associated audio content."
                    Path="Target"
