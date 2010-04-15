@@ -87,7 +87,8 @@ An element definition was not found for:
 
         public override void TakeAction()
         {
-            m_UrakawaSession.PerformTreeNodeSelection(Target);
+            if (ErrorType != ContentDocumentErrorType.MissingDtd)
+                m_UrakawaSession.PerformTreeNodeSelection(Target);
         }
 
         private IUrakawaSession m_UrakawaSession;

@@ -1,12 +1,7 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Media;
-using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
-using urakawa.core;
 
 namespace Tobi.Plugin.Validator.MissingAudio
 {

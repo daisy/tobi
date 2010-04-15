@@ -8,6 +8,11 @@
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
     <Setter Property="Margin" Value="0,0,0,5"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
+
+  <Style TargetType="{x:Type TextBlock}">
+    <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
   <!-- template representing the semi-flattened XML (direct children only) for a single node-->
@@ -56,7 +61,7 @@
   <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplate">
     <StackPanel>
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
-      <TextBlock TextWrapping="Wrap">
+      <TextBlock>
         <TextBlock.Text>
           <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
                    Path="Target"
@@ -77,7 +82,7 @@
 
       <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
               BorderThickness="2">
-        <TextBlock TextWrapping="Wrap" Margin="3"
+        <TextBlock Margin="3"
                  Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"/>
       </Border>
 
