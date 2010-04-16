@@ -66,4 +66,37 @@ namespace Tobi.Plugin.Validator.Metadata
         }
     }
 
+    [ValueConversion(typeof(MetadataDefinition), typeof(string))]
+    public class DefinitionSynonymsListConverter : ValueConverterMarkupExtensionBase<DefinitionSynonymsListConverter>
+    {
+        //return a comma-delimited string of metadata synonyms
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is MetadataDefinition)) return "";
+
+            MetadataDefinition definition = value as MetadataDefinition;
+
+            if (definition.Synonyms != null && definition.Synonyms.Count > 0)
+            {
+                return string.Join(",", definition.Synonyms.ToArray());
+            }
+            return "";
+        }
+    }
+
+    [ValueConversion(typeof(MetadataDefinition), typeof(Visibility))]
+    public class DefinitionSynonymsListVisibilityConverter : ValueConverterMarkupExtensionBase<DefinitionSynonymsListVisibilityConverter>
+    {
+        //return visible if this definition has synonyms
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return Visibility.Hidden;
+            if (!(value is MetadataDefinition)) return Visibility.Hidden;
+
+            MetadataDefinition definition = value as MetadataDefinition;
+
+            return definition.Synonyms != null && definition.Synonyms.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+        }
+    }
 }

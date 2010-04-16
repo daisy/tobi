@@ -70,6 +70,12 @@ namespace Tobi.Plugin.Validator.Metadata
                                                DataTypeToString(Definition.DataType),
                                                OccurrenceToString(Definition),
                                                RepeatableToString(Definition.IsRepeatable));
+                    
+                    if (Definition.Synonyms != null && Definition.Synonyms.Count > 0)
+                    {
+                        string synonyms = string.Join(",", Definition.Synonyms.ToArray());
+                        definition += string.Format("\nSynonyms: {0}", synonyms);
+                    }
                 }
 
                 

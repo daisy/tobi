@@ -7,6 +7,7 @@ using Tobi.Common.UI.XAML;
 using Tobi.Plugin.Validator.Metadata;
 using System.Collections.ObjectModel;
 using Tobi.Common.Validation;
+using urakawa.metadata;
 
 namespace Tobi.Plugin.MetadataPane
 {
@@ -169,7 +170,7 @@ namespace Tobi.Plugin.MetadataPane
             return string.Format("{0}: {1}", (string) values[0], (string) values[1]);
         }
     }
-
+    
     [ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
     public class PrimaryIdentifierConverter : ValueConverterMarkupExtensionBase<PrimaryIdentifierConverter>
     {
@@ -243,4 +244,5 @@ namespace Tobi.Plugin.MetadataPane
             else return false;
         }
     }*/
+
 }

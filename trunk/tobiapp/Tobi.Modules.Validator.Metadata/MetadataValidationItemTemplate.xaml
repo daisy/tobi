@@ -57,6 +57,14 @@
             <Binding Path="IsRepeatable" Converter="{Metadata:IsRepeatableToStringConverter}"/>
           </TextBlock.Text>
         </TextBlock>
+
+        <TextBlock TextWrapping="Wrap" 
+                   Visibility="{Binding Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}">
+          <TextBlock.Text>
+            <Binding StringFormat="Synonyms: {0}"
+                     Converter="{Metadata:DefinitionSynonymsListConverter}"/>
+          </TextBlock.Text>
+        </TextBlock>
       </StackPanel>
   </DataTemplate>
 
@@ -104,7 +112,7 @@
       <TextBlock Margin="0,0,0,5">
         <TextBlock.Text>
           <MultiBinding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataFormatError_Hint}"> 
-            <Binding Path="Definition.Name"/>
+            <Binding Path="Target.NameContentAttribute.Name"/>
             <Binding Path="Hint"/>
           </MultiBinding>
         </TextBlock.Text>
