@@ -212,7 +212,7 @@ namespace Tobi.Plugin.MetadataPane
         private void addItem(Metadata metadata)
         {
             MetadataDefinition definition =
-                SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(metadata.NameContentAttribute.Name);
+                SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(metadata.NameContentAttribute.Name, true);
             //filter out read-only items because they will be filled in by Tobi at export time
             if (!definition.IsReadOnly)
             {
