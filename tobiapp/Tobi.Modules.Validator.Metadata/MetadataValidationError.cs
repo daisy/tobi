@@ -33,9 +33,10 @@ namespace Tobi.Plugin.Validator.Metadata
                 switch (ErrorType)
                 {
                     case MetadataErrorType.FormatError:
-                        string name = Definition.Name;
-                        if (string.IsNullOrEmpty(name))
-                            name = Target.NameContentAttribute.Name;
+                        string name = Target.NameContentAttribute.Name;
+                        if (Definition != null && string.IsNullOrEmpty(name))
+                            name = Definition.Name;
+                        
                         description = string.Format(Tobi_Plugin_Validator_Metadata_Lang.DefNameMustBeHint,                               // TODO LOCALIZE DefNameMustBeHint
                                                     name.ToLower(), Hint);
                         break;
