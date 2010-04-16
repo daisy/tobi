@@ -260,7 +260,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                                                            };
 
                 //look for more details about this error -- which child element is causing problems?
-                RevalidateChildren(regex, childrenNames, error);
+                //RevalidateChildren(regex, childrenNames, error);
                 
                 addValidationItem(error);
                 return false;
@@ -283,7 +283,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 ArrayList childrenArr = StringToArrayList(childrenNames, '#');
                 if (childrenArr.Count < error.Target.Children.Count)
                 {
-                    error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);
+                    //error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);
                 }
             }
             else
@@ -300,7 +300,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     //there are no smaller subsets to test, so the error could be either with the first child
                     //or just a general error with the overall sequence
                     //better not to be specific if we aren't sures
-                    error.BeginningOfError = null;
+                    //error.BeginningOfError = null;
                 }
             }
         }

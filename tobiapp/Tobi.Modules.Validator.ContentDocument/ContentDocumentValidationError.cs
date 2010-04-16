@@ -20,7 +20,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public ContentDocumentErrorType ErrorType { get; set; }
         public string AllowedChildNodes { get; set; }
         public TreeNode Target { get; set;}
-        public TreeNode BeginningOfError { get; set; }
+        //public TreeNode BeginningOfError { get; set; }
         public string DtdIdentifier { get; set; }
 
                 public override string Message
