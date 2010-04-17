@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using urakawa;
+using urakawa.core;
+using urakawa.metadata;
 
 namespace Tobi.Common.Validation
 {
@@ -150,8 +152,16 @@ namespace Tobi.Common.Validation
         //this function launches something that shows the error in context and maybe
         //allows the user to fix it
         public abstract void TakeAction();
+        public abstract bool CanTakeAction { get; }
     }
-
+    public abstract class ValidationItemWithTreeNodeTarget : ValidationItem
+    {
+        public TreeNode Target { get; set; }
+    }
+    public abstract class ValidationItemWithMetadataTarget : ValidationItem
+    {
+        public Metadata Target { get; set; }
+    }
     public static class ValidationDataTemplateProperties
     {
         public const string TypeIdentifier = "ValidationItemDataTemplate";

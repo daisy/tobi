@@ -29,7 +29,7 @@
   </DataTemplate>
 
   <!-- cannot find a dtd error -->
-  <DataTemplate x:Key="ContentDocumentMissingDtdTemplate">
+  <DataTemplate DataType="{x:Type ContentDocument:MissingDtdValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>  <!-- TODO LOCALIZE MissingDTD Key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>   <!-- TODO LOCALIZE CannotValidateDoc-->
@@ -40,7 +40,7 @@
   </DataTemplate>
 
   <!-- element definition not found error -->
-  <DataTemplate x:Key="ContentDocumentUndefinedElementTemplate">
+  <DataTemplate DataType="{x:Type ContentDocument:UndefinedElementValidationError}">
     <StackPanel Margin="0,5">
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>   <!-- TODO LOCALIZE UndefinedElement key already added-->
       <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
@@ -58,7 +58,7 @@
   </DataTemplate>
 
   <!-- invalid sequence of child elements error -->
-  <DataTemplate x:Key="ContentDocumentInvalidChildElementsTemplate">
+  <DataTemplate DataType="{x:Type ContentDocument:InvalidElementSequenceValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
       <TextBlock>
@@ -96,11 +96,14 @@
   </DataTemplate>
   
   <!-- general error -->
+  <!--
   <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
       <TextBlock Text="{Binding Message}"/>
   </DataTemplate>
+  -->
   
   <!-- this data template selects one of the others depending on the type of error -->
+  <!--
   <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
     <ContentPresenter x:Name="Presenter"
                       ContentTemplate="{StaticResource ContentDocumentGeneralErrorTemplate}"
@@ -136,5 +139,5 @@
         
       </DataTemplate.Triggers>    
  </DataTemplate>
-
+-->
 </ResourceDictionary>

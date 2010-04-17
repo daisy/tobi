@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Collections.ObjectModel;
 using Tobi.Common;
 using Tobi.Common.UI;
+using Tobi.Common.Validation;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
@@ -31,7 +32,7 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IShellView m_ShellView;
 
         private NotifyingMetadataItem m_NewlyAddedMetadataItem;
-        public MetadataValidationError ErrorWithFocus { get; set;}
+        public ValidationItem ErrorWithFocus { get; set;}
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -97,15 +98,18 @@ namespace Tobi.Plugin.MetadataPane
             if (ErrorWithFocus == null) return;
 
             //for missing item errors, add the missing item type
-            if (ErrorWithFocus.ErrorType == MetadataErrorType.MissingItemError)
+            if (ErrorWithFocus is MetadataMissingItemValidationError)
             {
-                AddMissingItem(ErrorWithFocus.Definition.Name);
+                AddMissingItem((ErrorWithFocus as MetadataMissingItemValidationError).Definition.Name);
             }
             else
             {
                 //for other errors, highlight the metadata item containing the error
-                if (ErrorWithFocus.Target == null) return;
-                SetSelectedListItem(ErrorWithFocus.Target);
+                if (ErrorWithFocus is AbstractMetadataValidationErrorWithTarget &&
+                    (ErrorWithFocus as AbstractMetadataValidationErrorWithTarget).Target != null)
+                {
+                    SetSelectedListItem((ErrorWithFocus as AbstractMetadataValidationErrorWithTarget).Target);
+                }
             }
             ErrorWithFocus = null;
         }

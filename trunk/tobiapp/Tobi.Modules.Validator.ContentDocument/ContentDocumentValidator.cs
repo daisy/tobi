@@ -91,9 +91,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (m_DtdRegex == null || m_DtdRegex.DtdRegexTable == null ||
                     m_DtdRegex.DtdRegexTable.Count == 0)
                 {
-                    ContentDocumentValidationError error = new ContentDocumentValidationError(m_Session)
+                    MissingDtdValidationError error = new MissingDtdValidationError()
                                                                {
-                                                                   ErrorType = ContentDocumentErrorType.MissingDtd,
                                                                    DtdIdentifier = m_DtdIdentifier
                                                                };
                     addValidationItem(error);
@@ -169,9 +168,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (dtdStream == null)
                 {
                     m_Dtd = null;
-                    ContentDocumentValidationError error = new ContentDocumentValidationError(m_Session)
+                    MissingDtdValidationError error = new MissingDtdValidationError()
                                                                {
-                                                                   ErrorType = ContentDocumentErrorType.MissingDtd,
                                                                    DtdIdentifier = m_DtdIdentifier
                                                                };
                     addValidationItem(error);
@@ -233,15 +231,13 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 string childrenNames = DtdSharpToRegex.GenerateChildNameList(node);
                 Regex regex = m_DtdRegex.GetRegex(node);
-                ContentDocumentValidationError error;
                 if (regex == null)
                 {
-                    error = new ContentDocumentValidationError(m_Session)
+                    UndefinedElementValidationError error1 = new UndefinedElementValidationError(m_Session)
                                                                {
-                                                                   Target = node,
-                                                                   ErrorType = ContentDocumentErrorType.UndefinedElement
+                                                                   Target = node
                                                                };
-                    addValidationItem(error);
+                    addValidationItem(error1);
                     return false;
                 }
 
@@ -252,17 +248,16 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     return true;
                 }
 
-                error = new ContentDocumentValidationError(m_Session)
+                InvalidElementSequenceValidationError error2 = new InvalidElementSequenceValidationError(m_Session)
                                                            {
                                                                Target = node,
-                                                               ErrorType = ContentDocumentErrorType.InvalidElementSequence,
                                                                AllowedChildNodes = regex.ToString(),
                                                            };
 
                 //look for more details about this error -- which child element is causing problems?
                 //RevalidateChildren(regex, childrenNames, error);
                 
-                addValidationItem(error);
+                addValidationItem(error2);
                 return false;
             }
 
@@ -271,7 +266,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         }
 
         //child element names must be formatted like "a#b#c#"
-        private static void RevalidateChildren(Regex regex, string childrenNames, ContentDocumentValidationError error)
+    /*    private static void RevalidateChildren(Regex regex, string childrenNames, ContentDocumentValidationError error)
         {
             Match match = regex.Match(childrenNames);
 
@@ -304,6 +299,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
             }
         }
+        */
         private static ArrayList StringToArrayList(string input, char delim)
         {
             ArrayList arr = new ArrayList(input.Split(delim));

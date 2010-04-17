@@ -1,21 +1,22 @@
-﻿using Tobi.Common;
+﻿using System;
+using Tobi.Common;
 using Tobi.Common.Validation;
 using urakawa.core;
 
 namespace Tobi.Plugin.Validator.ContentDocument
 {
-    public enum ContentDocumentErrorType
+   /* public enum ContentDocumentErrorType
     {
         UndefinedElement,
         InvalidElementSequence,
         MissingDtd
-    }
+    }*/
     
     //expectation of error types and available data
     //UndefinedElement => supply Target
     //InvalidElementSequence => supply Target, AllowedChildNodes, optionally BeginningOfError
     //MissingDtd => supply DtdIdentifier
-    public class ContentDocumentValidationError : ValidationItem
+   /* public class ContentDocumentValidationError : ValidationItem
     {
         public ContentDocumentErrorType ErrorType { get; set; }
         public string AllowedChildNodes { get; set; }
@@ -97,6 +98,124 @@ An element definition was not found for:
         {
             m_UrakawaSession = session;
             Severity = ValidationSeverity.Error;
+        }
+    }*/
+
+    public class InvalidElementSequenceValidationError : ValidationItemWithTreeNodeTarget
+    {
+        private readonly IUrakawaSession m_UrakawaSession;
+        public string AllowedChildNodes { get; set; }
+        public InvalidElementSequenceValidationError(IUrakawaSession session)
+        {
+            m_UrakawaSession = session;
+            Severity = ValidationSeverity.Error;
+        }
+
+        public override string Message
+        {
+            get
+            {
+                return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.InvalidSequence,
+                                     ValidatorUtilities.GetTreeNodeName(Target));
+            }
+        }
+
+        public override string CompleteSummary
+        {
+            get
+            {
+                return string.Format(@"Invalid Element Sequence
+Element <{0}> contains an invalid sequence of child elements.
+{1}
+The following are permitted as children for <{0}>:
+{2}",
+                        ValidatorUtilities.GetTreeNodeName(Target),
+                        ValidatorUtilities.GetNodeXml(Target, true),
+                        ContentDocumentValidator.GetElementsListFromDtdRegex(AllowedChildNodes));
+            }
+        }
+
+        public override void TakeAction()
+        {
+            m_UrakawaSession.PerformTreeNodeSelection(Target);
+        }
+
+        public override bool CanTakeAction
+        {
+            get { return true; }
+        }
+    }
+    public class MissingDtdValidationError : ValidationItem
+    {
+        public string DtdIdentifier { get; set;}
+
+        public override string Message
+        {
+            get 
+            {
+                return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.NoDTDFound, DtdIdentifier);
+            }
+        }
+
+        public override string CompleteSummary
+        {
+            get
+            {
+                return string.Format(@"Missing DTD
+Tobi could not locate a DTD, so it cannot validate the document.
+The DTD identifier associated with this document is:
+{0}", DtdIdentifier);    
+            }
+        }
+
+        public override void TakeAction()
+        {
+            //do nothing
+        }
+
+        public override bool CanTakeAction
+        {
+            get { return false; }
+        }
+    }
+    public class UndefinedElementValidationError : ValidationItemWithTreeNodeTarget
+    {
+        private readonly IUrakawaSession m_UrakawaSession;
+       
+        public UndefinedElementValidationError(IUrakawaSession session)
+        {
+            m_UrakawaSession = session;
+            Severity = ValidationSeverity.Error;
+        }
+
+        public override string Message
+        {
+            get
+            {
+                return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.NoElementDefinitionFound, 
+                    ValidatorUtilities.GetTreeNodeName(Target));
+            }
+        }
+
+        public override string CompleteSummary
+        {
+            get
+            {
+                return string.Format(@"Undefined element
+An element definition was not found for:
+{0}",
+                    ValidatorUtilities.GetNodeXml(Target, true));
+            }
+        }
+
+        public override void TakeAction()
+        {
+            m_UrakawaSession.PerformTreeNodeSelection(Target);
+        }
+
+        public override bool CanTakeAction
+        {
+            get { return true; }
         }
     }
 }

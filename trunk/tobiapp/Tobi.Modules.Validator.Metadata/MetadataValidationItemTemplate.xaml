@@ -68,7 +68,7 @@
       </StackPanel>
   </DataTemplate>
 
-  <DataTemplate x:Key="MetadataDuplicateItemErrorTemplate">
+  <DataTemplate DataType="{x:Type Metadata:MetadataDuplicateItemValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
                  Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>   <!-- TODO LOCALIZE DuplicateItemsDetected -->
@@ -83,7 +83,7 @@
     </StackPanel>
   </DataTemplate>
 
-  <DataTemplate x:Key="MetadataMissingItemErrorTemplate">
+  <DataTemplate DataType="{x:Type Metadata:MetadataMissingItemValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>  <!-- TODO LOCALIZE MissingRequiredItem -->
       <TextBlock Margin="0,0,0,5">
@@ -102,7 +102,7 @@
     </StackPanel>
   </DataTemplate>
 
-  <DataTemplate x:Key="MetadataFormatErrorTemplate">
+  <DataTemplate DataType="{x:Type Metadata:MetadataFormatValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
                  Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>  <!-- TODO LOCALIZE InvalidFormatting -->
@@ -130,15 +130,9 @@
     </StackPanel>
   </DataTemplate>
 
-  <DataTemplate x:Key="MetadataGeneralErrorTemplate">
-    <StackPanel>
-      <TextBlock Text= "{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.GeneralError}" 
-                 Style="{StaticResource MetadataHeadingStyle}"/>  <!-- TODO LOCALIZE GeneralError -->
-      <TextBlock Text="{Binding Message}"/>
-    </StackPanel>
-  </DataTemplate>
+  
 
-  <DataTemplate DataType="{x:Type Metadata:MetadataValidationError}">  
+  <!--<DataTemplate DataType="{x:Type Metadata:MetadataValidationError}">  
     <ContentPresenter x:Name="Presenter"
                       ContentTemplate="{StaticResource MetadataGeneralErrorTemplate}"
                       Content="{TemplateBinding Content}" />
@@ -173,5 +167,5 @@
 
     </DataTemplate.Triggers>
   </DataTemplate>
-
+-->
 </ResourceDictionary>

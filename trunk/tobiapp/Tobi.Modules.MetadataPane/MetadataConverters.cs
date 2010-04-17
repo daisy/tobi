@@ -107,9 +107,12 @@ namespace Tobi.Plugin.MetadataPane
             IEnumerable<ValidationItem> errors = (IEnumerable<ValidationItem>)values[1];
 
             //find the error for this metadata object
-            MetadataValidationError error = 
-                errors.Where(v => ((MetadataValidationError) v).Target == 
-                    metadata.UrakawaMetadata).Cast<MetadataValidationError>().FirstOrDefault();
+            ValidationItem error = 
+                errors.Where(v => 
+                    (v is AbstractMetadataValidationErrorWithTarget) 
+                    && 
+                    (v as AbstractMetadataValidationErrorWithTarget).Target == 
+                    metadata.UrakawaMetadata).FirstOrDefault();
             
             if (error == null)
             {
@@ -206,13 +209,11 @@ namespace Tobi.Plugin.MetadataPane
             NotifyingMetadataItem metadataItem = (NotifyingMetadataItem)values[0];
             IEnumerable<ValidationItem> validationItems = (IEnumerable<ValidationItem>) values[1];
             
-            
             foreach (ValidationItem item in validationItems)
             {
-                if (item is MetadataValidationError)
+                if (item is AbstractMetadataValidationErrorWithTarget)
                 {
-                    var metadataError = item as MetadataValidationError;
-                    if (metadataError.Target == metadataItem.UrakawaMetadata)
+                    if ((item as AbstractMetadataValidationErrorWithTarget).Target == metadataItem.UrakawaMetadata)
                     {
                         return false;
                     }

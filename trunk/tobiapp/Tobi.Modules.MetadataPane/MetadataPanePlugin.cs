@@ -7,6 +7,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using Tobi.Common.Validation;
 using Tobi.Plugin.Validator.Metadata;
 
 namespace Tobi.Plugin.MetadataPane
@@ -77,7 +78,7 @@ namespace Tobi.Plugin.MetadataPane
         }
 
         private int m_MenuBarId_1;
-        private MetadataValidationError m_ErrorWithFocus;
+        private ValidationItem m_ErrorWithFocus;
 
         protected override void OnMenuBarReady()
         {
@@ -116,7 +117,7 @@ namespace Tobi.Plugin.MetadataPane
             m_MetadataPaneView.ErrorWithFocus = m_ErrorWithFocus;
             m_MetadataPaneView.Popup();
         }
-        void OnLaunchMetadataEditor(MetadataValidationError error)
+        void OnLaunchMetadataEditor(ValidationItem error)
         {
             m_ErrorWithFocus = error;
             CommandShowMetadataPane.Execute();
