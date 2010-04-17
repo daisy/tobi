@@ -154,7 +154,11 @@ namespace Tobi.Common.Validation
         public abstract void TakeAction();
         public abstract bool CanTakeAction { get; }
     }
-    public abstract class ValidationItemWithTreeNodeTarget : ValidationItem
+    public abstract class ValidationItemWithTarget<T> : ValidationItem
+    {
+        public T Target { get; set; }
+    }
+   /* public abstract class ValidationItemWithTreeNodeTarget : ValidationItem
     {
         public TreeNode Target { get; set; }
     }
@@ -162,6 +166,7 @@ namespace Tobi.Common.Validation
     {
         public Metadata Target { get; set; }
     }
+    */
     public static class ValidationDataTemplateProperties
     {
         public const string TypeIdentifier = "ValidationItemDataTemplate";

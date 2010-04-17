@@ -7,10 +7,13 @@ using System.Windows.Data;
 using System.ComponentModel.Composition;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
+using Tobi.Common;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
+using urakawa.core;
 
 namespace Tobi.Plugin.Validator
 {
@@ -58,11 +61,22 @@ namespace Tobi.Plugin.Validator
             //DataContext = this;
             
             InitializeComponent();
-
+            
             //foreach (var validator in m_ValidatorAggregator.Validators)
             //{
                 
             //}
+
+            m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
+
+        }
+
+        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> obj)
+        {
+            Tuple<TreeNode, TreeNode> newTreeNodeSelection = obj.Item2;
+            //TODO: should we look at Item1, Item2, or both?
+            SelectItemInListFromDocumentNodeSelection(newTreeNodeSelection.Item1);
+
         }
 
         private void ValidationItemsListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -94,43 +108,78 @@ namespace Tobi.Plugin.Validator
             if (target == null) return;
 
             //get the visible tab
-            TabItem visible = (TabItem) Tabs.SelectedItem;
-            
-            //does this tab's validator repsond to document content nodes?
-            IValidator validator = (IValidator) visible.DataContext;
-            //TODO: this is a total hack.  need a new IValidator property that says whether it is a document
-            //content validator or something else
-            if (validator.Name == "Content Document Validator" ||
-                validator.Name == "Missing Audio Validator")
+            IValidator validator = (IValidator) Tabs.SelectedItem;
+            if (validator == null) return;
+
+            ValidationItem selection = null;
+            //look for a validationitem that has our target as its error.Target
+            foreach (ValidationItem item in validator.ValidationItems)
             {
-                ValidationItem selection = null;
-                //look for a validationitem that has our target as its error.Target
-                foreach (ValidationItem item in validator.ValidationItems)
+                if (target is TreeNode && item is ValidationItemWithTarget<TreeNode>)
                 {
-                    /*if (item.Target == target)
+                    if ((item as ValidationItemWithTarget<TreeNode>).Target == target)
                     {
-                       selection = item;
-                       break;
-                    }*/
-                    //TODO:  ValidationItem does not have a default Target member
-                    //only specific ValidationItem-derived classes define that
-                    //we probably need a new ValidationItem class hierarchy
-                    //which changes pretty much everything
+                        selection = item;
+                        break;
+                    }
                 }
-                //select it
-                if (selection != null)
-                {
-                    SelectValidationItem(selection);
-                }
+            }
+            //select it
+            if (selection != null)
+            {
+                SelectValidationItem(selection);
             }
         }
 
+        //TODO: how to find the listbox within a tabitem?
         private void SelectValidationItem(ValidationItem selection)
         {
             if (selection == null) return;
-            ListBox list = (ListBox)FindResource("ValidationItemsListBox");
-            if (list != null) list.SelectedItem = selection;
+
+            //this didn't work ..
+            /*DataTemplate contentTemplate = Tabs.ContentTemplate;
+            FrameworkElement templateParent = Tabs.ItemContainerGenerator.ContainerFromItem(Tabs.SelectedItem) as FrameworkElement;
+            ListBox list = (ListBox)contentTemplate.FindName("ValidationItemsListBox", templateParent);
+            */
+
+            //neither did this
+            TabItem myItem =
+                (TabItem)(Tabs.ItemContainerGenerator.ContainerFromItem(Tabs.Items.CurrentItem));
+
+            // Getting the ContentPresenter of myListBoxItem
+            ContentPresenter myContentPresenter = FindVisualChild<ContentPresenter>(myItem);
+
+            // Finding textBlock from the DataTemplate that is set on that ContentPresenter
+            DataTemplate myDataTemplate = myContentPresenter.ContentTemplate;
+            ListBox list = (ListBox)myDataTemplate.FindName("ValidationItemsListBox", myContentPresenter);
+
+
+
+            if (list != null)
+            {
+                list.SelectedItem = selection;
+                list.ScrollIntoView(selection);
+            }
         }
+
+        private childItem FindVisualChild<childItem>(DependencyObject obj)
+    where childItem : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is childItem)
+                    return (childItem)child;
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
+        }
+
     }
 
 
