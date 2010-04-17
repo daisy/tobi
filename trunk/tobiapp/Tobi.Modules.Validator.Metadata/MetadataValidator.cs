@@ -211,47 +211,46 @@ namespace Tobi.Plugin.Validator.Metadata
             //and check that the definitions don't match and the error types don't match
             //theoretically, there should only be one error type per definition (e.g. format, duplicate, etc)
 
-            ValidationItem valItem = null;
+            bool foundDuplicate = false;
 
             foreach (ValidationItem e in ValidationItems)
             {
                 if (e == null) continue;
 
                 bool sameItem = false;
-                bool nullErrorTarget = false;
-                bool nullTempErrorTarget = false;
-                if (e.GetType() == error.GetType())
+                bool sameDef = sameDef = (e as IMetadataValidationError).Definition == (error as IMetadataValidationError).Definition;
+                bool sameType = e.GetType() == error.GetType();
+                
+                if (sameType)
                 {
                     //does this error's target metadata item already have an error
                     //of this type associated with it?
                     if (e is AbstractMetadataValidationErrorWithTarget &&
                         error is AbstractMetadataValidationErrorWithTarget)
                     {
-                        nullErrorTarget = ((error as AbstractMetadataValidationErrorWithTarget).Target == null);
-                        nullTempErrorTarget = ((e as AbstractMetadataValidationErrorWithTarget).Target == null);
-                        if (((e as AbstractMetadataValidationErrorWithTarget).Target ==
-                            (error as AbstractMetadataValidationErrorWithTarget).Target)
+                        AbstractMetadataValidationErrorWithTarget eWithTarget =
+                            e as AbstractMetadataValidationErrorWithTarget;
+                        AbstractMetadataValidationErrorWithTarget errorWithTarget =
+                            error as AbstractMetadataValidationErrorWithTarget;
+
+                        if (sameType 
+                            &&
+                            eWithTarget.Target == errorWithTarget.Target
                             && 
-                            nullTempErrorTarget == false)
+                            eWithTarget.Target != null)
                         {
                             sameItem = true;
                         }
-
                     }
-                    
                 }
-                //does this error's type and target metadata definition already exist?
-                bool sameDef = (e as IMetadataValidationError).Definition == (error as IMetadataValidationError).Definition;
-                bool sameType = (e.GetType() == error.GetType());
-
-                if (sameItem || (sameDef && sameType && nullErrorTarget))
+                if (sameItem || (sameDef && sameType))
                 {
-                    valItem = e;
+                    foundDuplicate = true;
                     break; // && err.ErrorType != MetadataErrorType.MissingItemError
                 }
             }
 
-            if (valItem == null)
+            if (!foundDuplicate)
             {
                 addValidationItem(error);
             }
@@ -522,6 +521,8 @@ namespace Tobi.Plugin.Validator.Metadata
         }
     }
 
+    //checks for non-empty values
+    //we could probably move this into one of the other validators since it's pretty simple what it does
     public class MetadataOccurrenceValidator
     {
         private MetadataValidator m_ParentValidator;
