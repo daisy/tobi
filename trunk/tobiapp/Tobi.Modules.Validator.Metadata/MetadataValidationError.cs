@@ -161,7 +161,8 @@ An entry for {0} was not found.
 
         public string Hint { get; set; }
     }
-    public abstract class AbstractMetadataValidationErrorWithTarget : ValidationItemWithMetadataTarget, IMetadataValidationError
+    public abstract class AbstractMetadataValidationErrorWithTarget : 
+        ValidationItemWithTarget<urakawa.metadata.Metadata>, IMetadataValidationError
     {
         private IEventAggregator m_EventAggregator;
         public AbstractMetadataValidationErrorWithTarget(urakawa.metadata.Metadata target, 

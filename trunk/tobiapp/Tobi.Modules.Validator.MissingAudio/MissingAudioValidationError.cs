@@ -1,9 +1,10 @@
 ﻿using Tobi.Common;
 using Tobi.Common.Validation;
+using urakawa.core;
 
 namespace Tobi.Plugin.Validator.MissingAudio
 {
-    public class MissingAudioValidationError : ValidationItemWithTreeNodeTarget
+    public class MissingAudioValidationError : ValidationItemWithTarget<TreeNode>
     {
         public override string Message
         {

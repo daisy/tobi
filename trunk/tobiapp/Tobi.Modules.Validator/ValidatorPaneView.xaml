@@ -10,6 +10,7 @@
            x:Name="Tabs"
            ItemsSource="{Binding Path=Validators}"
            mc:Ignorable="d"
+           IsSynchronizedWithCurrentItem ="True"
            >
   <TabControl.Resources>
     <Style TargetType="{x:Type TextBlock}">
@@ -24,7 +25,7 @@
   </TabControl.ItemTemplate>
 
   <TabControl.ContentTemplate>
-    <DataTemplate>
+    <DataTemplate x:Name="tabContent">
       <Grid Height="Auto" Width="Auto">
 
         <Grid.ColumnDefinitions>
@@ -43,6 +44,7 @@
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ListBoxItem.MouseDoubleClick="ValidationItemsListBox_OnMouseDoubleClick"
+                 
                  >
           <ListBox.ItemTemplate>
             <DataTemplate>

@@ -101,7 +101,7 @@ An element definition was not found for:
         }
     }*/
 
-    public class InvalidElementSequenceValidationError : ValidationItemWithTreeNodeTarget
+    public class InvalidElementSequenceValidationError : ValidationItemWithTarget<TreeNode>
     {
         private readonly IUrakawaSession m_UrakawaSession;
         public string AllowedChildNodes { get; set; }
@@ -178,7 +178,7 @@ The DTD identifier associated with this document is:
             get { return false; }
         }
     }
-    public class UndefinedElementValidationError : ValidationItemWithTreeNodeTarget
+    public class UndefinedElementValidationError : ValidationItemWithTarget<TreeNode>
     {
         private readonly IUrakawaSession m_UrakawaSession;
        
