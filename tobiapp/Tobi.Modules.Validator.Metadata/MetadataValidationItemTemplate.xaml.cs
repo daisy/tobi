@@ -27,7 +27,7 @@ namespace Tobi.Plugin.Validator.Metadata
         private void OnAddLinkClick(object sender, RoutedEventArgs e)
         {
             var obj = sender as Hyperlink;
-            MetadataValidationError err = (MetadataValidationError)obj.DataContext;
+            ValidationItem err = (ValidationItem)obj.DataContext;
             err.TakeAction();
         }
     }
@@ -39,7 +39,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             if (value == null) return "";
             if (!(value is MetadataDataType)) return "";
-            return MetadataValidationError.DataTypeToString((MetadataDataType)value);
+            return MetadataUtilities.DataTypeToString((MetadataDataType)value);
         }
     }
 
@@ -51,7 +51,7 @@ namespace Tobi.Plugin.Validator.Metadata
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return "";
-            return MetadataValidationError.OccurrenceToString(value as MetadataDefinition);
+            return MetadataUtilities.OccurrenceToString(value as MetadataDefinition);
         }
     }
 
@@ -62,7 +62,7 @@ namespace Tobi.Plugin.Validator.Metadata
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool isRepeatable = (bool)value;
-            return MetadataValidationError.RepeatableToString(isRepeatable);
+            return MetadataUtilities.RepeatableToString(isRepeatable);
         }
     }
 

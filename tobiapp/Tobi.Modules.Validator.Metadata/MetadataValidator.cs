@@ -205,7 +205,7 @@ namespace Tobi.Plugin.Validator.Metadata
         }
 
         
-        internal void ReportError(MetadataValidationError error)
+        internal void ReportError(ValidationItem error)
         {
             //prevent duplicate errors: check that the items aren't identical
             //and check that the definitions don't match and the error types don't match
@@ -213,25 +213,40 @@ namespace Tobi.Plugin.Validator.Metadata
 
             ValidationItem valItem = null;
 
-            foreach (var e in ValidationItems)
+            foreach (ValidationItem e in ValidationItems)
             {
-                MetadataValidationError err = e as MetadataValidationError;
-                if (err == null) continue;
+                if (e == null) continue;
 
                 bool sameItem = false;
-                if (err.ErrorType == error.ErrorType)
+                bool nullErrorTarget = false;
+                bool nullTempErrorTarget = false;
+                if (e.GetType() == error.GetType())
                 {
                     //does this error's target metadata item already have an error
                     //of this type associated with it?
-                    sameItem = err.Target != null && (err.Target == error.Target);
+                    if (e is AbstractMetadataValidationErrorWithTarget &&
+                        error is AbstractMetadataValidationErrorWithTarget)
+                    {
+                        nullErrorTarget = ((error as AbstractMetadataValidationErrorWithTarget).Target == null);
+                        nullTempErrorTarget = ((e as AbstractMetadataValidationErrorWithTarget).Target == null);
+                        if (((e as AbstractMetadataValidationErrorWithTarget).Target ==
+                            (error as AbstractMetadataValidationErrorWithTarget).Target)
+                            && 
+                            nullTempErrorTarget == false)
+                        {
+                            sameItem = true;
+                        }
+
+                    }
+                    
                 }
                 //does this error's type and target metadata definition already exist?
-                bool sameDef = (err.Definition == error.Definition);
-                bool sameType = (err.ErrorType == error.ErrorType);
+                bool sameDef = (e as IMetadataValidationError).Definition == (error as IMetadataValidationError).Definition;
+                bool sameType = (e.GetType() == error.GetType());
 
-                if (sameItem || (sameDef && sameType && error.Target == null))
+                if (sameItem || (sameDef && sameType && nullErrorTarget))
                 {
-                    valItem = err;
+                    valItem = e;
                     break; // && err.ErrorType != MetadataErrorType.MissingItemError
                 }
             }
@@ -281,8 +296,8 @@ namespace Tobi.Plugin.Validator.Metadata
 
                     if (metadata == null)
                     {
-                        MetadataValidationError err = new MetadataValidationError(metadataDefinition, m_EventAggregator);
-                        err.ErrorType = MetadataErrorType.MissingItemError;
+                        MetadataMissingItemValidationError err = 
+                            new MetadataMissingItemValidationError(metadataDefinition, m_EventAggregator);
                         ReportError(err);
                         isValid = false;
                     }
@@ -303,8 +318,8 @@ namespace Tobi.Plugin.Validator.Metadata
 
                     if (list.Count > 1)
                     {
-                        MetadataValidationError err = new MetadataValidationError(metadataDefinition, m_EventAggregator);
-                        err.ErrorType = MetadataErrorType.DuplicateItemError;
+                        MetadataDuplicateItemValidationError err = 
+                            new MetadataDuplicateItemValidationError(metadataDefinition, m_EventAggregator);
                         ReportError(err);
                         isValid = false;
                     }
@@ -358,11 +373,10 @@ namespace Tobi.Plugin.Validator.Metadata
         }
         private bool _validateDate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
-            err.ErrorType = MetadataErrorType.FormatError;
+            MetadataFormatValidationError err = 
+                new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
             err.Hint = m_DateHint;
-            err.Target = metadata;
-
+            
             string date = metadata.NameContentAttribute.Value;
             //Require at least the year field
             //The max length of the entire datestring is 10
@@ -450,11 +464,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch (Exception)
             {
-                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
-                err.ErrorType = MetadataErrorType.FormatError;
+                MetadataFormatValidationError err = 
+                    new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NumericHint;
-                err.Target = metadata;
-
+                
                 m_ParentValidator.ReportError(err);
                 return false;
             }
@@ -468,11 +481,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch (Exception)
             {
-                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
-                err.ErrorType = MetadataErrorType.FormatError;
+                MetadataFormatValidationError err = 
+                    new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NumericHint;
-                err.Target = metadata;
-
+                
                 m_ParentValidator.ReportError(err);
                 return false;
             }
@@ -491,11 +503,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch
             {
-                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
-                err.ErrorType = MetadataErrorType.FormatError;
+                MetadataFormatValidationError err = 
+                    new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NumericHint;
-                err.Target = metadata;
-
+                
                 m_ParentValidator.ReportError(err);
                 return false;
             }
@@ -535,11 +546,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             else
             {
-                MetadataValidationError err = new MetadataValidationError(definition, m_EventAggregator);
-                err.ErrorType = MetadataErrorType.FormatError;
+                MetadataFormatValidationError err = 
+                    new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NonEmptyHint;
-                err.Target = metadata;
-
+                
                 m_ParentValidator.ReportError(err);
                 return false;
             }

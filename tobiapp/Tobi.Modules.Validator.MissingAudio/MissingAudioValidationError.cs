@@ -1,13 +1,10 @@
 ﻿using Tobi.Common;
 using Tobi.Common.Validation;
-using urakawa.core;
 
 namespace Tobi.Plugin.Validator.MissingAudio
 {
-    public class MissingAudioValidationError : ValidationItem
+    public class MissingAudioValidationError : ValidationItemWithTreeNodeTarget
     {
-        public TreeNode Target { get; set;}
-        
         public override string Message
         {
             get { return string.Format("Element <{0}> is missing audio", ValidatorUtilities.GetTreeNodeName(Target)); }
@@ -30,6 +27,11 @@ The element <{0}> has no associated audio content.
         public override void TakeAction()
         {
             m_UrakawaSession.PerformTreeNodeSelection(Target);
+        }
+
+        public override bool CanTakeAction
+        {
+            get { return true; }
         }
 
         public MissingAudioValidationError(IUrakawaSession session)
