@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Media;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -390,10 +392,12 @@ namespace Tobi.Common.UI
 
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
             {
-                HwndSource hwndSource = PresentationSource.FromVisual(this) as HwndSource;
-                HwndTarget hwndTarget = hwndSource.CompositionTarget;
-
-                hwndTarget.RenderMode = RenderMode.SoftwareOnly;
+                var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+                if (hwndSource != null)
+                {
+                    HwndTarget hwndTarget = hwndSource.CompositionTarget;
+                    hwndTarget.RenderMode = RenderMode.SoftwareOnly;
+                }
             }
 
             //0 => No graphics hardware acceleration available for the application on the device.
@@ -405,8 +409,13 @@ namespace Tobi.Common.UI
 
             try
             {
-                Uri iconUri = new Uri("pack://application:,,,/Tobi;component/Tobi.ico", UriKind.Absolute);
                 //Uri iconUri = new Uri("Tobi.ico", UriKind.RelativeOrAbsolute);
+                //Uri iconUri = new Uri("pack://application:,,,/Tobi;component/Tobi.ico", UriKind.Absolute);
+
+                string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string iconPath = Path.Combine(appFolder, "Shortcut.ico");
+                var iconUri = new Uri("file://" + iconPath, UriKind.Absolute);
+
                 Icon = BitmapFrame.Create(iconUri);
             }
             finally
