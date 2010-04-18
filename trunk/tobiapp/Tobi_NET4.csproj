@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tobi</RootNamespace>
-    <AssemblyName>Tobi</AssemblyName>
+    <AssemblyName>Tobi_NET4</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET4_0.3.6.5\</PublishUrl>
+    <PublishUrl>Z:\Desktop\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET4_0.3.6.6\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -43,8 +43,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.3.7.0</ApplicationVersion>
+    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationVersion>0.3.6.6</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -59,7 +59,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>bin\Debug\Tobi.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi_NET4.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
@@ -67,7 +67,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NET40</DefineConstants>
+    <DefineConstants>NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -163,9 +163,7 @@
     <Compile Include="Shell_Commands.cs" />
     <Compile Include="Shell_Magnification.cs" />
     <Compile Include="Shell_SplitterDrag.cs" />
-    <None Include="App.NET40.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -351,6 +349,16 @@
       <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
+    <PublishFile Include="fr\Tobi_NET4.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi_Lang.fr.resx">
@@ -372,10 +380,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<UsingTask TaskName="Delete" AssemblyName="" />-->
-  <Target Name="AfterBuild" Condition="True">
+  <!--<Target Name="AfterBuild" Condition="True">
     <Delete Files="$(TargetDir)$(TargetFileName).config" />
     <Copy SourceFiles="$(ProjectDir)App.NET40.config" DestinationFiles="$(TargetDir)$(TargetFileName).config" />
-  </Target>
+  </Target>-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

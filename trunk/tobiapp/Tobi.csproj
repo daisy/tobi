@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tobi</RootNamespace>
-    <AssemblyName>Tobi</AssemblyName>
+    <AssemblyName>Tobi_NET3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
     <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>Z:\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnce_0.3.7.0\</PublishUrl>
+    <PublishUrl>Z:\Desktop\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_0.3.6.6\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -35,16 +35,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.digitaltalkingbook.com/projects/tobi/install/alpha/</InstallUrl>
+    <InstallUrl>http://www.digitaltalkingbook.com/projects/tobi/install/net3/</InstallUrl>
     <SupportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Help.html</SupportUrl>
     <ErrorReportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
-    <ProductName>Tobi</ProductName>
+    <ProductName>Tobi %28.NET 3%29</ProductName>
     <PublisherName>DAISY Consortium</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.3.7.0</ApplicationVersion>
+    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationVersion>0.3.6.6</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -59,14 +59,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>bin\Debug\Tobi.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tobi_NET3.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
