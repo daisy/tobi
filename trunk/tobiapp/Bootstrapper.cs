@@ -111,7 +111,7 @@ namespace Tobi
 , "Tobi log (.NET4).lnk"
 #else
 , "Tobi log (.NET3).lnk"
-#endif // DEBUG
+#endif
 );
             if (File.Exists(shortcutToLogPath))
             {
