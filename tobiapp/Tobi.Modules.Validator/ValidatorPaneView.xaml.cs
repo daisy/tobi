@@ -74,9 +74,8 @@ namespace Tobi.Plugin.Validator
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> obj)
         {
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = obj.Item2;
-            //TODO: should we look at Item1, Item2, or both?
-            SelectItemInListFromDocumentNodeSelection(newTreeNodeSelection.Item1);
-
+            TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
+            SelectItemInListFromDocumentNodeSelection(treeNode);
         }
 
         private void ValidationItemsListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
