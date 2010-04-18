@@ -34,7 +34,11 @@ namespace Tobi.Common
             string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
             APP_VERSION = GetVersion();
-            OS_INFORMATION = getOSInfo() + " -- (" + (IsRunning64() ? "64-bit" : "32-bit") + " .NET)";
+            OS_INFORMATION = getOSInfo()
+#if NET40
+ + " [.NET 4]"
+#endif
+ + " -- (" + (IsRunning64() ? "64-bit" : "32-bit") + " .NET)";
         }
 
         public static readonly string APP_VERSION;
