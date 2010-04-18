@@ -448,11 +448,11 @@ namespace Tobi
                 aLayer.Add(theAdorner);
             }
 
-            Effect = new BlurEffect();
+            //Effect = new BlurEffect();
 
             action.Invoke();
 
-            Effect = null;
+            //Effect = null;
 
             if (aLayer != null)
             {
