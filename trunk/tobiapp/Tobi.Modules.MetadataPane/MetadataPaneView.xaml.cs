@@ -154,6 +154,7 @@ namespace Tobi.Plugin.MetadataPane
             {
                 MetadataList.SelectedItem = selection;
                 MetadataList.Focus();
+                MetadataList.ScrollIntoView(selection);
 
                 CollectionViewSource cvs = (CollectionViewSource)FindResource("MetadatasCVS");
                 if (cvs != null) cvs.View.MoveCurrentTo(selection);

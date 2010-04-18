@@ -179,6 +179,38 @@ namespace Tobi.Plugin.Validator
             return null;
         }
 
+        private void OnClipboardCopyAllLinkClick(object sender, RoutedEventArgs e)
+        {
+            bool noErrors = true;
+            string clipboardText = "List of all validation errors\n\n";
+            IEnumerator<IValidator> enumerator = m_ValidatorAggregator.Validators.GetEnumerator();
+            while(enumerator.MoveNext())
+            {
+                clipboardText += string.Format("{0}: {1}\n\n", enumerator.Current.Name, enumerator.Current.Description);
+                foreach (ValidationItem item in enumerator.Current.ValidationItems)
+                {
+                    noErrors = false;
+                    clipboardText += string.Format("{0}\n\n", item.CompleteSummary);
+                }
+                if (noErrors)
+                {
+                    clipboardText += "No errors reported\n\n";
+                }
+                clipboardText += string.Format("End of {0} report.\n\n", enumerator.Current.Name);
+
+            }
+
+            try
+            {
+                //this raises an exception the first time it is used
+                Clipboard.SetText(clipboardText);
+                MessageBox.Show("Contents copied to clipboard.");
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail(string.Format("Clipboad exception: {0}", ex.Message));
+            }
+        }
     }
 
 
