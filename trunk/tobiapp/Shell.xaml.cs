@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -474,9 +476,14 @@ namespace Tobi
 
             try
             {
-                var iconUri = new Uri("pack://application:,,,/" + GetType().Assembly.GetName().Name
-                                        + ";component/Tobi.ico", UriKind.Absolute);
+                //var iconUri = new Uri("pack://application:,,,/" + GetType().Assembly.GetName().Name + ";component/Tobi.ico", UriKind.Absolute);
                 //Uri iconUri = new Uri("Tobi.ico", UriKind.RelativeOrAbsolute);
+                //Uri iconUri = new Uri("pack://application:,,,/Tobi;component/Tobi.ico", UriKind.Absolute);
+
+                string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string iconPath = Path.Combine(appFolder, "Shortcut.ico");
+                var iconUri = new Uri("file://" + iconPath, UriKind.Absolute);
+
                 Icon = BitmapFrame.Create(iconUri);
             }
             catch

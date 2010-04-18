@@ -105,7 +105,7 @@ namespace Tobi
             m_Logger.Log(@"[Tobi user config folder: " + Path.GetDirectoryName(config.FilePath) + @"]", Category.Info, Priority.High);
 
             string logPath = Path.Combine(appFolder, "Tobi.log");
-            string iconPath = Path.Combine(appFolder, "Tobi.ico");
+            string iconPath = Path.Combine(appFolder, "Shortcut.ico");
             string shortcutToLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Shortcut to Tobi log.lnk");
             if (File.Exists(shortcutToLogPath))
             {
