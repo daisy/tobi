@@ -53,10 +53,6 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CAL\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Core">
@@ -92,6 +88,10 @@
     <ProjectReference Include="..\MEF\Lib.MEF_NET4.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceLocation\Lib.ServiceLocation_NET4.csproj">
+      <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>
+      <Name>Lib.ServiceLocation_NET4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
