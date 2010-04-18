@@ -106,7 +106,13 @@ namespace Tobi
 
             string logPath = Path.Combine(appFolder, "Tobi.log");
             string iconPath = Path.Combine(appFolder, "Shortcut.ico");
-            string shortcutToLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Shortcut to Tobi log.lnk");
+            string shortcutToLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+#if NET40
+, "Tobi log (.NET4).lnk"
+#else
+, "Tobi log (.NET3).lnk"
+#endif // DEBUG
+);
             if (File.Exists(shortcutToLogPath))
             {
                 try
