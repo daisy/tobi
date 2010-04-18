@@ -74,10 +74,6 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ExternalLibs\CAL\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationFramework.Aero">
     </Reference>
     <Reference Include="System" />
@@ -215,6 +211,10 @@
     <ProjectReference Include="ExternalLibs\MEF_Unity\Lib.MEF_Unity_NET4.csproj">
       <Project>{24A770F8-AF0E-400F-8ABB-3FD68617103E}</Project>
       <Name>Lib.MEF_Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\ServiceLocation\Lib.ServiceLocation_NET4.csproj">
+      <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>
+      <Name>Lib.ServiceLocation_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="Tobi.Common\Tobi.Common_NET4.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
