@@ -9,8 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.Practices.ServiceLocation</RootNamespace>
     <AssemblyName>Microsoft.Practices.ServiceLocation</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <!-- TargetFrameworkProfile>Client</TargetFrameworkProfile -->
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <FileUpgradeFlags>
     </FileUpgradeFlags>
