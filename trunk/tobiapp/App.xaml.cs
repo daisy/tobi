@@ -116,17 +116,6 @@ Command c = new RunCommand();
 CommandLineParser.ParseArguments(c, args); 
 c.Execute();
              */
-            //TODO with ClickOnce activation through file association
-            if (true || ApplicationDeployment.IsNetworkDeployed)
-            {
-                if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null
-                    && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null
-                    && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData.Length > 0)
-                {
-                    string path = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData[0];
-                    Console.WriteLine(@"APP PARAMETER: " + path);
-                }
-            }
             base.OnStartup(e);
         }
 
