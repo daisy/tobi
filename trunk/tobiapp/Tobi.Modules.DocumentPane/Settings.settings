@@ -4,11 +4,11 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
-    <Setting Name="Document_Color_PageNum_Back" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#ffffa500</Value>
+    <Setting Name="Document_Color_Hyperlink_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff87CEFA</Value>
     </Setting>
-    <Setting Name="Document_Color_PageNum_Font" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#ff000000</Value>
+    <Setting Name="Document_Color_PageNum_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ffffe4c4</Value>
     </Setting>
     <Setting Name="Document_Font" Type="System.Windows.Media.FontFamily" Scope="User">
       <Value Profile="(Default)">Times New Roman</Value>

@@ -29,6 +29,9 @@
     <Setting Name="AudioWaveForm_Color_Fill" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#ff32cd32</Value>
     </Setting>
+    <Setting Name="AudioWaveForm_Color_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff000000</Value>
+    </Setting>
     <Setting Name="AudioWaveForm_Color_Stroke" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#ff00ff00</Value>
     </Setting>

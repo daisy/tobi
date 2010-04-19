@@ -366,7 +366,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private Color m_ColorWaveBackground = Colors.Black;
+        private Color m_ColorWaveBackground = Settings.Default.AudioWaveForm_Color_Back;
         public Color ColorWaveBackground
         {
             get

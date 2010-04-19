@@ -920,7 +920,8 @@ namespace Tobi.Plugin.AudioPane
             GeometryDrawing geoDrawMarkers = null;
 
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_ViewModel.m_UrakawaSession.GetTreeNodeSelection();
-            if (treeNodeSelection.Item1 != null)
+
+            if (m_ViewModel.State.Audio.PlayStreamMarkers != null && treeNodeSelection.Item1 != null)
             {
                 geoDrawMarkers = createGeometry_Markers(heightMagnified, bytesPerPixel_Magnified);
             }

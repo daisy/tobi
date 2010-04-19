@@ -23,6 +23,7 @@ using urakawa.media.data.image;
 using urakawa.media.timing;
 using urakawa.property.xml;
 using urakawa.xuk;
+using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -254,10 +255,10 @@ namespace Tobi.Plugin.DocumentPane
             data.FontSize = m_FlowDoc.FontSize * 1.2;
 
             Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
-            Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+            //Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
 
             data.Background = brushBack;
-            data.Foreground = brushFont;
+            //data.Foreground = brushFont;
 
             formatPageNumberAndSetId(node, data);
         }
@@ -271,10 +272,10 @@ namespace Tobi.Plugin.DocumentPane
             data.FontSize = m_FlowDoc.FontSize * 1.2;
 
             Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
-            Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+            //Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
 
             data.Background = brushBack;
-            data.Foreground = brushFont;
+            //data.Foreground = brushFont;
 
             formatPageNumberAndSetId(node, data);
         }
@@ -330,7 +331,7 @@ namespace Tobi.Plugin.DocumentPane
         private void addInlineInBlocks(Inline data, BlockCollection blocks)
         {
             Block lastBlock = blocks.LastBlock;
-            if (lastBlock != null && lastBlock is Section)
+            if (lastBlock != null && lastBlock is Section && lastBlock.Tag != null && lastBlock.Tag is bool && ((bool)lastBlock.Tag))
             {
                 Block lastBlock2 = ((Section)lastBlock).Blocks.LastBlock;
                 if (lastBlock2 != null && lastBlock2 is Paragraph && lastBlock2.Tag != null && lastBlock2.Tag is bool && ((bool)lastBlock2.Tag))
@@ -339,7 +340,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    Paragraph para = new Paragraph(data);
+                    var para = new Paragraph(data);
                     para.Tag = true;
                     ((Section)lastBlock).Blocks.Add(para);
                 }
@@ -350,9 +351,11 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                Paragraph para = new Paragraph(data);
+                var para = new Paragraph(data);
                 para.Tag = true;
-                blocks.Add(new Section(para));
+                var section = new Section(para);
+                section.Tag = true;
+                blocks.Add(section);
             }
         }
 
@@ -454,7 +457,7 @@ namespace Tobi.Plugin.DocumentPane
         private void setTag(TextElement data, TreeNode node)
         {
             data.Tag = node;
-            data.Foreground = Brushes.Red;
+            //data.Foreground = Brushes.Red; // default is normally overriden
 
             bool noAudio;
             Boolean needMouseHandler = SetTextElementAttributes(data, node, out noAudio);
@@ -523,7 +526,7 @@ namespace Tobi.Plugin.DocumentPane
                 TableCell data = new TableCell();
                 setTag(data, node);
 
-                data.BorderBrush = Brushes.LightGray;
+                data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 data.BorderThickness = new Thickness(1.0);
 
                 TableRowGroup trg = ((Table)parent).RowGroups[m_currentROWGROUP];
@@ -535,12 +538,12 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         if (qn.LocalName == "thead")
                         {
-                            data.Background = Brushes.LightGreen;
+                            //data.Background = Brushes.LightGreen;
                             data.FontWeight = FontWeights.Heavy;
                         }
                         if (qn.LocalName == "tfoot")
                         {
-                            data.Background = Brushes.LightBlue;
+                            //data.Background = Brushes.LightBlue;
                         }
                     }
                 }
@@ -735,7 +738,7 @@ namespace Tobi.Plugin.DocumentPane
             setTag(data, node);
 
             data.CellSpacing = 4.0;
-            data.BorderBrush = Brushes.Brown;
+            data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
             data.BorderThickness = new Thickness(1.0);
 
             m_currentROWGROUP = -1;
@@ -977,7 +980,7 @@ namespace Tobi.Plugin.DocumentPane
             Underline data = new Underline();
             setTag(data, node);
 
-            data.Background = Brushes.LightSkyBlue;
+            data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
             //data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
@@ -1030,7 +1033,7 @@ namespace Tobi.Plugin.DocumentPane
 
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
-            data.Background = Brushes.LightSkyBlue;
+            data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
             //data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
@@ -1508,7 +1511,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = Brushes.GreenYellow;
+                                    //data.BorderBrush = Brushes.GreenYellow;
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(4.0);
                                 }
@@ -1519,7 +1522,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = Brushes.Olive;
+                                    //data.BorderBrush = Brushes.Olive;
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                     data.Margin = new Thickness(4.0);
@@ -1532,7 +1535,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = Brushes.LightSkyBlue;
+                                    //data.BorderBrush = Brushes.LightSkyBlue;
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                     data.FontSize = m_FlowDoc.FontSize / 1.2;
@@ -1565,7 +1568,7 @@ namespace Tobi.Plugin.DocumentPane
                                 return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                  data =>
                                  {
-                                     data.BorderBrush = Brushes.Green;
+                                     //data.BorderBrush = Brushes.Green;
                                      data.BorderThickness = new Thickness(1.0);
                                      data.Padding = new Thickness(2.0);
                                      data.FontWeight = FontWeights.Light;
@@ -1659,7 +1662,9 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = Brushes.LightSalmon;
+                                    data.BorderBrush =
+                                        m_DocumentPaneView.GetCachedBrushForColor(
+                                            Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(0.5);
                                     data.Padding = new Thickness(2.0);
                                 });
@@ -1669,7 +1674,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Floater(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = Brushes.MediumSlateBlue;
+                                    //data.BorderBrush = Brushes.MediumSlateBlue;
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                 });
@@ -1761,7 +1766,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.Background = Brushes.BlanchedAlmond;
+                                    //data.Background = Brushes.BlanchedAlmond;
                                 }
                                 );
                         }

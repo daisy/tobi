@@ -399,7 +399,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 //BorderBrush = null,
                 //BorderThickness = new Thickness(0.0),
                 Background = Brushes.Transparent,
-                Foreground = Brushes.Black,
+                //Foreground = Brushes.Black,
                 Cursor = Cursors.Cross,
                 FontWeight = FontWeights.ExtraBold,
                 //Style = m_ButtonStyle,

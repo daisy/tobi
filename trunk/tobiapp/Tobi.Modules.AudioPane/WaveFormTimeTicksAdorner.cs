@@ -29,7 +29,7 @@ namespace Tobi.Plugin.AudioPane
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
 
-            m_renderBrush = new SolidColorBrush(Colors.Black); // { Opacity = 0.8 };
+            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
             m_renderBrush.Freeze();
 
             ResetBrushes();
