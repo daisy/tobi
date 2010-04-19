@@ -973,7 +973,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
         private Dictionary<Color, SolidColorBrush> m_SolidColorBrushCache;
-        private SolidColorBrush getCachedBrushForColor(Color color)
+        public SolidColorBrush GetCachedBrushForColor(Color color)
         {
             if (m_SolidColorBrushCache == null)
             {
@@ -1000,12 +1000,6 @@ namespace Tobi.Plugin.DocumentPane
                     m_SolidColorBrushCache.Add(color, new SolidColorBrush(color));
                 }
             }
-#if DEBUG
-            else
-            {
-                int debug = 1;
-            }
-#endif
 
             return m_SolidColorBrushCache[color];
         }
@@ -1013,10 +1007,10 @@ namespace Tobi.Plugin.DocumentPane
 
         private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2)
         {
-            Brush brushFont = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
-            Brush brushBorder = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
-            Brush brushBack1 = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
-            Brush brushBack2 = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
+            Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack1 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
+            Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
 
             m_lastHighlighted = textElement1;
 
@@ -1058,9 +1052,9 @@ namespace Tobi.Plugin.DocumentPane
 
         private void doLastHighlightedOnly(TextElement textElement)
         {
-            Brush brushFont = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
-            Brush brushBorder = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
-            Brush brushBack2 = getCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
+            Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
 
             m_lastHighlighted = textElement;
 
@@ -1542,7 +1536,7 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            Brush brush = getCachedBrushForColor(Settings.Default.Document_Color_Selection_UnderOverLine);
+            Brush brush = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_UnderOverLine);
 
             var decUnder = new TextDecoration(
                 TextDecorationLocation.Underline,
