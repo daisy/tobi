@@ -1849,7 +1849,7 @@ namespace Tobi.Plugin.DocumentPane
                     case "col":
                     case "colgroup":
                         {
-                            System.Diagnostics.Debug.Fail(String.Format("DTBook element not yet supported [{0}]", qname.LocalName));
+                            Debug.Fail(String.Format(@"DTBook element not yet supported [{0}]", qname.LocalName));
                             break;
                         }
                     case "hr":
@@ -1859,13 +1859,21 @@ namespace Tobi.Plugin.DocumentPane
                         }
                     default:
                         {
-                            System.Diagnostics.Debug.Fail(String.Format("Unknown DTBook element ! [{0}]", qname.LocalName));
+                            Debug.Fail(String.Format("Unknown DTBook element ! [{0}]", qname.LocalName));
                             break;
                         }
                 }
             }
             else
             {
+                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                    data =>
+                    {
+                        data.BorderBrush = Brushes.Red;
+                        data.BorderThickness = new Thickness(1.0);
+                        data.Padding = new Thickness(4.0);
+                    }
+                    );
                 //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
             }
 
