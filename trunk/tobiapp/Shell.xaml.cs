@@ -23,6 +23,10 @@ using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using Application = System.Windows.Application;
 
+#if NET40
+using System.Windows.Shell;
+#endif
+
 namespace Tobi
 {
     /// <summary>
@@ -132,6 +136,10 @@ namespace Tobi
             InitializeComponent();
 
             m_InConstructor = false;
+
+#if NET40
+            TaskbarItemInfo = new TaskbarItemInfo();
+#endif
 
             Settings.Default.PropertyChanged += (sender, e) =>
             {
@@ -667,6 +675,10 @@ namespace Tobi
         private bool RunModalCancellableProgressTask_(string title, IDualCancellableProgressReporter reporter,
                                                      Action actionCancelled, Action actionCompleted)
         {
+#if NET40
+            TaskbarItemInfo.ProgressValue = 0;
+            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+#endif
             var progressBar = new ProgressBar
             {
                 IsIndeterminate = false,
@@ -754,11 +766,21 @@ namespace Tobi
                     if (args.ProgressPercentage < 0)
                     {
                         progressBar.IsIndeterminate = true;
+
+#if NET40
+                        TaskbarItemInfo.ProgressValue = 0;
+                        TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+#endif
                     }
                     else
                     {
                         progressBar.IsIndeterminate = false;
                         progressBar.Value = args.ProgressPercentage;
+
+#if NET40
+                        TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage/100;
+                        TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+#endif
                     }
 
                     label.Text = (string)args.UserState;
@@ -860,6 +882,11 @@ namespace Tobi
 
             windowPopup.ShowModal();
 
+#if NET40
+            TaskbarItemInfo.ProgressValue = 0;
+            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+#endif
+
             if (workException != null)
             {
                 ExceptionHandler.Handle(workException, false, this);
@@ -876,6 +903,11 @@ namespace Tobi
                 windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
             {
                 progressBar.IsIndeterminate = true;
+
+#if NET40
+                TaskbarItemInfo.ProgressValue = 0;
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+#endif
                 label.Text = Tobi_Lang.PleaseWait;
 
                 details.Visibility = Visibility.Collapsed;
@@ -896,6 +928,10 @@ namespace Tobi
 
                 windowPopup.ShowModal();
 
+#if NET40
+                TaskbarItemInfo.ProgressValue = 0;
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+#endif
                 return false;
             }
 
@@ -914,6 +950,11 @@ namespace Tobi
 #endif
             }
             m_Logger.Log(String.Format(@"Shell.RunModalCancellableProgressTask() [{0}]", title), Category.Debug, Priority.Medium);
+
+#if NET40
+            TaskbarItemInfo.ProgressValue = 0;
+            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+#endif
 
             if (!inSeparateThread)
             {
@@ -1086,9 +1127,9 @@ namespace Tobi
                 try
                 {
 #endif
-                reporter.DoWork();
+                    reporter.DoWork();
 
-                args.Result = @"dummy result";
+                    args.Result = @"dummy result";
 #if DEBUG
                 }
                 catch (Exception ex)
@@ -1118,11 +1159,21 @@ namespace Tobi
                 if (args.ProgressPercentage < 0)
                 {
                     progressBar.IsIndeterminate = true;
+
+#if NET40
+                    TaskbarItemInfo.ProgressValue = 0;
+                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+#endif
                 }
                 else
                 {
                     progressBar.IsIndeterminate = false;
                     progressBar.Value = args.ProgressPercentage;
+
+#if NET40
+                    TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100;
+                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+#endif
                 }
 
                 label.Text = (string)args.UserState;
@@ -1154,6 +1205,11 @@ namespace Tobi
 
             windowPopup.ShowModal();
 
+#if NET40
+            TaskbarItemInfo.ProgressValue = 0;
+            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+#endif
+
             if (workException != null)
             {
                 ExceptionHandler.Handle(workException, false, this);
@@ -1166,6 +1222,11 @@ namespace Tobi
                 if (backWorker == null) return false;
 
                 progressBar.IsIndeterminate = true;
+
+#if NET40
+                TaskbarItemInfo.ProgressValue = 0;
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+#endif
                 label.Text = Tobi_Lang.PleaseWait;
 
                 details.Visibility = Visibility.Collapsed;
@@ -1187,6 +1248,10 @@ namespace Tobi
 
                 windowPopup.ShowModal();
 
+#if NET40
+                TaskbarItemInfo.ProgressValue = 0;
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+#endif
                 return false;
             }
 
