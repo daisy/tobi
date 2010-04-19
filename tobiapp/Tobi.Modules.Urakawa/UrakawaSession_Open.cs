@@ -82,6 +82,14 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(OpenCommand);
         }
 
+        public void TryOpenFile(string filename)
+        {
+            if (OpenCommand.CanExecute() && File.Exists(filename))
+            {
+                OpenFile(filename);
+            }
+        }
+
         public bool OpenFile(string filename)
         {
             var fileUri = new Uri(filename, UriKind.Absolute);
