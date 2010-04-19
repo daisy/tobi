@@ -263,7 +263,8 @@ namespace Tobi.Plugin.AudioPane
                                             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                                             {
                                                 WaveFormProgress.IsIndeterminate = true;
-
+                                                TimeMessageHide();
+                                                m_ViewModel.m_TimeStringOther = String.Empty;
                                                 ShowHideWaveFormLoadingMessage(false);
 
                                                 CommandManager.InvalidateRequerySuggested();
@@ -442,8 +443,11 @@ namespace Tobi.Plugin.AudioPane
 
                 #region LOOP
 
+                long totalRead = 0;
                 while ((read = audioStream.Read(bytes, 0, bytesPerStep)) > 0)
                 {
+                    totalRead += read;
+
 #if USE_BLOCK_COPY
                     // converts Int 8 unsigned to Int 16 signed
                     Buffer.BlockCopy(bytes, 0, samples, 0, read);
@@ -737,6 +741,13 @@ namespace Tobi.Plugin.AudioPane
 
                             DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                             {
+                                double ms = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(totalRead);
+                                //double ms = m_ViewModel.State.Audio.PcmFormat.Data.ConvertBytesToTime(totalRead);
+
+                                m_ViewModel.m_TimeStringOther = AudioPaneViewModel.FormatTimeSpan_Units(ms);
+                                TimeMessageShow();
+                                //TimeMessageRefresh();
+
                                 WaveFormProgress.Value += m_ProgressVisibleOffset;
                             }));
                         }
@@ -761,6 +772,8 @@ namespace Tobi.Plugin.AudioPane
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
                         WaveFormProgress.IsIndeterminate = true;
+                        m_ViewModel.m_TimeStringOther = String.Empty;
+                        TimeMessageHide();
                     }));
                 }
 

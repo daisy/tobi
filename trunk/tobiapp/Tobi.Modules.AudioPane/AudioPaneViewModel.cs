@@ -115,7 +115,38 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Debug.Assert(State.Audio.PlayStreamMarkers == null);
 
-                    StreamWithMarkers? sm = treeNodeSelection.Item1.OpenPcmInputStreamOfManagedAudioMediaFlattened();
+                    Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
+                    PCMFormatInfo pcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat.Copy(); 
+                    
+                    Stopwatch stopWatch = Stopwatch.StartNew();
+
+                    long totalLength = 0;
+                    StreamWithMarkers? sm = treeNodeSelection.Item1.OpenPcmInputStreamOfManagedAudioMediaFlattened(
+                        streamLength =>
+                        {
+                            totalLength += streamLength;
+
+                            if (stopWatch.ElapsedMilliseconds > 200)
+                            {
+                                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() =>
+                                {
+                                    //double ms = State.Audio.ConvertBytesToMilliseconds(totalLength);
+                                    double ms = pcmFormat.Data.ConvertBytesToTime(totalLength);
+
+                                    m_TimeStringOther = FormatTimeSpan_Units(ms);
+                                    View.TimeMessageShow();
+                                    //View.TimeMessageRefresh();
+                                }));
+                                m_ShellView.PumpDispatcherFrames(DispatcherPriority.Loaded);
+                                
+                                stopWatch.Restart();
+                            }
+                        }
+                        );
+                    
+                    stopWatch.Stop();
+                    m_TimeStringOther = String.Empty;
+                    View.TimeMessageHide();
 
                     if (sm != null)
                     {
@@ -145,6 +176,8 @@ namespace Tobi.Plugin.AudioPane
                         //{
                         State.Audio.SetPlayStream_FromTreeNode(sm.GetValueOrDefault().m_Stream);
                         State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
+
+                        Debug.Assert(totalLength == sm.GetValueOrDefault().m_Stream.Length);
                     }
 
                     //if (State.Audio.PlayStream == null)
@@ -1141,6 +1174,8 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        public string m_TimeStringOther = String.Empty;
+
         private static readonly PropertyChangedEventArgs m_TimeStringCurrentArgs = new PropertyChangedEventArgs("TimeStringCurrent");
         [NotifyDependsOn("IsPlaying")]
         [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
@@ -1160,9 +1195,9 @@ namespace Tobi.Plugin.AudioPane
                 string strToDisplay = null;
 
 
-                if (!State.Audio.HasContent)
+                if (!State.Audio.HasContent || IsWaveFormLoading)
                 {
-                    return "";
+                    return m_TimeStringOther;
                 }
 
                 if (IsPlaying
@@ -1179,7 +1214,7 @@ namespace Tobi.Plugin.AudioPane
                     return "Time: " + strToDisplay + " / " + TimeStringTotalWaveform;
                 }
 
-                return "";
+                return String.Empty;
             }
         }
 

@@ -14,6 +14,7 @@ namespace Tobi.Common.MVVM
 
         protected ViewModelBase()
         {
+            // Note: ViewModels must be created on the UI thread.
             Dispatcher = Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher;
         }
 
