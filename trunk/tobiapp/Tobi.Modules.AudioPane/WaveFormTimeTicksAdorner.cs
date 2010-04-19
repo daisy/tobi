@@ -91,6 +91,8 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+            return; // TODO TESTING !!!!
+
             double heightAvailable = ((FrameworkElement)AdornedElement).ActualHeight;
             double widthAvailable = ((FrameworkElement)AdornedElement).ActualWidth;
 
@@ -242,9 +244,10 @@ namespace Tobi.Plugin.AudioPane
 
                 currentTickX += minorTickInterval_pixels;
             }
-
+            
+            // TODO TESTING !!!!
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
-            if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
+            if (false && treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
             {
                 //drawingContext.Pop(); //PushOpacity
 
