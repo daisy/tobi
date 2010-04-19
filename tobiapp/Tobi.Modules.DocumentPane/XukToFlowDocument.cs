@@ -1522,7 +1522,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    //data.BorderBrush = Brushes.Olive;
+                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                     data.Margin = new Thickness(4.0);
@@ -1535,7 +1535,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    //data.BorderBrush = Brushes.LightSkyBlue;
+                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                     data.FontSize = m_FlowDoc.FontSize / 1.2;
@@ -1568,7 +1568,7 @@ namespace Tobi.Plugin.DocumentPane
                                 return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                  data =>
                                  {
-                                     //data.BorderBrush = Brushes.Green;
+                                     data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                      data.BorderThickness = new Thickness(1.0);
                                      data.Padding = new Thickness(2.0);
                                      data.FontWeight = FontWeights.Light;
@@ -1620,6 +1620,8 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
                                 data =>
                                 {
+                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                    data.BorderThickness = new Thickness(1.0);
                                     data.FontSize = m_FlowDoc.FontSize * 1.2;
                                     data.FontWeight = FontWeights.Heavy;
                                     //data.Foreground = Brushes.Navy;
@@ -1662,9 +1664,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush =
-                                        m_DocumentPaneView.GetCachedBrushForColor(
-                                            Settings.Default.Document_Color_Font_NoAudio);
+                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(0.5);
                                     data.Padding = new Thickness(2.0);
                                 });
@@ -1674,7 +1674,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Floater(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    //data.BorderBrush = Brushes.MediumSlateBlue;
+                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                 });
@@ -1854,7 +1854,7 @@ namespace Tobi.Plugin.DocumentPane
                         }
                     case "hr":
                         {
-                            Console.WriteLine("XUK to FlowDocument converter: ignoring HR markup.");
+                            Console.WriteLine(@"XUK to FlowDocument converter: ignoring HR markup.");
                             break;
                         }
                     default:
