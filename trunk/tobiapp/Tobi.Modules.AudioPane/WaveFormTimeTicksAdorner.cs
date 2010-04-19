@@ -91,8 +91,6 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            return; // TODO TESTING !!!!
-
             double heightAvailable = ((FrameworkElement)AdornedElement).ActualHeight;
             double widthAvailable = ((FrameworkElement)AdornedElement).ActualWidth;
 
