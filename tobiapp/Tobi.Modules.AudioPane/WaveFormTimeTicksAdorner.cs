@@ -245,7 +245,7 @@ namespace Tobi.Plugin.AudioPane
             
             // TODO TESTING !!!!
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
-            if (false && treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
+            if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
             {
                 //drawingContext.Pop(); //PushOpacity
 
@@ -255,11 +255,20 @@ namespace Tobi.Plugin.AudioPane
                 double widthChunk = 0;
                 foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
                 {
+                    if (pixelsLeft > (hoffset + widthAvailable)) break;
+
                     pixelsRight = (sumData + marker.m_LocalStreamDataLength) / m_AudioPaneView.BytesPerPixel;
 
                     widthChunk = pixelsRight - pixelsLeft;
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
                     {
+                        if (widthChunk < 20)
+                        {
+                            sumData += marker.m_LocalStreamDataLength;
+                            pixelsLeft = pixelsRight;
+                            continue;
+                        }
+
                         double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
 
                         var formattedTextDuration = new FormattedText(
@@ -307,7 +316,7 @@ namespace Tobi.Plugin.AudioPane
                         }
 
                         double chunkWidthForText = widthChunk - tickHeight - tickHeight - 1;
-                        if (chunkWidthForText <= 0)
+                        if (chunkWidthForText <= 10)
                         {
                             sumData += marker.m_LocalStreamDataLength;
                             pixelsLeft = pixelsRight;
