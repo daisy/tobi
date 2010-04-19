@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>Z:\Desktop\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_0.3.6.7\</PublishUrl>
+    <PublishUrl>Z:\Desktop\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_0.3.7.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -43,8 +43,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>7</ApplicationRevision>
-    <ApplicationVersion>0.3.6.7</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.3.7.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -185,6 +185,9 @@
     </None>
     <None Include="Tobi_TemporaryKey.pfx" />
     <AppDesigner Include="Properties\" />
+    <Content Include="tpbnarrator.res">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.csproj">
@@ -297,7 +300,7 @@
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -334,6 +337,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="hi.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tpbnarrator_res.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="index_ClickOnce.html" />
