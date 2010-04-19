@@ -36,18 +36,22 @@ namespace Tobi.Common.UI
 
                     if (m_IconSmall != null)
                     {
+                        m_IconSmall.CacheMode = null;
                         updateSource(m_IconSmall);
                     }
                     if (m_IconMedium != null)
                     {
+                        m_IconMedium.CacheMode = null;
                         updateSource(m_IconMedium);
                     }
                     if (m_IconLarge != null)
                     {
+                        m_IconLarge.CacheMode = null;
                         updateSource(m_IconLarge);
                     }
                     if (m_IconXLarge != null)
                     {
+                        m_IconXLarge.CacheMode = null;
                         updateSource(m_IconXLarge);
                     }
 
@@ -66,6 +70,37 @@ namespace Tobi.Common.UI
             image.InitializeFromVectorGraphics(
                 IconVisualBrush,
                 image.Width * IconDrawScale, image.Height * IconDrawScale);
+
+#if NET40
+            if (image.CacheMode == null)
+            {
+                image.CacheMode = new BitmapCache
+                {
+                    RenderAtScale = IconDrawScale,
+                    EnableClearType = true,
+                    SnapsToDevicePixels = true
+                };
+
+                //var bitmapCacheBrush = new BitmapCacheBrush
+                //{
+                //    AutoLayoutContent = false,
+                //    Target = image,
+                //    BitmapCache = new BitmapCache
+                //    {
+                //        RenderAtScale = 0.3,
+                //        EnableClearType = false,
+                //        SnapsToDevicePixels = false
+                //    }
+                //};
+                //var imageTooltip = new Canvas
+                //{
+                //    Width = image.Width * bitmapCacheBrush.BitmapCache.RenderAtScale,
+                //    Height = image.Height * bitmapCacheBrush.BitmapCache.RenderAtScale,
+                //    Background = bitmapCacheBrush
+                //};
+                //host.ToolTip = imageTooltip;
+            }
+#endif
         }
 
         private AutoGreyableImage createImage(int size)
@@ -107,6 +142,7 @@ namespace Tobi.Common.UI
 
             //image.SetValue(RenderOptions.CacheInvalidationThresholdMinimumProperty, 1);
             //image.SetValue(RenderOptions.CacheInvalidationThresholdMaximumProperty, 1);
+
 
             return image;
 
