@@ -194,20 +194,20 @@ namespace Tobi.Plugin.DocumentPane
 
         private void formatCaptionCell(TableCell cell)
         {
-            cell.BorderBrush = Brushes.BlueViolet;
+            //cell.BorderBrush = Brushes.BlueViolet;
             cell.BorderThickness = new Thickness(2);
-            cell.Background = Brushes.LightYellow;
+            //cell.Background = Brushes.LightYellow;
             //cell.Foreground = Brushes.Navy;
         }
 
         private void formatListHeader(Paragraph data)
         {
-            data.BorderBrush = Brushes.Blue;
+            //data.BorderBrush = Brushes.Blue;
             data.BorderThickness = new Thickness(2.0);
             data.Padding = new Thickness(2.0);
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.Lavender;
+            //data.Background = Brushes.Lavender;
             //data.Foreground = Brushes.DarkSlateBlue;
         }
 
@@ -252,8 +252,12 @@ namespace Tobi.Plugin.DocumentPane
             //data.Padding = new Thickness(2.0);
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.Orange;
-            //data.Foreground = Brushes.DarkOrange;
+
+            Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+            Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+
+            data.Background = brushBack;
+            data.Foreground = brushFont;
 
             formatPageNumberAndSetId(node, data);
         }
@@ -265,8 +269,12 @@ namespace Tobi.Plugin.DocumentPane
             data.Padding = new Thickness(2.0);
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
-            data.Background = Brushes.Orange;
-            //data.Foreground = Brushes.DarkOrange;
+
+            Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+            Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+
+            data.Background = brushBack;
+            data.Foreground = brushFont;
 
             formatPageNumberAndSetId(node, data);
         }
