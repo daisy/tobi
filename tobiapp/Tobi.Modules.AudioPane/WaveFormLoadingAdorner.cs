@@ -25,14 +25,17 @@ namespace Tobi.Plugin.AudioPane
             ClipToBounds = true;
             m_AudioPaneViewModel = view;
 
-            m_renderBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.6 };
+            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back)
+                                {
+                                    Opacity = 0.6
+                                };
             m_renderBrush.Freeze();
 
             m_typeFace = new Typeface("Helvetica");
 
             m_culture = CultureInfo.GetCultureInfo("en-us");
             
-            m_textPen = new Pen(Brushes.Black, 1);
+            m_textPen = new Pen(new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back), 1);
             m_textPen.Freeze();
 
             m_pointText = new Point(1, 1);
@@ -63,7 +66,7 @@ namespace Tobi.Plugin.AudioPane
                 FlowDirection.LeftToRight,
                 m_typeFace,
                 30,
-                Brushes.Black
+                m_textPen.Brush
                 );
 
             const double margin = 20;

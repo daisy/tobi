@@ -25,25 +25,25 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ffffa500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#ff87CEFA")]
+        public global::System.Windows.Media.Color Document_Color_Hyperlink_Back {
+            get {
+                return ((global::System.Windows.Media.Color)(this["Document_Color_Hyperlink_Back"]));
+            }
+            set {
+                this["Document_Color_Hyperlink_Back"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#ffffe4c4")]
         public global::System.Windows.Media.Color Document_Color_PageNum_Back {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_PageNum_Back"]));
             }
             set {
                 this["Document_Color_PageNum_Back"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff000000")]
-        public global::System.Windows.Media.Color Document_Color_PageNum_Font {
-            get {
-                return ((global::System.Windows.Media.Color)(this["Document_Color_PageNum_Font"]));
-            }
-            set {
-                this["Document_Color_PageNum_Font"] = value;
             }
         }
         
