@@ -811,67 +811,72 @@ namespace Tobi.Plugin.AudioPane
 
             if (freeze)
             {
-                //Console.WriteLine(@"Drawing waveform...freeze1");
+                //Console.WriteLine(@"Drawing waveform...freeze2");
 
+                GC.Collect();
+
+                Action del = () =>
+                {
+#if NET40
+                    WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
+
+                    var zoom = (m_ShellView != null
+                                    ? m_ShellView.MagnificationLevel
+                                    : (Double)FindResource("MagnificationLevel"));
+
+                    if (WaveFormImage.CacheMode == null
+                        || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom)
+                    {
+                        WaveFormImage.CacheMode = new BitmapCache
+                                                    {
+                                                        RenderAtScale = zoom,
+                                                        EnableClearType = true,
+                                                        SnapsToDevicePixels = true
+                                                    };
+
+                        //var bitmapCacheBrush = new BitmapCacheBrush
+                        //{
+                        //    AutoLayoutContent = false,
+                        //    Target = WaveFormImage,
+                        //    BitmapCache = new BitmapCache
+                        //    {
+                        //        RenderAtScale = 0.3,
+                        //        EnableClearType = false,
+                        //        SnapsToDevicePixels = false
+                        //    }
+                        //};
+                        //var imageTooltip = new Canvas
+                        //{
+                        //    Width = renderBitmap.Width * bitmapCacheBrush.BitmapCache.RenderAtScale,
+                        //    Height = renderBitmap.Height * bitmapCacheBrush.BitmapCache.RenderAtScale,
+                        //    Background = bitmapCacheBrush
+                        //};
+                        //ZoomSlider.ToolTip = imageTooltip;
+                    }
+#else
                 var drawingVisual = new DrawingVisual();
                 using (DrawingContext context = drawingVisual.RenderOpen())
                 {
                     context.DrawDrawing(drawGrp);
                 }
 
+                var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
+                renderTargetBitmap.Render(drawingVisual);
+                renderTargetBitmap.Freeze();
+
+
+                //uint[] arrBits = new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
+                //renderTargetBitmap.CopyPixels(arrBits, 4 * renderTargetBitmap.PixelWidth, 0);
                 //var writeableBitmap = new WriteableBitmap((int)widthMagnified, (int)heightMagnified);
+                //BitmapSource.Create()
 
-                var renderBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
-                renderBitmap.Render(drawingVisual);
-                renderBitmap.Freeze();
-
-                //Console.WriteLine(@"Drawing waveform...freeze2");
-
-                GC.Collect();
-
-                Action del = () =>
-            {
-                WaveFormImage.Source = renderBitmap;
-#if NET40
-                var zoom = (m_ShellView != null
-                                ? m_ShellView.MagnificationLevel
-                                : (Double)FindResource("MagnificationLevel"));
-
-                if (WaveFormImage.CacheMode == null
-                    || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom)
-                {
-                    WaveFormImage.CacheMode = new BitmapCache
-                                                {
-                                                    RenderAtScale = zoom,
-                                                    EnableClearType = true,
-                                                    SnapsToDevicePixels = true
-                                                };
-
-                    //var bitmapCacheBrush = new BitmapCacheBrush
-                    //{
-                    //    AutoLayoutContent = false,
-                    //    Target = WaveFormImage,
-                    //    BitmapCache = new BitmapCache
-                    //    {
-                    //        RenderAtScale = 0.3,
-                    //        EnableClearType = false,
-                    //        SnapsToDevicePixels = false
-                    //    }
-                    //};
-                    //var imageTooltip = new Canvas
-                    //{
-                    //    Width = renderBitmap.Width * bitmapCacheBrush.BitmapCache.RenderAtScale,
-                    //    Height = renderBitmap.Height * bitmapCacheBrush.BitmapCache.RenderAtScale,
-                    //    Background = bitmapCacheBrush
-                    //};
-                    //ZoomSlider.ToolTip = imageTooltip;
-                }
+                WaveFormImage.Source = renderTargetBitmap;
 #endif
-                m_WaveFormTimeTicksAdorner.InvalidateVisual();
-                m_WaveFormTimeTicksAdorner.ResetBrushes();
-                m_WaveFormLoadingAdorner.ResetBrushes();
+                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                    m_WaveFormTimeTicksAdorner.ResetBrushes();
+                    m_WaveFormLoadingAdorner.ResetBrushes();
 
-            };
+                };
 
                 if (!Dispatcher.CheckAccess())
                 {
