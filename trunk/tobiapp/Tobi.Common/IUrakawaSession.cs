@@ -11,6 +11,8 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        void TryOpenFile(string filename);
+
         Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode);
         Tuple<TreeNode, TreeNode> GetTreeNodeSelection();
 

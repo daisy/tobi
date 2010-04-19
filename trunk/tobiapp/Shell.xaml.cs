@@ -464,6 +464,10 @@ namespace Tobi
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            AddHandler(DropEvent,
+                new RoutedEventHandler(OnWindowDrop_),
+                true);
+
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
             {
                 HwndSource hwndSource = PresentationSource.FromVisual(this) as HwndSource;
@@ -533,7 +537,7 @@ namespace Tobi
                 return String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
                     ApplicationConstants.APP_VERSION
 #if NET40
-+ " (.NET4)"
+ + " (.NET4)"
 #else
 + " (.NET3)"
 #endif
@@ -1082,9 +1086,9 @@ namespace Tobi
                 try
                 {
 #endif
-                    reporter.DoWork();
+                reporter.DoWork();
 
-                    args.Result = @"dummy result";
+                args.Result = @"dummy result";
 #if DEBUG
                 }
                 catch (Exception ex)
@@ -1193,6 +1197,27 @@ namespace Tobi
         public void PumpDispatcherFrames(DispatcherPriority prio)
         {
             this.DoEvents(prio); // See DispatcherObjectExtensions
+        }
+
+        private void OnWindowDrop_(object sender, RoutedEventArgs e)
+        {
+            if (e is DragEventArgs)
+            {
+                OnWindowDrop(sender, (DragEventArgs)e);
+            }
+        }
+
+        private void OnWindowDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data is DataObject
+                && ((DataObject)e.Data).ContainsFileDropList())
+            {
+                foreach (string filePath in ((DataObject)e.Data).GetFileDropList())
+                {
+                    m_UrakawaSession.TryOpenFile(filePath);
+                    break;
+                }
+            }
         }
     }
 }

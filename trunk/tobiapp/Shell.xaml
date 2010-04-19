@@ -13,6 +13,7 @@
     
     Title="{Binding Path=WindowTitle}"
     
+    
     Topmost="False"
     
     WindowStartupLocation="Manual"
@@ -33,8 +34,12 @@
     KeyUp="OnWindowKeyUp"
         
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    
+    AllowDrop="True"
+    
    >
 <!--
+Drop="OnWindowDrop"
 
     ToolTip="{x:Static Tobi:Tobi_Lang.LangStringKey1}"
     GotFocus="OnWindowGotFocus"

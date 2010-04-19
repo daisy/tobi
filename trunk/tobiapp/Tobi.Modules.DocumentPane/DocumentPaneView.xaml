@@ -21,7 +21,7 @@
     </Grid.RowDefinitions>
 
 
-  <FlowDocumentScrollViewer x:Name="FlowDocReader"
+  <FlowDocumentScrollViewer AllowDrop="True" x:Name="FlowDocReader"
                             
           Margin="0,0,0,0"
           Padding="0,0,0,0"
@@ -47,7 +47,7 @@
                       
                       ViewingMode="Scroll" -->
 
-    <FlowDocument x:Name="TheFlowDocument"
+    <FlowDocument AllowDrop="True" x:Name="TheFlowDocument"
                     
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
