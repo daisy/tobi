@@ -209,6 +209,19 @@ namespace Tobi
                 m_Logger.Log(@"Tobi anonymous usage logger has been DISABLED by user.", Category.Warn, Priority.High);
             }
 
+
+            if (true || ApplicationDeployment.IsNetworkDeployed)
+            {
+                if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null
+                    && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null
+                    && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData.Length > 0)
+                {
+                    string path = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData[0];
+                    Console.WriteLine(@"APP PARAMETER: " + path);
+                }
+            }
+
+
             //    WshShellClass wsh = new WshShellClass();
             //            IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(
             //                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\shorcut.lnk") as IWshRuntimeLibrary.IWshShortcut;
