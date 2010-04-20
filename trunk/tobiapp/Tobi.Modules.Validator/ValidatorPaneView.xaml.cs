@@ -130,29 +130,13 @@ namespace Tobi.Plugin.Validator
             }
         }
 
-        //TODO: how to find the listbox within a tabitem?
         private void SelectValidationItem(ValidationItem selection)
         {
             if (selection == null) return;
 
-            //this didn't work ..
-            /*DataTemplate contentTemplate = Tabs.ContentTemplate;
-            FrameworkElement templateParent = Tabs.ItemContainerGenerator.ContainerFromItem(Tabs.SelectedItem) as FrameworkElement;
-            ListBox list = (ListBox)contentTemplate.FindName("ValidationItemsListBox", templateParent);
-            */
-
-            //neither did this
-            TabItem myItem =
-                (TabItem)(Tabs.ItemContainerGenerator.ContainerFromItem(Tabs.Items.CurrentItem));
-
-            // Getting the ContentPresenter of myListBoxItem
-            ContentPresenter myContentPresenter = FindVisualChild<ContentPresenter>(myItem);
-
-            // Finding textBlock from the DataTemplate that is set on that ContentPresenter
-            DataTemplate myDataTemplate = myContentPresenter.ContentTemplate;
-            ListBox list = (ListBox)myDataTemplate.FindName("ValidationItemsListBox", myContentPresenter);
-
-
+            DataTemplate template = Tabs.ContentTemplate;
+            ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(Tabs);
+            ListBox list = (ListBox)template.FindName("ValidationItemsListBox", contentPresenter);
 
             if (list != null)
             {
@@ -161,8 +145,7 @@ namespace Tobi.Plugin.Validator
             }
         }
 
-        private childItem FindVisualChild<childItem>(DependencyObject obj)
-    where childItem : DependencyObject
+        private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
             {
@@ -184,14 +167,25 @@ namespace Tobi.Plugin.Validator
             bool noErrors = true;
             string clipboardText = "List of all validation errors\n\n";
             IEnumerator<IValidator> enumerator = m_ValidatorAggregator.Validators.GetEnumerator();
+            int validatorNumbering = 1;
+            int totalErrorCount = 0;
             while(enumerator.MoveNext())
             {
-                clipboardText += string.Format("{0}: {1}\n\n", enumerator.Current.Name, enumerator.Current.Description);
+                clipboardText += string.Format("{0}. {1}: {2}\n\n", 
+                    validatorNumbering, enumerator.Current.Name, enumerator.Current.Description);
+
+                int errorNumbering = 1;
+
                 foreach (ValidationItem item in enumerator.Current.ValidationItems)
                 {
                     noErrors = false;
-                    clipboardText += string.Format("{0}\n\n", item.CompleteSummary);
+                    clipboardText += string.Format("{0}.{1}. {2}\n\n", 
+                        validatorNumbering, errorNumbering, item.CompleteSummary);
+                    errorNumbering++;
+                    totalErrorCount++;
                 }
+                validatorNumbering++;
+
                 if (noErrors)
                 {
                     clipboardText += "No errors reported\n\n";
@@ -199,6 +193,7 @@ namespace Tobi.Plugin.Validator
                 clipboardText += string.Format("End of {0} report.\n\n", enumerator.Current.Name);
 
             }
+            clipboardText += string.Format("Total errors: {0}\n", totalErrorCount);
 
             try
             {
