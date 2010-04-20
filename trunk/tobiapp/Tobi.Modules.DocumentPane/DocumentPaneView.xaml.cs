@@ -139,6 +139,12 @@ namespace Tobi.Plugin.DocumentPane
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
+            // UGLY hack, necessary to avoid memory leaks due to Mouse event handlers
+            if (XukToFlowDocument.m_DocumentPaneView == null)
+            {
+                XukToFlowDocument.m_DocumentPaneView = this;
+            }
+
             m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
@@ -438,11 +444,18 @@ namespace Tobi.Plugin.DocumentPane
                 //&& !e.PropertyName.StartsWith(@"Document_")
                 ) return;
             
-            updateHighlightedColors();
-            
-            if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Document_Color_Font_Audio))
+            if (e.PropertyName.StartsWith(@"Document_Color_Selection_"))
             {
+                updateHighlightedColors();
             }
+            else
+            {
+                updateDocumentColors();
+            }
+
+            //if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Document_Color_Font_Audio))
+            //{
+            //}
         }
 
         private TreeNode ensureTreeNodeIsNoteAnnotation(TreeNode treeNode)
@@ -1074,6 +1087,11 @@ namespace Tobi.Plugin.DocumentPane
             setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
         }
 
+        private void updateDocumentColors()
+        {
+            WalkDocumentTree(data => XukToFlowDocument.SetBackFrontColorBasedOnTreeNodeTag(data));
+        }
+
         private void updateHighlightedColors()
         {
             if (m_lastHighlighted == null) return;
@@ -1328,12 +1346,6 @@ namespace Tobi.Plugin.DocumentPane
             if (m_DelegateAddIdLinkTarget == null)
             {
                 m_DelegateAddIdLinkTarget = (name, data) => m_idLinkTargets.Add(name, data);
-            }
-
-            // UGLY hack, necessary to avoid memory leaks due to Mouse event handlers
-            if (XukToFlowDocument.m_DocumentPaneView == null)
-            {
-                XukToFlowDocument.m_DocumentPaneView = this;
             }
 
             var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator, m_ShellView
