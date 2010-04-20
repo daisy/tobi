@@ -49,13 +49,25 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Times New Roman")]
-        public global::System.Windows.Media.FontFamily Document_Font {
+        [global::System.Configuration.DefaultSettingValueAttribute("#ffffffff")]
+        public global::System.Windows.Media.Color Document_Back {
             get {
-                return ((global::System.Windows.Media.FontFamily)(this["Document_Font"]));
+                return ((global::System.Windows.Media.Color)(this["Document_Back"]));
             }
             set {
-                this["Document_Font"] = value;
+                this["Document_Back"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Times New Roman")]
+        public global::System.Windows.Media.FontFamily Document_TypeFace {
+            get {
+                return ((global::System.Windows.Media.FontFamily)(this["Document_TypeFace"]));
+            }
+            set {
+                this["Document_TypeFace"] = value;
             }
         }
         

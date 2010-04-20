@@ -33,10 +33,11 @@
                     IsTabStop="False"
                     Focusable="False"
                             Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                      Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                      Background="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                       >
     <!-- 
+{DynamicResource {x:Static SystemColors.WindowBrushKey}}
 
                             IsFindEnabled="False"
                       IsPrintEnabled="False"
@@ -48,7 +49,7 @@
                       ViewingMode="Scroll" -->
 
     <FlowDocument AllowDrop="True" x:Name="TheFlowDocument"
-                    
+                    Background="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
                  AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
@@ -211,7 +212,7 @@
                   ItemsSource="{Binding}"
                   IsSynchronizedWithCurrentItem="True"
                   
-                  SelectedItem="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Font, Mode=TwoWay}"
+                  SelectedItem="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_TypeFace, Mode=TwoWay}"
                   
                   Width="160"
                   AlternationCount="2"
