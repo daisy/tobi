@@ -746,7 +746,7 @@ namespace Tobi.Plugin.DocumentPane
                 if (node == text.Tag)
                 {
                     bool noAudio;
-                    XukToFlowDocument.SetTextElementAttributes(text, node, out noAudio);
+                    XukToFlowDocument.SetTextElementAttributes(text, out noAudio, false);
 
                     Debug.Assert(noAudio == !bTreeNodeHasOrInheritsAudio(node));
 
@@ -1089,7 +1089,38 @@ namespace Tobi.Plugin.DocumentPane
 
         private void updateDocumentColors()
         {
-            WalkDocumentTree(data => XukToFlowDocument.SetBackFrontColorBasedOnTreeNodeTag(data));
+            WalkDocumentTree(data =>
+            {
+                XukToFlowDocument.SetBackFrontColorBasedOnTreeNodeTag(data);
+
+                if (data.Tag is TreeNode)
+                {
+                    bool noAudio;
+                    XukToFlowDocument.SetTextElementAttributes(data, out noAudio, false);
+                }
+
+                if (data == m_lastHighlightedSub)
+                {
+                    m_lastHighlightedSub_Background = data.Background;
+                    m_lastHighlightedSub_Foreground = data.Foreground;
+                    if (data is Block)
+                    {
+                        m_lastHighlightedSub_BorderBrush = ((Block)data).BorderBrush;
+                        m_lastHighlightedSub_BorderThickness = ((Block)data).BorderThickness;
+                    }
+                }
+                else if (data == m_lastHighlighted)
+                {
+                    m_lastHighlighted_Background = data.Background;
+                    m_lastHighlighted_Foreground = data.Foreground;
+                    if (data is Block)
+                    {
+                        m_lastHighlighted_BorderBrush = ((Block)data).BorderBrush;
+                        m_lastHighlighted_BorderThickness = ((Block)data).BorderThickness;
+                    }
+                }
+            });
+            updateHighlightedColors();
         }
 
         private void updateHighlightedColors()
