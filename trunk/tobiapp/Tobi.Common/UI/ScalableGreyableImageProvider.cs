@@ -36,22 +36,30 @@ namespace Tobi.Common.UI
 
                     if (m_IconSmall != null)
                     {
+#if NET40
                         m_IconSmall.CacheMode = null;
+#endif
                         updateSource(m_IconSmall);
                     }
                     if (m_IconMedium != null)
                     {
+#if NET40
                         m_IconMedium.CacheMode = null;
+#endif
                         updateSource(m_IconMedium);
                     }
                     if (m_IconLarge != null)
                     {
+#if NET40
                         m_IconLarge.CacheMode = null;
+#endif
                         updateSource(m_IconLarge);
                     }
                     if (m_IconXLarge != null)
                     {
+#if NET40
                         m_IconXLarge.CacheMode = null;
+#endif
                         updateSource(m_IconXLarge);
                     }
 

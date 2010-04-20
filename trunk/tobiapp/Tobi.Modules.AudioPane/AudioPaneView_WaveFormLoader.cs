@@ -827,6 +827,7 @@ namespace Tobi.Plugin.AudioPane
                     if (WaveFormImage.CacheMode == null
                         || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom)
                     {
+                        WaveFormImage.UseLayoutRounding = true;
                         WaveFormImage.CacheMode = new BitmapCache
                                                     {
                                                         RenderAtScale = zoom,
