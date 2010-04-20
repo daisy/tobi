@@ -1,10 +1,9 @@
 ﻿<UserControl x:Class="Tobi.Common._UnusedCode.SmallColorPicker"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode"
-    x:Name="ThisColorPicker">
+    xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML" x:Name="ThisColorPicker">
     <UserControl.Resources>
-        <_UnusedCode:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+        <XAML:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
     </UserControl.Resources>
     <ComboBox x:Name="Picker" 
               SelectedValue="{Binding ElementName=ThisColorPicker, Path=SelectedColor}" 
