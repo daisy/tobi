@@ -91,26 +91,26 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private double m_WaveStepX = Settings.Default.AudioWaveForm_Resolution;
-        public double WaveStepX
-        {
-            get
-            {
-                return m_WaveStepX;
-            }
-            set
-            {
-                if (m_WaveStepX == value) return;
-                m_WaveStepX = value;
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
+        //private double m_WaveStepX = Settings.Default.AudioWaveForm_Resolution;
+        //public double WaveStepX
+        //{
+        //    get
+        //    {
+        //        return m_WaveStepX;
+        //    }
+        //    set
+        //    {
+        //        if (m_WaveStepX == value) return;
+        //        m_WaveStepX = value;
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
 
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => WaveStepX);
-            }
-        }
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => WaveStepX);
+        //    }
+        //}
 
         private bool m_IsUseDecibelsAdjust = true;
         public bool IsUseDecibelsAdjust
@@ -232,253 +232,251 @@ namespace Tobi.Plugin.AudioPane
             }
         }*/
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_IsWaveFillVisible = Settings.Default.AudioWaveForm_IsStroked;
-        // ReSharper restore RedundantDefaultFieldInitializer
-        public bool IsWaveFillVisible
-        {
-            get
-            {
-                return m_IsWaveFillVisible;
-            }
-            set
-            {
-                if (m_IsWaveFillVisible == value) return;
-                m_IsWaveFillVisible = value;
-                //resetWaveFormBackground();
-                if (View != null)
-                {
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => IsWaveFillVisible);
-            }
-        }
+        //private bool m_IsWaveFillVisible = Settings.Default.AudioWaveForm_IsStroked;
+        //public bool IsWaveFillVisible
+        //{
+        //    get
+        //    {
+        //        return m_IsWaveFillVisible;
+        //    }
+        //    set
+        //    {
+        //        if (m_IsWaveFillVisible == value) return;
+        //        m_IsWaveFillVisible = value;
+        //        //resetWaveFormBackground();
+        //        if (View != null)
+        //        {
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => IsWaveFillVisible);
+        //    }
+        //}
 
-        private bool m_IsEnvelopeVisible = Settings.Default.AudioWaveForm_IsBordered;
-        public bool IsEnvelopeVisible
-        {
-            get
-            {
-                return m_IsEnvelopeVisible;
-            }
-            set
-            {
-                if (m_IsEnvelopeVisible == value) return;
-                m_IsEnvelopeVisible = value;
-                //resetWaveFormBackground();
-                if (View != null)
-                {
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => IsEnvelopeVisible);
-            }
-        }
+        //private bool m_IsEnvelopeVisible = Settings.Default.AudioWaveForm_IsBordered;
+        //public bool IsEnvelopeVisible
+        //{
+        //    get
+        //    {
+        //        return m_IsEnvelopeVisible;
+        //    }
+        //    set
+        //    {
+        //        if (m_IsEnvelopeVisible == value) return;
+        //        m_IsEnvelopeVisible = value;
+        //        //resetWaveFormBackground();
+        //        if (View != null)
+        //        {
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => IsEnvelopeVisible);
+        //    }
+        //}
 
-        private bool m_IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
-        public bool IsEnvelopeFilled
-        {
-            get
-            {
-                return m_IsEnvelopeFilled;
-            }
-            set
-            {
-                if (m_IsEnvelopeFilled == value) return;
-                m_IsEnvelopeFilled = value;
-                //resetWaveFormBackground();
-                if (View != null)
-                {
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => IsEnvelopeFilled);
-            }
-        }
-
-        private Color m_ColorTimeInfoText = Settings.Default.AudioWaveForm_Color_TimeText;
-        public Color ColorTimeInfoText
-        {
-            get
-            {
-                return m_ColorTimeInfoText;
-            }
-            set
-            {
-                if (m_ColorTimeInfoText == value) return;
-                m_ColorTimeInfoText = value;
-
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
-
-                    CommandRefresh.Execute();
-                }
-
-                RaisePropertyChanged(() => ColorTimeInfoText);
-            }
-        }
-
-        private Color m_ColorTimeSelection = Settings.Default.AudioWaveForm_Color_Selection;
-        public Color ColorTimeSelection
-        {
-            get
-            {
-                return m_ColorTimeSelection;
-            }
-            set
-            {
-                if (m_ColorTimeSelection == value) return;
-                m_ColorTimeSelection = value;
-                RaisePropertyChanged(() => ColorTimeSelection);
-
-                RaisePropertyChanged(() => ColorSelectionContourBrush);
-            }
-        }
-
-        private Color m_ColorPlayhead = Settings.Default.AudioWaveForm_Color_CursorBorder;
-        public Color ColorPlayhead
-        {
-            get
-            {
-                return m_ColorPlayhead;
-            }
-            set
-            {
-                if (m_ColorPlayhead == value) return;
-                m_ColorPlayhead = value;
-                AudioPlayer_UpdateWaveFormPlayHead();
-                RaisePropertyChanged(() => ColorPlayhead);
-            }
-        }
-
-        private Color m_ColorPlayheadFill = Settings.Default.AudioWaveForm_Color_CursorFill;
-        public Color ColorPlayheadFill
-        {
-            get
-            {
-                return m_ColorPlayheadFill;
-            }
-            set
-            {
-                if (m_ColorPlayheadFill == value) return;
-                m_ColorPlayheadFill = value;
-                AudioPlayer_UpdateWaveFormPlayHead();
-                RaisePropertyChanged(() => ColorPlayheadFill);
-            }
-        }
-
-        private Color m_ColorWaveBackground = Settings.Default.AudioWaveForm_Color_Back;
-        public Color ColorWaveBackground
-        {
-            get
-            {
-                return m_ColorWaveBackground;
-            }
-            set
-            {
-                if (m_ColorWaveBackground == value) return;
-                m_ColorWaveBackground = value;
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
-
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => ColorWaveBackground);
-            }
-        }
-
-        private Color m_ColorMarkers = Settings.Default.AudioWaveForm_Color_Phrases;
-        public Color ColorMarkers
-        {
-            get
-            {
-                return m_ColorMarkers;
-            }
-            set
-            {
-                if (m_ColorMarkers == value) return;
-                m_ColorMarkers = value;
-
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
-
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => ColorMarkers);
-            }
-        }
-
-        private Color m_ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
-        public Color ColorWaveBars
-        {
-            get
-            {
-                return m_ColorWaveBars;
-            }
-            set
-            {
-                if (m_ColorWaveBars == value) return;
-                m_ColorWaveBars = value;
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
-
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => ColorWaveBars);
-            }
-        }
+        //private bool m_IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
+        //public bool IsEnvelopeFilled
+        //{
+        //    get
+        //    {
+        //        return m_IsEnvelopeFilled;
+        //    }
+        //    set
+        //    {
+        //        if (m_IsEnvelopeFilled == value) return;
+        //        m_IsEnvelopeFilled = value;
+        //        //resetWaveFormBackground();
+        //        if (View != null)
+        //        {
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => IsEnvelopeFilled);
+        //    }
+        //}
 
         public SolidColorBrush ColorSelectionContourBrush
         {
             get
             {
-                return new SolidColorBrush(ColorTimeSelection) {Opacity = 0.6};
+                return new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Selection) { Opacity = 0.6 };
             }
         }
 
-        private Color m_ColorEnvelopeFill = Settings.Default.AudioWaveForm_Color_Fill;
-        public Color ColorEnvelopeFill
-        {
-            get
-            {
-                return m_ColorEnvelopeFill;
-            }
-            set
-            {
-                if (m_ColorEnvelopeFill == value) return;
-                m_ColorEnvelopeFill = value;
+        //private Color m_ColorTimeInfoText = Settings.Default.AudioWaveForm_Color_TimeText;
+        //public Color ColorTimeInfoText
+        //{
+        //    get
+        //    {
+        //        return m_ColorTimeInfoText;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorTimeInfoText == value) return;
+        //        m_ColorTimeInfoText = value;
 
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => ColorEnvelopeFill);
-            }
-        }
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
 
-        private Color m_ColorEnvelopeOutline = Settings.Default.AudioWaveForm_Color_Border;
-        public Color ColorEnvelopeOutline
-        {
-            get
-            {
-                return m_ColorEnvelopeOutline;
-            }
-            set
-            {
-                if (m_ColorEnvelopeOutline == value) return;
-                m_ColorEnvelopeOutline = value;
-                if (View != null)
-                {
-                    View.ResetWaveFormEmpty();
+        //            CommandRefresh.Execute();
+        //        }
 
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => ColorEnvelopeOutline);
-            }
-        }
+        //        RaisePropertyChanged(() => ColorTimeInfoText);
+        //    }
+        //}
+
+        //private Color m_ColorTimeSelection = Settings.Default.AudioWaveForm_Color_Selection;
+        //public Color ColorTimeSelection
+        //{
+        //    get
+        //    {
+        //        return m_ColorTimeSelection;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorTimeSelection == value) return;
+        //        m_ColorTimeSelection = value;
+        //        RaisePropertyChanged(() => ColorTimeSelection);
+
+        //        RaisePropertyChanged(() => ColorSelectionContourBrush);
+        //    }
+        //}
+
+        //private Color m_ColorPlayhead = Settings.Default.AudioWaveForm_Color_CursorBorder;
+        //public Color ColorPlayhead
+        //{
+        //    get
+        //    {
+        //        return m_ColorPlayhead;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorPlayhead == value) return;
+        //        m_ColorPlayhead = value;
+        //        AudioPlayer_UpdateWaveFormPlayHead();
+        //        RaisePropertyChanged(() => ColorPlayhead);
+        //    }
+        //}
+
+        //private Color m_ColorPlayheadFill = Settings.Default.AudioWaveForm_Color_CursorFill;
+        //public Color ColorPlayheadFill
+        //{
+        //    get
+        //    {
+        //        return m_ColorPlayheadFill;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorPlayheadFill == value) return;
+        //        m_ColorPlayheadFill = value;
+        //        AudioPlayer_UpdateWaveFormPlayHead();
+        //        RaisePropertyChanged(() => ColorPlayheadFill);
+        //    }
+        //}
+
+        //private Color m_ColorWaveBackground = Settings.Default.AudioWaveForm_Color_Back;
+        //public Color ColorWaveBackground
+        //{
+        //    get
+        //    {
+        //        return m_ColorWaveBackground;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorWaveBackground == value) return;
+        //        m_ColorWaveBackground = value;
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
+
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => ColorWaveBackground);
+        //    }
+        //}
+
+        //private Color m_ColorMarkers = Settings.Default.AudioWaveForm_Color_Phrases;
+        //public Color ColorMarkers
+        //{
+        //    get
+        //    {
+        //        return m_ColorMarkers;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorMarkers == value) return;
+        //        m_ColorMarkers = value;
+
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
+
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => ColorMarkers);
+        //    }
+        //}
+
+        //private Color m_ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
+        //public Color ColorWaveBars
+        //{
+        //    get
+        //    {
+        //        return m_ColorWaveBars;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorWaveBars == value) return;
+        //        m_ColorWaveBars = value;
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
+
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => ColorWaveBars);
+        //    }
+        //}
+
+        //private Color m_ColorEnvelopeFill = Settings.Default.AudioWaveForm_Color_Fill;
+        //public Color ColorEnvelopeFill
+        //{
+        //    get
+        //    {
+        //        return m_ColorEnvelopeFill;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorEnvelopeFill == value) return;
+        //        m_ColorEnvelopeFill = value;
+
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => ColorEnvelopeFill);
+        //    }
+        //}
+
+        //private Color m_ColorEnvelopeOutline = Settings.Default.AudioWaveForm_Color_Border;
+        //public Color ColorEnvelopeOutline
+        //{
+        //    get
+        //    {
+        //        return m_ColorEnvelopeOutline;
+        //    }
+        //    set
+        //    {
+        //        if (m_ColorEnvelopeOutline == value) return;
+        //        m_ColorEnvelopeOutline = value;
+        //        if (View != null)
+        //        {
+        //            View.ResetWaveFormEmpty();
+
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => ColorEnvelopeOutline);
+        //    }
+        //}
 
         #endregion WaveForm configuration
     }

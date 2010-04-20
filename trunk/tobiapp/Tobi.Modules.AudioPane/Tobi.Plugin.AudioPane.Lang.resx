@@ -285,9 +285,6 @@
   <data name="CmdAudioSettings_LongDesc" xml:space="preserve">
     <value>Settings for the audio player and recorder</value>
   </data>
-  <data name="CmdAudioShowOptions_ShortDesc" xml:space="preserve">
-    <value>Show audio options</value>
-  </data>
   <data name="CmdAudioStartMonitor_ShortDesc" xml:space="preserve">
     <value>St_art monitoring</value>
   </data>

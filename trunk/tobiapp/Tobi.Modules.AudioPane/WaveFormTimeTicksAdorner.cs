@@ -29,9 +29,6 @@ namespace Tobi.Plugin.AudioPane
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
 
-            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
-            m_renderBrush.Freeze();
-
             ResetBrushes();
 
             m_point1 = new Point(1, 1);
@@ -48,10 +45,13 @@ namespace Tobi.Plugin.AudioPane
 
         public void ResetBrushes()
         {
-            m_phraseBrush = new SolidColorBrush(m_AudioPaneViewModel.ColorMarkers);
+            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
+            m_renderBrush.Freeze();
+
+            m_phraseBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Phrases); //m_AudioPaneViewModel.ColorMarkers);
             m_phraseBrush.Freeze();
 
-            m_timeTextBrush = new SolidColorBrush(m_AudioPaneViewModel.ColorTimeInfoText);
+            m_timeTextBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
             m_timeTextBrush.Freeze();
 
             m_penTick = new Pen(m_timeTextBrush, 1);

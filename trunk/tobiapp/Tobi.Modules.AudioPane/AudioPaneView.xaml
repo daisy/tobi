@@ -418,8 +418,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
              CanContentScroll="True"
                 IsDeferredScrollingEnabled="False"
                   Focusable="False"
-                  
-                  Background="Black"
+                  Background="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   ScrollChanged="OnWaveFormScrollChanged"
                   
@@ -433,7 +432,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                MouseLeave="OnWaveFormMouseLeave"
                MouseEnter="OnWaveFormMouseEnter"
               Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-              Background="Black"
+              Background="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
               SnapsToDevicePixels="True"
@@ -452,7 +451,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Canvas.Top="0"
                RenderOptions.EdgeMode="Unspecified"
                SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="HighQuality"/>
+               RenderOptions.BitmapScalingMode="LowQuality"/>
 
         <Path x:Name="WaveFormTimeRangePath"
               Canvas.ZIndex="1"
@@ -460,10 +459,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               RenderOptions.EdgeMode="Aliased"
               SnapsToDevicePixels="True">
           <Path.Fill>
-            <SolidColorBrush Color="{Binding Path=ColorMarkers, Mode=OneWay}"/>
+            <SolidColorBrush Color="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Phrases, Mode=OneWay}"/>
           </Path.Fill>
           <Path.Stroke>
-            <SolidColorBrush Color="{Binding Path=ColorMarkers, Mode=OneWay}"/>
+            <SolidColorBrush Color="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Phrases, Mode=OneWay}"/>
           </Path.Stroke>
         </Path>
 
@@ -486,7 +485,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             <System:Double>4</System:Double>
           </Rectangle.StrokeDashArray>
           <Rectangle.Fill>
-            <SolidColorBrush Opacity="0.20" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
+            <SolidColorBrush Opacity="0.20" Color="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Selection, Mode=OneWay}"/>
           </Rectangle.Fill>
         </Rectangle>
         
@@ -507,7 +506,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             <System:Double>2</System:Double>
           </Rectangle.StrokeDashArray>
           <Rectangle.Fill>
-            <SolidColorBrush Opacity="0.35" Color="{Binding Path=ColorTimeSelection, Mode=OneWay}"/>
+            <SolidColorBrush Opacity="0.35" Color="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Selection, Mode=OneWay}"/>
           </Rectangle.Fill>
         </Rectangle>
 
@@ -517,10 +516,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               RenderOptions.EdgeMode="Unspecified"
               SnapsToDevicePixels="True">
           <Path.Stroke>
-            <SolidColorBrush Color="{Binding Path=ColorPlayhead, Mode=OneWay}"/>
+            <SolidColorBrush Color="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_CursorBorder, Mode=OneWay}"/>
           </Path.Stroke>
           <Path.Fill>
-            <SolidColorBrush Color="{Binding Path=ColorPlayheadFill, Mode=OneWay}"/>
+            <SolidColorBrush Color="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_CursorFill, Mode=OneWay}"/>
           </Path.Fill>
         </Path>
       </Canvas>
@@ -939,7 +938,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             TickPlacement="None"
             Value="1000"
             Minimum="800"
-            Maximum="10000"
+            Maximum="8000"
             TickFrequency="500"
             Delay="1000"
             Interval="1000"

@@ -106,9 +106,9 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandAudioSettings);
             //
-#if DEBUG
+#if false && DEBUG
             CommandShowOptionsDialog = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.CmdAudioShowOptions_ShortDesc,
+                @"Show audio options",
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 null,
@@ -121,7 +121,7 @@ namespace Tobi.Plugin.AudioPane
                     var pane = new AudioOptions { DataContext = this };
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.CmdAudioShowOptions_ShortDesc),
+                                                           UserInterfaceStrings.EscapeMnemonic(@"Show audio options"),
                                                            pane,
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
