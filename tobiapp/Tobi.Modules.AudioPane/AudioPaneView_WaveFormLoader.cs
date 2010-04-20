@@ -830,14 +830,16 @@ namespace Tobi.Plugin.AudioPane
                 {
 #if NET40
                     if (Settings.Default.AudioWaveForm_UseVectorAtResize)
-                {
-                    WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
-                }else{
-                    var drawImg = new DrawingImage(drawGrp);
-                    drawImg.Freeze();
-WaveFormImage.Source = drawImg;
+                    {
+                        WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
                     }
-                    
+                    else
+                    {
+                        var drawImg = new DrawingImage(drawGrp);
+                        drawImg.Freeze();
+                        WaveFormImage.Source = drawImg;
+                    }
+
 
                     var zoom = (m_ShellView != null
                                     ? m_ShellView.MagnificationLevel
@@ -848,11 +850,11 @@ WaveFormImage.Source = drawImg;
                     {
                         WaveFormImage.UseLayoutRounding = true;
                         WaveFormImage.CacheMode = new BitmapCache
-                                                    {
-                                                        RenderAtScale = zoom,
-                                                        EnableClearType = true,
-                                                        SnapsToDevicePixels = true
-                                                    };
+                            {
+                                RenderAtScale = zoom,
+                                EnableClearType = true,
+                                SnapsToDevicePixels = true
+                            };
 
                         //var bitmapCacheBrush = new BitmapCacheBrush
                         //{
