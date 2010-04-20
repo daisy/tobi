@@ -182,20 +182,4 @@ namespace Tobi.Common._UnusedCode
         }
 
     }
-
-    [ValueConversion(typeof(Color), typeof(Brush))]
-    public class ColorToBrushConverter : ValueConverterMarkupExtensionBase<ColorToBrushConverter>
-    {
-        #region IValueConverter Members
-
-        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (targetType != typeof(Brush)) return null;
-            if (!(value is Color)) return null;
-            SolidColorBrush scb = new SolidColorBrush((Color)value);
-            return scb;
-        }
-
-        #endregion
-    }
 }

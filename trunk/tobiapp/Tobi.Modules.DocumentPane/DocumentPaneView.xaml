@@ -4,9 +4,7 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-    xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
-      
-          Margin="0,0,0,0"
+    xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" Margin="0,0,0,0"
           
       >
   
@@ -33,7 +31,9 @@
                     IsTabStop="False"
                     Focusable="False"
                             Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                      Background="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                      Background="{Binding
+                       Converter={XAML:ColorToBrushConverter},
+                            Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                       >
     <!-- 
@@ -49,7 +49,9 @@
                       ViewingMode="Scroll" -->
 
     <FlowDocument AllowDrop="True" x:Name="TheFlowDocument"
-                    Background="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    Background="{Binding
+                    Converter={XAML:ColorToBrushConverter},
+                    Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
                  AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"

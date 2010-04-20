@@ -199,6 +199,7 @@
     <Compile Include="UI\WrapPanelLastChildFill.cs" />
     <Compile Include="UI\XAML\BooleanToVisibilityConverter.cs" />
     <Compile Include="UI\XAML\BoolToOppositeBoolConverter.cs" />
+    <Compile Include="UI\XAML\ColorToBrushConverter.cs" />
     <Compile Include="UI\XAML\DataContextSpy.cs" />
     <Compile Include="UI\XAML\DoubleToTextConverter.cs" />
     <Compile Include="UI\XAML\RenderTargetBitmapImageSourceConverter.cs" />
