@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Reflection;
@@ -427,6 +428,21 @@ namespace Tobi.Plugin.DocumentPane
                 //CommandFindNext.IsActive = focusAware.IsActive;
                 //CommandFindPrev.IsActive = focusAware.IsActive;
             };
+
+            Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
+        }
+
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!e.PropertyName.StartsWith(@"Document_Color_")
+                //&& !e.PropertyName.StartsWith(@"Document_")
+                ) return;
+            
+            updateHighlightedColors();
+            
+            if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Document_Color_Font_Audio))
+            {
+            }
         }
 
         private TreeNode ensureTreeNodeIsNoteAnnotation(TreeNode treeNode)
@@ -960,13 +976,13 @@ namespace Tobi.Plugin.DocumentPane
 
             if (textElement2 == null)
             {
-                doLastHighlightedOnly(textElement1);
+                doLastHighlightedOnly(textElement1, false);
 
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement1.BringIntoView));
             }
             else
             {
-                doLastHighlightedAndSub(textElement1, textElement2);
+                doLastHighlightedAndSub(textElement1, textElement2, false);
 
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement2.BringIntoView));
             }
@@ -1005,72 +1021,103 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2)
+        private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2, bool onlyUpdateColors)
         {
             Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
             Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
             Brush brushBack1 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
             Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
 
-            m_lastHighlighted = textElement1;
+            if (!onlyUpdateColors)
+            {
+                m_lastHighlighted = textElement1;
 
-            m_lastHighlighted_Background = m_lastHighlighted.Background;
+                m_lastHighlighted_Background = m_lastHighlighted.Background;
+                m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            }
             m_lastHighlighted.Background = brushBack1;
-
-            m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
             m_lastHighlighted.Foreground = brushFont;
 
             if (m_lastHighlighted is Block)
             {
-                m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                if (!onlyUpdateColors)
+                {
+                    m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                    m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                }
                 ((Block)m_lastHighlighted).BorderBrush = brushBorder;
-
-                m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
                 ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
             }
 
-            m_lastHighlightedSub = textElement2;
+            if (!onlyUpdateColors)
+            {
+                m_lastHighlightedSub = textElement2;
 
-            m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
+                m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
+                m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
+            }
             m_lastHighlightedSub.Background = brushBack2;
-
-            m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
             m_lastHighlightedSub.Foreground = brushFont;
 
             if (m_lastHighlightedSub is Block)
             {
-                m_lastHighlightedSub_BorderBrush = ((Block)m_lastHighlightedSub).BorderBrush;
-                ((Block)m_lastHighlightedSub).BorderBrush = brushBorder;
-
-                m_lastHighlightedSub_BorderThickness = ((Block)m_lastHighlightedSub).BorderThickness;
+                if (!onlyUpdateColors)
+                {
+                    m_lastHighlightedSub_BorderBrush = ((Block)m_lastHighlightedSub).BorderBrush;
+                    m_lastHighlightedSub_BorderThickness = ((Block)m_lastHighlightedSub).BorderThickness;
+                }
+                
+                ((Block)m_lastHighlightedSub).BorderBrush = brushBorder;                
                 ((Block)m_lastHighlightedSub).BorderThickness = new Thickness(1);
             }
 
             setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
         }
 
+        private void updateHighlightedColors()
+        {
+            if (m_lastHighlighted == null) return;
 
-        private void doLastHighlightedOnly(TextElement textElement)
+            if (m_lastHighlightedSub != null)
+            {
+                doLastHighlightedAndSub(m_lastHighlighted, m_lastHighlightedSub, true);
+            }
+            else
+            {
+                doLastHighlightedOnly(m_lastHighlighted, true);
+            }
+        }
+
+        private void doLastHighlightedOnly(TextElement textElement, bool onlyUpdateColors)
         {
             Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
             Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
             Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
 
-            m_lastHighlighted = textElement;
+            if (!onlyUpdateColors)
+            {
+                m_lastHighlighted = textElement;
+            }
 
             if (m_lastHighlighted is Block)
             {
-                m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
-                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
+                if (!onlyUpdateColors)
+                {
+                    m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                    m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                }
 
-                m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
                 ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
             }
 
-            m_lastHighlighted_Background = m_lastHighlighted.Background;
-            m_lastHighlighted.Background = brushBack2;
+            if (!onlyUpdateColors)
+            {
+                m_lastHighlighted_Background = m_lastHighlighted.Background;
+                m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            }
 
-            m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            m_lastHighlighted.Background = brushBack2;
             m_lastHighlighted.Foreground = brushFont;
 
             setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);

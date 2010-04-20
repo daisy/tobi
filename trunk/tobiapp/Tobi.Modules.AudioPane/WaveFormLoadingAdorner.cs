@@ -25,19 +25,10 @@ namespace Tobi.Plugin.AudioPane
             ClipToBounds = true;
             m_AudioPaneViewModel = view;
 
-            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back)
-                                {
-                                    Opacity = 0.6
-                                };
-            m_renderBrush.Freeze();
-
             m_typeFace = new Typeface("Helvetica");
 
             m_culture = CultureInfo.GetCultureInfo("en-us");
             
-            m_textPen = new Pen(new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back), 1);
-            m_textPen.Freeze();
-
             m_pointText = new Point(1, 1);
             m_rectRect = new Rect(1, 1, 1, 1);
             
@@ -46,6 +37,15 @@ namespace Tobi.Plugin.AudioPane
 
         public void ResetBrushes()
         {
+            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back)
+            {
+                Opacity = 0.6
+            };
+            m_renderBrush.Freeze();
+
+            m_textPen = new Pen(new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back), 1);
+            m_textPen.Freeze();
+
             m_textBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
             m_textBrush.Freeze();
 
