@@ -1514,6 +1514,11 @@ namespace Tobi.Plugin.DocumentPane
 
         private void setOrRemoveTextDecoration_SelectUnderline(TextElement textElement, bool remove)
         {
+            if (remove == false && !Settings.Default.Document_UseDottedSelect)
+            {
+                return;
+            }
+
             if (textElement is ListItem) // TEXT_ELEMENT
             {
                 var blocks = ((ListItem)textElement).Blocks;
