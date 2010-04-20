@@ -268,23 +268,34 @@ namespace Tobi.Plugin.DocumentPane
             {
                 data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
             }
-            else if (data is Block)
+            else if (qName.LocalName == "th" || qName.LocalName == "td")
             {
-                if (qName.LocalName == "th" || qName.LocalName == "td")
+                Debug.Assert(data is TableCell);
+                if (data is TableCell)
                 {
-                    ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                    ((TableCell)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 }
-                else if (qName.LocalName == "sidebar"
-                     || qName.LocalName == "imggroup"
-                     || qName.LocalName == "doctitle"
-                     || qName.LocalName == "docauthor"
-                     || qName.LocalName == "covertitle"
-                     || qName.LocalName == "caption"
-                     || qName.LocalName == "note"
-                     || qName.LocalName == "annotation"
-                     || qName.LocalName == "blockquote"
-                     || qName.LocalName == "table"
-                    )
+            } if (qName.LocalName == "sidebar")
+            {
+                Debug.Assert(data is Floater);
+                if (data is Floater)
+                {
+                    ((Floater)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                }
+            }
+            else if (qName.LocalName == "imggroup"
+                 || qName.LocalName == "doctitle"
+                 || qName.LocalName == "docauthor"
+                 || qName.LocalName == "covertitle"
+                 || qName.LocalName == "caption"
+                 || qName.LocalName == "note"
+                 || qName.LocalName == "annotation"
+                 || qName.LocalName == "blockquote"
+                 || qName.LocalName == "table"
+                )
+            {
+                Debug.Assert(data is Block);
+                if (data is Block)
                 {
                     ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                 }
