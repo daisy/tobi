@@ -128,6 +128,8 @@ namespace Tobi.Plugin.AudioPane
 
                             if (stopWatch.ElapsedMilliseconds > 200)
                             {
+                                stopWatch.Stop();
+
                                 Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() =>
                                 {
                                     //double ms = State.Audio.ConvertBytesToMilliseconds(totalLength);
@@ -139,7 +141,9 @@ namespace Tobi.Plugin.AudioPane
                                 }));
                                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Loaded);
                                 
-                                stopWatch.Restart();
+                                //stopWatch.Restart(); NET40 only !
+                                stopWatch.Reset();
+                                stopWatch.Start();
                             }
                         }
                         );
