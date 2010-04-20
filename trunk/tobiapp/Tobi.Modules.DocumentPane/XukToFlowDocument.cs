@@ -250,6 +250,12 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (data.Tag == null || !(data.Tag is TreeNode)) return;
 
+            data.Background = Brushes.Transparent; // SystemColors.WindowBrush;
+            if (data is Block)
+            {
+                ((Block) data).BorderBrush = null;
+            }
+
             var treeNode = (TreeNode)data.Tag;
             var qName = treeNode.GetXmlElementQName();
             if (qName == null) return;
@@ -261,6 +267,27 @@ namespace Tobi.Plugin.DocumentPane
                 || qName.LocalName == "annoref" || qName.LocalName == "noteref")
             {
                 data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+            }
+            else if (data is Block)
+            {
+                if (qName.LocalName == "th" || qName.LocalName == "td")
+                {
+                    ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                }
+                else if (qName.LocalName == "sidebar"
+                     || qName.LocalName == "imggroup"
+                     || qName.LocalName == "doctitle"
+                     || qName.LocalName == "docauthor"
+                     || qName.LocalName == "covertitle"
+                     || qName.LocalName == "caption"
+                     || qName.LocalName == "note"
+                     || qName.LocalName == "annotation"
+                     || qName.LocalName == "blockquote"
+                     || qName.LocalName == "table"
+                    )
+                {
+                    ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                }
             }
         }
 
@@ -433,14 +460,20 @@ namespace Tobi.Plugin.DocumentPane
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
-        public static bool SetTextElementAttributes(TextElement data, TreeNode node, out bool noAudio)
+        public static bool SetTextElementAttributes(TextElement data, out bool noAudio, bool updateTotalDuration)
         {
             noAudio = false;
+
+            Debug.Assert(data.Tag is TreeNode);
+            var node = (TreeNode)data.Tag;
 
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
-                m_totalAudioDuration.Add(media.Duration);
+                if (updateTotalDuration)
+                {
+                    m_totalAudioDuration.Add(media.Duration);
+                }
 
                 SetTextElementAttributesForTreeNodeWithAudio(data);
 
@@ -500,7 +533,7 @@ namespace Tobi.Plugin.DocumentPane
             //data.Foreground = Brushes.Red; // default is normally overriden
 
             bool noAudio;
-            Boolean needMouseHandler = SetTextElementAttributes(data, node, out noAudio);
+            Boolean needMouseHandler = SetTextElementAttributes(data, out noAudio, true);
             if (noAudio)
             {
                 EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
@@ -566,8 +599,19 @@ namespace Tobi.Plugin.DocumentPane
                 TableCell data = new TableCell();
                 setTag(data, node);
 
-                data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 data.BorderThickness = new Thickness(1.0);
+
+                //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+#if DEBUG
+                Debug.Assert(data.Tag != null);
+                Debug.Assert(data.Tag is TreeNode);
+                Debug.Assert(node == data.Tag);
+
+                var qName = node.GetXmlElementQName();
+                Debug.Assert(qName != null);
+                Debug.Assert(qName.LocalName == "th" || qName.LocalName == "td");
+#endif
+                SetBackFrontColorBasedOnTreeNodeTag(data);
 
                 TableRowGroup trg = ((Table)parent).RowGroups[m_currentROWGROUP];
 
@@ -778,8 +822,20 @@ namespace Tobi.Plugin.DocumentPane
             setTag(data, node);
 
             data.CellSpacing = 4.0;
-            data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+            
             data.BorderThickness = new Thickness(1.0);
+
+            //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+            Debug.Assert(data.Tag != null);
+            Debug.Assert(data.Tag is TreeNode);
+            Debug.Assert(node == data.Tag);
+
+            var qName = node.GetXmlElementQName();
+            Debug.Assert(qName != null);
+            Debug.Assert(qName.LocalName == "table");
+#endif
+            SetBackFrontColorBasedOnTreeNodeTag(data);
 
             m_currentROWGROUP = -1;
             m_firstTR = false;
@@ -1583,10 +1639,22 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                     data.Margin = new Thickness(4.0);
+
+                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                    Debug.Assert(data.Tag != null);
+                                    Debug.Assert(data.Tag is TreeNode);
+                                    Debug.Assert(node == data.Tag);
+
+                                    var qName = node.GetXmlElementQName();
+                                    Debug.Assert(qName != null);
+                                    Debug.Assert(qName.LocalName == "blockquote");
+#endif
+                                    SetBackFrontColorBasedOnTreeNodeTag(data);
+
                                 }
                                 );
                         }
@@ -1596,10 +1664,21 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
                                     data.FontSize = m_FlowDoc.FontSize / 1.2;
+
+                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                    Debug.Assert(data.Tag != null);
+                                    Debug.Assert(data.Tag is TreeNode);
+                                    Debug.Assert(node == data.Tag);
+
+                                    var qName = node.GetXmlElementQName();
+                                    Debug.Assert(qName != null);
+                                    Debug.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
+#endif
+                                    SetBackFrontColorBasedOnTreeNodeTag(data);
 
                                     XmlProperty xmlProp = node.GetProperty<XmlProperty>();
                                     XmlAttribute attr = xmlProp.GetAttribute("id");
@@ -1629,12 +1708,23 @@ namespace Tobi.Plugin.DocumentPane
                                 return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                  data =>
                                  {
-                                     data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                      data.BorderThickness = new Thickness(1.0);
                                      data.Padding = new Thickness(2.0);
                                      data.FontWeight = FontWeights.Light;
                                      data.FontSize = m_FlowDoc.FontSize / 1.2;
                                      //data.Foreground = Brushes.DarkGreen;
+
+                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                     Debug.Assert(data.Tag != null);
+                                     Debug.Assert(data.Tag is TreeNode);
+                                     Debug.Assert(node == data.Tag);
+
+                                     var qName = node.GetXmlElementQName();
+                                     Debug.Assert(qName != null);
+                                     Debug.Assert(qName.LocalName == "caption");
+#endif
+                                     SetBackFrontColorBasedOnTreeNodeTag(data);
                                  });
                             }
                         }
@@ -1681,11 +1771,22 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(1.0);
                                     data.FontSize = m_FlowDoc.FontSize * 1.2;
                                     data.FontWeight = FontWeights.Heavy;
                                     //data.Foreground = Brushes.Navy;
+
+                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                    Debug.Assert(data.Tag != null);
+                                    Debug.Assert(data.Tag is TreeNode);
+                                    Debug.Assert(node == data.Tag);
+
+                                    var qName = node.GetXmlElementQName();
+                                    Debug.Assert(qName != null);
+                                    Debug.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
+#endif
+                                    SetBackFrontColorBasedOnTreeNodeTag(data);
                                 });
                         }
                     case "pagenum":
@@ -1725,9 +1826,20 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(0.5);
                                     data.Padding = new Thickness(2.0);
+
+                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                    Debug.Assert(data.Tag != null);
+                                    Debug.Assert(data.Tag is TreeNode);
+                                    Debug.Assert(node == data.Tag);
+
+                                    var qName = node.GetXmlElementQName();
+                                    Debug.Assert(qName != null);
+                                    Debug.Assert(qName.LocalName == "imggroup");
+#endif
+                                    SetBackFrontColorBasedOnTreeNodeTag(data);
                                 });
                         }
                     case "sidebar":
@@ -1735,9 +1847,20 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Floater(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
+
+                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                    Debug.Assert(data.Tag != null);
+                                    Debug.Assert(data.Tag is TreeNode);
+                                    Debug.Assert(node == data.Tag);
+
+                                    var qName = node.GetXmlElementQName();
+                                    Debug.Assert(qName != null);
+                                    Debug.Assert(qName.LocalName == "sidebar");
+#endif
+                                    SetBackFrontColorBasedOnTreeNodeTag(data);
                                 });
                         }
                     case "img":
