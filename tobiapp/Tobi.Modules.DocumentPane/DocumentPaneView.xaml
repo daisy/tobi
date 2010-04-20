@@ -213,7 +213,7 @@
                   
                   SelectedItem="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Font, Mode=TwoWay}"
                   
-                  Width="120"
+                  Width="160"
                   AlternationCount="2"
                   Height="Auto"
                   VerticalAlignment="Center"

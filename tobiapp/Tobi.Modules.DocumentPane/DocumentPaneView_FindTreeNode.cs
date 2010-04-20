@@ -5,6 +5,10 @@ namespace Tobi.Plugin.DocumentPane
 {
     public partial class DocumentPaneView
     {
+        private TextElement FindTextElement(TreeNode node)
+        {
+            return FindTextElement(node, TheFlowDocument.Blocks);
+        }
         private TextElement FindTextElement(TreeNode node, InlineCollection ic)
         {
             foreach (Inline inline in ic)
@@ -180,10 +184,7 @@ namespace Tobi.Plugin.DocumentPane
             if (li.Tag == node) return li;
             return FindTextElement(node, li.Blocks);
         }
-        private TextElement FindTextElement(TreeNode node)
-        {
-            return FindTextElement(node, TheFlowDocument.Blocks);
-        }
+        
         private TextElement FindTextElement(TreeNode node, Section section)
         {
             if (section.Tag == node) return section;

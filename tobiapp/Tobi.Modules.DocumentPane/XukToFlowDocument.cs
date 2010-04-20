@@ -246,6 +246,24 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        public static void SetBackFrontColorBasedOnTreeNodeTag(TextElement data)
+        {
+            if (data.Tag == null || !(data.Tag is TreeNode)) return;
+
+            var treeNode = (TreeNode)data.Tag;
+            var qName = treeNode.GetXmlElementQName();
+            if (qName == null) return;
+            if (qName.LocalName == "pagenum")
+            {
+                data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+            }
+            else if (qName.LocalName == "a" || qName.LocalName == "anchor"
+                || qName.LocalName == "annoref" || qName.LocalName == "noteref")
+            {
+                data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+            }
+        }
+
         private void formatPageNumberAndSetId_Span(TreeNode node, Span data)
         {
             //data.BorderBrush = Brushes.Orange;
@@ -253,12 +271,23 @@ namespace Tobi.Plugin.DocumentPane
             //data.Padding = new Thickness(2.0);
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
+#if DEBUG
+            Debug.Assert(data.Tag != null);
+            Debug.Assert(data.Tag is TreeNode);
+            Debug.Assert(node == data.Tag);
 
-            Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
-            //Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+            var qName = node.GetXmlElementQName();
+            Debug.Assert(qName != null);
+            Debug.Assert(qName.LocalName == "pagenum");
+#endif
+            SetBackFrontColorBasedOnTreeNodeTag(data);
 
-            data.Background = brushBack;
-            //data.Foreground = brushFont;
+
+            //Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+            ////Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+
+            //data.Background = brushBack;
+            ////data.Foreground = brushFont;
 
             formatPageNumberAndSetId(node, data);
         }
@@ -270,12 +299,23 @@ namespace Tobi.Plugin.DocumentPane
             data.Padding = new Thickness(2.0);
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
+#if DEBUG
+            Debug.Assert(data.Tag != null);
+            Debug.Assert(data.Tag is TreeNode);
+            Debug.Assert(node == data.Tag);
 
-            Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
-            //Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+            var qName = node.GetXmlElementQName();
+            Debug.Assert(qName != null);
+            Debug.Assert(qName.LocalName == "pagenum");
+#endif
+            SetBackFrontColorBasedOnTreeNodeTag(data);
 
-            data.Background = brushBack;
-            //data.Foreground = brushFont;
+
+            //Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+            ////Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+
+            //data.Background = brushBack;
+            ////data.Foreground = brushFont;
 
             formatPageNumberAndSetId(node, data);
         }
@@ -448,7 +488,7 @@ namespace Tobi.Plugin.DocumentPane
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
 
                 noAudio = true;
-                
+
                 return true;
             }
             return false;
@@ -474,7 +514,7 @@ namespace Tobi.Plugin.DocumentPane
 
         public static void SetTextElementAttributesForTreeNodeWithNoAudio(TextElement data)
         {
-            Brush brushFontNoAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_NoAudio);
+            Brush brushFontNoAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 
             data.Foreground = brushFontNoAudio;
             //data.Background = Brushes.LimeGreen;
@@ -483,7 +523,7 @@ namespace Tobi.Plugin.DocumentPane
 
         public static void SetTextElementAttributesForTreeNodeWithSequenceAudio(TextElement data)
         {
-            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
@@ -492,7 +532,7 @@ namespace Tobi.Plugin.DocumentPane
 
         public static void SetTextElementAttributesForTreeNodeWithAudio(TextElement data)
         {
-            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
@@ -501,7 +541,7 @@ namespace Tobi.Plugin.DocumentPane
 
         public static void SetTextElementAttributesForTreeNodeWithAncestorAudio(TextElement data)
         {
-            Brush brushFontAudio = new SolidColorBrush(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
@@ -979,9 +1019,19 @@ namespace Tobi.Plugin.DocumentPane
             //Hyperlink data = new Hyperlink();
             Underline data = new Underline();
             setTag(data, node);
+#if DEBUG
+            Debug.Assert(data.Tag != null);
+            Debug.Assert(data.Tag is TreeNode);
+            Debug.Assert(node == data.Tag);
 
-            data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
-            //data.Foreground = Brushes.Blue;
+            var qName = node.GetXmlElementQName();
+            Debug.Assert(qName != null);
+            Debug.Assert(qName.LocalName == "anchor" || qName.LocalName == "a");
+#endif
+            SetBackFrontColorBasedOnTreeNodeTag(data);
+
+            //data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+            ////data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("href");
@@ -1033,8 +1083,19 @@ namespace Tobi.Plugin.DocumentPane
 
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
-            data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
-            //data.Foreground = Brushes.Blue;
+#if DEBUG
+            Debug.Assert(data.Tag != null);
+            Debug.Assert(data.Tag is TreeNode);
+            Debug.Assert(node == data.Tag);
+
+            var qName = node.GetXmlElementQName();
+            Debug.Assert(qName != null);
+            Debug.Assert(qName.LocalName == "annoref" || qName.LocalName == "noteref");
+#endif
+            SetBackFrontColorBasedOnTreeNodeTag(data);
+
+            //data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+            ////data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("idref");
@@ -1885,7 +1946,7 @@ namespace Tobi.Plugin.DocumentPane
             m_nTreeNode++;
 
             if (node.IsMarked)
-            {                
+            {
                 EventAggregator.GetEvent<MarkedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
 
