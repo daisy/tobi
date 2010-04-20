@@ -1750,7 +1750,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.FontSize = m_FlowDoc.FontSize * 2;
+                                    data.FontSize = m_FlowDoc.FontSize * 1.5;
                                     data.FontWeight = FontWeights.Heavy;
                                 });
                         }
@@ -1759,7 +1759,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.FontSize = m_FlowDoc.FontSize * 1.5;
+                                    data.FontSize = m_FlowDoc.FontSize * 1.25;
                                     data.FontWeight = FontWeights.Heavy;
                                 });
                         }
@@ -1771,7 +1771,7 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.FontSize = m_FlowDoc.FontSize * 1.2;
+                                    data.FontSize = m_FlowDoc.FontSize * 1.15;
                                     data.FontWeight = FontWeights.Heavy;
                                 });
                         }
@@ -1783,7 +1783,7 @@ namespace Tobi.Plugin.DocumentPane
                                 data =>
                                 {
                                     data.BorderThickness = new Thickness(1.0);
-                                    data.FontSize = m_FlowDoc.FontSize * 1.2;
+                                    data.FontSize = m_FlowDoc.FontSize * 1.3;
                                     data.FontWeight = FontWeights.Heavy;
                                     //data.Foreground = Brushes.Navy;
 

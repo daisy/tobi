@@ -285,10 +285,10 @@ namespace Tobi.Plugin.NavigationPane
 
                 if (m_isExpanded)
                 {
-                    if (m_parent != null)
-                    {
-                        m_parent.IsExpanded = true;
-                    }
+                    //if (m_parent != null && !m_parent.IsExpanded)
+                    //{
+                    //    m_parent.IsExpanded = true;
+                    //}
                     LoadChildren();
                 }
                 else
