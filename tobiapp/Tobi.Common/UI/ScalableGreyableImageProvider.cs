@@ -10,7 +10,11 @@ namespace Tobi.Common.UI
         public static VisualBrush ConvertIconFormat(DrawingImage drawImage)
         {
             var image = new Image { Source = drawImage };
-            return new VisualBrush(image);
+            return new VisualBrush
+                {
+                    Visual = image,
+                    //AutoLayoutContent = true ?
+                };
         }
 
         public ScalableGreyableImageProvider(VisualBrush icon, double iconDrawScale)

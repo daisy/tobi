@@ -46,7 +46,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void ResetBrushes()
         {
-            m_textBrush = new SolidColorBrush(m_AudioPaneViewModel.ColorTimeInfoText);
+            m_textBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
             m_textBrush.Freeze();
 
             m_pen = new Pen(m_textBrush, 1);

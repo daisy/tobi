@@ -250,52 +250,95 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Resolution))
             {
-                WaveStepX = Settings.Default.AudioWaveForm_Resolution;
+                if (View != null)
+                {
+                    View.ResetWaveFormEmpty();
+
+                    CommandRefresh.Execute();
+                }
+                //WaveStepX = Settings.Default.AudioWaveForm_Resolution;
             }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsFilled))
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsFilled)
+                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered)
+                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked))
             {
-                IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
+                //resetWaveFormBackground();
+                if (View != null)
+                {
+                    CommandRefresh.Execute();
+                }
+                //IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
             }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered))
-            {
-                IsEnvelopeVisible = Settings.Default.AudioWaveForm_IsBordered;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked))
-            {
-                IsWaveFillVisible = Settings.Default.AudioWaveForm_IsStroked;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Stroke))
-            {
-                ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Border))
-            {
-                ColorEnvelopeOutline = Settings.Default.AudioWaveForm_Color_Border;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Fill))
-            {
-                ColorEnvelopeFill = Settings.Default.AudioWaveForm_Color_Fill;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorBorder))
-            {
-                ColorPlayhead = Settings.Default.AudioWaveForm_Color_CursorBorder;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorFill))
-            {
-                ColorPlayheadFill = Settings.Default.AudioWaveForm_Color_CursorFill;
-            }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Phrases))
-            {
-                ColorMarkers = Settings.Default.AudioWaveForm_Color_Phrases;
-            }
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered))
+            //{
+            //    IsEnvelopeVisible = Settings.Default.AudioWaveForm_IsBordered;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked))
+            //{
+            //    IsWaveFillVisible = Settings.Default.AudioWaveForm_IsStroked;
+            //}
             else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Selection))
             {
-                ColorTimeSelection = Settings.Default.AudioWaveForm_Color_Selection;
+                RaisePropertyChanged(() => ColorSelectionContourBrush);
+                //ColorTimeSelection = Settings.Default.AudioWaveForm_Color_Selection;
             }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_TimeText))
+            else if (e.PropertyName.StartsWith(@"AudioWaveForm_Color"))
             {
-                ColorTimeInfoText = Settings.Default.AudioWaveForm_Color_TimeText;
+                //ColorTimeSelection
+
+                if (View != null
+                    && e.PropertyName != GetMemberName(() => Settings.Default.AudioWaveForm_Color_Selection))
+                {
+                    if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorBorder)
+                        || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorFill))
+                    {
+                        //ColorPlayhead
+                        //ColorPlayheadFill
+                        
+                        AudioPlayer_UpdateWaveFormPlayHead();
+                    }
+                    else
+                    {
+                        //ColorEnvelopeFill
+                        //ColorWaveBars
+                        //ColorEnvelopeOutline
+                        //ColorTimeInfoText
+                        //ColorWaveBackground
+
+                        View.ResetWaveFormEmpty();
+
+                        CommandRefresh.Execute();
+                    }
+                }
             }
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Stroke))
+            //{
+            //    ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Border))
+            //{
+            //    ColorEnvelopeOutline = Settings.Default.AudioWaveForm_Color_Border;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Fill))
+            //{
+            //    ColorEnvelopeFill = Settings.Default.AudioWaveForm_Color_Fill;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorBorder))
+            //{
+            //    ColorPlayhead = Settings.Default.AudioWaveForm_Color_CursorBorder;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_CursorFill))
+            //{
+            //    ColorPlayheadFill = Settings.Default.AudioWaveForm_Color_CursorFill;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Phrases))
+            //{
+            //    ColorMarkers = Settings.Default.AudioWaveForm_Color_Phrases;
+            //}
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_TimeText))
+            //{
+            //    ColorTimeInfoText = Settings.Default.AudioWaveForm_Color_TimeText;
+            //}
         }
 
         //StatusBarMessageUpdateEvent

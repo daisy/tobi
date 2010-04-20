@@ -37,6 +37,30 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AudioWaveForm_UseVectorAtResize {
+            get {
+                return ((bool)(this["AudioWaveForm_UseVectorAtResize"]));
+            }
+            set {
+                this["AudioWaveForm_UseVectorAtResize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double AudioWaveForm_RenderMethod {
+            get {
+                return ((double)(this["AudioWaveForm_RenderMethod"]));
+            }
+            set {
+                this["AudioWaveForm_RenderMethod"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseFriendlyTimeFormat {
             get {

@@ -527,7 +527,7 @@ namespace Tobi.Plugin.AudioPane
 
             geometry.Freeze();
 
-            Brush brushColorBack = new SolidColorBrush(m_ViewModel.ColorWaveBackground);
+            Brush brushColorBack = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); //m_ViewModel.ColorWaveBackground);
             var geoDraw = new GeometryDrawing(brushColorBack, new Pen(brushColorBack, 1.0), geometry);
             geoDraw.Freeze();
             var drawGrp = new DrawingGroup();
