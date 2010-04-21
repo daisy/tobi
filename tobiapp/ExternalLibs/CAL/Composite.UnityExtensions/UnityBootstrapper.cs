@@ -89,6 +89,13 @@ namespace Microsoft.Practices.Composite.UnityExtensions
                 throw new InvalidOperationException(Resources.NullUnityContainerException);
             }
 
+#if true || NET40
+            var locator = new UnityServiceLocator(Container);
+            ServiceLocator.SetLocatorProvider(() => locator);
+#else
+                RegisterTypeIfMissing(typeof(IServiceLocator), typeof(UnityServiceLocatorAdapter), true);
+                ServiceLocator.SetLocatorProvider(() => this.Container.Resolve<IServiceLocator>());
+#endif
 
             logger.Log("Configuring container", Category.Debug, Priority.Low);
             this.Container.AddNewExtension<UnityBootstrapperExtension>();
@@ -150,13 +157,6 @@ namespace Microsoft.Practices.Composite.UnityExtensions
 
             if (useDefaultConfiguration)
             {
-#if true || NET40
-                var locator = new UnityServiceLocator(Container);
-                ServiceLocator.SetLocatorProvider(() => locator);
-#else
-                RegisterTypeIfMissing(typeof(IServiceLocator), typeof(UnityServiceLocatorAdapter), true);
-                ServiceLocator.SetLocatorProvider(() => this.Container.Resolve<IServiceLocator>());
-#endif
                 RegisterTypeIfMissing(typeof(IModuleInitializer), typeof(ModuleInitializer), true);
                 RegisterTypeIfMissing(typeof(IModuleManager), typeof(ModuleManager), true);
                 RegisterTypeIfMissing(typeof(RegionAdapterMappings), typeof(RegionAdapterMappings), true);
