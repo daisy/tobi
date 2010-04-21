@@ -63,7 +63,16 @@
   </DockPanel>
 
 
+  <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right"
+          TabIndex="6"
+          Margin="0,4,0,8"
+          Content="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Short}"
+          ToolTip="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Long}"
+          Click="OnClick_RestoreDefault"/>
+
+
   <UI:SortableListView2
+    TabIndex="5"
     x:Name="SettingsList"
     ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
     ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
@@ -295,9 +304,12 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
         <CheckBox Control.IsTabStop="true"
-                  IsChecked="{Binding Value, Mode=TwoWay}" Content="False"
+                  IsChecked="{Binding Value, Mode=TwoWay}"
                   IsThreeState="False"
-                  Margin="2">
+                  Margin="2"
+                   >
+          <!--False-->
+
           <CheckBox.Style>
             <Style TargetType="{x:Type CheckBox}">
               <Style.Setters>
@@ -312,7 +324,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                                                      Storyboard.TargetProperty="Content">
 
                           <DiscreteObjectKeyFrame KeyTime="00:00:00"
-                                                  Value="True"/>
+                                                  Value=""/><!--True-->
                         </ObjectAnimationUsingKeyFrames>
                       </Storyboard>
                     </BeginStoryboard>
@@ -397,28 +409,10 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
     </ListView.Resources>
 
     <ListView.View>
-      <GridView AllowsColumnReorder="true">
+      <GridView AllowsColumnReorder="false">
 
-        <!-- GridViewColumn Header="Icon">
-          <GridViewColumn.CellTemplate>
-            <DataTemplate>
-
-              <ContentControl Focusable="False"
-                                Width="{Binding Path=IconProvider.IconWidth_Large}"
-                            
-                                  Height="{Binding Path=IconProvider.IconHeight_Large}"
-                            
-                                  Content="{Binding Path=IconProvider.IconLarge}"
-                                                     
-                      ToolTip="{StaticResource imageIconTooltipp}"
-                              Margin="2, 4, 2, 4">
-              </ContentControl>
-            </DataTemplate>
-
-          </GridViewColumn.CellTemplate>
-
-        </GridViewColumn -->
-
+        <!-- GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Current}"
+                        DisplayMemberBinding="{Binding OriginalValue, Mode=OneWay}"/ -->
 
         <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Name}"
                         SortPropertyName="Name"
@@ -453,16 +447,47 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           </GridViewColumn.CellTemplate>
         </UI:SortableGridViewColumn>
 
+        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Value}"
+                        Width="150"
+                        CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
+
         <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Default}"
                         SortPropertyName="DefaultValue"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
 
-        <!-- GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Current}"
-                        DisplayMemberBinding="{Binding OriginalValue, Mode=OneWay}"/ -->
+        <GridViewColumn Header="">
+          <GridViewColumn.HeaderTemplate>
+            <DataTemplate>
+              <CheckBox Control.IsTabStop="true"
+                  Checked="OnCheckAll"
+                  Unchecked="OnUnCheckAll"
+                  IsThreeState="False"
+                  Margin="2"
+                   
+                        ToolTip="{x:Static Settings:Tobi_Plugin_Settings_Lang.CheckUnCheckAll}">
 
-        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Edit}"
-                        Width="150"
-                        CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
+                <CheckBox.Style>
+                  <Style TargetType="{x:Type CheckBox}">
+                    <Style.Setters>
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Settings:Tobi_Plugin_Settings_Lang.CheckUnCheckAll}"/>
+                    </Style.Setters>
+                  </Style>
+                </CheckBox.Style>
+              </CheckBox>
+            </DataTemplate>
+          </GridViewColumn.HeaderTemplate>
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox Control.IsTabStop="true"
+                  IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                  IsThreeState="False"
+                  Margin="2"
+                   />
+            </DataTemplate>
+
+          </GridViewColumn.CellTemplate>
+
+        </GridViewColumn>
 
         <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Info}"
                         SortPropertyName="Message"
@@ -522,11 +547,6 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
 
     </ListView.ItemContainerStyle>
   </UI:SortableListView2>
-
-
-
-
-
 
   <!-- ListBox
   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
