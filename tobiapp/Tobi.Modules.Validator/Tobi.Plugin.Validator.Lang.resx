@@ -126,10 +126,4 @@
   <data name="ValidatorPlugin_Name" xml:space="preserve">
     <value>Publication Validator.</value>
   </data>
-  <data name="Validator_Description" xml:space="preserve">
-    <value>This is the main content validator</value>
-  </data>
-  <data name="Validator_Name" xml:space="preserve">
-    <value>Aggregator Validator</value>
-  </data>
 </root>

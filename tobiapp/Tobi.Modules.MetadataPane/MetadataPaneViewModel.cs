@@ -103,10 +103,6 @@ namespace Tobi.Plugin.MetadataPane
             m_Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
-            /*if (project == null)
-            {
-                m_MetadataCollection = null;
-            }*/
             m_MetadataCollection = null;
 
             RaisePropertyChanged(() => MetadataCollection);
@@ -249,9 +245,6 @@ namespace Tobi.Plugin.MetadataPane
         internal void SelectionChanged()
         {
             RaisePropertyChanged(() => AvailableMetadataNames);
-
-            //TODO: what's up here ?
-            //RaisePropertyChanged(() => MetadataCollection.Metadatas);
         }
 
         /*

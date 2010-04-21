@@ -61,6 +61,15 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add a new metadata item.
+        /// </summary>
+        public static string Add_new {
+            get {
+                return ResourceManager.GetString("Add_new", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata viewer/editor.
         /// </summary>
         public static string CmdShowMetadata_LongDesc {
@@ -79,38 +88,56 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content:.
+        ///   Looks up a localized string similar to Content.
         /// </summary>
-        public static string Metadata_Content {
+        public static string Content {
             get {
-                return ResourceManager.GetString("Metadata_Content", resourceCulture);
+                return ResourceManager.GetString("Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this item.
+        /// </summary>
+        public static string Delete_Tooltip {
+            get {
+                return ResourceManager.GetString("Delete_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot delete required item (unless there are duplicates).
+        /// </summary>
+        public static string Delete_Tooltip2 {
+            get {
+                return ResourceManager.GetString("Delete_Tooltip2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Description:.
         /// </summary>
-        public static string Metadata_Description {
+        public static string Description {
             get {
-                return ResourceManager.GetString("Metadata_Description", resourceCulture);
+                return ResourceManager.GetString("Description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Errors:.
+        ///   Looks up a localized string similar to Errors.
         /// </summary>
-        public static string Metadata_Error {
+        public static string Errors {
             get {
-                return ResourceManager.GetString("Metadata_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name:.
-        /// </summary>
-        public static string Metadata_Name {
-            get {
-                return ResourceManager.GetString("Metadata_Name", resourceCulture);
+                return ResourceManager.GetString("Errors", resourceCulture);
             }
         }
         
@@ -142,6 +169,15 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Optional.
         /// </summary>
         public static string Optional {
@@ -153,9 +189,9 @@ namespace Tobi.Plugin.MetadataPane {
         /// <summary>
         ///   Looks up a localized string similar to Is primary identifier?.
         /// </summary>
-        public static string PrimaryIdentifier_CheckBox {
+        public static string PrimaryIdentifier {
             get {
-                return ResourceManager.GetString("PrimaryIdentifier_CheckBox", resourceCulture);
+                return ResourceManager.GetString("PrimaryIdentifier", resourceCulture);
             }
         }
         
@@ -183,6 +219,15 @@ namespace Tobi.Plugin.MetadataPane {
         public static string SummaryOfErrors {
             get {
                 return ResourceManager.GetString("SummaryOfErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synonyms: {0}.
+        /// </summary>
+        public static string Synonyms {
+            get {
+                return ResourceManager.GetString("Synonyms", resourceCulture);
             }
         }
         
