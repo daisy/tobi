@@ -73,7 +73,12 @@
       <RowDefinition Height="1.5*"/>
     </Grid.RowDefinitions>
 
-    <UI:SortableListView
+    <UI:SortableListView2
+      
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
       Grid.Row="0"
       AlternationCount="2"
       ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
@@ -84,9 +89,10 @@
       <ListView.View>
         <GridView>
 
-          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Name}" 
+          <UI:SortableGridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Name}" 
                           Width="Auto" 
-                          UI:SortableListView.SortPropertyName="Name">
+                          SortPropertyName="Name"
+                                     IsDefaultSortColumn="True">
             <GridViewColumn.CellTemplate>
               <!-- template to decide how to display the name  -->
               <DataTemplate>
@@ -107,11 +113,11 @@
 
               </DataTemplate>
             </GridViewColumn.CellTemplate>
-          </GridViewColumn>
-          
-          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Content}"  
+          </UI:SortableGridViewColumn>
+
+          <UI:SortableGridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Content}"  
                           Width="Auto" 
-                          UI:SortableListView.SortPropertyName="Content">
+                          SortPropertyName="Content">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
                 <TextBox x:Name="contentText" 
@@ -128,7 +134,7 @@
                 -->
               </DataTemplate>
             </GridViewColumn.CellTemplate>
-          </GridViewColumn>
+          </UI:SortableGridViewColumn>
 
           <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Errors}">
             <GridViewColumn.CellTemplate>
@@ -170,16 +176,25 @@
             </GridViewColumn.CellTemplate>
           </GridViewColumn> 
           
+          <GridViewColumn  Width="Auto" Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <CheckBox Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
+                        IsChecked="{Binding IsPrimaryIdentifier, Mode=TwoWay}"/>
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+
           <GridViewColumn  Width="Auto">
             <GridViewColumn.CellTemplate>
-              
+
               <DataTemplate>
-                <Button x:Name="deleteButton" Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete}" 
+                <Button x:Name="deleteButton" Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete}"
                         Click="DeleteButton_OnClick"
                         ToolTip="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip}"
                         ToolTipService.ShowOnDisabled="True" />
                 <DataTemplate.Triggers>
-                  
+
                   <!-- the delete button is not enabled for required items-->
                   <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
                     <Setter TargetName="deleteButton" Property="IsEnabled" Value="False"/>
@@ -189,18 +204,10 @@
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
-          
-          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}">
-            <GridViewColumn.CellTemplate>
-              <DataTemplate>
-                <CheckBox Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
-                        IsChecked="{Binding IsPrimaryIdentifier, Mode=TwoWay}"/>
-              </DataTemplate>
-            </GridViewColumn.CellTemplate>
-          </GridViewColumn>
+
         </GridView>
       </ListView.View>
-    </UI:SortableListView>
+    </UI:SortableListView2>
     
     <Button Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"
             Click="AddButton_OnClick"/>

@@ -7,7 +7,7 @@
 
   <TabItem Header="Icons Debug Tango">
 
-    <UI:SortableListView
+    <UI:SortableListView2
     
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="True"
@@ -65,8 +65,8 @@ AlternationCount="2"
 
           </GridViewColumn>
 
-          <GridViewColumn Header="Resource Key"
-                          UI:SortableListView.SortPropertyName="ShortDescription"
+          <UI:SortableGridViewColumn Header="Resource Key"
+                          SortPropertyName="ShortDescription"
              DisplayMemberBinding="{Binding ShortDescription}"  />
 
         </GridView>
@@ -85,14 +85,14 @@ AlternationCount="2"
         </Style>
 
       </ListView.ItemContainerStyle>
-    </UI:SortableListView>
+    </UI:SortableListView2>
 
 
   </TabItem>
 
   <TabItem Header="Icons Debug Neu">
 
-    <UI:SortableListView
+    <UI:SortableListView2
     
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="True"
@@ -150,8 +150,8 @@ AlternationCount="2"
 
           </GridViewColumn>
 
-          <GridViewColumn Header="Resource Key"
-                          UI:SortableListView.SortPropertyName="ShortDescription"
+          <UI:SortableGridViewColumn Header="Resource Key"
+                          SortPropertyName="ShortDescription"
              DisplayMemberBinding="{Binding ShortDescription}"  />
 
         </GridView>
@@ -170,13 +170,13 @@ AlternationCount="2"
         </Style>
 
       </ListView.ItemContainerStyle>
-    </UI:SortableListView>
+    </UI:SortableListView2>
 
 
   </TabItem>
   <TabItem Header="Icons Debug Gion">
 
-    <UI:SortableListView
+    <UI:SortableListView2
     
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="True"
@@ -234,8 +234,8 @@ AlternationCount="2"
 
           </GridViewColumn>
 
-          <GridViewColumn Header="Resource Key"
-                          UI:SortableListView.SortPropertyName="ShortDescription"
+          <UI:SortableGridViewColumn Header="Resource Key"
+                          SortPropertyName="ShortDescription"
              DisplayMemberBinding="{Binding ShortDescription}"  />
 
         </GridView>
@@ -254,13 +254,13 @@ AlternationCount="2"
         </Style>
 
       </ListView.ItemContainerStyle>
-    </UI:SortableListView>
+    </UI:SortableListView2>
 
   </TabItem>
 
   <TabItem Header="Icons Debug Foxtrot">
 
-    <UI:SortableListView
+    <UI:SortableListView2
     
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="True"
@@ -318,8 +318,8 @@ AlternationCount="2"
 
           </GridViewColumn>
 
-          <GridViewColumn Header="Resource Key"
-                          UI:SortableListView.SortPropertyName="ShortDescription"
+          <UI:SortableGridViewColumn Header="Resource Key"
+                          SortPropertyName="ShortDescription"
              DisplayMemberBinding="{Binding ShortDescription}"  />
 
         </GridView>
@@ -338,7 +338,7 @@ AlternationCount="2"
         </Style>
 
       </ListView.ItemContainerStyle>
-    </UI:SortableListView>
+    </UI:SortableListView2>
 
   </TabItem>
 </TabControl>
