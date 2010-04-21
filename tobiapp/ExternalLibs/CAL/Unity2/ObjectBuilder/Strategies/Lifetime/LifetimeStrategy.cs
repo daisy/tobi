@@ -92,13 +92,14 @@ namespace Microsoft.Practices.ObjectBuilder2
             object openGenericBuildKey = new NamedTypeBuildKey(typeToBuild.GetGenericTypeDefinition(),
                                                                context.BuildKey.Name);
 
+            IPolicyList factorySource;
             ILifetimeFactoryPolicy factoryPolicy =
-                context.Policies.Get<ILifetimeFactoryPolicy>(openGenericBuildKey);
+                context.Policies.Get<ILifetimeFactoryPolicy>(openGenericBuildKey, out factorySource);
 
             if(factoryPolicy != null)
             {
                 ILifetimePolicy lifetime = factoryPolicy.CreateLifetimePolicy();
-                context.PersistentPolicies.Set<ILifetimePolicy>(lifetime, context.BuildKey);
+                factorySource.Set<ILifetimePolicy>(lifetime, context.BuildKey);
                 return lifetime;
             }
 

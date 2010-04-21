@@ -177,6 +177,17 @@ namespace Tobi.Plugin.Settings
             }
         }
 
+        private bool m_isChecked;
+        public bool IsChecked
+        {
+            get { return m_isChecked; }
+            set
+            {
+                if (m_isChecked == value) { return; }
+                m_isChecked = value;
+                m_PropertyChangeHandler.RaisePropertyChanged(() => IsChecked);
+            }
+        }
 
         //public string this[string propertyName]
         //{

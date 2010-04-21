@@ -49,7 +49,7 @@ namespace Microsoft.Practices.Unity
             : this(null)
         {
             // Only a root container (one without a parent) gets the default strategies.
-            this.AddNewExtension<UnityDefaultStrategiesExtension>();
+            this.AddExtension(new UnityDefaultStrategiesExtension());
         }
 
         /// <summary>
@@ -74,10 +74,10 @@ namespace Microsoft.Practices.Unity
             childContainerCreated += delegate { };
 
             // Every container gets the default behavior
-            this.AddNewExtension<UnityDefaultBehaviorExtension>();
+            this.AddExtension(new UnityDefaultBehaviorExtension());
 
 #pragma warning disable 618
-            this.AddNewExtension<InjectedMembers>();
+            this.AddExtension( new InjectedMembers());
 #pragma warning restore 618
         }
 

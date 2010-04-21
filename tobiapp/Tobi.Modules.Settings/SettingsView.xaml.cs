@@ -555,5 +555,51 @@ namespace Tobi.Plugin.Settings
             }
             return pResult;
         }
+
+        private void OnCheckAll(object sender, RoutedEventArgs e)
+        {
+            foreach (var settingWrapper in AggregatedSettings)
+            {
+                settingWrapper.IsChecked = true;
+            }
+        }
+        private void OnUnCheckAll(object sender, RoutedEventArgs e)
+        {
+            foreach (var settingWrapper in AggregatedSettings)
+            {
+                settingWrapper.IsChecked = false;
+            }
+        }
+
+        private void OnClick_RestoreDefault(object sender, RoutedEventArgs e)
+        {
+            foreach (var settingWrapper in AggregatedSettings)
+            {
+                if (settingWrapper.IsChecked)
+                {
+                    TypeConverter converter = TypeDescriptor.GetConverter(settingWrapper.ValueType);
+                    if (converter != null
+                        //&& converter.CanConvertFrom(settingWrapper.DefaultValue.GetType())
+                        //&& converter.CanConvertTo(settingWrapper.ValueType)
+                        )
+                    {
+                        try
+                        {
+                            settingWrapper.Value = converter.ConvertFrom(settingWrapper.DefaultValue);
+                        }
+                        catch(Exception ex)
+                        {
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+            }
+        }
     }
 }

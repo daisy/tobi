@@ -61,6 +61,15 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check / uncheck all.
+        /// </summary>
+        public static string CheckUnCheckAll {
+            get {
+                return ResourceManager.GetString("CheckUnCheckAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application preferences.
         /// </summary>
         public static string Cmd_ApplicationPref {
@@ -79,29 +88,11 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current.
-        /// </summary>
-        public static string Current {
-            get {
-                return ResourceManager.GetString("Current", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         public static string Default {
             get {
                 return ResourceManager.GetString("Default", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit.
-        /// </summary>
-        public static string Edit {
-            get {
-                return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
         
@@ -187,6 +178,24 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore the default value for the selected items.
+        /// </summary>
+        public static string ResetItems_Long {
+            get {
+                return ResourceManager.GetString("ResetItems_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset selected items.
+        /// </summary>
+        public static string ResetItems_Short {
+            get {
+                return ResourceManager.GetString("ResetItems_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original: {0}.
         /// </summary>
         public static string Settings_OriginalValue {
@@ -237,6 +246,15 @@ namespace Tobi.Plugin.Settings {
         public static string StringCannotJustBeSeparators {
             get {
                 return ResourceManager.GetString("StringCannotJustBeSeparators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string Value {
+            get {
+                return ResourceManager.GetString("Value", resourceCulture);
             }
         }
         

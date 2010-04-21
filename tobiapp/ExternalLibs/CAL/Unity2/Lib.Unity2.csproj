@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<Compile Include="Injection\GenericParameterBase.cs" />
+    <Compile Include="Injection\OptionalGenericParameter.cs" />
     <Compile Include="Attributes\DependencyResolutionAttribute.cs" />
     <Compile Include="Attributes\InjectionConstructorAttribute.cs" />
     <Compile Include="Attributes\InjectionMethodAttribute.cs" />

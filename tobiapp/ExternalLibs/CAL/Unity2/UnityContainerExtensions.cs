@@ -650,14 +650,15 @@ namespace Microsoft.Practices.Unity
         /// Creates a new extension object and adds it to the container.
         /// </summary>
         /// <typeparam name="TExtension">Type of <see cref="UnityContainerExtension"/> to add. The extension type
-        /// must have a zero-argument public constructor.</typeparam>
+        /// will be resolved from within the supplied <paramref name="container"/>.</typeparam>
         /// <param name="container">Container to add the extension to.</param>
         /// <returns>The <see cref="UnityContainer"/> object that this method was called on (this in C#, Me in Visual Basic).</returns>
         public static IUnityContainer AddNewExtension<TExtension>(this IUnityContainer container) 
-            where TExtension : UnityContainerExtension, new()
+            where TExtension : UnityContainerExtension
         {
             Guard.ArgumentNotNull(container, "container");
-            return container.AddExtension(new TExtension());
+            TExtension newExtension = container.Resolve<TExtension>();
+            return container.AddExtension(newExtension);
         }
 
         /// <summary>

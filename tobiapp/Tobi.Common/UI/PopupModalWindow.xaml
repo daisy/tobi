@@ -56,7 +56,7 @@
                   AncestorType={x:Type Window}}, Path=.}"
                         
                       SnapsToDevicePixels="True"
-                    Margin="8, 8, 8, 0"
+                    Margin="8, 8, 18, 0"
                       
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
@@ -71,7 +71,7 @@
                   AncestorType={x:Type Window}}, Path=.}"
                         
                       SnapsToDevicePixels="True"
-                  Margin="8, 8, 8, 0"
+                  Margin="8, 8, 18, 0"
                       
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"

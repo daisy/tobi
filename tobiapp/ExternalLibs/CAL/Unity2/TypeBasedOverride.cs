@@ -36,6 +36,9 @@ namespace Microsoft.Practices.Unity
         /// <param name="innerOverride">Inner override to check after type matches.</param>
         public TypeBasedOverride(Type targetType, ResolverOverride innerOverride)
         {
+            Guard.ArgumentNotNull(targetType, "targetType");
+            Guard.ArgumentNotNull(innerOverride, "innerOverride");
+
             this.targetType = targetType;
             this.innerOverride = innerOverride;
         }
