@@ -20,8 +20,9 @@ namespace Tobi.Plugin.NavigationPane
         private bool m_isExpanded;
         private bool m_isMatch;
         private bool m_isSelected;
+#if LAZY_LOAD
         private HeadingTreeNodeWrapper m_dummyNode;
-
+#endif
         public RichDelegateCommand CommandExpandAll { get; private set; }
         public RichDelegateCommand CommandCollapseAll { get; private set; }
 
@@ -146,7 +147,7 @@ namespace Tobi.Plugin.NavigationPane
 
                 RaisePropertyChanged(() => Children);
             }
-            if (!string.IsNullOrEmpty(m_navigator.SearchTerm))
+            if (!string.IsNullOrEmpty(m_navigator.SearchTerm) && m_children != null)
             {
                 HeadingsNavigator.SearchNodes(m_children, m_navigator.SearchTerm);
             }
@@ -282,21 +283,27 @@ namespace Tobi.Plugin.NavigationPane
             {
                 if (value == m_isExpanded) { return; }
                 m_isExpanded = value;
-
+#if LAZY_LOAD
                 if (m_isExpanded)
                 {
-                    //if (m_parent != null && !m_parent.IsExpanded)
-                    //{
-                    //    m_parent.IsExpanded = true;
-                    //}
+                    if (m_parent != null && !m_parent.IsExpanded)
+                    {
+                        m_parent.IsExpanded = true;
+                    }
                     LoadChildren();
                 }
                 else
                 {
                     m_children = null;
-                    //RaisePropertyChanged(() => Children);
+                    RaisePropertyChanged(() => Children);
                     //                    m_childSelected = false;
                 }
+#else
+                if (m_parent != null && !m_parent.IsExpanded)
+                {
+                    m_parent.IsExpanded = true;
+                }
+#endif
 
                 RaisePropertyChanged(() => IsExpanded);
             }
@@ -309,13 +316,13 @@ namespace Tobi.Plugin.NavigationPane
                 if (m_isSelected == value) { return; }
                 m_isSelected = value;
 
-                //if (m_parent != null && m_isSelected)
-                //{
-                //    if (!m_parent.IsExpanded)
-                //    {
-                //        m_parent.IsExpanded = true;
-                //    }
-                //}
+                if (m_parent != null && m_isSelected)
+                {
+                    if (!m_parent.IsExpanded)
+                    {
+                        m_parent.IsExpanded = true;
+                    }
+                }
                 RaisePropertyChanged(() => IsSelected);
             }
         }
@@ -434,6 +441,7 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     return new ObservableCollection<HeadingTreeNodeWrapper>();
                 }
+#if LAZY_LOAD
                 if (IsExpanded)
                 {
                     if (m_children == null)
@@ -452,6 +460,13 @@ namespace Tobi.Plugin.NavigationPane
                     col.Add(m_dummyNode);
                 }
                 return col;
+#else
+                if (m_children == null)
+                {
+                    LoadChildren();
+                }
+                return m_children;
+#endif
             }
         }
 

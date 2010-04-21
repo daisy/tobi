@@ -80,6 +80,12 @@ namespace Tobi.Plugin.NavigationPane
                 }
                 prevPage = page;
             }
+            if (prevPage != ListView.SelectedItem)
+            {
+                //_ignorePageSelected = true;
+                ListView.SelectedItem = prevPage;
+                ListView.ScrollIntoView(prevPage);
+            }
         }
 
         public string ViewName
