@@ -123,17 +123,14 @@
   <data name="MetadataPanePlugin_Name" xml:space="preserve">
     <value>Metadata editor panel</value>
   </data>
-  <data name="Metadata_Content" xml:space="preserve">
-    <value>Content:</value>
+  <data name="Content" xml:space="preserve">
+    <value>Content</value>
   </data>
-  <data name="Metadata_Description" xml:space="preserve">
+  <data name="Description" xml:space="preserve">
     <value>Description:</value>
   </data>
-  <data name="Metadata_Error" xml:space="preserve">
-    <value>Errors:</value>
-  </data>
-  <data name="Metadata_Name" xml:space="preserve">
-    <value>Name:</value>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="Metadata_Occurence" xml:space="preserve">
     <value>Occurrence:</value>
@@ -147,7 +144,7 @@
   <data name="Optional" xml:space="preserve">
     <value>Optional</value>
   </data>
-  <data name="PrimaryIdentifier_CheckBox" xml:space="preserve">
+  <data name="PrimaryIdentifier" xml:space="preserve">
     <value>Is primary identifier?</value>
   </data>
   <data name="Recommended" xml:space="preserve">
@@ -164,5 +161,24 @@
   </data>
   <data name="SummaryOfErrors" xml:space="preserve">
     <value>Summary of errors</value>
+  </data>
+  <data name="Add_new" xml:space="preserve">
+    <value>Add a new metadata item</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Delete_Tooltip" xml:space="preserve">
+    <value>Delete this item</value>
+  </data>
+  <data name="Delete_Tooltip2" xml:space="preserve">
+    <value>Cannot delete required item (unless there are duplicates)</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Synonyms" xml:space="preserve">
+    <value>Synonyms: {0}</value>
+    <comment>{0} = a comma-separated list of synonyms</comment>
   </data>
 </root>

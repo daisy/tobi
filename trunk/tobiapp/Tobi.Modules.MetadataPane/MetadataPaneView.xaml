@@ -3,9 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Tobi.Plugin.MetadataPane"
-    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-    xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework" 
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" 
     xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata;assembly=Tobi.Plugin.Validator.Metadata" 
     LastChildFill="True">
   <!-- ALL RESOURCES -->
@@ -86,7 +84,8 @@
       <ListView.View>
         <GridView>
 
-          <GridViewColumn Header="Name" Width="Auto" 
+          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Name}" 
+                          Width="Auto" 
                           UI:SortableListView.SortPropertyName="Name">
             <GridViewColumn.CellTemplate>
               <!-- template to decide how to display the name  -->
@@ -110,7 +109,9 @@
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
           
-          <GridViewColumn Header="Content"  Width="Auto" UI:SortableListView.SortPropertyName="Content">
+          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Content}"  
+                          Width="Auto" 
+                          UI:SortableListView.SortPropertyName="Content">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
                 <TextBox x:Name="contentText" 
@@ -129,7 +130,7 @@
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
 
-          <GridViewColumn Header="Errors">
+          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Errors}">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
                 <!-- default: show no text -->
@@ -142,7 +143,8 @@
                         <MultiBinding Converter="{local:ValidityConverter}">
                           <MultiBinding.Bindings>
                             <Binding/>
-                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
+                            <Binding RelativeSource="{RelativeSource FindAncestor, 
+                                     AncestorType={x:Type local:MetadataPaneView}}"
                                      Path="DataContext.ValidationItems"/>
                           </MultiBinding.Bindings>
                         </MultiBinding>
@@ -172,22 +174,23 @@
             <GridViewColumn.CellTemplate>
               
               <DataTemplate>
-                <Button x:Name="deleteButton" Content="Delete" Click="DeleteButton_OnClick"
-                        ToolTip="Delete this item"
+                <Button x:Name="deleteButton" Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete}" 
+                        Click="DeleteButton_OnClick"
+                        ToolTip="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip}"
                         ToolTipService.ShowOnDisabled="True" />
                 <DataTemplate.Triggers>
                   
                   <!-- the delete button is not enabled for required items-->
                   <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
                     <Setter TargetName="deleteButton" Property="IsEnabled" Value="False"/>
-                    <Setter TargetName="deleteButton" Property="ToolTip" Value="Cannot delete required item (unless there are duplicates)"/>
+                    <Setter TargetName="deleteButton" Property="ToolTip" Value="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip2}"/>
                   </DataTrigger>
                 </DataTemplate.Triggers>
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
           
-          <GridViewColumn Header="Is primary identifier?">
+          <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
                 <CheckBox Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
@@ -199,11 +202,11 @@
       </ListView.View>
     </UI:SortableListView>
     
-    <Button Content="Add a new metadata item" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"
+    <Button Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"
             Click="AddButton_OnClick"/>
 
     <StackPanel Grid.Row="2">
-      <TextBlock Text="Description:" FontWeight="Bold"/>
+      <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Description}" FontWeight="Bold"/>
       <TextBlock TextWrapping="Wrap">
         <TextBlock.Text>
           <MultiBinding StringFormat="{}{0}: {1}">
@@ -218,7 +221,7 @@
                  Visibility="{Binding Source={StaticResource MetadatasCVS}, 
                  Path=/Definition, Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}">
         <TextBlock.Text>
-          <Binding StringFormat="Synonyms: {0}" 
+          <Binding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Synonyms}" 
                    Source="{StaticResource MetadatasCVS}"
                    Path="/Definition" 
                    Converter="{Metadata:DefinitionSynonymsListConverter}"/>

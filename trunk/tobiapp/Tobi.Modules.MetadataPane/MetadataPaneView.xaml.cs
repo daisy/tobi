@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -31,7 +30,6 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
 
-        private NotifyingMetadataItem m_NewlyAddedMetadataItem;
         public ValidationItem ErrorWithFocus { get; set;}
 
         ///<summary>
@@ -56,7 +54,6 @@ namespace Tobi.Plugin.MetadataPane
             m_Logger.Log("MetadataPaneView.ctor", Category.Debug, Priority.Medium);
 
             DataContext = m_ViewModel;
-            m_NewlyAddedMetadataItem = null;
             ErrorWithFocus = null;
             InitializeComponent();
         }

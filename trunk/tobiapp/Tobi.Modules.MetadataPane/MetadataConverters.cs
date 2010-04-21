@@ -7,94 +7,12 @@ using Tobi.Common.UI.XAML;
 using Tobi.Plugin.Validator.Metadata;
 using System.Collections.ObjectModel;
 using Tobi.Common.Validation;
-using urakawa.metadata;
 
 namespace Tobi.Plugin.MetadataPane
 {
-    //all classes here represent value converters used by XAML
-
-    /*[ValueConversion(typeof(NotifyingMetadataItem), typeof(bool))]
-    public class IsNotRequiredOccurrenceConverter : ValueConverterMarkupExtensionBase<IsNotRequiredOccurrenceConverter>
-    {
-        //return false if required
-        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value == null) return false;
-            if (!(value is NotifyingMetadataItem))return false;
-
-            NotifyingMetadataItem item = (NotifyingMetadataItem)value;
-            ObservableCollection<NotifyingMetadataItem> metadatas = item.ParentCollection.Metadatas;
-
-            if (item.Definition != null && item.Definition.Occurrence == MetadataOccurrence.Required)
-            {
-                //check for duplicates.  a required item can be removed if it is not the only one.
-                List<NotifyingMetadataItem> results = metadatas.ToList().FindAll
-                    (s => s.Name.ToLower() == item.Name.ToLower());
-                if (results.Count > 1)
-                    return true;
-                return false;
-            }
-            return true;
-        }
-    }*/
-
-    /*[ValueConversion(typeof(MetadataDefinition), typeof(string))]
-    public class OccurrenceDescriptionConverter : ValueConverterMarkupExtensionBase<OccurrenceDescriptionConverter>
-    {
-        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            string occurrence = "";
-            string repeatable = "";
-            if (value == null) return "";
-            MetadataDefinition item = (MetadataDefinition)value;
-
-            if (item.Occurrence == MetadataOccurrence.Required)
-                occurrence = Tobi_Plugin_MetadataPane_Lang.Required; 
-            else if (item.Occurrence == MetadataOccurrence.Recommended)
-                occurrence = Tobi_Plugin_MetadataPane_Lang.Recommended;       // TODO LOCALIZE Recommended
-            else
-                occurrence = Tobi_Plugin_MetadataPane_Lang.Optional;              // TODO LOCALIZE Optional
-
-            if (item.IsRepeatable)
-                repeatable = "more than one allowed";
-            else
-                repeatable = "only one allowed";
-
-            return string.Format("{0}; {1}.", occurrence, repeatable);
-        }
-    }*/
-
-    //public class ErrorsToListConverter : IValueConverter
-    //{
-    //    //don't include errors about read-only metadata items
-    //    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-    //    {
-    //        //ObservableCollection<MetadataValidationError> errors = new ObservableCollection<MetadataValidationError>();
-    //        ObservableCollection<string> errors = new ObservableCollection<string>();
-    //        IEnumerable<ValidationItem> sourceList =
-    //            (IEnumerable<ValidationItem>)value;
-            
-    //        foreach (ValidationItem error in sourceList)
-    //        {
-    //            if (!((MetadataValidationError)error).Definition.IsReadOnly)
-    //                errors.Add(error.Message);
-    //        }
-
-    //        return errors;
-    //    }
-
-    //    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-    //    {
-    //        throw new NotImplementedException
-    //            ("The ConvertBack method is not implemented because this Converter should only be used in a one-way Binding.");
-    //    }
-    //}
-
-
     [ValueConversion(typeof(object), typeof(string))]
     public class DescriptiveErrorTextConverter : ValueConverterMarkupExtensionBase<DescriptiveErrorTextConverter>
     {
-        private const string NoErrors = "";
         //Expected: NotifyingMetadataItem and list of ValidationItems
         public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -116,7 +34,7 @@ namespace Tobi.Plugin.MetadataPane
             
             if (error == null)
             {
-                return NoErrors;
+                return "";
             }
             return error.Message;
         }
@@ -224,26 +142,5 @@ namespace Tobi.Plugin.MetadataPane
         }
     }
 
-    /*[ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
-    public class IsRequiredAndUniqueConverter : ValueConverterMarkupExtensionBase<IsRequiredAndUniqueConverter>
-    {
-        //expected: NotifyingMetadataItem and ObservableCollection<NotifyingMetadataItem>
-        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (values[0] == null || values[1] == null) return false;
-            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is ObservableCollection<NotifyingMetadataItem>)) 
-                return false;
-
-            NotifyingMetadataItem item = (NotifyingMetadataItem)values[0];
-            MetadataCollection metadatas = item.ParentCollection;
-
-            if (!item.IsRequired) return false;
-
-            int matches = metadatas.Metadatas.Count(m => (m.Definition == item.Definition));
-
-            if (matches > 0) return true;
-            else return false;
-        }
-    }*/
-
+    
 }

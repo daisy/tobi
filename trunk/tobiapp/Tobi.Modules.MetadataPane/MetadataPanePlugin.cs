@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.Windows;
+﻿using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -125,12 +123,12 @@ namespace Tobi.Plugin.MetadataPane
         }
         public override string Name
         {
-            get { return Tobi_Plugin_MetadataPane_Lang.MetadataPanePlugin_Name; }      // TODO LOCALIZE MetadataPanePlugin_Name
+            get { return Tobi_Plugin_MetadataPane_Lang.MetadataPanePlugin_Name; }
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_MetadataPane_Lang.MetadataPanePlugin_Description; }   // TODO LOCALIZE MetadataPanePlugin_Description
+            get { return Tobi_Plugin_MetadataPane_Lang.MetadataPanePlugin_Description; } 
         }
     }
 }

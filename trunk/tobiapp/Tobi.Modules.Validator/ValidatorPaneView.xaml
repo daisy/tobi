@@ -83,12 +83,7 @@
           <!-- this picks up the currently selected item-->
           <ContentControl Content="{Binding}"/>
 
-          <!--<TextBlock Margin="0,3,0,3"
-                     Visibility="{Binding Mode=OneWay, Converter={Validator:VisibilityConverter}}">
-            <Hyperlink Click="OnViewLinkClick">
-              <Run Text="Click to view"/>
-            </Hyperlink>
-          </TextBlock>-->
+         
 
           <TextBlock Margin="0,3,0,3"
                      Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
