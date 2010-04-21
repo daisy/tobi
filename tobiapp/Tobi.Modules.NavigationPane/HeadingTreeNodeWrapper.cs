@@ -309,13 +309,13 @@ namespace Tobi.Plugin.NavigationPane
                 if (m_isSelected == value) { return; }
                 m_isSelected = value;
 
-                if (m_parent != null && m_isSelected)
-                {
-                    if (!m_parent.IsExpanded)
-                    {
-                        m_parent.IsExpanded = true;
-                    }
-                }
+                //if (m_parent != null && m_isSelected)
+                //{
+                //    if (!m_parent.IsExpanded)
+                //    {
+                //        m_parent.IsExpanded = true;
+                //    }
+                //}
                 RaisePropertyChanged(() => IsSelected);
             }
         }

@@ -84,7 +84,7 @@ namespace Tobi.Common.UI
                     if (!doNotSelect)
                     {
                         currentContainer.IsSelected = true;
-                        currentContainer.BringIntoView();
+                        //currentContainer.BringIntoView();
                         //currentContainer.Focus();
                     }
 

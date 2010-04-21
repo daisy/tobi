@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Documents;
 using urakawa.core;
 
@@ -6,125 +7,224 @@ namespace Tobi.Plugin.DocumentPane
 {
     public partial class DocumentPaneView
     {
-        private TextElement WalkDocumentTree(Action<TextElement> action)
+        private void WalkDocumentTree(TextElement textElement, Action<TextElement> action)
         {
-            return WalkDocumentTree(action, TheFlowDocument.Blocks);
+            action.Invoke(textElement);
+
+            if (textElement is ListItem) // TEXT_ELEMENT
+            {
+                var blocks = ((ListItem)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    WalkDocumentTree(block, action);
+                }
+            }
+            else if (textElement is TableRowGroup) // TEXT_ELEMENT
+            {
+                var rows = ((TableRowGroup)textElement).Rows;
+                foreach (var row in rows)
+                {
+                    WalkDocumentTree(row, action);
+                }
+            }
+            else if (textElement is TableRow) // TEXT_ELEMENT
+            {
+                var cells = ((TableRow)textElement).Cells;
+                foreach (var cell in cells)
+                {
+                    WalkDocumentTree(cell, action);
+                }
+            }
+            else if (textElement is TableCell) // TEXT_ELEMENT
+            {
+                var blocks = ((TableCell)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    WalkDocumentTree(block, action);
+                }
+            }
+            else if (textElement is Table) // BLOCK
+            {
+                var rowGs = ((Table)textElement).RowGroups;
+                foreach (var rowG in rowGs)
+                {
+                    WalkDocumentTree(rowG, action);
+                }
+            }
+            else if (textElement is Paragraph) // BLOCK
+            {
+                var inlines = ((Paragraph)textElement).Inlines;
+                foreach (var inline in inlines)
+                {
+                    WalkDocumentTree(inline, action);
+                }
+            }
+            else if (textElement is Section) // BLOCK
+            {
+                var blocks = ((Section)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    WalkDocumentTree(block, action);
+                }
+            }
+            else if (textElement is List) // BLOCK
+            {
+                var lis = ((List)textElement).ListItems;
+                foreach (var li in lis)
+                {
+                    WalkDocumentTree(li, action);
+                }
+            }
+            else if (textElement is BlockUIContainer) // BLOCK
+            {
+                //((BlockUIContainer)textElement).Child => UIElement
+            }
+            else if (textElement is Span) // INLINE
+            {
+                var inlines = ((Span)textElement).Inlines;
+                foreach (var inline in inlines)
+                {
+                    WalkDocumentTree(inline, action);
+                }
+            }
+            else if (textElement is Floater) // INLINE
+            {
+                var blocks = ((Floater)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    WalkDocumentTree(block, action);
+                }
+            }
+            else if (textElement is Figure) // INLINE
+            {
+                var blocks = ((Figure)textElement).Blocks;
+                foreach (var block in blocks)
+                {
+                    WalkDocumentTree(block, action);
+                }
+            }
+            else if (textElement is Inline) // includes InlineUIContainer, LineBreak and Run
+            {
+                //
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, InlineCollection ic)
+
+
+        private void WalkDocumentTree(Action<TextElement> action)
+        {
+            WalkDocumentTree(action, TheFlowDocument.Blocks);
+        }
+        private void WalkDocumentTree(Action<TextElement> action, InlineCollection ic)
         {
             foreach (Inline inline in ic)
             {
                 if (inline is Figure)
                 {
-                    TextElement te = WalkDocumentTree(action, (Figure)inline);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Figure)inline);
                 }
                 else if (inline is Floater)
                 {
-                    TextElement te = WalkDocumentTree(action, (Floater)inline);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Floater)inline);
+
                 }
                 else if (inline is Run)
                 {
-                    TextElement te = WalkDocumentTree(action, (Run)inline);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Run)inline);
+
                 }
                 else if (inline is LineBreak)
                 {
-                    TextElement te = WalkDocumentTree(action, (LineBreak)inline);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (LineBreak)inline);
+
                 }
                 else if (inline is InlineUIContainer)
                 {
-                    TextElement te = WalkDocumentTree(action, (InlineUIContainer)inline);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (InlineUIContainer)inline);
+
                 }
                 else if (inline is Span)
                 {
-                    TextElement te = WalkDocumentTree(action, (Span)inline);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Span)inline);
+
                 }
                 else
                 {
                     System.Diagnostics.Debug.Fail("TextElement type not matched ??");
                 }
             }
-
-            return null;
         }
 
-        private TextElement WalkDocumentTree(Action<TextElement> action, Span span)
-        {
-            //if (span.Tag == node) return span;
-            action.Invoke(span);
-            return WalkDocumentTree(action, span.Inlines);
-        }
-
-        private TextElement WalkDocumentTree(Action<TextElement> action, TableCellCollection tcc)
+        private void WalkDocumentTree(Action<TextElement> action, TableCellCollection tcc)
         {
             foreach (TableCell tc in tcc)
             {
-                TextElement te = WalkDocumentTree(action, tc);
-                if (te != null) return te;
+                WalkDocumentTree(action, tc);
+
             }
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, TableRowCollection trc)
+        private void WalkDocumentTree(Action<TextElement> action, TableRowCollection trc)
         {
             foreach (TableRow tr in trc)
             {
-                TextElement te = WalkDocumentTree(action, tr);
-                if (te != null) return te;
+                WalkDocumentTree(action, tr);
+
             }
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, TableRowGroupCollection trgc)
+        private void WalkDocumentTree(Action<TextElement> action, TableRowGroupCollection trgc)
         {
             foreach (TableRowGroup trg in trgc)
             {
-                TextElement te = WalkDocumentTree(action, trg);
-                if (te != null) return te;
+                WalkDocumentTree(action, trg);
+
             }
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, ListItemCollection lic)
+        private void WalkDocumentTree(Action<TextElement> action, ListItemCollection lic)
         {
             foreach (ListItem li in lic)
             {
-                TextElement te = WalkDocumentTree(action, li);
-                if (te != null) return te;
+                WalkDocumentTree(action, li);
+
             }
-            return null;
+            
         }
 
-        private TextElement WalkDocumentTree(Action<TextElement> action, BlockCollection bc)
+        private void WalkDocumentTree(Action<TextElement> action, BlockCollection bc)
         {
             foreach (Block block in bc)
             {
                 if (block is Section)
                 {
-                    TextElement te = WalkDocumentTree(action, (Section)block);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Section)block);
+
                 }
                 else if (block is Paragraph)
                 {
-                    TextElement te = WalkDocumentTree(action, (Paragraph)block);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Paragraph)block);
+
                 }
                 else if (block is List)
                 {
-                    TextElement te = WalkDocumentTree(action, (List)block);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (List)block);
+
                 }
                 else if (block is Table)
                 {
-                    TextElement te = WalkDocumentTree(action, (Table)block);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (Table)block);
+
                 }
                 else if (block is BlockUIContainer)
                 {
-                    TextElement te = WalkDocumentTree(action, (BlockUIContainer)block);
-                    if (te != null) return te;
+                    WalkDocumentTree(action, (BlockUIContainer)block);
+
                 }
                 else
                 {
@@ -132,93 +232,85 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
-            return null;
+            
         }
 
-        private TextElement WalkDocumentTree(Action<TextElement> action, TableCell tc)
+        private void WalkDocumentTree(Action<TextElement> action, Span span)
         {
-            //if (tc.Tag == node) return tc;
+            action.Invoke(span);
+            WalkDocumentTree(action, span.Inlines);
+        }
+
+        private void WalkDocumentTree(Action<TextElement> action, TableCell tc)
+        {
             action.Invoke(tc);
-            return WalkDocumentTree(action, tc.Blocks);
+            WalkDocumentTree(action, tc.Blocks);
         }
 
-        private TextElement WalkDocumentTree(Action<TextElement> action, Run r)
+        private void WalkDocumentTree(Action<TextElement> action, Run r)
         {
-            //if (r.Tag == node) return r;
             action.Invoke(r);
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, LineBreak lb)
+        private void WalkDocumentTree(Action<TextElement> action, LineBreak lb)
         {
-            //if (lb.Tag == node) return lb;
             action.Invoke(lb);
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, InlineUIContainer iuc)
+        private void WalkDocumentTree(Action<TextElement> action, InlineUIContainer iuc)
         {
-            //if (iuc.Tag == node) return iuc;
             action.Invoke(iuc);
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, BlockUIContainer b)
+        private void WalkDocumentTree(Action<TextElement> action, BlockUIContainer b)
         {
-            //if (b.Tag == node) return b;
             action.Invoke(b);
-            return null;
+            
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, Floater f)
+        private void WalkDocumentTree(Action<TextElement> action, Floater f)
         {
-            //if (f.Tag == node) return f;
             action.Invoke(f);
-            return WalkDocumentTree(action, f.Blocks);
+            WalkDocumentTree(action, f.Blocks);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, Figure f)
+        private void WalkDocumentTree(Action<TextElement> action, Figure f)
         {
-            //if (f.Tag == node) return f;
             action.Invoke(f);
-            return WalkDocumentTree(action, f.Blocks);
+            WalkDocumentTree(action, f.Blocks);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, TableRow tr)
+        private void WalkDocumentTree(Action<TextElement> action, TableRow tr)
         {
-            //if (tr.Tag == node) return tr;
             action.Invoke(tr);
-            return WalkDocumentTree(action, tr.Cells);
+            WalkDocumentTree(action, tr.Cells);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, TableRowGroup trg)
+        private void WalkDocumentTree(Action<TextElement> action, TableRowGroup trg)
         {
-            //if (trg.Tag == node) return trg;
             action.Invoke(trg);
-            return WalkDocumentTree(action, trg.Rows);
+            WalkDocumentTree(action, trg.Rows);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, ListItem li)
+        private void WalkDocumentTree(Action<TextElement> action, ListItem li)
         {
-            //if (li.Tag == node) return li;
             action.Invoke(li);
-            return WalkDocumentTree(action, li.Blocks);
+            WalkDocumentTree(action, li.Blocks);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, Section section)
+        private void WalkDocumentTree(Action<TextElement> action, Section section)
         {
-            //if (section.Tag == node) return section;
             action.Invoke(section);
-            return WalkDocumentTree(action, section.Blocks);
+            WalkDocumentTree(action, section.Blocks);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, Paragraph para)
+        private void WalkDocumentTree(Action<TextElement> action, Paragraph para)
         {
-            //if (para.Tag == node) return para;
             action.Invoke(para);
-            return WalkDocumentTree(action, para.Inlines);
+            WalkDocumentTree(action, para.Inlines);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, List list)
+        private void WalkDocumentTree(Action<TextElement> action, List list)
         {
-            //if (list.Tag == node) return list;
             action.Invoke(list);
-            return WalkDocumentTree(action, list.ListItems);
+            WalkDocumentTree(action, list.ListItems);
         }
-        private TextElement WalkDocumentTree(Action<TextElement> action, Table table)
+        private void WalkDocumentTree(Action<TextElement> action, Table table)
         {
-            //if (table.Tag == node) return table;
             action.Invoke(table);
-            return WalkDocumentTree(action, table.RowGroups);
+            WalkDocumentTree(action, table.RowGroups);
         }
     }
 }

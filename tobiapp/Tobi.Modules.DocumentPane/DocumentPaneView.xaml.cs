@@ -443,14 +443,15 @@ namespace Tobi.Plugin.DocumentPane
             if (!e.PropertyName.StartsWith(@"Document_Color_")
                 //&& !e.PropertyName.StartsWith(@"Document_")
                 ) return;
-            
+
             if (e.PropertyName.StartsWith(@"Document_Color_Selection_"))
             {
-                updateHighlightedColors();
+                refreshHighlightedColors();
             }
             else
             {
-                updateDocumentColors();
+                refreshDocumentColors(null);
+                refreshHighlightedColors();
             }
 
             //if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Document_Color_Font_Audio))
@@ -603,16 +604,16 @@ namespace Tobi.Plugin.DocumentPane
 
 
         private TextElement m_lastHighlighted;
-        private Brush m_lastHighlighted_Background;
-        private Brush m_lastHighlighted_Foreground;
-        private Brush m_lastHighlighted_BorderBrush;
-        private Thickness m_lastHighlighted_BorderThickness;
+        //private Brush m_lastHighlighted_Background;
+        //private Brush m_lastHighlighted_Foreground;
+        //private Brush m_lastHighlighted_BorderBrush;
+        //private Thickness m_lastHighlighted_BorderThickness;
 
         private TextElement m_lastHighlightedSub;
-        private Brush m_lastHighlightedSub_Background;
-        private Brush m_lastHighlightedSub_Foreground;
-        private Brush m_lastHighlightedSub_BorderBrush;
-        private Thickness m_lastHighlightedSub_BorderThickness;
+        //private Brush m_lastHighlightedSub_Background;
+        //private Brush m_lastHighlightedSub_Foreground;
+        //private Brush m_lastHighlightedSub_BorderBrush;
+        //private Thickness m_lastHighlightedSub_BorderThickness;
 
 
         private Dictionary<string, TextElement> m_idLinkTargets;
@@ -750,14 +751,14 @@ namespace Tobi.Plugin.DocumentPane
 
                     Debug.Assert(noAudio == !bTreeNodeHasOrInheritsAudio(node));
 
-                    if (m_lastHighlighted == text)
-                    {
-                        m_lastHighlighted_Foreground = text.Foreground;
-                    }
-                    if (m_lastHighlightedSub == text)
-                    {
-                        m_lastHighlightedSub_Foreground = text.Foreground;
-                    }
+                    //if (m_lastHighlighted == text)
+                    //{
+                    //    m_lastHighlighted_Foreground = text.Foreground;
+                    //}
+                    //if (m_lastHighlightedSub == text)
+                    //{
+                    //    m_lastHighlightedSub_Foreground = text.Foreground;
+                    //}
                 }
             }
             ////ThreadPool.QueueUserWorkItem(obj =>
@@ -1001,15 +1002,17 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private Dictionary<Color, SolidColorBrush> m_SolidColorBrushCache;
+        private Dictionary<String, SolidColorBrush> m_SolidColorBrushCache;
         public SolidColorBrush GetCachedBrushForColor(Color color)
         {
             if (m_SolidColorBrushCache == null)
             {
-                m_SolidColorBrushCache = new Dictionary<Color, SolidColorBrush>();
+                m_SolidColorBrushCache = new Dictionary<String, SolidColorBrush>();
             }
 
-            if (!m_SolidColorBrushCache.ContainsKey(color))
+            string colorString = color.ToString();
+
+            if (!m_SolidColorBrushCache.ContainsKey(colorString))
             {
                 bool found = false;
                 foreach (PropertyInfo propertyInfo in typeof(Brushes).GetProperties(BindingFlags.Public | BindingFlags.Static))
@@ -1017,79 +1020,27 @@ namespace Tobi.Plugin.DocumentPane
                     if (propertyInfo.PropertyType == typeof(SolidColorBrush))
                     {
                         var brush = (SolidColorBrush)propertyInfo.GetValue(null, null);
-                        if (brush.Color == color)
+                        if (brush.Color.ToString() == colorString)
                         {
                             found = true;
-                            m_SolidColorBrushCache.Add(color, brush);
+                            m_SolidColorBrushCache.Add(colorString, brush);
+                            break;
                         }
                     }
                 }
                 if (!found)
                 {
-                    m_SolidColorBrushCache.Add(color, new SolidColorBrush(color));
+                    m_SolidColorBrushCache.Add(colorString, new SolidColorBrush(color));
                 }
             }
 
-            return m_SolidColorBrushCache[color];
+            return m_SolidColorBrushCache[colorString];
         }
 
 
-        private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2, bool onlyUpdateColors)
+        private void refreshDocumentColors(TextElement textElement)
         {
-            Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
-            Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
-            Brush brushBack1 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
-            Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
-
-            if (!onlyUpdateColors)
-            {
-                m_lastHighlighted = textElement1;
-
-                m_lastHighlighted_Background = m_lastHighlighted.Background;
-                m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
-            }
-            m_lastHighlighted.Background = brushBack1;
-            m_lastHighlighted.Foreground = brushFont;
-
-            if (m_lastHighlighted is Block)
-            {
-                if (!onlyUpdateColors)
-                {
-                    m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
-                    m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
-                }
-                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
-                ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
-            }
-
-            if (!onlyUpdateColors)
-            {
-                m_lastHighlightedSub = textElement2;
-
-                m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
-                m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
-            }
-            m_lastHighlightedSub.Background = brushBack2;
-            m_lastHighlightedSub.Foreground = brushFont;
-
-            if (m_lastHighlightedSub is Block)
-            {
-                if (!onlyUpdateColors)
-                {
-                    m_lastHighlightedSub_BorderBrush = ((Block)m_lastHighlightedSub).BorderBrush;
-                    m_lastHighlightedSub_BorderThickness = ((Block)m_lastHighlightedSub).BorderThickness;
-                }
-                
-                ((Block)m_lastHighlightedSub).BorderBrush = brushBorder;                
-                ((Block)m_lastHighlightedSub).BorderThickness = new Thickness(1);
-            }
-
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
-        }
-
-        private void updateDocumentColors()
-        {
-            WalkDocumentTree(data =>
+            Action<TextElement> del = data =>
             {
                 XukToFlowDocument.SetBackFrontColorBasedOnTreeNodeTag(data);
 
@@ -1099,31 +1050,35 @@ namespace Tobi.Plugin.DocumentPane
                     XukToFlowDocument.SetTextElementAttributes(data, out noAudio, false);
                 }
 
-                if (data == m_lastHighlightedSub)
-                {
-                    m_lastHighlightedSub_Background = data.Background;
-                    m_lastHighlightedSub_Foreground = data.Foreground;
-                    if (data is Block)
-                    {
-                        m_lastHighlightedSub_BorderBrush = ((Block)data).BorderBrush;
-                        m_lastHighlightedSub_BorderThickness = ((Block)data).BorderThickness;
-                    }
-                }
-                else if (data == m_lastHighlighted)
-                {
-                    m_lastHighlighted_Background = data.Background;
-                    m_lastHighlighted_Foreground = data.Foreground;
-                    if (data is Block)
-                    {
-                        m_lastHighlighted_BorderBrush = ((Block)data).BorderBrush;
-                        m_lastHighlighted_BorderThickness = ((Block)data).BorderThickness;
-                    }
-                }
-            });
-            updateHighlightedColors();
+                //if (data == m_lastHighlightedSub)
+                //{
+                //    m_lastHighlightedSub_Background = data.Background;
+                //    m_lastHighlightedSub_Foreground = data.Foreground;
+                //    if (data is Block)
+                //    {
+                //        m_lastHighlightedSub_BorderBrush = ((Block)data).BorderBrush;
+                //        m_lastHighlightedSub_BorderThickness = ((Block)data).BorderThickness;
+                //    }
+                //}
+                //else if (data == m_lastHighlighted)
+                //{
+                //    m_lastHighlighted_Background = data.Background;
+                //    m_lastHighlighted_Foreground = data.Foreground;
+                //    if (data is Block)
+                //    {
+                //        m_lastHighlighted_BorderBrush = ((Block)data).BorderBrush;
+                //        m_lastHighlighted_BorderThickness = ((Block)data).BorderThickness;
+                //    }
+                //}
+            };
+
+            if (textElement == null)
+                WalkDocumentTree(del);
+            else
+                WalkDocumentTree(textElement, del);
         }
 
-        private void updateHighlightedColors()
+        private void refreshHighlightedColors()
         {
             if (m_lastHighlighted == null) return;
 
@@ -1150,61 +1105,148 @@ namespace Tobi.Plugin.DocumentPane
 
             if (m_lastHighlighted is Block)
             {
+                //if (!onlyUpdateColors)
+                //{
+                //    m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                //    m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                //}
+
+                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
+                ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
+            }
+
+            //if (!onlyUpdateColors)
+            //{
+            //    m_lastHighlighted_Background = m_lastHighlighted.Background;
+            //    m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            //}
+
+            WalkDocumentTree(textElement,
+                data =>
+                {
+                    data.Background = brushBack2;
+                    if (data.Tag != null && data.Tag is TreeNode)
+                    {
+                        data.Foreground = brushFont;
+                    }
+                });
+
+            //m_lastHighlighted.Background = brushBack2;
+            //m_lastHighlighted.Foreground = brushFont;
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);
+        }
+
+        private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2, bool onlyUpdateColors)
+        {
+            Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack1 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
+            Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
+
+            if (!onlyUpdateColors)
+            {
+                m_lastHighlighted = textElement1;
+
+                //m_lastHighlighted_Background = m_lastHighlighted.Background;
+                //m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+            }
+            m_lastHighlighted.Background = brushBack1;
+            //m_lastHighlighted.Foreground = brushFont;
+
+            if (m_lastHighlighted is Block)
+            {
                 if (!onlyUpdateColors)
                 {
-                    m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
-                    m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                    //m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                    //m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
                 }
-
                 ((Block)m_lastHighlighted).BorderBrush = brushBorder;
                 ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
             }
 
             if (!onlyUpdateColors)
             {
-                m_lastHighlighted_Background = m_lastHighlighted.Background;
-                m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
+                m_lastHighlightedSub = textElement2;
+
+                //m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
+                //m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
             }
 
-            m_lastHighlighted.Background = brushBack2;
-            m_lastHighlighted.Foreground = brushFont;
+            WalkDocumentTree(textElement2,
+                data =>
+                {
+                    data.Background = brushBack2;
+                    if (data.Tag != null && data.Tag is TreeNode)
+                    {
+                        data.Foreground = brushFont;
+                    }
+                });
+            //m_lastHighlightedSub.Background = brushBack2;
+            //m_lastHighlightedSub.Foreground = brushFont;
 
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);
+            if (m_lastHighlightedSub is Block)
+            {
+                //if (!onlyUpdateColors)
+                //{
+                //    m_lastHighlightedSub_BorderBrush = ((Block)m_lastHighlightedSub).BorderBrush;
+                //    m_lastHighlightedSub_BorderThickness = ((Block)m_lastHighlightedSub).BorderThickness;
+                //}
+
+                ((Block)m_lastHighlightedSub).BorderBrush = brushBorder;
+                ((Block)m_lastHighlightedSub).BorderThickness = new Thickness(1);
+            }
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
         }
 
         private void clearLastHighlighteds()
         {
             if (m_lastHighlighted != null)
             {
-                if (m_lastHighlighted is Block)
-                {
-                    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
-                    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
-                }
-
-                m_lastHighlighted.Background = m_lastHighlighted_Background;
-                m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
-
                 setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
 
-                m_lastHighlighted = null;
-            }
-
-            if (m_lastHighlightedSub != null)
-            {
-                if (m_lastHighlightedSub is Block)
+                if (m_lastHighlightedSub != null)
                 {
-                    ((Block)m_lastHighlightedSub).BorderBrush = m_lastHighlightedSub_BorderBrush;
-                    ((Block)m_lastHighlightedSub).BorderThickness = m_lastHighlightedSub_BorderThickness;
+                    setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
                 }
 
-                m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
-                m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
-
-                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
-
+                TextElement backup = m_lastHighlighted;
+                m_lastHighlighted = null;
                 m_lastHighlightedSub = null;
+                refreshDocumentColors(backup);
+
+                //if (m_lastHighlighted is Block)
+                //{
+                //    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
+                //    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
+                //}
+
+                //m_lastHighlighted.Background = m_lastHighlighted_Background;
+                //m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
+
+                //
+
+                //m_lastHighlighted = null;
             }
+
+            //if (m_lastHighlightedSub != null)
+            //{
+            //    //setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
+
+            //    //if (m_lastHighlightedSub is Block)
+            //    //{
+            //    //    ((Block)m_lastHighlightedSub).BorderBrush = m_lastHighlightedSub_BorderBrush;
+            //    //    ((Block)m_lastHighlightedSub).BorderThickness = m_lastHighlightedSub_BorderThickness;
+            //    //}
+
+            //    //m_lastHighlightedSub.Background = m_lastHighlightedSub_Background;
+            //    //m_lastHighlightedSub.Foreground = m_lastHighlightedSub_Foreground;
+
+
+
+            //    //m_lastHighlightedSub = null;
+            //}
         }
 
         //private void OnSubTreeNodeSelected(TreeNode node)
@@ -1564,7 +1606,7 @@ namespace Tobi.Plugin.DocumentPane
                 var inlines = ((Paragraph)textElement).Inlines;
                 foreach (var inline in inlines)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline_(inline, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(inline, remove);
                 }
             }
             else if (textElement is Section) // BLOCK
@@ -1592,7 +1634,7 @@ namespace Tobi.Plugin.DocumentPane
                 var inlines = ((Span)textElement).Inlines;
                 foreach (var inline in inlines)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline_(inline, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(inline, remove);
                 }
             }
             else if (textElement is Floater) // INLINE

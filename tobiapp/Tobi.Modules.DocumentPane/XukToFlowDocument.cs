@@ -248,12 +248,17 @@ namespace Tobi.Plugin.DocumentPane
 
         public static void SetBackFrontColorBasedOnTreeNodeTag(TextElement data)
         {
-            if (data.Tag == null || !(data.Tag is TreeNode)) return;
-
-            data.Background = Brushes.Transparent; // SystemColors.WindowBrush;
+            data.Background = null; // Brushes.Transparent; // SystemColors.WindowBrush;
+            
             if (data is Block)
             {
                 ((Block) data).BorderBrush = null;
+            }
+
+            if (data.Tag == null || !(data.Tag is TreeNode))
+            {
+                //data.Foreground = null; // m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                return;
             }
 
             var treeNode = (TreeNode)data.Tag;

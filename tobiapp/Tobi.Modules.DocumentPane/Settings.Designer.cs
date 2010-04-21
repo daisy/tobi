@@ -25,7 +25,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFAFEEEE")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FFFF")]
         public global::System.Windows.Media.Color Document_Color_Hyperlink_Back {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_Hyperlink_Back"]));
@@ -37,7 +37,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FF90EE90")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
         public global::System.Windows.Media.Color Document_Color_PageNum_Back {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_PageNum_Back"]));
@@ -49,7 +49,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFF8F8F8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFF5F5F5")]
         public global::System.Windows.Media.Color Document_Back {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Back"]));
@@ -85,7 +85,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Document_UseDottedSelect {
             get {
                 return ((bool)(this["Document_UseDottedSelect"]));
@@ -133,7 +133,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFD2B48C")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF6347")]
         public global::System.Windows.Media.Color Document_Color_Selection_UnderOverLine {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_Selection_UnderOverLine"]));
@@ -157,7 +157,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFCD853F")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFB22222")]
         public global::System.Windows.Media.Color Document_Color_Selection_Border {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_Selection_Border"]));
@@ -169,7 +169,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFF5F5DC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFAFAD2")]
         public global::System.Windows.Media.Color Document_Color_Selection_Back1 {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_Selection_Back1"]));
@@ -181,7 +181,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFE4B5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFD700")]
         public global::System.Windows.Media.Color Document_Color_Selection_Back2 {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_Selection_Back2"]));
