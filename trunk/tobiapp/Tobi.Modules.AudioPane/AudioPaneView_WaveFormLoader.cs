@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using Tobi.Common.UI;
 using urakawa.core;
@@ -855,25 +856,26 @@ namespace Tobi.Plugin.AudioPane
                                 EnableClearType = true,
                                 SnapsToDevicePixels = true
                             };
-
-                        //var bitmapCacheBrush = new BitmapCacheBrush
-                        //{
-                        //    AutoLayoutContent = false,
-                        //    Target = WaveFormImage,
-                        //    BitmapCache = new BitmapCache
-                        //    {
-                        //        RenderAtScale = 0.3,
-                        //        EnableClearType = false,
-                        //        SnapsToDevicePixels = false
-                        //    }
-                        //};
-                        //var imageTooltip = new Canvas
-                        //{
-                        //    Width = renderBitmap.Width * bitmapCacheBrush.BitmapCache.RenderAtScale,
-                        //    Height = renderBitmap.Height * bitmapCacheBrush.BitmapCache.RenderAtScale,
-                        //    Background = bitmapCacheBrush
-                        //};
-                        //ZoomSlider.ToolTip = imageTooltip;
+#if DEBUG
+                        var bitmapCacheBrush = new BitmapCacheBrush
+                        {
+                            AutoLayoutContent = false,
+                            Target = WaveFormImage,
+                            BitmapCache = new BitmapCache
+                            {
+                                RenderAtScale = 0.3,
+                                EnableClearType = false,
+                                SnapsToDevicePixels = false
+                            }
+                        };
+                        var imageTooltip = new Rectangle
+                        {
+                            Width = WaveFormImage.Width * bitmapCacheBrush.BitmapCache.RenderAtScale,
+                            Height = WaveFormImage.Height * bitmapCacheBrush.BitmapCache.RenderAtScale,
+                            Fill = bitmapCacheBrush
+                        };
+                        ZoomSlider.ToolTip = imageTooltip;
+#endif
                     }
 #else
                     var drawingVisual = new DrawingVisual();

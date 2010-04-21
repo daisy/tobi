@@ -5,13 +5,13 @@
   </Profiles>
   <Settings>
     <Setting Name="Document_Color_Hyperlink_Back" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFAFEEEE</Value>
+      <Value Profile="(Default)">#FF00FFFF</Value>
     </Setting>
     <Setting Name="Document_Color_PageNum_Back" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF90EE90</Value>
+      <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
     <Setting Name="Document_Back" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFF8F8F8</Value>
+      <Value Profile="(Default)">#FFF5F5F5</Value>
     </Setting>
     <Setting Name="Document_TypeFace" Type="System.Windows.Media.FontFamily" Scope="User">
       <Value Profile="(Default)">Times New Roman</Value>
@@ -20,7 +20,7 @@
       <Value Profile="(Default)">110</Value>
     </Setting>
     <Setting Name="Document_UseDottedSelect" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Document_ButtonBarVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -32,19 +32,19 @@
       <Value Profile="(Default)">#FF696969</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_UnderOverLine" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFD2B48C</Value>
+      <Value Profile="(Default)">#FFFF6347</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Font" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF8B0000</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Border" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFCD853F</Value>
+      <Value Profile="(Default)">#FFB22222</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back1" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFF5F5DC</Value>
+      <Value Profile="(Default)">#FFFAFAD2</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back2" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFFE4B5</Value>
+      <Value Profile="(Default)">#FFFFD700</Value>
     </Setting>
   </Settings>
 </SettingsFile>
