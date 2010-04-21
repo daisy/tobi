@@ -49,6 +49,13 @@ namespace Tobi.Common.UI
             if (headerClicked != null &&
                 headerClicked.Role != GridViewColumnHeaderRole.Padding)
             {
+                if (_lastHeaderClicked != null)
+                {
+
+                    _lastHeaderClicked.Column.HeaderTemplate = null;
+
+                }
+
                 if (headerClicked != _lastHeaderClicked)
                 {
                     direction = ListSortDirection.Ascending;
@@ -63,6 +70,17 @@ namespace Tobi.Common.UI
                     {
                         direction = ListSortDirection.Ascending;
                     }
+                }
+
+                if (direction == ListSortDirection.Ascending)
+                {
+                    headerClicked.Column.HeaderTemplate =
+                      Application.Current.Resources["ColumnHeaderTemplateArrowUp"] as DataTemplate;
+                }
+                else
+                {
+                    headerClicked.Column.HeaderTemplate =
+                      Application.Current.Resources["ColumnHeaderTemplateArrowDown"] as DataTemplate;
                 }
 
                 // see if we have an attached SortPropertyName value
