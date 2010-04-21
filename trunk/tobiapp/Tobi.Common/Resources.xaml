@@ -7,6 +7,26 @@
   <!-- SolidColorBrush x:Key="SystemColorsHighlight" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"></SolidColorBrush>
 
   <SolidColorBrush x:Key="SystemColorsControl" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"></SolidColorBrush -->
+
+
+  <DataTemplate x:Key="ColumnHeaderTemplateArrowNone">
+
+    <DockPanel>
+
+      <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+
+      <Path x:Name="arrow"
+
+         StrokeThickness = "1"
+
+         Fill            = "transparent"
+
+         Data            = "M 5,10 L 15,10 L 10,5 L 5,10"/>
+
+    </DockPanel>
+
+  </DataTemplate>
+  
   <DataTemplate x:Key="ColumnHeaderTemplateArrowUp">
 
     <DockPanel>

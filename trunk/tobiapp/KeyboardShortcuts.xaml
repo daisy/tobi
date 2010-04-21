@@ -1,4 +1,4 @@
-﻿<UI:SortableListView
+﻿<UI:SortableListView2
     
     x:Class="Tobi.KeyboardShortcuts"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -65,16 +65,16 @@ AlternationCount="2"
       </GridViewColumn>
 
 
-      <GridViewColumn Header="Short Description"
-                      UI:SortableListView.SortPropertyName="ShortDescription"
+      <UI:SortableGridViewColumn Header="Short Description"
+                      SortPropertyName="ShortDescription"
                       DisplayMemberBinding="{Binding ShortDescription}"/>
 
-      <GridViewColumn Header="Keyboard shortcut"
-                      UI:SortableListView.SortPropertyName="KeyGestureText"
+      <UI:SortableGridViewColumn Header="Keyboard shortcut"
+                      SortPropertyName="KeyGestureText"
                       DisplayMemberBinding="{Binding KeyGestureText}"/>
 
-      <GridViewColumn Header="Long Description"
-                    UI:SortableListView.SortPropertyName="LongDescription"
+      <UI:SortableGridViewColumn Header="Long Description"
+                    SortPropertyName="LongDescription"
                     DisplayMemberBinding="{Binding LongDescription}"/>
 
     </GridView>
@@ -94,7 +94,7 @@ AlternationCount="2"
     </Style>
 
   </ListView.ItemContainerStyle>
-</UI:SortableListView>
+</UI:SortableListView2>
 
 
 <!-- TabControl

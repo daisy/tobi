@@ -145,7 +145,7 @@
     <value>Optional</value>
   </data>
   <data name="PrimaryIdentifier" xml:space="preserve">
-    <value>Is primary identifier?</value>
+    <value>ID</value>
   </data>
   <data name="Recommended" xml:space="preserve">
     <value>Recommended</value>

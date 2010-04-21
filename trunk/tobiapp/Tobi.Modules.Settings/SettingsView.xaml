@@ -63,8 +63,12 @@
   </DockPanel>
 
 
-  <UI:SortableListView
+  <UI:SortableListView2
     x:Name="SettingsList"
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
            ScrollViewer.CanContentScroll="True"
              VirtualizingStackPanel.IsVirtualizing="False"
              VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -416,8 +420,9 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
         </GridViewColumn -->
 
 
-        <GridViewColumn Header="Name"
-                        UI:SortableListView.SortPropertyName="Name">
+        <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Name}"
+                        SortPropertyName="Name"
+                        IsDefaultSortColumn="True">
           <GridViewColumn.CellTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Name, Mode=OneWay}"
@@ -446,10 +451,10 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               </TextBlock>
             </DataTemplate>
           </GridViewColumn.CellTemplate>
-        </GridViewColumn>
+        </UI:SortableGridViewColumn>
 
-        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Default}"
-                        UI:SortableListView.SortPropertyName="DefaultValue"
+        <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Default}"
+                        SortPropertyName="DefaultValue"
                         DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
 
         <!-- GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Current}"
@@ -459,8 +464,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                         Width="150"
                         CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
 
-        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Info}"
-                        UI:SortableListView.SortPropertyName="Message"
+        <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Info}"
+                        SortPropertyName="Message"
                         Width="400">
 
           <GridViewColumn.CellTemplate>
@@ -478,7 +483,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               </TextBlock>
             </DataTemplate>
           </GridViewColumn.CellTemplate>
-        </GridViewColumn>
+        </UI:SortableGridViewColumn>
       </GridView>
     </ListView.View>
 
@@ -516,7 +521,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
       </Style>
 
     </ListView.ItemContainerStyle>
-  </UI:SortableListView>
+  </UI:SortableListView2>
 
 
 

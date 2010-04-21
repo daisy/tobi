@@ -171,6 +171,9 @@
   <data name="Current" xml:space="preserve">
     <value>Current</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
