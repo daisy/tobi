@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>Z:\Desktop\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_0.3.7.0\</PublishUrl>
+    <PublishUrl>Z:\Desktop\Sources\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_0.3.7.1\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -35,16 +35,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.digitaltalkingbook.com/projects/tobi/install/net3/</InstallUrl>
-    <SupportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Help.html</SupportUrl>
-    <ErrorReportUrl>http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
+    <InstallUrl>http://data.daisy.org/projects/tobi/install/net3/</InstallUrl>
+    <SupportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Help.html</SupportUrl>
+    <ErrorReportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
     <ProductName>Tobi %28.NET 3%29</ProductName>
     <PublisherName>DAISY Consortium</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.3.7.0</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>0.3.7.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
