@@ -19,8 +19,7 @@ namespace Tobi.Common
         //http://daisy.trac.cvsdude.com/tobi/
         public readonly static Uri TobiHomeUri = new Uri("http://www.daisy.org/projects/tobi/", UriKind.Absolute);
 
-        public const string TOBI_ANON_USAGE_URI =
-            "http://www.digitaltalkingbook.com/projects/tobi/Tobi_AnonymousUsageLogger.php";
+        public const string TOBI_ANON_USAGE_URI = "http://data.daisy.org/projects/tobi/Tobi_AnonymousUsageLogger.php";
 
         public const string LOG_FILE_NAME = "Tobi.log";
         public static readonly string LOG_FILE_PATH;
