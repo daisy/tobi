@@ -368,8 +368,7 @@ namespace Tobi.Plugin.Urakawa
             var details = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path));    // TODO LOCALIZE UrakawaSession_SavePath
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       Tobi_Plugin_Urakawa_Lang.Overwrite),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.Overwrite),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
@@ -417,8 +416,7 @@ namespace Tobi.Plugin.Urakawa
             var details = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path));   // TODO LOCALIZE UrakawaSession_SavePath Key Already Added
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       Tobi_Plugin_Urakawa_Lang.OpenSaveAsQuestion_),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.OpenSaveAsQuestion_),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,

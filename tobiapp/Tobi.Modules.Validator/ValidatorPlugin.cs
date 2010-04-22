@@ -46,7 +46,7 @@ namespace Tobi.Plugin.Validator
 
             CommandShowValidator = new RichDelegateCommand(
                 Tobi_Plugin_Validator_Lang.CmdValidationCheck_ShortDesc,                                                // TODO LOCALIZE ValidationCheck
-                "",
+                Tobi_Plugin_Validator_Lang.CmdValidationCheck_LongDesc,  
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeGionIcon(@"Gion_application-certificate"),
                 ShowDialog,
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.Validator
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Tools, PreferredPosition.Any, true,
+                Tobi_Common_Lang.Menu_Tools, PreferredPosition.Any, true,
                 null, PreferredPosition.First, true,
                 new[] { CommandShowValidator });
 
@@ -91,7 +91,7 @@ namespace Tobi.Plugin.Validator
 
             if (m_MenuBarView != null)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Tools, m_MenuBarId_1);
 
                 m_Logger.Log(@"ValidatorPlugin commands removed from menubar", Category.Debug, Priority.Medium);
             }
@@ -120,7 +120,7 @@ namespace Tobi.Plugin.Validator
             m_Logger.Log("ValidatorPlugin.ShowDialog", Category.Debug, Priority.Medium);
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic("Validator"),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Validator_Lang.CmdValidationCheck_ShortDesc),
                                                    m_ValidatorPaneView,
                                                    PopupModalWindow.DialogButtonsSet.Close,
                                                    PopupModalWindow.DialogButton.Close,

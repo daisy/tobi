@@ -69,18 +69,20 @@ namespace Tobi.Plugin.DocumentPane
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Structure, PreferredPosition.First, true,
-                RegionNames.MenuBar_Navigation, PreferredPosition.Any, true,
+                Tobi_Common_Lang.Menu_Text, PreferredPosition.First, true,
+                null, //Tobi_Common_Lang.Menu_Navigation,
+                PreferredPosition.Any, true,
                 new[] { m_DocView.CommandStructureUp, m_DocView.CommandStructureDown });
 
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Structure, PreferredPosition.First, true,
-                RegionNames.MenuBar_Navigation, PreferredPosition.First, true,
+                Tobi_Common_Lang.Menu_Text, PreferredPosition.First, true,
+                null, //Tobi_Common_Lang.Menu_Navigation,
+                PreferredPosition.First, true,
                 new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
 
             m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_View, PreferredPosition.First, true,
-                RegionNames.MenuBar_Focus, PreferredPosition.Any, false,
+                Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,
+                Tobi_Common_Lang.Menu_Focus, PreferredPosition.Any, false,
                 new[] { m_DocView.CommandFocus });
 
             m_Logger.Log(@"Document commands pushed to menubar", Category.Debug, Priority.Medium);
@@ -97,9 +99,9 @@ namespace Tobi.Plugin.DocumentPane
 
             if (m_MenuBarView != null)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Structure, m_MenuBarId_2);
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Structure, m_MenuBarId_1);
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_View, m_MenuBarId_3);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Text, m_MenuBarId_2);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Text, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_View, m_MenuBarId_3);
 
                 m_Logger.Log(@"Document commands removed from menubar", Category.Debug, Priority.Medium);
             }

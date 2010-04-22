@@ -163,7 +163,7 @@
     <value>Clear the current audio selection</value>
   </data>
   <data name="CmdAudioDelete_ShortDesc" xml:space="preserve">
-    <value>_Delete audio selection</value>
+    <value>_Delete selected audio</value>
   </data>
   <data name="CmdAudioDelete_LongDesc" xml:space="preserve">
     <value>Delete the audio in the waveform selection</value>
@@ -184,7 +184,7 @@
     <value>_Fit into view</value>
   </data>
   <data name="CmdAudioFitFull_LongDesc" xml:space="preserve">
-    <value>Fit the entire audio waveform into view</value>
+    <value>Bring the entire audio content into full view</value>
   </data>
   <data name="CmdAudioFocus_ShortDesc" xml:space="preserve">
     <value>Audio pane focus</value>
@@ -196,16 +196,16 @@
     <value>_Go to begin</value>
   </data>
   <data name="CmdAudioGotoBegin_LongDesc" xml:space="preserve">
-    <value>Rewind to the begining of the audio stream</value>
+    <value>Jump to the begining of the audio content</value>
   </data>
   <data name="CmdAudioGotoEnd_ShortDesc" xml:space="preserve">
     <value>_Go to end</value>
   </data>
   <data name="CmdAudioGotoEnd_LongDesc" xml:space="preserve">
-    <value>Fast Forward to the end of the audio stream</value>
+    <value>Jump to the end of the audio content</value>
   </data>
   <data name="CmdAudioInsertFile_ShortDesc" xml:space="preserve">
-    <value>_Insert audio file</value>
+    <value>_Import audio file</value>
   </data>
   <data name="CmdAudioInsertFile_LongDesc" xml:space="preserve">
     <value>Insert a local WAV or MP3 file</value>
@@ -220,7 +220,7 @@
     <value>_Pause</value>
   </data>
   <data name="CmdAudioPause_LongDesc" xml:space="preserve">
-    <value>Pause playback</value>
+    <value>Pause audio playback</value>
   </data>
   <data name="CmdAudioPlay_ShortDesc" xml:space="preserve">
     <value>Pla_y</value>
@@ -229,58 +229,58 @@
     <value>Preview _before</value>
   </data>
   <data name="CmdAudioPlayPreviewLeft_LongDesc" xml:space="preserve">
-    <value>Preview the audio just before the current cursor position</value>
+    <value>Preview the audio just before the cursor position</value>
   </data>
   <data name="CmdAudioPlayPreviewRight_ShortDesc" xml:space="preserve">
     <value>Preview _after</value>
   </data>
   <data name="CmdAudioPlayPreviewRight_LongDesc" xml:space="preserve">
-    <value>Preview the audio right after the current cursor position</value>
+    <value>Preview the audio right after the cursor position</value>
   </data>
   <data name="CmdAudioPlayRateDown_ShortDesc" xml:space="preserve">
-    <value>_Descrease playback rate</value>
+    <value>_Decrease playback rate</value>
   </data>
   <data name="CmdAudioPlayRateDown_LongDesc" xml:space="preserve">
-    <value>Turn the playback speed down</value>
+    <value>Turn down the audio playback speed</value>
   </data>
   <data name="CmdAudioPlayRateReset_ShortDesc" xml:space="preserve">
     <value>_Reset playback rate</value>
   </data>
   <data name="CmdAudioPlayRateReset_LongDesc" xml:space="preserve">
-    <value>Restore the normal playback speed</value>
+    <value>Restore the normal audio playback speed</value>
   </data>
   <data name="CmdAudioPlayRateUp_ShortDesc" xml:space="preserve">
     <value>_Increase playback rate</value>
   </data>
   <data name="CmdAudioPlayRateUp_LongDesc" xml:space="preserve">
-    <value>Turn the playback speed up</value>
+    <value>Turn up the audio playback speed</value>
   </data>
   <data name="CmdAudioReload_ShortDesc" xml:space="preserve">
     <value>_Reload audio</value>
   </data>
   <data name="CmdAudioReload_LongDesc" xml:space="preserve">
-    <value>Reload the audio waveform data</value>
+    <value>Reload the waveform data</value>
   </data>
   <data name="CmdAudioRewind_ShortDesc" xml:space="preserve">
-    <value>_Step backwards</value>
+    <value>_Step back</value>
   </data>
   <data name="CmdAudioRewind_LongDesc" xml:space="preserve">
-    <value>Jump back by a pre-defined time increment</value>
+    <value>Jump backwards by a pre-defined time increment</value>
   </data>
   <data name="CmdAudioSelectNextChunk_ShortDesc" xml:space="preserve">
-    <value>Select next phrase</value>
+    <value>Select next chunk</value>
   </data>
   <data name="CmdAudioSelectNextChunk_LongDesc" xml:space="preserve">
-    <value>Select the entire audio phrase following the current one</value>
+    <value>Select the entire audio chunk after the cursor</value>
   </data>
   <data name="CmdAudioSelectPreviousChunk_ShortDesc" xml:space="preserve">
-    <value>Select previous phrase</value>
+    <value>Select previous chunk</value>
   </data>
   <data name="CmdAudioSelectPreviousChunk_LongDesc" xml:space="preserve">
-    <value>Select the entire audio phrase preceding the current one</value>
+    <value>Select the entire audio chunk preceding the cursor</value>
   </data>
   <data name="CmdAudioSettings_ShortDesc" xml:space="preserve">
-    <value>Audio se_ttings</value>
+    <value>Device se_ttings...</value>
   </data>
   <data name="CmdAudioSettings_LongDesc" xml:space="preserve">
     <value>Settings for the audio player and recorder</value>
@@ -289,31 +289,31 @@
     <value>St_art monitoring</value>
   </data>
   <data name="CmdAudioStartMonitor_LongDesc" xml:space="preserve">
-    <value>Start monitoring audio input</value>
+    <value>Check audio levels from input device</value>
   </data>
-  <data name="Audio_StartRecord" xml:space="preserve">
+  <data name="CmdAudioStartRecord_ShortDesc" xml:space="preserve">
     <value>St_art recording</value>
   </data>
-  <data name="Audio_StartRecord_" xml:space="preserve">
-    <value>Start recording audio</value>
+  <data name="CmdAudioStartRecord_LongDesc" xml:space="preserve">
+    <value>Record audio from input device</value>
   </data>
   <data name="CmdAudioStepBack_ShortDesc" xml:space="preserve">
-    <value>_Back one phrase</value>
+    <value>_Previous chunk</value>
   </data>
   <data name="CmdAudioStepBack_LongDesc" xml:space="preserve">
-    <value>Step back one phrase</value>
+    <value>Jump to the audio chunk preceding the cursor</value>
   </data>
   <data name="CmdAudioStepForward_ShortDesc" xml:space="preserve">
-    <value>_Forward one phrase</value>
+    <value>_Next chunk</value>
   </data>
   <data name="CmdAudioStepForward_LongDesc" xml:space="preserve">
-    <value>Step forward one phrase</value>
+    <value>Jumpd to the audio chunk following the cursor</value>
   </data>
   <data name="CmdAudioStopMonitor_ShortDesc" xml:space="preserve">
     <value>St_op monitoring</value>
   </data>
   <data name="CmdAudioStopMonitor_LongDesc" xml:space="preserve">
-    <value>Stop the audio input monitoring</value>
+    <value>Stop checking the audio input levels</value>
   </data>
   <data name="CmdAudioStopRecordAndContinue_ShortDesc" xml:space="preserve">
     <value>St_op recording and continue</value>
@@ -331,7 +331,7 @@
     <value>_Zoom on selection</value>
   </data>
   <data name="CmdAudioZoomSelection_LongDesc" xml:space="preserve">
-    <value>Zoom waveform selection into view</value>
+    <value>Bring waveform selection into full view</value>
   </data>
   <data name="Audio_ZoomSlider" xml:space="preserve">
     <value>Audio waveform zoom</value>
@@ -382,19 +382,19 @@
     <value>_Select left</value>
   </data>
   <data name="CmdAudioSelectLeft_LongDesc" xml:space="preserve">
-    <value>Select audio on the left of the play cursor</value>
+    <value>Select all audio on the left of the cursor</value>
   </data>
   <data name="CmdAudioSelectRight_ShortDesc" xml:space="preserve">
     <value>_Select right</value>
   </data>
   <data name="CmdAudioSelectRight_LongDesc" xml:space="preserve">
-    <value>Select audio on the right of the play cursor</value>
+    <value>Select all audio on the right of the cursor</value>
   </data>
   <data name="CmdSelectAll_ShortDesc" xml:space="preserve">
     <value>_Select all</value>
   </data>
   <data name="CmdSelectAll_LongDesc" xml:space="preserve">
-    <value>Select all content</value>
+    <value>Select all audio content</value>
   </data>
   <data name="AudioPanePlugin_Description" xml:space="preserve">
     <value>The audio waveform editor and display.</value>
@@ -415,6 +415,6 @@
     <value>Replace audio data with the supplied audio clip</value>
   </data>
   <data name="CmdAudioPlay_LongDesc" xml:space="preserve">
-    <value>Start playback</value>
+    <value>Start audio playback</value>
   </data>
 </root>

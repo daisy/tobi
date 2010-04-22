@@ -123,11 +123,17 @@
   <data name="Apply" xml:space="preserve">
     <value>_Apply</value>
   </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>Oops, a problem occurred.{0}The full error message is displayed below.{0}Alternatively, you may open the '{1}' file, located here: [ {2} ].</value>
+  </data>
   <data name="SearchKeywords" xml:space="preserve">
     <value>search keywords</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Find: </value>
+  </data>
+  <data name="Menu_Find" xml:space="preserve">
+    <value>_Find</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>_Cancel</value>
@@ -183,11 +189,11 @@
   <data name="Menu_OpenRecent" xml:space="preserve">
     <value>_Open recent</value>
   </data>
-  <data name="Menu_Structure" xml:space="preserve">
-    <value>_Structure</value>
+  <data name="Menu_Text" xml:space="preserve">
+    <value>_Text</value>
   </data>
-  <data name="Menu_System" xml:space="preserve">
-    <value>_System</value>
+  <data name="Menu_BrowseFolder" xml:space="preserve">
+    <value>_Browse folder</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>_Tools</value>

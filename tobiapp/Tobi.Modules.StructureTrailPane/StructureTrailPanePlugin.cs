@@ -67,8 +67,8 @@ namespace Tobi.Plugin.StructureTrailPane
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_View, PreferredPosition.First, true,
-                RegionNames.MenuBar_Focus, PreferredPosition.First, false,
+                Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,
+                Tobi_Common_Lang.Menu_Focus, PreferredPosition.First, false,
                 new[] { m_StructureView.CommandFocus });
 
             m_Logger.Log(@"Structure commands pushed to menubar", Category.Debug, Priority.Medium);
@@ -85,7 +85,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (m_MenuBarView != null)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_2);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Tools, m_MenuBarId_2);
 
                 m_Logger.Log(@"Structure commands removed from menubar", Category.Debug, Priority.Medium);
             }

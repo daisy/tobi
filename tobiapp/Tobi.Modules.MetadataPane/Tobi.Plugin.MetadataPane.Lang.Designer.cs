@@ -70,7 +70,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metadata viewer/editor.
+        ///   Looks up a localized string similar to Open the metadata editor.
         /// </summary>
         public static string CmdShowMetadata_LongDesc {
             get {
@@ -79,7 +79,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Edit metadata.
+        ///   Looks up a localized string similar to _Edit metadata....
         /// </summary>
         public static string CmdShowMetadata_ShortDesc {
             get {

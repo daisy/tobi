@@ -200,7 +200,7 @@
                         due to a problem in the RegionManager.
       
       UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Focus}"
-      prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Focus}"
+      prism:RegionManager.RegionName="{x:Static Common:Tobi_Common_Lang.Menu_Focus}"
    x:Name="MenuBar_Focus"
               / -->
       <!-- -->

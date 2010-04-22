@@ -206,23 +206,23 @@ namespace Tobi
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
                 int uid1 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_File, PreferredPosition.Last, true,
+                    Tobi_Common_Lang.Menu_File, PreferredPosition.Last, true,
                     null, PreferredPosition.Any, true,
                     new[] { ExitCommand });
 
                 int uid2 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_View, PreferredPosition.First, true,
-                    RegionNames.MenuBar_Magnification, PreferredPosition.First, true,
+                    Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,
+                    Tobi_Common_Lang.Menu_Magnification, PreferredPosition.First, true,
                     new[] { MagnifyUiResetCommand, MagnifyUiDecreaseCommand, MagnifyUiIncreaseCommand });
 #if DEBUG
                 int uid3 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_View, PreferredPosition.Last, true,
+                    Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,
                     null, PreferredPosition.Last, true,
                     new[] { ManageShortcutsCommand });
 #endif
                 int uid4 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_Tools, PreferredPosition.Last, true,
-                    RegionNames.MenuBar_System, PreferredPosition.First, false,
+                    Tobi_Common_Lang.Menu_Tools, PreferredPosition.Last, true,
+                    Tobi_Common_Lang.Menu_BrowseFolder, PreferredPosition.First, false,
                     new[] { OpenTobiSettingsFolderCommand, OpenTobiFolderCommand, OpenTobiIsolatedStorageCommand });
 
 #if DEBUG
@@ -383,8 +383,7 @@ namespace Tobi
             };
 
             var windowPopup = new PopupModalWindow(this,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       Tobi_Lang.Exit),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.Exit),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
@@ -543,13 +542,7 @@ namespace Tobi
                     return String.Format(String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNull, Tobi_Lang.PleaseWait), ApplicationConstants.APP_VERSION);    // TODO LOCALIZE WindowsTitleKey_UrakawaSessionIsNull, PleaseWait
                 }
                 return String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
-                    ApplicationConstants.APP_VERSION
-#if NET40
- + " (.NET4)"
-#else
-+ " (.NET3)"
-#endif
-,
+                    ApplicationConstants.APP_VERSION + ApplicationConstants.DOTNET_INFO,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
                     (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
                     );    // TODO LOCALIZE WindowsTitleKey_UrakawaSessionIsNotNull, NoDocument
@@ -917,8 +910,7 @@ namespace Tobi
                 //details.Text = "Cancelling the current operation...";
 
                 windowPopup = new PopupModalWindow(this,
-                                                       UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Lang.CancellingTask),
+                                                       UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.CancellingTask),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,
@@ -1236,8 +1228,7 @@ namespace Tobi
                 //details.Text = "Cancelling the current operation...";
 
                 windowPopup = new PopupModalWindow(this,
-                                                       UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Lang.CancellingTask),
+                                                       UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.CancellingTask),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,

@@ -142,13 +142,13 @@
     <value>_Close</value>
   </data>
   <data name="CmdClose_LongDesc" xml:space="preserve">
-    <value>Close document</value>
+    <value>Close the current document</value>
   </data>
   <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
-    <value>_Cleanup unused data</value>
+    <value>_Cleanup</value>
   </data>
   <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
-    <value>Remove files unused by the document</value>
+    <value>Remove data files not used by the current document</value>
   </data>
   <data name="CmdExport_ShortDesc" xml:space="preserve">
     <value>Export...</value>
@@ -189,7 +189,7 @@ Do you want to continue ?</value>
     <value>_Redo</value>
   </data>
   <data name="CmdRedo_LongDesc" xml:space="preserve">
-    <value>Redo last undone action</value>
+    <value>Execute the last action that was undone</value>
   </data>
   <data name="RunningTask" xml:space="preserve">
     <value>Please wait...</value>
@@ -210,14 +210,14 @@ Do you want to continue ?</value>
     <value>_Undo</value>
   </data>
   <data name="CmdUndo_LongDesc" xml:space="preserve">
-    <value>Undo last action</value>
+    <value>Unexecute last action</value>
   </data>
   <data name="UnsavedChanges" xml:space="preserve">
     <value>_Save before close</value>
   </data>
   <data name="UnsavedChangesConfirm" xml:space="preserve">
     <value>There are unsaved changes.
-Agree to save the document now ?</value>
+Would you like to save the document now ?</value>
   </data>
   <data name="UnsavedChangesDetails" xml:space="preserve">
     <value>If you close the document without saving,

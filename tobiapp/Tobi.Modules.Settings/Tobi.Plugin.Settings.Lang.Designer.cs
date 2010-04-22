@@ -70,7 +70,7 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application preferences.
+        ///   Looks up a localized string similar to Preferences....
         /// </summary>
         public static string Cmd_ApplicationPref {
             get {
@@ -79,7 +79,7 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display an editor for application preferences.
+        ///   Looks up a localized string similar to Open the application settings dialog.
         /// </summary>
         public static string Cmd_DisplayEditor {
             get {

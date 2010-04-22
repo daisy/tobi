@@ -93,7 +93,7 @@ namespace Tobi.Common.UI
 
 
 
-            var labelMsg = new TextBoxReadOnlyCaretVisible(UserInterfaceStrings.UnhandledException)
+            var labelMsg = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Common_Lang.UnhandledException, Environment.NewLine, ApplicationConstants.LOG_FILE_NAME, ApplicationConstants.LOG_FILE_PATH))
             {
                 FontWeight = FontWeights.ExtraBlack,
                 Margin = margin,
@@ -298,8 +298,7 @@ namespace Tobi.Common.UI
              * */
 
             var windowPopup = new PopupModalWindow(shellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(
-                                                       Tobi_Common_Lang.Unexpected),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Common_Lang.Unexpected),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,

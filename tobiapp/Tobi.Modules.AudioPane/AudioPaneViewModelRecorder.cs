@@ -108,8 +108,8 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStopRecord);
             //
             CommandStartRecord = new RichDelegateCommand(
-                UserInterfaceStrings.CmdAudioStartRecord_ShortDesc,
-                UserInterfaceStrings.CmdAudioStartRecord_LongDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStartRecord_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStartRecord_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("media-record"),
                 () =>

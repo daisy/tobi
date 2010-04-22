@@ -70,7 +70,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find The Next Item That Matches The Search Criteria..
+        ///   Looks up a localized string similar to Search for the next item.
         /// </summary>
         public static string Cmd_LongDesc_FindNext {
             get {
@@ -79,7 +79,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find The Previous Item That Matches The Search Criteria..
+        ///   Looks up a localized string similar to Search for the previous item.
         /// </summary>
         public static string Cmd_LongDesc_FindPrevious {
             get {
@@ -88,7 +88,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find Next.
+        ///   Looks up a localized string similar to Find next.
         /// </summary>
         public static string Cmd_ShortDesc_FindNext {
             get {
@@ -97,7 +97,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find Previous.
+        ///   Looks up a localized string similar to Find previous.
         /// </summary>
         public static string Cmd_ShortDesc_FindPrevious {
             get {
@@ -106,7 +106,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit the search criteria..
+        ///   Looks up a localized string similar to Enter the text to search....
         /// </summary>
         public static string CmdFocus_LongDesc_Find {
             get {
@@ -223,7 +223,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings / user preferences.
+        ///   Looks up a localized string similar to User settings.
         /// </summary>
         public static string CmdOpenTobiSettingsFolder_ShortDesc {
             get {
@@ -232,7 +232,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Decrease the UI magnification level.
+        ///   Looks up a localized string similar to Decrease the UI zoom level.
         /// </summary>
         public static string CmdUIDecreaseMagnification_LongDesc {
             get {
@@ -250,7 +250,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Increase the UI magnification level.
+        ///   Looks up a localized string similar to Increase the UI zoom level.
         /// </summary>
         public static string CmdUIIncreaseMagnification_LongDesc {
             get {
@@ -268,7 +268,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset the UI magnification level.
+        ///   Looks up a localized string similar to Reset the UI zoom level.
         /// </summary>
         public static string CmdUIResetMagnification_LongDesc {
             get {

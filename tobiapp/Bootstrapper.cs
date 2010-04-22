@@ -149,6 +149,22 @@ namespace Tobi
 #endif // DEBUG
             }
 
+            foreach (Assembly item in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (item.GlobalAssemblyCache)
+                {
+                    if (!string.IsNullOrEmpty(item.FullName)
+                        && item.FullName.Contains("mscorlib"))
+                    {
+                        Console.WriteLine(item.FullName);
+                        Console.WriteLine(item.Location);
+                        Console.WriteLine(item.ImageRuntimeVersion);
+                        //Console.WriteLine(item.GetName());
+                        //Console.WriteLine(item.CodeBase);
+                    }
+                }
+            }
+
             //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
             string url = ApplicationConstants.TOBI_ANON_USAGE_URI;
@@ -159,7 +175,7 @@ namespace Tobi
             url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
             url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
 
-            // THIS BREAKS PRIVACY
+            // THIS BREAKS PRIVACY, so we don't 
             //string ipAddress = "";
             //IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
             //IPAddress[] ipAddresses = ipHostEntry.AddressList;
@@ -184,7 +200,7 @@ namespace Tobi
 
             if (Settings.Default.EnableAnonymousUsageReport)
             {
-                var webClient = new WebClient {UseDefaultCredentials = true};
+                var webClient = new WebClient { UseDefaultCredentials = true };
                 StreamReader streamReader = null;
                 try
                 {
