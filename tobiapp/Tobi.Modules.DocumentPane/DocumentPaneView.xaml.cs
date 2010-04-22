@@ -28,6 +28,45 @@ using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
 {
+    public class FlowDocumentScrollViewerEx : FlowDocumentScrollViewer
+    {
+        private ScrollViewer m_ScrollViewer;
+        public ScrollViewer ScrollViewer
+        {
+            get
+            {
+                if (m_ScrollViewer == null)
+                {
+                    m_ScrollViewer = GetScrollViewerInVisualTreeDescendantOf(this);
+                }
+
+                return m_ScrollViewer;
+            }
+        }
+
+        public static ScrollViewer GetScrollViewerInVisualTreeDescendantOf(DependencyObject o)
+        {
+            if (o is ScrollViewer)
+            {
+                return (ScrollViewer)o;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
+            {
+                var child = VisualTreeHelper.GetChild(o, i);
+
+                // Tree walking in depth-first traversal
+                var scroll = GetScrollViewerInVisualTreeDescendantOf(child);
+                if (scroll != null)
+                {
+                    return scroll;
+                }
+            }
+
+            return null;
+        }
+    }
+
     public class FontFamilyDataTemplateSelector : DataTemplateSelector
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
@@ -992,13 +1031,117 @@ namespace Tobi.Plugin.DocumentPane
             {
                 doLastHighlightedOnly(textElement1, false);
 
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement1.BringIntoView));
+                scrollToView(textElement1);
             }
             else
             {
                 doLastHighlightedAndSub(textElement1, textElement2, false);
 
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement2.BringIntoView));
+                scrollToView(textElement2);
+            }
+        }
+
+        private void scrollToView(TextElement textElement)
+        {
+            if (FlowDocReader.ScrollViewer == null)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
+            }
+            else
+            {
+                //Debug.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
+                if (FlowDocReader.ScrollViewer.ScrollableHeight !=
+                             FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
+                {
+                    double diff = FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight -
+                                  FlowDocReader.ScrollViewer.ScrollableHeight;
+                    Console.WriteLine("FlowDocument Scroll area diff: " + diff);
+                }
+
+                TextPointer textPointerStart = textElement.ContentStart;
+                TextPointer textPointerEnd = textElement.ContentEnd;
+
+                double left = Double.MaxValue, top = Double.MaxValue;
+                double right = Double.MinValue, bottom = Double.MinValue;
+
+                bool found = false;
+
+                TextPointer textPointerCurrent = null;
+                do
+                {
+                    if (textPointerCurrent == null)
+                    {
+                        textPointerCurrent = textPointerStart;
+                    }
+                    else
+                    {
+                        textPointerCurrent = textPointerCurrent.GetNextContextPosition(LogicalDirection.Forward);
+                    }
+
+                    Rect rect = textPointerCurrent.GetCharacterRect(LogicalDirection.Forward);
+                    if (rect.Left < left) left = rect.Left;
+                    if (rect.Top < top) top = rect.Top;
+                    if (rect.Right > right) right = rect.Right;
+                    if (rect.Bottom > bottom) bottom = rect.Bottom;
+
+                    //textPointerCurrent = textPointerCurrent.GetNextInsertionPosition(LogicalDirection.Forward);
+                    
+                    //int result = textPointerCurrent.CompareTo(textPointerEnd);
+                    //result = textPointerEnd.CompareTo(textPointerCurrent);
+                    //if (result==0)
+                    //{
+                    //    bool b = textPointerEnd == textPointerCurrent;
+                    //}
+
+                    if (textPointerCurrent.CompareTo(textPointerEnd) == 0)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                } while (textPointerCurrent != null);
+
+                var rectBoundingBox = new Rect(left, top, right - left, bottom - top);
+                if (!found)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    Rect rectStart = textPointerStart.GetCharacterRect(LogicalDirection.Forward);
+                    Rect rectEnd = textPointerEnd.GetCharacterRect(LogicalDirection.Backward);
+
+                    rectBoundingBox = new Rect(rectStart.Left, rectStart.Top, rectStart.Width, rectStart.Height);
+                    rectBoundingBox.Union(rectEnd);
+
+                    double textTotalHeight_ = rectEnd.Top + rectEnd.Height - rectStart.Top;
+                    double textTotalHeight = rectBoundingBox.Height;
+                    Debug.Assert(textTotalHeight_ == textTotalHeight);
+                }
+
+                //Rect rectDocStart = FlowDocReader.Document.ContentStart.GetCharacterRect(LogicalDirection.Forward);
+                double boxTopRelativeToDoc = -20 + FlowDocReader.ScrollViewer.VerticalOffset + rectBoundingBox.Top;
+
+                double offsetToTop = boxTopRelativeToDoc;
+                double offsetToCenter = boxTopRelativeToDoc - (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height) / 2;
+                double offsetToBottom = offsetToTop + FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height;
+
+                if (rectBoundingBox.Height > FlowDocReader.ScrollViewer.ViewportHeight)
+                {
+                    offsetToCenter = offsetToTop;
+                    offsetToBottom = offsetToTop;
+                }
+
+                double offset = offsetToCenter; //TODO: choose based on app pref
+                if (offset < 0)
+                {
+                    offset = 0;
+                }
+                else if (offset > FlowDocReader.ScrollViewer.ScrollableHeight)
+                {
+                    offset = FlowDocReader.ScrollViewer.ScrollableHeight;
+                }
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
             }
         }
 
@@ -1395,7 +1538,7 @@ namespace Tobi.Plugin.DocumentPane
                           if (uri.ToString().StartsWith("#"))
                           {
                               string id = uri.ToString().Substring(1);
-                              BringIntoViewAndHighlight(id);
+                              PerformTreeNodeSelection(id);
                           }
                       };
             }
@@ -1522,7 +1665,7 @@ namespace Tobi.Plugin.DocumentPane
         //}
 
 
-        public void BringIntoViewAndHighlight(string uid)
+        public void PerformTreeNodeSelection(string uid)
         {
             string id = XukToFlowDocument.IdToName(uid);
 

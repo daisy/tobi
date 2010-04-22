@@ -19,7 +19,7 @@
     </Grid.RowDefinitions>
 
 
-  <FlowDocumentScrollViewer AllowDrop="True" x:Name="FlowDocReader"
+  <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True" x:Name="FlowDocReader"
                             
           Margin="0,0,0,0"
           Padding="0,0,0,0"
@@ -78,7 +78,7 @@
 
 
 
-  </FlowDocumentScrollViewer>
+  </DocumentPane:FlowDocumentScrollViewerEx>
   <!-- IsSelectionEnabled="True"
     
                         IsScrollViewEnabled="False"
