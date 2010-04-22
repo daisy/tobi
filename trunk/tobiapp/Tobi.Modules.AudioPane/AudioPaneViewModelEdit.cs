@@ -470,7 +470,30 @@ namespace Tobi.Plugin.AudioPane
 
                 CommandDeleteAudioSelection.Execute();
 
-                if (!State.Audio.HasContent)
+                bool allWasDeleted = false;
+                if (selData != null)
+                {
+                    bool atLeastOneWasNotDeleted = false;
+                    foreach (var treeNodeAndStreamSelection in selData)
+                    {
+                        bool deleted = treeNodeAndStreamSelection.m_TreeNode.GetManagedAudioMediaOrSequenceMedia() == null;
+                        if (!deleted)
+                        {
+                            atLeastOneWasNotDeleted = true;
+                            break;
+                        }
+                    }
+                    if (!atLeastOneWasNotDeleted)
+                    {
+                        allWasDeleted = true;
+                    }
+                }
+                else
+                {
+                    Debug.Fail("WTF ??!");
+                }
+
+                if (allWasDeleted) //!State.Audio.HasContent)
                 {
                     if (selData != null && selData.Count > 0)
                     {
