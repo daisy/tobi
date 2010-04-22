@@ -135,7 +135,9 @@ namespace Tobi
                     shortcut.IconPath = iconPath;
                     shortcut.Path = logPath;
                     shortcut.WorkingDirectory = appFolder;
+#if !DEBUG
                     shortcut.Save();
+#endif
                 }
             }
             catch (Exception ex)
