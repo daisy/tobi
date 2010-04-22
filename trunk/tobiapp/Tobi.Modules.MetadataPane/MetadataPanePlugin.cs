@@ -81,7 +81,7 @@ namespace Tobi.Plugin.MetadataPane
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_Edit, PreferredPosition.Any, true,
+                 Tobi_Common_Lang.Menu_Edit, PreferredPosition.Any, true,
                 null, PreferredPosition.Any, true,
                 new[] { CommandShowMetadataPane });
 
@@ -99,7 +99,7 @@ namespace Tobi.Plugin.MetadataPane
 
             if (m_MenuBarView != null)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Tools, m_MenuBarId_1);
 
                 m_Logger.Log(@"Urakawa session commands removed from menubar", Category.Debug, Priority.Medium);
             }

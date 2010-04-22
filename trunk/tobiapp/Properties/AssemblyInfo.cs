@@ -34,3 +34,5 @@ using System.Windows;
 #if NET40
 [assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
 #endif
+
+[assembly: NeutralResourcesLanguageAttribute("en-US", UltimateResourceFallbackLocation.MainAssembly)]

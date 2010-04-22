@@ -464,8 +464,7 @@ namespace Tobi.Plugin.Urakawa
                 var details = new TextBoxReadOnlyCaretVisible(Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails);
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
-                                                       UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Plugin_Urakawa_Lang.UnsavedChanges) + (string.IsNullOrEmpty(role) ? "" : " (" + role + ")"),
+                                                       UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.UnsavedChanges) + (string.IsNullOrEmpty(role) ? "" : " (" + role + ")"),
                                                        panel,
                                                        buttonset,
                                                        PopupModalWindow.DialogButton.Cancel,

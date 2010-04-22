@@ -57,8 +57,8 @@ namespace Tobi.Plugin.ToolBars
         protected override void OnMenuBarReady()
         {
             m_ToolBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                RegionNames.MenuBar_View, PreferredPosition.First, true,
-                RegionNames.MenuBar_Focus, PreferredPosition.Any, false,
+                Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,
+                Tobi_Common_Lang.Menu_Focus, PreferredPosition.Any, false,
                 new[] { m_ToolBarsView.CommandFocus });
 
             m_Logger.Log(@"Toolbar commands pushed to menubar", Category.Debug, Priority.Medium);
@@ -68,7 +68,7 @@ namespace Tobi.Plugin.ToolBars
         {
             if (m_MenuBarView != null)
             {
-                m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Focus, m_ToolBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Focus, m_ToolBarId_1);
 
                 m_Logger.Log(@"Toolbar commands removed from menubar", Category.Debug, Priority.Medium);
             }

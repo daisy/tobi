@@ -124,8 +124,7 @@ namespace Tobi.Plugin.Urakawa
                 var details = new TextBoxReadOnlyCaretVisible(fileUri.ToString());
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
-                                                       UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Plugin_Urakawa_Lang.CannotOpenLocalFile),
+                                                       UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CannotOpenLocalFile),
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.Close,
                                                        PopupModalWindow.DialogButton.Close,

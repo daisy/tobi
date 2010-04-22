@@ -24,6 +24,8 @@ namespace Tobi.Common
         public const string LOG_FILE_NAME = "Tobi.log";
         public static readonly string LOG_FILE_PATH;
 
+        public static readonly string DOTNET_INFO;
+
         static ApplicationConstants()
         {
             //Directory.GetCurrentDirectory()
@@ -33,11 +35,35 @@ namespace Tobi.Common
             string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
             APP_VERSION = GetVersion();
-            OS_INFORMATION = getOSInfo()
+
+            string coreLibVersion = null;
+            string name = "";
+            foreach (Assembly item in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (item.GlobalAssemblyCache)
+                {
+                    if (!string.IsNullOrEmpty(item.FullName)
+                        && item.FullName.Contains("mscorlib"))
+                    {
+                        name = item.FullName;
+                        coreLibVersion = item.ImageRuntimeVersion;
+                        break;
+                    }
+                }
+            }
+
+            bool isV4 = !string.IsNullOrEmpty(coreLibVersion) && coreLibVersion.Contains("v4.")
+                || name.Contains("Version=4");
+
 #if NET40
- + " [.NET 4]"
+            const string NET4 = " [.NET 4]";
+            DOTNET_INFO = NET4;
+#else
+            const string NET4_ButTobi3 = " [.NET 3/4]";
+            const string NET3 = " [.NET 3]";
+            DOTNET_INFO = (isV4 ? NET4_ButTobi3 : NET3);
 #endif
- + " -- (" + (IsRunning64() ? "64-bit" : "32-bit") + " .NET)";
+            OS_INFORMATION = getOSInfo() + DOTNET_INFO + " -- (" + (IsRunning64() ? "64-bit" : "32-bit") + " .NET)";
         }
 
         public static readonly string APP_VERSION;
@@ -266,27 +292,6 @@ namespace Tobi.Common
 
     public static class RegionNames
     {
-        public const string MenuBar_File = UserInterfaceStrings.Menu_File;
-        public const string MenuBar_OpenRecent = UserInterfaceStrings.Menu_OpenRecent;
-        public const string MenuBar_Edit = UserInterfaceStrings.Menu_Edit;
-
-        public const string MenuBar_Audio = UserInterfaceStrings.Menu_Audio;
-        public const string MenuBar_AudioPlayback = UserInterfaceStrings.Menu_AudioPlayback;
-        public const string MenuBar_AudioRecording = UserInterfaceStrings.Menu_AudioRecording;
-        public const string MenuBar_AudioTransport = UserInterfaceStrings.Menu_AudioTransport;
-        public const string MenuBar_AudioSelection = UserInterfaceStrings.Menu_AudioSelection;
-        public const string MenuBar_AudioZoom = UserInterfaceStrings.Menu_AudioZoom;
-
-        public const string MenuBar_Tools = UserInterfaceStrings.Menu_Tools;
-        public const string MenuBar_Structure = UserInterfaceStrings.Menu_Structure;
-        public const string MenuBar_View = UserInterfaceStrings.Menu_View;
-        public const string MenuBar_Focus = UserInterfaceStrings.Menu_Focus;
-        public const string MenuBar_Navigation = UserInterfaceStrings.Menu_Navigation;
-        public const string MenuBar_Find = UserInterfaceStrings.Menu_Find;
-        public const string MenuBar_Magnification = UserInterfaceStrings.Menu_Magnification;
-
-        public const string MenuBar_System = UserInterfaceStrings.Menu_System;
-
         public const string MenuBar = "MenuBar";
         public const string MainToolbar = "MainToolbar";
 

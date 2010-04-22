@@ -157,7 +157,7 @@
     <value>Open a file browser where Tobi's system files are located.</value>
   </data>
   <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
-    <value>Settings / user preferences</value>
+    <value>User settings</value>
   </data>
   <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
     <value>Open a file browser where the Tobi user settings are stored.</value>
@@ -166,19 +166,19 @@
     <value>_Decrease magnification</value>
   </data>
   <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Decrease the UI magnification level</value>
+    <value>Decrease the UI zoom level</value>
   </data>
   <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
     <value>_Increase magnification</value>
   </data>
   <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Increase the UI magnification level</value>
+    <value>Increase the UI zoom level</value>
   </data>
   <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
     <value>_Reset magnification</value>
   </data>
   <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
-    <value>Reset the UI magnification level</value>
+    <value>Reset the UI zoom level</value>
   </data>
   <data name="Menu_Find" xml:space="preserve">
     <value>_Find</value>
@@ -199,19 +199,19 @@
     <value>Find...</value>
   </data>
   <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
-    <value>Find Next</value>
+    <value>Find next</value>
   </data>
   <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
-    <value>Find Previous</value>
+    <value>Find previous</value>
   </data>
   <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
-    <value>Edit the search criteria.</value>
+    <value>Enter the text to search...</value>
   </data>
   <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
-    <value>Find The Next Item That Matches The Search Criteria.</value>
+    <value>Search for the next item</value>
   </data>
   <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
-    <value>Find The Previous Item That Matches The Search Criteria.</value>
+    <value>Search for the previous item</value>
   </data>
   <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
     <value>Tobi {{{0}}} {1}[{2}]</value>

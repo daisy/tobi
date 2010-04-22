@@ -148,8 +148,7 @@ namespace Tobi
                     m_Logger.Log(@"ShellView.ManageShortcutsCommand_Executed", Category.Debug, Priority.Medium);
 
                     var windowPopup = new PopupModalWindow(this,
-                                                           UserInterfaceStrings.EscapeMnemonic(
-                                                               Tobi_Lang.CmdManageShortcuts_ShortDesc),
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.CmdManageShortcuts_ShortDesc),
                                                            new KeyboardShortcuts(this),
                                                            PopupModalWindow.DialogButtonsSet.Ok,
                                                            PopupModalWindow.DialogButton.Ok,

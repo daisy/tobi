@@ -220,6 +220,8 @@ c.Execute();
 
         private static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
+            return null;
+
             Assembly parentAssembly = Assembly.GetExecutingAssembly();
             //Application.ResourceAssembly = parentAssembly;
 

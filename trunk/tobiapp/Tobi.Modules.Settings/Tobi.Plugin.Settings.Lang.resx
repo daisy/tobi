@@ -127,10 +127,10 @@
     <value>Restore the default value for the selected items</value>
   </data>
   <data name="Cmd_ApplicationPref" xml:space="preserve">
-    <value>Application preferences</value>
+    <value>Preferences...</value>
   </data>
   <data name="Cmd_DisplayEditor" xml:space="preserve">
-    <value>Display an editor for application preferences</value>
+    <value>Open the application settings dialog</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Find:</value>

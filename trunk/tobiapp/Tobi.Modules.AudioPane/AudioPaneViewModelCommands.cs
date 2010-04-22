@@ -90,8 +90,7 @@ namespace Tobi.Plugin.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandAudioSettings", Category.Debug, Priority.Medium);
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                           UserInterfaceStrings.EscapeMnemonic(
-                                                               UserInterfaceStrings.Audio_Settings),
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_ShortDesc),
                                                            new AudioSettings(this),
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,

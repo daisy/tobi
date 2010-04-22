@@ -107,8 +107,8 @@ namespace Tobi
             if (!m_MenuBarCommandsDone && m_MenuBarView != null)
             {
                 int uid1 = m_MenuBarView.AddMenuBarGroup(
-                    RegionNames.MenuBar_Tools, PreferredPosition.First, true,
-                    RegionNames.MenuBar_Find, PreferredPosition.First, true,
+                    Tobi_Common_Lang.Menu_Tools, PreferredPosition.First, true,
+                    Tobi_Common_Lang.Menu_Find, PreferredPosition.First, true,
                     new[] { CmdFindFocus, CmdFindPrevious, CmdFindNext });
 
                 m_MenuBarCommandsDone = true;

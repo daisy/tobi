@@ -61,24 +61,6 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to St_art recording.
-        /// </summary>
-        public static string Audio_StartRecord {
-            get {
-                return ResourceManager.GetString("Audio_StartRecord", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start recording audio.
-        /// </summary>
-        public static string Audio_StartRecord_ {
-            get {
-                return ResourceManager.GetString("Audio_StartRecord_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Audio waveform zoom.
         /// </summary>
         public static string Audio_ZoomSlider {
@@ -178,7 +160,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Delete audio selection.
+        ///   Looks up a localized string similar to _Delete selected audio.
         /// </summary>
         public static string CmdAudioDelete_ShortDesc {
             get {
@@ -223,7 +205,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fit the entire audio waveform into view.
+        ///   Looks up a localized string similar to Bring the entire audio content into full view.
         /// </summary>
         public static string CmdAudioFitFull_LongDesc {
             get {
@@ -259,7 +241,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rewind to the begining of the audio stream.
+        ///   Looks up a localized string similar to Jump to the begining of the audio content.
         /// </summary>
         public static string CmdAudioGotoBegin_LongDesc {
             get {
@@ -277,7 +259,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fast Forward to the end of the audio stream.
+        ///   Looks up a localized string similar to Jump to the end of the audio content.
         /// </summary>
         public static string CmdAudioGotoEnd_LongDesc {
             get {
@@ -304,7 +286,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Insert audio file.
+        ///   Looks up a localized string similar to _Import audio file.
         /// </summary>
         public static string CmdAudioInsertFile_ShortDesc {
             get {
@@ -331,7 +313,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pause playback.
+        ///   Looks up a localized string similar to Pause audio playback.
         /// </summary>
         public static string CmdAudioPause_LongDesc {
             get {
@@ -349,7 +331,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start playback.
+        ///   Looks up a localized string similar to Start audio playback.
         /// </summary>
         public static string CmdAudioPlay_LongDesc {
             get {
@@ -367,7 +349,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview the audio just before the current cursor position.
+        ///   Looks up a localized string similar to Preview the audio just before the cursor position.
         /// </summary>
         public static string CmdAudioPlayPreviewLeft_LongDesc {
             get {
@@ -385,7 +367,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview the audio right after the current cursor position.
+        ///   Looks up a localized string similar to Preview the audio right after the cursor position.
         /// </summary>
         public static string CmdAudioPlayPreviewRight_LongDesc {
             get {
@@ -403,7 +385,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Turn the playback speed down.
+        ///   Looks up a localized string similar to Turn down the audio playback speed.
         /// </summary>
         public static string CmdAudioPlayRateDown_LongDesc {
             get {
@@ -412,7 +394,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Descrease playback rate.
+        ///   Looks up a localized string similar to _Decrease playback rate.
         /// </summary>
         public static string CmdAudioPlayRateDown_ShortDesc {
             get {
@@ -421,7 +403,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore the normal playback speed.
+        ///   Looks up a localized string similar to Restore the normal audio playback speed.
         /// </summary>
         public static string CmdAudioPlayRateReset_LongDesc {
             get {
@@ -439,7 +421,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Turn the playback speed up.
+        ///   Looks up a localized string similar to Turn up the audio playback speed.
         /// </summary>
         public static string CmdAudioPlayRateUp_LongDesc {
             get {
@@ -457,7 +439,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reload the audio waveform data.
+        ///   Looks up a localized string similar to Reload the waveform data.
         /// </summary>
         public static string CmdAudioReload_LongDesc {
             get {
@@ -475,7 +457,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump back by a pre-defined time increment.
+        ///   Looks up a localized string similar to Jump backwards by a pre-defined time increment.
         /// </summary>
         public static string CmdAudioRewind_LongDesc {
             get {
@@ -484,7 +466,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Step backwards.
+        ///   Looks up a localized string similar to _Step back.
         /// </summary>
         public static string CmdAudioRewind_ShortDesc {
             get {
@@ -493,7 +475,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select audio on the left of the play cursor.
+        ///   Looks up a localized string similar to Select all audio on the left of the cursor.
         /// </summary>
         public static string CmdAudioSelectLeft_LongDesc {
             get {
@@ -511,7 +493,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the entire audio phrase following the current one.
+        ///   Looks up a localized string similar to Select the entire audio chunk after the cursor.
         /// </summary>
         public static string CmdAudioSelectNextChunk_LongDesc {
             get {
@@ -520,7 +502,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select next phrase.
+        ///   Looks up a localized string similar to Select next chunk.
         /// </summary>
         public static string CmdAudioSelectNextChunk_ShortDesc {
             get {
@@ -529,7 +511,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the entire audio phrase preceding the current one.
+        ///   Looks up a localized string similar to Select the entire audio chunk preceding the cursor.
         /// </summary>
         public static string CmdAudioSelectPreviousChunk_LongDesc {
             get {
@@ -538,7 +520,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select previous phrase.
+        ///   Looks up a localized string similar to Select previous chunk.
         /// </summary>
         public static string CmdAudioSelectPreviousChunk_ShortDesc {
             get {
@@ -547,7 +529,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select audio on the right of the play cursor.
+        ///   Looks up a localized string similar to Select all audio on the right of the cursor.
         /// </summary>
         public static string CmdAudioSelectRight_LongDesc {
             get {
@@ -574,7 +556,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio se_ttings.
+        ///   Looks up a localized string similar to Device se_ttings....
         /// </summary>
         public static string CmdAudioSettings_ShortDesc {
             get {
@@ -583,7 +565,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start monitoring audio input.
+        ///   Looks up a localized string similar to Check audio levels from input device.
         /// </summary>
         public static string CmdAudioStartMonitor_LongDesc {
             get {
@@ -601,7 +583,25 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step back one phrase.
+        ///   Looks up a localized string similar to Record audio from input device.
+        /// </summary>
+        public static string CmdAudioStartRecord_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioStartRecord_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to St_art recording.
+        /// </summary>
+        public static string CmdAudioStartRecord_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioStartRecord_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump to the audio chunk preceding the cursor.
         /// </summary>
         public static string CmdAudioStepBack_LongDesc {
             get {
@@ -610,7 +610,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Back one phrase.
+        ///   Looks up a localized string similar to _Previous chunk.
         /// </summary>
         public static string CmdAudioStepBack_ShortDesc {
             get {
@@ -619,7 +619,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step forward one phrase.
+        ///   Looks up a localized string similar to Jumpd to the audio chunk following the cursor.
         /// </summary>
         public static string CmdAudioStepForward_LongDesc {
             get {
@@ -628,7 +628,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Forward one phrase.
+        ///   Looks up a localized string similar to _Next chunk.
         /// </summary>
         public static string CmdAudioStepForward_ShortDesc {
             get {
@@ -637,7 +637,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop the audio input monitoring.
+        ///   Looks up a localized string similar to Stop checking the audio input levels.
         /// </summary>
         public static string CmdAudioStopMonitor_LongDesc {
             get {
@@ -691,7 +691,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zoom waveform selection into view.
+        ///   Looks up a localized string similar to Bring waveform selection into full view.
         /// </summary>
         public static string CmdAudioZoomSelection_LongDesc {
             get {
@@ -763,7 +763,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select all content.
+        ///   Looks up a localized string similar to Select all audio content.
         /// </summary>
         public static string CmdSelectAll_LongDesc {
             get {
