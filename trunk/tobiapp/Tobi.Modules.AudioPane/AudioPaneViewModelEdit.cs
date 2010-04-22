@@ -511,6 +511,18 @@ namespace Tobi.Plugin.AudioPane
                     treeNode.Presentation.UndoRedoManager.EndTransaction();
                     return;
                 }
+
+
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                }
+                m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
+                m_CurrentAudioStreamProvider();
+
+                //CommandRefresh.Execute();
+
+                m_LastSetPlayHeadTime = timeInsert;
             }
             else
             {

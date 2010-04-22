@@ -88,8 +88,8 @@ namespace Tobi.Plugin.AudioPane
                     if (AudioPlaybackStreamKeepAlive)
                     {
                         ensurePlaybackStreamIsDead();
-                        m_CurrentAudioStreamProvider();
                     }
+                    m_CurrentAudioStreamProvider();
                 }
 
                 Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
@@ -191,8 +191,8 @@ namespace Tobi.Plugin.AudioPane
                 if (AudioPlaybackStreamKeepAlive)
                 {
                     ensurePlaybackStreamIsDead();
-                    m_CurrentAudioStreamProvider();
                 }
+                m_CurrentAudioStreamProvider();
             }
 
             //bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(treeNode);
@@ -376,7 +376,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 if (done)
                 {
-                    foreach (var childCommand in ((CompositeCommand) cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                    foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
                     {
                         updateTotalDuration(childCommand, done);
                     }
@@ -482,19 +482,23 @@ namespace Tobi.Plugin.AudioPane
                 //Debug.Assert(command.ChildCommands.Count > 0);
                 if (command.ChildCommands.Count == 0) return;
 
-                var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
-                if (list != null)
+                if (command.ChildCommands.Count == 1)
                 {
-                    UndoRedoManagerChanged(list, done);
-                    return;
+                    cmd = command.ChildCommands.Get(0);
                 }
-
-                if (command.ChildCommands.Count > 0)
+                else
                 {
+                    var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                    if (list != null)
+                    {
+                        UndoRedoManagerChanged(list, done);
+                        return;
+                    }
                     if (done)
                     {
                         var childCmd = command.ChildCommands.Get(command.ChildCommands.Count - 1);
-                        if (childCmd is ManagedAudioMediaInsertDataCommand)
+                        if (childCmd is ManagedAudioMediaInsertDataCommand
+                            || childCmd is TreeNodeSetManagedAudioMediaCommand)
                         {
                             cmd = childCmd;
                         }
@@ -504,7 +508,8 @@ namespace Tobi.Plugin.AudioPane
                         var childCmd = command.ChildCommands.Get(0);
                         if (childCmd is CompositeCommand)
                         {
-                            var list_ = ((CompositeCommand)childCmd).GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
+                            var list_ =
+                                ((CompositeCommand)childCmd).GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
                             if (list_ != null)
                             {
                                 UndoRedoManagerChanged(list_, done);
@@ -543,6 +548,11 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+#if DEBUG
+            Debugger.Break();
+#endif
+
+            m_LastSetPlayHeadTime = 0;
             m_StateToRestore = null;
             if (AudioPlaybackStreamKeepAlive)
             {
