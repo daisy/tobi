@@ -411,6 +411,11 @@ namespace Tobi
 
         public void ExecuteShellProcess(string shellCmd)
         {
+            ExecuteShellProcess_(shellCmd);
+        }
+
+        public static void ExecuteShellProcess_(string shellCmd)
+        {
             var process = new Process
             {
                 StartInfo =

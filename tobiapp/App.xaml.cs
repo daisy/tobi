@@ -207,7 +207,18 @@ c.Execute();
                 {
                     File.Delete(filename);
                 }
+                
+                string directory = Path.GetDirectoryName(filename);
+
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                string settingsPath = Path.GetDirectoryName(config.FilePath);
+                Shell.ExecuteShellProcess_(settingsPath);
+
+                Debug.Assert(directory == settingsPath);
+
                 Settings.Default.Reset();
+                //Settings.Default.Reload();
+                //Settings.Default.Upgrade();
             }
 
 
