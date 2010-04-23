@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CmdTextOnlyViewToggle_ShortDesc" xml:space="preserve">
+    <value>_Toggle text view</value>
+  </data>
+  <data name="CmdTextOnlyViewToggle_LongDesc" xml:space="preserve">
+    <value>Alternate between the text view styles (full, minimalist)</value>
+  </data>
   <data name="CmdStructureDown_ShortDesc" xml:space="preserve">
     <value>_Narrow selection</value>
   </data>

@@ -159,6 +159,8 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandFocus { get; private set; }
 
+        public RichDelegateCommand CommandToggleTextOnlyView { get; private set; }
+
         private readonly ILoggerFacade m_Logger;
 
         private readonly IEventAggregator m_EventAggregator;
@@ -223,6 +225,21 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Txt));
 
             m_ShellView.RegisterRichCommand(CommandFocus);
+            //
+            CommandToggleTextOnlyView = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeNeuIcon("Neu_preferences-desktop-font"),
+                () =>
+                {
+                    Settings.Default.Document_ShowTextOnlyView = !Settings.Default.Document_ShowTextOnlyView;
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleTextOnly));
+
+            m_ShellView.RegisterRichCommand(CommandToggleTextOnlyView);
             //
             CommandStructureDown = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdStructureDown_ShortDesc,

@@ -142,7 +142,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View keyboard shortcuts.
+        ///   Looks up a localized string similar to View keyboard shortcuts (DEBUG MODE ONLY).
         /// </summary>
         public static string CmdManageShortcuts_LongDesc {
             get {
@@ -151,7 +151,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Keyboard shortcuts.
+        ///   Looks up a localized string similar to _Keyboard shortcuts (DEBUG).
         /// </summary>
         public static string CmdManageShortcuts_ShortDesc {
             get {
@@ -160,7 +160,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exit the application.
+        ///   Looks up a localized string similar to Close the application.
         /// </summary>
         public static string CmdMenuExit_LongDesc {
             get {
@@ -169,7 +169,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Quit.
+        ///   Looks up a localized string similar to _Exit.
         /// </summary>
         public static string CmdMenuExit_ShortDesc {
             get {
