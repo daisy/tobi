@@ -7,5 +7,8 @@
     <Setting Name="Keyboard_Focus_Nav" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F8</Value>
     </Setting>
+    <Setting Name="Keyboard_ToggleDocMark" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] K</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -12,8 +12,10 @@ namespace Tobi.Plugin.NavigationPane
 
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
-
+        
         private readonly MarkersPanelView m_MarkersPane;
+        private readonly MarkersPaneViewModel m_MarkersViewModel;
+        
 
         private readonly ILoggerFacade m_Logger;
 
@@ -31,7 +33,9 @@ namespace Tobi.Plugin.NavigationPane
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
             [Import(typeof(MarkersPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            MarkersPanelView pane) //MarkersPaneViewModel
+            MarkersPanelView pane,
+            [Import(typeof(MarkersPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            MarkersPaneViewModel viewModel)
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
@@ -39,6 +43,7 @@ namespace Tobi.Plugin.NavigationPane
             m_UrakawaSession = session;
             m_ShellView = shellView;
             m_MarkersPane = pane;
+            m_MarkersViewModel = viewModel;
 
             // Remark: using direct access instead of delayed lookup (via the region registry)
             // generates an exception, because the region does not exist yet (see "parent" plugin constructor, RegionManager.SetRegionManager(), etc.)            
@@ -63,10 +68,14 @@ namespace Tobi.Plugin.NavigationPane
             m_Logger.Log(@"Navigation commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
 
-        //private int m_MenuBarId_1;
+        private int m_MenuBarId_1;
         protected override void OnMenuBarReady()
         {
-            //m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext }, UserInterfaceStrings.Menu_Navigation);
+            m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Text, PreferredPosition.First, true,
+                null, //Tobi_Common_Lang.Menu_Focus,
+                PreferredPosition.First, false,
+                new[] { m_MarkersViewModel.CommandToggleMark });
 
             m_Logger.Log(@"Navigation commands pushed to menubar", Category.Debug, Priority.Medium);
         }
@@ -82,7 +91,7 @@ namespace Tobi.Plugin.NavigationPane
 
             if (m_MenuBarView != null)
             {
-                //m_MenuBarView.RemoveMenuBarGroup(RegionNames.MenuBar_Tools, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Text, m_MenuBarId_1);
 
                 m_Logger.Log(@"Navigation commands removed from menubar", Category.Debug, Priority.Medium);
             }

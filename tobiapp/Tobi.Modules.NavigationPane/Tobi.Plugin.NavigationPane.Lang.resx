@@ -234,4 +234,10 @@
   <data name="Marked" xml:space="preserve">
     <value>Marked</value>
   </data>
+  <data name="CmdNavigationToggleMark_ShortDesc" xml:space="preserve">
+    <value>Toggle document mark</value>
+  </data>
+  <data name="CmdNavigationToggleMark_LongDesc" xml:space="preserve">
+    <value>Switch on/off the marker on the currently-selected text item</value>
+  </data>
 </root>
