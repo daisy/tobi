@@ -22,11 +22,17 @@
     <Setting Name="Document_UseDottedSelect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="Document_ShowTextOnlyView" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="Document_ButtonBarVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Document_Color_Font_Audio" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#ff000000</Value>
+    </Setting>
+    <Setting Name="Document_Color_Font_TextOnly" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#ff333333</Value>
     </Setting>
     <Setting Name="Document_Color_Font_NoAudio" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF696969</Value>

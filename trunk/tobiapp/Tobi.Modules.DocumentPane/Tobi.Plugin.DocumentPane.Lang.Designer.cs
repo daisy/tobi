@@ -203,5 +203,14 @@ namespace Tobi.Plugin.DocumentPane {
                 return ResourceManager.GetString("No_Document", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text-only view.
+        /// </summary>
+        public static string TextOnly {
+            get {
+                return ResourceManager.GetString("TextOnly", resourceCulture);
+            }
+        }
     }
 }

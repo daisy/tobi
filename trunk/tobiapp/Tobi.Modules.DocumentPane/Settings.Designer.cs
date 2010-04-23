@@ -97,6 +97,18 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Document_ShowTextOnlyView {
+            get {
+                return ((bool)(this["Document_ShowTextOnlyView"]));
+            }
+            set {
+                this["Document_ShowTextOnlyView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Document_ButtonBarVisible {
             get {
@@ -116,6 +128,18 @@ namespace Tobi.Plugin.DocumentPane {
             }
             set {
                 this["Document_Color_Font_Audio"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#ff333333")]
+        public global::System.Windows.Media.Color Document_Color_Font_TextOnly {
+            get {
+                return ((global::System.Windows.Media.Color)(this["Document_Color_Font_TextOnly"]));
+            }
+            set {
+                this["Document_Color_Font_TextOnly"] = value;
             }
         }
         
