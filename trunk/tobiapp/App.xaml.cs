@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Configuration;
 using System.Deployment.Application;
 using System.Diagnostics;
 using System.Globalization;
@@ -176,6 +178,39 @@ c.Execute();
         /// <param name="e"></param>
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
+            try
+            {
+                SettingsPropertyCollection col1 = Settings.Default.Properties;
+                IEnumerator enume1 = col1.GetEnumerator();
+                while (enume1.MoveNext())
+                {
+                    var current = (SettingsProperty)enume1.Current;
+                    Console.WriteLine(current.DefaultValue);
+                    Console.WriteLine(Settings.Default[current.Name]);
+                }
+                //Settings.Default.Reload();
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                string filename = ex.Filename;
+                if (string.IsNullOrEmpty(filename)
+                    && ex.InnerException != null
+                    && ex.InnerException is ConfigurationErrorsException)
+                {
+                    filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
+                }
+
+                if (filename != null && File.Exists(filename))
+                {
+                    File.Delete(filename);
+                }
+                Settings.Default.Reset();
+            }
+
+
 #if DEBUG
             var str = Tobi_Lang.LangStringKey1;
 
@@ -185,7 +220,20 @@ c.Execute();
             SetCulture("hi");
             str = Tobi_Lang.LangStringKey1;
 
-            SetCulture(Settings.Default.Lang);
+            try
+            {
+                SetCulture(Settings.Default.Lang);
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                MessageBox.Show(ex.Message);
+
+                Process.GetCurrentProcess().Kill();
+                return;
+            }
             str = Tobi_Lang.LangStringKey1;
 #else //DEBUG
             SetCulture(Settings.Default.Lang);

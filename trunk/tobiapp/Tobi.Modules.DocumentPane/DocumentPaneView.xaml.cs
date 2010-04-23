@@ -1069,7 +1069,7 @@ namespace Tobi.Plugin.DocumentPane
                 m_TextOnlyViewRun = new Run("");
                 var block = new Paragraph(m_TextOnlyViewRun);
 
-                m_TextOnlyViewRun.FontSize *= 3;
+                m_TextOnlyViewRun.FontSize *= 2;
                 m_TextOnlyViewRun.FontStyle = FontStyles.Normal;
                 m_TextOnlyViewRun.FontWeight = FontWeights.Heavy;
                 m_TextOnlyViewRun.FontStretch = FontStretches.Normal;
