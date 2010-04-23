@@ -21,6 +21,8 @@ namespace Tobi.Plugin.NavigationPane
     [Export(typeof(MarkersPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
     public class MarkersPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
+        public RichDelegateCommand CommandToggleMark { get; private set; }
+
         #region Construction
 
         //        protected IUnityContainer Container { get; private set; }
@@ -49,6 +51,21 @@ namespace Tobi.Plugin.NavigationPane
 
 
             m_Logger.Log("MarkersPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
+            CommandToggleMark = new RichDelegateCommand(
+                Tobi_Plugin_NavigationPane_Lang.CmdNavigationToggleMark_ShortDesc,
+                Tobi_Plugin_NavigationPane_Lang.CmdNavigationToggleMark_LongDesc,
+                                    null, // KeyGesture obtained from settings (see last parameters below)
+                                    m_ShellView.LoadTangoIcon("bookmark-new"),
+                                    () =>
+                                    {
+                                        var cmd = SelectedTreeNode.Presentation.CommandFactory.CreateTreeNodeSetIsMarkedCommand(SelectedTreeNode, !SelectedTreeNode.IsMarked);
+                                        SelectedTreeNode.Presentation.UndoRedoManager.Execute(cmd);
+                                    },
+                                    () => SelectedTreeNode != null,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleDocMark));
+
+            m_ShellView.RegisterRichCommand(CommandToggleMark);
 
             CommandFindFocusMarkers = new RichDelegateCommand(
                 @"MARKERS CommandFindFocus DUMMY TXT",
@@ -192,8 +209,7 @@ namespace Tobi.Plugin.NavigationPane
             set
             {
                 if (SelectedTreeNode == null) return;
-                var cmd = SelectedTreeNode.Presentation.CommandFactory.CreateTreeNodeSetIsMarkedCommand(SelectedTreeNode, value);
-                SelectedTreeNode.Presentation.UndoRedoManager.Execute(cmd);
+                CommandToggleMark.Execute();
             }
         }
 
