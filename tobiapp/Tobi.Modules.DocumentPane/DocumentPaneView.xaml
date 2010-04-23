@@ -20,7 +20,10 @@
 
 
   <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True" x:Name="FlowDocReader"
-                            
+                                               
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+         
           Margin="0,0,0,0"
           Padding="0,0,0,0"
           
@@ -79,6 +82,74 @@
 
 
   </DocumentPane:FlowDocumentScrollViewerEx>
+
+
+
+  <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True" x:Name="FlowDocReaderSimple"
+                            
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
+         
+          Margin="0,0,0,0"
+          Padding="0,0,0,0"
+          
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
+                            
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                    IsTabStop="False"
+                    Focusable="False"
+                            Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                      Background="{Binding
+                       Converter={XAML:ColorToBrushConverter},
+                            Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                            Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+                      >
+    <!-- 
+{DynamicResource {x:Static SystemColors.WindowBrushKey}}
+
+                            IsFindEnabled="False"
+                      IsPrintEnabled="False"
+                      
+                        IsScrollViewEnabled="True"
+                      IsPageViewEnabled="True"
+                      IsTwoPageViewEnabled="False"
+                      
+                      ViewingMode="Scroll" -->
+
+    <FlowDocument AllowDrop="True" x:Name="TheFlowDocumentSimple"
+                    Background="{Binding
+                    Converter={XAML:ColorToBrushConverter},
+                    Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
+                      
+                 AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
+         IsEnabled = "True"
+         IsHyphenationEnabled = "False"
+         IsOptimalParagraphEnabled = "False"
+         ColumnWidth = "Infinity"
+         IsColumnWidthFlexible="False"
+         TextAlignment = "Center"
+                  Focusable="False"
+
+                    />
+
+
+    <!-- ScrollViewer
+                VerticalScrollBarVisibility="Visible"
+                HorizontalScrollBarVisibility="Auto"
+                
+             CanContentScroll="False"
+                IsDeferredScrollingEnabled="False"
+                  Focusable="False"
+                >
+    </ScrollViewer -->
+
+
+
+  </DocumentPane:FlowDocumentScrollViewerEx>
+  
+  
   <!-- IsSelectionEnabled="True"
     
                         IsScrollViewEnabled="False"
@@ -188,7 +259,9 @@
                  
              Style="{StaticResource VisibilityTogglerStyleWidth}"
           />
-    <UI:ButtonRichCommand
+
+
+      <UI:ButtonRichCommand
                           RichCommand="{Binding CommandStructureUp}"
                                  />
     <UI:ButtonRichCommand
@@ -205,6 +278,13 @@
 
       <Separator/>
 
+      <CheckBox Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
+                Margin="3"
+                 VerticalAlignment="Center"
+   IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView, Mode=TwoWay}"/>
+
+
+      <Separator/>
       <!--<StackPanel Orientation="Horizontal"
                   DataContext="{StaticResource familyCollection}">-->
 

@@ -448,12 +448,15 @@ namespace Tobi.Plugin.DocumentPane
 
             //var fontConverter = new FontFamilyConverter();
             //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
-            //comboListOfFonts.SelectedItem = fontFamily;
+
+            //UserInterfaceStrings.No_Document);
+            //setTextDecoration_ErrorUnderline(run);//comboListOfFonts.SelectedItem = fontFamily;
 
             TheFlowDocument.Blocks.Clear();
-            var run = new Run(" "); //UserInterfaceStrings.No_Document);
-            //setTextDecoration_ErrorUnderline(run);
-            TheFlowDocument.Blocks.Add(new Paragraph(run));
+            TheFlowDocument.Blocks.Add(new Paragraph(new Run(" ")));
+
+            TheFlowDocumentSimple.Blocks.Clear();
+            TheFlowDocumentSimple.Blocks.Add(new Paragraph(new Run(" ")));
 
             //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
             //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
@@ -477,11 +480,21 @@ namespace Tobi.Plugin.DocumentPane
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
 
+        private void refreshTextOnlyViewColors()
+        {
+            if (m_TextOnlyViewRun != null)
+            {
+                m_TextOnlyViewRun.Foreground = GetCachedBrushForColor(Settings.Default.Document_Color_Font_TextOnly);
+            }
+        }
+
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!e.PropertyName.StartsWith(@"Document_Color_")
                 //&& !e.PropertyName.StartsWith(@"Document_")
                 ) return;
+
+            refreshTextOnlyViewColors();
 
             if (e.PropertyName.StartsWith(@"Document_Color_Selection_"))
             {
@@ -856,15 +869,17 @@ namespace Tobi.Plugin.DocumentPane
             m_lastHighlightedSub = null;
 
             TheFlowDocument.Blocks.Clear();
+            TheFlowDocumentSimple.Blocks.Clear();
 
             if (project == null)
             {
 #if false && DEBUG
                 FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("Testing FlowDocument (DEBUG) （１）このテキストDAISY図書は，レベル５まであります。")));
 #else
-                var run = new Run(" "); //UserInterfaceStrings.No_Document);
+                //UserInterfaceStrings.No_Document);
                 //setTextDecoration_ErrorUnderline(run);
-                TheFlowDocument.Blocks.Add(new Paragraph(run));
+                TheFlowDocument.Blocks.Add(new Paragraph(new Run(" ")));
+                TheFlowDocumentSimple.Blocks.Add(new Paragraph(new Run(" ")));
 #endif //DEBUG
 
                 GC.Collect();
@@ -978,6 +993,9 @@ namespace Tobi.Plugin.DocumentPane
             Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
+            TreeNode selectedTreeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
+            updateSimpleTextView(selectedTreeNode);
+
             TextElement textElement1 = null;
             if (m_lastHighlighted != null && m_lastHighlighted.Tag == newTreeNodeSelection.Item1)
             {
@@ -1041,6 +1059,37 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private Run m_TextOnlyViewRun;
+        private void updateSimpleTextView(TreeNode treeNode)
+        {
+            if (m_TextOnlyViewRun == null || TheFlowDocumentSimple.Blocks.Count == 0)
+            {
+                TheFlowDocumentSimple.Blocks.Clear();
+
+                m_TextOnlyViewRun = new Run("");
+                var block = new Paragraph(m_TextOnlyViewRun);
+
+                m_TextOnlyViewRun.FontSize *= 3;
+                m_TextOnlyViewRun.FontStyle = FontStyles.Normal;
+                m_TextOnlyViewRun.FontWeight = FontWeights.Heavy;
+                m_TextOnlyViewRun.FontStretch = FontStretches.Normal;
+                
+                refreshTextOnlyViewColors();
+
+                //block.TextAlignment = TextAlignment.Center;
+
+                TheFlowDocumentSimple.Blocks.Add(block);
+            }
+
+            string str = treeNode.GetTextMediaFlattened(true);
+            if (string.IsNullOrEmpty(str))
+            {
+                return;
+            }
+
+            m_TextOnlyViewRun.Text = str;
+        }
+
         private void scrollToView(TextElement textElement)
         {
             if (FlowDocReader.ScrollViewer == null)
@@ -1085,7 +1134,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (rect.Bottom > bottom) bottom = rect.Bottom;
 
                     //textPointerCurrent = textPointerCurrent.GetNextInsertionPosition(LogicalDirection.Forward);
-                    
+
                     //int result = textPointerCurrent.CompareTo(textPointerEnd);
                     //result = textPointerEnd.CompareTo(textPointerCurrent);
                     //if (result==0)
