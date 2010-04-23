@@ -133,16 +133,16 @@
     <value>Hello</value>
   </data>
   <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
-    <value>_Keyboard shortcuts</value>
+    <value>_Keyboard shortcuts (DEBUG)</value>
   </data>
   <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
-    <value>View keyboard shortcuts</value>
+    <value>View keyboard shortcuts (DEBUG MODE ONLY)</value>
   </data>
   <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
-    <value>_Quit</value>
+    <value>_Exit</value>
   </data>
   <data name="CmdMenuExit_LongDesc" xml:space="preserve">
-    <value>Exit the application</value>
+    <value>Close the application</value>
   </data>
   <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
     <value>Application executable and log</value>

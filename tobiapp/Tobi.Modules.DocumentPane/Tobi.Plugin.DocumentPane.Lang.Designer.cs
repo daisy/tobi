@@ -133,6 +133,24 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alternate between the text view styles (full, minimalist).
+        /// </summary>
+        public static string CmdTextOnlyViewToggle_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdTextOnlyViewToggle_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Toggle text view.
+        /// </summary>
+        public static string CmdTextOnlyViewToggle_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdTextOnlyViewToggle_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text viewer focus.
         /// </summary>
         public static string CmdTxtFocus_ShortDesc {

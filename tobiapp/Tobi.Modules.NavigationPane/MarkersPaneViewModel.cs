@@ -51,6 +51,7 @@ namespace Tobi.Plugin.NavigationPane
 
 
             m_Logger.Log("MarkersPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
+            
             CommandToggleMark = new RichDelegateCommand(
                 Tobi_Plugin_NavigationPane_Lang.CmdNavigationToggleMark_ShortDesc,
                 Tobi_Plugin_NavigationPane_Lang.CmdNavigationToggleMark_LongDesc,

@@ -28,7 +28,7 @@ namespace Tobi
         public RichDelegateCommand MagnifyUiResetCommand { get; private set; }
 
         public RichDelegateCommand ManageShortcutsCommand { get; private set; }
-        public RichDelegateCommand DisplayPreviewIconsDebugCommand { get; private set; }
+        //public RichDelegateCommand DisplayPreviewIconsDebugCommand { get; private set; }
 
         public RichDelegateCommand HelpCommand { get; private set; }
         //public RichDelegateCommand PreferencesCommand { get; private set; }
