@@ -116,7 +116,7 @@ namespace Tobi.Plugin.NavigationPane
 
             _ignoreTreeNodeSelectedEvent = true;
 
-            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] MarkersPanelView.OnMarkersSelected", Category.Debug, Priority.Medium);
+            //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] MarkersPanelView.OnMarkersSelected", Category.Debug, Priority.Medium);
 
             m_UrakawaSession.PerformTreeNodeSelection(treeNode);
             //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);

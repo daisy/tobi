@@ -418,7 +418,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
              CanContentScroll="True"
                 IsDeferredScrollingEnabled="False"
                   Focusable="False"
-                  Background="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
+                  Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   ScrollChanged="OnWaveFormScrollChanged"
                   
@@ -432,7 +432,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                MouseLeave="OnWaveFormMouseLeave"
                MouseEnter="OnWaveFormMouseEnter"
               Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-              Background="{Binding Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
+              Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
               SnapsToDevicePixels="True"

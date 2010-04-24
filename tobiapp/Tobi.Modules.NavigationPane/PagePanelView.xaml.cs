@@ -123,7 +123,7 @@ namespace Tobi.Plugin.NavigationPane
 
             _ignoreTreeNodeSelectedEvent = true;
 
-            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
+            //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
 
             m_UrakawaSession.PerformTreeNodeSelection(treeNode);
         }

@@ -35,7 +35,7 @@ namespace Tobi.Plugin.AudioPane
                 m_ShellView.LoadTangoIcon("view-refresh"),
                 ()=>
                 {
-                    Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);
+                    //Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);
 
                     StartWaveFormLoadTimer(200, IsAutoPlay);
                 },

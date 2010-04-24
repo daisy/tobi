@@ -96,7 +96,7 @@ namespace Tobi.Plugin.Validator.Metadata
                 return;
             }
 
-            m_Logger.Log("MetadataValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            //m_Logger.Log("MetadataValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs

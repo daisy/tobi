@@ -495,7 +495,7 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            m_Logger.Log(@"-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.close", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.close", Category.Debug, Priority.Medium);
 
             var oldProject = DocumentProject;
 

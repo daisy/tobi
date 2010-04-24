@@ -601,7 +601,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 return;
             }
 
-            m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            //m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
@@ -615,7 +615,7 @@ namespace Tobi.Plugin.StructureTrailPane
             if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
                 Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                //m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 

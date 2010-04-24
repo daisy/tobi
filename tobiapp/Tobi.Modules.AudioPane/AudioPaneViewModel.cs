@@ -1399,8 +1399,7 @@ namespace Tobi.Plugin.AudioPane
                         CommandPlay.Execute();
                     }
 
-                    Logger.Log("++++++ PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.LastPlayHeadTime",
-                                   Category.Debug, Priority.Medium);
+                    //Logger.Log("++++++ PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.LastPlayHeadTime", Category.Debug, Priority.Medium);
 
                     //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(State.CurrentSubTreeNode);
                     m_UrakawaSession.PerformTreeNodeSelection(treeNode);

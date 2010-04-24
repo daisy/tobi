@@ -59,7 +59,7 @@ namespace Tobi.Plugin.MenuBar
                                     string subMenuItemId, PreferredPosition positionInSubLevel, bool addSeparatorSubLevel,
                                     object[] commands)
         {
-            m_Logger.Log(@"AddMenuBarGroup", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"AddMenuBarGroup", Category.Debug, Priority.Medium);
 
 #if DEBUG
             if (!Dispatcher.CheckAccess())

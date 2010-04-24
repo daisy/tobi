@@ -128,7 +128,7 @@ namespace Tobi.Plugin.NavigationPane
             m_ignoreTreeNodeSelectedEvent = true;
             m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
 
-            m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
+            //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
 
             m_UrakawaSession.PerformTreeNodeSelection(treeNode);
         }
