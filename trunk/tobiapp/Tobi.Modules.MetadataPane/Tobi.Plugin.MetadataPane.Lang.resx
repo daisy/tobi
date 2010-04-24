@@ -181,4 +181,8 @@
     <value>Synonyms: {0}</value>
     <comment>{0} = a comma-separated list of synonyms</comment>
   </data>
+  <data name="NameAndDescription" xml:space="preserve">
+    <value>{0}: {1}</value>
+    <comment>{0} = Name  {1} = Description</comment>
+  </data>
 </root>

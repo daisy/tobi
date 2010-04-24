@@ -243,10 +243,15 @@ namespace Tobi.Plugin.Validator.Metadata
                         }
                     }
                 }
-                if (sameItem || (sameDef && sameType))
+                if (error is AbstractMetadataValidationErrorWithTarget && sameItem == true)
                 {
                     foundDuplicate = true;
-                    break; // && err.ErrorType != MetadataErrorType.MissingItemError
+                    break;
+                }
+                else if (!(error is AbstractMetadataValidationErrorWithTarget) && sameDef && sameType)
+                {
+                    foundDuplicate = true;
+                    break; 
                 }
             }
 
@@ -317,10 +322,13 @@ namespace Tobi.Plugin.Validator.Metadata
 
                     if (list.Count > 1)
                     {
-                        MetadataDuplicateItemValidationError err = 
-                            new MetadataDuplicateItemValidationError(metadataDefinition, m_EventAggregator);
-                        ReportError(err);
                         isValid = false;
+                        foreach (urakawa.metadata.Metadata item in list)
+                        {
+                            MetadataDuplicateItemValidationError err =
+                                new MetadataDuplicateItemValidationError(item, metadataDefinition, m_EventAggregator);
+                            ReportError(err);
+                        }
                     }
                 }
             }

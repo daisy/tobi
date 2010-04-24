@@ -216,7 +216,7 @@
       <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Description}" FontWeight="Bold"/>
       <TextBlock TextWrapping="Wrap">
         <TextBlock.Text>
-          <MultiBinding StringFormat="{}{0}: {1}">
+          <MultiBinding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.NameAndDescription}">
             <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Name"/>
             <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Description"/>
           </MultiBinding>
