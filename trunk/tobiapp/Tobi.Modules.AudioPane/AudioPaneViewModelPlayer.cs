@@ -1040,7 +1040,7 @@ namespace Tobi.Plugin.AudioPane
                 TreeNode nextNode = treeNodeSelection.Item1.GetNextSiblingWithManagedAudio();
                 if (nextNode != null)
                 {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
+                    //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
                     //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                     m_UrakawaSession.PerformTreeNodeSelection(nextNode);

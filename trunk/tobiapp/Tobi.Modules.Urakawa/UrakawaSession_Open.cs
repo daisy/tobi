@@ -209,16 +209,14 @@ namespace Tobi.Plugin.Urakawa
 
                 if (DocumentProject != null)
                 {
-                    m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug,
-                               Priority.Medium);
+                    //m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
 
                     m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
 
                     var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText(true);
                     if (treeNode != null)
                     {
-                        m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded",
-                                   Category.Debug, Priority.Medium);
+                        //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);
 
                         PerformTreeNodeSelection(treeNode);
                         //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);

@@ -290,7 +290,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            m_Logger.Log("MarkersPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            //m_Logger.Log("MarkersPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
                   || eventt is UnDoneEventArgs

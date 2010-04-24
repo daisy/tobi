@@ -106,7 +106,8 @@ namespace Tobi.Plugin.ToolBars
 
         public int AddToolBarGroup(RichDelegateCommand[] commands, PreferredPosition position)
         {
-            m_Logger.Log(@"AddToolBarGroup", Category.Debug, Priority.Medium);
+            //m_Logger.Log(@"AddToolBarGroup", Category.Debug, Priority.Medium);
+
 #if DEBUG
             if (!Dispatcher.CheckAccess())
             {
@@ -123,7 +124,7 @@ namespace Tobi.Plugin.ToolBars
             {
                 string viewname = uid + @"_" + count++;
 
-                m_Logger.Log(@"}}}}}}}}}}}}}> AddToolBar: " + position + " (" + viewname + ") " + command.ShortDescription, Category.Debug, Priority.Medium);
+                //m_Logger.Log(@"}}}}}}}}}}}}}> AddToolBar: " + position + " (" + viewname + ") " + command.ShortDescription, Category.Debug, Priority.Medium);
 
                 m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar,
                     new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = command, m_viewPreferredPosition = position });

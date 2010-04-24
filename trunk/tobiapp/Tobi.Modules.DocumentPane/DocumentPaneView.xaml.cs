@@ -725,7 +725,7 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
@@ -739,7 +739,7 @@ namespace Tobi.Plugin.DocumentPane
             if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
                 Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 
@@ -1751,7 +1751,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textElement.Tag is TreeNode)
                 {
-                    m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
+                    //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.BringIntoViewAndHighlight", Category.Debug, Priority.Medium);
 
                     m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
                     //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish((TreeNode)(textElement.Tag));

@@ -78,8 +78,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (treeNodeSelection.Item1 != command.CurrentTreeNode)
                 {
-                    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
-                               Category.Debug, Priority.Medium);
+                    //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
                     //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
                     m_UrakawaSession.PerformTreeNodeSelection(command.CurrentTreeNode);
                 }
@@ -100,8 +99,7 @@ namespace Tobi.Plugin.AudioPane
                 if (command.SelectionData.m_TreeNode.IsDescendantOf(command.CurrentTreeNode)
                     && treeNodeSelectionAfter.Item2 != command.SelectionData.m_TreeNode)
                 {
-                    Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
-                               Category.Debug, Priority.Medium);
+                    //Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
                     //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.SelectionData.m_TreeNode);
                     m_UrakawaSession.PerformTreeNodeSelection(command.SelectionData.m_TreeNode);
 
@@ -168,8 +166,7 @@ namespace Tobi.Plugin.AudioPane
 
                 //State.CurrentTreeNode = null;
 
-                Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
-                           Category.Debug, Priority.Medium);
+                //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
                 //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(currentTreeNode);
                 m_UrakawaSession.PerformTreeNodeSelection(currentTreeNode);
 
@@ -250,8 +247,7 @@ namespace Tobi.Plugin.AudioPane
             if (treeNodeSelectionAfter.Item2 != treeNode
                 && treeNode != currentTreeNode)
             {
-                Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged",
-                           Category.Debug, Priority.Medium);
+                //Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
                 //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(treeNode);
                 m_UrakawaSession.PerformTreeNodeSelection(treeNode);
 
@@ -414,7 +410,7 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
-            Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
+            //Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
 
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
@@ -437,7 +433,7 @@ namespace Tobi.Plugin.AudioPane
             if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
                 Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                //Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 
