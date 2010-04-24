@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -71,10 +72,8 @@ namespace Tobi.Plugin.MetadataPane
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_ShortDesc, Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_LongDesc);
 
-            //highlight an item that has an error
-            if (ErrorWithFocus != null) FocusOnError();
-            
             windowPopup.ShowModal();
+            
 
             //if the user presses "Ok", then save the changes.  otherwise, don't save them.
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
@@ -209,6 +208,11 @@ namespace Tobi.Plugin.MetadataPane
         {
             Debug.Print("Metadata pane: mousedown focus");
             SelectAllTextIfEmptyString(sender as TextBox);
+        }
+
+        private void MetadataPaneView_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (ErrorWithFocus != null) FocusOnError();
         }
     }
 }
