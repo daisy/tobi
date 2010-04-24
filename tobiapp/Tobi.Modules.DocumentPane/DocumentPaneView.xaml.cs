@@ -1,4 +1,7 @@
-﻿using System;
+﻿// MUST USE THIS !! OTHERWISE TextRange.ApplyPropertyValue modifies the FlowDocument content by inserting markup !!!
+#define USE_WALKTREE_FOR_SELECT
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -10,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -28,6 +32,7 @@ using urakawa.xuk;
 
 namespace Tobi.Plugin.DocumentPane
 {
+
     public class FlowDocumentScrollViewerEx : FlowDocumentScrollViewer
     {
         private ScrollViewer m_ScrollViewer;
@@ -180,11 +185,11 @@ namespace Tobi.Plugin.DocumentPane
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
-            // UGLY hack, necessary to avoid memory leaks due to Mouse event handlers
-            if (XukToFlowDocument.m_DocumentPaneView == null)
-            {
-                XukToFlowDocument.m_DocumentPaneView = this;
-            }
+            //// UGLY hack, necessary to avoid memory leaks due to Mouse event handlers
+            //if (XukToFlowDocument.m_DocumentPaneView == null)
+            //{
+            //    XukToFlowDocument.m_DocumentPaneView = this;
+            //}
 
             m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
@@ -462,7 +467,13 @@ namespace Tobi.Plugin.DocumentPane
 
             InitializeComponent();
 
+#if NET40
+            FlowDocReader.SelectionBrush = new SolidColorBrush(Settings.Default.Document_Color_Selection_Back1);
+            FlowDocReader.SelectionOpacity = 0.7;
+#endif
 
+            FlowDocReader.MouseLeave += (sender, e) => restoreMouseOverHighlight();
+            
             //var fontConverter = new FontFamilyConverter();
             //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
 
@@ -816,7 +827,7 @@ namespace Tobi.Plugin.DocumentPane
                 if (node == text.Tag)
                 {
                     bool noAudio;
-                    XukToFlowDocument.SetTextElementAttributes(text, out noAudio, false);
+                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, text, out noAudio, false);
 
                     Debug.Assert(noAudio == !bTreeNodeHasOrInheritsAudio(node));
 
@@ -890,6 +901,11 @@ namespace Tobi.Plugin.DocumentPane
 
             if (project == null)
             {
+                if (FlowDocReader.Selection != null)
+                {
+                    FlowDocReader.Selection.Select(TheFlowDocument.ContentStart, TheFlowDocument.ContentEnd);
+                }
+
 #if false && DEBUG
                 FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("Testing FlowDocument (DEBUG) （１）このテキストDAISY図書は，レベル５まであります。")));
 #else
@@ -1090,7 +1106,7 @@ namespace Tobi.Plugin.DocumentPane
                 m_TextOnlyViewRun.FontStyle = FontStyles.Normal;
                 m_TextOnlyViewRun.FontWeight = FontWeights.Heavy;
                 m_TextOnlyViewRun.FontStretch = FontStretches.Normal;
-                
+
                 refreshTextOnlyViewColors();
 
                 //block.TextAlignment = TextAlignment.Center;
@@ -1145,6 +1161,13 @@ namespace Tobi.Plugin.DocumentPane
                     }
 
                     Rect rect = textPointerCurrent.GetCharacterRect(LogicalDirection.Forward);
+                    if (rect.Left == Double.MaxValue || rect.Top == Double.MaxValue
+                            || rect.Right == Double.MinValue || rect.Bottom == Double.MinValue)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
                     if (rect.Left < left) left = rect.Left;
                     if (rect.Top < top) top = rect.Top;
                     if (rect.Right > right) right = rect.Right;
@@ -1161,13 +1184,31 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (textPointerCurrent.CompareTo(textPointerEnd) == 0)
                     {
+                        if (left == Double.MaxValue || top == Double.MaxValue
+                            || right == Double.MinValue || bottom == Double.MinValue)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
                         found = true;
                         break;
                     }
 
                 } while (textPointerCurrent != null);
 
-                var rectBoundingBox = new Rect(left, top, right - left, bottom - top);
+                double width = right - left;
+                double height = bottom - top;
+                if (width <= 0 || height <= 0)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
+                    return;
+                }
+                var rectBoundingBox = new Rect(left, top, width, height);
+
                 if (!found)
                 {
 #if DEBUG
@@ -1251,12 +1292,17 @@ namespace Tobi.Plugin.DocumentPane
         {
             Action<TextElement> del = data =>
             {
-                XukToFlowDocument.SetBackFrontColorBasedOnTreeNodeTag(data);
+                if (m_MouseOverTextElement == data)
+                {
+                    m_MouseOverTextElement = null;
+                }
+
+                XukToFlowDocument.SetBorderAndBackColorBasedOnTreeNodeTag(this, data);
 
                 if (data.Tag is TreeNode)
                 {
                     bool noAudio;
-                    XukToFlowDocument.SetTextElementAttributes(data, out noAudio, false);
+                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, data, out noAudio, false);
                 }
 
                 //if (data == m_lastHighlightedSub)
@@ -1289,6 +1335,9 @@ namespace Tobi.Plugin.DocumentPane
 
         private void refreshHighlightedColors()
         {
+#if NET40
+            FlowDocReader.SelectionBrush = new SolidColorBrush(Settings.Default.Document_Color_Selection_Back1);
+#endif
             if (m_lastHighlighted == null) return;
 
             if (m_lastHighlightedSub != null)
@@ -1330,15 +1379,63 @@ namespace Tobi.Plugin.DocumentPane
             //    m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
             //}
 
+#if USE_WALKTREE_FOR_SELECT
             WalkDocumentTree(textElement,
-                data =>
-                {
-                    data.Background = brushBack2;
-                    if (data.Tag != null && data.Tag is TreeNode)
-                    {
-                        data.Foreground = brushFont;
-                    }
-                });
+                             data =>
+                             {
+                                 if (!(data is Run) && !(data is InlineUIContainer) && !(data is BlockUIContainer)) return;
+
+                                 if (m_MouseOverTextElement == data)
+                                 {
+                                     m_MouseOverTextElement = null;
+                                 }
+
+                                 data.Background = brushBack2;
+                                 if (data.Tag != null && data.Tag is TreeNode)
+                                 {
+                                     data.Foreground = brushFont;
+                                 }
+                             });
+#else //USE_WALKTREE_FOR_SELECT
+#if USE_FLOWDOCSELECTION_FOR_SELECT
+            var textRange = null;
+            if (FlowDocReader.Selection != null)
+            {
+                FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
+                textRange = FlowDocReader.Selection;
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                return;
+            }
+#else //USE_FLOWDOCSELECTION_FOR_SELECT
+            var textRange = new TextRange(textElement.ContentStart, textElement.ContentEnd);
+
+#if DEBUG
+            string txt1 = textRange.Text;
+#endif //DEBUG
+
+#endif //USE_FLOWDOCSELECTION_FOR_SELECT
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, brushFont);
+            textRange.ApplyPropertyValue(TextElement.BackgroundProperty, brushBack2);
+#if DEBUG
+            var textRange2 = new TextRange(textElement.ContentStart, textElement.ContentEnd);
+            string txt2 = textRange2.Text;
+
+            if (txt1 != txt2)
+            {
+                Debugger.Break();
+            }
+            if (textElement is Span && ((Span)textElement).Inlines.Count == 0)
+            {
+                Debugger.Break();
+            }
+#endif //DEBUG
+#endif //USE_WALKTREE_FOR_SELECT
+
 
             //m_lastHighlighted.Background = brushBack2;
             //m_lastHighlighted.Foreground = brushFont;
@@ -1382,15 +1479,64 @@ namespace Tobi.Plugin.DocumentPane
                 //m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
             }
 
+#if USE_WALKTREE_FOR_SELECT
             WalkDocumentTree(textElement2,
-                data =>
-                {
-                    data.Background = brushBack2;
-                    if (data.Tag != null && data.Tag is TreeNode)
-                    {
-                        data.Foreground = brushFont;
-                    }
-                });
+                             data =>
+                             {
+                                 if (!(data is Run) && !(data is InlineUIContainer) && !(data is BlockUIContainer)) return;
+
+                                 if (m_MouseOverTextElement == data)
+                                 {
+                                     m_MouseOverTextElement = null;
+                                 }
+
+                                 data.Background = brushBack2;
+                                 if (data.Tag != null && data.Tag is TreeNode)
+                                 {
+                                     data.Foreground = brushFont;
+                                 }
+                             });
+#else //USE_WALKTREE_FOR_SELECT
+#if USE_FLOWDOCSELECTION_FOR_SELECT
+            var textRange = null;
+            if (FlowDocReader.Selection != null)
+            {
+                FlowDocReader.Selection.Select(textElement2.ContentStart, textElement2.ContentEnd);
+                textRange = FlowDocReader.Selection;
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                return;
+            }
+#else //USE_FLOWDOCSELECTION_FOR_SELECT
+            var textRange = new TextRange(textElement2.ContentStart, textElement2.ContentEnd);
+#endif //USE_FLOWDOCSELECTION_FOR_SELECT
+
+#if DEBUG
+            string txt1 = textRange.Text;
+#endif //DEBUG
+
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, brushFont);
+            textRange.ApplyPropertyValue(TextElement.BackgroundProperty, brushBack2);
+#if DEBUG
+            var textRange2 = new TextRange(textElement2.ContentStart, textElement2.ContentEnd);
+            string txt2 = textRange2.Text;
+
+            if (txt1 != txt2)
+            {
+                Debugger.Break();
+            }
+
+            if (textElement2 is Span && ((Span)textElement2).Inlines.Count == 0)
+            {
+                Debugger.Break();
+            }
+#endif //DEBUG
+#endif //USE_WALKTREE_FOR_SELECT
+
             //m_lastHighlightedSub.Background = brushBack2;
             //m_lastHighlightedSub.Foreground = brushFont;
 
@@ -1411,33 +1557,76 @@ namespace Tobi.Plugin.DocumentPane
 
         private void clearLastHighlighteds()
         {
-            if (m_lastHighlighted != null)
+            if (m_lastHighlighted == null)
             {
-                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
-
-                if (m_lastHighlightedSub != null)
-                {
-                    setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
-                }
-
-                TextElement backup = m_lastHighlighted;
-                m_lastHighlighted = null;
-                m_lastHighlightedSub = null;
-                refreshDocumentColors(backup);
-
-                //if (m_lastHighlighted is Block)
-                //{
-                //    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
-                //    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
-                //}
-
-                //m_lastHighlighted.Background = m_lastHighlighted_Background;
-                //m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
-
-                //
-
-                //m_lastHighlighted = null;
+                return;
             }
+
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
+
+#if !USE_WALKTREE_FOR_SELECT
+#if USE_FLOWDOCSELECTION_FOR_SELECT
+            var textRange = null;
+            if (FlowDocReader.Selection != null)
+            {
+                FlowDocReader.Selection.Select(m_lastHighlighted.ContentStart, m_lastHighlighted.ContentEnd);
+                textRange = FlowDocReader.Selection;
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                return;
+            }
+#else //USE_FLOWDOCSELECTION_FOR_SELECT
+            var textRange = new TextRange(m_lastHighlighted.ContentStart, m_lastHighlighted.ContentEnd);
+#endif //USE_FLOWDOCSELECTION_FOR_SELECT
+
+#if DEBUG
+            string txt1 = textRange.Text;
+#endif //DEBUG
+
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio));
+            textRange.ApplyPropertyValue(TextElement.BackgroundProperty, GetCachedBrushForColor(Settings.Default.Document_Back));
+#if DEBUG
+            var textRange2 = new TextRange(m_lastHighlighted.ContentStart, m_lastHighlighted.ContentEnd);
+            string txt2 = textRange2.Text;
+
+            if (txt1 != txt2)
+            {
+                Debugger.Break();
+            }
+            if (m_lastHighlighted is Span && ((Span)m_lastHighlighted).Inlines.Count == 0)
+            {
+                Debugger.Break();
+            }
+#endif //DEBUG
+#endif //!USE_WALKTREE_FOR_SELECT
+
+            if (m_lastHighlightedSub != null)
+            {
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
+            }
+
+            TextElement backup = m_lastHighlighted;
+            m_lastHighlighted = null;
+            m_lastHighlightedSub = null;
+            refreshDocumentColors(backup);
+
+            //if (m_lastHighlighted is Block)
+            //{
+            //    ((Block)m_lastHighlighted).BorderBrush = m_lastHighlighted_BorderBrush;
+            //    ((Block)m_lastHighlighted).BorderThickness = m_lastHighlighted_BorderThickness;
+            //}
+
+            //m_lastHighlighted.Background = m_lastHighlighted_Background;
+            //m_lastHighlighted.Foreground = m_lastHighlighted_Foreground;
+
+            //
+
+            //m_lastHighlighted = null;
+
 
             //if (m_lastHighlightedSub != null)
             //{
@@ -1557,12 +1746,90 @@ namespace Tobi.Plugin.DocumentPane
         //    return result;
         //}
 
-        public DelegateOnMouseDownTextElementWithNode m_DelegateOnMouseDownTextElementWithNode;
-        public DelegateOnRequestNavigate m_DelegateOnRequestNavigate;
+        //public DelegateOnMouseDownTextElementWithNode m_DelegateOnMouseDownTextElementWithNode;
+        //public DelegateOnRequestNavigate m_DelegateOnRequestNavigate;
 
-        public DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
-        public DelegateAddIdLinkSource m_DelegateAddIdLinkSource;
+        //public DelegateAddIdLinkTarget m_DelegateAddIdLinkTarget;
+        //public DelegateAddIdLinkSource m_DelegateAddIdLinkSource;
 
+
+        public void AddIdLinkTarget(string name, TextElement textElement)
+        {
+            m_idLinkTargets.Add(name, textElement);
+        }
+        public void AddIdLinkSource(string name, TextElement textElement)
+        {
+            if (m_idLinkSources.ContainsKey(name))
+            {
+                var list = m_idLinkSources[name];
+                list.Add(textElement);
+            }
+            else
+            {
+                var list = new List<TextElement>(1) { textElement };
+                m_idLinkSources.Add(name, list);
+            }
+        }
+
+        public void OnTextElementRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            m_Logger.Log("DocumentPaneView.OnRequestNavigate: " + e.Uri.ToString(), Category.Debug, Priority.Medium);
+
+            if (e.Uri.ToString().StartsWith("#"))
+            {
+                string id = e.Uri.ToString().Substring(1);
+                PerformTreeNodeSelection(id);
+            }
+        }
+
+        private TextElement m_MouseOverTextElement;
+        private Brush m_MouseOverTextElementBackground;
+        public void OnTextElementMouseEnter(object sender, MouseEventArgs e)
+        {
+            restoreMouseOverHighlight();
+
+            var textElem = (TextElement)sender;
+            m_MouseOverTextElement = textElem;
+            m_MouseOverTextElementBackground = m_MouseOverTextElement.Background;
+            m_MouseOverTextElement.Background = Brushes.Red;
+        }
+
+        private void restoreMouseOverHighlight()
+        {
+            if (m_MouseOverTextElement != null)
+            {
+                m_MouseOverTextElement.Background = m_MouseOverTextElementBackground ?? null;
+            }
+        }
+
+        //public void OnTextElementMouseLeave(object sender, MouseEventArgs e)
+        //{
+        //    var textElem = (TextElement)sender;
+        //    if (m_MouseOverTextElementBackground != null)
+        //    {
+        //        Debug.Assert(textElem == m_MouseOverTextElement);
+        //        textElem.Background = m_MouseOverTextElementBackground;
+        //    }
+        //    m_MouseOverTextElement = null;
+        //    m_MouseOverTextElementBackground = null;
+        //}
+        public void OnTextElementMouseClick(object sender, RoutedEventArgs e)
+        {
+            //if (e.ChangedButton == MouseButton.Left)
+            {
+                var textElem = (TextElement)sender;
+                //var obj = FindVisualTreeRoot(textElem);
+
+                var node = textElem.Tag as TreeNode;
+                if (node == null)
+                {
+                    return;
+                }
+
+                m_UrakawaSession.PerformTreeNodeSelection(node);
+                //selectNode(node);
+            }
+        }
         private void createFlowDocumentFromXuk(Project project)
         {
             TreeNode root = project.Presentations.Get(0).RootNode;
@@ -1576,61 +1843,9 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            if (m_DelegateOnMouseDownTextElementWithNode == null)
-            {
-                m_DelegateOnMouseDownTextElementWithNode = (textElem) =>
-                       {
-                           //var obj = FindVisualTreeRoot(textElem);
-
-                           var node = textElem.Tag as TreeNode;
-                           if (node == null)
-                           {
-                               return;
-                           }
-
-                           m_UrakawaSession.PerformTreeNodeSelection(node);
-                           //selectNode(node);
-                       };
-            }
-
-            if (m_DelegateOnRequestNavigate == null)
-            {
-                m_DelegateOnRequestNavigate = (uri) =>
-                      {
-                          m_Logger.Log(
-                              "DocumentPaneView.OnRequestNavigate: " + uri.ToString(),
-                              Category.Debug, Priority.Medium);
-
-                          if (uri.ToString().StartsWith("#"))
-                          {
-                              string id = uri.ToString().Substring(1);
-                              PerformTreeNodeSelection(id);
-                          }
-                      };
-            }
-
-            if (m_DelegateAddIdLinkSource == null)
-            {
-                m_DelegateAddIdLinkSource = (name, data) =>
-                    {
-                        if (m_idLinkSources.ContainsKey(name))
-                        {
-                            var list = m_idLinkSources[name];
-                            list.Add(data);
-                        }
-                        else
-                        {
-                            var list = new List<TextElement>(1) { data };
-                            m_idLinkSources.Add(name, list);
-                        }
-                    };
-            }
-            if (m_DelegateAddIdLinkTarget == null)
-            {
-                m_DelegateAddIdLinkTarget = (name, data) => m_idLinkTargets.Add(name, data);
-            }
-
-            var converter = new XukToFlowDocument(nodeBook, TheFlowDocument, m_Logger, m_EventAggregator, m_ShellView
+            var converter = new XukToFlowDocument(this,
+                nodeBook, TheFlowDocument,
+                m_Logger, m_EventAggregator, m_ShellView
                 //OnMouseUpFlowDoc,
                 //m_DelegateOnMouseDownTextElementWithNode,
                 //m_DelegateOnRequestNavigate,
@@ -1662,6 +1877,7 @@ namespace Tobi.Plugin.DocumentPane
 
             GC.Collect();
             GC.WaitForFullGCComplete();
+            GC.WaitForPendingFinalizers();
         }
 
         //private void selectNode(TreeNode node)
