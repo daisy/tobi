@@ -5,7 +5,8 @@
     xmlns:local="clr-namespace:Tobi.Plugin.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" 
     xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata;assembly=Tobi.Plugin.Validator.Metadata" 
-    LastChildFill="True">
+    LastChildFill="True"
+    Loaded="MetadataPaneView_OnLoaded">
   <!-- ALL RESOURCES -->
   <DockPanel.Resources>
 
