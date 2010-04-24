@@ -14,7 +14,7 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandAudioSettings { get; private set; }
 
-#if DEBUG
+#if false && DEBUG
         public RichDelegateCommand CommandShowOptionsDialog { get; private set; }
 #endif //DEBUG
 

@@ -124,19 +124,19 @@
     <value>_Copy</value>
   </data>
   <data name="CmdCopy_LongDesc" xml:space="preserve">
-    <value>Copy to clipboard</value>
+    <value>Copy audio to application clipboard</value>
   </data>
   <data name="CmdCut_ShortDesc" xml:space="preserve">
     <value>C_ut</value>
   </data>
   <data name="CmdCut_LongDesc" xml:space="preserve">
-    <value>Cut to clipboard</value>
+    <value>Cut audio to application clipboard</value>
   </data>
   <data name="CmdPaste_ShortDesc" xml:space="preserve">
     <value>_Paste</value>
   </data>
   <data name="CmdPaste_LongDesc" xml:space="preserve">
-    <value>Paste from clipboard</value>
+    <value>Paste audio from application clipboard</value>
   </data>
   <data name="AudioPanePlugin_Name" xml:space="preserve">
     <value>Audio waveform editor.</value>
