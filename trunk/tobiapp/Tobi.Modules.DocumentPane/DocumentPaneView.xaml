@@ -7,33 +7,37 @@
     xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" Margin="0,0,0,0"
           
       >
-  
+
   <!--LastChildFill="True"-->
 
   <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
+    <ColumnDefinition Width="*"/>
+  </Grid.ColumnDefinitions>
+  <Grid.RowDefinitions>
+    <RowDefinition Height="*"/>
+    <RowDefinition Height="Auto"/>
+  </Grid.RowDefinitions>
 
 
-  <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True" x:Name="FlowDocReader"
+  <DocumentPane:FlowDocumentScrollViewerEx
+    AllowDrop="True" x:Name="FlowDocReader"
                                                
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
               Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
          
           Margin="0,0,0,0"
           Padding="0,0,0,0"
-          
     Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
                             
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
+                    
                     IsTabStop="False"
-                    Focusable="False"
-                            Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                    IsEnabled = "True"
+                    Focusable="True"
+    IsSelectionEnabled="True"
+    
+    Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                       Background="{Binding
                        Converter={XAML:ColorToBrushConverter},
                             Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
@@ -51,19 +55,22 @@
                       
                       ViewingMode="Scroll" -->
 
-    <FlowDocument AllowDrop="True" x:Name="TheFlowDocument"
+    <FlowDocument
+                  AllowDrop="True" x:Name="TheFlowDocument"
                     Background="{Binding
                     Converter={XAML:ColorToBrushConverter},
                     Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
                  AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
-         IsEnabled = "True"
+         
          IsHyphenationEnabled = "False"
          IsOptimalParagraphEnabled = "False"
          ColumnWidth = "Infinity"
          IsColumnWidthFlexible="False"
          TextAlignment = "Left"
+                  
+                  IsEnabled = "True"
                   Focusable="False"
 
                     />
@@ -148,8 +155,8 @@
 
 
   </DocumentPane:FlowDocumentScrollViewerEx>
-  
-  
+
+
   <!-- IsSelectionEnabled="True"
     
                         IsScrollViewEnabled="False"
@@ -174,8 +181,8 @@
          
              Style="{StaticResource VisibilityTogglerStyleHeight}"
           />
-  
-  <Border  
+
+  <Border
           BorderThickness="1,1,1,1"
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
         
@@ -232,7 +239,7 @@
       <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
 
 
-    <!-- DockPanel LastChildFill="True" HorizontalAlignment="Stretch" >
+      <!-- DockPanel LastChildFill="True" HorizontalAlignment="Stretch" >
       <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
       <UI:WatermarkTextBox  x:Name="SearchBox"
                                      TextChanged="OnSearchTextChanged"
@@ -241,11 +248,11 @@
                                     HorizontalAlignment="Stretch"
                             Width="200"  Margin="0,0,4,0"/>
     </DockPanel -->
-    <WrapPanel.Resources>
-      <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
-    </WrapPanel.Resources>
+      <WrapPanel.Resources>
+        <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
+      </WrapPanel.Resources>
 
-      <TextBlock 
+      <TextBlock
              x:Name="FocusExpanded"
         Focusable="True"
              
@@ -264,16 +271,16 @@
       <UI:ButtonRichCommand
                           RichCommand="{Binding CommandStructureUp}"
                                  />
-    <UI:ButtonRichCommand
-                          RichCommand="{Binding CommandStructureDown}"
+      <UI:ButtonRichCommand
+                            RichCommand="{Binding CommandStructureDown}"
                                  />
-    <UI:ButtonRichCommand
-                          RichCommand="{Binding CommandSwitchPhrasePrevious}"
+      <UI:ButtonRichCommand
+                            RichCommand="{Binding CommandSwitchPhrasePrevious}"
                                  />
 
 
-    <UI:ButtonRichCommand
-      RichCommand="{Binding CommandSwitchPhraseNext}"
+      <UI:ButtonRichCommand
+        RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
       <Separator/>
@@ -289,54 +296,54 @@
                   DataContext="{StaticResource familyCollection}">-->
 
 
-        <ComboBox x:Name="comboListOfFonts"
-                   DataContext="{StaticResource familyCollection}"
-                  ItemsSource="{Binding}"
-                  IsSynchronizedWithCurrentItem="True"
+      <ComboBox x:Name="comboListOfFonts"
+                 DataContext="{StaticResource familyCollection}"
+                ItemsSource="{Binding}"
+                IsSynchronizedWithCurrentItem="True"
                   
-                  SelectedItem="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_TypeFace, Mode=TwoWay}"
+                SelectedItem="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_TypeFace, Mode=TwoWay}"
                   
-                  Width="160"
-                  AlternationCount="2"
-                  Height="Auto"
-                  VerticalAlignment="Center"
+                Width="160"
+                AlternationCount="2"
+                Height="Auto"
+                VerticalAlignment="Center"
           >
-          <!--BorderBrush="{x:Null}"-->
+        <!--BorderBrush="{x:Null}"-->
 
-          <!--SelectionChanged="OnFontSelectionChanged"-->
+        <!--SelectionChanged="OnFontSelectionChanged"-->
 
-          <ComboBox.ItemsPanel>
-            <ItemsPanelTemplate>
-              <VirtualizingStackPanel />
-            </ItemsPanelTemplate>
-          </ComboBox.ItemsPanel>
-          <ComboBox.ItemContainerStyle>
+        <ComboBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <VirtualizingStackPanel />
+          </ItemsPanelTemplate>
+        </ComboBox.ItemsPanel>
+        <ComboBox.ItemContainerStyle>
 
-            <Style TargetType="{x:Type ComboBoxItem}">
+          <Style TargetType="{x:Type ComboBoxItem}">
 
-              <Style.Setters>
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="AutomationProperties.Name" Value="{Binding Mode=OneWay}"/>
-              </Style.Setters>
+            <Style.Setters>
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="AutomationProperties.Name" Value="{Binding Mode=OneWay}"/>
+            </Style.Setters>
 
-              <Style.Triggers>
-                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                </Trigger>
-              </Style.Triggers>
-            </Style>
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
 
-          </ComboBox.ItemContainerStyle>
-          <!--<ComboBox.ItemTemplate>
+        </ComboBox.ItemContainerStyle>
+        <!--<ComboBox.ItemTemplate>
           </ComboBox.ItemTemplate>-->
-          <ComboBox.ItemTemplateSelector>
-            <DocumentPane:FontFamilyDataTemplateSelector/>
-          </ComboBox.ItemTemplateSelector>
+        <ComboBox.ItemTemplateSelector>
+          <DocumentPane:FontFamilyDataTemplateSelector/>
+        </ComboBox.ItemTemplateSelector>
 
-        </ComboBox>
+      </ComboBox>
 
-        <!-- ComboBox ItemsSource="{Binding Path=FamilyTypefaces}"
+      <!-- ComboBox ItemsSource="{Binding Path=FamilyTypefaces}"
                 Width="120"
                 AlternationCount="2">
 

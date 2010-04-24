@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -34,7 +35,7 @@ namespace Tobi.Plugin.DocumentPane
 
     public class XukToFlowDocument : DualCancellableProgressReporter
     {
-        public static DocumentPaneView m_DocumentPaneView;
+        private DocumentPaneView m_DocumentPaneView;
 
         //private Stopwatch m_StopWatch;
 
@@ -83,7 +84,7 @@ namespace Tobi.Plugin.DocumentPane
             //#endif
         }
 
-        public XukToFlowDocument(TreeNode node, FlowDocument flowDocument,
+        public XukToFlowDocument(DocumentPaneView documentPaneView, TreeNode node, FlowDocument flowDocument,
             ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView
             //DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
             //DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
@@ -92,6 +93,8 @@ namespace Tobi.Plugin.DocumentPane
             //DelegateAddIdLinkSource delegateAddIdLinkSource
             )
         {
+            m_DocumentPaneView = documentPaneView;
+
             COUNT++;
 
 
@@ -246,13 +249,20 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        public static void SetBackFrontColorBasedOnTreeNodeTag(TextElement data)
+
+        private void SetBorderAndBackColorBasedOnTreeNodeTag(TextElement data)
+        {
+            SetBorderAndBackColorBasedOnTreeNodeTag(m_DocumentPaneView, data);
+        }
+
+        public static void SetBorderAndBackColorBasedOnTreeNodeTag(DocumentPaneView documentPaneView, TextElement data)
         {
             data.Background = null; // Brushes.Transparent; // SystemColors.WindowBrush;
-            
+
             if (data is Block)
             {
-                ((Block) data).BorderBrush = null;
+                ((Block)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Colors.Transparent);
+                //((Block)data).BorderBrush = null;
             }
 
             if (data.Tag == null || !(data.Tag is TreeNode))
@@ -266,26 +276,26 @@ namespace Tobi.Plugin.DocumentPane
             if (qName == null) return;
             if (qName.LocalName == "pagenum")
             {
-                data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+                data.Background = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
             }
             else if (qName.LocalName == "a" || qName.LocalName == "anchor"
                 || qName.LocalName == "annoref" || qName.LocalName == "noteref")
             {
-                data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+                data.Background = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
             }
             else if (qName.LocalName == "th" || qName.LocalName == "td")
             {
                 Debug.Assert(data is TableCell);
                 if (data is TableCell)
                 {
-                    ((TableCell)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                    ((TableCell)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 }
             } if (qName.LocalName == "sidebar")
             {
                 Debug.Assert(data is Floater);
                 if (data is Floater)
                 {
-                    ((Floater)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                    ((Floater)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 }
             }
             else if (qName.LocalName == "imggroup"
@@ -302,7 +312,7 @@ namespace Tobi.Plugin.DocumentPane
                 Debug.Assert(data is Block);
                 if (data is Block)
                 {
-                    ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                    ((Block)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
                 }
             }
         }
@@ -323,7 +333,7 @@ namespace Tobi.Plugin.DocumentPane
             Debug.Assert(qName != null);
             Debug.Assert(qName.LocalName == "pagenum");
 #endif
-            SetBackFrontColorBasedOnTreeNodeTag(data);
+            SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
 
             //Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
@@ -351,7 +361,7 @@ namespace Tobi.Plugin.DocumentPane
             Debug.Assert(qName != null);
             Debug.Assert(qName.LocalName == "pagenum");
 #endif
-            SetBackFrontColorBasedOnTreeNodeTag(data);
+            SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
 
             //Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
@@ -476,7 +486,13 @@ namespace Tobi.Plugin.DocumentPane
                 throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
-        public static bool SetTextElementAttributes(TextElement data, out bool noAudio, bool updateTotalDuration)
+
+        private bool SetForegroundColorAndCursorBasedOnTreeNodeTag(TextElement data, out bool noAudio, bool updateTotalDuration)
+        {
+            return SetForegroundColorAndCursorBasedOnTreeNodeTag(m_DocumentPaneView, data, out noAudio, updateTotalDuration);
+        }
+
+        public static bool SetForegroundColorAndCursorBasedOnTreeNodeTag(DocumentPaneView documentPaneView, TextElement data, out bool noAudio, bool updateTotalDuration)
         {
             noAudio = false;
 
@@ -491,7 +507,7 @@ namespace Tobi.Plugin.DocumentPane
                     m_totalAudioDuration.Add(media.Duration);
                 }
 
-                SetTextElementAttributesForTreeNodeWithAudio(data);
+                SetTextElementAttributesForTreeNodeWithAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
@@ -505,7 +521,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                SetTextElementAttributesForTreeNodeWithSequenceAudio(data);
+                SetTextElementAttributesForTreeNodeWithSequenceAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
@@ -517,7 +533,7 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
             {
-                SetTextElementAttributesForTreeNodeWithAncestorAudio(data);
+                SetTextElementAttributesForTreeNodeWithAncestorAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
@@ -530,7 +546,7 @@ namespace Tobi.Plugin.DocumentPane
             if (node.GetTextMedia() != null
                 || qname != null && qname.LocalName.ToLower() == "img")
             {
-                SetTextElementAttributesForTreeNodeWithNoAudio(data);
+                SetTextElementAttributesForTreeNodeWithNoAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNode;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
@@ -548,8 +564,14 @@ namespace Tobi.Plugin.DocumentPane
             data.Tag = node;
             //data.Foreground = Brushes.Red; // default is normally overriden
 
+            if (data is Block)
+            {
+                ((Block)data).BorderThickness = new Thickness(1.0);
+                ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Colors.Transparent);
+            }
+
             bool noAudio;
-            Boolean needMouseHandler = SetTextElementAttributes(data, out noAudio, true);
+            Boolean needMouseHandler = SetForegroundColorAndCursorBasedOnTreeNodeTag(data, out noAudio, true);
             if (noAudio)
             {
                 EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
@@ -557,40 +579,45 @@ namespace Tobi.Plugin.DocumentPane
 
             if (needMouseHandler)
             {
-                data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                data.AddHandler(ContentElement.MouseLeftButtonDownEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseClick), true);
+                //data.MouseDown += m_DocumentPaneView.OnTextElementMouseClick;
+
+                data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
+                //data.MouseLeave += m_DocumentPaneView.OnTextElementMouseLeave;
             }
         }
 
-        public static void SetTextElementAttributesForTreeNodeWithNoAudio(TextElement data)
+
+
+        public static void SetTextElementAttributesForTreeNodeWithNoAudio(DocumentPaneView documentPaneView, TextElement data)
         {
-            Brush brushFontNoAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+            Brush brushFontNoAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 
             data.Foreground = brushFontNoAudio;
             //data.Background = Brushes.LimeGreen;
             data.Cursor = Cursors.Pen;
         }
-
-        public static void SetTextElementAttributesForTreeNodeWithSequenceAudio(TextElement data)
+        public static void SetTextElementAttributesForTreeNodeWithSequenceAudio(DocumentPaneView documentPaneView, TextElement data)
         {
-            Brush brushFontAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
             data.Cursor = Cursors.Cross;
         }
 
-        public static void SetTextElementAttributesForTreeNodeWithAudio(TextElement data)
+        public static void SetTextElementAttributesForTreeNodeWithAudio(DocumentPaneView documentPaneView, TextElement data)
         {
-            Brush brushFontAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
             data.Cursor = Cursors.Hand;
         }
 
-        public static void SetTextElementAttributesForTreeNodeWithAncestorAudio(TextElement data)
+        public static void SetTextElementAttributesForTreeNodeWithAncestorAudio(DocumentPaneView documentPaneView, TextElement data)
         {
-            Brush brushFontAudio = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+            Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
             data.Foreground = brushFontAudio;
             //data.Background = Brushes.LightGoldenrodYellow;
@@ -627,7 +654,7 @@ namespace Tobi.Plugin.DocumentPane
                 Debug.Assert(qName != null);
                 Debug.Assert(qName.LocalName == "th" || qName.LocalName == "td");
 #endif
-                SetBackFrontColorBasedOnTreeNodeTag(data);
+                SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
                 TableRowGroup trg = ((Table)parent).RowGroups[m_currentROWGROUP];
 
@@ -838,7 +865,7 @@ namespace Tobi.Plugin.DocumentPane
             setTag(data, node);
 
             data.CellSpacing = 4.0;
-            
+
             data.BorderThickness = new Thickness(1.0);
 
             //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
@@ -851,7 +878,7 @@ namespace Tobi.Plugin.DocumentPane
             Debug.Assert(qName != null);
             Debug.Assert(qName.LocalName == "table");
 #endif
-            SetBackFrontColorBasedOnTreeNodeTag(data);
+            SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
             m_currentROWGROUP = -1;
             m_firstTR = false;
@@ -1100,7 +1127,7 @@ namespace Tobi.Plugin.DocumentPane
             Debug.Assert(qName != null);
             Debug.Assert(qName.LocalName == "anchor" || qName.LocalName == "a");
 #endif
-            SetBackFrontColorBasedOnTreeNodeTag(data);
+            SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
             //data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
             ////data.Foreground = Brushes.Blue;
@@ -1164,7 +1191,7 @@ namespace Tobi.Plugin.DocumentPane
             Debug.Assert(qName != null);
             Debug.Assert(qName.LocalName == "annoref" || qName.LocalName == "noteref");
 #endif
-            SetBackFrontColorBasedOnTreeNodeTag(data);
+            SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
             //data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
             ////data.Foreground = Brushes.Blue;
@@ -1179,12 +1206,12 @@ namespace Tobi.Plugin.DocumentPane
 
                 //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
                 //data.RequestNavigate += (sender, e) => m_DelegateOnRequestNavigate(e.Uri);
-                data.RequestNavigate += (sender, e) => m_DocumentPaneView.m_DelegateOnRequestNavigate(e.Uri);
+                data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
 
                 data.ToolTip = data.NavigateUri.ToString();
                 data.Name = IdToName(id);
 
-                m_DocumentPaneView.m_DelegateAddIdLinkSource(data.Name, data);
+                m_DocumentPaneView.AddIdLinkSource(data.Name, data);
             }
             else
             {
@@ -1213,6 +1240,7 @@ namespace Tobi.Plugin.DocumentPane
                 return data;
             }
         }
+
 
         private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSpanInitializer initializer)
         {
@@ -1669,7 +1697,7 @@ namespace Tobi.Plugin.DocumentPane
                                     Debug.Assert(qName != null);
                                     Debug.Assert(qName.LocalName == "blockquote");
 #endif
-                                    SetBackFrontColorBasedOnTreeNodeTag(data);
+                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
                                 }
                                 );
@@ -1694,7 +1722,7 @@ namespace Tobi.Plugin.DocumentPane
                                     Debug.Assert(qName != null);
                                     Debug.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
 #endif
-                                    SetBackFrontColorBasedOnTreeNodeTag(data);
+                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
                                     XmlProperty xmlProp = node.GetProperty<XmlProperty>();
                                     XmlAttribute attr = xmlProp.GetAttribute("id");
@@ -1703,7 +1731,7 @@ namespace Tobi.Plugin.DocumentPane
                                     {
                                         data.Name = IdToName(attr.Value);
                                         data.ToolTip = attr.Value;
-                                        m_DocumentPaneView.m_DelegateAddIdLinkTarget(data.Name, data);
+                                        m_DocumentPaneView.AddIdLinkTarget(data.Name, data);
                                     }
                                 }
                                 );
@@ -1740,7 +1768,7 @@ namespace Tobi.Plugin.DocumentPane
                                      Debug.Assert(qName != null);
                                      Debug.Assert(qName.LocalName == "caption");
 #endif
-                                     SetBackFrontColorBasedOnTreeNodeTag(data);
+                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                  });
                             }
                         }
@@ -1802,7 +1830,7 @@ namespace Tobi.Plugin.DocumentPane
                                     Debug.Assert(qName != null);
                                     Debug.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
 #endif
-                                    SetBackFrontColorBasedOnTreeNodeTag(data);
+                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                 });
                         }
                     case "pagenum":
@@ -1855,7 +1883,7 @@ namespace Tobi.Plugin.DocumentPane
                                     Debug.Assert(qName != null);
                                     Debug.Assert(qName.LocalName == "imggroup");
 #endif
-                                    SetBackFrontColorBasedOnTreeNodeTag(data);
+                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                 });
                         }
                     case "sidebar":
@@ -1876,7 +1904,7 @@ namespace Tobi.Plugin.DocumentPane
                                     Debug.Assert(qName != null);
                                     Debug.Assert(qName.LocalName == "sidebar");
 #endif
-                                    SetBackFrontColorBasedOnTreeNodeTag(data);
+                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                 });
                         }
                     case "img":
