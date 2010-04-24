@@ -47,7 +47,6 @@
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
-      <!-- TODO: this doesn't work -->
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnViewLinkClick">
           <Run Text="Click to view"/>
@@ -59,7 +58,7 @@
 
   <!-- invalid sequence of child elements error -->
   <DataTemplate DataType="{x:Type ContentDocument:InvalidElementSequenceValidationError}">
-    <StackPanel>
+    <StackPanel x:Name="parentStack">
       <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
       <TextBlock>
         <TextBlock.Text>
@@ -72,20 +71,29 @@
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
-      <TextBlock>
-        <TextBlock.Text>
-          <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:" 
-                   Path="Target"
-                   Converter="{Common:ElementNameConverter}"/>   <!-- TODO LOCALIZE -->
-        </TextBlock.Text>
-      </TextBlock>
+      
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:"
+                     Path="Target"
+                     Converter="{Common:ElementNameConverter}"/>
+            <!-- TODO LOCALIZE -->
+          </TextBlock.Text>
+        </TextBlock>
 
       <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
               BorderThickness="2">
-        <TextBlock Margin="3"
-                 Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"/>
-      </Border>
+        <ScrollViewer
+        VerticalScrollBarVisibility="Visible"
+        HorizontalScrollBarVisibility="Disabled">
 
+          <TextBlock Margin="3"
+                 Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"
+                 TextWrapping="Wrap"
+                 MaxHeight="40"/>
+        </ScrollViewer>
+      </Border>
+      
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnViewLinkClick">
           <Run Text="Click to view"/>
