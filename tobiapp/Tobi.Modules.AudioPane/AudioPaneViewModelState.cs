@@ -373,6 +373,10 @@ namespace Tobi.Plugin.AudioPane
 
             public void SetSelectionBytes(long begin, long end)
             {
+                SetSelectionTime(m_viewModel.State.Audio.ConvertBytesToMilliseconds(begin),
+                                 m_viewModel.State.Audio.ConvertBytesToMilliseconds(end));
+                return;
+
                 SelectionBegin = m_viewModel.State.Audio.ConvertBytesToMilliseconds(begin);
                 SelectionEnd = m_viewModel.State.Audio.ConvertBytesToMilliseconds(end);
 

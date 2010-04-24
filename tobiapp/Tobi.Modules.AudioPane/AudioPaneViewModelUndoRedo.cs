@@ -360,7 +360,15 @@ namespace Tobi.Plugin.AudioPane
                 if (manMedia == null)
                 {
                     Debug.Assert(done);
-                    Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsMilliseconds == diff.AsMilliseconds);
+
+                    Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsMilliseconds  == diff.AsMilliseconds);
+
+                    Debug.Assert(
+                        command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.AreMillisecondTimesApproximatelyEqual(
+                            command.OriginalManagedAudioMedia.Duration.AsMilliseconds,
+                            diff.AsMilliseconds
+                        )
+                        );
                 }
 
                 if (done)
