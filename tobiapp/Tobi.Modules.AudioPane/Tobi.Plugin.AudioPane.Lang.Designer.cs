@@ -709,7 +709,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy to clipboard.
+        ///   Looks up a localized string similar to Copy audio to application clipboard.
         /// </summary>
         public static string CmdCopy_LongDesc {
             get {
@@ -727,7 +727,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cut to clipboard.
+        ///   Looks up a localized string similar to Cut audio to application clipboard.
         /// </summary>
         public static string CmdCut_LongDesc {
             get {
@@ -745,7 +745,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste from clipboard.
+        ///   Looks up a localized string similar to Paste audio from application clipboard.
         /// </summary>
         public static string CmdPaste_LongDesc {
             get {

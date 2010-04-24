@@ -113,6 +113,8 @@ namespace Tobi
 , "Tobi log (.NET3).lnk"
 #endif
 );
+
+#if !DEBUG
             if (File.Exists(shortcutToLogPath))
             {
                 try
@@ -123,7 +125,7 @@ namespace Tobi
                 {
 #if DEBUG
                     Debugger.Break();
-#endif // DEBUG
+#endif
                 }
             }
             try
@@ -135,9 +137,7 @@ namespace Tobi
                     shortcut.IconPath = iconPath;
                     shortcut.Path = logPath;
                     shortcut.WorkingDirectory = appFolder;
-#if !DEBUG
                     shortcut.Save();
-#endif
                 }
             }
             catch (Exception ex)
@@ -146,8 +146,9 @@ namespace Tobi
                 ExceptionHandler.LogException(ex);
 #if DEBUG
                 Debugger.Break();
-#endif // DEBUG
+#endif
             }
+#endif // DEBUG
 
             foreach (Assembly item in AppDomain.CurrentDomain.GetAssemblies())
             {
