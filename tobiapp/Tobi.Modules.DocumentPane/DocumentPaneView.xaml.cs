@@ -29,6 +29,7 @@ using urakawa.events.undo;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.xuk;
+using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -473,7 +474,7 @@ namespace Tobi.Plugin.DocumentPane
 #endif
 
             FlowDocReader.MouseLeave += (sender, e) => restoreMouseOverHighlight();
-            
+
             //var fontConverter = new FontFamilyConverter();
             //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
 
@@ -773,29 +774,6 @@ namespace Tobi.Plugin.DocumentPane
             return false;
         }
 
-        private bool bTreeNodeHasOrInheritsAudio(TreeNode node)
-        {
-            ManagedAudioMedia media = node.GetManagedAudioMedia();
-            if (media != null)
-            {
-                return true;
-            }
-
-            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
-            if (seqManagedAudioMedia != null)
-            {
-                return true;
-            }
-
-            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
-            if (ancerstor != null)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
         {
             foreach (var childTreeNode in node.Children.ContentsAs_YieldEnumerable)
@@ -826,10 +804,9 @@ namespace Tobi.Plugin.DocumentPane
                 Debug.Assert(node == text.Tag);
                 if (node == text.Tag)
                 {
-                    bool noAudio;
-                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, text, out noAudio, false);
+                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, text, false);
 
-                    Debug.Assert(noAudio == !bTreeNodeHasOrInheritsAudio(node));
+                    //Debug.Assert(noAudio == !node.HasOrInheritsAudio());
 
                     //if (m_lastHighlighted == text)
                     //{
@@ -1287,6 +1264,42 @@ namespace Tobi.Plugin.DocumentPane
             return m_SolidColorBrushCache[colorString];
         }
 
+        public static TextPointer AlignTextPointer(TextPointer start, int x)
+        {
+            var ret = start;
+            var i = 0;
+            while (i < x && ret != null)
+            {
+                if (ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.Text
+                    || ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.None)
+                {
+                    i++;
+                }
+                if (ret.GetPositionAtOffset(1, LogicalDirection.Forward) == null)
+                {
+                    return ret;
+                }
+                ret = ret.GetPositionAtOffset(1, LogicalDirection.Forward);
+            }
+            return ret;
+        }
+
+        //// EXMAPLE of use:
+        //    var run = new Run("test");
+        //    SelectAndColorize(TheFlowDocument.ContentStart.GetOffsetToPosition(run.ContentStart), run.Text.Length, Colors.Blue);
+        public void SelectAndColorize(int offset, int length, Color color)
+        {
+            var start = TheFlowDocument.ContentStart;
+            var startPos = AlignTextPointer(start, offset);
+            var endPos = AlignTextPointer(start, offset + length);
+
+            var textRange = FlowDocReader.Selection;
+            if (textRange == null) return;
+
+            textRange.Select(startPos, endPos);
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(color));
+            //textRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+        }
 
         private void refreshDocumentColors(TextElement textElement)
         {
@@ -1301,8 +1314,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (data.Tag is TreeNode)
                 {
-                    bool noAudio;
-                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, data, out noAudio, false);
+                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, data, false);
                 }
 
                 //if (data == m_lastHighlightedSub)
@@ -1383,7 +1395,7 @@ namespace Tobi.Plugin.DocumentPane
             WalkDocumentTree(textElement,
                              data =>
                              {
-                                 if (!(data is Run) && !(data is InlineUIContainer) && !(data is BlockUIContainer)) return;
+                                 //if (!(data is Run) && !(data is InlineUIContainer) && !(data is BlockUIContainer)) return;
 
                                  if (m_MouseOverTextElement == data)
                                  {
@@ -1483,7 +1495,7 @@ namespace Tobi.Plugin.DocumentPane
             WalkDocumentTree(textElement2,
                              data =>
                              {
-                                 if (!(data is Run) && !(data is InlineUIContainer) && !(data is BlockUIContainer)) return;
+                                 //if (!(data is Run) && !(data is InlineUIContainer) && !(data is BlockUIContainer)) return;
 
                                  if (m_MouseOverTextElement == data)
                                  {
@@ -1813,25 +1825,108 @@ namespace Tobi.Plugin.DocumentPane
         //    m_MouseOverTextElement = null;
         //    m_MouseOverTextElementBackground = null;
         //}
-        public void OnTextElementMouseClick(object sender, RoutedEventArgs e)
+
+        private TextElement m_MouseDownTextElement;
+        public void OnTextElementMouseDown(object sender, RoutedEventArgs e)
         {
-            //if (e.ChangedButton == MouseButton.Left)
+            if (!(e is MouseButtonEventArgs))
             {
-                var textElem = (TextElement)sender;
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            var textElem = (TextElement)sender;
+            var ev = e as MouseButtonEventArgs;
+
+            m_MouseDownTextElement = textElem;
+        }
+        
+        public void OnTextElementMouseUp(object sender, RoutedEventArgs e)
+        {
+            if (!(e is MouseButtonEventArgs))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            var textElem = (TextElement)sender;
+            var ev = e as MouseButtonEventArgs;
+#if DEBUG
+            if (ev.ChangedButton == MouseButton.Left)
+            {
+                // Somewhat never happens !! :(
+                // Yet it works with right button...
+                //Debugger.Break();
+                int debug = 1;
+            }
+#endif
+
+#if DEBUG
+            if (m_MouseDownTextElement != textElem)
+            {
+                int debug = 1;
+            }
+#endif
+            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left)
+            {
                 //var obj = FindVisualTreeRoot(textElem);
 
                 var node = textElem.Tag as TreeNode;
                 if (node == null)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return;
                 }
+#if DEBUG
+                if (textElem is Hyperlink)
+                {
+                    int debug = 1;
+                }
+#endif
 
                 m_UrakawaSession.PerformTreeNodeSelection(node);
-                //selectNode(node);
+            }
+
+            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left
+                && isControlKeyDown()
+                )
+            {
+                if (m_lastHighlighted == null) return;
+
+                TextElement textElement = m_lastHighlightedSub ?? m_lastHighlighted;
+                
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                        (Action)(() =>
+                                     {
+                                         if (FlowDocReader.Selection != null)
+                                             FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
+                                     })
+                        );
             }
         }
+        private bool isControlKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Control
+                //| ModifierKeys.Shift
+                    )
+                    ) != ModifierKeys.None;
+
+            //Keyboard.IsKeyDown(Key.LeftShift)
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
+
         private void createFlowDocumentFromXuk(Project project)
         {
+            Debug.Assert(false);// just checking....
+
             TreeNode root = project.Presentations.Get(0).RootNode;
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
 

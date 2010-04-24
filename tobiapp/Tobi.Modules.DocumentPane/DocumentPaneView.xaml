@@ -32,16 +32,17 @@
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
                     
-                    IsTabStop="False"
-                    IsEnabled = "True"
-                    Focusable="True"
-    IsSelectionEnabled="True"
-    
     Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                       Background="{Binding
                        Converter={XAML:ColorToBrushConverter},
                             Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+    
+                    IsTabStop="False"
+                    IsEnabled = "True"
+                    Focusable="False"
+    IsSelectionEnabled="True"
+    
                       >
     <!-- 
 {DynamicResource {x:Static SystemColors.WindowBrushKey}}
@@ -56,7 +57,12 @@
                       ViewingMode="Scroll" -->
 
     <FlowDocument
-                  AllowDrop="True" x:Name="TheFlowDocument"
+      
+                  IsEnabled = "True"
+                  Focusable="False"
+                  
+                  AllowDrop="True"
+                  x:Name="TheFlowDocument"
                     Background="{Binding
                     Converter={XAML:ColorToBrushConverter},
                     Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
@@ -70,8 +76,6 @@
          IsColumnWidthFlexible="False"
          TextAlignment = "Left"
                   
-                  IsEnabled = "True"
-                  Focusable="False"
 
                     />
 

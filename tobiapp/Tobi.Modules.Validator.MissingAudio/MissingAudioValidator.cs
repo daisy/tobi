@@ -131,13 +131,13 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 return;
             }
 
-            if (!bTreeNodeHasOrInheritsAudio(node))
+            if (!node.HasOrInheritsAudio())
             {
                 bool alreadyInList = false;
                 foreach (var vItem in ValidationItems)
                 {
                     var valItem = vItem as MissingAudioValidationError;
-                    
+
                     Debug.Assert(valItem != null);
                     if (valItem == null) continue;
 
@@ -238,7 +238,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
         {
             Debug.Assert(bTreeNodeNeedsAudio(treeNode));
-            Debug.Assert(!bTreeNodeHasOrInheritsAudio(treeNode));
+            Debug.Assert(!treeNode.HasOrInheritsAudio());
 
             var error = new MissingAudioValidationError(m_Session)
             {
@@ -253,35 +253,18 @@ namespace Tobi.Plugin.Validator.MissingAudio
             return IsValid;
         }
 
-        private bool bTreeNodeNeedsAudio(TreeNode node)
+        private static bool bTreeNodeNeedsAudio(TreeNode node)
         {
+            if (node.GetTextMedia() != null)
+            {
+                Debug.Assert(node.Children.Count == 0);
+                return true;
+            }
+
             QualifiedName qname = node.GetXmlElementQName();
-            if (node.GetTextMedia() != null
-                || qname != null && qname.LocalName.ToLower() == "img")
+            if (qname != null && qname.LocalName.ToLower() == "img")
             {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool bTreeNodeHasOrInheritsAudio(TreeNode node)
-        {
-            ManagedAudioMedia media = node.GetManagedAudioMedia();
-            if (media != null)
-            {
-                return true;
-            }
-
-            SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
-            if (seqManagedAudioMedia != null)
-            {
-                return true;
-            }
-
-            TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
-            if (ancerstor != null)
-            {
+                Debug.Assert(node.Children.Count == 0);
                 return true;
             }
 

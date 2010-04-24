@@ -28,6 +28,43 @@ using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.DocumentPane
 {
+    //public class RunEx : Run
+    //{
+    //    private readonly DocumentPaneView m_DocumentPaneView;
+
+    //    public RunEx(DocumentPaneView documentPaneView, string str)
+    //        : base(str)
+    //    {
+    //        m_DocumentPaneView = documentPaneView;
+    //    }
+
+    //    protected override void OnMouseDown(MouseButtonEventArgs e)
+    //    {
+    //        m_DocumentPaneView.OnTextElementMouseDown(this, e);
+    //    }
+    //    protected override void OnMouseUp(MouseButtonEventArgs e)
+    //    {
+    //        m_DocumentPaneView.OnTextElementMouseUp(this, e);
+    //    }
+    //}
+    //public class BlockUIContainerEx : BlockUIContainer
+    //{
+    //    private readonly DocumentPaneView m_DocumentPaneView;
+
+    //    public BlockUIContainerEx(DocumentPaneView documentPaneView)
+    //    {
+    //        m_DocumentPaneView = documentPaneView;
+    //    }
+
+    //    protected override void OnMouseDown(MouseButtonEventArgs e)
+    //    {
+    //        m_DocumentPaneView.OnTextElementMouseDown(this, e);
+    //    }
+    //    protected override void OnMouseUp(MouseButtonEventArgs e)
+    //    {
+    //        m_DocumentPaneView.OnTextElementMouseUp(this, e);
+    //    }
+    //}
     public delegate void DelegateOnMouseDownTextElementWithNode(TextElement textElem);
     public delegate void DelegateOnRequestNavigate(Uri uri);
     public delegate void DelegateAddIdLinkTarget(string name, TextElement data);
@@ -433,8 +470,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    var para = new Paragraph(data);
-                    para.Tag = true;
+                    var para = new Paragraph(data) { Tag = true };
                     ((Section)lastBlock).Blocks.Add(para);
                 }
             }
@@ -444,10 +480,8 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                var para = new Paragraph(data);
-                para.Tag = true;
-                var section = new Section(para);
-                section.Tag = true;
+                var para = new Paragraph(data) { Tag = true };
+                var section = new Section(para) { Tag = true };
                 blocks.Add(section);
             }
         }
@@ -487,15 +521,14 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private bool SetForegroundColorAndCursorBasedOnTreeNodeTag(TextElement data, out bool noAudio, bool updateTotalDuration)
+        private void SetForegroundColorAndCursorBasedOnTreeNodeTag(TextElement data, bool updateTotalDuration)
         {
-            return SetForegroundColorAndCursorBasedOnTreeNodeTag(m_DocumentPaneView, data, out noAudio, updateTotalDuration);
+            SetForegroundColorAndCursorBasedOnTreeNodeTag(m_DocumentPaneView, data, updateTotalDuration);
         }
 
-        public static bool SetForegroundColorAndCursorBasedOnTreeNodeTag(DocumentPaneView documentPaneView, TextElement data, out bool noAudio, bool updateTotalDuration)
-        {
-            noAudio = false;
 
+        public static void SetForegroundColorAndCursorBasedOnTreeNodeTag(DocumentPaneView documentPaneView, TextElement data, bool updateTotalDuration)
+        {
             Debug.Assert(data.Tag is TreeNode);
             var node = (TreeNode)data.Tag;
 
@@ -507,13 +540,12 @@ namespace Tobi.Plugin.DocumentPane
                     m_totalAudioDuration.Add(media.Duration);
                 }
 
-                SetTextElementAttributesForTreeNodeWithAudio(documentPaneView, data);
+                SetForegroundColorAndCursorForTreeNodeWithAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
 
-                return true;
             }
 
             SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
@@ -521,30 +553,26 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                SetTextElementAttributesForTreeNodeWithSequenceAudio(documentPaneView, data);
+                SetForegroundColorAndCursorForTreeNodeWithSequenceAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
 
-                return true;
             }
 
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
             {
-                SetTextElementAttributesForTreeNodeWithAncestorAudio(documentPaneView, data);
+                SetForegroundColorAndCursorForTreeNodeWithAncestorAudio(documentPaneView, data);
 
                 ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
 
-                return true;
             }
 
-            QualifiedName qname = node.GetXmlElementQName();
-            if (node.GetTextMedia() != null
-                || qname != null && qname.LocalName.ToLower() == "img")
+            if (bTreeNodeNeedsAudio(node))
             {
                 SetTextElementAttributesForTreeNodeWithNoAudio(documentPaneView, data);
 
@@ -552,15 +580,35 @@ namespace Tobi.Plugin.DocumentPane
                 ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
                 //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
 
-                noAudio = true;
+            }
 
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
+        }
+
+        private static bool bTreeNodeNeedsAudio(TreeNode node)
+        {
+            if (node.GetTextMedia() != null)
+            {
+                Debug.Assert(node.Children.Count == 0);
                 return true;
             }
+
+            QualifiedName qname = node.GetXmlElementQName();
+            if (qname != null && qname.LocalName.ToLower() == "img")
+            {
+                Debug.Assert(node.Children.Count == 0);
+                return true;
+            }
+
             return false;
         }
 
         private void setTag(TextElement data, TreeNode node)
         {
+            Debug.Assert(data.Tag == null);
+
             data.Tag = node;
             //data.Foreground = Brushes.Red; // default is normally overriden
 
@@ -570,23 +618,34 @@ namespace Tobi.Plugin.DocumentPane
                 ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Colors.Transparent);
             }
 
-            bool noAudio;
-            Boolean needMouseHandler = SetForegroundColorAndCursorBasedOnTreeNodeTag(data, out noAudio, true);
-            if (noAudio)
-            {
-                EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
-            }
+            SetForegroundColorAndCursorBasedOnTreeNodeTag(data, true);
 
-            if (needMouseHandler)
+            if (bTreeNodeNeedsAudio(node))
             {
-                data.AddHandler(ContentElement.MouseLeftButtonDownEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseClick), true);
-                //data.MouseDown += m_DocumentPaneView.OnTextElementMouseClick;
+                if (!node.HasOrInheritsAudio())
+                {
+                    EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
+                }
+
+                //bool condition = data is Run || data is BlockUIContainer || data is InlineUIContainer;
+                //Debug.Assert(condition);
+                //                if (!condition)
+                //                {
+                //#if DEBUG
+                //                    Debugger.Break();
+                //#endif
+                //                }
+
+                //data.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseUp), true);
+                //data.AddHandler(ContentElement.MouseDownEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseDown), true);
+
+                data.MouseUp += m_DocumentPaneView.OnTextElementMouseUp;
+                data.MouseDown += m_DocumentPaneView.OnTextElementMouseDown;
 
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
                 //data.MouseLeave += m_DocumentPaneView.OnTextElementMouseLeave;
             }
         }
-
 
 
         public static void SetTextElementAttributesForTreeNodeWithNoAudio(DocumentPaneView documentPaneView, TextElement data)
@@ -597,7 +656,7 @@ namespace Tobi.Plugin.DocumentPane
             //data.Background = Brushes.LimeGreen;
             data.Cursor = Cursors.Pen;
         }
-        public static void SetTextElementAttributesForTreeNodeWithSequenceAudio(DocumentPaneView documentPaneView, TextElement data)
+        public static void SetForegroundColorAndCursorForTreeNodeWithSequenceAudio(DocumentPaneView documentPaneView, TextElement data)
         {
             Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
@@ -606,7 +665,7 @@ namespace Tobi.Plugin.DocumentPane
             data.Cursor = Cursors.Cross;
         }
 
-        public static void SetTextElementAttributesForTreeNodeWithAudio(DocumentPaneView documentPaneView, TextElement data)
+        public static void SetForegroundColorAndCursorForTreeNodeWithAudio(DocumentPaneView documentPaneView, TextElement data)
         {
             Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
@@ -615,7 +674,7 @@ namespace Tobi.Plugin.DocumentPane
             data.Cursor = Cursors.Hand;
         }
 
-        public static void SetTextElementAttributesForTreeNodeWithAncestorAudio(DocumentPaneView documentPaneView, TextElement data)
+        public static void SetForegroundColorAndCursorForTreeNodeWithAncestorAudio(DocumentPaneView documentPaneView, TextElement data)
         {
             Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
@@ -711,7 +770,7 @@ namespace Tobi.Plugin.DocumentPane
                 //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
                 else
                 {
-                    Section section = new Section();
+                    var section = new Section();
                     data.Blocks.Add(section);
                     return section;
                 }
@@ -905,32 +964,36 @@ namespace Tobi.Plugin.DocumentPane
 #endif
                 throw new Exception("list item not in List ??");
             }
-            ListItem data = new ListItem();
-            setTag(data, node);
+            var data = new ListItem();
 
             if (node.Children.Count == 0)
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
                 {
+                    setTag(data, node);
                     // ignore empty list item
                 }
                 else
                 {
-                    Paragraph para = new Paragraph(new Run(textMedia.Text));
+                    var para = new Paragraph(new Run(textMedia.Text));
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
                     if (qname.LocalName == "pagenum")
                     {
-                        data.Tag = null;
+                        //data.Tag = null;
                         setTag(para, node);
                         formatPageNumberAndSetId_Para(node, para);
                     }
                     else if (qname.LocalName == "hd")
                     {
-                        data.Tag = null;
+                        //data.Tag = null;
                         setTag(para, node);
                         formatListHeader(para);
+                    }
+                    else
+                    {
+                        setTag(data, node);
                     }
                 }
 
@@ -942,8 +1005,8 @@ namespace Tobi.Plugin.DocumentPane
                 ((List)parent).ListItems.Add(data);
                 if (qname.LocalName == "pagenum")
                 {
-                    data.Tag = null;
-                    Paragraph para = new Paragraph();
+                    //data.Tag = null;
+                    var para = new Paragraph();
                     setTag(para, node);
                     formatPageNumberAndSetId_Para(node, para);
                     data.Blocks.Add(para);
@@ -951,12 +1014,16 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (qname.LocalName == "hd")
                 {
-                    data.Tag = null;
-                    Paragraph para = new Paragraph();
+                    //data.Tag = null;
+                    var para = new Paragraph();
                     setTag(para, node);
                     formatListHeader(para);
                     data.Blocks.Add(para);
                     return para;
+                }
+                else
+                {
+                    setTag(data, node);
                 }
                 return data;
             }
@@ -1116,7 +1183,7 @@ namespace Tobi.Plugin.DocumentPane
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
             //Hyperlink data = new Hyperlink();
-            Underline data = new Underline();
+            var data = new Underline();
             setTag(data, node);
 #if DEBUG
             Debug.Assert(data.Tag != null);
@@ -1137,7 +1204,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (attr != null && !String.IsNullOrEmpty(attr.Value))
             {
-                Uri uri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
+                var uri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
                 //removed to avoid swallowing the mouse click
                 //data.NavigateUri = uri;
                 //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
@@ -1639,7 +1706,7 @@ namespace Tobi.Plugin.DocumentPane
                     return parent;
                 }
 
-                Run data = new Run(textMedia.Text);
+                var data = new Run(textMedia.Text);
                 setTag(data, node);
                 addInline(parent, data);
 
@@ -1918,7 +1985,7 @@ namespace Tobi.Plugin.DocumentPane
                         }
                     case "br":
                         {
-                            LineBreak data = new LineBreak();
+                            var data = new LineBreak();
                             setTag(data, node);
                             addInline(parent, data);
                             return parent;
