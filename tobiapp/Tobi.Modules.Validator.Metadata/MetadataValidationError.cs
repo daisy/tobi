@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Presentation.Events;
+using urakawa.core;
 using urakawa.metadata;
 using Tobi.Common.Validation;
 
@@ -252,10 +253,10 @@ An entry for {0} was not found.
         }
     }
 
-    public class MetadataDuplicateItemValidationError : AbstractMetadataValidationError
+    public class MetadataDuplicateItemValidationError : AbstractMetadataValidationErrorWithTarget
     {
-        public MetadataDuplicateItemValidationError(MetadataDefinition definition, IEventAggregator eventAggregator) : 
-            base(definition, eventAggregator)
+        public MetadataDuplicateItemValidationError(urakawa.metadata.Metadata target, MetadataDefinition definition, IEventAggregator eventAggregator) : 
+            base(target, definition, eventAggregator)
         {
         }
 

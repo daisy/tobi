@@ -142,19 +142,19 @@ namespace Tobi.Plugin.MetadataPane
             if (selection != null) SetSelectedListItem(selection);
 
         }
-        //set the selected item in the list
-        //TODO: fix
+        
+        //this works for adding new items, but not for adding missing items or highlighting existing ones.  why?
         private void SetSelectedListItem(NotifyingMetadataItem selection)
         {   
             if (selection != null)
             {
-                MetadataList.SelectedItem = selection;
-                MetadataList.Focus();
-                MetadataList.ScrollIntoView(selection);
+               CollectionViewSource cvs = (CollectionViewSource)FindResource("MetadatasCVS");
+               if (cvs != null) cvs.View.MoveCurrentTo(selection);
 
-                CollectionViewSource cvs = (CollectionViewSource)FindResource("MetadatasCVS");
-                if (cvs != null) cvs.View.MoveCurrentTo(selection);
-            
+               //MetadataList.SelectedItem = selection;
+               MetadataList.Focus();
+               MetadataList.ScrollIntoView(selection);
+
             }
         }
 
@@ -168,6 +168,7 @@ namespace Tobi.Plugin.MetadataPane
         private void AddButton_OnClick(object sender, RoutedEventArgs e)
         {
             m_ViewModel.AddEmptyMetadata();
+            
             ObservableCollection<NotifyingMetadataItem> metadataItems =
                 m_ViewModel.MetadataCollection.Metadatas;
             if (metadataItems.Count > 0)
@@ -175,6 +176,7 @@ namespace Tobi.Plugin.MetadataPane
                 NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
                 SetSelectedListItem(metadata);
             }
+             
         }
 
         //TODO fix weird behavior:
