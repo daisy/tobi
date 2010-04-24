@@ -408,9 +408,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Grid.Row="1" Grid.Column="1"/>
     </Grid -->
 
-
+    <!--Style="{StaticResource FavsScrollViewer}"-->
     <ScrollViewer x:Name="WaveFormScroll"
-                  RenderTransformOrigin="0.5,0.5" Style="{StaticResource FavsScrollViewer}"
+                  RenderTransformOrigin="0.5,0.5"
+                  
                   DockPanel.Dock="Bottom"
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Visible"
