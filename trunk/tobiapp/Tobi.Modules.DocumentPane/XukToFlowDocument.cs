@@ -627,26 +627,12 @@ namespace Tobi.Plugin.DocumentPane
                     EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
                 }
 
-                //bool condition = data is Run || data is BlockUIContainer || data is InlineUIContainer;
-                //Debug.Assert(condition);
-                //                if (!condition)
-                //                {
-                //#if DEBUG
-                //                    Debugger.Break();
-                //#endif
-                //                }
+                ////// tesing with Got/LostCapture only 
+                ////data.MouseUp += m_DocumentPaneView.OnTextElementMouseUp;
+                ////data.MouseDown += m_DocumentPaneView.OnTextElementMouseDown;
 
-                //data.AddHandler(ContentElement.PreviewMouseUpEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseUp), true);
-
-                data.MouseUp += m_DocumentPaneView.OnTextElementMouseUp;
-                data.MouseDown += m_DocumentPaneView.OnTextElementMouseDown;
 
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
-
-                data.PreviewDragOver += m_DocumentPaneView.OnTextElementMouseDrag;
-
-                //data.AddHandler(ContentElement.PreviewMouseMoveEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseMove), true);
-                //data.MouseMove += m_DocumentPaneView.OnTextElementMouseEnter;
             }
         }
 
