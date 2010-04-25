@@ -14,17 +14,17 @@
                BorderBrush="{TemplateBinding Border.BorderBrush}"
                Margin="{TemplateBinding Control.Padding}"
                x:Uid="Border_49">-->
-        <ScrollViewer
-                  CanContentScroll="False"
-                  Name="PART_ContentHost"
-                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                  x:Uid="ScrollViewer_8" />
+      <ScrollViewer
+                CanContentScroll="False"
+                Name="PART_ContentHost"
+                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                x:Uid="ScrollViewer_8" />
       <!--</Border>-->
     </ControlTemplate>
 
   </Grid.Resources>
-  
+
   <!--LastChildFill="True"-->
 
   <Grid.ColumnDefinitions>
@@ -33,9 +33,52 @@
   <Grid.RowDefinitions>
     <RowDefinition Height="*"/>
     <RowDefinition Height="Auto"/>
-    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
 
+  <DockPanel LastChildFill="True"
+             
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
+                            >
+
+  <DockPanel LastChildFill="True"
+             DockPanel.Dock="Bottom"
+             Margin="2"
+             
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+             
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}">
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="2"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindNextGlobal}"/>
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="1"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+    <TextBlock
+      Text="{x:Static Common:Tobi_Common_Lang.Find}"
+      DockPanel.Dock="Left"
+                 HorizontalAlignment="Left" VerticalAlignment="Center"
+                 Margin="0,0,4,0"/>
+
+    <UI:WatermarkTextBox
+      Control.TabIndex="0"
+      x:Name="SearchBox"
+                                     TextChanged="OnSearchTextChanged"
+                                     Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+      KeyUp="OnSearchBoxKeyUp"/>
+
+  </DockPanel>
   <DocumentPane:FlowDocumentScrollViewerEx
     Template="{StaticResource FlowDocViewerTemplate}"
     AllowDrop="True" x:Name="FlowDocReader"
@@ -46,8 +89,6 @@
          
           Margin="0,0,0,0"
           Padding="0,0,0,0"
-    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
-                            
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
                     
@@ -114,7 +155,7 @@
 
   </DocumentPane:FlowDocumentScrollViewerEx>
 
-
+  </DockPanel>
 
   <DocumentPane:FlowDocumentScrollViewerEx
     
@@ -198,44 +239,6 @@
   </DocumentPane:FlowDocumentScrollViewerEx>
 
 
-  <DockPanel LastChildFill="True"
-             DockPanel.Dock="Top"
-             Margin="2"
-             
-    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
-                            
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                    
-             
-             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}">
-
-    <UI:ButtonRichCommand
-      DockPanel.Dock="Right"
-       HorizontalAlignment="Right" VerticalAlignment="Center"
-      UseSmallerIcon="True"
-      RichCommand="{Binding CmdFindNextGlobal}"/>
-
-    <UI:ButtonRichCommand
-      DockPanel.Dock="Right"
-       HorizontalAlignment="Right" VerticalAlignment="Center"
-      UseSmallerIcon="True"
-      RichCommand="{Binding CmdFindPreviousGlobal}"/>
-
-    <TextBlock
-      Text="{x:Static Common:Tobi_Common_Lang.Find}"
-      DockPanel.Dock="Left"
-                 HorizontalAlignment="Left" VerticalAlignment="Center"
-                 Margin="0,0,4,0"/>
-
-    <UI:WatermarkTextBox
-      x:Name="SearchBox"
-                                     TextChanged="OnSearchTextChanged"
-                                     Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
-                                    HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"/>
-
-  </DockPanel>
 
   <!-- IsSelectionEnabled="True"
     
@@ -248,7 +251,7 @@
 
   <TextBlock Text=""
              x:Name="FocusCollapsed"
-    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2"
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
              Width="Auto"
              VerticalAlignment="Center"
              HorizontalAlignment="Stretch"
@@ -319,15 +322,6 @@
       <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
 
 
-      <!-- DockPanel LastChildFill="True" HorizontalAlignment="Stretch" >
-      <TextBlock Text="Find:"  DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,4,0"/>
-      <UI:WatermarkTextBox  x:Name="SearchBox"
-                                     TextChanged="OnSearchTextChanged"
-                                     Watermark="search keywords"
-                            VerticalAlignment="Center"
-                                    HorizontalAlignment="Stretch"
-                            Width="200"  Margin="0,0,4,0"/>
-    </DockPanel -->
       <WrapPanel.Resources>
         <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
       </WrapPanel.Resources>

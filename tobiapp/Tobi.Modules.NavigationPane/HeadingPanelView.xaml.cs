@@ -169,5 +169,12 @@ namespace Tobi.Plugin.NavigationPane
             m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
         }
 
+        private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && m_ViewModel.CommandFindNext.CanExecute())
+            {
+                m_ViewModel.CommandFindNext.Execute();
+            }
+        }
     }
 }
