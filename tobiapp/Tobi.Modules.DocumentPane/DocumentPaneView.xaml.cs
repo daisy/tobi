@@ -476,15 +476,21 @@ namespace Tobi.Plugin.DocumentPane
             FlowDocReader.MouseLeave += (sender, e) => restoreMouseOverHighlight();
             FlowDocReader.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(OnFlowDocViewerMouseUp), true);
 
+            //FlowDocReaderSimple.InputBindings.Clear();
+            //TheFlowDocumentSimple.InputBindings.Clear();
+
+            //FlowDocReader.InputBindings.Clear();
+            //TheFlowDocument.InputBindings.Clear();
+
             //FlowDocReader.AddHandler(ContentElement.KeyDownEvent, new RoutedEventHandler(OnFlowDocViewerKeyDown), true);
             //FlowDocReader.PreviewKeyDown += new KeyEventHandler(OnFlowDocViewerPreviewKeyDown);
 
             //DocumentViewer dv1 = LogicalTreeHelper.FindLogicalNode(window, "dv1") as DocumentViewer;
-            var cc = FlowDocReader.Template.FindName("PART_FindToolBarHost", FlowDocReader) as ContentControl;
-            if (cc != null)
-            {
-                cc.Visibility = Visibility.Collapsed;
-            }
+            //var cc = FlowDocReader.Template.FindName("PART_FindToolBarHost", FlowDocReader) as ContentControl;
+            //if (cc != null)
+            //{
+            //    cc.Visibility = Visibility.Collapsed;
+            //}
 
             //var fontConverter = new FontFamilyConverter();
             //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
