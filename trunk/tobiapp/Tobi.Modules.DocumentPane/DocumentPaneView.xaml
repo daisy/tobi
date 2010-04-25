@@ -7,7 +7,24 @@
     xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" Margin="0,0,0,0"
           
       >
+  <Grid.Resources>
+    <ControlTemplate x:Key="FlowDocViewerTemplate">
+      <!--<Border
+               BorderThickness="{TemplateBinding Border.BorderThickness}"
+               BorderBrush="{TemplateBinding Border.BorderBrush}"
+               Margin="{TemplateBinding Control.Padding}"
+               x:Uid="Border_49">-->
+        <ScrollViewer
+                  CanContentScroll="False"
+                  Name="PART_ContentHost"
+                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                  x:Uid="ScrollViewer_8" />
+      <!--</Border>-->
+    </ControlTemplate>
 
+  </Grid.Resources>
+  
   <!--LastChildFill="True"-->
 
   <Grid.ColumnDefinitions>
@@ -20,6 +37,7 @@
 
 
   <DocumentPane:FlowDocumentScrollViewerEx
+    Template="{StaticResource FlowDocViewerTemplate}"
     AllowDrop="True" x:Name="FlowDocReader"
                                                
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
@@ -97,7 +115,10 @@
 
 
 
-  <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True"
+  <DocumentPane:FlowDocumentScrollViewerEx
+    
+    Template="{StaticResource FlowDocViewerTemplate}"
+    AllowDrop="True"
                                            x:Name="FlowDocReaderSimple"
                             
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,

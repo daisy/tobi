@@ -155,9 +155,16 @@ namespace Tobi
             //regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
             //((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
 
-            //FlowDocReader.AddHandler(ContentElement.KeyDownEvent, new RoutedEventHandler(OnFlowDocViewerKeyDown), true);
-            this.PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
+            // First line of defense against FlowDocument viewers and other controls that enforce annoying commands
+            ApplicationCommands.Help.InputGestures.Clear();
+            ApplicationCommands.CancelPrint.InputGestures.Clear();
+            ApplicationCommands.PrintPreview.InputGestures.Clear();
+            ApplicationCommands.Print.InputGestures.Clear();
+            ApplicationCommands.Find.InputGestures.Clear();
 
+            // First line of defense against FlowDocument viewers and the find feature in particular
+            //FlowDocReader.AddHandler(ContentElement.KeyDownEvent, new RoutedEventHandler(OnFlowDocViewerKeyDown), true);
+            //PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
         }
 
         public static bool isControlKeyDown()
@@ -180,8 +187,6 @@ namespace Tobi
                 return;
             }
 
-            e.Handled = true;
-
             if (e is KeyEventArgs)
             {
                 var ev = (KeyEventArgs)e;
@@ -195,13 +200,15 @@ namespace Tobi
                     {
                         var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
 
-                        if ((modifiers & ModifierKeys.None) != ModifierKeys.None
+                        if (modifiers == ModifierKeys.None
                             ||
                             isControlKeyDown()
                             && (modifiers & ModifierKeys.Control) != ModifierKeys.None)
                         {
                             if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
                             {
+                                e.Handled = true;
+
                                 ((KeyBinding)inputBinding).Command.Execute(null);
                             }
                         }
