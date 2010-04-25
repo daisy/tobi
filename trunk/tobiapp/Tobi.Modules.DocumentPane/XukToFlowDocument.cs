@@ -1262,7 +1262,8 @@ namespace Tobi.Plugin.DocumentPane
                 string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
                 data.NavigateUri = new Uri("#" + id, UriKind.Relative);
 
-                data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
+                //// Now using LostMouseCapture data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
+                
                 //data.MouseDown += m_DocumentPaneView.OnTextElementHyperLinkMouseDown;
 
                 data.ToolTip = data.NavigateUri.ToString();
