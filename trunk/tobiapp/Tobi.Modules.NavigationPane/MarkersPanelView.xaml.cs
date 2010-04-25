@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -148,5 +149,14 @@ namespace Tobi.Plugin.NavigationPane
             Debug.Assert(sender == e.Source);
             m_LastListItemSelected = (ListViewItem)sender;
         }
+
+        private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && ViewModel.CommandFindNextMarkers.CanExecute())
+            {
+                ViewModel.CommandFindNextMarkers.Execute();
+            }
+        }
+
     }
 }

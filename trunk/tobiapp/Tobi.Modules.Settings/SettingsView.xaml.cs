@@ -601,5 +601,14 @@ namespace Tobi.Plugin.Settings
                 }
             }
         }
+
+        private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && CommandFindNext.CanExecute())
+            {
+                CommandFindNext.Execute();
+            }
+        }
+
     }
 }

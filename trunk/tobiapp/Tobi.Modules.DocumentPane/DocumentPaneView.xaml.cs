@@ -738,23 +738,58 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CommandFindNext { get; private set; }
         public RichDelegateCommand CommandFindPrev { get; private set; }
 
-        private TextElement m_MouseDownTextElement;
+        private TextElement getFirstAncestorWithTreeNodeTag(object obj)
+        {
+            var textElement = obj as TextElement;
+            if (textElement == null)
+            {
+                var uiElement = obj as UIElement;
+                if (uiElement != null)
+                {
+                    DependencyObject parent = uiElement;
+                    do
+                    {
+                        if (parent is BlockUIContainer)
+                        {
+                            textElement = (BlockUIContainer)parent;
+                            break;
+                        }
+                        else if (parent is InlineUIContainer)
+                        {
+                            textElement = (InlineUIContainer)parent;
+                            break;
+                        }
+                        //parent = VisualTreeHelper.GetParent(parent);
+                        parent = LogicalTreeHelper.GetParent(parent);
+                    } while (parent != null);
+                }
+            }
+
+            if (textElement != null)
+            {
+                do
+                {
+                    if (textElement.Tag != null && textElement.Tag is TreeNode)
+                    {
+                        return textElement;
+                    }
+                    textElement = textElement.Parent as TextElement;
+                } while (textElement != null);
+            }
+
+            return null;
+        }
+
+        private DependencyObject m_MouseDownTextElement;// TextElement Image, Panel (UIElement)
         private void OnFlowDocGotMouseCapture(object sender, RoutedEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                var textElement = Mouse.DirectlyOver as TextElement;
+                var textElement = getFirstAncestorWithTreeNodeTag(Mouse.DirectlyOver);
+
                 if (textElement != null)
                 {
-                    do
-                    {
-                        if (textElement.Tag != null && textElement.Tag is TreeNode)
-                        {
-                            m_MouseDownTextElement = textElement;
-                            return;
-                        }
-                        textElement = textElement.Parent as TextElement;
-                    } while (textElement != null);
+                    m_MouseDownTextElement = textElement;
                 }
             }
         }
@@ -766,50 +801,44 @@ namespace Tobi.Plugin.DocumentPane
 
             Dispatcher.BeginInvoke(DispatcherPriority.Input, (Action)(() =>
             {
-                var textElement = Mouse.DirectlyOver as TextElement;
-                if (textElement != null && mouseDownTextElement != null)
+                if (mouseDownTextElement == null) return;
+
+                var textElement = getFirstAncestorWithTreeNodeTag(Mouse.DirectlyOver);
+
+                if (textElement != null && textElement == mouseDownTextElement)
                 {
-                    do
+                    if (textElement != (m_lastHighlightedSub ?? m_lastHighlighted))
                     {
-                        if (textElement.Tag != null && textElement.Tag is TreeNode)
+                        m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                    }
+
+                    if (isControlKeyDown())
+                    {
+                        if (m_lastHighlighted == null) return;
+
+                        textElement = m_lastHighlightedSub ?? m_lastHighlighted;
+
+                        TextElement hyperlink = textElement;
+                        do
                         {
-                            if (textElement == mouseDownTextElement
-                                && textElement != (m_lastHighlightedSub ?? m_lastHighlighted))
+                            if (hyperlink is Hyperlink && ((Hyperlink)hyperlink).NavigateUri != null
+                                && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
                             {
-                                m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
-
-                                if (isControlKeyDown())
-                                {
-                                    if (m_lastHighlighted == null) return;
-
-                                    textElement = m_lastHighlightedSub ?? m_lastHighlighted;
-
-                                    //
-                                    TextElement hyperlink = textElement;
-                                    do
-                                    {
-                                        if (hyperlink is Hyperlink && ((Hyperlink)hyperlink).NavigateUri != null
-                                            && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
-                                        {
-                                            NavigateUri(((Hyperlink)hyperlink).NavigateUri);
-                                        }
-                                        hyperlink = hyperlink.Parent as TextElement;
-                                    } while (hyperlink != null);
-                                    //
-
-                                    Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                                        (Action)(() =>
-                                        {
-                                            if (FlowDocReader.Selection != null)
-                                                FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
-                                        })
-                                        );
-                                }
+                                NavigateUri(((Hyperlink)hyperlink).NavigateUri);
+                                return;
                             }
-                            return;
-                        }
-                        textElement = textElement.Parent as TextElement;
-                    } while (textElement != null);
+                            hyperlink = hyperlink.Parent as TextElement;
+                        } while (hyperlink != null);
+                        
+                        // Fallback:
+                        Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                if (FlowDocReader.Selection != null)
+                                    FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
+                            })
+                            );
+                    }
                 }
             }));
         }
@@ -1499,9 +1528,6 @@ namespace Tobi.Plugin.DocumentPane
             double height = bottom - top;
             if (width <= 0 || height <= 0)
             {
-#if DEBUG
-                Debugger.Break();
-#endif
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
                 return;
             }
@@ -2176,30 +2202,30 @@ namespace Tobi.Plugin.DocumentPane
         //            }
         //        }
 
-//        public void OnTextElementMouseDown(object sender, RoutedEventArgs e)
-//        {
-//            return; // tesing with Got/LostCapture only 
+        //        public void OnTextElementMouseDown(object sender, RoutedEventArgs e)
+        //        {
+        //            return; // tesing with Got/LostCapture only 
 
-//            if (!(e is MouseButtonEventArgs))
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                return;
-//            }
+        //            if (!(e is MouseButtonEventArgs))
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return;
+        //            }
 
-//            var textElem = (TextElement)sender;
-//            var ev = e as MouseButtonEventArgs;
+        //            var textElem = (TextElement)sender;
+        //            var ev = e as MouseButtonEventArgs;
 
-//            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left)
-//            {
-//                m_MouseDownTextElement = textElem;
-//            }
-//            else
-//            {
-//                m_MouseDownTextElement = null;
-//            }
-//        }
+        //            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left)
+        //            {
+        //                m_MouseDownTextElement = textElem;
+        //            }
+        //            else
+        //            {
+        //                m_MouseDownTextElement = null;
+        //            }
+        //        }
 
         private void OnFlowDocDragOver(object sender, DragEventArgs e)
         {
@@ -2240,65 +2266,65 @@ namespace Tobi.Plugin.DocumentPane
         //    }
         //}
 
-//        public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
-//        {
-//            return; // tesing with Got/LostCapture only 
+        //        public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
+        //        {
+        //            return; // tesing with Got/LostCapture only 
 
-//            if (!(e is MouseButtonEventArgs))
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                return;
-//            }
+        //            if (!(e is MouseButtonEventArgs))
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return;
+        //            }
 
-//            var ev = e as MouseButtonEventArgs;
-//            var flowDocView = (FlowDocumentScrollViewer)sender;
-//            if (m_MouseDownTextElement != null)
-//            {
-//                OnTextElementMouseUp(m_MouseDownTextElement, ev);
-//            }
-//        }
+        //            var ev = e as MouseButtonEventArgs;
+        //            var flowDocView = (FlowDocumentScrollViewer)sender;
+        //            if (m_MouseDownTextElement != null)
+        //            {
+        //                OnTextElementMouseUp(m_MouseDownTextElement, ev);
+        //            }
+        //        }
 
-//        public void OnTextElementMouseUp(object sender, RoutedEventArgs e)
-//        {
-//            return; // tesing with Got/LostCapture only 
+        //        public void OnTextElementMouseUp(object sender, RoutedEventArgs e)
+        //        {
+        //            return; // tesing with Got/LostCapture only 
 
-//            if (!(e is MouseButtonEventArgs))
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                return;
-//            }
+        //            if (!(e is MouseButtonEventArgs))
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return;
+        //            }
 
-//            var textElem = (TextElement)sender;
-//            var ev = e as MouseButtonEventArgs;
+        //            var textElem = (TextElement)sender;
+        //            var ev = e as MouseButtonEventArgs;
 
-//            if (m_MouseDownTextElement != textElem)
-//            {
-//                return;
-//            }
+        //            if (m_MouseDownTextElement != textElem)
+        //            {
+        //                return;
+        //            }
 
-//            if (ev.ClickCount != 1 || ev.ChangedButton != MouseButton.Left)
-//            {
-//                return;
-//            }
+        //            if (ev.ClickCount != 1 || ev.ChangedButton != MouseButton.Left)
+        //            {
+        //                return;
+        //            }
 
-//            //var obj = FindVisualTreeRoot(textElem);
+        //            //var obj = FindVisualTreeRoot(textElem);
 
-//            var node = textElem.Tag as TreeNode;
-//            if (node == null)
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                return;
-//            }
+        //            var node = textElem.Tag as TreeNode;
+        //            if (node == null)
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return;
+        //            }
 
-//            m_UrakawaSession.PerformTreeNodeSelection(node);
+        //            m_UrakawaSession.PerformTreeNodeSelection(node);
 
-//        }
+        //        }
 
         public static bool isControlKeyDown()
         {
@@ -2832,6 +2858,19 @@ namespace Tobi.Plugin.DocumentPane
                 Settings.Default.Document_ButtonBarVisible = !Settings.Default.Document_ButtonBarVisible;
                 FocusHelper.FocusBeginInvoke(Settings.Default.Document_ButtonBarVisible ? FocusExpanded : FocusCollapsed);
             }
+        }
+
+        private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && CommandFindNext.CanExecute())
+            {
+                CommandFindNext.Execute();
+            }
+        }
+
+        public void OnHyperLinkGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            scrollToView((Hyperlink)sender);
         }
     }
 }

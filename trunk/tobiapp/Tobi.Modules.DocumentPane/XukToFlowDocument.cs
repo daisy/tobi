@@ -1269,6 +1269,8 @@ namespace Tobi.Plugin.DocumentPane
                 data.ToolTip = data.NavigateUri.ToString();
                 //string name = IdToName(id);
 
+                data.GotKeyboardFocus += m_DocumentPaneView.OnHyperLinkGotKeyboardFocus;
+
                 m_DocumentPaneView.AddIdLinkSource(id, data);
             }
             else

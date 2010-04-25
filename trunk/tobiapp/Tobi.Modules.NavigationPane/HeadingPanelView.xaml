@@ -36,6 +36,7 @@
                  Margin="0,0,4,0"/>
 
     <UI:WatermarkTextBox
+      KeyUp="OnSearchBoxKeyUp"
       Control.TabIndex="2"
       x:Name="SearchBox"
                                      TextChanged="OnSearchTextChanged"

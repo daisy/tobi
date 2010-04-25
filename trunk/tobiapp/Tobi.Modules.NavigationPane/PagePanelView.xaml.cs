@@ -166,5 +166,14 @@ namespace Tobi.Plugin.NavigationPane
             Debug.Assert(sender == e.Source);
             m_LastListItemSelected = (ListViewItem)sender;
         }
+
+        private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && m_ViewModel.CommandFindNextPage.CanExecute())
+            {
+                m_ViewModel.CommandFindNextPage.Execute();
+            }
+        }
+
     }
 }
