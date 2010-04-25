@@ -37,12 +37,13 @@
                        Converter={XAML:ColorToBrushConverter},
                             Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+
+                        Focusable="True"
     
                     IsTabStop="False"
-                    IsEnabled = "True"
-                    Focusable="False"
     IsSelectionEnabled="True"
-    
+                    IsEnabled = "True"
+    IsToolBarVisible="false"
                       >
     <!-- 
 {DynamicResource {x:Static SystemColors.WindowBrushKey}}
@@ -59,7 +60,7 @@
     <FlowDocument
       
                   IsEnabled = "True"
-                  Focusable="False"
+                  Focusable="True"
                   
                   AllowDrop="True"
                   x:Name="TheFlowDocument"

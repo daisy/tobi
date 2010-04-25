@@ -474,6 +474,7 @@ namespace Tobi.Plugin.DocumentPane
 #endif
 
             FlowDocReader.MouseLeave += (sender, e) => restoreMouseOverHighlight();
+            FlowDocReader.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(OnFlowDocViewerMouseUp), true);
 
             //var fontConverter = new FontFamilyConverter();
             //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
@@ -481,6 +482,7 @@ namespace Tobi.Plugin.DocumentPane
             //UserInterfaceStrings.No_Document);
             //setTextDecoration_ErrorUnderline(run);//comboListOfFonts.SelectedItem = fontFamily;
 
+            m_MouseDownTextElement = null;
             TheFlowDocument.Blocks.Clear();
             TheFlowDocument.Blocks.Add(new Paragraph(new Run(" ")));
 
@@ -583,13 +585,13 @@ namespace Tobi.Plugin.DocumentPane
             {
                 textElement = m_idLinkTargets[uid];
             }
-//            if (textElement == null)
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif //DEBUG
-//                textElement = TheFlowDocument.FindName(uid) as TextElement;
-//            }
+            //            if (textElement == null)
+            //            {
+            //#if DEBUG
+            //                Debugger.Break();
+            //#endif //DEBUG
+            //                textElement = TheFlowDocument.FindName(uid) as TextElement;
+            //            }
             if (textElement != null)
             {
                 if (textElement.Tag is TreeNode)
@@ -872,6 +874,8 @@ namespace Tobi.Plugin.DocumentPane
 
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
+            
+            m_MouseDownTextElement = null;
 
             TheFlowDocument.Blocks.Clear();
             TheFlowDocumentSimple.Blocks.Clear();
@@ -1108,125 +1112,132 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                //Debug.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
-                if (FlowDocReader.ScrollViewer.ScrollableHeight !=
-                             FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
+                Dispatcher.Invoke(DispatcherPriority.Render, (Action)(textElement.BringIntoView));
+                //textElement.BringIntoView();
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
+            }
+        }
+
+        private void scrollToView_(TextElement textElement)
+        {
+            //Debug.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
+            if (FlowDocReader.ScrollViewer.ScrollableHeight !=
+                         FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
+            {
+                double diff = FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight -
+                              FlowDocReader.ScrollViewer.ScrollableHeight;
+                Console.WriteLine("FlowDocument Scroll area diff: " + diff);
+            }
+
+            TextPointer textPointerStart = textElement.ContentStart;
+            TextPointer textPointerEnd = textElement.ContentEnd;
+
+            double left = Double.MaxValue, top = Double.MaxValue;
+            double right = Double.MinValue, bottom = Double.MinValue;
+
+            bool found = false;
+
+            TextPointer textPointerCurrent = null;
+            do
+            {
+                if (textPointerCurrent == null)
                 {
-                    double diff = FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight -
-                                  FlowDocReader.ScrollViewer.ScrollableHeight;
-                    Console.WriteLine("FlowDocument Scroll area diff: " + diff);
+                    textPointerCurrent = textPointerStart;
+                }
+                else
+                {
+                    textPointerCurrent = textPointerCurrent.GetNextContextPosition(LogicalDirection.Forward);
                 }
 
-                TextPointer textPointerStart = textElement.ContentStart;
-                TextPointer textPointerEnd = textElement.ContentEnd;
-
-                double left = Double.MaxValue, top = Double.MaxValue;
-                double right = Double.MinValue, bottom = Double.MinValue;
-
-                bool found = false;
-
-                TextPointer textPointerCurrent = null;
-                do
+                Rect rect = textPointerCurrent.GetCharacterRect(LogicalDirection.Forward);
+                if (rect.Left == Double.MaxValue || rect.Top == Double.MaxValue
+                        || rect.Right == Double.MinValue || rect.Bottom == Double.MinValue)
                 {
-                    if (textPointerCurrent == null)
-                    {
-                        textPointerCurrent = textPointerStart;
-                    }
-                    else
-                    {
-                        textPointerCurrent = textPointerCurrent.GetNextContextPosition(LogicalDirection.Forward);
-                    }
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+                if (rect.Left < left) left = rect.Left;
+                if (rect.Top < top) top = rect.Top;
+                if (rect.Right > right) right = rect.Right;
+                if (rect.Bottom > bottom) bottom = rect.Bottom;
 
-                    Rect rect = textPointerCurrent.GetCharacterRect(LogicalDirection.Forward);
-                    if (rect.Left == Double.MaxValue || rect.Top == Double.MaxValue
-                            || rect.Right == Double.MinValue || rect.Bottom == Double.MinValue)
+                //textPointerCurrent = textPointerCurrent.GetNextInsertionPosition(LogicalDirection.Forward);
+
+                //int result = textPointerCurrent.CompareTo(textPointerEnd);
+                //result = textPointerEnd.CompareTo(textPointerCurrent);
+                //if (result==0)
+                //{
+                //    bool b = textPointerEnd == textPointerCurrent;
+                //}
+
+                if (textPointerCurrent.CompareTo(textPointerEnd) == 0)
+                {
+                    if (left == Double.MaxValue || top == Double.MaxValue
+                        || right == Double.MinValue || bottom == Double.MinValue)
                     {
 #if DEBUG
                         Debugger.Break();
 #endif
                     }
-                    if (rect.Left < left) left = rect.Left;
-                    if (rect.Top < top) top = rect.Top;
-                    if (rect.Right > right) right = rect.Right;
-                    if (rect.Bottom > bottom) bottom = rect.Bottom;
+                    found = true;
+                    break;
+                }
 
-                    //textPointerCurrent = textPointerCurrent.GetNextInsertionPosition(LogicalDirection.Forward);
+            } while (textPointerCurrent != null);
 
-                    //int result = textPointerCurrent.CompareTo(textPointerEnd);
-                    //result = textPointerEnd.CompareTo(textPointerCurrent);
-                    //if (result==0)
-                    //{
-                    //    bool b = textPointerEnd == textPointerCurrent;
-                    //}
-
-                    if (textPointerCurrent.CompareTo(textPointerEnd) == 0)
-                    {
-                        if (left == Double.MaxValue || top == Double.MaxValue
-                            || right == Double.MinValue || bottom == Double.MinValue)
-                        {
+            double width = right - left;
+            double height = bottom - top;
+            if (width <= 0 || height <= 0)
+            {
 #if DEBUG
-                            Debugger.Break();
+                Debugger.Break();
 #endif
-                        }
-                        found = true;
-                        break;
-                    }
-
-                } while (textPointerCurrent != null);
-
-                double width = right - left;
-                double height = bottom - top;
-                if (width <= 0 || height <= 0)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
-                    return;
-                }
-                var rectBoundingBox = new Rect(left, top, width, height);
-
-                if (!found)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    Rect rectStart = textPointerStart.GetCharacterRect(LogicalDirection.Forward);
-                    Rect rectEnd = textPointerEnd.GetCharacterRect(LogicalDirection.Backward);
-
-                    rectBoundingBox = new Rect(rectStart.Left, rectStart.Top, rectStart.Width, rectStart.Height);
-                    rectBoundingBox.Union(rectEnd);
-
-                    double textTotalHeight_ = rectEnd.Top + rectEnd.Height - rectStart.Top;
-                    double textTotalHeight = rectBoundingBox.Height;
-                    Debug.Assert(textTotalHeight_ == textTotalHeight);
-                }
-
-                //Rect rectDocStart = FlowDocReader.Document.ContentStart.GetCharacterRect(LogicalDirection.Forward);
-                double boxTopRelativeToDoc = -20 + FlowDocReader.ScrollViewer.VerticalOffset + rectBoundingBox.Top;
-
-                double offsetToTop = boxTopRelativeToDoc;
-                double offsetToCenter = boxTopRelativeToDoc - (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height) / 2;
-                double offsetToBottom = offsetToTop + FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height;
-
-                if (rectBoundingBox.Height > FlowDocReader.ScrollViewer.ViewportHeight)
-                {
-                    offsetToCenter = offsetToTop;
-                    offsetToBottom = offsetToTop;
-                }
-
-                double offset = offsetToCenter; //TODO: choose based on app pref
-                if (offset < 0)
-                {
-                    offset = 0;
-                }
-                else if (offset > FlowDocReader.ScrollViewer.ScrollableHeight)
-                {
-                    offset = FlowDocReader.ScrollViewer.ScrollableHeight;
-                }
-
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
+                return;
             }
+            var rectBoundingBox = new Rect(left, top, width, height);
+
+            if (!found)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Rect rectStart = textPointerStart.GetCharacterRect(LogicalDirection.Forward);
+                Rect rectEnd = textPointerEnd.GetCharacterRect(LogicalDirection.Backward);
+
+                rectBoundingBox = new Rect(rectStart.Left, rectStart.Top, rectStart.Width, rectStart.Height);
+                rectBoundingBox.Union(rectEnd);
+
+                double textTotalHeight_ = rectEnd.Top + rectEnd.Height - rectStart.Top;
+                double textTotalHeight = rectBoundingBox.Height;
+                Debug.Assert(textTotalHeight_ == textTotalHeight);
+            }
+
+            //Rect rectDocStart = FlowDocReader.Document.ContentStart.GetCharacterRect(LogicalDirection.Forward);
+            double boxTopRelativeToDoc = -20 + FlowDocReader.ScrollViewer.VerticalOffset + rectBoundingBox.Top;
+
+            double offsetToTop = boxTopRelativeToDoc;
+            double offsetToCenter = boxTopRelativeToDoc - (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height) / 2;
+            double offsetToBottom = offsetToTop + FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height;
+
+            if (rectBoundingBox.Height > FlowDocReader.ScrollViewer.ViewportHeight)
+            {
+                offsetToCenter = offsetToTop;
+                offsetToBottom = offsetToTop;
+            }
+
+            double offset = offsetToCenter; //TODO: choose based on app pref
+            if (offset < 0)
+            {
+                offset = 0;
+            }
+            else if (offset > FlowDocReader.ScrollViewer.ScrollableHeight)
+            {
+                offset = FlowDocReader.ScrollViewer.ScrollableHeight;
+            }
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
         }
 
         private Dictionary<String, SolidColorBrush> m_SolidColorBrushCache;
@@ -1783,17 +1794,6 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        public void OnTextElementRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            m_Logger.Log("DocumentPaneView.OnRequestNavigate: " + e.Uri.ToString(), Category.Debug, Priority.Medium);
-
-            if (e.Uri.ToString().StartsWith("#"))
-            {
-                string id = e.Uri.ToString().Substring(1);
-                PerformTreeNodeSelection(id);
-            }
-        }
-
         private TextElement m_MouseOverTextElement;
         private Brush m_MouseOverTextElementBackground;
         public void OnTextElementMouseEnter(object sender, MouseEventArgs e)
@@ -1803,7 +1803,7 @@ namespace Tobi.Plugin.DocumentPane
             var textElem = (TextElement)sender;
             m_MouseOverTextElement = textElem;
             m_MouseOverTextElementBackground = m_MouseOverTextElement.Background;
-            m_MouseOverTextElement.Background = Brushes.Red;
+            m_MouseOverTextElement.Background = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
         }
 
         private void restoreMouseOverHighlight()
@@ -1826,6 +1826,42 @@ namespace Tobi.Plugin.DocumentPane
         //    m_MouseOverTextElementBackground = null;
         //}
 
+        private void NavigateUri(Uri uri)
+        {
+            if (uri.ToString().StartsWith("#"))
+            {
+                string id = uri.ToString().Substring(1);
+                PerformTreeNodeSelection(id);
+            }
+        }
+
+        public void OnTextElementRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            m_Logger.Log("DocumentPaneView.OnRequestNavigate: " + e.Uri.ToString(), Category.Debug, Priority.Medium);
+            m_MouseDownTextElement = null;
+            NavigateUri(e.Uri);
+            m_MouseDownTextElement = null;
+        }
+
+        //        public void OnTextElementHyperLinkMouseDown(object sender, RoutedEventArgs e)
+        //        {
+        //            if (!(e is MouseButtonEventArgs))
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return;
+        //            }
+
+        //            var hyperlink = (Hyperlink)sender;
+        //            var ev = e as MouseButtonEventArgs;
+
+        //            if (ev.ClickCount == 2 && ev.ChangedButton == MouseButton.Left)
+        //            {
+        //                NavigateUri(hyperlink.NavigateUri);
+        //            }
+        //        }
+
         private TextElement m_MouseDownTextElement;
         public void OnTextElementMouseDown(object sender, RoutedEventArgs e)
         {
@@ -1840,9 +1876,35 @@ namespace Tobi.Plugin.DocumentPane
             var textElem = (TextElement)sender;
             var ev = e as MouseButtonEventArgs;
 
-            m_MouseDownTextElement = textElem;
+            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left)
+            {
+                m_MouseDownTextElement = textElem;
+            }
+            else
+            {
+                m_MouseDownTextElement = null;
+            }
+
         }
-        
+
+        public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
+        {
+            if (!(e is MouseButtonEventArgs))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            var ev = e as MouseButtonEventArgs;
+            var flowDocView = (FlowDocumentScrollViewer)sender;
+            if (m_MouseDownTextElement != null)
+            {
+                OnTextElementMouseUp(m_MouseDownTextElement, ev);
+            }
+        }
+
         public void OnTextElementMouseUp(object sender, RoutedEventArgs e)
         {
             if (!(e is MouseButtonEventArgs))
@@ -1855,61 +1917,47 @@ namespace Tobi.Plugin.DocumentPane
 
             var textElem = (TextElement)sender;
             var ev = e as MouseButtonEventArgs;
-#if DEBUG
-            if (ev.ChangedButton == MouseButton.Left)
-            {
-                // Somewhat never happens !! :(
-                // Yet it works with right button...
-                //Debugger.Break();
-                int debug = 1;
-            }
-#endif
 
-#if DEBUG
             if (m_MouseDownTextElement != textElem)
             {
-                int debug = 1;
+                return;
             }
-#endif
-            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left)
+
+            if (ev.ClickCount != 1 || ev.ChangedButton != MouseButton.Left)
             {
-                //var obj = FindVisualTreeRoot(textElem);
-
-                var node = textElem.Tag as TreeNode;
-                if (node == null)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    return;
-                }
-#if DEBUG
-                if (textElem is Hyperlink)
-                {
-                    int debug = 1;
-                }
-#endif
-
-                m_UrakawaSession.PerformTreeNodeSelection(node);
+                return;
             }
 
-            if (ev.ClickCount == 1 && ev.ChangedButton == MouseButton.Left
-                && isControlKeyDown()
-                )
+            //var obj = FindVisualTreeRoot(textElem);
+
+            var node = textElem.Tag as TreeNode;
+            if (node == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            m_UrakawaSession.PerformTreeNodeSelection(node);
+
+
+            if (isControlKeyDown())
             {
                 if (m_lastHighlighted == null) return;
 
                 TextElement textElement = m_lastHighlightedSub ?? m_lastHighlighted;
-                
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                        (Action)(() =>
-                                     {
-                                         if (FlowDocReader.Selection != null)
-                                             FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
-                                     })
-                        );
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                    (Action)(() =>
+                                 {
+                                     if (FlowDocReader.Selection != null)
+                                         FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
+                                 })
+                    );
             }
         }
+
         private bool isControlKeyDown()
         {
             return (Keyboard.Modifiers &
@@ -1925,8 +1973,6 @@ namespace Tobi.Plugin.DocumentPane
 
         private void createFlowDocumentFromXuk(Project project)
         {
-            Debug.Assert(false);// just checking....
-
             TreeNode root = project.Presentations.Get(0).RootNode;
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
 
@@ -2051,13 +2097,13 @@ namespace Tobi.Plugin.DocumentPane
             {
                 textElement = m_idLinkTargets[uid];
             }
-//            if (textElement == null)
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif //DEBUG
-//                textElement = TheFlowDocument.FindName(uid) as TextElement;
-//            }
+            //            if (textElement == null)
+            //            {
+            //#if DEBUG
+            //                Debugger.Break();
+            //#endif //DEBUG
+            //                textElement = TheFlowDocument.FindName(uid) as TextElement;
+            //            }
             if (textElement != null)
             {
                 if (textElement.Tag is TreeNode)

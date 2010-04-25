@@ -636,7 +636,7 @@ namespace Tobi.Plugin.DocumentPane
                 //#endif
                 //                }
 
-                //data.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseUp), true);
+                //data.AddHandler(ContentElement.PreviewMouseUpEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseUp), true);
                 //data.AddHandler(ContentElement.MouseDownEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseDown), true);
 
                 data.MouseUp += m_DocumentPaneView.OnTextElementMouseUp;
@@ -1247,6 +1247,8 @@ namespace Tobi.Plugin.DocumentPane
             var data = new Hyperlink();
             setTag(data, node);
 
+            //data.Focusable = false;
+
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
 #if DEBUG
@@ -1271,9 +1273,8 @@ namespace Tobi.Plugin.DocumentPane
                 string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
                 data.NavigateUri = new Uri("#" + id, UriKind.Relative);
 
-                //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
-                //data.RequestNavigate += (sender, e) => m_DelegateOnRequestNavigate(e.Uri);
                 data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
+                //data.MouseDown += m_DocumentPaneView.OnTextElementHyperLinkMouseDown;
 
                 data.ToolTip = data.NavigateUri.ToString();
                 //string name = IdToName(id);
@@ -1294,7 +1295,11 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    //var span = new Span();
+                    var run = new Run(textMedia.Text);
+                    //span.Inlines.Add(run);
+
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
 
