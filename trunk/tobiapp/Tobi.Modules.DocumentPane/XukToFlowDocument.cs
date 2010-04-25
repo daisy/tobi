@@ -637,13 +637,16 @@ namespace Tobi.Plugin.DocumentPane
                 //                }
 
                 //data.AddHandler(ContentElement.PreviewMouseUpEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseUp), true);
-                //data.AddHandler(ContentElement.MouseDownEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseDown), true);
 
                 data.MouseUp += m_DocumentPaneView.OnTextElementMouseUp;
                 data.MouseDown += m_DocumentPaneView.OnTextElementMouseDown;
 
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
-                //data.MouseLeave += m_DocumentPaneView.OnTextElementMouseLeave;
+
+                data.PreviewDragOver += m_DocumentPaneView.OnTextElementMouseDrag;
+
+                //data.AddHandler(ContentElement.PreviewMouseMoveEvent, new RoutedEventHandler(m_DocumentPaneView.OnTextElementMouseMove), true);
+                //data.MouseMove += m_DocumentPaneView.OnTextElementMouseEnter;
             }
         }
 

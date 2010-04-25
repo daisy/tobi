@@ -39,6 +39,7 @@
   <DocumentPane:FlowDocumentScrollViewerEx
     Template="{StaticResource FlowDocViewerTemplate}"
     AllowDrop="True" x:Name="FlowDocReader"
+    
                                                
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
               Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
@@ -79,7 +80,7 @@
       
                   IsEnabled = "True"
                   Focusable="True"
-                  
+                  DragOver="OnFlowDocDragOver"
                   AllowDrop="True"
                   x:Name="TheFlowDocument"
                     Background="{Binding
@@ -162,7 +163,7 @@
       
                   IsEnabled = "True"
                   Focusable="True"
-                  
+                  DragOver="OnFlowDocDragOver"
                   AllowDrop="True" x:Name="TheFlowDocumentSimple"
                     Background="{Binding
                     Converter={XAML:ColorToBrushConverter},
