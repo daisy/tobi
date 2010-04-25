@@ -82,9 +82,14 @@ namespace Tobi.Common._UnusedCode
         /// </remarks>
         public TextRange FindNext(String input, FindOptions findOptions)
         {
-            TextRange textRange = GetTextRangeFromPosition(ref currentPosition, input, findOptions);
+            TextRange textRange = GetTextRangeFromPosition(ref currentPosition, input, findOptions, LogicalDirection.Forward);
             return textRange;
         }
+        //public TextRange FindPrevious(String input, FindOptions findOptions)
+        //{
+        //    TextRange textRange = GetTextRangeFromPosition(ref currentPosition, input, findOptions, LogicalDirection.Backward);
+        //    return textRange;
+        //}
 
         /// <summary>
         /// Find all matches of the input string.
@@ -97,15 +102,20 @@ namespace Tobi.Common._UnusedCode
         /// </remarks>
         public IEnumerable<TextRange> FindAll(String input, FindOptions findOptions)
         {
+            TextPointer backup = currentPosition;
+            this.currentPosition = inputTextRange.Start;
+
             while (currentPosition.CompareTo(inputTextRange.End) < 0)
             {
                 TextRange textRange = FindNext(input, findOptions);
                 if (textRange != null && !String.IsNullOrEmpty(textRange.Text))
                 {
-                    Console.WriteLine(textRange.Text);
+                    //Console.WriteLine(textRange.Text);
                     yield return textRange;
                 }
             }
+
+            this.currentPosition = backup;
         }
 
         /// <summary>
@@ -170,7 +180,7 @@ namespace Tobi.Common._UnusedCode
         /// <param name="textToFind">input text</param>
         /// <param name="findOptions">the search option</param>
         /// <returns>An <see cref="TextRange"/> instance represeneting the matching string withing the text container.</returns>
-        public TextRange GetTextRangeFromPosition(ref TextPointer position, String input, FindOptions findOptions)
+        private TextRange GetTextRangeFromPosition(ref TextPointer position, String input, FindOptions findOptions, LogicalDirection logicalDirection)
         {
             Boolean matchCase = (findOptions & FindOptions.MatchCase) == FindOptions.MatchCase;
             Boolean matchWholeWord = (findOptions & FindOptions.MatchWholeWord) == FindOptions.MatchWholeWord;
@@ -184,7 +194,7 @@ namespace Tobi.Common._UnusedCode
                     break;
                 }
 
-                if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                if (position.GetPointerContext(logicalDirection) == TextPointerContext.Text)
                 {
                     String textRun = position.GetTextInRun(LogicalDirection.Forward);
                     StringComparison stringComparison = matchCase ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
@@ -208,7 +218,7 @@ namespace Tobi.Common._UnusedCode
                             {
                                 // If a WholeWord match is not found, go to next recursion to find it.
                                 position = position.GetPositionAtOffset(input.Length);
-                                return GetTextRangeFromPosition(ref position, input, findOptions);
+                                return GetTextRangeFromPosition(ref position, input, findOptions, logicalDirection);
                             }
                         }
                         else

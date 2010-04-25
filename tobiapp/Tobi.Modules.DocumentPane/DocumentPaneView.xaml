@@ -33,8 +33,8 @@
   <Grid.RowDefinitions>
     <RowDefinition Height="*"/>
     <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
-
 
   <DocumentPane:FlowDocumentScrollViewerEx
     Template="{StaticResource FlowDocViewerTemplate}"
@@ -159,6 +159,8 @@
                       
                       ViewingMode="Scroll" -->
 
+    <!--TextBoxBase.AutoWordSelectionProperty-->
+
     <FlowDocument
       
                   IsEnabled = "True"
@@ -196,6 +198,45 @@
   </DocumentPane:FlowDocumentScrollViewerEx>
 
 
+  <DockPanel LastChildFill="True"
+             DockPanel.Dock="Top"
+             Margin="2"
+             
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
+                            
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                    
+             
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}">
+
+    <UI:ButtonRichCommand
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindNextGlobal}"/>
+
+    <UI:ButtonRichCommand
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+    <TextBlock
+      Text="{x:Static Common:Tobi_Common_Lang.Find}"
+      DockPanel.Dock="Left"
+                 HorizontalAlignment="Left" VerticalAlignment="Center"
+                 Margin="0,0,4,0"/>
+
+    <UI:WatermarkTextBox
+      x:Name="SearchBox"
+                                     TextChanged="OnSearchTextChanged"
+                                     Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"/>
+
+  </DockPanel>
+
   <!-- IsSelectionEnabled="True"
     
                         IsScrollViewEnabled="False"
@@ -207,7 +248,7 @@
 
   <TextBlock Text=""
              x:Name="FocusCollapsed"
-    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2"
              Width="Auto"
              VerticalAlignment="Center"
              HorizontalAlignment="Stretch"
@@ -230,7 +271,7 @@
           Margin="0,0,0,0"
           Padding="0,0,0,0"
           
-    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2"
            DockPanel.Dock="Bottom"
           
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,

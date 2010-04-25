@@ -10,14 +10,17 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common._UnusedCode;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
@@ -92,23 +95,212 @@ namespace Tobi.Plugin.DocumentPane
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DocumentPaneView : IPartImportsSatisfiedNotification // : INotifyPropertyChangedEx
+    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx
     {
         public void OnImportsSatisfied()
         {
             trySearchCommands();
         }
-        //public RichDelegateCommand CommandFindFocus { get; private set; }
-        //public RichDelegateCommand CommandFindNext { get; private set; }
-        //public RichDelegateCommand CommandFindPrev { get; private set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        private PropertyChangedNotifyBase m_PropertyChangeHandler;
+
+        public RichDelegateCommand CmdFindNextGlobal { get; private set; }
+        public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
+
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e) { SearchTerm = SearchBox.Text; }
+
+        private string m_SearchTerm;
+        public string SearchTerm
+        {
+            get { return m_SearchTerm; }
+            set
+            {
+                if (m_SearchTerm == value) { return; }
+                m_SearchTerm = value;
+
+                m_SearchMatches = null;
+                m_SearchCurrentIndex = -1;
+
+                // We do nothing: no search as you type, too costly and FlowDocument highlight is destructive with inserted Runs)
+                m_PropertyChangeHandler.RaisePropertyChanged(() => SearchTerm);
+            }
+        }
+
+        public bool IsSearchEnabled
+        {
+            get
+            {
+                return m_UrakawaSession.DocumentProject != null;
+            }
+        }
+        private FindAndReplaceManager m_FindAndReplaceManager;
+        private List<TextRange> m_SearchMatches;
+        private int m_SearchCurrentIndex = -1;
+
+        private void FindPreviousNext(bool previous)
+        {
+            if (string.IsNullOrEmpty(SearchTerm)) return;
+
+            if (m_FindAndReplaceManager == null)
+            {
+                m_FindAndReplaceManager = new FindAndReplaceManager(new TextRange(TheFlowDocument.ContentStart, TheFlowDocument.ContentEnd));
+                m_SearchMatches = null;
+            }
+            if (m_SearchMatches == null)
+            {
+                IEnumerable<TextRange> matches = m_FindAndReplaceManager.FindAll(SearchTerm, FindOptions.None);
+                m_SearchMatches = new List<TextRange>(matches);
+                m_SearchCurrentIndex = -1;
+            }
+            if (m_SearchMatches.Count == 0) return;
+
+            if (m_SearchCurrentIndex == -1)
+            {
+                TextPointer textPointer;
+                var textElement = m_lastHighlightedSub ?? m_lastHighlighted;
+                if (textElement != null)
+                {
+                    textPointer = previous ? textElement.ContentEnd : textElement.ContentStart;
+                }
+                else
+                {
+                    textPointer = TheFlowDocument.ContentStart;
+                }
+                //m_FindAndReplaceManager.CurrentPosition = textPointer;
+
+                int position = -1;
+                if (previous)
+                {
+                    int counter = -1;
+                    foreach (var textRange in m_SearchMatches)
+                    {
+                        counter++;
+                        if (textRange.Start.CompareTo(textPointer) >= 0)
+                        {
+                            position = counter;
+                            break;
+                        }
+                    }
+                }
+                else // next
+                {
+                    for (int counter = m_SearchMatches.Count - 1; counter >= 0; counter--)
+                    {
+                        var textRange = m_SearchMatches[counter];
+
+                        if (textRange.Start.CompareTo(textPointer) <= 0)
+                        {
+                            position = counter;
+                            break;
+                        }
+                    }
+                }
+
+                m_SearchCurrentIndex = position;
+            }
+            TextRange hit = null;
+            if (previous)
+            {
+                if (m_SearchCurrentIndex < 0)
+                {
+                    m_SearchCurrentIndex = m_SearchMatches.Count - 1;
+                    hit = m_SearchMatches[m_SearchCurrentIndex];
+                }
+                else if (m_SearchCurrentIndex == 0)
+                {
+                    hit = m_SearchMatches[m_SearchCurrentIndex];
+                }
+                else if (m_SearchCurrentIndex > 0)
+                {
+                    hit = m_SearchMatches[--m_SearchCurrentIndex];
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else // next
+            {
+                //hit = m_FindAndReplaceManager.FindNext(SearchTerm, FindOptions.None);
+                if (m_SearchCurrentIndex < 0)
+                {
+                    m_SearchCurrentIndex = 0;
+                    hit = m_SearchMatches[m_SearchCurrentIndex];
+                }
+                else if (m_SearchCurrentIndex == m_SearchMatches.Count - 1)
+                {
+                    hit = m_SearchMatches[m_SearchCurrentIndex];
+                }
+                else if (m_SearchCurrentIndex < (m_SearchMatches.Count - 1))
+                {
+                    hit = m_SearchMatches[++m_SearchCurrentIndex];
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (hit != null && !string.IsNullOrEmpty(hit.Text))
+            {
+                Debug.Assert(hit.Text.ToLower() == SearchTerm.ToLower());
+                if (FlowDocReader.Selection != null)
+                {
+                    FlowDocReader.Selection.Select(hit.Start, hit.End);
+                    FocusHelper.FocusBeginInvoke(FlowDocReader); // otherwise the selection is invisible :(
+
+                    var para = hit.Start.Paragraph;
+                    if (para != null)
+                    {
+                        //FlowDocReader.Selection.Select(para.ContentStart, para.ContentEnd);
+
+                        scrollToView(para);
+                        return;
+                    }
+                    var obj = hit.Start.GetAdjacentElement(LogicalDirection.Backward);
+                    if (obj != null && obj is TextElement)
+                    {
+                        scrollToView((TextElement)obj);
+                        return;
+                    }
+                    obj = hit.Start.GetAdjacentElement(LogicalDirection.Forward);
+                    if (obj != null && obj is TextElement)
+                    {
+                        scrollToView((TextElement)obj);
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void FindNext()
+        {
+            FindPreviousNext(false);
+        }
+        private void FindPrevious()
+        {
+            FindPreviousNext(true);
+        }
+
 
         ~DocumentPaneView()
         {
             if (m_GlobalSearchCommand != null)
             {
-                //m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
-                //m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
-                //m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
+                m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
+                m_GlobalSearchCommand.CmdFindNext.UnregisterCommand(CommandFindNext);
+                m_GlobalSearchCommand.CmdFindPrevious.UnregisterCommand(CommandFindPrev);
             }
 #if DEBUG
             m_Logger.Log("DocumentPaneView garbage collected.", Category.Debug, Priority.Medium);
@@ -126,16 +318,15 @@ namespace Tobi.Plugin.DocumentPane
             }
             m_GlobalSearchCommandDone = true;
 
-            //m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+            m_GlobalSearchCommand.CmdFindFocus.RegisterCommand(CommandFindFocus);
+            m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
+            m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
 
-            //m_GlobalSearchCommand.CmdFindNext.RegisterCommand(CommandFindNext);
-            //m_GlobalSearchCommand.CmdFindPrevious.RegisterCommand(CommandFindPrev);
-        }
+            CmdFindNextGlobal = m_GlobalSearchCommand.CmdFindNext;
+            m_PropertyChangeHandler.RaisePropertyChanged(() => CmdFindNextGlobal);
 
-        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
-        {
-            //if (m_ViewModel.HeadingsNavigator == null) { return; }
-            //m_ViewModel.HeadingsNavigator.SearchTerm = SearchBox.Text;
+            CmdFindPreviousGlobal = m_GlobalSearchCommand.CmdFindPrevious;
+            m_PropertyChangeHandler.RaisePropertyChanged(() => CmdFindPreviousGlobal);
         }
 
         //public event PropertyChangedEventHandler PropertyChanged;
@@ -186,23 +377,15 @@ namespace Tobi.Plugin.DocumentPane
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
+            m_PropertyChangeHandler = new PropertyChangedNotifyBase();
+            m_PropertyChangeHandler.InitializeDependentProperties(this);
+
             m_UrakawaSession = urakawaSession;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
             m_ShellView = shellView;
 
             DataContext = this;
-
-            //CommandFindFocus = new RichDelegateCommand(
-            //    @"DUMMY TXT",
-            //    @"DUMMY TXT",
-            //    null, // KeyGesture set only for the top-level CompositeCommand
-            //    null,
-            //    () => FocusHelper.Focus(this.SearchBox),
-            //    () => this.SearchBox.Visibility == Visibility.Visible,
-            //    null, //Settings_KeyGestures.Default,
-            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
-            //    );
 
             CommandFocus = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdTxtFocus_ShortDesc,
@@ -312,27 +495,7 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectUp));
 
             m_ShellView.RegisterRichCommand(CommandStructureUp);
-            //CommandFindNext = new RichDelegateCommand(
-            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext,
-            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
-            //    null, // KeyGesture set only for the top-level CompositeCommand
-            //    null,
-            //    () => _headingsNavigator.FindNext(),
-            //    () => _headingsNavigator != null,
-            //    null, //Settings_KeyGestures.Default,
-            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
-            //    );
-
-            //CommandFindPrev = new RichDelegateCommand(
-            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev,
-            //    @"DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
-            //    null, // KeyGesture set only for the top-level CompositeCommand
-            //    null,
-            //    () => _headingsNavigator.FindPrevious(),
-            //    () => _headingsNavigator != null,
-            //    null, //Settings_KeyGestures.Default,
-            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)
-            //    );
+            //
             CommandSwitchPhrasePrevious = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdEventSwitchPrevious_ShortDesc,
                 Tobi_Plugin_DocumentPane_Lang.CmdEventSwitchPrevious_LongDesc,
@@ -464,7 +627,39 @@ namespace Tobi.Plugin.DocumentPane
 
             m_ShellView.RegisterRichCommand(CommandSwitchPhraseNext);
             //
-
+            //
+            CommandFindFocus = new RichDelegateCommand(
+                @"DOCVIEW CommandFindFocus DUMMY TXT",
+                @"DOCVIEW CommandFindFocus DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
+                null,
+                () => FocusHelper.Focus(SearchBox),
+                () => SearchBox.Visibility == Visibility.Visible && SearchBox.IsEnabled,
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
+                );
+            //
+            CommandFindNext = new RichDelegateCommand(
+                @"DOCVIEW CommandFindNext DUMMY TXT",
+                @"DOCVIEW CommandFindNext DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
+                null,
+                FindNext,
+                () => !string.IsNullOrEmpty(SearchTerm),
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
+                );
+            CommandFindPrev = new RichDelegateCommand(
+                @"DOCVIEW CommandFindPrevious DUMMY TXT",
+                @"DOCVIEW CommandFindPrevious DUMMY TXT",
+                null, // KeyGesture set only for the top-level CompositeCommand
+                null,
+                FindPrevious,
+                () => !string.IsNullOrEmpty(SearchTerm),
+                null, //Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
+                );
+            //
             InitializeComponent();
 
 #if NET40
@@ -520,17 +715,27 @@ namespace Tobi.Plugin.DocumentPane
 
             m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, EscapeEvent.THREAD_OPTION);
 
-            var focusAware = new FocusActiveAwareAdapter(this);
-            focusAware.IsActiveChanged += (sender, e) =>
-            {
-                // ALWAYS ACTIVE ! CommandFindFocus.IsActive = focusAware.IsActive;
 
-                //CommandFindNext.IsActive = focusAware.IsActive;
-                //CommandFindPrev.IsActive = focusAware.IsActive;
-            };
+            ActiveAware = new FocusActiveAwareAdapter(this);
+            ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
+            m_ShellView.ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
+
+        public IActiveAware ActiveAware { get; private set; }
+
+        private void refreshCommandsIsActive()
+        {
+            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+            CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+        }
+
+
+        public RichDelegateCommand CommandFindFocus { get; private set; }
+        public RichDelegateCommand CommandFindNext { get; private set; }
+        public RichDelegateCommand CommandFindPrev { get; private set; }
 
         private void OnFlowDocGotMouseCapture(object sender, RoutedEventArgs e)
         {
@@ -928,6 +1133,7 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+            m_FindAndReplaceManager = null;
 
             m_PathToTreeNode = null;
 
@@ -943,9 +1149,9 @@ namespace Tobi.Plugin.DocumentPane
             }
             m_idLinkSources = new Dictionary<string, List<TextElement>>();
 
-
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
+            m_SearchCurrentIndex = -1;
 
             m_MouseDownTextElement = null;
 
@@ -957,6 +1163,7 @@ namespace Tobi.Plugin.DocumentPane
                 FlowDocReader.Selection.Select(TheFlowDocument.ContentStart, TheFlowDocument.ContentEnd);
             }
 
+            m_PropertyChangeHandler.RaisePropertyChanged(() => IsSearchEnabled);
 
             if (project == null)
             {
@@ -1455,6 +1662,7 @@ namespace Tobi.Plugin.DocumentPane
             if (!onlyUpdateColors)
             {
                 m_lastHighlighted = textElement;
+                m_SearchCurrentIndex = -1;
             }
 
             if (m_lastHighlighted is Block)
@@ -1549,6 +1757,7 @@ namespace Tobi.Plugin.DocumentPane
             if (!onlyUpdateColors)
             {
                 m_lastHighlighted = textElement1;
+                m_SearchCurrentIndex = -1;
 
                 //m_lastHighlighted_Background = m_lastHighlighted.Background;
                 //m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
@@ -1570,6 +1779,7 @@ namespace Tobi.Plugin.DocumentPane
             if (!onlyUpdateColors)
             {
                 m_lastHighlightedSub = textElement2;
+                m_SearchCurrentIndex = -1;
 
                 //m_lastHighlightedSub_Background = m_lastHighlightedSub.Background;
                 //m_lastHighlightedSub_Foreground = m_lastHighlightedSub.Foreground;
@@ -1708,6 +1918,8 @@ namespace Tobi.Plugin.DocumentPane
             TextElement backup = m_lastHighlighted;
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
+            m_SearchCurrentIndex = -1;
+
             refreshDocumentColors(backup);
 
             //if (m_lastHighlighted is Block)
