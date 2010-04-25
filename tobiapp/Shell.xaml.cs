@@ -154,7 +154,69 @@ namespace Tobi
             //string regionName = "AvalonDockRegion_1";
             //regionManager.Regions.Add(new AvalonDockRegion() { Name = regionName });
             //((AvalonDockRegion)regionManager.Regions[regionName]).Bind(DocumentContent2);
+
+            //FlowDocReader.AddHandler(ContentElement.KeyDownEvent, new RoutedEventHandler(OnFlowDocViewerKeyDown), true);
+            this.PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
+
         }
+
+        public static bool isControlKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Control
+                //| ModifierKeys.Shift
+                    )
+                    ) != ModifierKeys.None;
+
+            //Keyboard.IsKeyDown(Key.LeftShift)
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
+
+        private void OnThisKeyDown(object sender, RoutedEventArgs e)
+        {
+            if (!(e.Source is FlowDocumentScrollViewer || e.OriginalSource is FlowDocumentScrollViewer))
+            {
+                return;
+            }
+
+            e.Handled = true;
+
+            if (e is KeyEventArgs)
+            {
+                var ev = (KeyEventArgs)e;
+
+                foreach (var inputBinding in InputBindings)
+                {
+                    if (!(inputBinding is KeyBinding)) continue;
+                    if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                    if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key == ev.Key)
+                    {
+                        var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
+
+                        if ((modifiers & ModifierKeys.None) != ModifierKeys.None
+                            ||
+                            isControlKeyDown()
+                            && (modifiers & ModifierKeys.Control) != ModifierKeys.None)
+                        {
+                            if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
+                            {
+                                ((KeyBinding)inputBinding).Command.Execute(null);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //private void OnThisKeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.F3 || e.Key == Key.F && isControlKeyDown())
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
         private bool m_SessionTitleDone;
         private void trySessionWindowTitle()
@@ -548,10 +610,10 @@ namespace Tobi
                 }
                 return String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
                     ApplicationConstants.APP_VERSION + ApplicationConstants.DOTNET_INFO
-                    #if DEBUG
-                    + " (DEBUG) "
-                    #endif
-                    ,
+#if DEBUG
+ + " (DEBUG) "
+#endif
+,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
                     (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
                     );    // TODO LOCALIZE WindowsTitleKey_UrakawaSessionIsNotNull, NoDocument
@@ -780,7 +842,7 @@ namespace Tobi
                         progressBar.Value = args.ProgressPercentage;
 
 #if NET40
-                        TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage/100;
+                        TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100;
                         TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
 #endif
                     }
