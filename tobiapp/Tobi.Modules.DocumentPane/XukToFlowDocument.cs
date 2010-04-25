@@ -277,12 +277,12 @@ namespace Tobi.Plugin.DocumentPane
 
             if (!string.IsNullOrEmpty(pageID))
             {
-                data.Name = IdToName(pageID);
-                data.ToolTip = data.Name;
+                //string name = IdToName(pageID);
+                data.ToolTip = pageID;
 
                 //Logger.Log("-- PublishEvent [PageFoundByFlowDocumentParserEvent] DocumentPaneView.PageFoundByFlowDocumentParserEvent (" + data.Name + ")", Category.Debug, Priority.Medium);
 
-                EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(data);
+                EventAggregator.GetEvent<PageFoundByFlowDocumentParserEvent>().Publish(node);
             }
         }
 
@@ -683,15 +683,15 @@ namespace Tobi.Plugin.DocumentPane
             data.Cursor = Cursors.SizeAll;
         }
 
-        public static string IdToName(string id)
-        {
-            return id.Replace("-", "_DaSh_");
-        }
+        //public static string IdToName(string id)
+        //{
+        //    return id.Replace("-", "_DaSh_");
+        //}
 
-        public static string NameToId(string name)
-        {
-            return name.Replace("_DaSh_", "-");
-        }
+        //public static string NameToId(string name)
+        //{
+        //    return name.Replace("_DaSh_", "-");
+        //}
 
         private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
@@ -1244,7 +1244,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
         {
-            Hyperlink data = new Hyperlink();
+            var data = new Hyperlink();
             setTag(data, node);
 
             data.FontSize = m_FlowDoc.FontSize / 1.2;
@@ -1276,9 +1276,9 @@ namespace Tobi.Plugin.DocumentPane
                 data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
 
                 data.ToolTip = data.NavigateUri.ToString();
-                data.Name = IdToName(id);
+                //string name = IdToName(id);
 
-                m_DocumentPaneView.AddIdLinkSource(data.Name, data);
+                m_DocumentPaneView.AddIdLinkSource(id, data);
             }
             else
             {
@@ -1796,9 +1796,10 @@ namespace Tobi.Plugin.DocumentPane
 
                                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                                     {
-                                        data.Name = IdToName(attr.Value);
+                                        //string name = IdToName(attr.Value);
                                         data.ToolTip = attr.Value;
-                                        m_DocumentPaneView.AddIdLinkTarget(data.Name, data);
+
+                                        m_DocumentPaneView.AddIdLinkTarget(attr.Value, data);
                                     }
                                 }
                                 );

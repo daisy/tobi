@@ -1,4 +1,5 @@
-﻿using System.Windows.Documents;
+﻿using System.Diagnostics;
+using System.Windows.Documents;
 using System.Text;
 using Tobi.Common.MVVM;
 using urakawa.core;
@@ -9,23 +10,27 @@ namespace Tobi.Plugin.NavigationPane
     {
         private bool m_isMatch;
         private bool m_isSelected;
-        public Page(TextElement textElement)
+        public Page(TreeNode treeNode)
         {
-            TextElement = textElement;
+            TreeNode = treeNode;
         }
 
-        public TextElement TextElement
+        public TreeNode TreeNode
         {
             get;
             private set;
         }
-        public string Id
-        {
-            get
-            {
-                return TextElement.Name;
-            }
-        }
+
+        //public string Id
+        //{
+        //    get
+        //    {
+        //        string uid = ((TreeNode)TextElement.Tag).GetXmlElementId();
+        //        if (string.IsNullOrEmpty(uid)) return "";
+
+        //        return uid;
+        //    }
+        //}
         public bool IsSelected
         {
             get { return m_isSelected; }
@@ -40,7 +45,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             get
             {
-                string pageTxt = ((TreeNode)TextElement.Tag).GetTextMediaFlattened(true);
+                string pageTxt = TreeNode.GetTextMediaFlattened(true);
                 if (!string.IsNullOrEmpty(pageTxt))
                 {
                     return pageTxt;
