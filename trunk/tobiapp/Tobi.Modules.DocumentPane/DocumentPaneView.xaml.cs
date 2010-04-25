@@ -476,6 +476,16 @@ namespace Tobi.Plugin.DocumentPane
             FlowDocReader.MouseLeave += (sender, e) => restoreMouseOverHighlight();
             FlowDocReader.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(OnFlowDocViewerMouseUp), true);
 
+            //FlowDocReader.AddHandler(ContentElement.KeyDownEvent, new RoutedEventHandler(OnFlowDocViewerKeyDown), true);
+            //FlowDocReader.PreviewKeyDown += new KeyEventHandler(OnFlowDocViewerPreviewKeyDown);
+
+            //DocumentViewer dv1 = LogicalTreeHelper.FindLogicalNode(window, "dv1") as DocumentViewer;
+            var cc = FlowDocReader.Template.FindName("PART_FindToolBarHost", FlowDocReader) as ContentControl;
+            if (cc != null)
+            {
+                cc.Visibility = Visibility.Collapsed;
+            }
+
             //var fontConverter = new FontFamilyConverter();
             //var fontFamily = (FontFamily)fontConverter.ConvertFrom("Times New Roman");
 
@@ -510,6 +520,7 @@ namespace Tobi.Plugin.DocumentPane
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
+
 
         private void refreshTextOnlyViewColors()
         {
@@ -874,7 +885,7 @@ namespace Tobi.Plugin.DocumentPane
 
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
-            
+
             m_MouseDownTextElement = null;
 
             TheFlowDocument.Blocks.Clear();
@@ -1886,6 +1897,23 @@ namespace Tobi.Plugin.DocumentPane
             }
 
         }
+        private void OnFlowDocViewerKeyDown(object sender, RoutedEventArgs e)
+        {
+            //FlowDocReader
+            if (e is KeyEventArgs)
+            {
+                OnFlowDocViewerPreviewKeyDown(sender, (KeyEventArgs)e);
+            }
+        }
+
+        private void OnFlowDocViewerPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //FlowDocReader
+            if (e.Key == Key.F3 || e.Key == Key.F && isControlKeyDown())
+            {
+                e.Handled = true;
+            }
+        }
 
         public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
         {
@@ -1958,7 +1986,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private bool isControlKeyDown()
+        public static bool isControlKeyDown()
         {
             return (Keyboard.Modifiers &
                     (ModifierKeys.Control

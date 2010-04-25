@@ -97,7 +97,8 @@
 
 
 
-  <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True" x:Name="FlowDocReaderSimple"
+  <DocumentPane:FlowDocumentScrollViewerEx AllowDrop="True"
+                                           x:Name="FlowDocReaderSimple"
                             
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
               Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
@@ -109,13 +110,20 @@
                             
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
-                    IsTabStop="False"
-                    Focusable="False"
+                    
                             Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                       Background="{Binding
                        Converter={XAML:ColorToBrushConverter},
                             Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+                                           
+                                           
+                        Focusable="True"
+    
+                    IsTabStop="False"
+    IsSelectionEnabled="True"
+                    IsEnabled = "True"
+    IsToolBarVisible="false"
                       >
     <!-- 
 {DynamicResource {x:Static SystemColors.WindowBrushKey}}
@@ -129,20 +137,24 @@
                       
                       ViewingMode="Scroll" -->
 
-    <FlowDocument AllowDrop="True" x:Name="TheFlowDocumentSimple"
+    <FlowDocument
+      
+                  IsEnabled = "True"
+                  Focusable="True"
+                  
+                  AllowDrop="True" x:Name="TheFlowDocumentSimple"
                     Background="{Binding
                     Converter={XAML:ColorToBrushConverter},
                     Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
                  AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
-         IsEnabled = "True"
+         
          IsHyphenationEnabled = "False"
          IsOptimalParagraphEnabled = "False"
          ColumnWidth = "Infinity"
          IsColumnWidthFlexible="False"
          TextAlignment = "Center"
-                  Focusable="False"
 
                     />
 
