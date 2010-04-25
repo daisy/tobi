@@ -193,17 +193,17 @@ namespace Tobi.Plugin.NavigationPane
             View.UnloadProject();
         }
 
-        private void onPageFoundByFlowDocumentParser(TextElement data)
+        private void onPageFoundByFlowDocumentParser(TreeNode treeNode)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TextElement>)onPageFoundByFlowDocumentParser, data);
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onPageFoundByFlowDocumentParser, treeNode);
                 return;
             }
-            PagesNavigator.AddPage(data);
+            PagesNavigator.AddPage(treeNode);
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)

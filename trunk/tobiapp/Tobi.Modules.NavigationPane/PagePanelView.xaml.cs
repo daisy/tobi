@@ -65,9 +65,7 @@ namespace Tobi.Plugin.NavigationPane
             Page prevPage = null;
             foreach (Page page in m_ViewModel.PagesNavigator.Pages)
             {
-                TextElement textElement = page.TextElement;
-                TreeNode treeNode = textElement.Tag as TreeNode;
-                if (treeNode != null && treeNode.IsAfter(node))
+                if (page.TreeNode.IsAfter(node))
                 {
                     Page pageToSelect = prevPage ?? page;
                     if (pageToSelect != ListView.SelectedItem)
@@ -117,15 +115,12 @@ namespace Tobi.Plugin.NavigationPane
         {
             Page page = ListView.SelectedItem as Page;
             if (page == null) return;
-            TextElement textElement = page.TextElement;
-            TreeNode treeNode = textElement.Tag as TreeNode;
-            if (treeNode == null) return;
 
             _ignoreTreeNodeSelectedEvent = true;
 
             //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
 
-            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            m_UrakawaSession.PerformTreeNodeSelection(page.TreeNode);
         }
 
         private void OnKeyUp_ListItem(object sender, KeyEventArgs e)

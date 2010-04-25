@@ -5,6 +5,7 @@ using System.Windows;
 using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.core;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -19,9 +20,9 @@ namespace Tobi.Plugin.NavigationPane
             m_view = view;
         }
 
-        public void AddPage (TextElement data)
+        public void AddPage(TreeNode treeNode)
         {
-            Pages.Add(new Page(data));
+            Pages.Add(new Page(treeNode));
         }
         public ObservableCollection<Page> Pages
         {
@@ -124,14 +125,14 @@ namespace Tobi.Plugin.NavigationPane
             }
             return pResult;
         }
-        private Page GetPage(string id)
-        {
-            foreach (Page page in Pages)
-            {
-                if (page.Id == id)
-                    return page;
-            }
-            return null;
-        }
+        //private Page GetPage(string id)
+        //{
+        //    foreach (Page page in Pages)
+        //    {
+        //        if (page.Id == id)
+        //            return page;
+        //    }
+        //    return null;
+        //}
     }
 }

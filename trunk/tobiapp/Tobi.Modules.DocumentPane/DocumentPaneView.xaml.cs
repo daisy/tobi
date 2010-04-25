@@ -576,20 +576,20 @@ namespace Tobi.Plugin.DocumentPane
             string uid = treeNode.GetXmlElementId();
             if (string.IsNullOrEmpty(uid)) return;
 
-            string id = XukToFlowDocument.IdToName(uid);
+            //string id = XukToFlowDocument.IdToName(uid);
 
             TextElement textElement = null;
-            if (m_idLinkTargets.ContainsKey(id))
+            if (m_idLinkTargets.ContainsKey(uid))
             {
-                textElement = m_idLinkTargets[id];
+                textElement = m_idLinkTargets[uid];
             }
-            if (textElement == null)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif //DEBUG
-                textElement = TheFlowDocument.FindName(id) as TextElement;
-            }
+//            if (textElement == null)
+//            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif //DEBUG
+//                textElement = TheFlowDocument.FindName(uid) as TextElement;
+//            }
             if (textElement != null)
             {
                 if (textElement.Tag is TreeNode)
@@ -597,9 +597,9 @@ namespace Tobi.Plugin.DocumentPane
                     Debug.Assert(treeNode == (TreeNode)textElement.Tag);
                 }
             }
-            if (m_idLinkSources.ContainsKey(id))
+            if (m_idLinkSources.ContainsKey(uid))
             {
-                var list = m_idLinkSources[id];
+                var list = m_idLinkSources[uid];
 #if DEBUG
                 if (list.Count > 1) Debugger.Break();
 #endif //DEBUG
@@ -2044,20 +2044,20 @@ namespace Tobi.Plugin.DocumentPane
 
         public void PerformTreeNodeSelection(string uid)
         {
-            string id = XukToFlowDocument.IdToName(uid);
+            //string id = XukToFlowDocument.IdToName(uid);
 
             TextElement textElement = null;
-            if (m_idLinkTargets.ContainsKey(id))
+            if (m_idLinkTargets.ContainsKey(uid))
             {
-                textElement = m_idLinkTargets[id];
+                textElement = m_idLinkTargets[uid];
             }
-            if (textElement == null)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif //DEBUG
-                textElement = TheFlowDocument.FindName(id) as TextElement;
-            }
+//            if (textElement == null)
+//            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif //DEBUG
+//                textElement = TheFlowDocument.FindName(uid) as TextElement;
+//            }
             if (textElement != null)
             {
                 if (textElement.Tag is TreeNode)
