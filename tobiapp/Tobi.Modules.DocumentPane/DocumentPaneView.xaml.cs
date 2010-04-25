@@ -476,6 +476,16 @@ namespace Tobi.Plugin.DocumentPane
             FlowDocReader.MouseLeave += (sender, e) => restoreMouseOverHighlight();
             FlowDocReader.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(OnFlowDocViewerMouseUp), true);
 
+            TheFlowDocument.AddHandler(ContentElement.PreviewMouseMoveEvent, new RoutedEventHandler((sender, e) => Console.WriteLine("PreviewMouseMoveEvent")), true);
+            TheFlowDocument.AddHandler(ContentElement.MouseMoveEvent, new RoutedEventHandler((sender, e) => Console.WriteLine("MouseMoveEvent")), true);
+
+            TheFlowDocument.AddHandler(ContentElement.PreviewDragOverEvent, new RoutedEventHandler((sender, e) => Console.WriteLine("PreviewDragOverEvent")), true);
+            TheFlowDocument.AddHandler(ContentElement.DragOverEvent, new RoutedEventHandler((sender, e) => Console.WriteLine("DragOverEvent")), true);
+
+            TheFlowDocument.AddHandler(ContentElement.LostMouseCaptureEvent, new RoutedEventHandler((sender, e) => Console.WriteLine("LostMouseCaptureEvent")), true);
+            TheFlowDocument.AddHandler(ContentElement.GotMouseCaptureEvent, new RoutedEventHandler((sender, e) => Console.WriteLine("GotMouseCaptureEvent")), true);
+
+            
             //FlowDocReaderSimple.InputBindings.Clear();
             //TheFlowDocumentSimple.InputBindings.Clear();
 
@@ -1811,6 +1821,12 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+
+        public void OnTextElementMouseDrag(object sender, DragEventArgs e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
         private TextElement m_MouseOverTextElement;
         private Brush m_MouseOverTextElementBackground;
         public void OnTextElementMouseEnter(object sender, MouseEventArgs e)
@@ -1903,23 +1919,30 @@ namespace Tobi.Plugin.DocumentPane
             }
 
         }
-        private void OnFlowDocViewerKeyDown(object sender, RoutedEventArgs e)
+
+        private void OnFlowDocDragOver(object sender, DragEventArgs e)
         {
-            //FlowDocReader
-            if (e is KeyEventArgs)
-            {
-                OnFlowDocViewerPreviewKeyDown(sender, (KeyEventArgs)e);
-            }
+            e.Effects = DragDropEffects.All;
+            e.Handled = true;
         }
 
-        private void OnFlowDocViewerPreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            //FlowDocReader
-            if (e.Key == Key.F3 || e.Key == Key.F && isControlKeyDown())
-            {
-                e.Handled = true;
-            }
-        }
+        //private void OnFlowDocViewerKeyDown(object sender, RoutedEventArgs e)
+        //{
+        //    //FlowDocReader
+        //    if (e is KeyEventArgs)
+        //    {
+        //        OnFlowDocViewerPreviewKeyDown(sender, (KeyEventArgs)e);
+        //    }
+        //}
+
+        //private void OnFlowDocViewerPreviewKeyDown(object sender, KeyEventArgs e)
+        //{
+        //    //FlowDocReader
+        //    if (e.Key == Key.F3 || e.Key == Key.F && isControlKeyDown())
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
         public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
         {
