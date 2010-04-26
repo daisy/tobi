@@ -51,7 +51,7 @@ namespace Tobi.Plugin.AudioPane
             HandleInsertDelete(list[0].CurrentTreeNode,
                                list[0].SelectionData.m_TreeNode,
                                timeBegin,
-                               timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
+                               timeEnd.AsLocalUnits - timeBegin.AsLocalUnits,
                                audioMedia,
                                !done);
         }
@@ -107,7 +107,7 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(treeNodeSelectionAfter2.Item2 == command.SelectionData.m_TreeNode);
                 }
 
-                m_LastSetPlayHeadTime = -1;
+                m_LastSetPlayHeadTimeInLocalUnits = -1;
                 //AudioPlayer_UpdateWaveFormPlayHead();
                 if (View != null)
                 {
@@ -131,7 +131,7 @@ namespace Tobi.Plugin.AudioPane
             HandleInsertDelete(command.CurrentTreeNode,
                                command.SelectionData.m_TreeNode,
                                timeBegin,
-                               timeEnd.AsMilliseconds - timeBegin.AsMilliseconds,
+                               timeEnd.AsLocalUnits - timeBegin.AsLocalUnits,
                                audioMedia,
                                !done);
         }
@@ -141,13 +141,13 @@ namespace Tobi.Plugin.AudioPane
             HandleInsertDelete(command.CurrentTreeNode,
                                command.TreeNode,
                                command.TimeInsert,
-                               command.ManagedAudioMediaSource.Duration.AsMilliseconds,
+                               command.ManagedAudioMediaSource.Duration.AsLocalUnits,
                                command.TreeNode.GetManagedAudioMedia(),
                                done);
         }
 
         private void HandleInsertDelete(TreeNode currentTreeNode, TreeNode treeNode,
-            Time timeInsert, double selectionDur,
+            Time timeInsert, long selectionDur,
             ManagedAudioMedia managedAudioMediaTarget,
             bool done)
         {
@@ -204,7 +204,7 @@ namespace Tobi.Plugin.AudioPane
                 CommandRefresh.Execute();
             }
 
-            double timeOffset = 0;
+            long timeOffset = 0;
             if (managedAudioMediaTarget == null)
             {
                 TreeNode prev = treeNode.GetPreviousSiblingWithManagedAudio();
@@ -215,7 +215,7 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(prevAudio != null);
                     if (prevAudio != null)
                     {
-                        timeOffset += prevAudio.AudioMediaData.AudioDuration.AsMilliseconds;
+                        timeOffset += prevAudio.AudioMediaData.AudioDuration.AsLocalUnits;
                     }
                 }
             }
@@ -226,7 +226,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (done)
             {
-                double begin = timeOffset + timeInsert.AsMilliseconds;
+                long begin = timeOffset + timeInsert.AsLocalUnits;
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBegin = begin,
@@ -240,7 +240,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     SelectionBegin = -1,
                     SelectionEnd = -1,
-                    LastPlayHeadTime = timeOffset + timeInsert.AsMilliseconds
+                    LastPlayHeadTime = timeOffset + timeInsert.AsLocalUnits
                 };
             }
 
@@ -263,7 +263,7 @@ namespace Tobi.Plugin.AudioPane
             HandleInsertDelete(command.TreeNode,
                                command.TreeNode,
                                Time.Zero,
-                               command.ManagedAudioMedia.Duration.AsMilliseconds,
+                               command.ManagedAudioMedia.Duration.AsLocalUnits,
                                command.TreeNode.GetManagedAudioMedia(),
                                done);
             return;
@@ -318,11 +318,11 @@ namespace Tobi.Plugin.AudioPane
 
                 if (done)
                 {
-                    TotalDocumentAudioDuration += command.ManagedAudioMediaSource.Duration.AsMilliseconds;
+                    TotalDocumentAudioDurationInLocalUnits += command.ManagedAudioMediaSource.Duration.AsLocalUnits;
                 }
                 else
                 {
-                    TotalDocumentAudioDuration -= command.ManagedAudioMediaSource.Duration.AsMilliseconds;
+                    TotalDocumentAudioDurationInLocalUnits -= command.ManagedAudioMediaSource.Duration.AsLocalUnits;
                 }
             }
             else if (cmd is TreeNodeSetManagedAudioMediaCommand)
@@ -331,11 +331,11 @@ namespace Tobi.Plugin.AudioPane
 
                 if (done)
                 {
-                    TotalDocumentAudioDuration += command.ManagedAudioMedia.Duration.AsMilliseconds;
+                    TotalDocumentAudioDurationInLocalUnits += command.ManagedAudioMedia.Duration.AsLocalUnits;
                 }
                 else
                 {
-                    TotalDocumentAudioDuration -= command.ManagedAudioMedia.Duration.AsMilliseconds;
+                    TotalDocumentAudioDurationInLocalUnits -= command.ManagedAudioMedia.Duration.AsLocalUnits;
                 }
             }
             else if (cmd is TreeNodeAudioStreamDeleteCommand)
@@ -357,23 +357,23 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Debug.Assert(done);
 
-                    Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsMilliseconds  == diff.AsMilliseconds);
+                    Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsLocalUnits  == diff.AsLocalUnits);
 
-                    Debug.Assert(
-                        command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.AreMillisecondTimesApproximatelyEqual(
-                            command.OriginalManagedAudioMedia.Duration.AsMilliseconds,
-                            diff.AsMilliseconds
-                        )
-                        );
+                    //Debug.Assert(
+                    //    command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.AreMillisecondTimesApproximatelyEqual(
+                    //        command.OriginalManagedAudioMedia.Duration.AsMilliseconds,
+                    //        diff.AsMilliseconds
+                    //    )
+                    //    );
                 }
 
                 if (done)
                 {
-                    TotalDocumentAudioDuration -= diff.AsMilliseconds;
+                    TotalDocumentAudioDurationInLocalUnits -= diff.AsLocalUnits;
                 }
                 else
                 {
-                    TotalDocumentAudioDuration += diff.AsMilliseconds;
+                    TotalDocumentAudioDurationInLocalUnits += diff.AsLocalUnits;
                 }
             }
             else if (cmd is CompositeCommand)
@@ -556,7 +556,7 @@ namespace Tobi.Plugin.AudioPane
             Debugger.Break();
 #endif
 
-            m_LastSetPlayHeadTime = 0;
+            m_LastSetPlayHeadTimeInLocalUnits = 0;
             m_StateToRestore = null;
             if (AudioPlaybackStreamKeepAlive)
             {

@@ -29,7 +29,7 @@ namespace Tobi.Plugin.AudioPane
 
                        CommandPause.Execute();
 
-                       if (PlayHeadTime == 0)
+                       if (PlayHeadTimeInLocalUnits == 0)
                        {
                            AudioCues.PlayBeep();
                        }
@@ -40,7 +40,7 @@ namespace Tobi.Plugin.AudioPane
                                State.Selection.ClearSelection();
                            }
 
-                           PlayHeadTime = 0;
+                           PlayHeadTimeInLocalUnits = 0;
                        }
                    },
                    () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
@@ -60,9 +60,9 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    double end = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
+                    long end = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Audio.DataLength);
 
-                    if (PlayHeadTime == end)
+                    if (PlayHeadTimeInLocalUnits == end)
                     {
                         AudioCues.PlayBeep();
                     }
@@ -73,7 +73,7 @@ namespace Tobi.Plugin.AudioPane
                             State.Selection.ClearSelection();
                         }
 
-                        PlayHeadTime = end;
+                        PlayHeadTimeInLocalUnits = end;
                     }
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
@@ -93,7 +93,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(PlayHeadTime);
+                    long bytesPlayHead = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits);
 
                     long bytesLeftPrevious = -1;
 
@@ -108,7 +108,7 @@ namespace Tobi.Plugin.AudioPane
                                    State.Selection.ClearSelection();
                                }
 
-                               PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeft);
+                               PlayHeadTimeInLocalUnits = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(bytesLeft);
                                AudioCues.PlayBeep();
                                return -1;
                            }
@@ -118,7 +118,7 @@ namespace Tobi.Plugin.AudioPane
                                State.Selection.ClearSelection();
                            }
 
-                           PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesLeftPrevious);
+                           PlayHeadTimeInLocalUnits = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(bytesLeftPrevious);
 
                            return -1;
                        }
@@ -150,7 +150,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    long bytesPlayHead = State.Audio.ConvertMillisecondsToBytes(PlayHeadTime);
+                    long bytesPlayHead = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits);
 
                     long bytesRight;
                     long bytesLeft;
@@ -171,7 +171,7 @@ namespace Tobi.Plugin.AudioPane
                             State.Selection.ClearSelection();
                         }
 
-                        PlayHeadTime = State.Audio.ConvertBytesToMilliseconds(bytesRight);
+                        PlayHeadTimeInLocalUnits = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(bytesRight);
                     }
                     else
                     {
@@ -197,8 +197,8 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    double newTime = PlayHeadTime + m_TimeStepForwardRewind;
-                    double max = State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength);
+                    long newTime = PlayHeadTimeInLocalUnits + m_TimeStepForwardRewindInLocalUnits;
+                    long max = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Audio.DataLength);
                     if (newTime > max)
                     {
                         newTime = max;
@@ -210,7 +210,7 @@ namespace Tobi.Plugin.AudioPane
                         State.Selection.ClearSelection();
                     }
 
-                    PlayHeadTime = newTime;
+                    PlayHeadTimeInLocalUnits = newTime;
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
@@ -229,7 +229,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    double newTime = PlayHeadTime - m_TimeStepForwardRewind;
+                    long newTime = PlayHeadTimeInLocalUnits - m_TimeStepForwardRewindInLocalUnits;
                     if (newTime < 0)
                     {
                         newTime = 0;
@@ -241,7 +241,7 @@ namespace Tobi.Plugin.AudioPane
                         State.Selection.ClearSelection();
                     }
 
-                    PlayHeadTime = newTime;
+                    PlayHeadTimeInLocalUnits = newTime;
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,

@@ -379,10 +379,10 @@ namespace Tobi.Plugin.AudioPane
                     File.Delete(originalFilePath);
                 }
 
-                if (managedAudioMedia.Duration.AsMilliseconds > 500)
+                if (managedAudioMedia.Duration.AsLocalUnits > 500)
                     insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
                 else
-                    Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsMilliseconds + @"ms");
+                    Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsLocalUnits + @"ms");
 
                 return;
             }
@@ -455,13 +455,13 @@ namespace Tobi.Plugin.AudioPane
 
             bool transaction = false;
             List<TreeNodeAndStreamSelection> selData = null;
-            double timeInsert = 0;
+            long timeInsert = 0;
             long byteOffset = 0;
 
             if (IsSelectionSet)
             {
-                timeInsert = State.Selection.SelectionBegin;
-                byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
+                timeInsert = State.Selection.SelectionBeginInLocalUnits;
+                byteOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(timeInsert);
 
                 transaction = true;
                 treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc);
@@ -522,11 +522,11 @@ namespace Tobi.Plugin.AudioPane
 
                 //CommandRefresh.Execute();
 
-                m_LastSetPlayHeadTime = timeInsert;
+                m_LastSetPlayHeadTimeInLocalUnits = timeInsert;
             }
             else
             {
-                timeInsert = PlayHeadTime;
+                timeInsert = PlayHeadTimeInLocalUnits;
 
                 if (timeInsert < 0)
                 {
@@ -550,10 +550,10 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                byteOffset = State.Audio.ConvertMillisecondsToBytes(timeInsert);
+                byteOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(timeInsert);
             }
 
-            double timeOffset = timeInsert;
+            long timeOffset = timeInsert;
             TreeNode treeNodeTarget;
             long bytesRight;
             long bytesLeft;
@@ -570,7 +570,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - bytesLeft);
+            timeOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(byteOffset - bytesLeft);
 
             if (selData != null && selData.Count > 0)
             {

@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Tobi.Common.UI;
 using urakawa.core;
+using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -750,10 +751,9 @@ namespace Tobi.Plugin.AudioPane
 
                             DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                             {
-                                double ms = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(totalRead);
-                                //double ms = m_ViewModel.State.Audio.PcmFormat.Data.ConvertBytesToTime(totalRead);
+                                long timeInLocalUnits = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(totalRead);
 
-                                m_ViewModel.m_TimeStringOther = AudioPaneViewModel.FormatTimeSpan_Units(ms);
+                                m_ViewModel.m_TimeStringOther = AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits));
                                 TimeMessageShow();
                                 //TimeMessageRefresh();
 

@@ -4,7 +4,9 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using AudioLib;
 using urakawa.core;
+using urakawa.media.timing;
 using urakawa.property.xml;
 using urakawa.xuk;
 
@@ -122,10 +124,9 @@ namespace Tobi.Plugin.AudioPane
                                                                 tickHeight + tickHeight + formattedTextTMP.Height)));
              }*/
 
-            double minorTickInterval_milliseconds = 1000; //1s minor ticks
+            long minorTickInterval_milliseconds = 1000; //1s minor ticks
             double minorTickInterval_pixels =
-                m_AudioPaneViewModel.State.Audio.ConvertMillisecondsToBytes(minorTickInterval_milliseconds)
-                    / m_AudioPaneView.BytesPerPixel;
+                m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(minorTickInterval_milliseconds * AudioLibPCMFormat.TIME_UNIT) / m_AudioPaneView.BytesPerPixel;
 
             const double idealTickInterval = 20;
 
@@ -137,20 +138,20 @@ namespace Tobi.Plugin.AudioPane
             {
                 minorTickInterval_pixels = idealTickInterval;
 
-                minorTickInterval_milliseconds = Math.Round(
-                    m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
+                minorTickInterval_milliseconds =
+                    m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                    m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
 
                 if (minorTickInterval_milliseconds > 0)
                 {
                     if (minorTickInterval_milliseconds % 10 != 0)
                     {
-                        minorTickInterval_milliseconds = Math.Round(minorTickInterval_milliseconds / 10) * 10;
+                        minorTickInterval_milliseconds = (long)Math.Truncate(Math.Round(minorTickInterval_milliseconds / 10.0) * 10);
                         if (minorTickInterval_milliseconds > 0)
                         {
                             minorTickInterval_pixels =
-                                m_AudioPaneViewModel.State.Audio.ConvertMillisecondsToBytes(
-                                        minorTickInterval_milliseconds)
-                                                / m_AudioPaneView.BytesPerPixel;
+                                m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(minorTickInterval_milliseconds * AudioLibPCMFormat.TIME_UNIT) / m_AudioPaneView.BytesPerPixel;
                         }
                         else
                         {
@@ -191,10 +192,12 @@ namespace Tobi.Plugin.AudioPane
 
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
-                    double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX)));
+                    long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                        m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                        (long)Math.Round(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX))));
 
                     var formattedText = new FormattedText(
-                        AudioPaneViewModel.FormatTimeSpan_Units(ms),
+                        AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
                         m_culture,
                         FlowDirection.LeftToRight,
                         m_typeFace,
@@ -242,7 +245,7 @@ namespace Tobi.Plugin.AudioPane
 
                 currentTickX += minorTickInterval_pixels;
             }
-            
+
             // TODO TESTING !!!!
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
             if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
@@ -269,10 +272,12 @@ namespace Tobi.Plugin.AudioPane
                             continue;
                         }
 
-                        double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft)));
+                        long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                            m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                            (long)Math.Round(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft))));
 
                         var formattedTextDuration = new FormattedText(
-                                                AudioPaneViewModel.FormatTimeSpan_Units(ms),
+                                                AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
                                                               m_culture,
                                                               FlowDirection.LeftToRight,
                                                               m_typeFace,
@@ -438,10 +443,12 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_MousePosX >= 0)
             {
-                double ms = m_AudioPaneViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX)));
+                long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                    m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX))));
 
                 var formattedText = new FormattedText(
-                    AudioPaneViewModel.FormatTimeSpan_Units(ms),
+                    AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
                     m_culture,
                     FlowDirection.LeftToRight,
                     m_typeFace,

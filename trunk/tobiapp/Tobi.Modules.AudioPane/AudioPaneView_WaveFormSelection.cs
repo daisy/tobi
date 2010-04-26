@@ -22,14 +22,14 @@ namespace Tobi.Plugin.AudioPane
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
         }
 
-        public void SetSelectionTime(double begin, double end)
+        public void SetSelectionTime(long begin, long end)
         {
             m_Logger.Log("AudioPaneView.SetSelectionTime", Category.Debug, Priority.Medium);
 
             if (m_ViewModel.State.Audio.HasContent)
             {
-                long beginBytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(begin);
-                long endBytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(end);
+                long beginBytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(begin);
+                long endBytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(end);
 
                 m_TimeSelectionLeftX = beginBytes / BytesPerPixel;
                 WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
@@ -98,10 +98,15 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_ViewModel.State.Audio.HasContent)
             {
-                double selectionTimeLeft = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel));
-                double selectionTimeRight = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
+                long selectionTimeLeft = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round(m_TimeSelectionLeftX * BytesPerPixel)));
 
-                if (m_ViewModel.PlayHeadTime < selectionTimeLeft || m_ViewModel.PlayHeadTime > selectionTimeRight)
+                long selectionTimeRight = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel)));
+
+                if (m_ViewModel.PlayHeadTimeInLocalUnits < selectionTimeLeft || m_ViewModel.PlayHeadTimeInLocalUnits > selectionTimeRight)
                 {
                     m_ViewModel.SetPlayHeadTimeBypassAutoPlay(selectionTimeLeft);
                     //m_ViewModel.PlayHeadTime = selectionTimeLeft;
@@ -143,8 +148,10 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                double time = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(x * BytesPerPixel));
-                m_ViewModel.PlayHeadTime = time;
+                long time = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round(x * BytesPerPixel)));
+                m_ViewModel.PlayHeadTimeInLocalUnits = time;
 
                 return;
             }
@@ -166,7 +173,11 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            m_ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
+            m_ViewModel.State.Selection.SetSelectionBytes(
+                m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                (long)Math.Round(m_TimeSelectionLeftX * BytesPerPixel)),
+                m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                (long)Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel)));
         }
 
         private void restoreSelection()
@@ -182,7 +193,11 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (m_ViewModel.State.Audio.HasContent)
             {
-                m_ViewModel.State.Selection.SetSelectionBytes(Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel), Convert.ToInt64((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
+                m_ViewModel.State.Selection.SetSelectionBytes(
+                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round(m_TimeSelectionLeftX * BytesPerPixel)),
+                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel)));
             }
         }
 
