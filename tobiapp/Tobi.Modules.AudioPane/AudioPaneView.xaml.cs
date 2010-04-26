@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
@@ -348,7 +349,9 @@ namespace Tobi.Plugin.AudioPane
                     else
                     {
                         m_ViewModel.CommandClearSelection.Execute();
-                        m_ViewModel.SelectChunk(Convert.ToInt64(p.X * BytesPerPixel));
+                        m_ViewModel.SelectChunk(
+                            m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                            (long)Math.Round(p.X * BytesPerPixel)));
                     }
                 }
                 else if (m_MouseClicks == 3)
@@ -360,7 +363,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     if (isShiftKeyDown() && m_ViewModel.State.Audio.HasContent)
                     {
-                        m_TimeSelectionLeftX = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.PlayHeadTime) / BytesPerPixel;
+                        m_TimeSelectionLeftX = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(m_ViewModel.PlayHeadTimeInLocalUnits) / BytesPerPixel;
                         selectionFinished(p.X);
                     }
                     else
@@ -649,7 +652,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             //long bytes = ViewModel.PcmFormat.GetByteForTime(new Time(ViewModel.LastPlayHeadTime));
-            long bytes = m_ViewModel.State.Audio.ConvertMillisecondsToBytes(m_ViewModel.PlayHeadTime);
+            long bytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(m_ViewModel.PlayHeadTimeInLocalUnits);
 
             double pixels = bytes / BytesPerPixel;
 
@@ -671,7 +674,7 @@ namespace Tobi.Plugin.AudioPane
 
             using (StreamGeometryContext sgc = geometry.Open())
             {
-                if (m_ViewModel.PlayHeadTime < 0)
+                if (m_ViewModel.PlayHeadTimeInLocalUnits < 0)
                 {
                     sgc.BeginFigure(new Point(pixels, height), true, false);
                     sgc.LineTo(new Point(pixels, 0), true, false);
@@ -1181,15 +1184,17 @@ namespace Tobi.Plugin.AudioPane
                 m_PlaybackTimer = new DispatcherTimer(DispatcherPriority.Send);
                 m_PlaybackTimer.Tick += OnPlaybackTimerTick;
 
-                double interval = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(Convert.ToInt64(BytesPerPixel));
+                double intervalMilliseconds = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                    (long)Math.Round(BytesPerPixel))) / (double)AudioLibPCMFormat.TIME_UNIT;
 
                 //m_Logger.Log("WaveFormTimer REFRESH interval: " + interval, Category.Debug, Priority.Medium);
 
-                if (interval < m_ViewModel.AudioPlayer_RefreshInterval)
+                if (intervalMilliseconds < m_ViewModel.AudioPlayer_RefreshInterval)
                 {
-                    interval = m_ViewModel.AudioPlayer_RefreshInterval;
+                    intervalMilliseconds = m_ViewModel.AudioPlayer_RefreshInterval;
                 }
-                m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(interval);
+                m_PlaybackTimer.Interval = TimeSpan.FromMilliseconds(intervalMilliseconds);
             }
             else if (m_PlaybackTimer.IsEnabled)
             {
