@@ -540,12 +540,12 @@ namespace Tobi.Plugin.DocumentPane
                     m_totalAudioDuration.Add(media.Duration);
                 }
 
-                SetForegroundColorAndCursorForTreeNodeWithAudio(documentPaneView, data);
+                Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
-                ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-
+                data.Foreground = brushFontAudio;
+                //data.Cursor = Cursors.Hand;
+                
+                return;
             }
 
             SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
@@ -553,33 +553,31 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                SetForegroundColorAndCursorForTreeNodeWithSequenceAudio(documentPaneView, data);
+                Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
-                ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-
+                data.Foreground = brushFontAudio;
+                data.Cursor = Cursors.Cross;
+                
+                return;
             }
 
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
             {
-                SetForegroundColorAndCursorForTreeNodeWithAncestorAudio(documentPaneView, data);
+                Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 
-                ////data.MouseDown += OnMouseDownTextElementWithNodeAndAudio;
-                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
+                data.Foreground = brushFontAudio;
+                //data.Cursor = Cursors.SizeAll;
 
+                return;
             }
 
             if (bTreeNodeNeedsAudio(node))
             {
-                SetTextElementAttributesForTreeNodeWithNoAudio(documentPaneView, data);
+                Brush brushFontNoAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 
-                ////data.MouseDown += OnMouseDownTextElementWithNode;
-                ////data.MouseDown += (sender, e) => m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-                //data.MouseDown += (sender, e) => m_DocumentPaneView.m_DelegateOnMouseDownTextElementWithNode((TextElement)sender);
-
+                data.Foreground = brushFontNoAudio;
+                //data.Cursor = Cursors.Pen;
             }
 
             //#if DEBUG
@@ -627,49 +625,9 @@ namespace Tobi.Plugin.DocumentPane
                     EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Publish(node);
                 }
 
-                ////// tesing with Got/LostCapture only 
-                ////data.MouseUp += m_DocumentPaneView.OnTextElementMouseUp;
-                ////data.MouseDown += m_DocumentPaneView.OnTextElementMouseDown;
-
-
+                data.Cursor = Cursors.Hand;
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
             }
-        }
-
-
-        public static void SetTextElementAttributesForTreeNodeWithNoAudio(DocumentPaneView documentPaneView, TextElement data)
-        {
-            Brush brushFontNoAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
-
-            data.Foreground = brushFontNoAudio;
-            //data.Background = Brushes.LimeGreen;
-            data.Cursor = Cursors.Pen;
-        }
-        public static void SetForegroundColorAndCursorForTreeNodeWithSequenceAudio(DocumentPaneView documentPaneView, TextElement data)
-        {
-            Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
-
-            data.Foreground = brushFontAudio;
-            //data.Background = Brushes.LightGoldenrodYellow;
-            data.Cursor = Cursors.Cross;
-        }
-
-        public static void SetForegroundColorAndCursorForTreeNodeWithAudio(DocumentPaneView documentPaneView, TextElement data)
-        {
-            Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
-
-            data.Foreground = brushFontAudio;
-            //data.Background = Brushes.LightGoldenrodYellow;
-            data.Cursor = Cursors.Hand;
-        }
-
-        public static void SetForegroundColorAndCursorForTreeNodeWithAncestorAudio(DocumentPaneView documentPaneView, TextElement data)
-        {
-            Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
-
-            data.Foreground = brushFontAudio;
-            //data.Background = Brushes.LightGoldenrodYellow;
-            data.Cursor = Cursors.SizeAll;
         }
 
         //public static string IdToName(string id)
