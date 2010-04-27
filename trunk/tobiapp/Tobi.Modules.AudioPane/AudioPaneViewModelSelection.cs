@@ -39,7 +39,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandStepBack.Execute();
 
-                    SelectChunk(State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits));
+                    SelectChunk(PlayBytePosition);
                 },
                 () => CommandStepBack.CanExecute(),
                 Settings_KeyGestures.Default,
@@ -58,7 +58,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandStepForward.Execute();
 
-                    SelectChunk(State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits));
+                    SelectChunk(PlayBytePosition);
                 },
                 () => CommandStepForward.CanExecute(),
                 Settings_KeyGestures.Default,
@@ -76,15 +76,15 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandEndSelection", Category.Debug, Priority.Medium);
 
-                    if (m_SelectionBeginTmp < 0)
+                    if (m_SelectionBeginTmpBytePosition < 0)
                     {
                         return;
                     }
 
                     CommandPause.Execute();
 
-                    long begin = m_SelectionBeginTmp;
-                    long end = PlayHeadTimeInLocalUnits;
+                    long begin = m_SelectionBeginTmpBytePosition;
+                    long end = PlayBytePosition;
 
                     AudioCues.PlayTockTock();
 
@@ -101,7 +101,7 @@ namespace Tobi.Plugin.AudioPane
                         end = tmp;
                     }
 
-                    State.Selection.SetSelectionTime(begin, end);
+                    State.Selection.SetSelectionBytes(begin, end);
 
                     //if (IsAutoPlay)
                     //{
@@ -120,7 +120,7 @@ namespace Tobi.Plugin.AudioPane
                     //    //AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                     //}
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && m_SelectionBeginTmp >= 0,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && m_SelectionBeginTmpBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_EndSelection));
 
@@ -137,7 +137,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    m_SelectionBeginTmp = PlayHeadTimeInLocalUnits;
+                    m_SelectionBeginTmpBytePosition = PlayBytePosition;
 
                     AudioCues.PlayTock();
                 },
@@ -156,18 +156,16 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectLeft", Category.Debug, Priority.Medium);
 
-                    long bytes = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits);
-
-                    if (bytes <= 0)
+                    if (PlayBytePosition <= 0)
                     {
                         AudioCues.PlayAsterisk();
                         return;
                     }
 
-                    State.Selection.SetSelectionBytes(0, bytes);
+                    State.Selection.SetSelectionBytes(0, PlayBytePosition);
                     AudioCues.PlayTock();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayHeadTimeInLocalUnits >= 0,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectLeft));
 
@@ -182,18 +180,16 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectRight", Category.Debug, Priority.Medium);
 
-                    long bytes = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits);
-
-                    if (bytes >= State.Audio.DataLength)
+                    if (PlayBytePosition >= State.Audio.DataLength)
                     {
                         AudioCues.PlayAsterisk();
                         return;
                     }
 
-                    State.Selection.SetSelectionBytes(bytes, State.Audio.DataLength);
+                    State.Selection.SetSelectionBytes(PlayBytePosition, State.Audio.DataLength);
                     AudioCues.PlayTockTock();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayHeadTimeInLocalUnits >= 0,
+                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectRight));
 
@@ -245,7 +241,7 @@ namespace Tobi.Plugin.AudioPane
             //
         }
 
-        private long m_SelectionBeginTmp = -1;
+        private long m_SelectionBeginTmpBytePosition = -1;
 
         public void SelectChunk(long byteOffset)
         {
@@ -277,15 +273,15 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        [NotifyDependsOnEx("SelectionBeginInLocalUnits", typeof(SelectionStateData))]
-        [NotifyDependsOnEx("SelectionEndInLocalUnits", typeof(SelectionStateData))]
+        [NotifyDependsOnEx("SelectionBeginBytePosition", typeof(SelectionStateData))]
+        [NotifyDependsOnEx("SelectionEndBytePosition", typeof(SelectionStateData))]
         public bool IsSelectionSet
         {
             get
             {
                 if (State.Audio.HasContent)
                 {
-                    return State.Selection.SelectionBeginInLocalUnits >= 0 && State.Selection.SelectionEndInLocalUnits >= 0;
+                    return State.Selection.SelectionBeginBytePosition >= 0 && State.Selection.SelectionEndBytePosition >= 0;
                 }
                 if (View != null)
                 {

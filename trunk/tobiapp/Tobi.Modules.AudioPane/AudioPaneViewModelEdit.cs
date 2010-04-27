@@ -455,13 +455,12 @@ namespace Tobi.Plugin.AudioPane
 
             bool transaction = false;
             List<TreeNodeAndStreamSelection> selData = null;
-            long timeInsert = 0;
-            long byteOffset = 0;
+
+            long bytePositionInsert = 0;
 
             if (IsSelectionSet)
             {
-                timeInsert = State.Selection.SelectionBeginInLocalUnits;
-                byteOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(timeInsert);
+                bytePositionInsert = State.Selection.SelectionBeginBytePosition;
 
                 transaction = true;
                 treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc);
@@ -521,14 +520,13 @@ namespace Tobi.Plugin.AudioPane
                 m_CurrentAudioStreamProvider();
 
                 //CommandRefresh.Execute();
-
-                m_LastSetPlayHeadTimeInLocalUnits = timeInsert;
+                m_LastSetPlayBytePosition = State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(bytePositionInsert);
             }
             else
             {
-                timeInsert = PlayHeadTimeInLocalUnits;
+                bytePositionInsert = PlayBytePosition;
 
-                if (timeInsert < 0)
+                if (bytePositionInsert < 0)
                 {
                     if (AudioPlaybackStreamKeepAlive)
                     {
@@ -549,16 +547,13 @@ namespace Tobi.Plugin.AudioPane
 
                     return;
                 }
-
-                byteOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(timeInsert);
             }
 
-            long timeOffset = timeInsert;
             TreeNode treeNodeTarget;
             long bytesRight;
             long bytesLeft;
             int index;
-            bool match = State.Audio.FindInPlayStreamMarkers(byteOffset, out treeNodeTarget, out index, out bytesLeft, out bytesRight);
+            bool match = State.Audio.FindInPlayStreamMarkers(bytePositionInsert, out treeNodeTarget, out index, out bytesLeft, out bytesRight);
             if (!match)
             {
                 Debug.Fail("Waht ??");
@@ -570,8 +565,6 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            timeOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(byteOffset - bytesLeft);
-
             if (selData != null && selData.Count > 0)
             {
             }
@@ -582,7 +575,7 @@ namespace Tobi.Plugin.AudioPane
             Command command = treeNode.Presentation.CommandFactory.
                    CreateManagedAudioMediaInsertDataCommand(
                        treeNodeTarget, manMedia,
-                       new Time(timeOffset),
+                       bytePositionInsert - bytesLeft,
                        treeNodeSelection.Item1);
 
             if (AudioPlaybackStreamKeepAlive)

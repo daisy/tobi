@@ -144,11 +144,11 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
 
-                    long playTime = PlayHeadTimeInLocalUnits;
+                    long playBytePosition = PlayBytePosition;
 
                     m_Player.Stop();
 
-                    SetPlayHeadTimeBypassAutoPlay(playTime);
+                    SetPlayHeadTimeBypassAutoPlay(playBytePosition);
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped);
                 },
@@ -169,42 +169,37 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    if (PlayHeadTimeInLocalUnits < 0) m_LastSetPlayHeadTimeInLocalUnits = 0;
-
-                    long byteLastPlayHeadTime = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits);
+                    if (PlayBytePosition < 0) m_LastSetPlayBytePosition = 0;
 
                     if (!IsSelectionSet)
                     {
                         //if (LastPlayHeadTime >= State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength))
-                        if (byteLastPlayHeadTime >= State.Audio.DataLength)
+                        if (PlayBytePosition >= State.Audio.DataLength)
                         {
                             //LastPlayHeadTime = 0; infinite loop !
                             AudioPlayer_PlayFromTo(0, -1);
                         }
                         else
                         {
-                            AudioPlayer_PlayFromTo(byteLastPlayHeadTime, -1);
+                            AudioPlayer_PlayFromTo(PlayBytePosition, -1);
                         }
                     }
                     else
                     {
-                        long byteSelectionLeft = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(State.Selection.SelectionBeginInLocalUnits);
-                        long byteSelectionRight = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(State.Selection.SelectionEndInLocalUnits);
-
-                        if (byteLastPlayHeadTime >= byteSelectionLeft
-                                && byteLastPlayHeadTime < byteSelectionRight)
+                        if (PlayBytePosition >= State.Selection.SelectionBeginBytePosition
+                                && PlayBytePosition < State.Selection.SelectionEndBytePosition)
                         {
                             //if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
                             //{
                             //}
-                            AudioPlayer_PlayFromTo(byteLastPlayHeadTime, byteSelectionRight);
+                            AudioPlayer_PlayFromTo(PlayBytePosition, State.Selection.SelectionEndBytePosition);
                         }
                         else
                         {
                             //if (verifyBeginEndPlayerValues(byteSelectionLeft, byteSelectionRight))
                             //{
                             //}
-                            AudioPlayer_PlayFromTo(byteSelectionLeft, byteSelectionRight);
+                            AudioPlayer_PlayFromTo(State.Selection.SelectionBeginBytePosition, State.Selection.SelectionEndBytePosition);
                         }
                     }
                 },
@@ -251,19 +246,16 @@ namespace Tobi.Plugin.AudioPane
             long to = 0;
             if (left)
             {
-                from = Math.Max(0, PlayHeadTimeInLocalUnits - m_TimePreviewPlayInLocalUnits);
-                to = PlayHeadTimeInLocalUnits;
+                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(m_TimePreviewPlayInLocalUnits));
+                to = PlayBytePosition;
             }
             else
             {
-                from = PlayHeadTimeInLocalUnits;
-                to = Math.Min(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Audio.DataLength), PlayHeadTimeInLocalUnits + m_TimePreviewPlayInLocalUnits);
+                from = PlayBytePosition;
+                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(m_TimePreviewPlayInLocalUnits));
             }
 
-            long byteLeft = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(from);
-            long byteRight = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(to);
-
-            if (byteRight == byteLeft)
+            if (from == to)
             {
                 return;
             }
@@ -271,9 +263,9 @@ namespace Tobi.Plugin.AudioPane
             //if (verifyBeginEndPlayerValues(byteLeft, byteRight))
             //{
             //}
-            AudioPlayer_PlayFromTo(byteLeft, byteRight);
+            AudioPlayer_PlayFromTo(from, to);
 
-            State.Audio.EndOffsetOfPlayStream = left ? byteRight : byteLeft;
+            State.Audio.EndOffsetOfPlayStream = left ? to : from;
         }
 
         //private long m_StreamRiffHeaderEndPos;
@@ -464,13 +456,11 @@ namespace Tobi.Plugin.AudioPane
 
             //Logger.Log("AudioPaneViewModel.RefreshWaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
-            long byteOffset = State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(PlayHeadTimeInLocalUnits);
-
             long bytesRight;
             long bytesLeft;
             int index;
             TreeNode subTreeNode;
-            bool match = State.Audio.FindInPlayStreamMarkers(byteOffset, out subTreeNode, out index, out bytesLeft, out bytesRight);
+            bool match = State.Audio.FindInPlayStreamMarkers(PlayBytePosition, out subTreeNode, out index, out bytesLeft, out bytesRight);
 
             if (match)
             {
@@ -497,7 +487,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            long time = PlayHeadTimeInLocalUnits;
+            long bytePosition = PlayBytePosition;
             //if (IsPlaying
             //    //|| m_Player.CurrentState == AudioPlayer.State.Paused
             //    )
@@ -509,9 +499,9 @@ namespace Tobi.Plugin.AudioPane
             //    //time = 0;
             //}
 
-            if (time >= 0)
+            if (bytePosition >= 0)
             {
-                SetPlayHeadTimeBypassAutoPlay(time);
+                SetPlayHeadTimeBypassAutoPlay(bytePosition);
                 //PlayHeadTime = time;
             }
         }
@@ -669,9 +659,9 @@ namespace Tobi.Plugin.AudioPane
 
         struct StateToRestore
         {
-            public long SelectionBeginInLocalUnits;
-            public long SelectionEndInLocalUnits;
-            public long PlayHeadTimeInLocalUnits;
+            public long SelectionBeginBytePosition;
+            public long SelectionEndBytePosition;
+            public long PlayHeadBytePosition;
         }
         private StateToRestore? m_StateToRestore = null;
 
@@ -679,25 +669,25 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_StateToRestore != null)
             {
-                long begin = m_StateToRestore.GetValueOrDefault().SelectionBeginInLocalUnits;
-                long end = m_StateToRestore.GetValueOrDefault().SelectionEndInLocalUnits;
+                long begin = m_StateToRestore.GetValueOrDefault().SelectionBeginBytePosition;
+                long end = m_StateToRestore.GetValueOrDefault().SelectionEndBytePosition;
 
                 if (begin >= 0 && end >= 0)
                 {
-                    State.Selection.SetSelectionTime(begin, end);
+                    State.Selection.SetSelectionBytes(begin, end);
                 }
                 else
                 {
                     State.Selection.ResetAll();
                 }
 
-                long newPlayTime = m_StateToRestore.GetValueOrDefault().PlayHeadTimeInLocalUnits;
+                long newBytePosition = m_StateToRestore.GetValueOrDefault().PlayHeadBytePosition;
 
                 m_StateToRestore = null;
 
-                if (newPlayTime < 0)
+                if (newBytePosition < 0)
                 {
-                    m_LastSetPlayHeadTimeInLocalUnits = -1;
+                    m_LastSetPlayBytePosition = -1;
                     //AudioPlayer_UpdateWaveFormPlayHead();
                     if (View != null)
                     {
@@ -708,7 +698,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
-                    PlayHeadTimeInLocalUnits = newPlayTime;
+                    PlayBytePosition = newBytePosition;
                     RefreshWaveFormChunkMarkers();
                 }
 
@@ -933,7 +923,7 @@ namespace Tobi.Plugin.AudioPane
 
             State.ResetAll();
 
-            m_LastSetPlayHeadTimeInLocalUnits = 0;
+            m_LastSetPlayBytePosition = 0;
             //IsWaveFormLoading = false;
 
             State.FilePath = path;
@@ -944,7 +934,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 State.ResetAll();
 
-                m_LastSetPlayHeadTimeInLocalUnits = -1;
+                m_LastSetPlayBytePosition = -1;
                 //IsWaveFormLoading = false;
                 return;
             }
@@ -1015,13 +1005,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (State.Audio.HasContent)
             {
-                //double time = m_PcmFormat.GetDuration(m_DataLength).AsMilliseconds;
-                //long bytes = (long) m_Player.CurrentTime;
-
-                long time = State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Audio.EndOffsetOfPlayStream);
-                //double time = PcmFormat.GetDuration(m_EndOffsetOfPlayStream).AsMilliseconds;
-
-                SetPlayHeadTimeBypassAutoPlay(time);
+                SetPlayHeadTimeBypassAutoPlay(State.Audio.EndOffsetOfPlayStream);
 
                 //updateWaveFormPlayHead(time);
             }

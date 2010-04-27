@@ -325,59 +325,29 @@ namespace Tobi.Plugin.AudioPane
                 m_viewModel = vm;
             }
 
-            public void SetSelectionTime(long begin, long end)
-            {
-                SelectionBeginInLocalUnits = begin;
-                SelectionEndInLocalUnits = end;
-
-                if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
-                {
-                    m_viewModel.View.SetSelectionTime(SelectionBeginInLocalUnits, SelectionEndInLocalUnits);
-                }
-
-                if (m_viewModel.IsAutoPlay)
-                {
-                    m_viewModel.PlayHeadTimeInLocalUnits = SelectionBeginInLocalUnits;
-
-
-                    //m_viewModel.m_LastSetPlayHeadTime = SelectionBegin;
-                    //m_viewModel.CommandPlay.Execute();
-
-
-
-                    //long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
-
-                    //m_ViewModel.IsAutoPlay = false;
-                    //m_ViewModel.LastPlayHeadTime = m_ViewModel.State.Audio.ConvertBytesToMilliseconds(bytesFrom);
-                    //m_ViewModel.IsAutoPlay = true;
-
-                    //long bytesTo = Convert.ToInt64(right * BytesPerPixel);
-
-                    //m_ViewModel.AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
-                }
-            }
-
             public void SetSelectionBytes(long begin, long end)
             {
-                SetSelectionTime(m_viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(begin),
-                                 m_viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(end));
-                return;
-
-                SelectionBeginInLocalUnits = m_viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(begin);
-                SelectionEndInLocalUnits = m_viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(end);
-
                 if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
                 {
-                    m_viewModel.View.SetSelectionBytes(begin, end);
+                    SelectionBeginBytePosition = m_viewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(begin);
+                    SelectionEndBytePosition = m_viewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(end);
+
+                    m_viewModel.View.SetSelectionBytes(SelectionBeginBytePosition, SelectionEndBytePosition);
+                }
+                else
+                {
+                    SelectionBeginBytePosition = begin;
+                    SelectionEndBytePosition = end;
                 }
 
                 if (m_viewModel.IsAutoPlay)
                 {
-                    m_viewModel.PlayHeadTimeInLocalUnits = SelectionBeginInLocalUnits;
+                    m_viewModel.PlayBytePosition = SelectionBeginBytePosition;
+
 
                     //m_viewModel.m_LastSetPlayHeadTime = SelectionBegin;
                     //m_viewModel.CommandPlay.Execute();
-                    
+
 
 
                     //long bytesFrom = Convert.ToInt64(m_TimeSelectionLeftX * BytesPerPixel);
@@ -394,48 +364,48 @@ namespace Tobi.Plugin.AudioPane
 
             public void ClearSelection()
             {
-                SelectionBeginInLocalUnits = -1;
-                SelectionEndInLocalUnits = -1;
+                SelectionBeginBytePosition = -1;
+                SelectionEndBytePosition = -1;
                 if (m_viewModel.View != null)
                 {
                     m_viewModel.View.ClearSelection();
                 }
             }
 
-            private long m_SelectionBeginInLocalUnits;
-            public long SelectionBeginInLocalUnits
+            private long m_SelectionBeginBytePosition;
+            public long SelectionBeginBytePosition
             {
                 get
                 {
-                    return m_SelectionBeginInLocalUnits;
+                    return m_SelectionBeginBytePosition;
                 }
                 private set
                 {
-                    if (m_SelectionBeginInLocalUnits == value) return;
-                    m_SelectionBeginInLocalUnits = value;
-                    m_notifier.RaisePropertyChanged(() => SelectionBeginInLocalUnits);
+                    if (m_SelectionBeginBytePosition == value) return;
+                    m_SelectionBeginBytePosition = value;
+                    m_notifier.RaisePropertyChanged(() => SelectionBeginBytePosition);
                 }
             }
 
-            private long m_SelectionEndInLocalUnits;
-            public long SelectionEndInLocalUnits
+            private long m_SelectionEndVytePosition;
+            public long SelectionEndBytePosition
             {
                 get
                 {
-                    return m_SelectionEndInLocalUnits;
+                    return m_SelectionEndVytePosition;
                 }
                 private set
                 {
-                    if (m_SelectionEndInLocalUnits == value) return;
-                    m_SelectionEndInLocalUnits = value;
-                    m_notifier.RaisePropertyChanged(() => SelectionEndInLocalUnits);
+                    if (m_SelectionEndVytePosition == value) return;
+                    m_SelectionEndVytePosition = value;
+                    m_notifier.RaisePropertyChanged(() => SelectionEndBytePosition);
                 }
             }
 
             public void ResetAll()
             {
-                SelectionBeginInLocalUnits = -1;
-                SelectionEndInLocalUnits = -1;
+                SelectionBeginBytePosition = -1;
+                SelectionEndBytePosition = -1;
             }
         }
 
