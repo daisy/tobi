@@ -37,7 +37,7 @@
         void ZoomSelection();
         void ZoomFitFull();
         void InitGraphicalCommandBindings();
-        void SetSelectionTime(long begin, long end);
+
         void SetSelectionBytes(long begin, long end);
         void CancelWaveFormLoad(bool interruptDrawingToo);
     }

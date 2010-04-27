@@ -22,22 +22,6 @@ namespace Tobi.Plugin.AudioPane
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
         }
 
-        public void SetSelectionTime(long begin, long end)
-        {
-            m_Logger.Log("AudioPaneView.SetSelectionTime", Category.Debug, Priority.Medium);
-
-            if (m_ViewModel.State.Audio.HasContent)
-            {
-                long beginBytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(begin);
-                long endBytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(end);
-
-                m_TimeSelectionLeftX = beginBytes / BytesPerPixel;
-                WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
-                WaveFormTimeSelectionRect.Width = endBytes / BytesPerPixel - m_TimeSelectionLeftX;
-                WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
-            }
-        }
-
         public void SetSelectionBytes(long begin, long end)
         {
             m_Logger.Log("AudioPaneView.SetSelectionBytes", Category.Debug, Priority.Medium);
@@ -98,18 +82,13 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_ViewModel.State.Audio.HasContent)
             {
-                long selectionTimeLeft = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
-                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
-                    (long)Math.Round(m_TimeSelectionLeftX * BytesPerPixel)));
+                long selectionByteLeft =  m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize((long)Math.Round(m_TimeSelectionLeftX * BytesPerPixel));
 
-                long selectionTimeRight = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
-                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
-                    (long)Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel)));
+                long selectionByteRight = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize((long)Math.Round((m_TimeSelectionLeftX + WaveFormTimeSelectionRect.Width) * BytesPerPixel));
 
-                if (m_ViewModel.PlayHeadTimeInLocalUnits < selectionTimeLeft || m_ViewModel.PlayHeadTimeInLocalUnits > selectionTimeRight)
+                if (m_ViewModel.PlayBytePosition < selectionByteLeft || m_ViewModel.PlayBytePosition > selectionByteRight)
                 {
-                    m_ViewModel.SetPlayHeadTimeBypassAutoPlay(selectionTimeLeft);
-                    //m_ViewModel.PlayHeadTime = selectionTimeLeft;
+                    m_ViewModel.SetPlayHeadTimeBypassAutoPlay(selectionByteLeft);
                 }
             }
 
@@ -148,10 +127,8 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                long time = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
-                    m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
-                    (long)Math.Round(x * BytesPerPixel)));
-                m_ViewModel.PlayHeadTimeInLocalUnits = time;
+                long bytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize((long)Math.Round(x * BytesPerPixel));
+                m_ViewModel.PlayBytePosition = bytes;
 
                 return;
             }
