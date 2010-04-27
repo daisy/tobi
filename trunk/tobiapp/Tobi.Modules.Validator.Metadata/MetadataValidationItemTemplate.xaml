@@ -23,7 +23,7 @@
                  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                  Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
         <TextBlock.Text>
-          <MultiBinding  StringFormat="{}{0} = {1}">
+          <MultiBinding  StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataNameValue}">
             <Binding Path="NameContentAttribute.Name"/>
             <Binding Path="NameContentAttribute.Value"/>
           </MultiBinding>
@@ -36,19 +36,19 @@
       <StackPanel>
         <TextBlock Style="{StaticResource MetadataHeadingStyle}">
           <TextBlock.Text>
-            <Binding StringFormat="Rules for {0}" Path="Name"/>  <!-- TODO LOCALIZE MetadataDefinition_RulesForName -->
+            <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.RulesFor}" Path="Name"/>
           </TextBlock.Text>
         </TextBlock>
         <TextBlock Text="{Binding Description}"/>
         <TextBlock>
           <TextBlock.Text>
-            <Binding StringFormat="Must be a {0}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>   <!-- TODO LOCALIZE MetadataDefinition_MustBeDatatype -->
+            <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MustBe}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>
           </TextBlock.Text>
         </TextBlock>
 
         <TextBlock>
           <TextBlock.Text>
-            <Binding StringFormat="Is {0}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>  <!-- TODO LOCALIZE MetadataDefinition_Occurrance--> 
+            <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.Occurrence}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>
           </TextBlock.Text>
         </TextBlock>
 
@@ -61,7 +61,7 @@
         <TextBlock TextWrapping="Wrap" 
                    Visibility="{Binding Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}">
           <TextBlock.Text>
-            <Binding StringFormat="Synonyms: {0}"
+            <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataSynonyms2}"
                      Converter="{Metadata:DefinitionSynonymsListConverter}"/>
           </TextBlock.Text>
         </TextBlock>
@@ -71,13 +71,13 @@
   <DataTemplate DataType="{x:Type Metadata:MetadataDuplicateItemValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
-                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>   <!-- TODO LOCALIZE DuplicateItemsDetected -->
-      <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.NotMoreThanOneInstance}" Margin="0,0,0,5"/>  <!--TODO LOCALIZE NotMoreThanOneInstance -->
+                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>
+      <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.NotMoreThanOneInstance}" Margin="0,0,0,5"/>
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding Definition}" />
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnEditLinkClick">
-          <Run Text="Click to edit metadata"/>
+          <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}"/>
         </Hyperlink>
       </TextBlock>
     </StackPanel>
@@ -85,18 +85,18 @@
 
   <DataTemplate DataType="{x:Type Metadata:MetadataMissingItemValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>  <!-- TODO LOCALIZE MissingRequiredItem -->
+      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>
       <TextBlock Margin="0,0,0,5">
         <TextBlock.Text>
           <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" 
-                   Path="Definition.Name"/>   <!-- TODO LOCALIZE EntryNotFound-->
+                   Path="Definition.Name"/>  
         </TextBlock.Text>
       </TextBlock>
         <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding Definition}" />
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnAddLinkClick">
-          <Run Text="Click to add and edit"/>
+          <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToAddAndEdit}"/>
         </Hyperlink>
       </TextBlock>
     </StackPanel>
@@ -105,8 +105,8 @@
   <DataTemplate DataType="{x:Type Metadata:MetadataFormatValidationError}">
     <StackPanel>
       <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
-                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>  <!-- TODO LOCALIZE InvalidFormatting -->
-      <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidValue}"/>  <!-- TODO LOCALIZE InvalidValue -->
+                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>
+      <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidValue}"/>
       <ContentPresenter ContentTemplate="{StaticResource MetadataItemTemplate}"
                           Content="{Binding Target}" />
       <TextBlock Margin="0,0,0,5">
@@ -123,49 +123,11 @@
 
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnEditLinkClick">
-          <Run Text="Click to edit metadata"/>
+          <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}"/>
         </Hyperlink>
       </TextBlock>
       
     </StackPanel>
   </DataTemplate>
-
   
-
-  <!--<DataTemplate DataType="{x:Type Metadata:MetadataValidationError}">  
-    <ContentPresenter x:Name="Presenter"
-                      ContentTemplate="{StaticResource MetadataGeneralErrorTemplate}"
-                      Content="{TemplateBinding Content}" />
-
-    <DataTemplate.Triggers>
-      <DataTrigger Binding="{Binding ErrorType}">
-        <DataTrigger.Value>
-          <Metadata:MetadataErrorType>FormatError</Metadata:MetadataErrorType>
-        </DataTrigger.Value>
-        <Setter TargetName="Presenter"
-            Property="ContentTemplate"
-            Value="{StaticResource MetadataFormatErrorTemplate}" />
-      </DataTrigger>
-
-      <DataTrigger Binding="{Binding ErrorType}">
-        <DataTrigger.Value>
-          <Metadata:MetadataErrorType>DuplicateItemError</Metadata:MetadataErrorType>
-        </DataTrigger.Value>
-        <Setter TargetName="Presenter"
-            Property="ContentTemplate"
-            Value="{StaticResource MetadataDuplicateItemErrorTemplate}" />
-      </DataTrigger>
-
-      <DataTrigger Binding="{Binding ErrorType}">
-        <DataTrigger.Value>
-          <Metadata:MetadataErrorType>MissingItemError</Metadata:MetadataErrorType>
-        </DataTrigger.Value>
-        <Setter TargetName="Presenter"
-            Property="ContentTemplate"
-            Value="{StaticResource MetadataMissingItemErrorTemplate}" />
-      </DataTrigger>
-
-    </DataTemplate.Triggers>
-  </DataTemplate>
--->
 </ResourceDictionary>

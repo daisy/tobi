@@ -31,12 +31,12 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         public override string Name
         {
-            get { return "Missing Audio Validator"; }
+            get { return Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioValidator_Name; }
         }
 
         public override string Description
         {
-            get { return "Find text with missing audio content"; }
+            get { return Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioValidator_Description; }
         }
     }
 }

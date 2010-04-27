@@ -61,11 +61,29 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to add and edit.
+        /// </summary>
+        public static string ClickToAddAndEdit {
+            get {
+                return ResourceManager.GetString("ClickToAddAndEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to edit metadata.
+        /// </summary>
+        public static string ClickToEdit {
+            get {
+                return ResourceManager.GetString("ClickToEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to formatted as YYYY-MM-DD, YYYY-MM, or YYYY.
         /// </summary>
-        public static string Date {
+        public static string DateHint {
             get {
-                return ResourceManager.GetString("Date", resourceCulture);
+                return ResourceManager.GetString("DateHint", resourceCulture);
             }
         }
         
@@ -75,6 +93,17 @@ namespace Tobi.Plugin.Validator.Metadata {
         public static string DefNameMustBeHint {
             get {
                 return ResourceManager.GetString("DefNameMustBeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata error: duplicate items detected
+        ///This metadata field cannot have more than one instance.
+        ///{0}.
+        /// </summary>
+        public static string DuplicateErrorCompleteSummary {
+            get {
+                return ResourceManager.GetString("DuplicateErrorCompleteSummary", resourceCulture);
             }
         }
         
@@ -97,15 +126,6 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;[EMPTY]&quot;.
-        /// </summary>
-        public static string Empty {
-            get {
-                return ResourceManager.GetString("Empty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An entry for {0} was not found..
         /// </summary>
         public static string EntryNotFound {
@@ -115,11 +135,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metadata error: general error.
+        ///   Looks up a localized string similar to Metadata error: invalid formatting
+        ///The value for the item is invalid.
+        ///{0} = {1}
+        ///Hint: {0} must be {2}
+        ///{3}.
         /// </summary>
-        public static string GeneralError {
+        public static string FormatErrorCompleteSummary {
             get {
-                return ResourceManager.GetString("GeneralError", resourceCulture);
+                return ResourceManager.GetString("FormatErrorCompleteSummary", resourceCulture);
             }
         }
         
@@ -169,29 +193,15 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must be a {0}.
+        ///   Looks up a localized string similar to Rules for {0}
+        ///      {1}
+        ///      Must be a {2}
+        ///      Is {3}
+        ///      {4}.
         /// </summary>
-        public static string MetadataDefinition_MustBeDatatype {
+        public static string MetadataDefinitionSummary {
             get {
-                return ResourceManager.GetString("MetadataDefinition_MustBeDatatype", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Is {0}.
-        /// </summary>
-        public static string MetadataDefinition_Occurrance {
-            get {
-                return ResourceManager.GetString("MetadataDefinition_Occurrance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rules for {0}.
-        /// </summary>
-        public static string MetadataDefinition_RulesForName {
-            get {
-                return ResourceManager.GetString("MetadataDefinition_RulesForName", resourceCulture);
+                return ResourceManager.GetString("MetadataDefinitionSummary", resourceCulture);
             }
         }
         
@@ -223,6 +233,34 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} = {1}.
+        /// </summary>
+        public static string MetadataNameValue {
+            get {
+                return ResourceManager.GetString("MetadataNameValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///      Synonyms: {0}.
+        /// </summary>
+        public static string MetadataSynonyms {
+            get {
+                return ResourceManager.GetString("MetadataSynonyms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synonyms: {0}.
+        /// </summary>
+        public static string MetadataSynonyms2 {
+            get {
+                return ResourceManager.GetString("MetadataSynonyms2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validate publication metadata.
         /// </summary>
         public static string MetadataValidator_Description {
@@ -250,6 +288,17 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Metadata error: missing a required item
+        ///An entry for {0} was not found.
+        ///{1}.
+        /// </summary>
+        public static string MissingItemErrorCompleteSummary {
+            get {
+                return ResourceManager.GetString("MissingItemErrorCompleteSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata error: missing a required item.
         /// </summary>
         public static string MissingRequiredItem {
@@ -259,11 +308,20 @@ namespace Tobi.Plugin.Validator.Metadata {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Must be a {0}.
+        /// </summary>
+        public static string MustBe {
+            get {
+                return ResourceManager.GetString("MustBe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to non-empty.
         /// </summary>
-        public static string NonEmpty {
+        public static string NonEmptyHint {
             get {
-                return ResourceManager.GetString("NonEmpty", resourceCulture);
+                return ResourceManager.GetString("NonEmptyHint", resourceCulture);
             }
         }
         
@@ -279,18 +337,27 @@ namespace Tobi.Plugin.Validator.Metadata {
         /// <summary>
         ///   Looks up a localized string similar to a numeric value.
         /// </summary>
-        public static string NumVal {
+        public static string NumericValueHint {
             get {
-                return ResourceManager.GetString("NumVal", resourceCulture);
+                return ResourceManager.GetString("NumericValueHint", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unspecified error in {0}..
+        ///   Looks up a localized string similar to Is {0}.
         /// </summary>
-        public static string UnspecifiedError {
+        public static string Occurrence {
             get {
-                return ResourceManager.GetString("UnspecifiedError", resourceCulture);
+                return ResourceManager.GetString("Occurrence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rules for {0}.
+        /// </summary>
+        public static string RulesFor {
+            get {
+                return ResourceManager.GetString("RulesFor", resourceCulture);
             }
         }
     }

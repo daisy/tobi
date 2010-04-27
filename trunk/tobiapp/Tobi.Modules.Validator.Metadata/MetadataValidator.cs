@@ -156,12 +156,12 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Name; }       // TODO LOCALIZE MetadataValidator_Name
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Name; }
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description; }       // TODO LOCALIZE MetadataValidator_Description
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description; }  
         }
 
         public override bool Validate()
@@ -341,8 +341,8 @@ namespace Tobi.Plugin.Validator.Metadata
         private MetadataValidator m_ParentValidator;
         //These hints describe what the data must be formatted as.
         //Complete sentences purposefully left out.
-        private const string m_DateHint = "formatted as YYYY-MM-DD, YYYY-MM, or YYYY";             // TODO LOCALIZE Date
-        private const string m_NumericHint = "a numeric value";                                    // TODO LOCALIZE NumVal
+        private string m_DateHint = Tobi_Plugin_Validator_Metadata_Lang.DateHint;             
+        private string m_NumericHint = Tobi_Plugin_Validator_Metadata_Lang.NumericValueHint;                                    // TODO LOCALIZE NumVal
         private readonly IEventAggregator m_EventAggregator;
 
         public MetadataDataTypeValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)
@@ -534,7 +534,7 @@ namespace Tobi.Plugin.Validator.Metadata
     public class MetadataOccurrenceValidator
     {
         private MetadataValidator m_ParentValidator;
-        private const string m_NonEmptyHint = "non-empty";                               // TODO LOCALIZE NonEmpty
+        private string m_NonEmptyHint = Tobi_Plugin_Validator_Metadata_Lang.NonEmptyHint;                               
         private readonly IEventAggregator m_EventAggregator;
 
         public MetadataOccurrenceValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)

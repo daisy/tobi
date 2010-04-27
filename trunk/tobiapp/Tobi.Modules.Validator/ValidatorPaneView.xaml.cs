@@ -94,7 +94,7 @@ namespace Tobi.Plugin.Validator
             {
                 //this raises an exception the first time it is used
                 Clipboard.SetText(err.CompleteSummary);
-                MessageBox.Show("Contents copied to clipboard.");
+                MessageBox.Show(Tobi_Plugin_Validator_Lang.ContentsCopied);
             }
             catch (Exception ex)
             {
@@ -165,13 +165,13 @@ namespace Tobi.Plugin.Validator
         private void OnClipboardCopyAllLinkClick(object sender, RoutedEventArgs e)
         {
             bool noErrors = true;
-            string clipboardText = "List of all validation errors\n\n";
+            string clipboardText = Tobi_Plugin_Validator_Lang.ClipboardListOfAll;
             IEnumerator<IValidator> enumerator = m_ValidatorAggregator.Validators.GetEnumerator();
             int validatorNumbering = 1;
             int totalErrorCount = 0;
             while(enumerator.MoveNext())
             {
-                clipboardText += string.Format("{0}. {1}: {2}\n\n", 
+                clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardValidatorEntry, 
                     validatorNumbering, enumerator.Current.Name, enumerator.Current.Description);
 
                 int errorNumbering = 1;
@@ -179,7 +179,7 @@ namespace Tobi.Plugin.Validator
                 foreach (ValidationItem item in enumerator.Current.ValidationItems)
                 {
                     noErrors = false;
-                    clipboardText += string.Format("{0}.{1}. {2}\n\n", 
+                    clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardErrorEntry, 
                         validatorNumbering, errorNumbering, item.CompleteSummary);
                     errorNumbering++;
                     totalErrorCount++;
@@ -188,18 +188,18 @@ namespace Tobi.Plugin.Validator
 
                 if (noErrors)
                 {
-                    clipboardText += "No errors reported\n\n";
+                    clipboardText += Tobi_Plugin_Validator_Lang.ClipboardNoErrors;
                 }
-                clipboardText += string.Format("End of {0} report.\n\n", enumerator.Current.Name);
+                clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardEndOfValidatorReport, enumerator.Current.Name);
 
             }
-            clipboardText += string.Format("Total errors: {0}\n", totalErrorCount);
+            clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardTotalErrorCount, totalErrorCount);
 
             try
             {
                 //this raises an exception the first time it is used
                 Clipboard.SetText(clipboardText);
-                MessageBox.Show("Contents copied to clipboard.");
+                MessageBox.Show(Tobi_Plugin_Validator_Lang.ContentsCopied);
             }
             catch (Exception ex)
             {

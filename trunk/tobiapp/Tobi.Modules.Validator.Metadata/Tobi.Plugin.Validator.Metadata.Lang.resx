@@ -117,11 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Date" xml:space="preserve">
+  <data name="ClickToAddAndEdit" xml:space="preserve">
+    <value>Click to add and edit</value>
+  </data>
+  <data name="ClickToEdit" xml:space="preserve">
+    <value>Click to edit metadata</value>
+  </data>
+  <data name="DateHint" xml:space="preserve">
     <value>formatted as YYYY-MM-DD, YYYY-MM, or YYYY</value>
   </data>
   <data name="DefNameMustBeHint" xml:space="preserve">
     <value>{0} must be {1}.</value>
+  </data>
+  <data name="DuplicateErrorCompleteSummary" xml:space="preserve">
+    <value>Metadata error: duplicate items detected
+This metadata field cannot have more than one instance.
+{0}</value>
+    <comment>{0} = metadata definition</comment>
   </data>
   <data name="DuplicateItemsDetected" xml:space="preserve">
     <value>Metadata error: duplicate items detected</value>
@@ -129,14 +141,16 @@
   <data name="DuplicateNotAllowed" xml:space="preserve">
     <value>Duplicate of {0} not allowed.</value>
   </data>
-  <data name="Empty" xml:space="preserve">
-    <value>"[EMPTY]"</value>
-  </data>
   <data name="EntryNotFound" xml:space="preserve">
     <value>An entry for {0} was not found.</value>
   </data>
-  <data name="GeneralError" xml:space="preserve">
-    <value>Metadata error: general error</value>
+  <data name="FormatErrorCompleteSummary" xml:space="preserve">
+    <value>Metadata error: invalid formatting
+The value for the item is invalid.
+{0} = {1}
+Hint: {0} must be {2}
+{3}</value>
+    <comment>{0} = metadata name, {1} = metadata value, {2} = hint, {3} = metadata definition</comment>
   </data>
   <data name="InvalidFormatting" xml:space="preserve">
     <value>Metadata error: invalid formatting</value>
@@ -144,14 +158,13 @@
   <data name="InvalidValue" xml:space="preserve">
     <value>The value for the item is invalid:</value>
   </data>
-  <data name="MetadataDefinition_MustBeDatatype" xml:space="preserve">
-    <value>Must be a {0}</value>
-  </data>
-  <data name="MetadataDefinition_Occurrance" xml:space="preserve">
-    <value>Is {0}</value>
-  </data>
-  <data name="MetadataDefinition_RulesForName" xml:space="preserve">
-    <value>Rules for {0}</value>
+  <data name="MetadataDefinitionSummary" xml:space="preserve">
+    <value>Rules for {0}
+      {1}
+      Must be a {2}
+      Is {3}
+      {4}</value>
+    <comment>{0} = metadata name, {1} = metadata description, {2} = data type, {3} = occurrence, {4} = is repeatable or not</comment>
   </data>
   <data name="MetadataFormatError_Hint" xml:space="preserve">
     <value>Hint: {0} must be {1}</value>
@@ -161,6 +174,19 @@
   </data>
   <data name="MetadataMayNotBeRepeated" xml:space="preserve">
     <value>May not be repeated</value>
+  </data>
+  <data name="MetadataNameValue" xml:space="preserve">
+    <value>{0} = {1}</value>
+    <comment>{0} = name, {1} = value</comment>
+  </data>
+  <data name="MetadataSynonyms" xml:space="preserve">
+    <value>
+      Synonyms: {0}</value>
+    <comment>{0} = list of synonyms</comment>
+  </data>
+  <data name="MetadataSynonyms2" xml:space="preserve">
+    <value>Synonyms: {0}</value>
+    <comment>{0} = list of synonyms</comment>
   </data>
   <data name="MetadataValidator_Description" xml:space="preserve">
     <value>Validate publication metadata</value>
@@ -180,19 +206,34 @@
   <data name="Missing" xml:space="preserve">
     <value>Missing {0}</value>
   </data>
+  <data name="MissingItemErrorCompleteSummary" xml:space="preserve">
+    <value>Metadata error: missing a required item
+An entry for {0} was not found.
+{1}</value>
+    <comment>{0} = metadata name, {1} = metadata definition</comment>
+  </data>
   <data name="MissingRequiredItem" xml:space="preserve">
     <value>Metadata error: missing a required item</value>
   </data>
-  <data name="NonEmpty" xml:space="preserve">
+  <data name="MustBe" xml:space="preserve">
+    <value>Must be a {0}</value>
+    <comment>{0} = data type</comment>
+  </data>
+  <data name="NonEmptyHint" xml:space="preserve">
     <value>non-empty</value>
   </data>
   <data name="NotMoreThanOneInstance" xml:space="preserve">
     <value>This metadata field cannot have more than one instance.</value>
   </data>
-  <data name="NumVal" xml:space="preserve">
+  <data name="NumericValueHint" xml:space="preserve">
     <value>a numeric value</value>
   </data>
-  <data name="UnspecifiedError" xml:space="preserve">
-    <value>Unspecified error in {0}.</value>
+  <data name="Occurrence" xml:space="preserve">
+    <value>Is {0}</value>
+    <comment>{0} = required, optional, or recommended</comment>
+  </data>
+  <data name="RulesFor" xml:space="preserve">
+    <value>Rules for {0}</value>
+    <comment>{0} = name</comment>
   </data>
 </root>

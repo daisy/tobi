@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Binding DtdIdentifier.
-        /// </summary>
-        public static string BindingDtdIdentifier {
-            get {
-                return ResourceManager.GetString("BindingDtdIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tobi could not locate a DTD, so it cannot validate the document..
         /// </summary>
         public static string CannotValidateDoc {
@@ -84,33 +75,6 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         public static string ClickToView {
             get {
                 return ResourceManager.GetString("ClickToView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt;.
-        /// </summary>
-        public static string ContentDocument_DataTemplate {
-            get {
-                return ResourceManager.GetString("ContentDocument_DataTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The element &lt;{0}&gt; contains an invalid sequence of child elements..
-        /// </summary>
-        public static string ContentDocument_InvalidChildElements {
-            get {
-                return ResourceManager.GetString("ContentDocument_InvalidChildElements", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The following are permitted as children for &lt;{0}&gt;:.
-        /// </summary>
-        public static string ContentDocument_PermittedChildren {
-            get {
-                return ResourceManager.GetString("ContentDocument_PermittedChildren", resourceCulture);
             }
         }
         
@@ -142,47 +106,11 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Document structure error.
-        /// </summary>
-        public static string DocStructureError {
-            get {
-                return ResourceManager.GetString("DocStructureError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The DTD identifier associated with this document:.
         /// </summary>
         public static string DTDIdentifier {
             get {
                 return ResourceManager.GetString("DTDIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to General document error.
-        /// </summary>
-        public static string GeneralDocumentError {
-            get {
-                return ResourceManager.GetString("GeneralDocumentError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This element contain an invalid sequence of child elements:.
-        /// </summary>
-        public static string InvalidChildElements {
-            get {
-                return ResourceManager.GetString("InvalidChildElements", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Additionally, the error begins with this child element:.
-        /// </summary>
-        public static string InvalidChildElements_AdditionalMsg {
-            get {
-                return ResourceManager.GetString("InvalidChildElements_AdditionalMsg", resourceCulture);
             }
         }
         
@@ -196,11 +124,24 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Element &lt;{0}&gt; contains an invalid sequence of child elements.
+        ///   Looks up a localized string similar to The element &lt;{0}&gt; contains an invalid sequence of child elements.
         /// </summary>
-        public static string InvalidSequence {
+        public static string InvalidElementSequenceMessage {
             get {
-                return ResourceManager.GetString("InvalidSequence", resourceCulture);
+                return ResourceManager.GetString("InvalidElementSequenceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Element Sequence
+        ///Element &lt;{0}&gt; contains an invalid sequence of child elements.
+        ///{1}
+        ///The following are permitted as children for &lt;{0}&gt;:
+        ///{2}.
+        /// </summary>
+        public static string InvalidElementSequenceSummary {
+            get {
+                return ResourceManager.GetString("InvalidElementSequenceSummary", resourceCulture);
             }
         }
         
@@ -210,6 +151,18 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         public static string MissingDTD {
             get {
                 return ResourceManager.GetString("MissingDTD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing DTD
+        ///Tobi could not locate a DTD, so it cannot validate the document.
+        ///The DTD identifier associated with this document is:
+        ///{0}.
+        /// </summary>
+        public static string MissingDTDSummary {
+            get {
+                return ResourceManager.GetString("MissingDTDSummary", resourceCulture);
             }
         }
         
@@ -232,11 +185,11 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to , starting with {0}..
+        ///   Looks up a localized string similar to The following are permitted as children for &lt;{0}&gt;:.
         /// </summary>
-        public static string StartingWith0 {
+        public static string PermittedChildren {
             get {
-                return ResourceManager.GetString("StartingWith0", resourceCulture);
+                return ResourceManager.GetString("PermittedChildren", resourceCulture);
             }
         }
         
@@ -250,11 +203,13 @@ namespace Tobi.Plugin.Validator.ContentDocument {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unspecified error.
+        ///   Looks up a localized string similar to Undefined element
+        ///An element definition was not found for:
+        ///{0}.
         /// </summary>
-        public static string UnspecifiedError {
+        public static string UndefinedElementSummary {
             get {
-                return ResourceManager.GetString("UnspecifiedError", resourceCulture);
+                return ResourceManager.GetString("UndefinedElementSummary", resourceCulture);
             }
         }
     }

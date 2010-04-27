@@ -117,58 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CmdValidationCheck_ShortDesc" xml:space="preserve">
-    <value>Validation dialog...</value>
+  <data name="ClickToView" xml:space="preserve">
+    <value>Click to view</value>
   </data>
-  <data name="CmdValidationCheck_LongDesc" xml:space="preserve">
-    <value>Open the validation dialog</value>
+  <data name="MissingAudio" xml:space="preserve">
+    <value>Missing audio content</value>
   </data>
-  <data name="ValidatorPlugin_Description" xml:space="preserve">
-    <value>A framework to validate the data model of an authored Urakawa SDK project.</value>
+  <data name="MissingAudioMessage" xml:space="preserve">
+    <value>Element &lt;{0}&gt; is missing audio</value>
+    <comment>{0} = element name</comment>
   </data>
-  <data name="ValidatorPlugin_Name" xml:space="preserve">
-    <value>Publication Validator.</value>
+  <data name="MissingAudioMessage2" xml:space="preserve">
+    <value>The element &lt;{0}&gt; has no associated audio content.</value>
+    <comment>{0} = element name</comment>
   </data>
-  <data name="ClipboardEndOfValidatorReport" xml:space="preserve">
-    <value>End of {0} report.
-    
-    </value>
-    <comment>{0} = validator name</comment>
+  <data name="MissingAudioSummary" xml:space="preserve">
+    <value>Missing audio content
+The element &lt;{0}&gt; has no associated audio content.
+{1}</value>
+    <comment>{0} = element name, {1} = element xml</comment>
   </data>
-  <data name="ClipboardErrorEntry" xml:space="preserve">
-    <value>{0}.{1}. {2}
-    
-    </value>
-    <comment>{0} = validator number, {1} error number, {2} = error message</comment>
+  <data name="MissingAudioValidator_Description" xml:space="preserve">
+    <value>Find text with missing audio content</value>
   </data>
-  <data name="ClipboardListOfAll" xml:space="preserve">
-    <value>List of all validation errors
-    
-    </value>
-  </data>
-  <data name="ClipboardNoErrors" xml:space="preserve">
-    <value>No errors reported
-    
-    </value>
-  </data>
-  <data name="ClipboardTotalErrorCount" xml:space="preserve">
-    <value>Total errors: {0}
-    </value>
-    <comment>{0} = number of errors</comment>
-  </data>
-  <data name="ClipboardValidatorEntry" xml:space="preserve">
-    <value>{0}. {1}: {2}
-    
-    </value>
-    <comment>{0} = validator number, {1} = validator name, {2} = validator description </comment>
-  </data>
-  <data name="ContentsCopied" xml:space="preserve">
-    <value>Contents copied to clipboard.</value>
-  </data>
-  <data name="CopyAllLink" xml:space="preserve">
-    <value>Copy all error details to clipboard</value>
-  </data>
-  <data name="CopyLink" xml:space="preserve">
-    <value>Copy details to clipboard</value>
+  <data name="MissingAudioValidator_Name" xml:space="preserve">
+    <value>Missing Audio Validator</value>
   </data>
 </root>

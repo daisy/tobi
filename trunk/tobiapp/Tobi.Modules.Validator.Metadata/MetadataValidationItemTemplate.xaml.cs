@@ -3,7 +3,6 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
-using Tobi.Common;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.metadata;
@@ -43,8 +42,6 @@ namespace Tobi.Plugin.Validator.Metadata
         }
     }
 
-    //TODO: this has been copy-pasted from the MetadataPane.  How to share?  Maybe keep it here and remove it from 
-    //the pane (the pane is aware of the validator, but not vice versa)
     [ValueConversion(typeof(MetadataDefinition), typeof(string))]
     public class OccurrenceDescriptionConverter : ValueConverterMarkupExtensionBase<OccurrenceDescriptionConverter>
     {

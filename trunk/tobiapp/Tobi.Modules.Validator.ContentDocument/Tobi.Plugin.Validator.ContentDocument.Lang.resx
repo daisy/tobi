@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BindingDtdIdentifier" xml:space="preserve">
-    <value>Binding DtdIdentifier</value>
-  </data>
   <data name="CannotValidateDoc" xml:space="preserve">
     <value>Tobi could not locate a DTD, so it cannot validate the document.</value>
   </data>
@@ -132,26 +129,14 @@
   <data name="DefinitionNotFound" xml:space="preserve">
     <value>An element definition was not found for:</value>
   </data>
-  <data name="DocStructureError" xml:space="preserve">
-    <value>Document structure error</value>
-  </data>
   <data name="DTDIdentifier" xml:space="preserve">
     <value>The DTD identifier associated with this document:</value>
-  </data>
-  <data name="GeneralDocumentError" xml:space="preserve">
-    <value>General document error</value>
-  </data>
-  <data name="InvalidChildElements" xml:space="preserve">
-    <value>This element contain an invalid sequence of child elements:</value>
-  </data>
-  <data name="InvalidChildElements_AdditionalMsg" xml:space="preserve">
-    <value>Additionally, the error begins with this child element:</value>
   </data>
   <data name="InvalidElementSequence" xml:space="preserve">
     <value>Invalid element sequence</value>
   </data>
-  <data name="InvalidSequence" xml:space="preserve">
-    <value>Element &lt;{0}&gt; contains an invalid sequence of child elements</value>
+  <data name="InvalidElementSequenceMessage" xml:space="preserve">
+    <value>The element &lt;{0}&gt; contains an invalid sequence of child elements</value>
   </data>
   <data name="MissingDTD" xml:space="preserve">
     <value>Missing DTD</value>
@@ -162,25 +147,35 @@
   <data name="NoElementDefinitionFound" xml:space="preserve">
     <value>No element definition found for {0}</value>
   </data>
-  <data name="StartingWith0" xml:space="preserve">
-    <value>, starting with {0}.</value>
-  </data>
   <data name="UndefinedElement" xml:space="preserve">
     <value>Undefined element</value>
-  </data>
-  <data name="UnspecifiedError" xml:space="preserve">
-    <value>Unspecified error</value>
   </data>
   <data name="ClickToView" xml:space="preserve">
     <value>Click to view</value>
   </data>
-  <data name="ContentDocument_DataTemplate" xml:space="preserve">
-    <value>&lt;{0}&gt;</value>
+  <data name="InvalidElementSequenceSummary" xml:space="preserve">
+    <value>Invalid Element Sequence
+Element &lt;{0}&gt; contains an invalid sequence of child elements.
+{1}
+The following are permitted as children for &lt;{0}&gt;:
+{2}</value>
+    <comment>{0} = element name, {1} = element children, {2} = allowed children</comment>
   </data>
-  <data name="ContentDocument_InvalidChildElements" xml:space="preserve">
-    <value>The element &lt;{0}&gt; contains an invalid sequence of child elements.</value>
+  <data name="MissingDTDSummary" xml:space="preserve">
+    <value>Missing DTD
+Tobi could not locate a DTD, so it cannot validate the document.
+The DTD identifier associated with this document is:
+{0}</value>
+    <comment>{0} = DTD identifier</comment>
   </data>
-  <data name="ContentDocument_PermittedChildren" xml:space="preserve">
+  <data name="PermittedChildren" xml:space="preserve">
     <value>The following are permitted as children for &lt;{0}&gt;:</value>
+    <comment>{0} = element name</comment>
+  </data>
+  <data name="UndefinedElementSummary" xml:space="preserve">
+    <value>Undefined element
+An element definition was not found for:
+{0}</value>
+    <comment>{0} = element name</comment>
   </data>
 </root>
