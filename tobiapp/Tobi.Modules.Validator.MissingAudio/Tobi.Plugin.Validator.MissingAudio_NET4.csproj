@@ -86,11 +86,22 @@
     </Compile>
     <Compile Include="MissingAudioValidator.cs" />
     <Compile Include="MissingAudioValidatorPlugin.cs" />
+    <Compile Include="Tobi.Plugin.Validator.MissingAudio.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi.Plugin.Validator.MissingAudio.Lang.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MissingAudioValidationItemTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.Validator.MissingAudio.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi.Plugin.Validator.MissingAudio.Lang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

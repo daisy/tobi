@@ -9,12 +9,16 @@
       >
   <Grid.Resources>
     <ControlTemplate x:Key="FlowDocViewerTemplate">
-      <Border
+      <!--<Border
                BorderThickness="{TemplateBinding Border.BorderThickness}"
                BorderBrush="{TemplateBinding Border.BorderBrush}"
                Margin="{TemplateBinding Control.Padding}"
-               x:Uid="Border_49">
+               x:Uid="Border_49">-->
       <ScrollViewer
+        
+    Height="Auto"
+    Width="Auto"
+
                 CanContentScroll="False"
                 Name="PART_ContentHost"
                 HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
@@ -22,7 +26,7 @@
                 HorizontalContentAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                 VerticalContentAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                 x:Uid="ScrollViewer_8" />
-      </Border>
+      <!--</Border>-->
     </ControlTemplate>
 
   </Grid.Resources>
@@ -81,11 +85,12 @@
       KeyUp="OnSearchBoxKeyUp"/>
 
   </DockPanel>
-  <DocumentPane:FlowDocumentScrollViewerEx
-    Template="{StaticResource FlowDocViewerTemplate}"
-    AllowDrop="True" x:Name="FlowDocReader"
+    <!--Template="{StaticResource FlowDocViewerTemplate}"-->
+    <DocumentPane:FlowDocumentScrollViewerEx
     
-                                               
+    AllowDrop="True" x:Name="FlowDocReader"
+    HorizontalScrollBarVisibility="Disabled"
+                                          KeyboardNavigation.TabNavigation="Continue"     
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
               Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
          
@@ -138,9 +143,12 @@
          IsHyphenationEnabled = "False"
          IsOptimalParagraphEnabled = "False"
          ColumnWidth = "Infinity"
-         IsColumnWidthFlexible="False"
+         IsColumnWidthFlexible="True"
          TextAlignment = "Left"
                   
+                      PageHeight="Auto"
+    PageWidth="Auto"
+
 
                     />
 
@@ -166,7 +174,7 @@
     Template="{StaticResource FlowDocViewerTemplate}"
     AllowDrop="True"
                                            x:Name="FlowDocReaderSimple"
-                            
+                            HorizontalScrollBarVisibility="Disabled"
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
               Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
          
@@ -225,8 +233,12 @@
          IsHyphenationEnabled = "False"
          IsOptimalParagraphEnabled = "False"
          ColumnWidth = "Infinity"
-         IsColumnWidthFlexible="False"
+         IsColumnWidthFlexible="True"
          TextAlignment = "Center"
+                  
+    PageHeight="Auto"
+    PageWidth="Auto"
+
 
                     />
 
