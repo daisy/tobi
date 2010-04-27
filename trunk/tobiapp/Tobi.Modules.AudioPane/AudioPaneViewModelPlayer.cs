@@ -669,9 +669,9 @@ namespace Tobi.Plugin.AudioPane
 
         struct StateToRestore
         {
-            public long SelectionBegin;
-            public long SelectionEnd;
-            public long LastPlayHeadTime;
+            public long SelectionBeginInLocalUnits;
+            public long SelectionEndInLocalUnits;
+            public long PlayHeadTimeInLocalUnits;
         }
         private StateToRestore? m_StateToRestore = null;
 
@@ -679,8 +679,8 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_StateToRestore != null)
             {
-                long begin = m_StateToRestore.GetValueOrDefault().SelectionBegin;
-                long end = m_StateToRestore.GetValueOrDefault().SelectionEnd;
+                long begin = m_StateToRestore.GetValueOrDefault().SelectionBeginInLocalUnits;
+                long end = m_StateToRestore.GetValueOrDefault().SelectionEndInLocalUnits;
 
                 if (begin >= 0 && end >= 0)
                 {
@@ -691,7 +691,7 @@ namespace Tobi.Plugin.AudioPane
                     State.Selection.ResetAll();
                 }
 
-                long newPlayTime = m_StateToRestore.GetValueOrDefault().LastPlayHeadTime;
+                long newPlayTime = m_StateToRestore.GetValueOrDefault().PlayHeadTimeInLocalUnits;
 
                 m_StateToRestore = null;
 

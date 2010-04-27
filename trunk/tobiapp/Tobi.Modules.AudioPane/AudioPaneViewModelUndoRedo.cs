@@ -229,18 +229,18 @@ namespace Tobi.Plugin.AudioPane
                 long begin = timeOffset + timeInsert.AsLocalUnits;
                 m_StateToRestore = new StateToRestore
                 {
-                    SelectionBegin = begin,
-                    SelectionEnd = begin + selectionDur,
-                    LastPlayHeadTime = begin
+                    SelectionBeginInLocalUnits = begin,
+                    SelectionEndInLocalUnits = begin + selectionDur,
+                    PlayHeadTimeInLocalUnits = begin
                 };
             }
             else
             {
                 m_StateToRestore = new StateToRestore
                 {
-                    SelectionBegin = -1,
-                    SelectionEnd = -1,
-                    LastPlayHeadTime = timeOffset + timeInsert.AsLocalUnits
+                    SelectionBeginInLocalUnits = -1,
+                    SelectionEndInLocalUnits = -1,
+                    PlayHeadTimeInLocalUnits = timeOffset + timeInsert.AsLocalUnits
                 };
             }
 
@@ -357,7 +357,9 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Debug.Assert(done);
 
-                    Debug.Assert(command.OriginalManagedAudioMedia.Duration.AsLocalUnits  == diff.AsLocalUnits);
+                    Debug.Assert(
+                        command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.
+                            TimesAreEqualWithBlockAlignTolerance(diff.AsLocalUnits, command.OriginalManagedAudioMedia.Duration.AsLocalUnits));
 
                     //Debug.Assert(
                     //    command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.AreMillisecondTimesApproximatelyEqual(
