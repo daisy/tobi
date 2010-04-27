@@ -82,9 +82,9 @@ namespace Tobi.Plugin.AudioPane
 
             double newSliderValue = ZoomSlider.Value * (widthToUse / WaveFormTimeSelectionRect.Width);
 
-            if (newSliderValue > 20000)
+            if (newSliderValue > 8000)
             {
-                newSliderValue = 20000; //safeguard...image too large
+                newSliderValue = 8000; //safeguard...image too large
             }
 
             if (newSliderValue < ZoomSlider.Minimum)
