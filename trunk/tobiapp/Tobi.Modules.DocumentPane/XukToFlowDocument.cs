@@ -327,12 +327,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     ((TableCell)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 }
-            } if (qName.LocalName == "sidebar")
+            }
+            else if (qName.LocalName == "sidebar")
             {
-                Debug.Assert(data is Floater);
-                if (data is Floater)
+                Debug.Assert(data is Section);
+                if (data is Section)
                 {
-                    ((Floater)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                    ((Section)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
                 }
             }
             else if (qName.LocalName == "imggroup"
@@ -1911,7 +1912,7 @@ namespace Tobi.Plugin.DocumentPane
                         }
                     case "sidebar":
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Floater(node, parent, qname, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
                                 data =>
                                 {
                                     data.BorderThickness = new Thickness(2.0);
