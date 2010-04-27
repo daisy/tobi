@@ -415,10 +415,25 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+            bool compCmdAudio = false;
+            if (eventt.Command is CompositeCommand)
+            {
+                foreach (var childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_YieldEnumerable)
+                {
+                    if (childCmd is ManagedAudioMediaInsertDataCommand
+                        || childCmd is TreeNodeSetManagedAudioMediaCommand
+                        || childCmd is TreeNodeAudioStreamDeleteCommand)
+                    {
+                        compCmdAudio = true;
+                        break;
+                    }
+                }
+            }
+
             if (!(eventt.Command is ManagedAudioMediaInsertDataCommand)
                 && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
                 && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
-                && !(eventt.Command is CompositeCommand)
+                && !compCmdAudio
                 )
             {
                 return;

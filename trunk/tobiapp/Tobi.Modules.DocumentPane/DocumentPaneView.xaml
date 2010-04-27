@@ -9,18 +9,20 @@
       >
   <Grid.Resources>
     <ControlTemplate x:Key="FlowDocViewerTemplate">
-      <!--<Border
+      <Border
                BorderThickness="{TemplateBinding Border.BorderThickness}"
                BorderBrush="{TemplateBinding Border.BorderBrush}"
                Margin="{TemplateBinding Control.Padding}"
-               x:Uid="Border_49">-->
+               x:Uid="Border_49">
       <ScrollViewer
                 CanContentScroll="False"
                 Name="PART_ContentHost"
                 HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                 VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                HorizontalContentAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                VerticalContentAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                 x:Uid="ScrollViewer_8" />
-      <!--</Border>-->
+      </Border>
     </ControlTemplate>
 
   </Grid.Resources>
@@ -91,6 +93,8 @@
           Padding="0,0,0,0"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
                     
     Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                       Background="{Binding
@@ -174,6 +178,9 @@
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
                     
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+    
                             Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                       Background="{Binding
                        Converter={XAML:ColorToBrushConverter},
