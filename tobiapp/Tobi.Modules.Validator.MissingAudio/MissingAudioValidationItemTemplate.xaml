@@ -17,10 +17,10 @@
   
   <DataTemplate DataType="{x:Type MissingAudio:MissingAudioValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource MissingAudioHeadingStyle}" Text="Missing audio content"/>
+      <TextBlock Style="{StaticResource MissingAudioHeadingStyle}" Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="The element &lt;{0}&gt; has no associated audio content."
+          <Binding StringFormat="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioMessage2}"
                    Path="Target"
                    Converter="{Common:ElementNameConverter}"/>
         </TextBlock.Text>
@@ -45,7 +45,7 @@
 
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnViewLinkClick">
-          <Run Text="Click to view"/>
+          <Run Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>
     </StackPanel>

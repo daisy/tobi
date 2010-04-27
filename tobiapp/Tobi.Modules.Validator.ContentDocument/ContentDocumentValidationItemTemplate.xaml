@@ -31,9 +31,9 @@
   <!-- cannot find a dtd error -->
   <DataTemplate DataType="{x:Type ContentDocument:MissingDtdValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>  <!-- TODO LOCALIZE MissingDTD Key already added-->
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>   <!-- TODO LOCALIZE CannotValidateDoc-->
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>  <!-- TODO LOCALIZE DTDIdentifier-->
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>
       <TextBlock Text="{Binding DtdIdentifier}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                  Margin="5" FontFamily="Courier New" Width="Auto" Padding="3"/>
    </StackPanel>
@@ -42,14 +42,14 @@
   <!-- element definition not found error -->
   <DataTemplate DataType="{x:Type ContentDocument:UndefinedElementValidationError}">
     <StackPanel Margin="0,5">
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>   <!-- TODO LOCALIZE UndefinedElement key already added-->
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>  <!-- TODO LOCALIZE DefinitionNotFound-->
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>
+      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnViewLinkClick">
-          <Run Text="Click to view"/>
+          <Run Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>
 
@@ -59,12 +59,12 @@
   <!-- invalid sequence of child elements error -->
   <DataTemplate DataType="{x:Type ContentDocument:InvalidElementSequenceValidationError}">
     <StackPanel x:Name="parentStack">
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>  <!-- TODO LOCALIZE InvalidElementSequence-->
+      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>
       <TextBlock>
         <TextBlock.Text>
-          <Binding StringFormat="The element &lt;{0}&gt; contains an invalid sequence of child elements."
+          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequenceMessage}"
                    Path="Target"
-                   Converter="{Common:ElementNameConverter}"/>  <!-- TODO LOCALIZE -->
+                   Converter="{Common:ElementNameConverter}"/>
         </TextBlock.Text>
       </TextBlock>
 
@@ -74,10 +74,9 @@
       
         <TextBlock>
           <TextBlock.Text>
-            <Binding StringFormat="The following are permitted as children for &lt;{0}&gt;:"
+            <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.PermittedChildren}"
                      Path="Target"
                      Converter="{Common:ElementNameConverter}"/>
-            <!-- TODO LOCALIZE -->
           </TextBlock.Text>
         </TextBlock>
 
@@ -96,56 +95,11 @@
       
       <TextBlock Margin="0,3,0,3">
         <Hyperlink Click="OnViewLinkClick">
-          <Run Text="Click to view"/>
+          <Run Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>
       
     </StackPanel>
   </DataTemplate>
-  
-  <!-- general error -->
-  <!--
-  <DataTemplate x:Key="ContentDocumentGeneralErrorTemplate">
-      <TextBlock Text="{Binding Message}"/>
-  </DataTemplate>
-  -->
-  
-  <!-- this data template selects one of the others depending on the type of error -->
-  <!--
-  <DataTemplate DataType="{x:Type ContentDocument:ContentDocumentValidationError}">
-    <ContentPresenter x:Name="Presenter"
-                      ContentTemplate="{StaticResource ContentDocumentGeneralErrorTemplate}"
-                      Content="{TemplateBinding Content}"
-                      />
-      <DataTemplate.Triggers>
-        <DataTrigger Binding="{Binding ErrorType}">
-        	<DataTrigger.Value>
-            <ContentDocument:ContentDocumentErrorType>InvalidElementSequence</ContentDocument:ContentDocumentErrorType>
-          </DataTrigger.Value>
-        	<Setter TargetName="Presenter"
-              Property="ContentTemplate"
-              Value="{StaticResource ContentDocumentInvalidChildElementsTemplate}" />
-        </DataTrigger>
-
-        <DataTrigger Binding="{Binding ErrorType}">
-          <DataTrigger.Value>
-            <ContentDocument:ContentDocumentErrorType>UndefinedElement</ContentDocument:ContentDocumentErrorType>
-          </DataTrigger.Value>
-          <Setter TargetName="Presenter"
-              Property="ContentTemplate"
-              Value="{StaticResource ContentDocumentUndefinedElementTemplate}" />
-        </DataTrigger>
-
-        <DataTrigger Binding="{Binding ErrorType}">
-          <DataTrigger.Value>
-            <ContentDocument:ContentDocumentErrorType>MissingDtd</ContentDocument:ContentDocumentErrorType>
-          </DataTrigger.Value>
-          <Setter TargetName="Presenter"
-              Property="ContentTemplate"
-              Value="{StaticResource ContentDocumentMissingDtdTemplate}" />
-        </DataTrigger>
-        
-      </DataTemplate.Triggers>    
- </DataTemplate>
--->
-</ResourceDictionary>
+ 
+ </ResourceDictionary>

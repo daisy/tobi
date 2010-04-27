@@ -86,7 +86,7 @@
           <TextBlock Margin="0,3,0,3"
                      Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
             <Hyperlink Click="OnClipboardLinkClick">
-              <Run Text="Copy details to clipboard"/>
+              <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyLink}"/>
             </Hyperlink>
           </TextBlock>
         </StackPanel>
@@ -97,7 +97,7 @@
 </TabControl>
   <TextBlock Margin="0,3,0,3" Grid.Row="1">
     <Hyperlink Click="OnClipboardCopyAllLinkClick">
-      <Run Text="Copy all error details to clipboard"/>
+      <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyAllLink}"/>
     </Hyperlink>
   </TextBlock>
 </Grid>

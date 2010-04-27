@@ -71,12 +71,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Name; }       // TODO LOCALIZE ContentDocumentValidator_Name
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Name; }
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Description; }     // TODO LOCALIZE ContentDocumentValidator_Description
+            get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Description; }
         }
 
         public override bool Validate()
