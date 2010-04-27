@@ -8,27 +8,41 @@
           
       >
   <Grid.Resources>
-    <ControlTemplate x:Key="FlowDocViewerTemplate">
-      <!--<Border
-               BorderThickness="{TemplateBinding Border.BorderThickness}"
-               BorderBrush="{TemplateBinding Border.BorderBrush}"
-               Margin="{TemplateBinding Control.Padding}"
-               x:Uid="Border_49">-->
-      <ScrollViewer
-        
-    Height="Auto"
-    Width="Auto"
-
-                CanContentScroll="False"
-                Name="PART_ContentHost"
-                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                HorizontalContentAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                VerticalContentAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                x:Uid="ScrollViewer_8" />
-      <!--</Border>-->
-    </ControlTemplate>
-
+    <Style TargetType="{x:Type DocumentPane:FlowDocumentScrollViewerEx}">
+      <Style.Resources>
+        <ResourceDictionary />
+      </Style.Resources>
+      <Setter Property="Control.HorizontalContentAlignment">
+        <Setter.Value>
+          <x:Static Member="HorizontalAlignment.Stretch" />
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Control.VerticalContentAlignment">
+        <Setter.Value>
+          <x:Static Member="VerticalAlignment.Stretch" />
+        </Setter.Value>
+      </Setter>
+      <Setter Property="KeyboardNavigation.TabNavigation">
+        <Setter.Value>
+          <x:Static Member="KeyboardNavigationMode.Local" />
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type FlowDocumentScrollViewer}">
+            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Margin="{TemplateBinding Control.Padding}" x:Uid="Border_49">
+              <ScrollViewer CanContentScroll="True" Name="PART_ContentHost" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" x:Uid="ScrollViewer_8" />
+            </Border>
+            <!--<Grid xml:lang="en-us" x:Uid="Grid_26">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              
+            </Grid>-->
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
   </Grid.Resources>
 
   <!--LastChildFill="True"-->
@@ -169,9 +183,11 @@
 
   </DockPanel>
 
+
+  <!--Template="{StaticResource FlowDocViewerTemplate}"-->
+
   <DocumentPane:FlowDocumentScrollViewerEx
     
-    Template="{StaticResource FlowDocViewerTemplate}"
     AllowDrop="True"
                                            x:Name="FlowDocReaderSimple"
                             HorizontalScrollBarVisibility="Disabled"
