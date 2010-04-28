@@ -163,7 +163,9 @@
     <Compile Include="Shell_Commands.cs" />
     <Compile Include="Shell_Magnification.cs" />
     <Compile Include="Shell_SplitterDrag.cs" />
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -347,22 +349,22 @@
   <ItemGroup>
     <PublishFile Include="fr\Tobi.resources">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
     <PublishFile Include="fr\Tobi_NET4.resources">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>False</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>False</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
   </ItemGroup>
