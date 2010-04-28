@@ -158,7 +158,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (PlayBytePosition <= 0)
                     {
-                        AudioCues.PlayAsterisk();
+                        AudioCues.PlayBeep();
                         return;
                     }
 
@@ -182,12 +182,12 @@ namespace Tobi.Plugin.AudioPane
 
                     if (PlayBytePosition >= State.Audio.DataLength)
                     {
-                        AudioCues.PlayAsterisk();
+                        AudioCues.PlayBeep();
                         return;
                     }
 
                     State.Selection.SetSelectionBytes(PlayBytePosition, State.Audio.DataLength);
-                    AudioCues.PlayTockTock();
+                    AudioCues.PlayTock();
                 },
                 () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,

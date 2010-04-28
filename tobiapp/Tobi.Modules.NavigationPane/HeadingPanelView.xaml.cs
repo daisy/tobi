@@ -51,6 +51,8 @@ namespace Tobi.Plugin.NavigationPane
             m_ViewModel.SetView(this);
         }
 
+
+
         public string ViewName
         {
             get { return Tobi_Plugin_NavigationPane_Lang.Headings; }
@@ -171,9 +173,25 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return && m_ViewModel.CommandFindNext.CanExecute())
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return && m_ViewModel.CommandFindNext.CanExecute())
             {
                 m_ViewModel.CommandFindNext.Execute();
+            }
+
+            if (key == Key.Escape)
+            {
+                SearchBox.Text = "";
+                FocusHelper.FocusBeginInvoke(ViewFocusStart);
+            }
+        }
+
+        private void OnSearchLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SearchBox.Text))
+            {
+                m_ViewModel.IsSearchVisible = false;
             }
         }
     }

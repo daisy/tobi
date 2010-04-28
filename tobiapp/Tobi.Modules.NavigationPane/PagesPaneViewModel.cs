@@ -55,8 +55,17 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible && View.SearchBox.IsEnabled,
+                () =>
+                {
+                    if (View != null)
+                    {
+                        IsSearchVisible = true;
+                        FocusHelper.Focus(View.SearchBox);
+                    }
+                },
+                () => View != null
+                    //&& View.SearchBox.Visibility == Visibility.Visible
+                    && View.SearchBox.IsEnabled,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -98,6 +107,20 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
+        private bool m_IsSearchVisible;
+        public bool IsSearchVisible
+        {
+            get
+            {
+                return m_IsSearchVisible;
+            }
+            set
+            {
+                if (value == m_IsSearchVisible) return;
+                m_IsSearchVisible = value;
+                RaisePropertyChanged(() => IsSearchVisible);
+            }
+        }
 
         public RichDelegateCommand CommandFindFocusPage { get; private set; }
         public RichDelegateCommand CommandFindNextPage { get; private set; }
@@ -157,7 +180,7 @@ namespace Tobi.Plugin.NavigationPane
 
         private void refreshCommandsIsActive()
         {
-            CommandFindFocusPage.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindFocusPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindNextPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindPrevPage.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }

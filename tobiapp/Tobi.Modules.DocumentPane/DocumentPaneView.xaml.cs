@@ -220,6 +220,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (m_SearchCurrentIndex == 0)
                 {
+                    AudioCues.PlayBeep();
                     hit = m_SearchMatches[m_SearchCurrentIndex];
                 }
                 else if (m_SearchCurrentIndex > 0)
@@ -241,6 +242,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (m_SearchCurrentIndex == m_SearchMatches.Count - 1)
                 {
+                    AudioCues.PlayBeep();
                     hit = m_SearchMatches[m_SearchCurrentIndex];
                 }
                 else if (m_SearchCurrentIndex < (m_SearchMatches.Count - 1))
@@ -634,8 +636,13 @@ namespace Tobi.Plugin.DocumentPane
                 @"DOCVIEW CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => FocusHelper.Focus(SearchBox),
-                () => SearchBox.Visibility == Visibility.Visible && SearchBox.IsEnabled,
+                () =>
+                    {
+                        IsSearchVisible = true;
+                        FocusHelper.Focus(SearchBox);
+                    },
+                () => SearchBox.IsEnabled
+                && SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
                 );
@@ -723,12 +730,32 @@ namespace Tobi.Plugin.DocumentPane
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
-
+        private void OnSearchLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SearchBox.Text))
+            {
+                IsSearchVisible = false;
+            }
+        }
+        private bool m_IsSearchVisible;
+        public bool IsSearchVisible
+        {
+            get
+            {
+                return m_IsSearchVisible;
+            }
+            set
+            {
+                if (value == m_IsSearchVisible) return;
+                m_IsSearchVisible = value;
+                m_PropertyChangeHandler.RaisePropertyChanged(() => IsSearchVisible);
+            }
+        }
         public IActiveAware ActiveAware { get; private set; }
 
         private void refreshCommandsIsActive()
         {
-            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }
@@ -2862,9 +2889,17 @@ namespace Tobi.Plugin.DocumentPane
 
         private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
         {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
             if (e.Key == Key.Return && CommandFindNext.CanExecute())
             {
                 CommandFindNext.Execute();
+            }
+
+            if (key == Key.Escape)
+            {
+                SearchBox.Text = "";
+                CommandFocus.Execute();
             }
         }
 

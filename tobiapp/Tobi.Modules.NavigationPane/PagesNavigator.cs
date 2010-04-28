@@ -58,7 +58,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                AudioCues.PlayAsterisk();
+                AudioCues.PlayBeep();
             }
         }
         public void FindPrevious()
@@ -71,7 +71,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
-                AudioCues.PlayAsterisk();
+                AudioCues.PlayBeep();
             }
 
         }

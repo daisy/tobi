@@ -200,13 +200,15 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
+
+                    AudioCues.PlayTock();
+
                     m_Recorder.StartMonitoring(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring); // TODO Localize Monitoring
 
-                    AudioCues.PlayTock();
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
                 Settings_KeyGestures.Default,
@@ -224,13 +226,13 @@ namespace Tobi.Plugin.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
 
                     m_Recorder.StopRecording();
-
+                    
+                    AudioCues.PlayTockTock();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);// TODO Localize MonitoringStopped
 
                     State.Audio.PcmFormatRecordingMonitoring = null;
 
-                    AudioCues.PlayTockTock();
                 },
                 () => !IsWaveFormLoading && IsMonitoring,
                 Settings_KeyGestures.Default,
@@ -475,7 +477,7 @@ namespace Tobi.Plugin.AudioPane
                     View.TimeMessageShow();
                 }
 
-                AudioCues.PlayTock();
+                //AudioCues.PlayTock();
             }
         }
 

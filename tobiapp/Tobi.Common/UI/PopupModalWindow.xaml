@@ -2,8 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:UI="clr-namespace:Tobi.Common.UI"
-    xmlns:Common="clr-namespace:Tobi.Common"
-    Height="480" Width="640"
+    xmlns:Common="clr-namespace:Tobi.Common" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML" Height="480" Width="640"
 
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
@@ -13,9 +12,9 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         >
   
-  <Window.Resources>
+  <!--<Window.Resources>
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
-  </Window.Resources>
+  </Window.Resources>-->
   <!-- LastChildFill="True" -->
   
     <Grid Style="{StaticResource ScaleTransformed}">
@@ -76,7 +75,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                     Focusable="False"
-                    Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    Visibility="{Binding IsDetailsExpanded, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"/>
 
       <!-- 
         DockPanel.Dock="Bottom" -->
@@ -102,7 +101,7 @@
                    Stroke="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
                     Fill="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
                 SnapsToDevicePixels="True"
-                   Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={StaticResource booleanToVisibilityConverter}}"
+                   Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={XAML:BooleanToVisibilityConverter}}"
                    />
 
         <!-- 
@@ -119,7 +118,7 @@
                 RichCommandActive="{Binding IsDetailsExpanded, Mode=OneWay}"
           DockPanel.Dock="Left"
           VerticalAlignment="Bottom"
-          Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={StaticResource booleanToVisibilityConverter}}"/>
+          Visibility="{Binding Mode=OneWay, Path=HasDetails, Converter={XAML:BooleanToVisibilityConverter}}"/>
 
         <StackPanel
           Margin="0, 8, 0, 0"
@@ -142,42 +141,42 @@
                 Click="OnOkButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Ok}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Ok}"
-                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Ok, Converter={StaticResource booleanToVisibilityConverter}}"
+                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Ok, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.Ok}"/>
         
         <Button x:Name="ButtonYes"
                 Click="OnYesButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Yes}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Yes}"
-                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Yes, Converter={StaticResource booleanToVisibilityConverter}}"
+                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Yes, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.Yes}"/>
         
         <Button x:Name="ButtonNo"
                 Click="OnNoButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_No}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_No}"
-                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_No, Converter={StaticResource booleanToVisibilityConverter}}"
+                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_No, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.No}"/>
         
         <Button x:Name="ButtonApply"
                 Click="OnApplyButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Apply}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Apply}"
-                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Apply, Converter={StaticResource booleanToVisibilityConverter}}"
+                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Apply, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.Apply}"/>
 
           <Button x:Name="ButtonCancel"
                   Click="OnCancelButtonClick"
                   IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Cancel}"
                   IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Cancel}"
-                  Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Cancel, Converter={StaticResource booleanToVisibilityConverter}}"
+                  Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Cancel, Converter={XAML:BooleanToVisibilityConverter}}"
                   Content="{x:Static Common:Tobi_Common_Lang.Cancel}"/>
 
           <Button x:Name="ButtonClose"
                 Click="OnCloseButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Close}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Close}"
-                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Close, Converter={StaticResource booleanToVisibilityConverter}}"
+                Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Close, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.CloseDialog}"/>
 
         <Rectangle Width="10"/>

@@ -125,7 +125,7 @@
     <Compile Include="MVVM\ActiveAware.cs" />
     <Compile Include="MVVM\Command\DelegateCommand.cs" />
     <Compile Include="MVVM\Command\IInputBindingManager.cs" />
-    <Compile Include="MVVM\Command\RichCompositeCommand.cs" />
+    <Compile Include="MVVM\Command\RichDispatcherCommand.cs" />
     <Compile Include="MVVM\Command\RichDelegateCommand.cs" />
     <Compile Include="MVVM\FocusActiveAwareAdapter.cs" />
     <Compile Include="MVVM\NotifyDependsOnAttribute.cs" />

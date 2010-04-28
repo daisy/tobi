@@ -116,6 +116,7 @@ namespace Tobi
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
             ActiveAware = new FocusActiveAwareAdapter(this);
+            ActiveAware.IsActive = true;
             ActiveAware.IsActiveChanged += (sender, e) =>
                    {
                        if (!ActiveAware.IsActive)

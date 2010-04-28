@@ -17,9 +17,9 @@
 
   <DockPanel.Resources>
     <FrameworkElement x:Key="dataContextBridge" />
-    
+
   </DockPanel.Resources>
-  
+
   <DockPanel.DataContext>
     <Binding
       Mode="OneWayToSource"
@@ -27,9 +27,15 @@
       Source="{StaticResource dataContextBridge}"/>
   </DockPanel.DataContext>
 
-  <DockPanel LastChildFill="True"
-             DockPanel.Dock="Top"
-             Margin="0,0,0,2"
+  <Border
+           DockPanel.Dock="Top"
+             
+           BorderThickness="2"
+           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <DockPanel LastChildFill="True"
+             
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
              >
 
     <UI:ButtonRichCommand
@@ -50,7 +56,7 @@
       Text="{x:Static Common:Tobi_Common_Lang.Find}"
       DockPanel.Dock="Left"
                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                 Margin="0,0,4,0"/>
+                 Margin="2,0,2,0"/>
 
     <UI:WatermarkTextBox
       KeyUp="OnSearchBoxKeyUp"
@@ -62,7 +68,7 @@
                             VerticalAlignment="Center"/>
 
   </DockPanel>
-
+  </Border>
 
   <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left"
           TabIndex="6"
@@ -94,12 +100,12 @@
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
 AlternationCount="2"
-search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"        
+search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
     >
 
     <ListView.Resources>
 
-        <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
+      <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
 
       <DataTemplate x:Key="FontFamilyComboCollapsed">
         <!-- TextBlock Text="{Binding}" FontFamily="{Binding}"/ -->
@@ -162,7 +168,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           <UI:KeyGestureSinkBox.Style>
             <Style TargetType="{x:Type UI:KeyGestureSinkBox}">
               <Style.Triggers>
-                
+
 
                 <!-- Storyboard.Target="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:KeyGestureSinkBox}}}" -->
                 <!-- EventTrigger RoutedEvent="UI:KeyGestureSinkBox.Escaped">
@@ -200,8 +206,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Trigger>
               </Style.Triggers>
               <Style.Setters>
-              <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
-                </Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
             </Style>
           </UI:KeyGestureSinkBox.Style>
         </UI:KeyGestureSinkBox>
@@ -253,18 +259,18 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
         </UI:ValidationAwareTextBox>
 
       </DataTemplate>
-      
+
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
         <UI:ValidationAwareTextBox Validation.Error="OnError"
                                    Control.IsTabStop="true">
-          
+
           <UI:ValidationAwareTextBox.Resources>
             <XAML:DataContextSpy x:Key="dataContextSpy" />
           </UI:ValidationAwareTextBox.Resources>
-          
+
           <!-- DataErrorValidationRule/ -->
           <!-- IDataErrorInfo -->
-          
+
           <UI:ValidationAwareTextBox.Text>
             <Binding Path="Value" Converter="{XAML:DoubleToTextConverter}" Mode="TwoWay"
                      UpdateSourceTrigger="PropertyChanged"
@@ -297,12 +303,12 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               </Style.Triggers>
               <Style.Setters>
                 <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
-                </Style.Setters>
+              </Style.Setters>
             </Style>
           </UI:ValidationAwareTextBox.Style>
         </UI:ValidationAwareTextBox>
-      
-    </DataTemplate>
+
+      </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
         <CheckBox Control.IsTabStop="true"
@@ -315,10 +321,10 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           <CheckBox.Style>
             <Style TargetType="{x:Type CheckBox}">
               <Style.Setters>
-              <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
-                </Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
               <Style.Triggers>
-              <DataTrigger Binding="{Binding Value}" Value="True">
+                <DataTrigger Binding="{Binding Value}" Value="True">
                   <DataTrigger.EnterActions>
                     <BeginStoryboard>
                       <Storyboard>
@@ -326,7 +332,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                                                      Storyboard.TargetProperty="Content">
 
                           <DiscreteObjectKeyFrame KeyTime="00:00:00"
-                                                  Value=""/><!--True-->
+                                                  Value=""/>
+                          <!--True-->
                         </ObjectAnimationUsingKeyFrames>
                       </Storyboard>
                     </BeginStoryboard>
@@ -337,7 +344,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           </CheckBox.Style>
         </CheckBox>
       </DataTemplate>
-      
+
       <DataTemplate x:Key="SettingEditTemplate_Color" DataType="{x:Type Color}">
         <UI:ComboBoxColor
           Control.IsTabStop="true"
@@ -350,7 +357,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
             </Style>
           </UI:ComboBoxColor.Style>
         </UI:ComboBoxColor>
-    </DataTemplate>
+      </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_FontFamily" DataType="{x:Type FontFamily}">
 
@@ -373,7 +380,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               </Style.Setters>
             </Style>
           </ComboBox.Style>
-          
+
           <ComboBox.ItemsPanel>
             <ItemsPanelTemplate>
               <VirtualizingStackPanel />
@@ -475,7 +482,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                         <Setter Property="FontWeight" Value="Normal"/>
                       </DataTrigger>
                     </Style.Triggers>
-                    
+
                   </Style>
                 </TextBlock.Style>
               </TextBlock>
@@ -503,8 +510,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 <TextBlock.Style>
                   <Style TargetType="{x:Type TextBlock}">
                     <Style.Setters>
-                    <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
-                      </Style.Setters>
+                      <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
+                    </Style.Setters>
                   </Style>
                 </TextBlock.Style>
               </TextBlock>
@@ -529,21 +536,21 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
           <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
         </Style.Setters>
-        
+
         <Style.Triggers>
           <Trigger Property="ItemsControl.AlternationIndex" Value="0">
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
           </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="FontWeight" Value="Bold" />
-            </Trigger>
-            <Trigger Property="search:SearchOperations.IsMatch" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                      <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
+          <Trigger Property="IsSelected" Value="True">
+            <Setter Property="FontWeight" Value="Bold" />
+          </Trigger>
+          <Trigger Property="search:SearchOperations.IsMatch" Value="True">
+            <Setter Property="Background">
+              <Setter.Value>
+                <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
         </Style.Triggers>
       </Style>
 

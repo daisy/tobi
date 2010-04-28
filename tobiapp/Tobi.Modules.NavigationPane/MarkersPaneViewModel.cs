@@ -51,7 +51,7 @@ namespace Tobi.Plugin.NavigationPane
 
 
             m_Logger.Log("MarkersPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
-            
+
             CommandToggleMark = new RichDelegateCommand(
                 Tobi_Plugin_NavigationPane_Lang.CmdNavigationToggleMark_ShortDesc,
                 Tobi_Plugin_NavigationPane_Lang.CmdNavigationToggleMark_LongDesc,
@@ -73,8 +73,17 @@ namespace Tobi.Plugin.NavigationPane
                 @"MARKERS CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible && View.SearchBox.IsEnabled,
+                () =>
+                {
+                    if (View != null)
+                    {
+                        IsSearchVisible = true;
+                        FocusHelper.Focus(View.SearchBox);
+                    }
+                },
+                () => View != null
+                    //&& View.SearchBox.Visibility == Visibility.Visible
+                    && View.SearchBox.IsEnabled,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -224,6 +233,20 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
+        private bool m_IsSearchVisible;
+        public bool IsSearchVisible
+        {
+            get
+            {
+                return m_IsSearchVisible;
+            }
+            set
+            {
+                if (value == m_IsSearchVisible) return;
+                m_IsSearchVisible = value;
+                RaisePropertyChanged(() => IsSearchVisible);
+            }
+        }
 
         protected MarkersPanelView View { get; private set; }
         public void SetView(MarkersPanelView view)
@@ -239,7 +262,7 @@ namespace Tobi.Plugin.NavigationPane
 
         private void refreshCommandsIsActive()
         {
-            CommandFindFocusMarkers.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindFocusMarkers.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindNextMarkers.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindPrevMarkers.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }

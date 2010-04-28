@@ -117,14 +117,14 @@ namespace Tobi.Plugin.AudioPane
                {
                    Logger.Log("AudioPaneViewModel.CommandAutoPlay", Category.Debug, Priority.Medium);
 
-                   if (IsAutoPlay)
-                   {
-                       AudioCues.PlayTock();
-                   }
-                   else
-                   {
-                       AudioCues.PlayTockTock();
-                   }
+                   //if (IsAutoPlay)
+                   //{
+                   //    AudioCues.PlayTock();
+                   //}
+                   //else
+                   //{
+                   //    AudioCues.PlayTockTock();
+                   //}
 
                    IsAutoPlay = !IsAutoPlay;
                },

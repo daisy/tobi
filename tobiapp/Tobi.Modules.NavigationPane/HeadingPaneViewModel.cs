@@ -60,6 +60,21 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
+        private bool m_IsSearchVisible;
+        public bool IsSearchVisible
+        {
+            get
+            {
+                return m_IsSearchVisible;
+            }
+            set
+            {
+                if (value == m_IsSearchVisible) return;
+                m_IsSearchVisible = value;
+                RaisePropertyChanged(() => IsSearchVisible);
+            }
+        }
+
         private void intializeCommands()
         {
             m_Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
@@ -91,8 +106,17 @@ namespace Tobi.Plugin.NavigationPane
                 @"HEADINGS CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => { if (View != null) FocusHelper.Focus(View.SearchBox); },
-                () => View != null && View.SearchBox.Visibility == Visibility.Visible && View.SearchBox.IsEnabled,
+                () =>
+                {
+                    if (View != null)
+                    {
+                        IsSearchVisible = true;
+                        FocusHelper.Focus(View.SearchBox);
+                    }
+                },
+                () => View != null
+                    //&& View.SearchBox.Visibility == Visibility.Visible
+                    && View.SearchBox.IsEnabled,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
                 );
@@ -151,7 +175,7 @@ namespace Tobi.Plugin.NavigationPane
 
         public RichDelegateCommand CommandExpandAll { get; private set; }
         public RichDelegateCommand CommandCollapseAll { get; private set; }
-        
+
         public RichDelegateCommand CommandFindFocus { get; private set; }
         public RichDelegateCommand CommandFindNext { get; private set; }
         public RichDelegateCommand CommandFindPrev { get; private set; }
@@ -210,7 +234,7 @@ namespace Tobi.Plugin.NavigationPane
 
         private void refreshCommandsIsActive()
         {
-            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive;
+            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
             CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }
