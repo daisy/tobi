@@ -49,6 +49,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public double AudioWaveForm_TimeStep {
+            get {
+                return ((double)(this["AudioWaveForm_TimeStep"]));
+            }
+            set {
+                this["AudioWaveForm_TimeStep"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double AudioWaveForm_RenderMethod {
             get {

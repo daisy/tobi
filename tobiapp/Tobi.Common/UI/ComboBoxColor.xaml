@@ -11,7 +11,8 @@
              >
   <UserControl.Resources>
     <DataTemplate DataType="{x:Type UI:ColorViewModel}">
-      <StackPanel Orientation="Horizontal" Margin="0">
+      <StackPanel Orientation="Horizontal" Margin="0"
+                                  AutomationProperties.Name="{Binding Path=Name}">
         <Grid>
           <!-- Draw a checkboard rectangle first, in case the selected color is transparent -->
           <Rectangle Fill="{Binding ElementName=ThisColorPicker, Path=CheckerBrush}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>
@@ -26,5 +27,14 @@
   <UI:ComboBoxWithAutomationPeer x:Name="ColorList1"
             SelectedValue="{Binding ElementName=ThisColorPicker, Path=SelectedColor}"
             SnapsToDevicePixels="True">
-  </UI:ComboBoxWithAutomationPeer>
+
+    <ComboBox.ItemContainerStyle>
+      <Style TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+        <Setter Property="ToolTip" Value="{Binding Name}"/>
+      </Style>
+    </ComboBox.ItemContainerStyle>
+
+  
+</UI:ComboBoxWithAutomationPeer>
 </UserControl>

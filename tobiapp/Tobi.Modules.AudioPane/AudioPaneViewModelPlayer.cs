@@ -246,13 +246,13 @@ namespace Tobi.Plugin.AudioPane
             long to = 0;
             if (left)
             {
-                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(m_TimePreviewPlayInLocalUnits));
+                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStep * AudioLibPCMFormat.TIME_UNIT));
                 to = PlayBytePosition;
             }
             else
             {
                 from = PlayBytePosition;
-                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(m_TimePreviewPlayInLocalUnits));
+                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStep * AudioLibPCMFormat.TIME_UNIT));
             }
 
             if (from == to)
@@ -887,8 +887,8 @@ namespace Tobi.Plugin.AudioPane
         //    return false;
         //}
 
-        private long m_TimeStepForwardRewindInLocalUnits = 500 * AudioLibPCMFormat.TIME_UNIT; // 500ms
-        private long m_TimePreviewPlayInLocalUnits = 1500 * AudioLibPCMFormat.TIME_UNIT; // 1.5s
+        //private long m_TimeStepForwardRewindInLocalUnits = 500 * AudioLibPCMFormat.TIME_UNIT; // 500ms
+        //private long m_TimePreviewPlayInLocalUnits = 1500 * AudioLibPCMFormat.TIME_UNIT; // 1.5s
 
         private void ensurePlaybackStreamIsDead()
         {
