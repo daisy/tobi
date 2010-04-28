@@ -851,11 +851,11 @@ namespace Tobi.Plugin.AudioPane
                     {
                         WaveFormImage.UseLayoutRounding = true;
                         WaveFormImage.CacheMode = new BitmapCache
-                                                      {
-                                                          RenderAtScale = zoom,
-                                                          EnableClearType = true,
-                                                          SnapsToDevicePixels = true
-                                                      };
+                        {
+                            RenderAtScale = zoom,
+                            EnableClearType = true,
+                            SnapsToDevicePixels = true
+                        };
 #if DEBUG
                         var bitmapCacheBrush = new BitmapCacheBrush
                         {
@@ -875,8 +875,8 @@ namespace Tobi.Plugin.AudioPane
                             Fill = bitmapCacheBrush
                         };
                         ZoomSlider.ToolTip = imageTooltip;
-                    }
 #endif
+                    }
 #else
                     var drawingVisual = new DrawingVisual();
                     using (DrawingContext drawContext = drawingVisual.RenderOpen())
