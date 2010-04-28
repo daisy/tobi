@@ -83,10 +83,25 @@
       Grid.Row="0"
       AlternationCount="2"
       ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
-      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+      ScrollViewer.HorizontalScrollBarVisibility="Visible"
       HorizontalContentAlignment="Stretch"
       IsSynchronizedWithCurrentItem="True"
       x:Name="MetadataList">
+      
+      <ListView.ItemContainerStyle>
+        <Style TargetType="{x:Type ListViewItem}">
+          <Setter Property="AutomationProperties.Name">
+          <Setter.Value>
+            <MultiBinding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.NameAndDescription}">
+              <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Name"/>
+              <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Description"/>
+            </MultiBinding>
+          </Setter.Value>
+          </Setter>
+        
+      </Style>
+      </ListView.ItemContainerStyle>
+
       <ListView.View>
         <GridView>
 
@@ -126,7 +141,7 @@
                          Mode=TwoWay, 
                          Path=Content, 
                          UpdateSourceTrigger=PropertyChanged}"
-                         GotMouseCapture="OnContentTextMouseFocus"/>
+                         GotFocus="OnContentGotFocus"/>
                 <!-- 
                      MouseDown="ContentText_OnMouseDown"
                      GotMouseCapture="OnContentTextMouseFocus"
@@ -210,12 +225,15 @@
       </ListView.View>
     </UI:SortableListView2>
     
-    <Button Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}" HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"
-            Click="AddButton_OnClick"/>
+    <Button Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}"
+            HorizontalAlignment="Left" Grid.Row="1" Width="Auto" Margin="5"
+            Click="AddButton_OnClick"
+            />
 
-    <StackPanel Grid.Row="2">
-      <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Description}" FontWeight="Bold"/>
-      <TextBlock TextWrapping="Wrap">
+    <StackPanel Grid.Row="2" Focusable="false">
+      <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Description}"
+                 FontWeight="Bold"  Focusable="true"/>
+      <TextBlock TextWrapping="Wrap"  Focusable="true">
         <TextBlock.Text>
           <MultiBinding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.NameAndDescription}">
             <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Name"/>
@@ -224,10 +242,12 @@
         </TextBlock.Text>
       </TextBlock>
       <TextBlock TextWrapping="Wrap" Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition,
-                 Converter={Metadata:OccurrenceDescriptionConverter}}"/>
+                 Converter={Metadata:OccurrenceDescriptionConverter}}"
+                   Focusable="true"/>
       <TextBlock TextWrapping="Wrap"
                  Visibility="{Binding Source={StaticResource MetadatasCVS}, 
-                 Path=/Definition, Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}">
+                 Path=/Definition, Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}"
+                   Focusable="true">
         <TextBlock.Text>
           <Binding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Synonyms}" 
                    Source="{StaticResource MetadatasCVS}"

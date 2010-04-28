@@ -238,7 +238,7 @@ namespace Tobi.Plugin.Validator
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return value == null ? Visibility.Hidden : Visibility.Visible;
+            return value == null ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

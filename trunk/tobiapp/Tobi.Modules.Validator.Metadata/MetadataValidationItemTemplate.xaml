@@ -19,7 +19,7 @@
   <DataTemplate x:Key="MetadataItemTemplate">
     <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
             BorderThickness="2">
-      <TextBlock Padding="5" 
+      <TextBlock Padding="5"  Focusable="True"
                  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                  Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
         <TextBlock.Text>
@@ -34,31 +34,33 @@
 
   <DataTemplate x:Key="MetadataDefinitionTemplate">
       <StackPanel>
-        <TextBlock Style="{StaticResource MetadataHeadingStyle}">
+        <TextBlock Style="{StaticResource MetadataHeadingStyle}"
+                   Focusable="True">
           <TextBlock.Text>
             <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.RulesFor}" Path="Name"/>
           </TextBlock.Text>
         </TextBlock>
-        <TextBlock Text="{Binding Description}"/>
-        <TextBlock>
+        <TextBlock Text="{Binding Description}"
+                   Focusable="True"/>
+        <TextBlock Focusable="True">
           <TextBlock.Text>
             <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MustBe}" Path="DataType" Converter="{Metadata:DataTypeToStringConverter}"/>
           </TextBlock.Text>
         </TextBlock>
 
-        <TextBlock>
+        <TextBlock Focusable="True">
           <TextBlock.Text>
             <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.Occurrence}" Converter="{Metadata:OccurrenceDescriptionConverter}"/>
           </TextBlock.Text>
         </TextBlock>
 
-        <TextBlock>
+        <TextBlock Focusable="True">
           <TextBlock.Text>
             <Binding Path="IsRepeatable" Converter="{Metadata:IsRepeatableToStringConverter}"/>
           </TextBlock.Text>
         </TextBlock>
 
-        <TextBlock TextWrapping="Wrap" 
+        <TextBlock Focusable="True" TextWrapping="Wrap" 
                    Visibility="{Binding Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}">
           <TextBlock.Text>
             <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataSynonyms2}"
@@ -70,7 +72,7 @@
 
   <DataTemplate DataType="{x:Type Metadata:MetadataDuplicateItemValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
+      <TextBlock Focusable="True" Style="{StaticResource MetadataHeadingStyle}" 
                  Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>
       <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.NotMoreThanOneInstance}" Margin="0,0,0,5"/>
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
@@ -85,8 +87,8 @@
 
   <DataTemplate DataType="{x:Type Metadata:MetadataMissingItemValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>
-      <TextBlock Margin="0,0,0,5">
+      <TextBlock Focusable="True" Style="{StaticResource MetadataHeadingStyle}" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>
+      <TextBlock Focusable="True" Margin="0,0,0,5">
         <TextBlock.Text>
           <Binding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" 
                    Path="Definition.Name"/>  
@@ -104,12 +106,12 @@
 
   <DataTemplate DataType="{x:Type Metadata:MetadataFormatValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource MetadataHeadingStyle}" 
+      <TextBlock Focusable="True" Style="{StaticResource MetadataHeadingStyle}" 
                  Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>
-      <TextBlock Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidValue}"/>
+      <TextBlock Focusable="True" Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidValue}"/>
       <ContentPresenter ContentTemplate="{StaticResource MetadataItemTemplate}"
                           Content="{Binding Target}" />
-      <TextBlock Margin="0,0,0,5">
+      <TextBlock Focusable="True" Margin="0,0,0,5">
         <TextBlock.Text>
           <MultiBinding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataFormatError_Hint}"> 
             <Binding Path="Target.NameContentAttribute.Name"/>
