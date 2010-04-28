@@ -61,6 +61,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double AudioWaveForm_TextPreRenderThreshold {
+            get {
+                return ((double)(this["AudioWaveForm_TextPreRenderThreshold"]));
+            }
+            set {
+                this["AudioWaveForm_TextPreRenderThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseFriendlyTimeFormat {
             get {

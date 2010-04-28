@@ -229,7 +229,7 @@ namespace Tobi.Plugin.AudioPane
                                             //Console.WriteLine(@"BEFORE loadWaveForm");
 
                                             loadWaveForm(widthMagnified, heightMagnified, wasPlaying,
-                                                     play, bytesPerPixel_Magnified);
+                                                     play, bytesPerPixel_Magnified, zoom);
 
                                             //Console.WriteLine(@"AFTER loadWaveForm");
                                         }
@@ -326,7 +326,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, bool play, double bytesPerPixel_Magnified)
+        private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, bool play, double bytesPerPixel_Magnified, double zoom)
         {
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
@@ -734,7 +734,7 @@ namespace Tobi.Plugin.AudioPane
                             sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                             listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                             heightMagnified, widthMagnified,
-                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified);
+                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified, zoom);
 
                         stopWatch.Reset();
                     }
@@ -792,7 +792,7 @@ namespace Tobi.Plugin.AudioPane
                     sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                     listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                     heightMagnified, widthMagnified,
-                    dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified);
+                    dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified, zoom);
 
             }
             finally
@@ -801,7 +801,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private void drawWaveForm(Stream audioStream, bool freeze, StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2, List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2, double heightMagnified, double widthMagnified, double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance, double bytesPerPixel_Magnified)
+        private void drawWaveForm(Stream audioStream, bool freeze, StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2, List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2, double heightMagnified, double widthMagnified, double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance, double bytesPerPixel_Magnified, double zoom)
         {
             //Console.WriteLine(@"Drawing waveform...1");
 
@@ -809,7 +809,7 @@ namespace Tobi.Plugin.AudioPane
                 sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                 listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                 heightMagnified, widthMagnified,
-                dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified);
+                dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified, zoom);
 
             //Console.WriteLine(@"Drawing waveform...2");
 
@@ -842,20 +842,20 @@ namespace Tobi.Plugin.AudioPane
                     }
 
 
-                    var zoom = (m_ShellView != null
-                                    ? m_ShellView.MagnificationLevel
-                                    : (Double)FindResource("MagnificationLevel"));
+                    //var zoom = (m_ShellView != null
+                    //                ? m_ShellView.MagnificationLevel
+                    //                : (Double)FindResource("MagnificationLevel"));
 
                     if (WaveFormImage.CacheMode == null
                         || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom)
                     {
                         WaveFormImage.UseLayoutRounding = true;
                         WaveFormImage.CacheMode = new BitmapCache
-                            {
-                                RenderAtScale = zoom,
-                                EnableClearType = true,
-                                SnapsToDevicePixels = true
-                            };
+                        {
+                            RenderAtScale = zoom,
+                            EnableClearType = true,
+                            SnapsToDevicePixels = true
+                        };
 #if DEBUG
                         var bitmapCacheBrush = new BitmapCacheBrush
                         {
@@ -875,8 +875,8 @@ namespace Tobi.Plugin.AudioPane
                             Fill = bitmapCacheBrush
                         };
                         ZoomSlider.ToolTip = imageTooltip;
-#endif
                     }
+#endif
 #else
                     var drawingVisual = new DrawingVisual();
                     using (DrawingContext drawContext = drawingVisual.RenderOpen())
@@ -891,6 +891,14 @@ namespace Tobi.Plugin.AudioPane
                         //};
                         //Rect bounds = VisualTreeHelper.GetContentBounds(visual);
                         //drawContext.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
+
+
+                        if (false &&
+                            m_ViewModel.State.Audio.PlayStreamMarkers != null
+                            && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                        {
+                            m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                        }
                     }
 
                     var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
@@ -907,14 +915,14 @@ namespace Tobi.Plugin.AudioPane
                         //formatConv.DestinationFormat = PixelFormats.Rgb24;
                         //formatConv.EndInit();  
 
-                        uint[] arrBits = new uint[renderTargetBitmap.PixelWidth*renderTargetBitmap.PixelHeight];
+                        uint[] arrBits = new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
                         // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
-                        int stride = 4*renderTargetBitmap.PixelWidth;
+                        int stride = 4 * renderTargetBitmap.PixelWidth;
                         renderTargetBitmap.CopyPixels(arrBits, stride, 0);
 
                         if (renderMethod == 1)
                         {
-                            var bitmapSource = BitmapSource.Create((int) widthMagnified, (int) heightMagnified, 96, 96, PixelFormats.Pbgra32, null, arrBits, stride);
+                            var bitmapSource = BitmapSource.Create((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32, null, arrBits, stride);
 
                             WaveFormImage.Source = bitmapSource;
                         }
@@ -931,7 +939,7 @@ namespace Tobi.Plugin.AudioPane
                         // Default is scalable, works automatically with UI magnification (expensive but clean vectors)
                         WaveFormImage.Source = renderTargetBitmap;
                     }
-#endif
+#endif // ELSE NET40
                     m_WaveFormTimeTicksAdorner.InvalidateVisual();
                     m_WaveFormTimeTicksAdorner.ResetBrushes();
                     m_WaveFormLoadingAdorner.ResetBrushes();
@@ -977,7 +985,7 @@ namespace Tobi.Plugin.AudioPane
             List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2,
             double heightMagnified, double widthMagnified,
             double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance,
-            double bytesPerPixel_Magnified
+            double bytesPerPixel_Magnified, double zoom
             )
         {
             Brush brushColorBars = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Stroke); //m_ViewModel.ColorWaveBars);
@@ -1142,6 +1150,36 @@ namespace Tobi.Plugin.AudioPane
                 trGrp.Children.Add(new ScaleTransform(width / drawGrp.Bounds.Width, height / drawGrp.Bounds.Height));
                 drawGrp.Transform = trGrp;
             }*/
+
+
+            if (m_ViewModel.State.Audio.PlayStreamMarkers != null
+                && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+            {
+                //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
+
+                //var zoom = (m_ShellView != null
+                //                ? m_ShellView.MagnificationLevel
+                //                : (Double)FindResource("MagnificationLevel"));
+
+                //DrawingContext dc = drawGrp.Open();
+
+                //var imageDrawing = new ImageDrawing();
+                //imageDrawing.Rect = null;
+
+                //var drawingImage = new DrawingImage();
+                //drawingImage.Drawing = imageDrawing;
+
+                //var drawGroup = new DrawingGroup();
+                //drawGroup.Children.Add(imageDrawing);
+
+                m_WaveFormTimeTicksAdorner.drawChunkInfos(null, drawGrp, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                //dc.Close();
+
+                //drawGrp.Children.Add(imageDrawing);
+            }
+
+
+
 
             drawGrp.Freeze();
 

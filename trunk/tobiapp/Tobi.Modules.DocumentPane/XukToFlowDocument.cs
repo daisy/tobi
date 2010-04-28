@@ -1524,8 +1524,8 @@ namespace Tobi.Plugin.DocumentPane
                 int pw = bitmap.PixelWidth;
                 double dpix = bitmap.DpiX;
                 double dpiy = bitmap.DpiY;
-                image.Width = ph;
-                image.Height = pw;
+                image.Width = pw;
+                image.Height = ph;
             }
             XmlAttribute srcW = xmlProp.GetAttribute("width");
             if (srcW != null)
@@ -1587,9 +1587,23 @@ namespace Tobi.Plugin.DocumentPane
             }
             imagePanel.Children.Add(image);
 
+            image.HorizontalAlignment = HorizontalAlignment.Center;
+            image.VerticalAlignment = VerticalAlignment.Center;
+
+            imagePanel.HorizontalAlignment = HorizontalAlignment.Center;
+            imagePanel.VerticalAlignment = VerticalAlignment.Center;
+
+            imagePanel.Width = image.Width;
+            imagePanel.MaxWidth = image.Width;
+
+            imagePanel.Height = image.Height;
+            imagePanel.MaxHeight = image.Height;
+
             if (parentHasBlocks)
             {
-                BlockUIContainer img = new BlockUIContainer(imagePanel);
+                var img = new BlockUIContainer(imagePanel);
+
+                //img.LineStackingStrategy = LineStackingStrategy.MaxHeight;
 
                 //img.BorderBrush = Brushes.RoyalBlue;
                 //img.BorderThickness = new Thickness(2.0);
@@ -1609,7 +1623,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                InlineUIContainer img = new InlineUIContainer(imagePanel);
+                var img = new InlineUIContainer(imagePanel);
 
                 setTag(img, node);
 

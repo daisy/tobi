@@ -74,6 +74,11 @@ namespace Tobi.Plugin.AudioPane
         private Point m_point3;
         private Rect m_rectRect;
 
+        public const double m_horizontalMargin = 2;
+
+        public const double m_tickHeight = 3;
+
+
         public void OnAdornerMouseLeave(object sender, MouseEventArgs e)
         {
             m_MousePosX = -1;
@@ -99,30 +104,46 @@ namespace Tobi.Plugin.AudioPane
             heightAvailable = m_AudioPaneView.WaveFormScroll.ViewportHeight;
             widthAvailable = m_AudioPaneView.WaveFormScroll.ViewportWidth;
 
-            /* var brush = new SolidColorBrush(Colors.Red) { Opacity = 0.0 };
-            drawingContext.DrawRectangle(brush, null,
-                                             new Rect(new Point(0, 0),
-                                                      new Size(widthAvailable,
-                                                               heightAvailable))); */
+            double hoffset = m_AudioPaneView.WaveFormScroll.HorizontalOffset;
 
-            const double tickHeight = 3;
+            drawTimeRuler(drawingContext, hoffset, heightAvailable, widthAvailable);
 
-            /*if (m_MousePosX != -1)
-             {
+            if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null
+                && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+            {
+                drawChunkInfos(drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel, 1);
+            }
 
-                 var formattedTextTMP = new FormattedText(
-                     "test",
-                     CultureInfo.GetCultureInfo("en-us"),
-                     FlowDirection.LeftToRight,
-                     new Typeface("Helvetica"),
-                     12,
-                     Brushes.White
-                     );
-                 drawingContext.DrawRectangle(renderBrush, null,
-                                              new Rect(new Point(0, 0),
-                                                       new Size(widthAvailable,
-                                                                tickHeight + tickHeight + formattedTextTMP.Height)));
-             }*/
+            drawMouseOver(drawingContext, hoffset, heightAvailable, widthAvailable);
+        }
+
+        /* var brush = new SolidColorBrush(Colors.Red) { Opacity = 0.0 };
+        drawingContext.DrawRectangle(brush, null,
+                                         new Rect(new Point(0, 0),
+                                                  new Size(widthAvailable,
+                                                           heightAvailable))); */
+
+        /*if (m_MousePosX != -1)
+         {
+
+             var formattedTextTMP = new FormattedText(
+                 "test",
+                 CultureInfo.GetCultureInfo("en-us"),
+                 FlowDirection.LeftToRight,
+                 new Typeface("Helvetica"),
+                 12,
+                 Brushes.White
+                 );
+             drawingContext.DrawRectangle(renderBrush, null,
+                                          new Rect(new Point(0, 0),
+                                                   new Size(widthAvailable,
+                                                            m_tickHeight + m_tickHeight + formattedTextTMP.Height)));
+         }*/
+
+        private void drawTimeRuler(DrawingContext drawingContext, double hoffset, double heightAvailable, double widthAvailable)
+        {
+            double widthAvailableWaveFormOnly =
+                Math.Min(widthAvailable, m_AudioPaneViewModel.State.Audio.DataLength / m_AudioPaneView.BytesPerPixel);
 
             long minorTickInterval_milliseconds = 1000; //1s minor ticks
             double minorTickInterval_pixels =
@@ -141,7 +162,7 @@ namespace Tobi.Plugin.AudioPane
                 minorTickInterval_milliseconds =
                     m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
                     m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
-                    (long)Math.Round(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels)));
+                    (long)Math.Round(m_AudioPaneView.BytesPerPixel * minorTickInterval_pixels))) / AudioLibPCMFormat.TIME_UNIT;
 
                 if (minorTickInterval_milliseconds > 0)
                 {
@@ -165,8 +186,6 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            double hoffset = m_AudioPaneView.WaveFormScroll.HorizontalOffset;
-
             int numberOfEntireTicksHidden = (int)Math.Floor(hoffset / minorTickInterval_pixels);
 
             double firstTickX = minorTickInterval_pixels -
@@ -174,11 +193,9 @@ namespace Tobi.Plugin.AudioPane
 
             //drawingContext.PushOpacity(0.6);
 
-            const double horizontalMargin = 2;
-
             int count = numberOfEntireTicksHidden;
             double currentTickX = firstTickX;
-            while (currentTickX <= widthAvailable)
+            while (currentTickX <= widthAvailableWaveFormOnly)
             {
                 count++;
 
@@ -188,7 +205,7 @@ namespace Tobi.Plugin.AudioPane
                     m_point1.Y = 0;
 
                     m_point2.X = currentTickX;
-                    m_point2.Y = tickHeight * 2;
+                    m_point2.Y = m_tickHeight * 2;
 
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
@@ -208,11 +225,11 @@ namespace Tobi.Plugin.AudioPane
                     double posX = currentTickX - formattedText.Width / 2;
 
                     m_point3.X = posX;
-                    m_point3.Y = tickHeight * 2;
+                    m_point3.Y = m_tickHeight * 2;
 
-                    m_rectRect.X = m_point3.X - horizontalMargin;
+                    m_rectRect.X = m_point3.X - m_horizontalMargin;
                     m_rectRect.Y = m_point3.Y;
-                    m_rectRect.Width = Math.Min(formattedText.Width + horizontalMargin * 2, widthAvailable - m_rectRect.X);
+                    m_rectRect.Width = Math.Min(formattedText.Width + m_horizontalMargin * 2, widthAvailableWaveFormOnly - m_rectRect.X);
                     m_rectRect.Height = formattedText.Height;
 
                     if (m_MousePosX != -1)
@@ -238,209 +255,17 @@ namespace Tobi.Plugin.AudioPane
                     m_point1.Y = 0;
 
                     m_point2.X = currentTickX;
-                    m_point2.Y = tickHeight;
+                    m_point2.Y = m_tickHeight;
 
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
                 }
 
                 currentTickX += minorTickInterval_pixels;
             }
+        }
 
-            // TODO TESTING !!!!
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
-            if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
-            {
-                //drawingContext.Pop(); //PushOpacity
-
-                long sumData = 0;
-                double pixelsLeft = 0;
-                double pixelsRight = 0;
-                double widthChunk = 0;
-                foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
-                {
-                    if (pixelsLeft > (hoffset + widthAvailable)) break;
-
-                    pixelsRight = (sumData + marker.m_LocalStreamDataLength) / m_AudioPaneView.BytesPerPixel;
-
-                    widthChunk = pixelsRight - pixelsLeft;
-                    if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
-                    {
-                        if (widthChunk < 20)
-                        {
-                            sumData += marker.m_LocalStreamDataLength;
-                            pixelsLeft = pixelsRight;
-                            continue;
-                        }
-
-                        long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
-                            m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
-                            (long)Math.Round(m_AudioPaneView.BytesPerPixel * (pixelsRight - pixelsLeft))));
-
-                        var formattedTextDuration = new FormattedText(
-                                                AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
-                                                              m_culture,
-                                                              FlowDirection.LeftToRight,
-                                                              m_typeFace,
-                                                              12,
-                                                              m_timeTextBrush
-                            );
-
-                        m_point3.X = pixelsLeft - hoffset + horizontalMargin + tickHeight;
-                        if (m_point3.X < tickHeight)
-                        {
-                            widthChunk += m_point3.X;
-                            m_point3.X = tickHeight;
-                        }
-
-                        m_point3.Y = heightAvailable - formattedTextDuration.Height - formattedTextDuration.Height - tickHeight - tickHeight - tickHeight;
-
-                        double diff = (pixelsRight - hoffset) - widthAvailable;
-                        if (diff > 0)
-                        {
-                            widthChunk -= diff;
-                        }
-
-                        double minW = Math.Min(formattedTextDuration.Width + horizontalMargin + horizontalMargin,
-                                                widthChunk - tickHeight - tickHeight - 1);
-                        if (minW > 0)
-                        {
-                            m_rectRect.X = m_point3.X - horizontalMargin;
-                            m_rectRect.Y = m_point3.Y;
-                            m_rectRect.Width = minW;
-                            m_rectRect.Height = formattedTextDuration.Height;
-
-                            drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
-
-                            var clipGeo = new RectangleGeometry(m_rectRect);
-                            clipGeo.Freeze();
-                            drawingContext.PushClip(clipGeo);
-
-                            drawingContext.DrawText(formattedTextDuration, m_point3);
-
-                            drawingContext.Pop(); //PushClip
-                        }
-
-                        double chunkWidthForText = widthChunk - tickHeight - tickHeight - 1;
-                        if (chunkWidthForText <= 10)
-                        {
-                            sumData += marker.m_LocalStreamDataLength;
-                            pixelsLeft = pixelsRight;
-                            continue;
-                        }
-
-                        //QualifiedName qName = marker.m_TreeNode.GetXmlElementQName();
-                        //string imgAlt = null;
-                        //if (qName != null && qName.LocalName.ToLower() == "img")
-                        //{
-                        //    XmlAttribute xmlAttr = marker.m_TreeNode.GetXmlProperty().GetAttribute("alt");
-                        //    if (xmlAttr != null)
-                        //    {
-                        //        imgAlt = xmlAttr.Value;
-                        //    }
-                        //}
-                        //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
-
-                        string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened(true);
-
-                        if (!String.IsNullOrEmpty(nodeTxt))
-                        {
-                            nodeTxt = nodeTxt.Replace("\r\n", "");
-                            nodeTxt = nodeTxt.Replace("\n", "");
-                            nodeTxt = nodeTxt.Replace(Environment.NewLine, "");
-                            nodeTxt = nodeTxt.Trim();
-
-                            if (m_standardTextHeight <= 0)
-                            {
-                                var txt = new FormattedText("Test Height",
-                                                                      m_culture,
-                                                                      FlowDirection.LeftToRight,
-                                                                      m_typeFace,
-                                                                      12,
-                                                                      m_phraseBrush
-                                    );
-                                m_standardTextHeight = txt.Height;
-                            }
-
-                            var formattedText = new FormattedText(nodeTxt,
-                                                                  m_culture,
-                                                                  FlowDirection.LeftToRight,
-                                                                  m_typeFace,
-                                                                  12,
-                                                                  m_phraseBrush
-                                );
-
-                            formattedText.Trimming = TextTrimming.CharacterEllipsis;
-                            formattedText.MaxTextWidth = chunkWidthForText;
-                            formattedText.MaxTextHeight = m_standardTextHeight + tickHeight;
-
-                            //FormattedText formattedTextDots = null;
-
-                            m_point3.Y = heightAvailable - m_standardTextHeight - tickHeight - tickHeight;
-
-                            minW = Math.Min(formattedText.Width + horizontalMargin + horizontalMargin,
-                                                chunkWidthForText);
-                            if (minW > 0)
-                            {
-                                m_rectRect.X = m_point3.X - horizontalMargin;
-                                m_rectRect.Y = m_point3.Y;
-                                m_rectRect.Width = minW;
-                                m_rectRect.Height = m_standardTextHeight;
-
-                                //drawingContext.PushOpacity(0.6);
-
-                                drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
-
-                                Boolean mouseIn = m_MousePosX >= (pixelsLeft - hoffset) &&
-                                                  m_MousePosX < (pixelsRight - hoffset);
-                                if (mouseIn)
-                                {
-                                    //drawingContext.Pop(); //PushOpacity
-                                }
-
-                                var clipGeo = new RectangleGeometry(m_rectRect);
-                                clipGeo.Freeze();
-                                drawingContext.PushClip(clipGeo);
-
-                                drawingContext.DrawText(formattedText, m_point3);
-
-                                drawingContext.Pop(); //PushClip
-
-                                if (!mouseIn)
-                                {
-                                    //drawingContext.Pop(); //PushOpacity
-                                }
-
-                                //if (false && formattedText.Width >= minW)
-                                //{
-                                //    formattedTextDots = new FormattedText(" ...",
-                                //                                      m_culture,
-                                //                                      FlowDirection.LeftToRight,
-                                //                                      m_typeFace,
-                                //                                      12,
-                                //                                      m_timeTextBrush
-                                //    );
-                                //}
-
-                                //if (formattedTextDots != null && formattedTextDots.Width < minW)
-                                //{
-                                //    m_point3.X = m_rectRect.X + m_rectRect.Width - formattedTextDots.Width;
-                                //    m_rectRect.X = m_point3.X;
-                                //    m_rectRect.Width = formattedTextDots.Width;
-
-                                //    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
-                                //    drawingContext.DrawText(formattedTextDots, m_point3);
-                                //}
-                            }
-                        }
-                    }
-
-                    sumData += marker.m_LocalStreamDataLength;
-                    pixelsLeft = pixelsRight;
-                }
-
-                //drawingContext.PushOpacity(0.6);
-            }
-
+        private void drawMouseOver(DrawingContext drawingContext, double hoffset, double heightAvailable, double widthAvailable)
+        {
             if (m_MousePosX >= 0)
             {
                 long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
@@ -471,17 +296,259 @@ namespace Tobi.Plugin.AudioPane
                 //drawingContext.Pop(); //PushOpacity
 
                 m_point3.X = xPos;
-                //m_point3.Y = heightAvailable - formattedText.Height - tickHeight;
-                m_point3.Y = formattedText.Height + tickHeight + tickHeight;
+                //m_point3.Y = heightAvailable - formattedText.Height - m_tickHeight;
+                m_point3.Y = formattedText.Height + m_tickHeight + m_tickHeight;
 
 
-                m_rectRect.X = m_point3.X - horizontalMargin;
+                m_rectRect.X = m_point3.X - m_horizontalMargin;
                 m_rectRect.Y = m_point3.Y;
-                m_rectRect.Width = formattedText.Width + horizontalMargin * 2;
+                m_rectRect.Width = formattedText.Width + m_horizontalMargin * 2;
                 m_rectRect.Height = formattedText.Height;
                 drawingContext.DrawRectangle(m_renderBrush, m_penTick, m_rectRect);
 
                 drawingContext.DrawText(formattedText, m_point3);
+            }
+        }
+
+
+        public void drawChunkInfos(DrawingContext drawingContext, DrawingGroup drawingGroup, double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel, double zoom)
+        {
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
+            if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
+            {
+                //drawingContext.Pop(); //PushOpacity
+
+                long sumData = 0;
+                double pixelsLeft = 0;
+                double pixelsRight = 0;
+                double widthChunk = 0;
+                foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
+                {
+                    if (pixelsLeft > (hoffset + widthAvailable)) break;
+
+                    pixelsRight = (sumData + marker.m_LocalStreamDataLength) / bytesPerPixel;
+
+                    widthChunk = pixelsRight - pixelsLeft;
+                    if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
+                    {
+                        if (widthChunk < 20 * zoom)
+                        {
+                            sumData += marker.m_LocalStreamDataLength;
+                            pixelsLeft = pixelsRight;
+                            continue;
+                        }
+
+                        long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
+                            m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                            (long)Math.Round(bytesPerPixel * (pixelsRight - pixelsLeft))));
+
+                        double tickHeight = m_tickHeight * zoom;
+
+                        double chunkWidthForText = widthChunk - tickHeight - tickHeight - 1;
+
+                        if (m_standardTextHeight <= 0)
+                        {
+                            var txt = new FormattedText("Test Height",
+                                                                  m_culture,
+                                                                  FlowDirection.LeftToRight,
+                                                                  m_typeFace,
+                                                                  12,
+                                                                  m_phraseBrush
+                                );
+                            m_standardTextHeight = txt.Height;
+                        }
+                        double standardTextHeight = m_standardTextHeight * zoom;
+
+                        var formattedTextDuration = new FormattedText(
+                                                AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
+                                                              m_culture,
+                                                              FlowDirection.LeftToRight,
+                                                              m_typeFace,
+                                                              12 * zoom,
+                                                              m_timeTextBrush
+                            );
+
+                        formattedTextDuration.Trimming = TextTrimming.CharacterEllipsis;
+                        formattedTextDuration.MaxTextWidth = chunkWidthForText;
+                        formattedTextDuration.MaxTextHeight = standardTextHeight + tickHeight;
+
+                        double horizontalMargin = m_horizontalMargin * zoom;
+
+                        m_point3.X = pixelsLeft - hoffset + horizontalMargin + tickHeight;
+                        if (m_point3.X < tickHeight)
+                        {
+                            widthChunk += m_point3.X;
+                            m_point3.X = tickHeight;
+                        }
+
+                        m_point3.Y = heightAvailable - standardTextHeight - standardTextHeight - tickHeight - tickHeight - tickHeight;
+
+                        double diff = (pixelsRight - hoffset) - widthAvailable;
+                        if (diff > 0)
+                        {
+                            widthChunk -= diff;
+                        }
+
+                        double minW = Math.Min(formattedTextDuration.Width + horizontalMargin + horizontalMargin,
+                                                widthChunk - tickHeight - tickHeight - 1);
+                        if (minW > 0)
+                        {
+                            m_rectRect.X = m_point3.X - horizontalMargin;
+                            m_rectRect.Y = m_point3.Y;
+                            m_rectRect.Width = minW;
+                            m_rectRect.Height = standardTextHeight;
+
+                            if (drawingGroup != null)
+                            {
+                                var rectGeo = new RectangleGeometry(m_rectRect);
+                                rectGeo.Freeze();
+                                var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
+                                rectGeoDraw.Freeze();
+                                drawingGroup.Children.Add(rectGeoDraw);
+
+                                var textGeo = formattedTextDuration.BuildGeometry(m_point3);
+                                textGeo.Freeze();
+                                var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
+                                textGeoDraw.Freeze();
+                                drawingGroup.Children.Add(textGeoDraw);
+                            }
+                            else
+                            {
+                                drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+
+                                var clipGeo = new RectangleGeometry(m_rectRect);
+                                clipGeo.Freeze();
+                                drawingContext.PushClip(clipGeo);
+
+                                drawingContext.DrawText(formattedTextDuration, m_point3);
+
+                                drawingContext.Pop(); //PushClip
+                            }
+                        }
+
+                        if (chunkWidthForText <= 10)
+                        {
+                            sumData += marker.m_LocalStreamDataLength;
+                            pixelsLeft = pixelsRight;
+                            continue;
+                        }
+
+                        //QualifiedName qName = marker.m_TreeNode.GetXmlElementQName();
+                        //string imgAlt = null;
+                        //if (qName != null && qName.LocalName.ToLower() == "img")
+                        //{
+                        //    XmlAttribute xmlAttr = marker.m_TreeNode.GetXmlProperty().GetAttribute("alt");
+                        //    if (xmlAttr != null)
+                        //    {
+                        //        imgAlt = xmlAttr.Value;
+                        //    }
+                        //}
+                        //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
+
+                        string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened(true);
+
+                        if (!String.IsNullOrEmpty(nodeTxt))
+                        {
+                            nodeTxt = nodeTxt.Replace("\r\n", "");
+                            nodeTxt = nodeTxt.Replace("\n", "");
+                            nodeTxt = nodeTxt.Replace(Environment.NewLine, "");
+                            nodeTxt = nodeTxt.Trim();
+
+                            var formattedText = new FormattedText(nodeTxt,
+                                                                  m_culture,
+                                                                  FlowDirection.LeftToRight,
+                                                                  m_typeFace,
+                                                                  12 * zoom,
+                                                                  m_phraseBrush
+                                );
+
+                            formattedText.Trimming = TextTrimming.CharacterEllipsis;
+                            formattedText.MaxTextWidth = chunkWidthForText;
+                            formattedText.MaxTextHeight = standardTextHeight + tickHeight;
+
+                            //FormattedText formattedTextDots = null;
+
+                            m_point3.Y = heightAvailable - standardTextHeight - tickHeight - tickHeight;
+
+                            minW = Math.Min(formattedText.Width + horizontalMargin + horizontalMargin,
+                                                chunkWidthForText);
+                            if (minW > 0)
+                            {
+                                m_rectRect.X = m_point3.X - horizontalMargin;
+                                m_rectRect.Y = m_point3.Y;
+                                m_rectRect.Width = minW;
+                                m_rectRect.Height = standardTextHeight;
+
+                                if (drawingGroup != null)
+                                {
+                                    var rectGeo = new RectangleGeometry(m_rectRect);
+                                    rectGeo.Freeze();
+                                    var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
+                                    rectGeoDraw.Freeze();
+                                    drawingGroup.Children.Add(rectGeoDraw);
+
+                                    var textGeo = formattedText.BuildGeometry(m_point3);
+                                    textGeo.Freeze();
+                                    var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
+                                    textGeoDraw.Freeze();
+                                    drawingGroup.Children.Add(textGeoDraw);
+                                }
+                                else
+                                {
+                                    //drawingContext.PushOpacity(0.6);
+
+                                    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+
+                                    Boolean mouseIn = m_MousePosX >= (pixelsLeft - hoffset) &&
+                                                      m_MousePosX < (pixelsRight - hoffset);
+                                    if (mouseIn)
+                                    {
+                                        //drawingContext.Pop(); //PushOpacity
+                                    }
+
+                                    var clipGeo = new RectangleGeometry(m_rectRect);
+                                    clipGeo.Freeze();
+                                    drawingContext.PushClip(clipGeo);
+
+                                    drawingContext.DrawText(formattedText, m_point3);
+
+                                    drawingContext.Pop(); //PushClip
+
+                                    if (!mouseIn)
+                                    {
+                                        //drawingContext.Pop(); //PushOpacity
+                                    }
+
+                                    //if (false && formattedText.Width >= minW)
+                                    //{
+                                    //    formattedTextDots = new FormattedText(" ...",
+                                    //                                      m_culture,
+                                    //                                      FlowDirection.LeftToRight,
+                                    //                                      m_typeFace,
+                                    //                                      12,
+                                    //                                      m_timeTextBrush
+                                    //    );
+                                    //}
+
+                                    //if (formattedTextDots != null && formattedTextDots.Width < minW)
+                                    //{
+                                    //    m_point3.X = m_rectRect.X + m_rectRect.Width - formattedTextDots.Width;
+                                    //    m_rectRect.X = m_point3.X;
+                                    //    m_rectRect.Width = formattedTextDots.Width;
+
+                                    //    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+                                    //    drawingContext.DrawText(formattedTextDots, m_point3);
+                                    //}
+                                }
+                            }
+                        }
+                    }
+
+                    sumData += marker.m_LocalStreamDataLength;
+                    pixelsLeft = pixelsRight;
+                }
+
+                //drawingContext.PushOpacity(0.6);
             }
         }
     }
