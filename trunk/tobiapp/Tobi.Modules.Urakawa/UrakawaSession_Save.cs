@@ -365,7 +365,12 @@ namespace Tobi.Plugin.Urakawa
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
-            var details = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path));    // TODO LOCALIZE UrakawaSession_SavePath
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path)
+            };
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.Overwrite),
@@ -413,8 +418,12 @@ namespace Tobi.Plugin.Urakawa
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
-            var details = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path));   // TODO LOCALIZE UrakawaSession_SavePath Key Already Added
-
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path)
+            };
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.OpenSaveAsQuestion_),
                                                    panel,

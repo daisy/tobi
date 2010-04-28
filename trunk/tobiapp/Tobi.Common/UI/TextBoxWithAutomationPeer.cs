@@ -33,6 +33,7 @@ namespace Tobi.Common.UI
             if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
             {
                 m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
+                m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
             }
         }
 

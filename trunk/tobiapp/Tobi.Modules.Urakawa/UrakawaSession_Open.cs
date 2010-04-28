@@ -121,7 +121,12 @@ namespace Tobi.Plugin.Urakawa
                 panel.Children.Add(iconProvider.IconLarge);
                 panel.Children.Add(label);
 
-                var details = new TextBoxReadOnlyCaretVisible(fileUri.ToString());
+                var details = new TextBoxReadOnlyCaretVisible
+                {
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(6),
+                    TextReadOnly = fileUri.ToString()
+                };
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CannotOpenLocalFile),

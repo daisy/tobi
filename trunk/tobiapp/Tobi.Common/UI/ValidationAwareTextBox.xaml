@@ -1,8 +1,8 @@
-﻿<UI:TextBoxWithAutomationPeer x:Class="Tobi.Common.UI.ValidationAwareTextBox"
+﻿<UI:TextBoxReadOnlyCaretVisible x:Class="Tobi.Common.UI.ValidationAwareTextBox"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:UI="clr-namespace:Tobi.Common.UI"
                               KeyUp="OnKeyUp"
            LostFocus="OnLostFocus"
            GotFocus="OnGotFocus"
          >
-</UI:TextBoxWithAutomationPeer>
+</UI:TextBoxReadOnlyCaretVisible>
