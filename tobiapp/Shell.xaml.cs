@@ -723,6 +723,11 @@ namespace Tobi
         //    theAdorner.InvalidateVisual();
         //}
 
+        public void RaiseEscapeEvent()
+        {
+            m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+        }
+
         private void OnWindowKeyUp(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));

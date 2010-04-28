@@ -171,6 +171,11 @@ namespace Tobi.Common.UI
 
         public void ShowModal()
         {
+            if (ShellView != null)
+            {
+                ShellView.RaiseEscapeEvent();
+            }
+
             ensureVisible();
 
             ShowInTaskbar = false;
@@ -187,6 +192,11 @@ namespace Tobi.Common.UI
 
         public void ShowFloating(Action whenDoneAction)
         {
+            if (ShellView != null)
+            {
+                ShellView.RaiseEscapeEvent();
+            }
+
             m_whenDoneAction = whenDoneAction;
 
             ensureVisible();

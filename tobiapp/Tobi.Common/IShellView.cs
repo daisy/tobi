@@ -307,6 +307,8 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
+        void RaiseEscapeEvent();
+
         IActiveAware ActiveAware { get; }
 
         event EventHandler DeviceRemoved;
