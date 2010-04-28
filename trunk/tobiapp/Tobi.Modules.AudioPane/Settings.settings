@@ -8,6 +8,9 @@
     <Setting Name="AudioWaveForm_UseVectorAtResize" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="AudioWaveForm_TimeStep" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">800</Value>
+    </Setting>
     <Setting Name="AudioWaveForm_RenderMethod" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
