@@ -419,11 +419,14 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
                 return;
             }
+            
+            IsAutoPlay = false;
 
             if (View != null)
             {
                 View.CancelWaveFormLoad(false);
             }
+
             InterruptAudioPlayerRecorder();
         }
 
