@@ -31,10 +31,10 @@
   <!-- cannot find a dtd error -->
   <DataTemplate DataType="{x:Type ContentDocument:MissingDtdValidationError}">
     <StackPanel>
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>
-      <TextBlock Text="{Binding DtdIdentifier}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+      <TextBlock Focusable="True" Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>
+      <TextBlock Focusable="True" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>
+      <TextBlock Focusable="True" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>
+      <TextBlock Focusable="True" Text="{Binding DtdIdentifier}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                  Margin="5" FontFamily="Courier New" Width="Auto" Padding="3"/>
    </StackPanel>
   </DataTemplate>
@@ -42,8 +42,8 @@
   <!-- element definition not found error -->
   <DataTemplate DataType="{x:Type ContentDocument:UndefinedElementValidationError}">
     <StackPanel Margin="0,5">
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>
-      <TextBlock Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>
+      <TextBlock Focusable="True" Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>
+      <TextBlock Focusable="True" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
@@ -59,8 +59,8 @@
   <!-- invalid sequence of child elements error -->
   <DataTemplate DataType="{x:Type ContentDocument:InvalidElementSequenceValidationError}">
     <StackPanel x:Name="parentStack">
-      <TextBlock Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>
-      <TextBlock>
+      <TextBlock Focusable="True" Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>
+      <TextBlock Focusable="True">
         <TextBlock.Text>
           <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequenceMessage}"
                    Path="Target"
@@ -72,7 +72,7 @@
                           Content="{Binding Target}" />
 
       
-        <TextBlock>
+        <TextBlock Focusable="True">
           <TextBlock.Text>
             <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.PermittedChildren}"
                      Path="Target"
@@ -84,9 +84,10 @@
               BorderThickness="2">
         <ScrollViewer
         VerticalScrollBarVisibility="Visible"
-        HorizontalScrollBarVisibility="Disabled">
-
-          <TextBlock Margin="3"
+        HorizontalScrollBarVisibility="Disabled"
+        CanContentScroll="false">
+          <TextBlock Focusable="True" Margin="3"
+                     
                  Text="{Binding AllowedChildNodes, Converter={ContentDocument:AllowedChildNodesConverter}}"
                  TextWrapping="Wrap"
                  MaxHeight="40"/>

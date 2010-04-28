@@ -6,6 +6,10 @@
 
   <Style TargetType="{x:Type TextBlock}">
     <Setter Property="TextWrapping" Value="Wrap"/>
+    <!--
+    binding WORKS, but shouldn't be necessary for UIA...normally TextBlocks "speak" on their own
+    <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>-->
+    <!--<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>-->
   </Style>
 
   <Style x:Key="MissingAudioHeadingStyle" TargetType="{x:Type TextBlock}">
@@ -16,9 +20,11 @@
   </Style>
   
   <DataTemplate DataType="{x:Type MissingAudio:MissingAudioValidationError}">
-    <StackPanel>
-      <TextBlock Style="{StaticResource MissingAudioHeadingStyle}" Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
-      <TextBlock>
+    <StackPanel Focusable="False">
+      <TextBlock
+         Focusable="True"
+         Style="{StaticResource MissingAudioHeadingStyle}" Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
+      <TextBlock Focusable="True">
         <TextBlock.Text>
           <Binding StringFormat="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioMessage2}"
                    Path="Target"

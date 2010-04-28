@@ -178,7 +178,7 @@ namespace Tobi.Plugin.MetadataPane
              
         }
 
-        private void OnContentTextMouseFocus(object sender, MouseEventArgs e)
+        private void OnContentGotFocus(object sender, EventArgs e)
         {
             //Debug.Print("Metadata pane: mouse focus");
             //e.Handled = true;

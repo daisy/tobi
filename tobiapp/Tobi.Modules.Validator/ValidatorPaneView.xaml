@@ -24,6 +24,12 @@
       <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
   </TabControl.Resources>
+
+  <TabControl.ItemContainerStyle>
+    <Style TargetType="{x:Type TabItem}">
+      <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+    </Style>
+  </TabControl.ItemContainerStyle>
   <TabControl.ItemTemplate>
     <DataTemplate>
       <TextBlock Text="{Binding Mode=OneWay, Path=Name}"
@@ -49,24 +55,46 @@
                  x:Name="ValidationItemsListBox"
                  Margin="0,0,0,0"
                  HorizontalContentAlignment="Stretch"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 
                  ListBoxItem.MouseDoubleClick="ValidationItemsListBox_OnMouseDoubleClick"
                  
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+AlternationCount="2"
                  >
+          <ListBox.ItemContainerStyle>
+            <Style TargetType="{x:Type ListBoxItem}">
+              <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
+              <Setter Property="ToolTip" Value="{Binding Message}"/>
+
+              <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </ListBox.ItemContainerStyle>
+
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <BulletDecorator Width="Auto" Margin="0,0,0,2">
+              <TextBlock Padding="4" Text="{Binding Message}"/>
+              
+              <!--<BulletDecorator Width="Auto" Margin="0,0,0,2">
                 <BulletDecorator.Bullet>
                   <Ellipse Fill="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                            Width="4"
                            Height="4"/>
                 </BulletDecorator.Bullet>
                 <TextBlock Padding="4, 0, 0, 0" Text="{Binding Message}"/>
-              </BulletDecorator>
+              </BulletDecorator>-->
+              
              </DataTemplate>
           </ListBox.ItemTemplate>
         
-        </ListBox>
+        
+      </ListBox>
 
         <GridSplitter
             Grid.Column="1" Grid.Row="0"
@@ -74,14 +102,14 @@
              HorizontalAlignment="Center" VerticalAlignment="Stretch">
         </GridSplitter>
 
-        <StackPanel Grid.Column="2"  Grid.Row="0" Margin="4">
+        <StackPanel Focusable="False" Grid.Column="2"  Grid.Row="0" Margin="4">
           <StackPanel.DataContext>
             <Binding ElementName="ValidationItemsListBox"
                      Path="SelectedItem"/>
           </StackPanel.DataContext>
 
           <!-- this picks up the currently selected item-->
-          <ContentControl Content="{Binding}"/>
+          <ContentControl Focusable="False" Content="{Binding}"/>
 
           <TextBlock Margin="0,3,0,3"
                      Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
@@ -95,6 +123,7 @@
     </DataTemplate>
   </TabControl.ContentTemplate>
 </TabControl>
+  
   <TextBlock Margin="0,3,0,3" Grid.Row="1">
     <Hyperlink Click="OnClipboardCopyAllLinkClick">
       <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyAllLink}"/>

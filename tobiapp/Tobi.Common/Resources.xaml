@@ -88,6 +88,10 @@
   <System:Double x:Key="VisibilityTogglerThickness">5</System:Double>
   <System:Double x:Key="VisibilityTogglerThicknessEmphasis">10</System:Double>
 
+  <!--<Style TargetType="{x:Type TextBlock}">
+    <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>
+  </Style>-->
+  
   <Style x:Key="VisibilityTogglerStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
     <Setter Property="UIElement.Focusable" Value="True"/>
