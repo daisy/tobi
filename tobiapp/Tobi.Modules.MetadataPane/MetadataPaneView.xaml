@@ -121,7 +121,7 @@
                           SortPropertyName="Content">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-                <TextBox x:Name="contentText" 
+                <UI:TextBoxReadOnlyCaretVisible x:Name="contentText" 
                          Text="{Binding 
                          Mode=TwoWay, 
                          Path=Content, 

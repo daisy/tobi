@@ -93,8 +93,12 @@ namespace Tobi.Common.UI
 
 
 
-            var labelMsg = new TextBoxReadOnlyCaretVisible(String.Format(Tobi_Common_Lang.UnhandledException, Environment.NewLine, ApplicationConstants.LOG_FILE_NAME, ApplicationConstants.LOG_FILE_PATH))
+            var labelMsg = new TextBoxReadOnlyCaretVisible
             {
+                TextReadOnly = String.Format(Tobi_Common_Lang.UnhandledException, Environment.NewLine, ApplicationConstants.LOG_FILE_NAME, ApplicationConstants.LOG_FILE_PATH),
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
                 FontWeight = FontWeights.ExtraBlack,
                 Margin = margin,
                 BorderBrush = Brushes.Red
@@ -176,8 +180,11 @@ namespace Tobi.Common.UI
                 }
             }
 
-            var labelSummary = new TextBoxReadOnlyCaretVisible(exMessage)
+            var labelSummary = new TextBoxReadOnlyCaretVisible
             {
+                TextReadOnly = exMessage,
+
+                Padding = new Thickness(6),
                 FontWeight = FontWeights.ExtraBlack,
                 //Margin = margin,
 
@@ -252,8 +259,11 @@ namespace Tobi.Common.UI
                 }
             }
 
-            var stackTrace = new TextBoxReadOnlyCaretVisible(exStackTrace)
+            var stackTrace = new TextBoxReadOnlyCaretVisible
             {
+                TextReadOnly = exStackTrace,
+
+                Padding = new Thickness(6),
                 BorderBrush = null,
                 BorderThickness = new Thickness(0)
             };

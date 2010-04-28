@@ -95,9 +95,6 @@
     <Compile Include="HeadingNavigationPlugin.cs" />
     <Compile Include="HeadingPaneViewModel.cs" />
     <Compile Include="HeadingsNavigator.cs" />
-    <Compile Include="InputBox.xaml.cs">
-      <DependentUpon>InputBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="NavigationPane.xaml.cs">
       <DependentUpon>NavigationPane.xaml</DependentUpon>
     </Compile>
@@ -117,10 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="HeadingPanelView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="InputBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

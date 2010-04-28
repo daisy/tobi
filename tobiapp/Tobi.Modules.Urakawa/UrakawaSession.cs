@@ -461,7 +461,12 @@ namespace Tobi.Plugin.Urakawa
                 panel.Children.Add(label);
                 //panel.Margin = new Thickness(8, 8, 8, 0);
 
-                var details = new TextBoxReadOnlyCaretVisible(Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails);
+                var details = new TextBoxReadOnlyCaretVisible
+                    {
+                        BorderThickness = new Thickness(1),
+                        Padding = new Thickness(6),
+                        TextReadOnly = Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails
+                    };
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.UnsavedChanges) + (string.IsNullOrEmpty(role) ? "" : " (" + role + ")"),

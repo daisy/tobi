@@ -6,7 +6,7 @@ namespace Tobi.Common.UI
     /// <summary>
     /// Taken from here: http://joyfulwpf.blogspot.com/2009/05/watermarktextbox-by-inheriting-textbox.html
     /// </summary>
-    public class WatermarkTextBox : TextBox
+    public class WatermarkTextBox : TextBoxReadOnlyCaretVisible
     {
         static WatermarkTextBox()
         {

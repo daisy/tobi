@@ -178,20 +178,14 @@ namespace Tobi.Plugin.MetadataPane
              
         }
 
-        //TODO fix weird behavior:
-        //click once, the text box flickers
-        //click once more, the text is selected
-        //confirmed that selectall is called both times
-        //it seems like it's either not working the first time, or it's being ignored
-        //if no mouse/kbd events are handled for the text box, it flickers anyway
         private void OnContentTextMouseFocus(object sender, MouseEventArgs e)
         {
-            Debug.Print("Metadata pane: mouse focus");
-            e.Handled = true;
-            SelectAllTextIfEmptyString(sender as TextBox);
+            //Debug.Print("Metadata pane: mouse focus");
+            //e.Handled = true;
+            SelectAllTextIfMagicEmptyString(sender as TextBox);
         }
 
-        private void SelectAllTextIfEmptyString(TextBox textBox)
+        private void SelectAllTextIfMagicEmptyString(TextBox textBox)
         {
             if (textBox != null)
             {
@@ -207,7 +201,7 @@ namespace Tobi.Plugin.MetadataPane
         private void ContentText_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             Debug.Print("Metadata pane: mousedown focus");
-            SelectAllTextIfEmptyString(sender as TextBox);
+            SelectAllTextIfMagicEmptyString(sender as TextBox);
         }
 
         private void MetadataPaneView_OnLoaded(object sender, RoutedEventArgs e)

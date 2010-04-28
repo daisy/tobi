@@ -447,9 +447,10 @@ namespace Tobi
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxReadOnlyCaretVisible(Tobi_Lang.ExitConfirm)
-            {
-            };
+            //var details = new TextBoxReadOnlyCaretVisible
+            //                  {
+            //    TextReadOnly = Tobi_Lang.ExitConfirm
+            //};
 
             var windowPopup = new PopupModalWindow(this,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.Exit),
@@ -675,10 +676,6 @@ namespace Tobi
 
         static Shell()
         {
-            EventManager.RegisterClassHandler(typeof(TextBox),
-                UIElement.GotFocusEvent,
-                new RoutedEventHandler(TextBox_GotFocus));
-
             //EventManager.RegisterClassHandler(typeof(UIElement),
             //    UIElement.GotKeyboardFocusEvent,
             //    new RoutedEventHandler(UIElement_GotKeyboardFocus));
@@ -686,12 +683,6 @@ namespace Tobi
             //EventManager.RegisterClassHandler(typeof(UIElement),
             //    UIElement.LostKeyboardFocusEvent,
             //    new RoutedEventHandler(UIElement_LostKeyboardFocus));
-        }
-
-        private static void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (((TextBox)sender).SelectionLength == 0)
-                ((TextBox)sender).SelectAll();
         }
 
 

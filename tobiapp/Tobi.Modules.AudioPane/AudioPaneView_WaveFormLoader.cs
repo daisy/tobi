@@ -877,7 +877,6 @@ namespace Tobi.Plugin.AudioPane
                         ZoomSlider.ToolTip = imageTooltip;
                     }
 #endif
-                    }
 #else
                     var drawingVisual = new DrawingVisual();
                     using (DrawingContext drawContext = drawingVisual.RenderOpen())
@@ -941,6 +940,7 @@ namespace Tobi.Plugin.AudioPane
                         WaveFormImage.Source = renderTargetBitmap;
                     }
 #endif // ELSE NET40
+
                     m_WaveFormTimeTicksAdorner.InvalidateVisual();
                     m_WaveFormTimeTicksAdorner.ResetBrushes();
                     m_WaveFormLoadingAdorner.ResetBrushes();

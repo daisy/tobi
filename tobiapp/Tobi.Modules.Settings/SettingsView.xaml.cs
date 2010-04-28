@@ -141,9 +141,9 @@ namespace Tobi.Plugin.Settings
             // We re-focus on the ListItem,
             // only if the Key press happened within one of the known editors
             if (true || // Let's do it all the time !
-                e.OriginalSource is KeyGestureSinkBox
+                e.OriginalSource is KeyGestureSinkBox // TextBlock
                 || e.OriginalSource is CheckBox
-                || e.OriginalSource is TextBox
+                || e.OriginalSource is TextBox // ValidationAware TextBoxReadOnlyCaretVisible
                 || e.OriginalSource is ComboBoxColor)
             {
                 FocusHelper.Focus((UIElement)sender);
@@ -191,9 +191,9 @@ namespace Tobi.Plugin.Settings
             // If RETURN was pressed on one of the editors,
             // then we re-focus on the ListItem
             else if (true || // Let's do it all the time !
-                e.OriginalSource is KeyGestureSinkBox
+                e.OriginalSource is KeyGestureSinkBox // TextBlock
                 || e.OriginalSource is CheckBox
-                || e.OriginalSource is TextBox
+                || e.OriginalSource is TextBox // ValidationAware TextBoxReadOnlyCaretVisible
                 || e.OriginalSource is ComboBoxColor)
             {
                 FocusHelper.Focus((UIElement)sender);

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -6,7 +7,7 @@ using System.Windows.Controls;
 namespace Tobi.Common.UI
 {
     // no need for this class in .NET 4 with IsReadOnlyCaretVisible...
-    public class TextBoxReadOnlyCaretVisible : TextBox
+    public class TextBoxReadOnlyCaretVisible : TextBoxWithAutomationPeer
     {
         public struct TextBoxSelection
         {
@@ -14,17 +15,48 @@ namespace Tobi.Common.UI
             public int length;
         }
 
-        public AutomationPeer m_AutomationPeer;
+        private string m_Text;
 
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            m_AutomationPeer = base.OnCreateAutomationPeer();
-            return m_AutomationPeer;
-        }
+        //private static void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    if (((TextBox)sender).SelectionLength == 0)
+        //        ((TextBox)sender).SelectAll();
+        //}
 
-        public TextBoxReadOnlyCaretVisible(string txt) : this()
+        public TextBoxReadOnlyCaretVisible()
         {
-            Text = txt;
+            //EventManager.RegisterClassHandler(typeof(TextBox),
+            //    UIElement.GotFocusEvent,
+            //    new RoutedEventHandler(TextBox_GotFocus));
+
+            AcceptsTab = false;
+            AcceptsReturn = true;
+            IsReadOnly = false;
+
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Stretch;
+            TextWrapping = TextWrapping.Wrap;
+
+            //SetResourceReference(Control.BackgroundProperty, SystemColors.ControlLightLightBrushKey);
+            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkDarkBrush);
+
+            //Background = SystemColors.ControlLightLightBrush;
+            //BorderBrush = SystemColors.ControlDarkDarkBrush;
+
+            SnapsToDevicePixels = true;
+#if NET40
+            ////TODO:
+            //TextBox.CaretBrush
+            //TextBox.SelectionBrush
+#endif
+
+            GotFocus += ((sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(SelectedText))
+                {
+                    SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(SelectedText);
+                }
+            });
 
             var tbSel = new TextBoxSelection();
 
@@ -33,47 +65,65 @@ namespace Tobi.Common.UI
                 tbSel.start = SelectionStart;
                 tbSel.length = SelectionLength;
 
-                SetValue(AutomationProperties.NameProperty, SelectedText);
-
-                if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+                if (!string.IsNullOrEmpty(SelectedText))
                 {
-                    m_AutomationPeer.RaiseAutomationEvent(
-                        AutomationEvents.AutomationFocusChanged);
+                    SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(SelectedText);
                 }
             });
 
             TextChanged += ((sender, e) =>
             {
-                int start = tbSel.start;
-                int length = tbSel.length;
-                Text = txt;
-                Select(start, length);
+                if (!string.IsNullOrEmpty(m_Text))
+                {
+                    int start = tbSel.start;
+                    int length = tbSel.length;
+                    Text = m_Text;
+                    Select(start, length);
+                }
             });
         }
 
-        protected TextBoxReadOnlyCaretVisible()
+        public static readonly DependencyProperty TextReadOnlyProperty =
+            DependencyProperty.Register(@"TextReadOnly",
+            typeof(string),
+            typeof(TextBoxReadOnlyCaretVisible),
+            new PropertyMetadata("empty text",
+                OnTextReadOnlyChanged, OnTextReadOnlyCoerce));
+
+        public string TextReadOnly
         {
-            AcceptsTab = false;
-            AcceptsReturn = true;
-            IsReadOnly = false;
+            get
+            {
+                return (string)GetValue(TextReadOnlyProperty);
+            }
+            set
+            {
+                // The value will be coerced after this call !
+                SetValue(TextReadOnlyProperty, value);
+            }
+        }
 
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-            VerticalAlignment = VerticalAlignment.Stretch;
-            TextWrapping = TextWrapping.Wrap;
-            
-            SetResourceReference(Control.BackgroundProperty, SystemColors.ControlLightLightBrushKey);
-            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkDarkBrush);
-            //Background = SystemColors.ControlLightLightBrush;
-            //BorderBrush = SystemColors.ControlDarkDarkBrush;
+        private static object OnTextReadOnlyCoerce(DependencyObject d, object basevalue)
+        {
+            return basevalue;
+        }
 
-            BorderThickness = new Thickness(1);
-            Padding = new Thickness(6);
-            SnapsToDevicePixels = true;
-#if NET40
-            ////TODO:
-            //TextBox.CaretBrush
-            //TextBox.SelectionBrush
-#endif
+        private static void OnTextReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var tb = d as TextBoxReadOnlyCaretVisible;
+            if (tb == null) return;
+
+            tb.SetTextReadOnly((string)e.NewValue);
+        }
+
+        private void SetTextReadOnly(string txt)
+        {
+            // The order is important ! (otherwise infinite loop due to TextChanged event)
+            m_Text = null;
+            Text = txt;
+            m_Text = txt;
+
+            SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(m_Text);
         }
     }
 }
