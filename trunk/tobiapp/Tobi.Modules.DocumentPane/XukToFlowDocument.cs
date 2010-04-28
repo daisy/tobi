@@ -1514,9 +1514,6 @@ namespace Tobi.Plugin.DocumentPane
                 image.Source = bitmap;
             }
 
-            image.Stretch = Stretch.Uniform;
-            image.StretchDirection = StretchDirection.Both;
-
             if (image.Source is BitmapSource)
             {
                 BitmapSource bitmap = (BitmapSource)image.Source;
@@ -1524,8 +1521,8 @@ namespace Tobi.Plugin.DocumentPane
                 int pw = bitmap.PixelWidth;
                 double dpix = bitmap.DpiX;
                 double dpiy = bitmap.DpiY;
-                image.Width = pw;
-                image.Height = ph;
+                //image.Width = pw;
+                //image.Height = ph;
             }
             XmlAttribute srcW = xmlProp.GetAttribute("width");
             if (srcW != null)
@@ -1540,8 +1537,14 @@ namespace Tobi.Plugin.DocumentPane
                 image.Height = hh;
             }
 
-            image.MinWidth = image.Width;
-            image.MinHeight = image.Height;
+            image.HorizontalAlignment = HorizontalAlignment.Stretch;
+            image.VerticalAlignment = VerticalAlignment.Stretch;
+
+            image.Stretch = Stretch.Uniform;
+            image.StretchDirection = StretchDirection.DownOnly;
+
+            //image.MinWidth = image.Width;
+            //image.MinHeight = image.Height;
             //image.MaxWidth = image.Width;
             //image.MaxHeight = image.Height;
 
@@ -1587,17 +1590,14 @@ namespace Tobi.Plugin.DocumentPane
             }
             imagePanel.Children.Add(image);
 
-            image.HorizontalAlignment = HorizontalAlignment.Center;
-            image.VerticalAlignment = VerticalAlignment.Center;
+            imagePanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            imagePanel.VerticalAlignment = VerticalAlignment.Stretch;
 
-            imagePanel.HorizontalAlignment = HorizontalAlignment.Center;
-            imagePanel.VerticalAlignment = VerticalAlignment.Center;
+            //imagePanel.Width = image.Width;
+            //imagePanel.MaxWidth = image.Width;
 
-            imagePanel.Width = image.Width;
-            imagePanel.MaxWidth = image.Width;
-
-            imagePanel.Height = image.Height;
-            imagePanel.MaxHeight = image.Height;
+            //imagePanel.Height = image.Height;
+            //imagePanel.MaxHeight = image.Height;
 
             if (parentHasBlocks)
             {
