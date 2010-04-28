@@ -180,6 +180,7 @@ namespace Tobi.Common.UI
 
             ShowInTaskbar = false;
 
+            ActiveAware.IsActive = true;
             if (ShellView != null)
             {
                 ShellView.DimBackgroundWhile(() => ShowDialog());
@@ -203,6 +204,7 @@ namespace Tobi.Common.UI
 
             ShowInTaskbar = true;
 
+            ActiveAware.IsActive = true;
             Show();
         }
 

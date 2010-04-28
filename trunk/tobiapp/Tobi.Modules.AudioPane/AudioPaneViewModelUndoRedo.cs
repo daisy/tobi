@@ -469,7 +469,7 @@ namespace Tobi.Plugin.AudioPane
 
             CommandPause.Execute();
 
-            AudioCues.PlayTockTock();
+            //AudioCues.PlayTockTock();
 
             if (View != null)
             {

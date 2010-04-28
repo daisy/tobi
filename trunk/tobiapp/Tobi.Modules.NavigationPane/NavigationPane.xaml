@@ -5,82 +5,273 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
     xmlns:infra="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-  TabStripPlacement="Bottom"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:s="clr-namespace:System;assembly=mscorlib" TabStripPlacement="Bottom"
   BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-  BorderThickness="0"
-    cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPaneTabs}">
-  
+  BorderThickness="1"
+    cal:RegionManager.RegionName="{x:Static infra:RegionNames.NavigationPaneTabs}"
+  >
+
   <!-- 
   Focusable="True"
   x:Name="FocusStart" -->
   
-    <TabControl.Resources>
-        <!-- Style TargetType="{x:Type TabControl}">
+  <TabControl.Template>
+    <ControlTemplate TargetType="{x:Type TabControl}">
+      <Grid ClipToBounds="True" SnapsToDevicePixels="True" KeyboardNavigation.TabNavigation="Local">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Name="ColumnDefinition0" />
+          <ColumnDefinition Width="0" Name="ColumnDefinition1" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" Name="RowDefinition0" />
+          <RowDefinition Height="*" Name="RowDefinition1" />
+        </Grid.RowDefinitions>
+        <TabPanel IsItemsHost="True" Name="HeaderPanel" Margin="2,2,2,0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1" Grid.Column="0" Grid.Row="0" />
+
+        <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="ContentPanel" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Column="0" Grid.Row="1">
+          <ContentPresenter
+            Content="{TemplateBinding TabControl.SelectedContent}"
+            ContentTemplate="{TemplateBinding TabControl.SelectedContentTemplate}"
+            ContentStringFormat="{TemplateBinding TabControl.SelectedContentStringFormat}"
+            ContentSource="SelectedContent"
+            Name="PART_SelectedContentHost"
+            SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
+            Margin="0"
+            />
+          <!--Margin="{TemplateBinding Control.Padding}"-->
+        </Border>
+      </Grid>
+      <ControlTemplate.Triggers>
+        <Trigger Property="TabControl.TabStripPlacement">
+          <Setter Property="Grid.Row" TargetName="HeaderPanel">
+            <Setter.Value>
+              <s:Int32>
+                1
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Row" TargetName="ContentPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="RowDefinition.Height" TargetName="RowDefinition0">
+            <Setter.Value>
+              <GridLength>
+                *
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="RowDefinition.Height" TargetName="RowDefinition1">
+            <Setter.Value>
+              <GridLength>
+                Auto
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="FrameworkElement.Margin" TargetName="HeaderPanel">
+            <Setter.Value>
+              <Thickness>
+                2,0,2,2
+              </Thickness>
+            </Setter.Value>
+          </Setter>
+          <Trigger.Value>
+            <x:Static Member="Dock.Bottom" />
+          </Trigger.Value>
+        </Trigger>
+        <Trigger Property="TabControl.TabStripPlacement">
+          <Setter Property="Grid.Row" TargetName="HeaderPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Row" TargetName="ContentPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Column" TargetName="HeaderPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Column" TargetName="ContentPanel">
+            <Setter.Value>
+              <s:Int32>
+                1
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="ColumnDefinition.Width" TargetName="ColumnDefinition0">
+            <Setter.Value>
+              <GridLength>
+                Auto
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="ColumnDefinition.Width" TargetName="ColumnDefinition1">
+            <Setter.Value>
+              <GridLength>
+                *
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="RowDefinition.Height" TargetName="RowDefinition0">
+            <Setter.Value>
+              <GridLength>
+                *
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="RowDefinition.Height" TargetName="RowDefinition1">
+            <Setter.Value>
+              <GridLength>
+                0
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="FrameworkElement.Margin" TargetName="HeaderPanel">
+            <Setter.Value>
+              <Thickness>
+                2,2,0,2
+              </Thickness>
+            </Setter.Value>
+          </Setter>
+          <Trigger.Value>
+            <x:Static Member="Dock.Left" />
+          </Trigger.Value>
+        </Trigger>
+        <Trigger Property="TabControl.TabStripPlacement">
+          <Setter Property="Grid.Row" TargetName="HeaderPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Row" TargetName="ContentPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Column" TargetName="HeaderPanel">
+            <Setter.Value>
+              <s:Int32>
+                1
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Grid.Column" TargetName="ContentPanel">
+            <Setter.Value>
+              <s:Int32>
+                0
+              </s:Int32>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="ColumnDefinition.Width" TargetName="ColumnDefinition0">
+            <Setter.Value>
+              <GridLength>
+                *
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="ColumnDefinition.Width" TargetName="ColumnDefinition1">
+            <Setter.Value>
+              <GridLength>
+                Auto
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="RowDefinition.Height" TargetName="RowDefinition0">
+            <Setter.Value>
+              <GridLength>
+                *
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="RowDefinition.Height" TargetName="RowDefinition1">
+            <Setter.Value>
+              <GridLength>
+                0
+              </GridLength>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="FrameworkElement.Margin" TargetName="HeaderPanel">
+            <Setter.Value>
+              <Thickness>
+                0,2,2,2
+              </Thickness>
+            </Setter.Value>
+          </Setter>
+          <Trigger.Value>
+            <x:Static Member="Dock.Right" />
+          </Trigger.Value>
+        </Trigger>
+        <Trigger Property="UIElement.IsEnabled">
+          <Setter Property="TextElement.Foreground">
+            <Setter.Value>
+              <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+            </Setter.Value>
+          </Setter>
+          <Trigger.Value>
+            <s:Boolean>
+              False
+            </s:Boolean>
+          </Trigger.Value>
+        </Trigger>
+      </ControlTemplate.Triggers>
+    </ControlTemplate>
+  </TabControl.Template>
+
+  <!--<TabControl.ItemContainerStyle>
+    <Style>
+      <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
+    </Style>
+  </TabControl.ItemContainerStyle>-->
+  
+  <TabControl.Resources>
+
+    <Style TargetType="{x:Type TabItem}">
       <Setter Property="Template">
         <Setter.Value>
-          <ControlTemplate TargetType="{x:Type TabControl}">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-              </Grid.RowDefinitions>
-              <TabPanel
-                  Grid.Row="0"
-                  Panel.ZIndex="1"
-                  Margin="0,0,4,-1"
-                  IsItemsHost="True"
-                  Background="Transparent" />
-              <Border
-                  Grid.Row="1"
-                  BorderBrush="Black"
-                  BorderThickness="1"
-                  CornerRadius="0, 12, 12, 12"
-                  SnapsToDevicePixels="True">
-                <Border.Background>
-                  <LinearGradientBrush>
-                    <GradientStop Color="LightBlue" Offset="0" />
-                    <GradientStop Color="White" Offset="1" />
-                  </LinearGradientBrush>
-                </Border.Background>
-                <ContentPresenter ContentSource="SelectedContent" />
-              </Border>
-            </Grid>
+          <ControlTemplate TargetType="{x:Type TabItem}">
+            <Border
+    Name="Border"
+    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+    BorderThickness="1.5,0,1.5,1.5"
+    CornerRadius="0,0,4,4"
+    SnapsToDevicePixels="True">
+              <ContentPresenter x:Name="ContentSite"
+  VerticalAlignment="Center"
+  HorizontalAlignment="Center"
+  ContentSource="Header"
+  Margin="8,2,8,2"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
       </Setter>
-    </Style -->
-
-        <Style TargetType="{x:Type TabItem}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabItem}">
-                        <Border
-                Name="Border"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-                BorderThickness="1.5,0,1.5,1.5"
-                CornerRadius="0,0,4,4"
-                SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="ContentSite"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                ContentSource="Header"
-                Margin="8,2,8,2"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Header" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.ViewName}" />
-        </Style>
-    </TabControl.Resources>
+      <Setter Property="Header" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.ViewName}" />
+    </Style>
+  </TabControl.Resources>
 </UI:LazyKeepAliveTabControl>

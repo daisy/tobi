@@ -7,13 +7,21 @@
                     xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-        >
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
 
-  <DockPanel LastChildFill="True"
-             DockPanel.Dock="Top"
-             Margin="0,0,0,2"
-             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}">
+  <Border
+           DockPanel.Dock="Top"
+             
+           BorderThickness="2"
+           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <DockPanel LastChildFill="True"
+             
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
+             Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+             LostFocus="OnSearchLostFocus"
+             
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
     <UI:ButtonRichCommand
       Control.TabIndex="4"
@@ -33,7 +41,7 @@
       Text="{x:Static Common:Tobi_Common_Lang.Find}"
       DockPanel.Dock="Left"
                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                 Margin="0,0,4,0"/>
+                 Margin="2,0,2,0"/>
 
     <UI:WatermarkTextBox
       KeyUp="OnSearchBoxKeyUp"
@@ -45,7 +53,7 @@
                             VerticalAlignment="Center"/>
 
   </DockPanel>
-
+    </Border>
   <pres:ScrollViewer
       VerticalScrollBarVisibility="Auto"
       HorizontalScrollBarVisibility="Visible"

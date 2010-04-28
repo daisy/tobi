@@ -24,7 +24,7 @@
              for the default Stles that the ScrollViewer has out of the box
          -->
     <!-- XAML:BoolToOppositeBoolConverter x:Key="oppositeConverter" / -->
-    <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
+    <!--<BooleanToVisibilityConverter x:Key="boolToVisConverter"/>-->
 
     <SolidColorBrush x:Key="HorizontalNormalBrush" Color="blue" />
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="red" />
@@ -528,7 +528,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   </DockPanel>
   <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="true"
              Visibility="{Binding Path=IsWaveFormLoading,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}"
              Focusable="False"
              
@@ -991,21 +991,21 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <TextBlock
         
                  Visibility="{Binding Path=PcmFormatStringVisible,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}"
         Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
         VerticalAlignment="Center" Text=" | "/>
       
       <TextBlock 
                  Visibility="{Binding Path=PcmFormatStringVisible,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}" 
                  Focusable="True" VerticalAlignment="Center" Text="{Binding PcmFormatString, Mode=OneWay}"/>
 
       <TextBlock
         
                  Visibility="{Binding Path=TimeStringCurrentVisible,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}"
         Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
         VerticalAlignment="Center" Text=" | "/>
@@ -1013,7 +1013,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <TextBlock
         
                  Visibility="{Binding Path=TimeStringCurrentVisible,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}"
                  Focusable="True"
         FontWeight="Normal"
@@ -1021,7 +1021,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
       <TextBlock
                  Visibility="{Binding Path=TimeStringSelectionVisible,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}"
         Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
         VerticalAlignment="Center" Text=" | "/>
@@ -1029,7 +1029,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <TextBlock Focusable="True"
         FontWeight="Normal"
                  Visibility="{Binding Path=TimeStringSelectionVisible,
-                            Converter={StaticResource boolToVisConverter},
+                            Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}" 
         VerticalAlignment="Center" Text="{Binding TimeStringSelection, Mode=OneWay}"/>
 

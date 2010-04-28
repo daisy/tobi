@@ -384,13 +384,27 @@ namespace Tobi.Plugin.Settings
         private void FindNext()
         {
             SettingWrapper nextMatch = FindNextSetting(AggregatedSettings);
-            if (nextMatch != null) { nextMatch.IsSelected = true; } else { AudioCues.PlayAsterisk(); }
+            if (nextMatch != null)
+            {
+                nextMatch.IsSelected = true;
+            }
+            else
+            {
+                AudioCues.PlayBeep();
+            }
 
         }
         private void FindPrevious()
         {
             SettingWrapper nextMatch = FindPrevSetting(AggregatedSettings);
-            if (nextMatch != null) { nextMatch.IsSelected = true; } else { AudioCues.PlayAsterisk(); }
+            if (nextMatch != null)
+            {
+                nextMatch.IsSelected = true;
+            }
+            else
+            {
+                AudioCues.PlayBeep();
+            }
         }
 
         ~SettingsView()
@@ -475,6 +489,9 @@ namespace Tobi.Plugin.Settings
                 }
                 m_OwnerWindow = value;
                 if (m_OwnerWindow == null) return;
+                
+                OnOwnerWindowIsActiveChanged(null, null);
+
                 m_OwnerWindow.ActiveAware.IsActiveChanged += OnOwnerWindowIsActiveChanged;
 
                 if (m_GlobalSearchCommand == null) return;
@@ -587,7 +604,7 @@ namespace Tobi.Plugin.Settings
                         {
                             settingWrapper.Value = converter.ConvertFrom(settingWrapper.DefaultValue);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             ExceptionHandler.Handle(ex, false, m_ShellView);
                         }

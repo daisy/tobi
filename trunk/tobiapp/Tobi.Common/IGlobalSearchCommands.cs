@@ -4,8 +4,8 @@ namespace Tobi.Common
 {
     public interface IGlobalSearchCommands
     {
-        RichCompositeCommand CmdFindFocus { get; }
-        RichCompositeCommand CmdFindNext { get; }
-        RichCompositeCommand CmdFindPrevious { get; }
+        RichDispatcherCommand CmdFindFocus { get; }
+        RichDispatcherCommand CmdFindNext { get; }
+        RichDispatcherCommand CmdFindPrevious { get; }
     }
 }

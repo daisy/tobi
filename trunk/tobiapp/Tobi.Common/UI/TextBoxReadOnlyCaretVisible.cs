@@ -30,7 +30,7 @@ namespace Tobi.Common.UI
             //    new RoutedEventHandler(TextBox_GotFocus));
 
             AcceptsTab = false;
-            AcceptsReturn = true;
+            AcceptsReturn = false;
             IsReadOnly = false;
 
             HorizontalAlignment = HorizontalAlignment.Stretch;

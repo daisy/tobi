@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.UI;
 using urakawa.core;
 
 namespace Tobi.Plugin.NavigationPane
@@ -45,6 +46,14 @@ namespace Tobi.Plugin.NavigationPane
             InitializeComponent();
 
             m_ViewModel.SetView(this);
+        }
+
+        private void OnSearchLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SearchBox.Text))
+            {
+                m_ViewModel.IsSearchVisible = false;
+            }
         }
         private void onPageSelected(object sender, SelectionChangedEventArgs e)
         {
@@ -169,11 +178,18 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return && m_ViewModel.CommandFindNextPage.CanExecute())
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return && m_ViewModel.CommandFindNextPage.CanExecute())
             {
                 m_ViewModel.CommandFindNextPage.Execute();
             }
-        }
 
+            if (key == Key.Escape)
+            {
+                SearchBox.Text = "";
+                FocusHelper.FocusBeginInvoke(ViewFocusStart);
+            }
+        }
     }
 }

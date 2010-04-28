@@ -39,13 +39,13 @@ namespace Tobi
 #endif
         }
 
-        public RichCompositeCommand CmdFindFocus { get; private set; }
-        public RichCompositeCommand CmdFindNext { get; private set; }
-        public RichCompositeCommand CmdFindPrevious { get; private set; }
+        public RichDispatcherCommand CmdFindFocus { get; private set; }
+        public RichDispatcherCommand CmdFindNext { get; private set; }
+        public RichDispatcherCommand CmdFindPrevious { get; private set; }
 
         private void InitializeCommands()
         {
-            CmdFindFocus = new RichCompositeCommand(Tobi_Lang.CmdFocus_ShortDesc_Find, //TODO LOCALIZE CmdFocus_ShortDesc_Find
+            CmdFindFocus = new RichDispatcherCommand(Tobi_Lang.CmdFocus_ShortDesc_Find, //TODO LOCALIZE CmdFocus_ShortDesc_Find
                 Tobi_Lang.CmdFocus_LongDesc_Find,   // TODO LOCALIZE CmdFocus_LongDesc_Find
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-find"),
@@ -54,7 +54,7 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindFocus);
 
-            CmdFindNext = new RichCompositeCommand(Tobi_Lang.Cmd_ShortDesc_FindNext, //TODO LOCALIZE Cmd_ShortDesc_FindNext
+            CmdFindNext = new RichDispatcherCommand(Tobi_Lang.Cmd_ShortDesc_FindNext, //TODO LOCALIZE Cmd_ShortDesc_FindNext
                 Tobi_Lang.Cmd_LongDesc_FindNext,   // TODO LOCALIZE Cmd_LongDesc_FindNext
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
@@ -63,7 +63,7 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindNext);
 
-            CmdFindPrevious = new RichCompositeCommand(Tobi_Lang.Cmd_ShortDesc_FindPrevious, //TODO LOCALIZE Cmd_ShortDesc_FindPrevious
+            CmdFindPrevious = new RichDispatcherCommand(Tobi_Lang.Cmd_ShortDesc_FindPrevious, //TODO LOCALIZE Cmd_ShortDesc_FindPrevious
                 Tobi_Lang.Cmd_LongDesc_FindPrevious,  // TODO LOCALIZE Cmd_LongDesc_FindPrevious
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
