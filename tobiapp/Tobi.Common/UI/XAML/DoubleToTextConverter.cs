@@ -26,6 +26,7 @@ namespace Tobi.Common.UI.XAML
             return String.Empty; // will generate exception
         }
     }
+    
     [ValueConversion(typeof(Enum), typeof(String))]
     public class EnumToStringConverter : ValueConverterMarkupExtensionBase<EnumToStringConverter>
     {

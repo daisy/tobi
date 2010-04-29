@@ -189,10 +189,10 @@ Hint: {0} must be {2}
     <comment>{0} = list of synonyms</comment>
   </data>
   <data name="MetadataValidator_Description" xml:space="preserve">
-    <value>Validate publication metadata</value>
+    <value>Checks publication metadata</value>
   </data>
   <data name="MetadataValidator_Name" xml:space="preserve">
-    <value>Metadata Validator</value>
+    <value>Metadata issues</value>
   </data>
   <data name="Metadata_Optional" xml:space="preserve">
     <value>Optional</value>

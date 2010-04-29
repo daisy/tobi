@@ -101,6 +101,7 @@
     <EmbeddedResource Include="Tobi.Plugin.Validator.ContentDocument.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.ContentDocument.Lang.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
