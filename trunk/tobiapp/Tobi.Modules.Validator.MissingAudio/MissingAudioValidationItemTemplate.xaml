@@ -2,9 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:MissingAudio="clr-namespace:Tobi.Plugin.Validator.MissingAudio" 
-    xmlns:Common="clr-namespace:Tobi.Common.Validation;assembly=Tobi.Common">
+    xmlns:Common="clr-namespace:Tobi.Common.Validation;assembly=Tobi.Common" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
 
-  <Style TargetType="{x:Type TextBlock}">
+  <Style TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
     <Setter Property="TextWrapping" Value="Wrap"/>
     <!--
     binding WORKS, but shouldn't be necessary for UIA...normally TextBlocks "speak" on their own
@@ -12,7 +12,7 @@
     <!--<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>-->
   </Style>
 
-  <Style x:Key="MissingAudioHeadingStyle" TargetType="{x:Type TextBlock}">
+  <Style x:Key="MissingAudioHeadingStyle" TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
     <Setter Property="Margin" Value="0,0,0,5"/>
@@ -21,16 +21,18 @@
   
   <DataTemplate DataType="{x:Type MissingAudio:MissingAudioValidationError}">
     <StackPanel Focusable="False">
-      <TextBlock
+      <UI:TextBoxReadOnlyCaretVisible
          Focusable="True"
-         Style="{StaticResource MissingAudioHeadingStyle}" Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
-      <TextBlock Focusable="True">
-        <TextBlock.Text>
+         Style="{StaticResource MissingAudioHeadingStyle}"
+         Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
+      <UI:TextBoxReadOnlyCaretVisible Focusable="True">
+        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
           <Binding StringFormat="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioMessage2}"
                    Path="Target"
+                   Mode="OneWay"
                    Converter="{Common:ElementNameConverter}"/>
-        </TextBlock.Text>
-      </TextBlock>
+        </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+      </UI:TextBoxReadOnlyCaretVisible>
 
       <ContentPresenter Content="{Binding Target}">
         <ContentPresenter.ContentTemplate>

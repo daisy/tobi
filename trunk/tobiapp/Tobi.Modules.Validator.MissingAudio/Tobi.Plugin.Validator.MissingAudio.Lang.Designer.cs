@@ -108,7 +108,7 @@ namespace Tobi.Plugin.Validator.MissingAudio {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find text with missing audio content.
+        ///   Looks up a localized string similar to Reports text content that has no associated audio.
         /// </summary>
         public static string MissingAudioValidator_Description {
             get {
@@ -117,7 +117,7 @@ namespace Tobi.Plugin.Validator.MissingAudio {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing Audio Validator.
+        ///   Looks up a localized string similar to Missing audio.
         /// </summary>
         public static string MissingAudioValidator_Name {
             get {

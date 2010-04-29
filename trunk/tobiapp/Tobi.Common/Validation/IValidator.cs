@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Composite.Events;
+using Tobi.Common.MVVM;
 using urakawa;
 using urakawa.core;
 using urakawa.metadata;
@@ -10,10 +11,15 @@ using urakawa.metadata;
 namespace Tobi.Common.Validation
 {
     [InheritedExport(typeof(IValidator)), PartCreationPolicy(CreationPolicy.Shared)]
-    public abstract class AbstractValidator : IValidator
+    public abstract class AbstractValidator : PropertyChangedNotifyBase, IValidator
     {
         public abstract string Name { get; }
         public abstract string Description { get; }
+
+        public string NameAndNumberOfIssues
+        {
+            get { return Name + " (" + ValidationItems.Count + ")"; }
+        }
 
         public abstract bool Validate();
 
@@ -75,6 +81,8 @@ namespace Tobi.Common.Validation
 
         protected void notifyValidationStateChanged()
         {
+            RaisePropertyChanged(() => NameAndNumberOfIssues);
+
             EventHandler<ValidatorStateRefreshedEventArgs> eventHandler = ValidatorStateRefreshed;
             if (eventHandler != null)
             {

@@ -30,10 +30,11 @@
       <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
     </Style>
   </TabControl.ItemContainerStyle>
+  
   <TabControl.ItemTemplate>
     <DataTemplate>
-      <TextBlock Text="{Binding Mode=OneWay, Path=Name}"
-                 ToolTip="{Binding Mode=OneWay, Path=Description}"/>
+      <TextBlock Text="{Binding Mode=OneWay, Path=NameAndNumberOfIssues}"
+     ToolTip="{Binding Mode=OneWay, Path=Description}"/>
     </DataTemplate>
   </TabControl.ItemTemplate>
 

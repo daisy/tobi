@@ -37,7 +37,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
         public MissingAudioValidationError(IUrakawaSession session)
         {
             m_UrakawaSession = session;
-            Severity = ValidationSeverity.Error;
+            Severity = ValidationSeverity.Warning;
         }
     }
 }

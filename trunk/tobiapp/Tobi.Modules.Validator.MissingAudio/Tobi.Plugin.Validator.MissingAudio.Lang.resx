@@ -138,9 +138,9 @@ The element &lt;{0}&gt; has no associated audio content.
     <comment>{0} = element name, {1} = element xml</comment>
   </data>
   <data name="MissingAudioValidator_Description" xml:space="preserve">
-    <value>Find text with missing audio content</value>
+    <value>Reports text content that has no associated audio</value>
   </data>
   <data name="MissingAudioValidator_Name" xml:space="preserve">
-    <value>Missing Audio Validator</value>
+    <value>Missing audio</value>
   </data>
 </root>

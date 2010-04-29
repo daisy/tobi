@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,6 +15,7 @@ using Tobi.Common;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.core;
+using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.Validator
 {
@@ -68,7 +70,6 @@ namespace Tobi.Plugin.Validator
             //}
 
             m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
-
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> obj)
@@ -145,16 +146,16 @@ namespace Tobi.Plugin.Validator
             }
         }
 
-        private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
+        private T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is childItem)
-                    return (childItem)child;
+                if (child != null && child is T)
+                    return (T)child;
                 else
                 {
-                    childItem childOfChild = FindVisualChild<childItem>(child);
+                    T childOfChild = FindVisualChild<T>(child);
                     if (childOfChild != null)
                         return childOfChild;
                 }
@@ -208,8 +209,7 @@ namespace Tobi.Plugin.Validator
         }
     }
 
-
-    [ValueConversion(typeof(ValidationSeverity), typeof(ValidationSeverity))]
+    [ValueConversion(typeof(ValidationSeverity), typeof(bool))]
     public class SeverityConverter : ValueConverterMarkupExtensionBase<SeverityConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
