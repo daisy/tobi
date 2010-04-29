@@ -138,6 +138,13 @@
   <data name="CannotOpenLocalFile_" xml:space="preserve">
     <value>Failed to open file!</value>
   </data>
+  <data name="ValidationIssuesConfirmExport_Title" xml:space="preserve">
+    <value>Validation issues</value>
+  </data>
+  <data name="ValidationIssuesConfirmExport" xml:space="preserve">
+    <value>There are validation issues.
+Press OK to ignore, or CANCEL to see the issues.</value>
+  </data>
   <data name="CmdClose_ShortDesc" xml:space="preserve">
     <value>_Close</value>
   </data>

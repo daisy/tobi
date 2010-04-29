@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -15,10 +17,12 @@ namespace Tobi.Plugin.Validator
     {
         private readonly IShellView m_ShellView;
         private readonly IUrakawaSession m_UrakawaSession;
-        
+
         private readonly ValidatorPaneView m_ValidatorPaneView;
 
         private readonly ILoggerFacade m_Logger;
+
+        private readonly IEventAggregator m_EventAggregator;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -31,6 +35,7 @@ namespace Tobi.Plugin.Validator
         [ImportingConstructor]
         public ValidatorPlugin(
             ILoggerFacade logger,
+            IEventAggregator eventAggregator,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
@@ -41,12 +46,19 @@ namespace Tobi.Plugin.Validator
             m_Logger = logger;
             m_ShellView = shellView;
             m_UrakawaSession = urakawaSession;
-            
+
+            m_EventAggregator = eventAggregator;
+
             m_ValidatorPaneView = view;
+
+            m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Subscribe(
+                obj => CommandShowValidator.Execute(),
+                ValidationReportRequestEvent.THREAD_OPTION);
+
 
             CommandShowValidator = new RichDelegateCommand(
                 Tobi_Plugin_Validator_Lang.CmdValidationCheck_ShortDesc,                                                // TODO LOCALIZE ValidationCheck
-                Tobi_Plugin_Validator_Lang.CmdValidationCheck_LongDesc,  
+                Tobi_Plugin_Validator_Lang.CmdValidationCheck_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeGionIcon(@"Gion_application-certificate"),
                 ShowDialog,
@@ -58,7 +70,7 @@ namespace Tobi.Plugin.Validator
 
             //m_Logger.Log(@"ValidatorPlugin init", Category.Debug, Priority.Medium);
         }
-    
+
         private readonly RichDelegateCommand CommandShowValidator;
 
         //private int m_ToolBarId_1;
