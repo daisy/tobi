@@ -6,7 +6,7 @@ namespace Tobi.Common.MVVM
     public class ActiveAware : IActiveAware
     {
         private readonly object LOCK = new object();
-        private bool m_IsActive = false;
+        private bool m_IsActive = true;
         private EventHandler m_IsActiveChanged;
 
         #region IActiveAware members
