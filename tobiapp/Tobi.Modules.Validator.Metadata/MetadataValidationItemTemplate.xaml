@@ -17,11 +17,10 @@
 
 
   <DataTemplate x:Key="MetadataItemTemplate">
-    <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
-            BorderThickness="2">
-      <UI:TextBoxReadOnlyCaretVisible Padding="5"  Focusable="True"
-                 Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                 Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
+    <!--<Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+            BorderThickness="2">-->
+    
+      <UI:TextBoxReadOnlyCaretVisible Padding="5"  Focusable="True">
         <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
           <MultiBinding  Mode="OneWay" StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataNameValue}">
             <Binding Path="NameContentAttribute.Name"/>
@@ -30,7 +29,7 @@
         </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
       </UI:TextBoxReadOnlyCaretVisible>
     
-  </Border>
+  <!--</Border>-->
   </DataTemplate>
 
   <DataTemplate x:Key="MetadataDefinitionTemplate">
