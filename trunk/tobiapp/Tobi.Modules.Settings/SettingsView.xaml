@@ -17,6 +17,13 @@
 
   <DockPanel.Resources>
     <FrameworkElement x:Key="dataContextBridge" />
+    <!--<CollectionViewSource x:Key="sortedSettings"
+                          
+                      Source="{Binding AggregatedSettings, Mode=OneWay}">
+      <CollectionViewSource.GroupDescriptions>
+        <PropertyGroupDescription PropertyName="@Column1" />
+      </CollectionViewSource.GroupDescriptions>
+    </CollectionViewSource>-->
 
   </DockPanel.Resources>
 
@@ -77,7 +84,7 @@
           ToolTip="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Long}"
           Click="OnClick_RestoreDefault"/>
 
-
+  <!--"{Binding Source={StaticResource sortedSettings}}"-->
   <UI:SortableListView2
     TabIndex="5"
     x:Name="SettingsList"

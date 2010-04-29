@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
@@ -383,7 +384,7 @@ namespace Tobi.Plugin.Settings
 
         private void FindNext()
         {
-            SettingWrapper nextMatch = FindNextSetting(AggregatedSettings);
+            SettingWrapper nextMatch = FindNextSetting();
             if (nextMatch != null)
             {
                 nextMatch.IsSelected = true;
@@ -396,7 +397,7 @@ namespace Tobi.Plugin.Settings
         }
         private void FindPrevious()
         {
-            SettingWrapper nextMatch = FindPrevSetting(AggregatedSettings);
+            SettingWrapper nextMatch = FindPrevSetting();
             if (nextMatch != null)
             {
                 nextMatch.IsSelected = true;
@@ -450,10 +451,10 @@ namespace Tobi.Plugin.Settings
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () =>
-                    {
-                        FocusHelper.Focus(SearchBox);
-                        SearchBox.SelectAll();
-                    },
+                {
+                    FocusHelper.Focus(SearchBox);
+                    SearchBox.SelectAll();
+                },
                 () => SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
@@ -493,7 +494,7 @@ namespace Tobi.Plugin.Settings
                 }
                 m_OwnerWindow = value;
                 if (m_OwnerWindow == null) return;
-                
+
                 OnOwnerWindowIsActiveChanged(null, null);
 
                 m_OwnerWindow.ActiveAware.IsActiveChanged += OnOwnerWindowIsActiveChanged;
@@ -525,56 +526,63 @@ namespace Tobi.Plugin.Settings
             }
         }
 
-        private static SettingWrapper FindNextSetting(List<SettingWrapper> settingWrappers)
+        private SettingWrapper FindNextSetting()
         {
-            SettingWrapper pResult = null;
-            int iStarting = -1;
-            for (int i = 0; i < settingWrappers.Count; i++)
+            ICollectionView dataView = CollectionViewSource.GetDefaultView(SettingsList.ItemsSource);
+            IEnumerator enumerator = dataView.GetEnumerator();
+            
+            SettingWrapper firstMatch = null;
+            while (enumerator.MoveNext())
             {
-                if (settingWrappers[i].SearchMatch && iStarting == -1) { iStarting = i; }
-                if (!settingWrappers[i].IsSelected) { continue; }
-                iStarting = i;
-                break;
-            }
-            if (iStarting < 0) { return null; }
-            if (!settingWrappers[iStarting].IsSelected && settingWrappers[iStarting].SearchMatch) { pResult = settingWrappers[iStarting]; }
-            if (pResult == null)
-            {
-                for (int i = iStarting + 1; i < settingWrappers.Count; i++)
+                var current = (SettingWrapper)enumerator.Current;
+                if (current.SearchMatch && firstMatch == null)
                 {
-                    if (!settingWrappers[i].SearchMatch)
-                        continue;
-                    pResult = settingWrappers[i];
-                    break;
+                    firstMatch = current;
                 }
+                if (!current.IsSelected)
+                {
+                    continue;
+                }
+                
+                // from here we know we are after the selected item
+
+                while (enumerator.MoveNext())
+                {
+                    current = (SettingWrapper)enumerator.Current;
+                    if (current.SearchMatch)
+                    {
+                        return current; // the first match after the selected item
+                    }
+                }
+
+                return null; // no match after => we don't cycle
             }
-            return pResult;
+
+            return firstMatch; // no selection => first one that matched, if any
         }
 
-        private static SettingWrapper FindPrevSetting(List<SettingWrapper> settingWrappers)
+        private  SettingWrapper FindPrevSetting()
         {
-            SettingWrapper pResult = null;
-            int iStarting = -1;
-            for (int i = settingWrappers.Count - 1; i >= 0; i--)
+            ICollectionView dataView = CollectionViewSource.GetDefaultView(SettingsList.ItemsSource);
+            IEnumerator enumerator = dataView.GetEnumerator();
+
+            SettingWrapper lastMatch = null;
+            while (enumerator.MoveNext())
             {
-                if (settingWrappers[i].SearchMatch && iStarting == -1) { iStarting = i; }
-                if (!settingWrappers[i].IsSelected) { continue; }
-                iStarting = i;
-                break;
-            }
-            if (iStarting < 0) { return null; }
-            if (!settingWrappers[iStarting].IsSelected && settingWrappers[iStarting].SearchMatch) { pResult = settingWrappers[iStarting]; }
-            if (pResult == null)
-            {
-                for (int i = iStarting - 1; i >= 0; i--)
+                var current = (SettingWrapper)enumerator.Current;
+                
+                if (current.IsSelected)
                 {
-                    if (!settingWrappers[i].SearchMatch)
-                        continue;
-                    pResult = settingWrappers[i];
-                    break;
+                    return lastMatch;
+                }
+
+                if (current.SearchMatch)
+                {
+                    lastMatch = current;
                 }
             }
-            return pResult;
+
+            return lastMatch;
         }
 
         private void OnCheckAll(object sender, RoutedEventArgs e)
