@@ -88,12 +88,12 @@ namespace Tobi.Plugin.Validator.Metadata
         //return visible if this definition has synonyms
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null) return Visibility.Hidden;
-            if (!(value is MetadataDefinition)) return Visibility.Hidden;
+            if (value == null) return Visibility.Collapsed;
+            if (!(value is MetadataDefinition)) return Visibility.Collapsed;
 
             MetadataDefinition definition = value as MetadataDefinition;
 
-            return definition.Synonyms != null && definition.Synonyms.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+            return definition.Synonyms != null && definition.Synonyms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

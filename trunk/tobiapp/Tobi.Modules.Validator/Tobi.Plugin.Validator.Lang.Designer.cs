@@ -135,7 +135,7 @@ namespace Tobi.Plugin.Validator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Validation dialog.
+        ///   Looks up a localized string similar to Validation.
         /// </summary>
         public static string CmdValidationCheck_ShortDesc {
             get {
