@@ -195,7 +195,9 @@
           <GridViewColumn  Width="Auto" Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-                <CheckBox Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
+                <CheckBox
+                  AutomationProperties.Name="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}"
+                  Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
                         IsChecked="{Binding IsPrimaryIdentifier, Mode=TwoWay}"/>
               </DataTemplate>
             </GridViewColumn.CellTemplate>
