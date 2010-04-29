@@ -8,6 +8,7 @@ namespace Tobi.Common.MVVM
         private readonly UIElement m_UIElement;
         public FocusActiveAwareAdapter(UIElement uiElement)
         {
+            IsActive = false;
             m_UIElement = uiElement;
 
             //m_UIElement.AddHandler(UIElement.GotFocusEvent,

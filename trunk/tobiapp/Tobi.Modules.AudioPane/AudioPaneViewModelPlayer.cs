@@ -545,7 +545,7 @@ namespace Tobi.Plugin.AudioPane
 
         private static readonly Object LOCK = new Object();
 
-        private void StartWaveFormLoadTimer(long delay, bool play)
+        private void StartWaveFormLoadTimer(long delayMilliseconds, bool play)
         {
             if (IsWaveFormLoading)
             {
@@ -566,7 +566,7 @@ namespace Tobi.Plugin.AudioPane
                     m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
                     m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
                     // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-                    if (delay == 0)
+                    if (delayMilliseconds == 0)
                     // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
                     {
                         m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
@@ -574,7 +574,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delay);
+                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delayMilliseconds);
                     }
                 }
                 else if (m_WaveFormLoadTimer.IsEnabled)
