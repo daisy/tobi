@@ -27,18 +27,22 @@ namespace Tobi
         public RichDelegateCommand MagnifyUiDecreaseCommand { get; private set; }
         public RichDelegateCommand MagnifyUiResetCommand { get; private set; }
 
+
+#if DEBUG
         public RichDelegateCommand ManageShortcutsCommand { get; private set; }
+        public RichDelegateCommand HelpCommand { get; private set; }
+#endif
         //public RichDelegateCommand DisplayPreviewIconsDebugCommand { get; private set; }
 
-        public RichDelegateCommand HelpCommand { get; private set; }
+
         //public RichDelegateCommand PreferencesCommand { get; private set; }
         //public RichDelegateCommand WebHomeCommand { get; private set; }
 
         //public RichDelegateCommand NavNextCommand { get; private set; }
         //public RichDelegateCommand NavPreviousCommand { get; private set; }
-//#if DEBUG
-//        public RichDelegateCommand ShowLogFilePathCommand { get; private set; }
-//#endif //DEBUG
+        //#if DEBUG
+        //        public RichDelegateCommand ShowLogFilePathCommand { get; private set; }
+        //#endif //DEBUG
 
         public RichDelegateCommand OpenTobiFolderCommand { get; private set; }
         public RichDelegateCommand OpenTobiSettingsFolderCommand { get; private set; }
@@ -137,7 +141,8 @@ namespace Tobi
 
             RegisterRichCommand(DisplayPreviewIconsDebugCommand);
 #endif
-            //
+
+#if DEBUG
             ManageShortcutsCommand = new RichDelegateCommand(
                 Tobi_Lang.CmdManageShortcuts_ShortDesc,
                 Tobi_Lang.CmdManageShortcuts_LongDesc,
@@ -162,64 +167,66 @@ namespace Tobi
                 );
 
             RegisterRichCommand(ManageShortcutsCommand);
-            
-//#if DEBUG
-//            ShowLogFilePathCommand = new RichDelegateCommand(
-//                UserInterfaceStrings.ShowLogFilePath,
-//                UserInterfaceStrings.ShowLogFilePath_,
-//                null, // KeyGesture obtained from settings (see last parameters below)
-//                null, //LoadTangoIcon(@"help-browser"),
-//                () =>
-//                {
-//                    m_Logger.Log(@"ShellView.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
+
+#endif
+
+            //#if DEBUG
+            //            ShowLogFilePathCommand = new RichDelegateCommand(
+            //                UserInterfaceStrings.ShowLogFilePath,
+            //                UserInterfaceStrings.ShowLogFilePath_,
+            //                null, // KeyGesture obtained from settings (see last parameters below)
+            //                null, //LoadTangoIcon(@"help-browser"),
+            //                () =>
+            //                {
+            //                    m_Logger.Log(@"ShellView.ShowLogFilePathCommand", Category.Debug, Priority.Medium);
 
 
-//                    var label = new TextBlock
-//                    {
-//                        Text = UserInterfaceStrings.ShowLogFilePath_,
-//                        Margin = new Thickness(8, 0, 8, 0),
-//                        HorizontalAlignment = HorizontalAlignment.Center,
-//                        VerticalAlignment = VerticalAlignment.Center,
-//                        Focusable = true,
-//                        TextWrapping = TextWrapping.Wrap
-//                    };
+            //                    var label = new TextBlock
+            //                    {
+            //                        Text = UserInterfaceStrings.ShowLogFilePath_,
+            //                        Margin = new Thickness(8, 0, 8, 0),
+            //                        HorizontalAlignment = HorizontalAlignment.Center,
+            //                        VerticalAlignment = VerticalAlignment.Center,
+            //                        Focusable = true,
+            //                        TextWrapping = TextWrapping.Wrap
+            //                    };
 
-//                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find"), MagnificationLevel);
+            //                    var iconProvider = new ScalableGreyableImageProvider(LoadTangoIcon("edit-find"), MagnificationLevel);
 
-//                    var panel = new StackPanel
-//                    {
-//                        Orientation = Orientation.Horizontal,
-//                        HorizontalAlignment = HorizontalAlignment.Center,
-//                        VerticalAlignment = VerticalAlignment.Stretch,
-//                    };
-//                    panel.Children.Add(iconProvider.IconLarge);
-//                    panel.Children.Add(label);
-//                    //panel.Margin = new Thickness(8, 8, 8, 0);
+            //                    var panel = new StackPanel
+            //                    {
+            //                        Orientation = Orientation.Horizontal,
+            //                        HorizontalAlignment = HorizontalAlignment.Center,
+            //                        VerticalAlignment = VerticalAlignment.Stretch,
+            //                    };
+            //                    panel.Children.Add(iconProvider.IconLarge);
+            //                    panel.Children.Add(label);
+            //                    //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-//                    var details = new TextBoxReadOnlyCaretVisible(ApplicationConstants.LOG_FILE_PATH)
-//                    {
-//                    };
+            //                    var details = new TextBoxReadOnlyCaretVisible(ApplicationConstants.LOG_FILE_PATH)
+            //                    {
+            //                    };
 
-//                    var windowPopup = new PopupModalWindow(this,
-//                                                           UserInterfaceStrings.EscapeMnemonic(
-//                                                               UserInterfaceStrings.ShowLogFilePath),
-//                                                           panel,
-//                                                           PopupModalWindow.DialogButtonsSet.Close,
-//                                                           PopupModalWindow.DialogButton.Close,
-//                                                           true, 300, 160, details, 40);
+            //                    var windowPopup = new PopupModalWindow(this,
+            //                                                           UserInterfaceStrings.EscapeMnemonic(
+            //                                                               UserInterfaceStrings.ShowLogFilePath),
+            //                                                           panel,
+            //                                                           PopupModalWindow.DialogButtonsSet.Close,
+            //                                                           PopupModalWindow.DialogButton.Close,
+            //                                                           true, 300, 160, details, 40);
 
-//                    windowPopup.ShowModal();
+            //                    windowPopup.ShowModal();
 
-//                },
-//                 () => true,
-//                Settings_KeyGestures.Default,
-//                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayLogFilePath)
-//                );
+            //                },
+            //                 () => true,
+            //                Settings_KeyGestures.Default,
+            //                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DisplayLogFilePath)
+            //                );
 
-//            RegisterRichCommand(ShowLogFilePathCommand);
-//            //
-//#endif //DEBUG
+            //            RegisterRichCommand(ShowLogFilePathCommand);
+            //            //
+            //#endif //DEBUG
             //
 
             OpenTobiIsolatedStorageCommand = new RichDelegateCommand(
@@ -278,6 +285,7 @@ namespace Tobi
 
             RegisterRichCommand(OpenTobiSettingsFolderCommand);
             //
+#if DEBUG
             HelpCommand = new RichDelegateCommand(
                 Tobi_Lang.CmdHelp_ShortDesc,
                 Tobi_Lang.CmdHelp_LongDesc,
@@ -286,10 +294,10 @@ namespace Tobi
                 () =>
                 {
                     m_Logger.Log("ShellView.HelpCommand", Category.Debug, Priority.Medium);
-                    
-                        throw new NotImplementedException("Functionality not implemented, sorry :(",
-                            new ArgumentOutOfRangeException("First Inner exception",
-                                new FileNotFoundException("Second inner exception !")));
+
+                    throw new NotImplementedException("Functionality not implemented, sorry :(",
+                        new ArgumentOutOfRangeException("First Inner exception",
+                            new FileNotFoundException("Second inner exception !")));
                     //    try
                     //    { }
                     //catch (Exception ex)
@@ -302,6 +310,7 @@ namespace Tobi
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help));
 
             RegisterRichCommand(HelpCommand);
+#endif
             //
             //PreferencesCommand = new RichDelegateCommand(
             //    UserInterfaceStrings.Preferences,
