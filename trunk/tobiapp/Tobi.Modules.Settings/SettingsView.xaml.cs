@@ -449,7 +449,11 @@ namespace Tobi.Plugin.Settings
                 @"SETTINGS CommandFindFocus DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => FocusHelper.Focus(SearchBox),
+                () =>
+                    {
+                        FocusHelper.Focus(SearchBox);
+                        SearchBox.SelectAll();
+                    },
                 () => SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)

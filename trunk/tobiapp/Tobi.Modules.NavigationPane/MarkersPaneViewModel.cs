@@ -79,6 +79,7 @@ namespace Tobi.Plugin.NavigationPane
                     {
                         IsSearchVisible = true;
                         FocusHelper.Focus(View.SearchBox);
+                        View.SearchBox.SelectAll();
                     }
                 },
                 () => View != null
