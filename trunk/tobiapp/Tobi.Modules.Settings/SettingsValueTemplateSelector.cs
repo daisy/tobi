@@ -37,6 +37,11 @@ namespace Tobi.Plugin.Settings
                     var t5 = ((ContentPresenter)container).FindResource("SettingEditTemplate_FontFamily") as DataTemplate;
                     return t5;
                 }
+                if (((SettingWrapper)item).ValueType == typeof(TextAlignment))
+                {
+                    var t6 = ((ContentPresenter)container).FindResource("SettingEditTemplate_TextAlignment") as DataTemplate;
+                    return t6;
+                }
             }
             var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;
             return defaultTemplate;
