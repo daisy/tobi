@@ -172,7 +172,7 @@ namespace Tobi.Plugin.DocumentPane
                 var textElement = m_lastHighlightedSub ?? m_lastHighlighted;
                 if (textElement != null)
                 {
-                    textPointer = previous ? textElement.ContentEnd : textElement.ContentStart;
+                    textPointer = !previous ? textElement.ContentEnd : textElement.ContentStart;
                 }
                 else
                 {
@@ -265,6 +265,18 @@ namespace Tobi.Plugin.DocumentPane
                     FocusHelper.FocusBeginInvoke(FlowDocReader); // otherwise the selection is invisible :(
 
                     var para = hit.Start.Paragraph;
+                    var obj1 = hit.Start.GetAdjacentElement(LogicalDirection.Backward);
+                    var obj2 = hit.Start.GetAdjacentElement(LogicalDirection.Forward);
+
+                    object toScan = (obj1 ?? obj2) ?? para;
+                    var textElement = getFirstAncestorWithTreeNodeTag(toScan);
+                    if (textElement != null)
+                    {
+                        Debug.Assert(textElement.Tag is TreeNode);
+                        m_UrakawaSession.PerformTreeNodeSelection((TreeNode) textElement.Tag);
+                        return;
+                    }
+
                     if (para != null)
                     {
                         //FlowDocReader.Selection.Select(para.ContentStart, para.ContentEnd);
@@ -272,16 +284,14 @@ namespace Tobi.Plugin.DocumentPane
                         scrollToView(para);
                         return;
                     }
-                    var obj = hit.Start.GetAdjacentElement(LogicalDirection.Backward);
-                    if (obj != null && obj is TextElement)
+                    if (obj1 != null && obj1 is TextElement)
                     {
-                        scrollToView((TextElement)obj);
+                        scrollToView((TextElement)obj1);
                         return;
                     }
-                    obj = hit.Start.GetAdjacentElement(LogicalDirection.Forward);
-                    if (obj != null && obj is TextElement)
+                    if (obj2 != null && obj2 is TextElement)
                     {
-                        scrollToView((TextElement)obj);
+                        scrollToView((TextElement)obj2);
                         return;
                     }
                 }
@@ -641,6 +651,7 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         IsSearchVisible = true;
                         FocusHelper.Focus(SearchBox);
+                        SearchBox.SelectAll();
                     },
                 () => SearchBox.IsEnabled
                 && SearchBox.Visibility == Visibility.Visible,

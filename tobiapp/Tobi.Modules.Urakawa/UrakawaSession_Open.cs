@@ -95,10 +95,8 @@ namespace Tobi.Plugin.Urakawa
             var fileUri = new Uri(filename, UriKind.Absolute);
             AddRecentFile(fileUri);
 
-            //todo: should we implement HTTP open/import ?
-            if (false &&
-                (!fileUri.IsFile //fileUri.Scheme.ToLower() != "file"
-                || !File.Exists(fileUri.LocalPath)))
+            if (!File.Exists(fileUri.LocalPath)
+                || !fileUri.IsFile)
             {
                 var label = new TextBlock
                 {
@@ -133,7 +131,7 @@ namespace Tobi.Plugin.Urakawa
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.Close,
                                                        PopupModalWindow.DialogButton.Close,
-                                                       true, 300, 160, details, 40);
+                                                       true, 300, 170, details, 40);
 
                 windowPopup.ShowModal();
 
