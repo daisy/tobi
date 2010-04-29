@@ -86,7 +86,7 @@ namespace Tobi.Plugin.Settings
             }
             if (!string.IsNullOrEmpty(strSettingsAlreadyUsingKeyG))
             {
-                return NotValid(String.Format(Tobi_Plugin_Settings_Lang.ShortcutAlreadyUsed, strSettingsAlreadyUsingKeyG)); 
+                return NotValid(String.Format(Tobi_Plugin_Settings_Lang.ShortcutAlreadyUsed, strSettingsAlreadyUsingKeyG));
             }
 
             return Valid();
@@ -128,9 +128,9 @@ namespace Tobi.Plugin.Settings
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
             string lowName = currentSetting.Name.ToLower();
 
-            //TODO: remove this Super-master hack !
-            bool mustBePositive = lowName.Contains("width") || lowName.Contains("height");
-            mustBePositive = true;
+
+            //bool mustBePositive = lowName.Contains("width") || lowName.Contains("height");
+            bool mustBePositive = true;
 
             if (mustBePositive)
             {
@@ -146,6 +146,44 @@ namespace Tobi.Plugin.Settings
                     return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange9999);           // TODO LOCALIZE NumericValueOutOfRange9999
                 }
             }
+
+            return Valid();
+        }
+    }
+    public class TextAlignmentValidationRule : DataContextValidationRuleBase
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var str = value as string;
+            if (String.IsNullOrEmpty(str))
+            {
+                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);            // TODO LOCALIZE Key already added ValueNotEmpty
+            }
+
+            TextAlignment val;
+            if (!Enum.TryParse(str, out val))
+            {
+                var converter = new TextAlignmentToStringConverter();
+                bool worked = false;
+                try
+                {
+                    var align =
+                        (TextAlignment)
+                        converter.ConvertBack(str, typeof(TextAlignment), null, CultureInfo.InvariantCulture);
+                    worked = true;
+                }
+                catch
+                {
+                    //ignore
+                }
+                if (!worked)
+                {
+                    return NotValid(Tobi_Plugin_Settings_Lang.InvalidTextAlignment);                 // TODO LOCALIZE InvalidNumericValue
+                }
+            }
+
+            //var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            //string lowName = currentSetting.Name.ToLower();
 
             return Valid();
         }

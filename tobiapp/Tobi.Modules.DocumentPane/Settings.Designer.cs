@@ -109,6 +109,18 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Center")]
+        public global::System.Windows.TextAlignment Document_TextOnlyAlign {
+            get {
+                return ((global::System.Windows.TextAlignment)(this["Document_TextOnlyAlign"]));
+            }
+            set {
+                this["Document_TextOnlyAlign"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Document_ButtonBarVisible {
             get {

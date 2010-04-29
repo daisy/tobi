@@ -260,14 +260,16 @@
          IsOptimalParagraphEnabled = "False"
          ColumnWidth = "Infinity"
          IsColumnWidthFlexible="True"
-         TextAlignment = "Center"
+          
+                  TextAlignment="{Binding
+                            Source={x:Static DocumentPane:Settings.Default}, Path=Document_TextOnlyAlign, Mode=OneWay}"
                   
     PageHeight="Auto"
     PageWidth="Auto"
 
-
                     />
 
+                       <!--Converter={XAML:StringToTextAlignmentConverter},-->
 
     <!-- ScrollViewer
                 VerticalScrollBarVisibility="Visible"

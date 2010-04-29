@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -24,6 +25,7 @@ using Tobi.Common._UnusedCode;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using Tobi.Common.UI.XAML;
 using urakawa;
 using urakawa.command;
 using urakawa.commands;
@@ -36,7 +38,6 @@ using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.DocumentPane
 {
-
     public class FlowDocumentScrollViewerEx : FlowDocumentScrollViewer
     {
         private ScrollViewer m_ScrollViewer;

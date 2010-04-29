@@ -133,6 +133,15 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid text alignment (should be one of: Center, Left, Right, Justify)..
+        /// </summary>
+        public static string InvalidTextAlignment {
+            get {
+                return ResourceManager.GetString("InvalidTextAlignment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {

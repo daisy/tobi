@@ -25,6 +25,9 @@
     <Setting Name="Document_ShowTextOnlyView" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="Document_TextOnlyAlign" Type="System.Windows.TextAlignment" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
     <Setting Name="Document_ButtonBarVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

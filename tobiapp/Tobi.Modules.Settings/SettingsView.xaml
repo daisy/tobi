@@ -260,6 +260,56 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
 
       </DataTemplate>
 
+      <DataTemplate x:Key="SettingEditTemplate_TextAlignment" DataType="{x:Type TextAlignment}">
+        <UI:ValidationAwareTextBox Validation.Error="OnError"
+                                   Control.IsTabStop="true">
+
+          <UI:ValidationAwareTextBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:ValidationAwareTextBox.Resources>
+
+          <!-- DataErrorValidationRule/ -->
+          <!-- IDataErrorInfo -->
+
+          <UI:ValidationAwareTextBox.Text>
+            <Binding Path="Value" Converter="{XAML:TextAlignmentToStringConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+
+                <Settings:TextAlignmentValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:ValidationAwareTextBox.Text>
+
+          <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
+          <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
+                          Path=(Validation.Errors).CurrentItem, 
+                          Converter={Settings:ValidationErrorConverter}}" -->
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ValidationAwareTextBox.Style>
+        </UI:ValidationAwareTextBox>
+
+      </DataTemplate>
+
       <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
         <UI:ValidationAwareTextBox Validation.Error="OnError"
                                    Control.IsTabStop="true">
