@@ -102,14 +102,16 @@ AlternationCount="2"
              HorizontalAlignment="Center" VerticalAlignment="Stretch">
         </GridSplitter>
 
-        <StackPanel Focusable="False" Grid.Column="2"  Grid.Row="0" Margin="4">
+        <StackPanel
+           Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+           Focusable="False" Grid.Column="2"  Grid.Row="0" Margin="4">
           <StackPanel.DataContext>
             <Binding ElementName="ValidationItemsListBox"
                      Path="SelectedItem"/>
           </StackPanel.DataContext>
 
           <!-- this picks up the currently selected item-->
-          <ContentControl Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+          <ContentControl
                           Focusable="False"
                           Content="{Binding}"/>
 
