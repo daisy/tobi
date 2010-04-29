@@ -414,15 +414,65 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
       </DataTemplate>
 
       <DataTemplate x:Key="SettingEditTemplate_Enum" DataType="{x:Type System:Enum}">
-        <UI:ValidationAwareTextBox Validation.Error="OnError"
+
+        <ComboBox x:Name="comboEnum"
+                  ItemsSource="{Binding Path=ValueType,
+                        Converter={XAML:EnumTypeToValuesConverter}}"
+                  
+                  Control.IsTabStop="true"
+          SelectedItem="{Binding Value, Mode=TwoWay}"
+                  
+                  AlternationCount="2"
+          >
+
+          <ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </ComboBox.Style>
+
+          <!--<ComboBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ComboBox.ItemsPanel>-->
+          
+          <ComboBox.ItemContainerStyle>
+
+            <Style TargetType="{x:Type ComboBoxItem}">
+
+              <Style.Setters>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
+              </Style.Setters>
+
+              <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+
+          
+          </ComboBox.ItemContainerStyle>
+          <!--<ComboBox.ItemTemplate>
+          </ComboBox.ItemTemplate>-->
+          
+          <!--<ComboBox.ItemTemplateSelector>
+            <Settings:FontFamilyDataTemplateSelector/>
+          </ComboBox.ItemTemplateSelector>-->
+
+        </ComboBox>
+
+        <!--<UI:ValidationAwareTextBox Validation.Error="OnError"
                                            Control.IsTabStop="true">
 
           <UI:ValidationAwareTextBox.Resources>
             <XAML:DataContextSpy x:Key="dataContextSpy" />
           </UI:ValidationAwareTextBox.Resources>
-
-          <!-- DataErrorValidationRule/ -->
-          <!-- IDataErrorInfo -->
 
           <UI:ValidationAwareTextBox.Text>
             <Binding Path="Value" Converter="{XAML:EnumToStringConverter}" Mode="TwoWay"
@@ -439,10 +489,6 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
             </Binding>
           </UI:ValidationAwareTextBox.Text>
 
-          <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
-          <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
-                          Path=(Validation.Errors).CurrentItem, 
-                          Converter={Settings:ValidationErrorConverter}}" -->
           <UI:ValidationAwareTextBox.Style>
             <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
               <Style.Triggers>
@@ -459,7 +505,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               </Style.Setters>
             </Style>
           </UI:ValidationAwareTextBox.Style>
-        </UI:ValidationAwareTextBox>
+        </UI:ValidationAwareTextBox>-->
 
       </DataTemplate>
       

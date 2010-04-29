@@ -6,6 +6,26 @@ using System.Windows.Data;
 
 namespace Tobi.Common.UI.XAML
 {
+    [ValueConversion(typeof(Type), typeof(IEnumerable<string>))]
+    public class EnumTypeToValuesConverter : ValueConverterMarkupExtensionBase<EnumTypeToValuesConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null
+                && value is Type
+                && typeof(Enum).IsAssignableFrom((Type)value))
+            {
+                var obj = Enum.GetValues((Type)value);
+                return obj;
+            }
+            return String.Empty; // will generate exception
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return String.Empty; // will generate exception
+        }
+    }
     [ValueConversion(typeof(Enum), typeof(String))]
     public class EnumToStringConverter : ValueConverterMarkupExtensionBase<EnumToStringConverter>
     {
