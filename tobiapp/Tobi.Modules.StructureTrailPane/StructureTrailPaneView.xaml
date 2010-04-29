@@ -7,7 +7,7 @@
     xmlns:StructureTrailPane="clr-namespace:Tobi.Plugin.StructureTrailPane"
            
           Focusable="False"
-          BorderThickness="1,1,1,0"
+          BorderThickness="1,1,1,1"
           BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
            
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
