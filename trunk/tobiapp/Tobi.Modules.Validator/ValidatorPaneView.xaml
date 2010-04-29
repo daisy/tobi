@@ -109,7 +109,9 @@ AlternationCount="2"
           </StackPanel.DataContext>
 
           <!-- this picks up the currently selected item-->
-          <ContentControl Focusable="False" Content="{Binding}"/>
+          <ContentControl Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                          Focusable="False"
+                          Content="{Binding}"/>
 
           <TextBlock Margin="0,3,0,3"
                      Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">

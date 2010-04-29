@@ -47,13 +47,14 @@
            DockPanel.Dock="Top"
              
            BorderThickness="2"
-           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+           
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
+             Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+             LostFocus="OnSearchLostFocus">
 
     <DockPanel LastChildFill="True"
              
-             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
-             Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
-             LostFocus="OnSearchLostFocus"
              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
     <UI:ButtonRichCommand

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using System.Windows;
 using System.Windows.Controls;
@@ -192,7 +193,9 @@ namespace Tobi.Plugin.MetadataPane
                 if (textBox.Text == SupportedMetadata_Z39862005.MagicStringEmpty)
                 {
                     Debug.Print("Metadata pane: selecting all text");
-                    textBox.SelectAll();
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
+                        new Action(textBox.SelectAll),
+                        DispatcherPriority.Background);
                 }
             }
         }

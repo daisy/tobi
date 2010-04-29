@@ -64,15 +64,16 @@
              DockPanel.Dock="Top"
              
              BorderThickness="2"
-             BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-      
-  <DockPanel LastChildFill="True"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
+             BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
              
              IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
              Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
              LostFocus="OnSearchLostFocus"
+             >
+      
+  <DockPanel LastChildFill="True"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
              
              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 

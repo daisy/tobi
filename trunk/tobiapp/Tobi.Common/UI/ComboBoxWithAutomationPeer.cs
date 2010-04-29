@@ -17,7 +17,8 @@ namespace Tobi.Common.UI
 
         private void NotifyScreenReaderAutomation()
         {
-            if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            if (m_AutomationPeer != null
+                && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
             {
                 m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
             }
