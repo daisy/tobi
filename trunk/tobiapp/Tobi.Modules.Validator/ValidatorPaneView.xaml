@@ -3,8 +3,7 @@
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator"
-           VerticalAlignment="Stretch"
+           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" VerticalAlignment="Stretch"
            HorizontalAlignment="Stretch">
 
     <Grid.RowDefinitions>
@@ -12,7 +11,7 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
   
-<TabControl VerticalAlignment="Stretch"
+<UI:LazyKeepAliveTabControl VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             x:Name="Tabs"
             ItemsSource="{Binding Path=Validators}"
@@ -127,7 +126,7 @@ AlternationCount="2"
       </Grid>
     </DataTemplate>
   </TabControl.ContentTemplate>
-</TabControl>
+</UI:LazyKeepAliveTabControl>
   
   <TextBlock Margin="0,3,0,3" Grid.Row="1">
     <Hyperlink Click="OnClipboardCopyAllLinkClick">

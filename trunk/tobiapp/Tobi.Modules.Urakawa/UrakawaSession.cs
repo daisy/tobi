@@ -11,6 +11,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using Tobi.Common.Validation;
 using urakawa;
 using urakawa.data;
 using urakawa.events;
@@ -35,6 +36,9 @@ namespace Tobi.Plugin.Urakawa
         private readonly ILoggerFacade m_Logger;
         private readonly IEventAggregator m_EventAggregator;
         private readonly IShellView m_ShellView;
+
+        [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true)]
+        private IEnumerable<IValidator> m_Validators;
 
         ///<summary>
         /// We inject a few dependencies in this constructor.

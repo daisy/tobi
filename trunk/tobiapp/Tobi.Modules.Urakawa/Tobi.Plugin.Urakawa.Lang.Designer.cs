@@ -459,5 +459,24 @@ namespace Tobi.Plugin.Urakawa {
                 return ResourceManager.GetString("UrakawaSession_SavePath", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are validation issues.
+        ///Press OK to ignore, or CANCEL to see the issues..
+        /// </summary>
+        public static string ValidationIssuesConfirmExport {
+            get {
+                return ResourceManager.GetString("ValidationIssuesConfirmExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation issues.
+        /// </summary>
+        public static string ValidationIssuesConfirmExport_Title {
+            get {
+                return ResourceManager.GetString("ValidationIssuesConfirmExport_Title", resourceCulture);
+            }
+        }
     }
 }
