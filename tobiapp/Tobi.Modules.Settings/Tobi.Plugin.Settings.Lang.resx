@@ -138,6 +138,9 @@
   <data name="InvalidKeyboardShortcut" xml:space="preserve">
     <value>Invalid keyboard shortcut.</value>
   </data>
+  <data name="InvalidEnumValue" xml:space="preserve">
+    <value>Invalid enumeration value, should be one of: ({0})</value>
+  </data>
   <data name="InvalidTextAlignment" xml:space="preserve">
     <value>Invalid text alignment (should be one of: Center, Left, Right, Justify).</value>
   </data>

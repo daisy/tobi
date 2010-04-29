@@ -61,10 +61,10 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double AudioWaveForm_RenderMethod {
+        [global::System.Configuration.DefaultSettingValueAttribute("BitmapSource")]
+        public global::Tobi.Plugin.AudioPane.WaveFormRenderMethod AudioWaveForm_RenderMethod {
             get {
-                return ((double)(this["AudioWaveForm_RenderMethod"]));
+                return ((global::Tobi.Plugin.AudioPane.WaveFormRenderMethod)(this["AudioWaveForm_RenderMethod"]));
             }
             set {
                 this["AudioWaveForm_RenderMethod"] = value;

@@ -37,10 +37,18 @@ namespace Tobi.Plugin.Settings
                     var t5 = ((ContentPresenter)container).FindResource("SettingEditTemplate_FontFamily") as DataTemplate;
                     return t5;
                 }
-                if (((SettingWrapper)item).ValueType == typeof(TextAlignment))
+
+                // see new ENUM support below
+                //if (((SettingWrapper)item).ValueType == typeof(TextAlignment))
+                //{
+                //    var t6 = ((ContentPresenter)container).FindResource("SettingEditTemplate_TextAlignment") as DataTemplate;
+                //    return t6;
+                //}
+
+                if (typeof(Enum).IsAssignableFrom(((SettingWrapper)item).ValueType))
                 {
-                    var t6 = ((ContentPresenter)container).FindResource("SettingEditTemplate_TextAlignment") as DataTemplate;
-                    return t6;
+                    var t7 = ((ContentPresenter)container).FindResource("SettingEditTemplate_Enum") as DataTemplate;
+                    return t7;
                 }
             }
             var defaultTemplate = ((ContentPresenter)container).FindResource("SettingEditTemplate_Text") as DataTemplate;
