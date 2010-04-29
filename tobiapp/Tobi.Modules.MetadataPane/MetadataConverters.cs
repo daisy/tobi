@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using Tobi.Common.UI.XAML;
 using Tobi.Plugin.Validator.Metadata;
@@ -10,6 +11,17 @@ using Tobi.Common.Validation;
 
 namespace Tobi.Plugin.MetadataPane
 {
+    [ValueConversion(typeof(string), typeof(Visibility))]
+    public class StringToVisibilityConverter : ValueConverterMarkupExtensionBase<StringToVisibilityConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return !(value is string)
+                       ? Visibility.Visible
+                       : string.IsNullOrEmpty((string) value) ? Visibility.Collapsed : Visibility.Visible;
+        }
+    }
+
     [ValueConversion(typeof(object), typeof(string))]
     public class DescriptiveErrorTextConverter : ValueConverterMarkupExtensionBase<DescriptiveErrorTextConverter>
     {
@@ -100,15 +112,15 @@ namespace Tobi.Plugin.MetadataPane
         //value parameters: the metadata object, and the MetadataCollection
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null) return System.Windows.Visibility.Hidden;
-            if (!(value is NotifyingMetadataItem)) return System.Windows.Visibility.Hidden;
+            if (value == null) return System.Windows.Visibility.Collapsed;
+            if (!(value is NotifyingMetadataItem)) return Visibility.Collapsed;
 
             NotifyingMetadataItem item = (NotifyingMetadataItem)value;
             MetadataCollection metadatas = item.ParentCollection;
 
             if (item.IsPrimaryIdentifier || metadatas.IsCandidateForPrimaryIdentifier(item))
-                return System.Windows.Visibility.Visible;
-            return System.Windows.Visibility.Hidden;
+                return Visibility.Visible;
+            return Visibility.Collapsed;
         }
     }
 
