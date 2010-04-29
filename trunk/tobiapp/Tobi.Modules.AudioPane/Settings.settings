@@ -11,8 +11,8 @@
     <Setting Name="AudioWaveForm_TimeStep" Type="System.Double" Scope="User">
       <Value Profile="(Default)">800</Value>
     </Setting>
-    <Setting Name="AudioWaveForm_RenderMethod" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="AudioWaveForm_RenderMethod" Type="Tobi.Plugin.AudioPane.WaveFormRenderMethod" Scope="User">
+      <Value Profile="(Default)">BitmapSource</Value>
     </Setting>
     <Setting Name="AudioWaveForm_TextPreRenderThreshold" Type="System.Double" Scope="User">
       <Value Profile="(Default)">10</Value>

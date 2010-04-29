@@ -16,6 +16,13 @@ using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
+    public enum WaveFormRenderMethod : byte
+    {
+        RenderTargetBitmap,
+        WriteableBitmap,
+        BitmapSource
+    }
+
     public partial class AudioPaneView
     {
         private bool m_CancelInterruptDrawingToo;
@@ -893,21 +900,21 @@ namespace Tobi.Plugin.AudioPane
                         //drawContext.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
 
 
-                        if (false &&
-                            m_ViewModel.State.Audio.PlayStreamMarkers != null
-                            && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
-                        {
-                            m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
-                        }
+                        //if (false &&
+                        //    m_ViewModel.State.Audio.PlayStreamMarkers != null
+                        //    && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                        //{
+                        //    m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                        //}
                     }
 
                     var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
                     renderTargetBitmap.Render(drawingVisual);
                     renderTargetBitmap.Freeze();
 
-                    // TODO: use an ENUM !! (needs to work with app preferences editor though)
-                    double renderMethod = Settings.Default.AudioWaveForm_RenderMethod;
-                    if (renderMethod == 1 || renderMethod == 2)
+                    WaveFormRenderMethod renderMethod = Settings.Default.AudioWaveForm_RenderMethod;
+                    if (renderMethod == WaveFormRenderMethod.WriteableBitmap
+                        || renderMethod == WaveFormRenderMethod.BitmapSource)
                     {
                         //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
                         //formatConv.BeginInit();
@@ -920,7 +927,7 @@ namespace Tobi.Plugin.AudioPane
                         int stride = 4 * renderTargetBitmap.PixelWidth;
                         renderTargetBitmap.CopyPixels(arrBits, stride, 0);
 
-                        if (renderMethod == 1)
+                        if (renderMethod == WaveFormRenderMethod.BitmapSource)
                         {
                             var bitmapSource = BitmapSource.Create((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32, null, arrBits, stride);
 
@@ -936,7 +943,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        // Default is scalable, works automatically with UI magnification (expensive but clean vectors)
+                        // Default
                         WaveFormImage.Source = renderTargetBitmap;
                     }
 #endif // ELSE NET40

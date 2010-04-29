@@ -115,6 +115,15 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid enumeration value, should be one of: ({0}).
+        /// </summary>
+        public static string InvalidEnumValue {
+            get {
+                return ResourceManager.GetString("InvalidEnumValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid keyboard shortcut..
         /// </summary>
         public static string InvalidKeyboardShortcut {

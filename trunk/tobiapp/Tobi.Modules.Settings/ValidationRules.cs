@@ -150,7 +150,7 @@ namespace Tobi.Plugin.Settings
             return Valid();
         }
     }
-    public class TextAlignmentValidationRule : DataContextValidationRuleBase
+    public class EnumValidationRule : DataContextValidationRuleBase
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
@@ -160,32 +160,74 @@ namespace Tobi.Plugin.Settings
                 return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);            // TODO LOCALIZE Key already added ValueNotEmpty
             }
 
-            TextAlignment val;
-            if (!Enum.TryParse(str, out val))
+            var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+            //string lowName = currentSetting.Name.ToLower();
+
+            try
             {
-                var converter = new TextAlignmentToStringConverter();
-                bool worked = false;
-                try
+                var obj = Enum.Parse(currentSetting.ValueType, str, true);
+                if (!Enum.IsDefined(currentSetting.ValueType, obj))
                 {
-                    var align =
-                        (TextAlignment)
-                        converter.ConvertBack(str, typeof(TextAlignment), null, CultureInfo.InvariantCulture);
-                    worked = true;
-                }
-                catch
-                {
-                    //ignore
-                }
-                if (!worked)
-                {
-                    return NotValid(Tobi_Plugin_Settings_Lang.InvalidTextAlignment);                 // TODO LOCALIZE InvalidNumericValue
+                    throw new Exception();
                 }
             }
-
-            //var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
-            //string lowName = currentSetting.Name.ToLower();
+            catch
+            {
+                var strAppend = "";
+                if (typeof(Enum).IsAssignableFrom(currentSetting.ValueType))
+                {
+                    var names = Enum.GetNames(currentSetting.ValueType);
+                    strAppend = "";
+                    foreach (var name in names)
+                    {
+                        strAppend += " ";
+                        strAppend += name;
+                    }
+                    strAppend += " ";
+                }
+                return NotValid(string.Format(Tobi_Plugin_Settings_Lang.InvalidEnumValue, strAppend));
+            }
 
             return Valid();
         }
     }
+
+    //public class TextAlignmentValidationRule : DataContextValidationRuleBase
+    //{
+    //    public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+    //    {
+    //        var str = value as string;
+    //        if (String.IsNullOrEmpty(str))
+    //        {
+    //            return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);            // TODO LOCALIZE Key already added ValueNotEmpty
+    //        }
+
+    //        TextAlignment val;
+    //        if (!Enum.TryParse(str, out val))
+    //        {
+    //            var converter = new TextAlignmentToStringConverter();
+    //            bool worked = false;
+    //            try
+    //            {
+    //                var align =
+    //                    (TextAlignment)
+    //                    converter.ConvertBack(str, typeof(TextAlignment), null, CultureInfo.InvariantCulture);
+    //                worked = true;
+    //            }
+    //            catch
+    //            {
+    //                //ignore
+    //            }
+    //            if (!worked)
+    //            {
+    //                return NotValid(Tobi_Plugin_Settings_Lang.InvalidTextAlignment);                 // TODO LOCALIZE InvalidNumericValue
+    //            }
+    //        }
+
+    //        //var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
+    //        //string lowName = currentSetting.Name.ToLower();
+
+    //        return Valid();
+    //    }
+    //}
 }

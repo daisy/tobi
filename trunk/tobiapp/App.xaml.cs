@@ -171,6 +171,37 @@ c.Execute();
 
         }
 
+        private void HandleConfigurationErrorsException(ConfigurationErrorsException ex)
+        {
+#if DEBUG
+            Debugger.Break();
+#endif
+            string filename = ex.Filename;
+            if (string.IsNullOrEmpty(filename)
+                && ex.InnerException != null
+                && ex.InnerException is ConfigurationErrorsException)
+            {
+                filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
+            }
+
+            if (filename != null && File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+
+            string directory = Path.GetDirectoryName(filename);
+
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            string settingsPath = Path.GetDirectoryName(config.FilePath);
+            Shell.ExecuteShellProcess_(settingsPath);
+
+            Debug.Assert(directory == settingsPath);
+
+            Settings.Default.Reset();
+            //Settings.Default.Reload();
+            //Settings.Default.Upgrade();
+        }
+
         /// <summary>
         /// Called after OnStartup()
         /// </summary>
@@ -192,33 +223,7 @@ c.Execute();
             }
             catch (ConfigurationErrorsException ex)
             {
-#if DEBUG
-                Debugger.Break();
-#endif
-                string filename = ex.Filename;
-                if (string.IsNullOrEmpty(filename)
-                    && ex.InnerException != null
-                    && ex.InnerException is ConfigurationErrorsException)
-                {
-                    filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
-                }
-
-                if (filename != null && File.Exists(filename))
-                {
-                    File.Delete(filename);
-                }
-                
-                string directory = Path.GetDirectoryName(filename);
-
-                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-                string settingsPath = Path.GetDirectoryName(config.FilePath);
-                Shell.ExecuteShellProcess_(settingsPath);
-
-                Debug.Assert(directory == settingsPath);
-
-                Settings.Default.Reset();
-                //Settings.Default.Reload();
-                //Settings.Default.Upgrade();
+                HandleConfigurationErrorsException(ex);
             }
 
 
@@ -237,9 +242,8 @@ c.Execute();
             }
             catch (ConfigurationErrorsException ex)
             {
-#if DEBUG
-                Debugger.Break();
-#endif
+                HandleConfigurationErrorsException(ex);
+
                 MessageBox.Show(ex.Message);
 
                 Process.GetCurrentProcess().Kill();
