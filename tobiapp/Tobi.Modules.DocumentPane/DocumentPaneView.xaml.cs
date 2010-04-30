@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -15,6 +16,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite;
@@ -273,7 +275,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (textElement != null)
                     {
                         Debug.Assert(textElement.Tag is TreeNode);
-                        m_UrakawaSession.PerformTreeNodeSelection((TreeNode) textElement.Tag);
+                        m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
                         return;
                     }
 
@@ -648,11 +650,11 @@ namespace Tobi.Plugin.DocumentPane
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
                 () =>
-                    {
-                        IsSearchVisible = true;
-                        FocusHelper.Focus(SearchBox);
-                        SearchBox.SelectAll();
-                    },
+                {
+                    IsSearchVisible = true;
+                    FocusHelper.Focus(SearchBox);
+                    SearchBox.SelectAll();
+                },
                 () => SearchBox.IsEnabled
                 && SearchBox.Visibility == Visibility.Visible,
                 null, //Settings_KeyGestures.Default,
@@ -720,10 +722,10 @@ namespace Tobi.Plugin.DocumentPane
 
             m_MouseDownTextElement = null;
             TheFlowDocument.Blocks.Clear();
-            TheFlowDocument.Blocks.Add(new Paragraph(new Run(" ")));
+            TheFlowDocument.Blocks.Add(createWelcomeEmptyFlowDoc());
 
             TheFlowDocumentSimple.Blocks.Clear();
-            TheFlowDocumentSimple.Blocks.Add(new Paragraph(new Run(" ")));
+            TheFlowDocumentSimple.Blocks.Add(createWelcomeEmptyFlowDoc());
 
             //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
             //m_EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
@@ -742,6 +744,57 @@ namespace Tobi.Plugin.DocumentPane
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
+
+        private Block createWelcomeEmptyFlowDoc()
+        {
+            string dirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+            string imgPath = Path.Combine(dirPath, "daisy_01.png");
+            try
+            {
+                FileStream imageStream = File.OpenRead(imgPath);
+                var iconDecoder = new PngBitmapDecoder(imageStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+                ImageSource imageSource = iconDecoder.Frames[0];
+                var image = new Image
+                    {
+                        Source = imageSource,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Stretch = Stretch.Uniform,
+                        StretchDirection = StretchDirection.DownOnly
+                    };
+                image.MaxWidth = 240;
+
+                //var block = new BlockUIContainer(image);
+
+                var block = new Paragraph();
+                block.TextAlignment = TextAlignment.Center;
+
+                var run1 = new Run(@"Tobi v" + ApplicationConstants.APP_VERSION)
+                    {
+                        FontWeight = FontWeights.Heavy
+                    };
+                run1.FontSize *= 2;
+                block.Inlines.Add(run1);
+                block.Inlines.Add(new LineBreak());
+
+                var run2 = new Run(@"Open-Source DAISY Multimedia Authoring");
+                block.Inlines.Add(run2);
+                block.Inlines.Add(new LineBreak());
+
+                var inline = new InlineUIContainer(image)
+                    {
+                        BaselineAlignment = BaselineAlignment.Top
+                    };
+                block.Inlines.Add(inline);
+
+                return block;
+            }
+            catch
+            {
+                return new Paragraph(new Run(" "));
+            }
+        }
+
         private void OnSearchLostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(SearchBox.Text))
@@ -868,7 +921,7 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             hyperlink = hyperlink.Parent as TextElement;
                         } while (hyperlink != null);
-                        
+
                         // Fallback:
                         Dispatcher.BeginInvoke(DispatcherPriority.Background,
                             (Action)(() =>
@@ -1267,10 +1320,8 @@ namespace Tobi.Plugin.DocumentPane
 #if false && DEBUG
                 FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("Testing FlowDocument (DEBUG) （１）このテキストDAISY図書は，レベル５まであります。")));
 #else
-                //UserInterfaceStrings.No_Document);
-                //setTextDecoration_ErrorUnderline(run);
-                TheFlowDocument.Blocks.Add(new Paragraph(new Run(" ")));
-                TheFlowDocumentSimple.Blocks.Add(new Paragraph(new Run(" ")));
+                TheFlowDocument.Blocks.Add(createWelcomeEmptyFlowDoc());
+                TheFlowDocumentSimple.Blocks.Add(createWelcomeEmptyFlowDoc());
 #endif //DEBUG
 
                 GC.Collect();
