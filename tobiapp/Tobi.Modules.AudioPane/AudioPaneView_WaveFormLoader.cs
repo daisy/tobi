@@ -150,7 +150,7 @@ namespace Tobi.Plugin.AudioPane
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_LoadWaveForm(bool wasPlaying, bool play)
+        public void RefreshUI_LoadWaveForm(bool wasPlaying)
         {
             ShowHideWaveFormLoadingMessage(true);
 
@@ -178,7 +178,7 @@ namespace Tobi.Plugin.AudioPane
 
                 ShowHideWaveFormLoadingMessage(false);
 
-                m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
+                m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying);
 
                 return;
             }
@@ -235,8 +235,7 @@ namespace Tobi.Plugin.AudioPane
                                         {
                                             //Console.WriteLine(@"BEFORE loadWaveForm");
 
-                                            loadWaveForm(widthMagnified, heightMagnified, wasPlaying,
-                                                     play, bytesPerPixel_Magnified, zoom);
+                                            loadWaveForm(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom);
 
                                             //Console.WriteLine(@"AFTER loadWaveForm");
                                         }
@@ -267,7 +266,7 @@ namespace Tobi.Plugin.AudioPane
                                             //Console.WriteLine(@">>>> SEND BEFORE 2");
 
                                             Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                                (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play)));
+                                                (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying)));
 
                                             //Console.WriteLine(@">>>> SEND BEFORE 3");
 
@@ -333,7 +332,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, bool play, double bytesPerPixel_Magnified, double zoom)
+        private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, double bytesPerPixel_Magnified, double zoom)
         {
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 

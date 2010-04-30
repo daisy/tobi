@@ -122,6 +122,8 @@ namespace Tobi.Plugin.AudioPane
                         return;
                     }
 
+                    IsAutoPlay = false;
+
                     if (IsWaveFormLoading && View != null)
                     {
                         View.CancelWaveFormLoad(true);
@@ -160,7 +162,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
-                    return !IsPlaying && !IsMonitoring && !IsRecording //!IsWaveFormLoading
+                    return !IsPlaying && !IsMonitoring && !IsRecording && !IsWaveFormLoading
                         && (m_UrakawaSession.DocumentProject == null
                         ||
                            node != null
@@ -183,6 +185,8 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);
+
+                    IsAutoPlay = false;
 
                     if (m_UrakawaSession.DocumentProject == null)
                     {
@@ -387,6 +391,11 @@ namespace Tobi.Plugin.AudioPane
                         {
                             if (treeNodeNew.GetManagedAudioMedia() == null)
                             {
+                                if (IsWaveFormLoading && View != null)
+                                {
+                                    View.CancelWaveFormLoad(true);
+                                }
+
                                 CommandStartRecord.Execute();
                             }
                             else

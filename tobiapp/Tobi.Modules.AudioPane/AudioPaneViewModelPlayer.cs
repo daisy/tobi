@@ -442,8 +442,7 @@ namespace Tobi.Plugin.AudioPane
 
             //StartWaveFormLoadTimer(0, IsAutoPlay);
 
-            m_ForcePlayAfterWaveFormLoaded = IsAutoPlay;
-            AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
+            AudioPlayer_LoadWaveForm();
         }
 
         public void RefreshWaveFormChunkMarkers()
@@ -539,13 +538,9 @@ namespace Tobi.Plugin.AudioPane
 
         private DispatcherTimer m_WaveFormLoadTimer;
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_ForcePlayAfterWaveFormLoaded = false;
-        // ReSharper restore RedundantDefaultFieldInitializer
-
         private static readonly Object LOCK = new Object();
 
-        private void StartWaveFormLoadTimer(long delayMilliseconds, bool play)
+        private void StartWaveFormLoadTimer(long delayMilliseconds)
         {
             if (IsWaveFormLoading)
             {
@@ -554,8 +549,6 @@ namespace Tobi.Plugin.AudioPane
 
             lock (LOCK)
             {
-                m_ForcePlayAfterWaveFormLoaded = play;
-
                 if (View != null)
                 {
                     View.ShowHideWaveFormLoadingMessage(true);
@@ -609,10 +602,10 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            AudioPlayer_LoadWaveForm(m_ForcePlayAfterWaveFormLoaded);
+            AudioPlayer_LoadWaveForm();
         }
 
-        public void AudioPlayer_LoadWaveForm(bool play)
+        public void AudioPlayer_LoadWaveForm()
         {
             //Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
@@ -646,14 +639,14 @@ namespace Tobi.Plugin.AudioPane
 
             if (View != null)
             {
-                View.RefreshUI_LoadWaveForm(wasPlaying, play);
+                View.RefreshUI_LoadWaveForm(wasPlaying);
             }
             else
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying, play);
+                AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying);
             }
         }
 
@@ -665,7 +658,7 @@ namespace Tobi.Plugin.AudioPane
         }
         private StateToRestore? m_StateToRestore = null;
 
-        public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying, bool play)
+        public void AudioPlayer_PlayAfterWaveFormLoaded(bool wasPlaying)
         {
             if (m_StateToRestore != null)
             {
@@ -725,7 +718,7 @@ namespace Tobi.Plugin.AudioPane
                  * */
             }
 
-            if (play)
+            if (IsAutoPlay)
             {
                 CommandPlay.Execute();
                 //OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
