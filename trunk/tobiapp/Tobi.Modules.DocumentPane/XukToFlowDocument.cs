@@ -1537,8 +1537,8 @@ namespace Tobi.Plugin.DocumentPane
                 image.Height = hh;
             }
 
-            image.HorizontalAlignment = HorizontalAlignment.Stretch;
-            image.VerticalAlignment = VerticalAlignment.Stretch;
+            image.HorizontalAlignment = HorizontalAlignment.Center;
+            image.VerticalAlignment = VerticalAlignment.Top;
 
             image.Stretch = Stretch.Uniform;
             image.StretchDirection = StretchDirection.DownOnly;
@@ -1590,8 +1590,8 @@ namespace Tobi.Plugin.DocumentPane
             }
             imagePanel.Children.Add(image);
 
-            imagePanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-            imagePanel.VerticalAlignment = VerticalAlignment.Stretch;
+            imagePanel.HorizontalAlignment = HorizontalAlignment.Center;
+            imagePanel.VerticalAlignment = VerticalAlignment.Top;
 
             //imagePanel.Width = image.Width;
             //imagePanel.MaxWidth = image.Width;
