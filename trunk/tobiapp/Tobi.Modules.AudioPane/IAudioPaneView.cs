@@ -11,7 +11,7 @@
         void ResetAll();
         void ResetPeakLines();
         void ResetWaveFormChunkMarkers();
-        void RefreshUI_LoadWaveForm(bool wasPlaying, bool play);
+        void RefreshUI_LoadWaveForm(bool wasPlaying);
         void RefreshUI_PeakMeter();
         void RefreshUI_PeakMeterBlackout(bool black);
         void RefreshUI_WaveFormPlayHead();

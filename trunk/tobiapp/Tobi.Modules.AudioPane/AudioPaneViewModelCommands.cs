@@ -37,7 +37,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     //Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);
 
-                    StartWaveFormLoadTimer(200, IsAutoPlay);
+                    StartWaveFormLoadTimer(200);
                 },
                 () => !IsWaveFormLoading,
                 null, null); //IsAudioLoaded
