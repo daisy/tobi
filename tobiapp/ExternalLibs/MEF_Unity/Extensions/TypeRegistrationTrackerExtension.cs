@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using MefContrib.Integration.Unity.Properties;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
@@ -11,8 +13,25 @@ namespace MefContrib.Integration.Unity.Extensions
     /// </summary>
     public sealed class TypeRegistrationTrackerExtension : UnityContainerExtension
     {
+        private readonly List<TypeRegistrationEntry> m_Entries;
+
+        /// <summary>
+        /// Event raised whenever an instance is being registered.
+        /// </summary>
         public event EventHandler<RegisterInstanceEventArgs> RegisteringInstance;
+
+        /// <summary>
+        /// Event raised whenever a type is being registered.
+        /// </summary>
         public event EventHandler<RegisterEventArgs> Registering;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TypeRegistrationTrackerExtension"/> class.
+        /// </summary>
+        public TypeRegistrationTrackerExtension()
+        {
+            m_Entries = new List<TypeRegistrationEntry>();
+        }
 
         protected override void Initialize()
         {
@@ -28,14 +47,27 @@ namespace MefContrib.Integration.Unity.Extensions
 
         private void OnRegisteringInstance(object sender, RegisterInstanceEventArgs e)
         {
+            m_Entries.Add(new TypeRegistrationEntry(e.RegisteredType, e.Name));
+
             if (RegisteringInstance != null)
                 RegisteringInstance(sender, e);
         }
 
         private void OnRegistering(object sender, RegisterEventArgs e)
         {
+            m_Entries.Add(new TypeRegistrationEntry(e.TypeFrom ?? e.TypeTo, e.Name));
+
             if (Registering != null)
                 Registering(sender, e);
+        }
+
+        /// <summary>
+        /// Gets all types registered int the <see cref="IUnityContainer"/> since
+        /// this extension was enabled.
+        /// </summary>
+        public ReadOnlyCollection<TypeRegistrationEntry> Entries
+        {
+            get { return m_Entries.AsReadOnly(); }
         }
 
         /// <summary>
@@ -54,7 +86,7 @@ namespace MefContrib.Integration.Unity.Extensions
             if (extension == null)
             {
                 // Extension was not added to the container.
-                throw new Exception(string.Format(Resources.ExtensionMissing,
+                throw new InvalidOperationException(string.Format(Resources.ExtensionMissing,
                     typeof(TypeRegistrationTrackerExtension).Name));
             }
 

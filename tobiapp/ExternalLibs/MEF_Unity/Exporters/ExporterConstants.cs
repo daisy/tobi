@@ -5,6 +5,9 @@ namespace MefContrib.Integration.Unity.Exporters
     /// </summary>
     public static class ExporterConstants
     {
+        /// <summary>
+        /// Identifies an export provided by <see cref="ExternalExportProvider"/>.
+        /// </summary>
         public const string IsExternallyProvidedMetadataName = "IsExternallyProvided";
     }
 }

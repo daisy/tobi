@@ -63,6 +63,7 @@
     <Compile Include="Exporters\ExporterConstants.cs" />
     <Compile Include="Exporters\ExternalExportDefinition.cs" />
     <Compile Include="Exporters\ExternalExportProvider.cs" />
+    <Compile Include="Extensions\TypeRegistrationEntry.cs" />
     <Compile Include="Extensions\TypeRegistrationTrackerExtension.cs" />
     <Compile Include="PartNotComposableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +72,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Strategies\ComposeStrategy.cs" />
+    <Compile Include="Strategies\CompositionContainerPolicy.cs" />
+    <Compile Include="Strategies\CompositionStrategy.cs" />
+    <Compile Include="Strategies\ICompositionContainerPolicy.cs" />
     <Compile Include="UnityContainerExtensions.cs" />
     <Compile Include="Exporters\UnityExportProvider.cs" />
   </ItemGroup>
@@ -81,6 +86,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions.csproj">
+      <Project>{17831F3B-6B82-4916-BD2B-2CE2071EA622}</Project>
+      <Name>Lib.Composite.UnityExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CAL\Unity2\Lib.Unity2.csproj">
       <Project>{8C5E8E92-D5D6-4A54-B382-0D675FE052EB}</Project>
       <Name>Lib.Unity2</Name>

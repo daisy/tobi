@@ -5,6 +5,7 @@
 #if(SILVERLIGHT)
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Resources;
@@ -22,7 +23,7 @@ namespace System.ComponentModel.Composition
             // deployment object is the only way to get the list of assemblies loaded by the XAP. 
             foreach (AssemblyPart ap in Deployment.Current.Parts)
             {
-                StreamResourceInfo sri = Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative));
+                StreamResourceInfo sri = MediaTypeNames.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative));
                 if (sri != null)
                 {
                     // Keep in mind that calling Load on an assembly that is already loaded will

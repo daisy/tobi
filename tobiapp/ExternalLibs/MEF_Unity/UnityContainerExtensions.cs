@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.Linq;
 using MefContrib.Integration.Unity.Exporters;
 using MefContrib.Integration.Unity.Extensions;
 using Microsoft.Practices.Unity;
@@ -12,16 +14,71 @@ namespace MefContrib.Integration.Unity
     /// </summary>
     public static class UnityContainerExtensions
     {
-        public static CompositionIntegration GetOrInitCompositionIntegration(this IUnityContainer unityContainer)
+        /// <summary>
+        /// Creates child container.
+        /// </summary>
+        /// <param name="unityContainer">Target container.</param>
+        /// <param name="enableComposition">True if the child container should
+        /// support MEF integration. False otherwise.</param>
+        /// <returns><see cref="IUnityContainer"/> child container.</returns>
+        public static IUnityContainer CreateChildContainer(this IUnityContainer unityContainer, bool enableComposition)
         {
-            var compositionIntegration = unityContainer.Configure<CompositionIntegration>();
-            if (compositionIntegration == null)
+            var childContainer = unityContainer.CreateChildContainer();
+            if (enableComposition)
             {
-                var unityExportProvider = new UnityExportProvider(unityContainer);
-                compositionIntegration = new CompositionIntegration(true, unityExportProvider);
-                unityContainer.AddExtension(compositionIntegration);
+                childContainer.EnableCompositionIntegration();
             }
-            return compositionIntegration;
+
+            return childContainer;
+        }
+
+        public static CompositionIntegration EnableCompositionIntegration(this IUnityContainer unityContainer)
+        {
+            lock (unityContainer)
+            {
+                var compositionIntegration = unityContainer.Configure<CompositionIntegration>();
+                if (compositionIntegration == null)
+                {
+                    var unityExportProvider = new UnityExportProvider(unityContainer);
+                    var parentExtension = (CompositionIntegration)null;
+
+                    if (unityContainer.Parent != null)
+                    {
+                        parentExtension = unityContainer.Parent.Configure<CompositionIntegration>();
+                    }
+
+                    if (parentExtension != null)
+                    {
+                        // Get the parent UnityExportProvider
+                        var parentUnityExportProvider = (UnityExportProvider)parentExtension.Providers.Where(
+                            ep => typeof(UnityExportProvider).IsAssignableFrom(ep.GetType())).First();
+
+                        // Collect all the exports provided by the parent container and add
+                        // them to the child export provider
+                        foreach (var definition in parentUnityExportProvider.ReadOnlyDefinitions)
+                        {
+                            unityExportProvider.AddExportDefinition(definition.ServiceType, definition.RegistrationName);
+                        }
+
+                        // Grab all the parent export providers except the unity ones
+                        var parentExporters = new List<ExportProvider>(
+                            parentExtension.Providers.Where(
+                                ep => !typeof(UnityExportProvider).IsAssignableFrom(ep.GetType()))) { unityExportProvider };
+
+                        var catalog = new AggregateCatalog(parentExtension.Catalogs);
+
+                        compositionIntegration = new CompositionIntegration(true, parentExporters.ToArray());
+                        compositionIntegration.Catalogs.Add(catalog);
+                    }
+                    else
+                    {
+                        compositionIntegration = new CompositionIntegration(true, unityExportProvider);
+                    }
+                    unityContainer.AddExtension(compositionIntegration);
+                }
+
+                return compositionIntegration;
+            }
         }
 
         /// <summary>
@@ -33,7 +90,7 @@ namespace MefContrib.Integration.Unity
         {
             lock (unityContainer)
             {
-                var compositionIntegration = GetOrInitCompositionIntegration(unityContainer);
+                var compositionIntegration = EnableCompositionIntegration(unityContainer);
 
                 compositionIntegration.Catalogs.Add(catalog);
 
@@ -45,7 +102,7 @@ namespace MefContrib.Integration.Unity
         {
             lock (unityContainer)
             {
-                var compositionIntegration = GetOrInitCompositionIntegration(unityContainer);
+                var compositionIntegration = EnableCompositionIntegration(unityContainer);
 
                 compositionIntegration.FallbackCatalogs.Add(catalog);
 

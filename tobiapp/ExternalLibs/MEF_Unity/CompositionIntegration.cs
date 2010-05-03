@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
-using System.Linq;
-using MefContrib.Integration.Unity.Exporters;
+using System.Diagnostics;
 using MefContrib.Integration.Unity.Extensions;
-using MefContrib.Integration.Unity.Properties;
+using MefContrib.Integration.Unity.Strategies;
+using Microsoft.Practices.Composite.UnityExtensions;
 using Microsoft.Practices.ObjectBuilder2;
-using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.ObjectBuilder;
 
@@ -28,23 +27,6 @@ namespace MefContrib.Integration.Unity
 
         private ExportProvider[] m_Providers;
         private CompositionContainer m_CompositionContainer;
-
-        ///// <summary>
-        ///// Initializes a new instance of <see cref="CompositionIntegration"/> class.
-        ///// </summary>
-        //public CompositionIntegration()
-        //    : this(true)
-        //{
-        //}
-
-        ///// <summary>
-        ///// Initializes a new instance of <see cref="CompositionIntegration"/> class.
-        ///// </summary>
-        ///// <param name="providers">An array of export providers.</param>
-        //public CompositionIntegration(params ExportProvider[] providers)
-        //    : this(true, providers)
-        //{
-        //}
 
         /// <summary>
         /// Initializes a new instance of <see cref="CompositionIntegration"/> class.
@@ -76,21 +58,42 @@ namespace MefContrib.Integration.Unity
             }
         }
 
+        /// <summary>
+        /// Gets a read-only collection of <see cref="ExportProvider"/>s registered in this extension.
+        /// </summary>
+        public IEnumerable<ExportProvider> Providers
+        {
+            get { return new List<ExportProvider>(m_Providers); }
+        }
+
         protected override void Initialize()
         {
             TypeRegistrationTrackerExtension.RegisterIfMissing(Container);
 
             m_CompositionContainer = PrepareCompositionContainer();
-#if true || NET40
-            //IServiceLocator locator = ServiceLocator.Current;
-            Context.Container.RegisterInstance(typeof(CompositionContainer), m_CompositionContainer);
-#else
-            Context.Locator.Add(typeof(CompositionContainer), m_CompositionContainer);
-#endif
 
+            Debug.Assert(Container == Context.Container);
 
-            Context.Strategies.AddNew<CompositionLifetimeStrategy>(UnityBuildStage.Lifetime);
-            Context.Strategies.AddNew<CompositionStrategy>(UnityBuildStage.Initialization);
+            Debug.Assert(Container.IsTypeRegistered(typeof(CompositionContainer))
+                == Container.IsRegistered<CompositionContainer>());
+
+            Debug.Assert(Container.IsTypeRegistered(typeof(CompositionContainer))
+                == UnityContainerHelper.IsTypeRegistered(Container, typeof(CompositionContainer)));
+            
+//#if true || NET40
+//            if (!Container.IsTypeRegistered(typeof(CompositionContainer)))
+//            {
+//                Context.Container.RegisterInstance(typeof(CompositionContainer), m_CompositionContainer);
+//            }
+
+//            //IServiceLocator locator = ServiceLocator.Current;
+//#else
+//            Context.Locator.Add(typeof(CompositionContainer), m_CompositionContainer);
+//#endif
+
+            Context.Policies.SetDefault<ICompositionContainerPolicy>(new CompositionContainerPolicy(m_CompositionContainer));
+            Context.Strategies.AddNew<CompositionStrategy>(UnityBuildStage.TypeMapping);
+            Context.Strategies.AddNew<ComposeStrategy>(UnityBuildStage.Initialization);
         }
 
         private CompositionContainer PrepareCompositionContainer()
@@ -145,81 +148,6 @@ namespace MefContrib.Integration.Unity
         {
             get { return m_CompositionContainer; }
         }
-
-        #region Builder Strategies
-
-        /// <summary>
-        /// Represents a strategy which injects MEF dependencies to
-        /// the Unity created object.
-        /// </summary>
-        private class CompositionStrategy : BuilderStrategy
-        {
-            public override void PostBuildUp(IBuilderContext context)
-            {
-                Type type = context.Existing.GetType();
-                object[] attributes = type.GetCustomAttributes(typeof(PartNotComposableAttribute), false);
-
-                if (attributes.Length == 0)
-                {
-                    CompositionContainer container = null;
-#if true || NET40
-                    IServiceLocator locator = ServiceLocator.Current;
-                    container = locator.GetInstance<CompositionContainer>();
-#else
-                    container = context.Locator.Get<CompositionContainer>();
-#endif
-                    container.SatisfyImportsOnce(AttributedModelServices.CreatePart(context.Existing));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Represents a MEF lifetime strategy which tries to resolve desired
-        /// component via MEF. If succeeded, build process is completed.
-        /// </summary>
-        private class CompositionLifetimeStrategy : BuilderStrategy
-        {
-            public override void PreBuildUp(IBuilderContext context)
-            {
-                CompositionContainer container = null;
-#if true || NET40
-                IServiceLocator locator = ServiceLocator.Current;
-                container = locator.GetInstance<CompositionContainer>();
-#else
-                container = context.Locator.Get<CompositionContainer>();
-#endif
-                var buildKey = (NamedTypeBuildKey)context.BuildKey;
-
-                try
-                {
-                    var exports = container.GetExports(buildKey.Type, null, buildKey.Name);
-
-                    if (exports.Count() == 0)
-                        return;
-
-                    if (exports.Count() > 1)
-                        throw new CompositionException(Resources.TooManyInstances);
-
-                    if (exports.First().Metadata is IDictionary<string, object>)
-                    {
-                        var metadata = (IDictionary<string, object>)exports.First().Metadata;
-                        if (metadata.ContainsKey(ExporterConstants.IsExternallyProvidedMetadataName) &&
-                            true.Equals(metadata[ExporterConstants.IsExternallyProvidedMetadataName]))
-                            return;
-                    }
-
-                    context.Existing = exports.First().Value;
-                    context.BuildComplete = true;
-                }
-                catch (Exception)
-                {
-                    context.BuildComplete = false;
-                    throw;
-                }
-            }
-        }
-
-        #endregion
 
         #region IDisposable
 
