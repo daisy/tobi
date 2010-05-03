@@ -52,22 +52,39 @@ namespace MefContrib.Integration.Unity.Exporters
         {
             TypeRegistrationTrackerExtension.RegisterIfMissing(m_UnityContainer);
 
-            m_UnityContainer.Configure<TypeRegistrationTrackerExtension>().Registering += (s, e) =>
-                m_ExternalExportProvider.AddExportDefinition(e.TypeFrom, e.Name);
+            var tracker = m_UnityContainer.Configure<TypeRegistrationTrackerExtension>();
 
-            m_UnityContainer.Configure<TypeRegistrationTrackerExtension>().RegisteringInstance += (s, e) =>
-                m_ExternalExportProvider.AddExportDefinition(e.RegisteredType, e.Name);
+            foreach (var entry in tracker.Entries)
+            {
+                AddExportDefinition(entry.Type, entry.Name);
+            }
+
+            tracker.Registering += (s, e) =>
+                AddExportDefinition(e.TypeFrom ?? e.TypeTo, e.Name);
+
+            tracker.RegisteringInstance += (s, e) =>
+                AddExportDefinition(e.RegisteredType, e.Name);
         }
 
         private object UnityFactoryMethod(Type requestedType, string registrationName)
         {
-            var obj = UnityContainer.Resolve(requestedType, registrationName);
-            return obj;
+            return UnityContainer.Resolve(requestedType, registrationName);
         }
 
         protected override IEnumerable<Export> GetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
         {
             return m_ExternalExportProvider.GetExports(definition);
+        }
+
+        /// <summary>
+        /// Adds a new export definition.
+        /// </summary>
+        /// <param name="type">Type that is being exported.</param>
+        /// <param name="registrationName">Registration name under which <paramref name="type"/>
+        /// is being exported.</param>
+        public void AddExportDefinition(Type type, string registrationName)
+        {
+            m_ExternalExportProvider.AddExportDefinition(type, registrationName);
         }
 
         /// <summary>
@@ -95,6 +112,14 @@ namespace MefContrib.Integration.Unity.Exporters
 
                 return m_UnityContainer;
             }
+        }
+
+        /// <summary>
+        /// Gets a read only list of definitions known to the export provider.
+        /// </summary>
+        public IList<ExternalExportDefinition> ReadOnlyDefinitions
+        {
+            get { return m_ExternalExportProvider.ReadOnlyDefinitions; }
         }
     }
 }

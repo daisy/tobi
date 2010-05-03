@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MefContrib.Integration.Unity.Exporters
 {
@@ -38,21 +39,15 @@ namespace MefContrib.Integration.Unity.Exporters
         }
 
         private IEnumerable<Export> GetExportsCore(
-            IEnumerable<ExternalExportDefinition> exportDefinitions,
-            Func<ExportDefinition, bool> constraint)
+                 IEnumerable<ExternalExportDefinition> exportDefinitions,
+                 Func<ExportDefinition, bool> constraint)
         {
             Debug.Assert(exportDefinitions != null);
             Debug.Assert(constraint != null);
 
-            var exports = new List<Export>();
-            foreach (var exportDefinition in exportDefinitions)
-            {
-                if (constraint(exportDefinition))
-                {
-                    exports.Add(CreateExport(exportDefinition));
-                }
-            }
-            return exports;
+            return (from exportDefinition in exportDefinitions
+                    where constraint(exportDefinition)
+                    select CreateExport(exportDefinition)).ToList();
         }
 
         private Export CreateExport(ExternalExportDefinition export)
@@ -75,7 +70,7 @@ namespace MefContrib.Integration.Unity.Exporters
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            m_Definitions.Add(new ExternalExportDefinition(type));
+            AddExportDefinition(type, null);
         }
 
         /// <summary>
@@ -89,7 +84,15 @@ namespace MefContrib.Integration.Unity.Exporters
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            m_Definitions.Add(new ExternalExportDefinition(type, registrationName));
+            var definitions = ReadOnlyDefinitions.Where(t => t.ServiceType == type &&
+                                                             t.RegistrationName == registrationName);
+
+            // We cannot add an export definition with the same type and registration name
+            // since we will introduce cardinality problems
+            if (definitions.Count() == 0)
+            {
+                m_Definitions.Add(new ExternalExportDefinition(type, registrationName));
+            }
         }
 
         /// <summary>

@@ -5,6 +5,8 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.ComponentModel.Composition.Primitives;
+using Microsoft.Internal;
+
 namespace System.ComponentModel.Composition.Hosting
 {
     public static class CompositionHost

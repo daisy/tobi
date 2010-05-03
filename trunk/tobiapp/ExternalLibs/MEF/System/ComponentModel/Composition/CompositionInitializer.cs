@@ -1,12 +1,15 @@
 ﻿// -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
+#if(SILVERLIGHT)
+
 using System;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Internal;
 
 namespace System.ComponentModel.Composition
 {
@@ -102,3 +105,5 @@ namespace System.ComponentModel.Composition
         }
     }
 }
+
+#endif
