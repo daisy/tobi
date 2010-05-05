@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
 using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.core;
@@ -50,46 +52,109 @@ namespace Tobi.Plugin.NavigationPane
             {
                 if (m_searchString == value) { return; }
                 m_searchString = value;
-                SearchMarkedTreeNodes(m_MarkedTreeNodes, m_searchString);
+                FlagSearchMatches();
             }
         }
 
-        private static void SearchMarkedTreeNodes(ObservableCollection<MarkedTreeNode> markedTreeNodes, string searchTerm)
+        private void FlagSearchMatches()
         {
-            foreach (MarkedTreeNode mnode in markedTreeNodes)
+            if (string.IsNullOrEmpty(SearchTerm))
             {
-                mnode.SearchMatch = !string.IsNullOrEmpty(searchTerm) &&
-                                   !string.IsNullOrEmpty(mnode.Description) &&
-                                   mnode.Description.ToLower().Contains(searchTerm.ToLower());
+                foreach (MarkedTreeNode mnode in MarkedTreeNodes)
+                {
+                    mnode.SearchMatch = false;
+                }
+                return;
+            }
+            bool atLeastOneFound = false;
+            foreach (MarkedTreeNode mnode in MarkedTreeNodes)
+            {
+                bool found = !string.IsNullOrEmpty(mnode.Description) &&
+                                   mnode.Description.ToLower().Contains(SearchTerm.ToLower());
+                mnode.SearchMatch = found;
+                if (found)
+                {
+                    atLeastOneFound = true;
+                }
+            }
+
+            if (atLeastOneFound)
+            {
+                MarkedTreeNode sw = FindNext(false);
+                if (sw == null)
+                {
+                    sw = FindPrevious(false);
+                }
             }
         }
 
-        public void FindNext()
+        public MarkedTreeNode FindNext(bool select)
         {
             MarkedTreeNode nextMatch = FindNextMarkers(m_MarkedTreeNodes);
             if (nextMatch != null)
             {
-                nextMatch.IsSelected = true;
-                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
+                var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+                                 m_view.ListView,
+                                 child =>
+                                 {
+                                     object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                                     return dc != null && dc == nextMatch;
+                                 });
+                if (select)
+                {
+                    nextMatch.IsSelected = true;
+                    if (listItem != null)
+                    {
+                        FocusHelper.FocusBeginInvoke(listItem); //m_view.m_LastListItemSelected
+                    }
+                }
+                else
+                {
+                    if (listItem != null)
+                    {
+                        listItem.BringIntoView();
+                    }
+                }
             }
             else
             {
                 AudioCues.PlayBeep();
             }
+            return nextMatch;
         }
-        public void FindPrevious()
+        public MarkedTreeNode FindPrevious(bool select)
         {
-            MarkedTreeNode nextMatch = FindPrevMarkers(m_MarkedTreeNodes);
-            if (nextMatch != null)
+            MarkedTreeNode previousMatch = FindPrevMarkers(m_MarkedTreeNodes);
+            if (previousMatch != null)
             {
-                nextMatch.IsSelected = true;
-                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
+                var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+                                 m_view.ListView,
+                                 child =>
+                                 {
+                                     object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                                     return dc != null && dc == previousMatch;
+                                 });
+                if (select)
+                {
+                    previousMatch.IsSelected = true;
+                    if (listItem != null)
+                    {
+                        FocusHelper.FocusBeginInvoke(listItem); //m_view.m_LastListItemSelected
+                    }
+                }
+                else
+                {
+                    if (listItem != null)
+                    {
+                        listItem.BringIntoView();
+                    }
+                }
             }
             else
             {
                 AudioCues.PlayBeep();
             }
-
+            return previousMatch;
         }
         private static MarkedTreeNode FindNextMarkers(ObservableCollection<MarkedTreeNode> pages)
         {
