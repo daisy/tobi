@@ -147,10 +147,10 @@ namespace Tobi.Plugin.NavigationPane
 
                 RaisePropertyChanged(() => Children);
             }
-            if (!string.IsNullOrEmpty(m_navigator.SearchTerm) && m_children != null)
-            {
-                HeadingsNavigator.SearchNodes(m_children, m_navigator.SearchTerm);
-            }
+            //if (m_children != null)
+            //{
+            //    m_navigator.FlagSearchMatches(m_children);
+            //}
         }
 
         public int ChildrenCount

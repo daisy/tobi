@@ -127,7 +127,7 @@ namespace Tobi.Plugin.NavigationPane
                 @"HEADINGS CommandFindNext DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => HeadingsNavigator.FindNext(),
+                () => HeadingsNavigator.FindNext(true),
                 () => HeadingsNavigator != null && !string.IsNullOrEmpty(HeadingsNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
@@ -138,7 +138,7 @@ namespace Tobi.Plugin.NavigationPane
                 @"HEADINGS CommandFindPrev DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => HeadingsNavigator.FindPrevious(),
+                () => HeadingsNavigator.FindPrevious(true),
                 () => HeadingsNavigator != null && !string.IsNullOrEmpty(HeadingsNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)

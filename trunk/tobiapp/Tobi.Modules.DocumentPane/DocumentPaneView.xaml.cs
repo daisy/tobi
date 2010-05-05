@@ -49,33 +49,11 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (m_ScrollViewer == null)
                 {
-                    m_ScrollViewer = GetScrollViewerInVisualTreeDescendantOf(this);
+                    m_ScrollViewer = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ScrollViewer>(this, null);
                 }
 
                 return m_ScrollViewer;
             }
-        }
-
-        public static ScrollViewer GetScrollViewerInVisualTreeDescendantOf(DependencyObject o)
-        {
-            if (o is ScrollViewer)
-            {
-                return (ScrollViewer)o;
-            }
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
-            {
-                var child = VisualTreeHelper.GetChild(o, i);
-
-                // Tree walking in depth-first traversal
-                var scroll = GetScrollViewerInVisualTreeDescendantOf(child);
-                if (scroll != null)
-                {
-                    return scroll;
-                }
-            }
-
-            return null;
         }
     }
 

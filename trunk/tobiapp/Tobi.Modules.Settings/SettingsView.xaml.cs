@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -394,19 +393,24 @@ namespace Tobi.Plugin.Settings
                 }
                 else
                 {
-                    var listItem = FindChild<ListViewItem>(SettingsList, nextMatch);
+                    var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+                        SettingsList,
+                        child =>
+                            {
+                                object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                                return dc != null && dc == nextMatch;
+                            });
                     if (listItem != null)
                     {
                         listItem.BringIntoView();
                     }
                 }
-                return nextMatch;
             }
             else
             {
                 AudioCues.PlayBeep();
             }
-            return null;
+            return nextMatch;
         }
 
         private SettingWrapper FindPrevious(bool select)
@@ -420,19 +424,24 @@ namespace Tobi.Plugin.Settings
                 }
                 else
                 {
-                    var listItem = FindChild<ListViewItem>(SettingsList, previousMatch);
+                    var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+                        SettingsList,
+                        child =>
+                        {
+                            object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                            return dc != null && dc == previousMatch;
+                        });
                     if (listItem != null)
                     {
                         listItem.BringIntoView();
                     }
                 }
-                return previousMatch;
             }
             else
             {
                 AudioCues.PlayBeep();
             }
-            return null;
+            return previousMatch;
         }
 
         ~SettingsView()
@@ -574,27 +583,7 @@ namespace Tobi.Plugin.Settings
                 }
             }
         }
-        private T FindChild<T>(DependencyObject obj, object dataContext) where T : DependencyObject
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is T)
-                {
-                    object dc = child.GetValue(FrameworkElement.DataContextProperty);
-                    if (dc != null && dc == dataContext)
-                    {
-                        return (T)child;
-                    }
-                }
-
-                T childOfChild = FindChild<T>(child, dataContext);
-                if (childOfChild != null)
-                    return childOfChild;
-
-            }
-            return null;
-        }
+        
         private SettingWrapper FindNextSetting()
         {
             ICollectionView dataView = CollectionViewSource.GetDefaultView(SettingsList.ItemsSource);
