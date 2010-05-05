@@ -1,5 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
 using Tobi.Common;
+using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
 using urakawa.navigation;
@@ -90,35 +93,73 @@ namespace Tobi.Plugin.NavigationPane
             node.IsExpanded = true;
         }
 
-        public void FindNext()
+        public HeadingTreeNodeWrapper FindNext(bool select)
         {
             ExpandAll();
 
             HeadingTreeNodeWrapper nextMatch = FindNextMatch(m_roots);
             if (nextMatch != null)
             {
-                //nextMatch.IsSelected = true;
-                ViewModel.View.SelectTreeNodeWrapper(nextMatch, true);
+                if (select)
+                {
+                    //nextMatch.IsSelected = true;
+                    ViewModel.View.SelectTreeNodeWrapper(nextMatch, true);
+                }
+                else
+                {
+                    var treeViewItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<TreeViewItem>(
+                        ViewModel.View.TreeView,
+                        child =>
+                        {
+                            object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                            return dc != null && dc == nextMatch;
+                        });
+                    if (treeViewItem != null)
+                    {
+                        treeViewItem.BringIntoView();
+                    }
+                }
             }
             else
             {
                 AudioCues.PlayBeep();
             }
+
+            return nextMatch;
         }
-        public void FindPrevious()
+        public HeadingTreeNodeWrapper FindPrevious(bool select)
         {
             ExpandAll();
 
             HeadingTreeNodeWrapper prevMatch = FindPrevMatch(m_roots);
             if (prevMatch != null)
             {
-                //prevMatch.IsSelected = true;
-                ViewModel.View.SelectTreeNodeWrapper(prevMatch, true);
+                if (select)
+                {
+                    //prevMatch.IsSelected = true;
+                    ViewModel.View.SelectTreeNodeWrapper(prevMatch, true);
+                }
+                else
+                {
+                    var treeViewItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<TreeViewItem>(
+                        ViewModel.View.TreeView,
+                        child =>
+                        {
+                            object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                            return dc != null && dc == prevMatch;
+                        });
+                    if (treeViewItem != null)
+                    {
+                        treeViewItem.BringIntoView();
+                    }
+                }
             }
             else
             {
                 AudioCues.PlayBeep();
             }
+
+            return prevMatch;
         }
 
         private static HeadingTreeNodeWrapper FindNextMatch(ObservableCollection<HeadingTreeNodeWrapper> nodes)
@@ -343,18 +384,64 @@ namespace Tobi.Plugin.NavigationPane
             {
                 if (m_searchString == value) { return; }
                 m_searchString = value;
-                SearchNodes(m_roots, m_searchString);
+                FlagSearchMatches();
             }
         }
-        internal static void SearchNodes(ObservableCollection<HeadingTreeNodeWrapper> nodes, string searchTerm)
+
+        internal void FlagSearchMatches()
         {
+            ExpandAll();
+
+            bool atLeastOneFound = FlagSearchMatches(m_roots);
+
+            if (atLeastOneFound)
+            {
+                HeadingTreeNodeWrapper nw = FindNext(false);
+                if (nw == null)
+                {
+                    nw = FindPrevious(false);
+                }
+            }
+        }
+
+        private bool FlagSearchMatches(ObservableCollection<HeadingTreeNodeWrapper> nodes)
+        {
+            if (string.IsNullOrEmpty(SearchTerm))
+            {
+                foreach (HeadingTreeNodeWrapper node in nodes)
+                {
+                    node.SearchMatch = false;
+                    if (node.Children != null && node.Children.Count > 0)
+                    {
+                        FlagSearchMatches(node.Children);
+                    }
+                }
+                return false;
+            }
+
+            bool atLeastOneFound = false;
+
             foreach (HeadingTreeNodeWrapper node in nodes)
             {
-                node.SearchMatch = !string.IsNullOrEmpty(searchTerm) &&
-                   !string.IsNullOrEmpty(node.Title) &&
-                   node.Title.ToLower().Contains(searchTerm.ToLower());
-                if (node.Children != null && node.Children.Count > 0) { SearchNodes(node.Children, searchTerm); }
+                bool found = !string.IsNullOrEmpty(node.Title) &&
+                             node.Title.ToLower().Contains(SearchTerm.ToLower());
+                node.SearchMatch = found;
+                if (found)
+                {
+                    atLeastOneFound = true;
+                }
+
+                if (node.Children != null && node.Children.Count > 0)
+                {
+                    found = FlagSearchMatches(node.Children);
+                    if (found)
+                    {
+                        atLeastOneFound = true;
+                    }
+                }
             }
+
+            return atLeastOneFound;
         }
     }
 }

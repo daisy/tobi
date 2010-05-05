@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.ComponentModel.Composition;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Events;
 using Tobi.Common;
+using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
 using urakawa.core;
-using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.Validator
 {
@@ -136,31 +134,14 @@ namespace Tobi.Plugin.Validator
             if (selection == null) return;
 
             DataTemplate template = Tabs.ContentTemplate;
-            ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(Tabs);
-            ListBox list = (ListBox)template.FindName("ValidationItemsListBox", contentPresenter);
+            var contentPresenter = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ContentPresenter>(Tabs, null);
+            var list = (ListBox)template.FindName("ValidationItemsListBox", contentPresenter);
 
             if (list != null)
             {
                 list.SelectedItem = selection;
                 list.ScrollIntoView(selection);
             }
-        }
-
-        private T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is T)
-                    return (T)child;
-                else
-                {
-                    T childOfChild = FindVisualChild<T>(child);
-                    if (childOfChild != null)
-                        return childOfChild;
-                }
-            }
-            return null;
         }
 
         private void OnClipboardCopyAllLinkClick(object sender, RoutedEventArgs e)

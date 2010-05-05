@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -6,6 +7,32 @@ namespace Tobi.Common.UI
 {
     public static class VisualLogicalTreeWalkHelper
     {
+        public static T FindObjectInVisualTreeWithMatchingType<T>(
+            DependencyObject parent, Func<T, bool> filterCondition)
+            where T : DependencyObject
+        {
+            if (parent is T)
+            {
+                if (filterCondition == null
+                    || filterCondition((T)parent))
+                {
+                    return (T)parent;
+                }
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                
+                var childOfChild = FindObjectInVisualTreeWithMatchingType<T>(child, filterCondition);
+                if (childOfChild != null)
+                {
+                    return childOfChild;
+                }
+            }
+            return null;
+        }
+
         public static IEnumerable<DependencyObject> GetElements(DependencyObject parent, bool nonRecursiveTreeParsingAlgorithm, bool leafFirst, bool logicalInsteadOfVisualTreeScan)
         {
             if (leafFirst)
