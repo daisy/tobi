@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -382,30 +383,56 @@ namespace Tobi.Plugin.Settings
         }
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e) { SearchTerm = SearchBox.Text; }
 
-        private void FindNext()
+        private SettingWrapper FindNext(bool select)
         {
             SettingWrapper nextMatch = FindNextSetting();
             if (nextMatch != null)
             {
-                nextMatch.IsSelected = true;
+                if (select)
+                {
+                    nextMatch.IsSelected = true;
+                }
+                else
+                {
+                    var listItem = FindChild<ListViewItem>(SettingsList, nextMatch);
+                    if (listItem != null)
+                    {
+                        listItem.BringIntoView();
+                    }
+                }
+                return nextMatch;
             }
             else
             {
                 AudioCues.PlayBeep();
             }
-
+            return null;
         }
-        private void FindPrevious()
+
+        private SettingWrapper FindPrevious(bool select)
         {
-            SettingWrapper nextMatch = FindPrevSetting();
-            if (nextMatch != null)
+            SettingWrapper previousMatch = FindPrevSetting();
+            if (previousMatch != null)
             {
-                nextMatch.IsSelected = true;
+                if (select)
+                {
+                    previousMatch.IsSelected = true;
+                }
+                else
+                {
+                    var listItem = FindChild<ListViewItem>(SettingsList, previousMatch);
+                    if (listItem != null)
+                    {
+                        listItem.BringIntoView();
+                    }
+                }
+                return previousMatch;
             }
             else
             {
                 AudioCues.PlayBeep();
             }
+            return null;
         }
 
         ~SettingsView()
@@ -465,7 +492,7 @@ namespace Tobi.Plugin.Settings
                 @"SETTINGS CommandFindNext DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                FindNext,
+                () => FindNext(true),
                 () => !string.IsNullOrEmpty(SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
@@ -475,7 +502,7 @@ namespace Tobi.Plugin.Settings
                 @"SETTINGS CommandFindPrevious DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                FindPrevious,
+                () => FindPrevious(true),
                 () => !string.IsNullOrEmpty(SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
@@ -516,21 +543,63 @@ namespace Tobi.Plugin.Settings
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private static void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)
+        private void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)
         {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                foreach (SettingWrapper wrapper in settingWrappers)
+                {
+                    wrapper.SearchMatch = false;
+                }
+                return;
+            }
+
+            bool atLeastOneFound = false;
             foreach (SettingWrapper wrapper in settingWrappers)
             {
-                wrapper.SearchMatch = !string.IsNullOrEmpty(searchTerm) &&
-                   !string.IsNullOrEmpty(wrapper.Name) &&
-                   wrapper.Name.ToLower().Contains(searchTerm.ToLower());
+                bool found = !string.IsNullOrEmpty(wrapper.Name) && wrapper.Name.ToLower().Contains(searchTerm.ToLower());
+                wrapper.SearchMatch = found;
+                if (found)
+                {
+                    atLeastOneFound = true;
+                }
+            }
+
+            if (atLeastOneFound)
+            {
+                SettingWrapper sw = FindNext(false);
+                if (sw == null)
+                {
+                    sw = FindPrevious(false);
+                }
             }
         }
+        private T FindChild<T>(DependencyObject obj, object dataContext) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is T)
+                {
+                    object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                    if (dc != null && dc == dataContext)
+                    {
+                        return (T)child;
+                    }
+                }
 
+                T childOfChild = FindChild<T>(child, dataContext);
+                if (childOfChild != null)
+                    return childOfChild;
+
+            }
+            return null;
+        }
         private SettingWrapper FindNextSetting()
         {
             ICollectionView dataView = CollectionViewSource.GetDefaultView(SettingsList.ItemsSource);
             IEnumerator enumerator = dataView.GetEnumerator();
-            
+
             SettingWrapper firstMatch = null;
             while (enumerator.MoveNext())
             {
@@ -543,7 +612,7 @@ namespace Tobi.Plugin.Settings
                 {
                     continue;
                 }
-                
+
                 // from here we know we are after the selected item
 
                 while (enumerator.MoveNext())
@@ -561,7 +630,7 @@ namespace Tobi.Plugin.Settings
             return firstMatch; // no selection => first one that matched, if any
         }
 
-        private  SettingWrapper FindPrevSetting()
+        private SettingWrapper FindPrevSetting()
         {
             ICollectionView dataView = CollectionViewSource.GetDefaultView(SettingsList.ItemsSource);
             IEnumerator enumerator = dataView.GetEnumerator();
@@ -570,7 +639,7 @@ namespace Tobi.Plugin.Settings
             while (enumerator.MoveNext())
             {
                 var current = (SettingWrapper)enumerator.Current;
-                
+
                 if (current.IsSelected)
                 {
                     return lastMatch;
