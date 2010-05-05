@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using System.Media;
-using System.Windows.Documents;
 using System.Windows;
+using System.Windows.Controls;
 using Tobi.Common;
 using Tobi.Common.UI;
-using urakawa;
 using urakawa.core;
 
 namespace Tobi.Plugin.NavigationPane
@@ -35,45 +33,108 @@ namespace Tobi.Plugin.NavigationPane
             {
                 if (m_searchString == value) { return; }
                 m_searchString = value;
-                SearchPages(m_Pages, m_searchString);
+                FlagSearchMatches();
             }
         }
-        private static void SearchPages(ObservableCollection<Page> pages, string searchTerm)
+        private void FlagSearchMatches()
         {
-            foreach (Page page in pages)
+            if (string.IsNullOrEmpty(SearchTerm))
             {
-                page.SearchMatch = !string.IsNullOrEmpty(searchTerm) &&
-                                   !string.IsNullOrEmpty(page.Name) &&
-                                   page.Name.ToLower().Contains(searchTerm.ToLower());
+                foreach (Page page in m_Pages)
+                {
+                    page.SearchMatch = false;
+                }
+                return;
+            }
+            bool atLeastOneFound = false;
+            foreach (Page page in m_Pages)
+            {
+                bool found = !string.IsNullOrEmpty(page.Name) &&
+                                   page.Name.ToLower().Contains(SearchTerm.ToLower());
+                page.SearchMatch = found;
+                if (found)
+                {
+                    atLeastOneFound = true;
+                }
+            }
+
+            if (atLeastOneFound)
+            {
+                Page sw = FindNext(false);
+                if (sw == null)
+                {
+                    sw = FindPrevious(false);
+                }
             }
         }
 
-        public void FindNext()
+        public Page FindNext(bool select)
         {
             Page nextMatch = FindNextPage(m_Pages);
             if (nextMatch != null)
             {
-                nextMatch.IsSelected = true;
-                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
+                var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+                              m_view.ListView,
+                              child =>
+                              {
+                                  object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                                  return dc != null && dc == nextMatch;
+                              });
+                if (select)
+                {
+                    nextMatch.IsSelected = true;
+                    if (listItem != null)
+                    {
+                        FocusHelper.FocusBeginInvoke(listItem); //m_view.m_LastListItemSelected
+                    }
+                }
+                else
+                {
+                    if (listItem != null)
+                    {
+                        listItem.BringIntoView();
+                    }
+                }
             }
             else
             {
                 AudioCues.PlayBeep();
             }
+            return nextMatch;
         }
-        public void FindPrevious()
+        public Page FindPrevious(bool select)
         {
-            Page nextMatch = FindPrevPage(m_Pages);
-            if (nextMatch != null)
+            Page previousMatch = FindPrevPage(m_Pages);
+            if (previousMatch != null)
             {
-                nextMatch.IsSelected = true;
-                FocusHelper.FocusBeginInvoke(m_view.m_LastListItemSelected);
+                var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+                           m_view.ListView,
+                           child =>
+                           {
+                               object dc = child.GetValue(FrameworkElement.DataContextProperty);
+                               return dc != null && dc == previousMatch;
+                           });
+                if (select)
+                {
+                    previousMatch.IsSelected = true;
+                    if (listItem != null)
+                    {
+                        FocusHelper.FocusBeginInvoke(listItem); //m_view.m_LastListItemSelected
+                    }
+                }
+                else
+                {
+                    if (listItem != null)
+                    {
+                        listItem.BringIntoView();
+                    }
+                }
             }
             else
             {
                 AudioCues.PlayBeep();
             }
-
+            return previousMatch;
         }
         private static Page FindNextPage(ObservableCollection<Page> pages)
         {

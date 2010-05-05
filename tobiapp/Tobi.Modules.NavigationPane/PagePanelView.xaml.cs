@@ -102,11 +102,11 @@ namespace Tobi.Plugin.NavigationPane
 
         public void LoadProject()
         {
-            m_LastListItemSelected = null;
+            //m_LastListItemSelected = null;
         }
         public void UnloadProject()
         {
-            m_LastListItemSelected = null;
+            //m_LastListItemSelected = null;
             SearchBox.Text = "";
         }
 
@@ -168,13 +168,13 @@ namespace Tobi.Plugin.NavigationPane
         //    }
         //}
 
-        internal ListViewItem m_LastListItemSelected;
+        //internal ListViewItem m_LastListItemSelected;
 
-        private void OnSelected_ListItem(object sender, RoutedEventArgs e)
-        {
-            Debug.Assert(sender == e.Source);
-            m_LastListItemSelected = (ListViewItem)sender;
-        }
+        //private void OnSelected_ListItem(object sender, RoutedEventArgs e)
+        //{
+        //    Debug.Assert(sender == e.Source);
+        //    m_LastListItemSelected = (ListViewItem)sender;
+        //}
 
         private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
         {

@@ -2,8 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
@@ -75,7 +73,7 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext,
                 @"PAGES CommandFindNext DUMMY TXT", //UserInterfaceStrings.PageFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => PagesNavigator.FindNext(),
+                null, () => PagesNavigator.FindNext(true),
                 () => PagesNavigator != null && !string.IsNullOrEmpty(PagesNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
@@ -85,7 +83,7 @@ namespace Tobi.Plugin.NavigationPane
                 @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev,
                 @"PAGES CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.PageFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => PagesNavigator.FindPrevious(),
+                null, () => PagesNavigator.FindPrevious(true),
                 () => PagesNavigator != null && !string.IsNullOrEmpty(PagesNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindPrev)

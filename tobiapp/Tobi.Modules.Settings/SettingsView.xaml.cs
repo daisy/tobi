@@ -376,7 +376,7 @@ namespace Tobi.Plugin.Settings
             {
                 if (m_SearchTerm == value) { return; }
                 m_SearchTerm = value;
-                FlagSearchMatches(AggregatedSettings, m_SearchTerm);
+                FlagSearchMatches();
                 m_PropertyChangeHandler.RaisePropertyChanged(() => SearchTerm);
             }
         }
@@ -552,11 +552,11 @@ namespace Tobi.Plugin.Settings
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void FlagSearchMatches(List<SettingWrapper> settingWrappers, string searchTerm)
+        private void FlagSearchMatches()
         {
-            if (string.IsNullOrEmpty(searchTerm))
+            if (string.IsNullOrEmpty(SearchTerm))
             {
-                foreach (SettingWrapper wrapper in settingWrappers)
+                foreach (SettingWrapper wrapper in AggregatedSettings)
                 {
                     wrapper.SearchMatch = false;
                 }
@@ -564,9 +564,10 @@ namespace Tobi.Plugin.Settings
             }
 
             bool atLeastOneFound = false;
-            foreach (SettingWrapper wrapper in settingWrappers)
+            foreach (SettingWrapper wrapper in AggregatedSettings)
             {
-                bool found = !string.IsNullOrEmpty(wrapper.Name) && wrapper.Name.ToLower().Contains(searchTerm.ToLower());
+                bool found = !string.IsNullOrEmpty(wrapper.Name)
+                    && wrapper.Name.ToLower().Contains(SearchTerm.ToLower());
                 wrapper.SearchMatch = found;
                 if (found)
                 {
