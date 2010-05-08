@@ -10,7 +10,7 @@
       <RowDefinition Height="15*"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-  
+
 <UI:LazyKeepAliveTabControl VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             x:Name="Tabs"
@@ -81,15 +81,6 @@ AlternationCount="2"
             <DataTemplate>
               <TextBlock Padding="4" Text="{Binding Message}"/>
               
-              <!--<BulletDecorator Width="Auto" Margin="0,0,0,2">
-                <BulletDecorator.Bullet>
-                  <Ellipse Fill="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
-                           Width="4"
-                           Height="4"/>
-                </BulletDecorator.Bullet>
-                <TextBlock Padding="4, 0, 0, 0" Text="{Binding Message}"/>
-              </BulletDecorator>-->
-              
              </DataTemplate>
           </ListBox.ItemTemplate>
         
@@ -110,12 +101,12 @@ AlternationCount="2"
                      Path="SelectedItem"/>
           </StackPanel.DataContext>
 
-          <!-- this picks up the currently selected item-->
-          <ContentControl
-                          Focusable="False"
-                          Content="{Binding}"/>
 
-          <TextBlock Margin="0,3,0,3"
+          
+          <ContentControl Focusable="False" Content="{Binding}"/>
+              
+          
+          <TextBlock Margin="5,0,0,0"
                      Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
             <Hyperlink Click="OnClipboardLinkClick">
               <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyLink}"/>

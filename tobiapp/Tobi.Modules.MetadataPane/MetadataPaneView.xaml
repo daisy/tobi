@@ -23,7 +23,7 @@
 
     <Style TargetType="{x:Type ListViewItem}">
       <Setter Property="Margin" Value="4"/>
-      <Setter>
+      <!--<Setter>
         <Setter.Property>AutomationProperties.Name</Setter.Property>
         <Setter.Value>
           <MultiBinding Converter="{local:FullDescriptionConverter}">
@@ -31,7 +31,7 @@
             <Binding Path="Content"/>
           </MultiBinding>
         </Setter.Value>
-      </Setter>
+      </Setter>-->
       <Style.Triggers>
         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
           <Setter Property="Background"
@@ -150,9 +150,11 @@
       <Style TargetType="{x:Type ListViewItem}">
         <Setter Property="AutomationProperties.Name">
           <Setter.Value>
-            <MultiBinding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.NameAndDescription}">
-              <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Name"/>
-              <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Description"/>
+            <MultiBinding Converter="{local:FullSummaryConverter}">
+              <Binding />
+              <Binding RelativeSource="{RelativeSource FindAncestor,
+                                       AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.ValidationItems"/>
             </MultiBinding>
           </Setter.Value>
         </Setter>

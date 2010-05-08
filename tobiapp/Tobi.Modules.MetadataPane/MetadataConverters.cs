@@ -28,22 +28,25 @@ namespace Tobi.Plugin.MetadataPane
         //Expected: NotifyingMetadataItem and list of ValidationItems
         public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (! (values[0] is NotifyingMetadataItem))
-            {
-                return null;
-            }
+            if (values[0] == null || values[1] == null) return "";
+            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is IEnumerable<ValidationItem>)) return "";
 
             NotifyingMetadataItem metadata = (NotifyingMetadataItem)values[0];
             IEnumerable<ValidationItem> errors = (IEnumerable<ValidationItem>)values[1];
 
+            return GetErrorText(metadata, errors);
+        }
+
+        public static string GetErrorText(NotifyingMetadataItem metadata, IEnumerable<ValidationItem> errors)
+        {
             //find the error for this metadata object
-            ValidationItem error = 
-                errors.Where(v => 
-                    (v is AbstractMetadataValidationErrorWithTarget) 
-                    && 
-                    (v as AbstractMetadataValidationErrorWithTarget).Target == 
+            ValidationItem error =
+                errors.Where(v =>
+                    (v is AbstractMetadataValidationErrorWithTarget)
+                    &&
+                    (v as AbstractMetadataValidationErrorWithTarget).Target ==
                     metadata.UrakawaMetadata).FirstOrDefault();
-            
+
             if (error == null)
             {
                 return "";
@@ -91,7 +94,7 @@ namespace Tobi.Plugin.MetadataPane
     }
 
     [ValueConversion(typeof(object), typeof(string))]
-    public class FullDescriptionConverter : ValueConverterMarkupExtensionBase<FullDescriptionConverter>
+    /*public class FullDescriptionConverter : ValueConverterMarkupExtensionBase<FullDescriptionConverter>
     {
         //concatenate values[0] and values[1]
         public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -102,7 +105,7 @@ namespace Tobi.Plugin.MetadataPane
 
             return string.Format("{0}: {1}", (string) values[0], (string) values[1]);
         }
-    }
+    }*/
     
     [ValueConversion(typeof(NotifyingMetadataItem), typeof(System.Windows.Visibility))]
     public class PrimaryIdentifierConverter : ValueConverterMarkupExtensionBase<PrimaryIdentifierConverter>
@@ -153,6 +156,48 @@ namespace Tobi.Plugin.MetadataPane
             return true;
         }
     }
+
+    [ValueConversion(typeof(NotifyingMetadataItem), typeof(string))]
+    public class FullSummaryConverter : ValueConverterMarkupExtensionBase<FullSummaryConverter>
+    {
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values[0] == null || values[1] == null) return "";
+            if (!(values[0] is NotifyingMetadataItem) || !(values[1] is IEnumerable<ValidationItem> )) return "";
+
+            NotifyingMetadataItem item = values[0] as NotifyingMetadataItem;
+            IEnumerable<ValidationItem> errors = values[1] as IEnumerable<ValidationItem>;
+
+            string error = DescriptiveErrorTextConverter.GetErrorText(item, errors);
+            if (string.IsNullOrEmpty(error)) error = Tobi_Plugin_MetadataPane_Lang.NoErrors;
+            else error = string.Format(Tobi_Plugin_MetadataPane_Lang.ErrorItem, error);
+
+            string primaryId = "";
+            if (item.IsPrimaryIdentifier) primaryId = Tobi_Plugin_MetadataPane_Lang.IsPrimaryIdentifier;
+
+            string canEditDelete = Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip2;
+            if (item.CanEditOrDelete) canEditDelete = Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip;
+            
+            string synonyms = "";
+            if (item.Definition.Synonyms != null && item.Definition.Synonyms.Count > 0)
+            {
+                synonyms = string.Format(Tobi_Plugin_MetadataPane_Lang.Synonyms, 
+                    string.Join(",", item.Definition.Synonyms.ToArray()));
+            }
+
+            //name = content.  errors. primary id. can delete.  definition. synonyms.  occurrence.
+            string retval = string.Format(Tobi_Plugin_MetadataPane_Lang.CompleteSummary, 
+                item.Name, item.Content, error, primaryId, canEditDelete, item.Definition.Description, synonyms, 
+                MetadataUtilities.OccurrenceToString(item.Definition));
+            return retval;
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 
     
 }

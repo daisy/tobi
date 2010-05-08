@@ -126,6 +126,13 @@
   <data name="DateHint" xml:space="preserve">
     <value>formatted as YYYY-MM-DD, YYYY-MM, or YYYY</value>
   </data>
+  <data name="DefinitionSummary" xml:space="preserve">
+    <value>{0}
+Must be a {1}
+Is {2}
+{3}</value>
+    <comment>{0} = definition, {1} = data type, {2} = occurrence, {3} = synonyms (if any)</comment>
+  </data>
   <data name="DefNameMustBeHint" xml:space="preserve">
     <value>{0} must be {1}.</value>
   </data>
@@ -143,6 +150,12 @@ This metadata field cannot have more than one instance.
   </data>
   <data name="EntryNotFound" xml:space="preserve">
     <value>An entry for {0} was not found.</value>
+  </data>
+  <data name="FormatError" xml:space="preserve">
+    <value>The value for the item is invalid:
+{0} = {1}
+Hint: {0} must be {2}</value>
+    <comment>{0} = name, {1} = value, {2} = hint</comment>
   </data>
   <data name="FormatErrorCompleteSummary" xml:space="preserve">
     <value>Metadata error: invalid formatting

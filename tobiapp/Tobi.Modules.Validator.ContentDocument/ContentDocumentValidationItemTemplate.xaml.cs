@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using Tobi.Common.UI.XAML;
 using Tobi.Common.Validation;
+using urakawa.core;
 
 namespace Tobi.Plugin.Validator.ContentDocument
 {
@@ -33,6 +34,18 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
             return ContentDocumentValidator.GetElementsListFromDtdRegex(value as string);
             
+        }
+    }
+
+    [ValueConversion(typeof(TreeNode), typeof(string))]
+    public class NodeToXmlConverter : ValueConverterMarkupExtensionBase<NodeToXmlConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is TreeNode)) return "";
+
+            return ValidatorUtilities.GetNodeXml(value as TreeNode, true);
         }
     }
 }

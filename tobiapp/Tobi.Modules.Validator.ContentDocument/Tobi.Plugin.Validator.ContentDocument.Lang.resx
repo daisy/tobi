@@ -132,7 +132,7 @@
   <data name="DTDIdentifier" xml:space="preserve">
     <value>The DTD identifier associated with this document:</value>
   </data>
-  <data name="InvalidElementSequence" xml:space="preserve">
+  <data name="InvalidElementSequenceHeading" xml:space="preserve">
     <value>Invalid element sequence</value>
   </data>
   <data name="InvalidElementSequenceMessage" xml:space="preserve">
@@ -177,5 +177,11 @@ The DTD identifier associated with this document is:
 An element definition was not found for:
 {0}</value>
     <comment>{0} = element name</comment>
+  </data>
+  <data name="MissingDTDMessage" xml:space="preserve">
+    <value>Tobi could not locate a DTD, so it cannot validate the document.
+The DTD identifier associated with this document:
+{0}</value>
+    <comment>{0} = DTD identifier</comment>
   </data>
 </root>
