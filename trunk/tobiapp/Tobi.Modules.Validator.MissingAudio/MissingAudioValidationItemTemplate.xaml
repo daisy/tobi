@@ -21,43 +21,44 @@
   
   <DataTemplate DataType="{x:Type MissingAudio:MissingAudioValidationError}">
     <StackPanel Focusable="False">
-      <UI:TextBoxReadOnlyCaretVisible
-         Focusable="True"
-         Style="{StaticResource MissingAudioHeadingStyle}"
-         Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True">
-        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
-          <Binding StringFormat="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioMessage2}"
-                   Path="Target"
-                   Mode="OneWay"
-                   Converter="{Common:ElementNameConverter}"/>
-        </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
-      </UI:TextBoxReadOnlyCaretVisible>
+      <StackPanel Focusable="False" Margin="5">
+        <UI:TextBoxReadOnlyCaretVisible
+           Focusable="True"
+           Style="{StaticResource MissingAudioHeadingStyle}"
+           TextReadOnly="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
+        <UI:TextBoxReadOnlyCaretVisible Focusable="True">
+          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+            <Binding StringFormat="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioMessage2}"
+                     Path="Target"
+                     Mode="OneWay"
+                     Converter="{Common:ElementNameConverter}"/>
+          </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+        </UI:TextBoxReadOnlyCaretVisible>
 
-      <ContentPresenter Content="{Binding Target}">
-        <ContentPresenter.ContentTemplate>
-          <DataTemplate>
-            <Border CornerRadius="5" Margin="5" 
-                    BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
-                    BorderThickness="2">
-              <FlowDocumentScrollViewer
-                              Document="{Binding Converter={Common:TreeNodeFlowDocumentConverter}}"
-                              IsTabStop="False"
-                              Focusable="False"
-                              MaxHeight="120"/>
+        <ContentPresenter Content="{Binding Target}">
+          <ContentPresenter.ContentTemplate>
+            <DataTemplate>
+              <Border CornerRadius="5" Margin="5"
+                      BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+                      BorderThickness="2">
+                <FlowDocumentScrollViewer
+                                Document="{Binding Converter={Common:TreeNodeFlowDocumentConverter}}"
+                                IsTabStop="False"
+                                Focusable="False"
+                                MaxHeight="120"/>
 
-            </Border>
-          </DataTemplate>
-        </ContentPresenter.ContentTemplate>
-      </ContentPresenter>
+              </Border>
+            </DataTemplate>
+          </ContentPresenter.ContentTemplate>
+        </ContentPresenter>
 
-      <TextBlock Margin="0,3,0,3">
-        <Hyperlink Click="OnViewLinkClick">
-          <Run Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.ClickToView}"/>
-        </Hyperlink>
-      </TextBlock>
+        <TextBlock>
+          <Hyperlink Click="OnViewLinkClick">
+            <Run Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.ClickToView}"/>
+          </Hyperlink>
+        </TextBlock>
+      </StackPanel>
     </StackPanel>
-
   </DataTemplate>
 
 </ResourceDictionary>

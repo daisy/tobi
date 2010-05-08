@@ -15,53 +15,76 @@
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
+  
   <!-- template representing the semi-flattened XML (direct children only) for a single node-->
   <DataTemplate x:Key="NodeTemplate">
-    <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
-            BorderThickness="2">
+    <Border CornerRadius="2" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+            BorderThickness="1">
       <FlowDocumentScrollViewer
                       Document="{Binding Converter={Common:TreeNodeFlowDocumentConverter}}"
                       IsTabStop="False"
-                      Focusable="False"
-                      MaxHeight="120"/>
-
+                      Focusable="True"
+                      MaxHeight="120"
+                      >
+        <FlowDocumentScrollViewer.Style>
+          <Style>
+            <Setter Property="AutomationProperties.Name" Value="{Binding Converter={ContentDocument:NodeToXmlConverter}}"/>
+          </Style>
+        </FlowDocumentScrollViewer.Style>
+      </FlowDocumentScrollViewer>
+      
+      
     </Border>
   </DataTemplate>
 
   <!-- cannot find a dtd error -->
   <DataTemplate DataType="{x:Type ContentDocument:MissingDtdValidationError}">
-    <StackPanel>
+    <StackPanel Focusable="False">
+    <StackPanel Focusable="False" Margin="5">
       <UI:TextBoxReadOnlyCaretVisible Focusable="True"
-                                      Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>
+                                      Style="{StaticResource ContentDocumentHeadingStyle}" 
+                                      TextReadOnly="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>
+      <!--
       <UI:TextBoxReadOnlyCaretVisible Focusable="True" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.CannotValidateDoc}"/>
       <UI:TextBoxReadOnlyCaretVisible Focusable="True" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DTDIdentifier}"/>
       <UI:TextBoxReadOnlyCaretVisible Focusable="True" Text="{Binding DtdIdentifier, Mode=OneWay}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                  Margin="5" FontFamily="Courier New" Width="Auto" Padding="3"/>
+      -->
+      <UI:TextBoxReadOnlyCaretVisible Focusable="True">
+        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+          <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTDMessage}" Path="DtdIdentifier"/>
+        </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+      </UI:TextBoxReadOnlyCaretVisible>
    </StackPanel>
+    </StackPanel>
   </DataTemplate>
 
   <!-- element definition not found error -->
   <DataTemplate DataType="{x:Type ContentDocument:UndefinedElementValidationError}">
-    <StackPanel Margin="0,5">
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Style="{StaticResource ContentDocumentHeadingStyle}" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>
+    <StackPanel Focusable="False">
+      <StackPanel  Margin="5" Focusable="False">
+      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Style="{StaticResource ContentDocumentHeadingStyle}" TextReadOnly="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElement}"/>
+      <UI:TextBoxReadOnlyCaretVisible Focusable="True" TextReadOnly="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.DefinitionNotFound}"/>
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
-      <TextBlock Margin="0,3,0,3">
+      <TextBlock>
         <Hyperlink Click="OnViewLinkClick">
           <Run Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>
 
     </StackPanel>
+    </StackPanel>
   </DataTemplate>
 
   <!-- invalid sequence of child elements error -->
   <DataTemplate DataType="{x:Type ContentDocument:InvalidElementSequenceValidationError}">
-    <StackPanel x:Name="parentStack">
+    <StackPanel Margin="5" Focusable="False">
+      <StackPanel Focusable="False">
+      
       <UI:TextBoxReadOnlyCaretVisible Focusable="True" Style="{StaticResource ContentDocumentHeadingStyle}"
-                                      Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequence}"/>
+                                      TextReadOnly="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequenceHeading}"/>
       <UI:TextBoxReadOnlyCaretVisible Focusable="True">
         <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
           <Binding StringFormat="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequenceMessage}"
@@ -70,7 +93,8 @@
                    Converter="{Common:ElementNameConverter}"/>
         </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
       </UI:TextBoxReadOnlyCaretVisible>
-
+      
+      
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
@@ -84,26 +108,25 @@
           </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
         </UI:TextBoxReadOnlyCaretVisible>
 
-      <Border CornerRadius="5" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
-              BorderThickness="2">
-        <ScrollViewer
-        VerticalScrollBarVisibility="Visible"
-        HorizontalScrollBarVisibility="Disabled"
-        CanContentScroll="false">
+      <Border CornerRadius="2" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+              BorderThickness="1">
           <UI:TextBoxReadOnlyCaretVisible Focusable="True" Margin="3"
-                     
-                 Text="{Binding AllowedChildNodes, Mode=OneWay, Converter={ContentDocument:AllowedChildNodesConverter}}"
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Disabled"
+                 TextReadOnly="{Binding AllowedChildNodes, Mode=OneWay, Converter={ContentDocument:AllowedChildNodesConverter}}"
                  TextWrapping="Wrap"
-                 MaxHeight="40"/>
-        </ScrollViewer>
+                 MaxHeight="50"
+                 />
+        
       </Border>
       
-      <TextBlock Margin="0,3,0,3">
+      <TextBlock>
         <Hyperlink Click="OnViewLinkClick">
           <Run Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>
       
+    </StackPanel>
     </StackPanel>
   </DataTemplate>
  

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -147,7 +148,7 @@ namespace Tobi.Common.Validation
             doc.Background = SystemColors.WindowBrush;
             doc.Foreground = SystemColors.WindowTextBrush;
             WriteNodeXml_Flat(node, doc);
-
+            
             return doc;
         }
 

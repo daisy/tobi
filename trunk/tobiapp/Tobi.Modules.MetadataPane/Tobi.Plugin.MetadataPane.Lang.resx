@@ -185,4 +185,18 @@
     <value>{0}: {1}</value>
     <comment>{0} = Name  {1} = Description</comment>
   </data>
+  <data name="CompleteSummary" xml:space="preserve">
+    <value>{0} = {1}.  {2} {3}.  {4}. Definition of {0}: {5}. {6}. {7}.</value>
+    <comment>{0} = name, {1} = content, {2} = errors, {3} = is primary identifier or not, {4} = can delete or not, {5} = definition description, {6} = synonyms, {7} = occurrence</comment>
+  </data>
+  <data name="ErrorItem" xml:space="preserve">
+    <value>Error: {0}</value>
+    <comment>{0} = error description</comment>
+  </data>
+  <data name="IsPrimaryIdentifier" xml:space="preserve">
+    <value>Is the primary identifier.</value>
+  </data>
+  <data name="NoErrors" xml:space="preserve">
+    <value>No errors.</value>
+  </data>
 </root>
