@@ -8,16 +8,15 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
+using System.Windows.Annotations;
+using System.Windows.Annotations.Storage;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
@@ -33,13 +32,80 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
-using urakawa.media;
-using urakawa.media.data.audio;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.DocumentPane
 {
+    [ValueConversion(typeof(Color), typeof(Brush))]
+    public class BackgroundColorToBrushConverter : ValueConverterMarkupExtensionBase<BackgroundColorToBrushConverter>
+    {
+        #region IValueConverter Members
+
+        private static BitmapImage m_ImageSource;
+
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(Brush)) return null;
+            if (!(value is Color)) return null;
+
+            if (((Color)value) == Colors.Transparent)
+            {
+                try
+                {
+                    if (m_ImageSource == null)
+                    {
+                        string dir = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+                        var filename = Path.Combine(dir, @"paper_tile_texture.jpg");
+                        if (File.Exists(filename))
+                        {
+                            var uri = new Uri("file:///" + filename, UriKind.Absolute);
+
+
+                            var bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = uri;
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.CreateOptions = BitmapCreateOptions.None;
+                            bitmap.EndInit();
+
+                            int ph = bitmap.PixelHeight;
+                            int pw = bitmap.PixelWidth;
+                            double dpix = bitmap.DpiX;
+                            double dpiy = bitmap.DpiY;
+
+                            //double zoom = ZoomSlider
+
+                            m_ImageSource = bitmap;
+                            m_ImageSource.Freeze();
+                        }
+                    }
+                    if (m_ImageSource != null)
+                    {
+                        return new ImageBrush(m_ImageSource)
+                        {
+                            TileMode = TileMode.Tile,
+                            Viewport = new Rect(0, 0, m_ImageSource.PixelWidth, m_ImageSource.PixelHeight),
+                            ViewportUnits = BrushMappingMode.Absolute,
+                            //Viewbox = new Rect(0, 0, m_ImageSource.PixelWidth, m_ImageSource.PixelHeight),
+                            //ViewboxUnits = BrushMappingMode.Absolute,
+                            //Viewbox = new Rect(0, 0, 1, 1),
+                            //ViewboxUnits = BrushMappingMode.RelativeToBoundingBox,
+                            Stretch = Stretch.Fill,
+                        };
+                    }
+                }
+                catch
+                {
+                    ;// default below
+                }
+            }
+            var scb = new SolidColorBrush((Color)value);
+            return scb;
+        }
+
+        #endregion
+    }
     public class FlowDocumentScrollViewerEx : FlowDocumentScrollViewer
     {
         private ScrollViewer m_ScrollViewer;
@@ -110,11 +176,77 @@ namespace Tobi.Plugin.DocumentPane
                 if (m_SearchTerm == value) { return; }
                 m_SearchTerm = value;
 
+                m_PropertyChangeHandler.RaisePropertyChanged(() => SearchTerm);
+
                 m_SearchMatches = null;
                 m_SearchCurrentIndex = -1;
 
-                // We do nothing: no search as you type, too costly and FlowDocument highlight is destructive with inserted Runs)
-                m_PropertyChangeHandler.RaisePropertyChanged(() => SearchTerm);
+                var textElement = FindPreviousNext(false, false);
+                if (textElement == null)
+                {
+                    m_SearchCurrentIndex = -1;
+                    textElement = FindPreviousNext(true, false);
+                    m_SearchCurrentIndex = -1;
+                }
+
+                if (Settings.Default.Document_EnableInstantSearch)
+                {
+                    if (FlowDocReader.Selection == null)
+                    {
+                        return;
+                    }
+                    var selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
+
+                    AnnotationService service = AnnotationService.GetService(FlowDocReader);
+
+                    if (service == null || !service.IsEnabled)
+                    {
+                        return;
+                    }
+
+                    //FlowDocReader.Selection.Select(FlowDocReader.Document.ContentStart,
+                    //                               FlowDocReader.Document.ContentEnd);
+                    //AnnotationHelper.ClearHighlightsForSelection(service);
+
+                    foreach (var annotation in service.Store.GetAnnotations())
+                    {
+                        service.Store.DeleteAnnotation(annotation.Id);
+                    }
+
+                    if (string.IsNullOrEmpty(m_SearchTerm) || m_SearchTerm.Length < 2)
+                    {
+                        return;
+                    }
+
+                    //if (m_FindAndReplaceManager == null)
+                    //{
+                    //    m_FindAndReplaceManager = new FindAndReplaceManager(new TextRange(TheFlowDocument.ContentStart, TheFlowDocument.ContentEnd));
+                    //    m_SearchMatches = null;
+                    //}
+                    //if (m_SearchMatches == null)
+                    //{
+                    //    IEnumerable<TextRange> matches = m_FindAndReplaceManager.FindAll(SearchTerm, FindOptions.None);
+                    //    m_SearchMatches = new List<TextRange>(matches);
+                    //    m_SearchCurrentIndex = -1;
+                    //}
+
+                    if (m_SearchMatches == null || m_SearchMatches.Count == 0)
+                    {
+                        return;
+                    }
+
+                    var brush = GetCachedBrushForColor(Common.Settings.Default.SearchHits_Color);
+                    brush.Opacity = .5;
+                    //var brush = new SolidColorBrush(Common.Settings.Default.SearchHits_Color) { Opacity = .5 };
+
+                    foreach (var textRange in m_SearchMatches)
+                    {
+                        FlowDocReader.Selection.Select(textRange.Start, textRange.End);
+                        AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
+                    }
+
+                    FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
+                }
             }
         }
 
@@ -129,9 +261,9 @@ namespace Tobi.Plugin.DocumentPane
         private List<TextRange> m_SearchMatches;
         private int m_SearchCurrentIndex = -1;
 
-        private void FindPreviousNext(bool previous)
+        private TextElement FindPreviousNext(bool previous, bool select)
         {
-            if (string.IsNullOrEmpty(SearchTerm)) return;
+            if (string.IsNullOrEmpty(SearchTerm)) return null;
 
             if (m_FindAndReplaceManager == null)
             {
@@ -144,7 +276,7 @@ namespace Tobi.Plugin.DocumentPane
                 m_SearchMatches = new List<TextRange>(matches);
                 m_SearchCurrentIndex = -1;
             }
-            if (m_SearchMatches.Count == 0) return;
+            if (m_SearchMatches.Count == 0) return null;
 
             if (m_SearchCurrentIndex == -1)
             {
@@ -201,7 +333,10 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (m_SearchCurrentIndex == 0)
                 {
-                    AudioCues.PlayBeep();
+                    if (select)
+                    {
+                        AudioCues.PlayBeep();
+                    }
                     hit = m_SearchMatches[m_SearchCurrentIndex];
                 }
                 else if (m_SearchCurrentIndex > 0)
@@ -210,7 +345,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    return;
+                    return null;
                 }
             }
             else // next
@@ -223,7 +358,10 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (m_SearchCurrentIndex == m_SearchMatches.Count - 1)
                 {
-                    AudioCues.PlayBeep();
+                    if (select)
+                    {
+                        AudioCues.PlayBeep();
+                    }
                     hit = m_SearchMatches[m_SearchCurrentIndex];
                 }
                 else if (m_SearchCurrentIndex < (m_SearchMatches.Count - 1))
@@ -232,7 +370,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    return;
+                    return null;
                 }
             }
 
@@ -241,8 +379,12 @@ namespace Tobi.Plugin.DocumentPane
                 Debug.Assert(hit.Text.ToLower() == SearchTerm.ToLower());
                 if (FlowDocReader.Selection != null)
                 {
-                    FlowDocReader.Selection.Select(hit.Start, hit.End);
-                    FocusHelper.FocusBeginInvoke(FlowDocReader); // otherwise the selection is invisible :(
+                    if (select && !Settings.Default.Document_EnableInstantSearch)
+                    {
+                        FlowDocReader.Selection.Select(hit.Start, hit.End);
+
+                        FocusHelper.FocusBeginInvoke(FlowDocReader); // otherwise the selection is invisible :(
+                    }
 
                     var para = hit.Start.Paragraph;
                     var obj1 = hit.Start.GetAdjacentElement(LogicalDirection.Backward);
@@ -253,8 +395,16 @@ namespace Tobi.Plugin.DocumentPane
                     if (textElement != null)
                     {
                         Debug.Assert(textElement.Tag is TreeNode);
-                        m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
-                        return;
+
+                        if (select)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                        }
+                        else
+                        {
+                            scrollToView(textElement);
+                        }
+                        return textElement;
                     }
 
                     if (para != null)
@@ -262,29 +412,31 @@ namespace Tobi.Plugin.DocumentPane
                         //FlowDocReader.Selection.Select(para.ContentStart, para.ContentEnd);
 
                         scrollToView(para);
-                        return;
+                        return para;
                     }
                     if (obj1 != null && obj1 is TextElement)
                     {
                         scrollToView((TextElement)obj1);
-                        return;
+                        return (TextElement)obj1;
                     }
                     if (obj2 != null && obj2 is TextElement)
                     {
                         scrollToView((TextElement)obj2);
-                        return;
+                        return (TextElement)obj2;
                     }
                 }
             }
+
+            return null;
         }
 
         private void FindNext()
         {
-            FindPreviousNext(false);
+            FindPreviousNext(false, true);
         }
         private void FindPrevious()
         {
-            FindPreviousNext(true);
+            FindPreviousNext(true, true);
         }
 
 
@@ -1044,46 +1196,53 @@ namespace Tobi.Plugin.DocumentPane
             return m_PathToTreeNode;
         }
 
-        /*
-        private void annotationsOn()
-        {
-            AnnotationService service = AnnotationService.GetService(FlowDocReader);
-
-            if (service == null)
-            {
-                string dir = Path.GetDirectoryName(UserInterfaceStrings.LOG_FILE_PATH);
-                Stream annoStream = new FileStream(dir + @"\annotations.xml", FileMode.OpenOrCreate);
-                service = new AnnotationService(FlowDocReader);
-                AnnotationStore store = new XmlStreamStore(annoStream);
-                service.Enable(store);
-            }
-
-            AnnotationService.CreateTextStickyNoteCommand.CanExecuteChanged += new EventHandler(OnAnnotationCanExecuteChanged);
-        }
-
-        TextSelection m_TextSelection = null;
-
-        public void OnAnnotationCanExecuteChanged(object o, EventArgs e)
-        {
-            if (m_TextSelection != FlowDocReader.Selection)
-            {
-                m_TextSelection = FlowDocReader.Selection;
-                OnMouseUpFlowDoc();
-            }
-        }
-
         private void annotationsOff()
         {
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
 
             if (service != null && service.IsEnabled)
             {
+                foreach (var annotation in service.Store.GetAnnotations())
+                {
+                    service.Store.DeleteAnnotation(annotation.Id);
+                }
+
                 service.Store.Flush();
                 service.Disable();
                 //AnnotationStream.Close();
+                service.Store.Dispose();
             }
-        }*/
+        }
 
+        private void annotationsOn()
+        {
+            AnnotationService service = AnnotationService.GetService(FlowDocReader);
+            if (service != null && service.IsEnabled)
+            {
+                service.Disable();
+            }
+            if (service == null)
+            {
+                service = new AnnotationService(FlowDocReader);
+            }
+            if (!service.IsEnabled)
+            {
+                string dir = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+                var filename = Path.Combine(dir, @"annotations.xml");
+
+                try
+                {
+                    Stream annoStream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                    AnnotationStore store = new XmlStreamStore(annoStream);
+
+                    service.Enable(store);
+                }
+                catch
+                {
+                    ;//ignore.
+                }
+            }
+        }
 
 
         //private FlowDocument m_FlowDoc;
@@ -1283,6 +1442,8 @@ namespace Tobi.Plugin.DocumentPane
 
             m_MouseDownTextElement = null;
 
+            annotationsOff();
+
             TheFlowDocument.Blocks.Clear();
             TheFlowDocumentSimple.Blocks.Clear();
 
@@ -1295,6 +1456,10 @@ namespace Tobi.Plugin.DocumentPane
 
             if (project == null)
             {
+                SearchBox.Text = "";
+                SearchTerm = null;
+                CommandFocus.Execute();
+
 #if false && DEBUG
                 FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("Testing FlowDocument (DEBUG) （１）このテキストDAISY図書は，レベル５まであります。")));
 #else
@@ -1321,13 +1486,13 @@ namespace Tobi.Plugin.DocumentPane
                 FlowDocReader.Selection.Select(TheFlowDocument.ContentStart, TheFlowDocument.ContentStart);
             }
 
+            annotationsOn();
+
             //if (FlowDocReader.Selection != null && !m_FlowDocSelectionHooked)
             //{
             //    m_FlowDocSelectionHooked = true;
             //    FlowDocReader.Selection.Changed += new EventHandler(OnFlowDocSelectionChanged);
             //}
-
-            //annotationsOn();
 
             /*
             string dirPath = Path.GetDirectoryName(FilePath);
@@ -1678,42 +1843,42 @@ namespace Tobi.Plugin.DocumentPane
             return m_SolidColorBrushCache[colorString];
         }
 
-        public static TextPointer AlignTextPointer(TextPointer start, int x)
-        {
-            var ret = start;
-            var i = 0;
-            while (i < x && ret != null)
-            {
-                if (ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.Text
-                    || ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.None)
-                {
-                    i++;
-                }
-                if (ret.GetPositionAtOffset(1, LogicalDirection.Forward) == null)
-                {
-                    return ret;
-                }
-                ret = ret.GetPositionAtOffset(1, LogicalDirection.Forward);
-            }
-            return ret;
-        }
+        //public static TextPointer AlignTextPointer(TextPointer start, int x)
+        //{
+        //    var ret = start;
+        //    var i = 0;
+        //    while (i < x && ret != null)
+        //    {
+        //        if (ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.Text
+        //            || ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.None)
+        //        {
+        //            i++;
+        //        }
+        //        if (ret.GetPositionAtOffset(1, LogicalDirection.Forward) == null)
+        //        {
+        //            return ret;
+        //        }
+        //        ret = ret.GetPositionAtOffset(1, LogicalDirection.Forward);
+        //    }
+        //    return ret;
+        //}
 
-        //// EXMAPLE of use:
-        //    var run = new Run("test");
-        //    SelectAndColorize(TheFlowDocument.ContentStart.GetOffsetToPosition(run.ContentStart), run.Text.Length, Colors.Blue);
-        public void SelectAndColorize(int offset, int length, Color color)
-        {
-            var start = TheFlowDocument.ContentStart;
-            var startPos = AlignTextPointer(start, offset);
-            var endPos = AlignTextPointer(start, offset + length);
+        ////// EXMAPLE of use:
+        ////    var run = new Run("test");
+        ////    SelectAndColorize(TheFlowDocument.ContentStart.GetOffsetToPosition(run.ContentStart), run.Text.Length, Colors.Blue);
+        //public void SelectAndColorize(int offset, int length, Color color)
+        //{
+        //    var start = TheFlowDocument.ContentStart;
+        //    var startPos = AlignTextPointer(start, offset);
+        //    var endPos = AlignTextPointer(start, offset + length);
 
-            var textRange = FlowDocReader.Selection;
-            if (textRange == null) return;
+        //    var textRange = FlowDocReader.Selection;
+        //    if (textRange == null) return;
 
-            textRange.Select(startPos, endPos);
-            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(color));
-            //textRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
-        }
+        //    textRange.Select(startPos, endPos);
+        //    textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(color));
+        //    //textRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+        //}
 
         private void refreshDocumentColors(TextElement textElement)
         {
@@ -2940,6 +3105,7 @@ namespace Tobi.Plugin.DocumentPane
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
+                SearchTerm = null;
                 CommandFocus.Execute();
             }
         }

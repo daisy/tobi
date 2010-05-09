@@ -13,7 +13,8 @@ namespace Tobi.Common.UI.XAML
         {
             if (targetType != typeof(Brush)) return null;
             if (!(value is Color)) return null;
-            SolidColorBrush scb = new SolidColorBrush((Color)value);
+
+            var scb = new SolidColorBrush((Color)value);
             return scb;
         }
 

@@ -85,6 +85,18 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Document_EnableInstantSearch {
+            get {
+                return ((bool)(this["Document_EnableInstantSearch"]));
+            }
+            set {
+                this["Document_EnableInstantSearch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Document_UseDottedSelect {
             get {
@@ -217,7 +229,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFD700")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFF0E68C")]
         public global::System.Windows.Media.Color Document_Color_Selection_Back2 {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_Selection_Back2"]));

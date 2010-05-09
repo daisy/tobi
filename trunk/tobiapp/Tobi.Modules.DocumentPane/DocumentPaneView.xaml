@@ -31,7 +31,9 @@
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type FlowDocumentScrollViewer}">
             <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Margin="{TemplateBinding Control.Padding}" x:Uid="Border_49">
-              <ScrollViewer CanContentScroll="True" Name="PART_ContentHost" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" x:Uid="ScrollViewer_8" />
+              <ScrollViewer
+                CanContentScroll="True" Name="PART_ContentHost" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" x:Uid="ScrollViewer_8">
+              </ScrollViewer>
             </Border>
             <!--<Grid xml:lang="en-us" x:Uid="Grid_26">
               <Grid.RowDefinitions>
@@ -126,9 +128,7 @@
                             HorizontalContentAlignment="Stretch"
                     
     Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                      Background="{Binding
-                       Converter={XAML:ColorToBrushConverter},
-                            Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                      
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
 
                         Focusable="True"
@@ -137,8 +137,16 @@
     IsSelectionEnabled="True"
                     IsEnabled = "True"
     IsToolBarVisible="false"
+Background="Transparent"
                       >
-    <!-- 
+      <!--
+
+Background="{Binding
+      Converter={XAML:ColorToBrushConverter},
+      Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"-->
+      
+
+      <!-- 
 {DynamicResource {x:Static SystemColors.WindowBrushKey}}
 
                             IsFindEnabled="False"
@@ -150,31 +158,37 @@
                       
                       ViewingMode="Scroll" -->
 
-    <FlowDocument
+      <FlowDocument
       
-                  IsEnabled = "True"
-                  Focusable="True"
-                  DragOver="OnFlowDocDragOver"
-                  AllowDrop="True"
-                  x:Name="TheFlowDocument"
-                    Background="{Binding
-                    Converter={XAML:ColorToBrushConverter},
-                    Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    IsEnabled = "True"
+                    Focusable="True"
+                    DragOver="OnFlowDocDragOver"
+                    AllowDrop="True"
+                    x:Name="TheFlowDocument"
+                  
+                    
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
-                 AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
+                   AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
          
-         IsHyphenationEnabled = "False"
-         IsOptimalParagraphEnabled = "False"
-         ColumnWidth = "Infinity"
-         IsColumnWidthFlexible="True"
-         TextAlignment = "Left"
+           IsHyphenationEnabled = "False"
+           IsOptimalParagraphEnabled = "False"
+           ColumnWidth = "Infinity"
+           IsColumnWidthFlexible="True"
+           TextAlignment = "Left"
                   
-                      PageHeight="Auto"
-    PageWidth="Auto"
-
-
-                    />
+                        PageHeight="Auto"
+      PageWidth="Auto"
+Background="{Binding
+        Converter={DocumentPane:BackgroundColorToBrushConverter},
+        Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    >
+        <!--
+Background="Transparent"
+-->
+        <!--ImageSource="pack://application:,,,/Tobi;component/Resources/paper_tile_texture.jpg"-->
+        
+    </FlowDocument>
 
 
     <!-- ScrollViewer
@@ -216,9 +230,7 @@
                             HorizontalContentAlignment="Stretch"
     
                             Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
-                      Background="{Binding
-                       Converter={XAML:ColorToBrushConverter},
-                            Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                      
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                                            
                                            
@@ -228,7 +240,11 @@
     IsSelectionEnabled="True"
                     IsEnabled = "True"
     IsToolBarVisible="false"
+    Background="Transparent"
                       >
+    <!--Background="{Binding
+    Converter={XAML:ColorToBrushConverter},
+    Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"-->
     <!-- 
 {DynamicResource {x:Static SystemColors.WindowBrushKey}}
 
@@ -249,9 +265,7 @@
                   Focusable="True"
                   DragOver="OnFlowDocDragOver"
                   AllowDrop="True" x:Name="TheFlowDocumentSimple"
-                    Background="{Binding
-                    Converter={XAML:ColorToBrushConverter},
-                    Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    
                     FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
                       
                  AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
@@ -266,8 +280,17 @@
                   
     PageHeight="Auto"
     PageWidth="Auto"
+Background="{Binding
+      Converter={DocumentPane:BackgroundColorToBrushConverter},
+      Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    >
+      
+      <!--<FlowDocument.Background>
+        <ImageBrush  ImageSource="/paper_tile_texture.jpg"
+                     Stretch="Fill" TileMode="tile"/>
+      </FlowDocument.Background>-->
 
-                    />
+    </FlowDocument>
 
                        <!--Converter={XAML:StringToTextAlignmentConverter},-->
 

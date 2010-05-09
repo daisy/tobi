@@ -19,6 +19,9 @@
     <Setting Name="Document_Zoom" Type="System.Double" Scope="User">
       <Value Profile="(Default)">110</Value>
     </Setting>
+    <Setting Name="Document_EnableInstantSearch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="Document_UseDottedSelect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -53,7 +56,7 @@
       <Value Profile="(Default)">#FFFAFAD2</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back2" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFFD700</Value>
+      <Value Profile="(Default)">#FFF0E68C</Value>
     </Setting>
   </Settings>
 </SettingsFile>
