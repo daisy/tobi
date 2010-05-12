@@ -340,7 +340,7 @@ namespace Tobi.Plugin.AudioPane
                     SelectionEndBytePosition = end;
                 }
 
-                if (m_viewModel.IsAutoPlay)
+                if (true || m_viewModel.IsAutoPlay)
                 {
                     m_viewModel.PlayBytePosition = SelectionBeginBytePosition;
 

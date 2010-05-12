@@ -813,7 +813,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" -->
 
 
-    <CheckBox Control.IsTabStop="true"
+    <!--<CheckBox Control.IsTabStop="true"
                 IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
                 Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAutoPlay}"
                 IsThreeState="False"
@@ -821,14 +821,14 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               VerticalAlignment="Center"
     Margin="4,0,4,0"/>
 
-    <Separator/>
+    <Separator/>-->
     
-    <UI:TwoStateButtonRichCommand
+    <!--<UI:TwoStateButtonRichCommand
   
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
       InputBindingManager="{Binding InputBindingManager}"
-            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>
+            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>-->
 
       <UI:TwoStateButtonRichCommand
   
@@ -895,12 +895,18 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand RichCommand="{Binding CommandSelectAll}"
                                  />
 
+    <UI:ButtonRichCommand RichCommand="{Binding CommandSelectLeft}"
+                                 />
+    <UI:ButtonRichCommand RichCommand="{Binding CommandSelectRight}"
+                                 />
+
+
     <UI:ButtonRichCommand RichCommand="{Binding CommandSelectPreviousChunk}"
                                  />
     <UI:ButtonRichCommand RichCommand="{Binding CommandSelectNextChunk}"
                                  />
 
-      <!-- UI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}" />
+    <!-- UI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}" />
     <UI:ButtonRichCommand RichCommand="{Binding CommandEndSelection}" / -->
     
     <UI:ButtonRichCommand RichCommand="{Binding CommandClearSelection}"
