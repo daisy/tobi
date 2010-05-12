@@ -124,6 +124,12 @@ namespace Tobi.Plugin.AudioPane
 
                     IsAutoPlay = false;
 
+                    if (IsPlaying) // Punch-in
+                    {
+                        CommandPause.Execute();
+                        CommandSelectRight.Execute();
+                    }
+
                     if (IsWaveFormLoading && View != null)
                     {
                         View.CancelWaveFormLoad(true);
@@ -162,7 +168,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
-                    return !IsPlaying && !IsMonitoring && !IsRecording && !IsWaveFormLoading
+                    return !IsMonitoring && !IsRecording && !IsWaveFormLoading //!IsPlaying && 
                         && (m_UrakawaSession.DocumentProject == null
                         ||
                            node != null
@@ -205,7 +211,7 @@ namespace Tobi.Plugin.AudioPane
 
                     OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
 
-                    AudioCues.PlayTock();
+                    //AudioCues.PlayTock();
 
                     m_Recorder.StartMonitoring(State.Audio.PcmFormatRecordingMonitoring.Copy().Data);
 
@@ -231,7 +237,7 @@ namespace Tobi.Plugin.AudioPane
 
                     m_Recorder.StopRecording();
                     
-                    AudioCues.PlayTockTock();
+                    //AudioCues.PlayTockTock();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);// TODO Localize MonitoringStopped
 

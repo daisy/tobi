@@ -86,7 +86,7 @@ namespace Tobi.Plugin.AudioPane
                     long begin = m_SelectionBeginTmpBytePosition;
                     long end = PlayBytePosition;
 
-                    AudioCues.PlayTockTock();
+                    //AudioCues.PlayTockTock();
 
                     if (begin == end)
                     {
@@ -139,7 +139,7 @@ namespace Tobi.Plugin.AudioPane
 
                     m_SelectionBeginTmpBytePosition = PlayBytePosition;
 
-                    AudioCues.PlayTock();
+                    //AudioCues.PlayTock();
                 },
                 () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent,
                 Settings_KeyGestures.Default,
@@ -163,7 +163,7 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     State.Selection.SetSelectionBytes(0, PlayBytePosition);
-                    AudioCues.PlayTock();
+                    //AudioCues.PlayTock();
                 },
                 () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
@@ -187,7 +187,7 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     State.Selection.SetSelectionBytes(PlayBytePosition, State.Audio.DataLength);
-                    AudioCues.PlayTock();
+                    //AudioCues.PlayTock();
                 },
                 () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
@@ -215,7 +215,7 @@ namespace Tobi.Plugin.AudioPane
 
                     State.Selection.SetSelectionBytes(0, State.Audio.DataLength);
                     
-                    AudioCues.PlayTockTock();
+                    //AudioCues.PlayTockTock();
                 },
                 () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent,
                 Settings_KeyGestures.Default,
