@@ -116,8 +116,8 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(State.Audio.PlayStreamMarkers == null);
 
                     Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
-                    PCMFormatInfo pcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat; 
-                    
+                    PCMFormatInfo pcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat;
+
                     Stopwatch stopWatch = Stopwatch.StartNew();
 
                     long totalLength = 0;
@@ -139,14 +139,14 @@ namespace Tobi.Plugin.AudioPane
                                     //View.TimeMessageRefresh();
                                 }));
                                 m_ShellView.PumpDispatcherFrames(DispatcherPriority.Loaded);
-                                
+
                                 //stopWatch.Restart(); NET40 only !
                                 stopWatch.Reset();
                                 stopWatch.Start();
                             }
                         }
                         );
-                    
+
                     stopWatch.Stop();
                     m_TimeStringOther = String.Empty;
                     View.TimeMessageHide();
@@ -293,7 +293,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         //ColorPlayhead
                         //ColorPlayheadFill
-                        
+
                         AudioPlayer_UpdateWaveFormPlayHead();
                     }
                     else
@@ -419,7 +419,7 @@ namespace Tobi.Plugin.AudioPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
                 return;
             }
-            
+
             IsAutoPlay = false;
 
             if (View != null)
@@ -1254,12 +1254,19 @@ namespace Tobi.Plugin.AudioPane
                                                  IsStopped
                                              ))
                 {
-                    strToDisplay = FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(PlayBytePosition)));
+                    if (IsPlaying && m_RecordAfterPlayOverwriteSelection > 0)
+                    {
+                        strToDisplay = FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(m_RecordAfterPlayOverwriteSelection - PlayBytePosition)));
+                    }
+                    else
+                    {
+                        strToDisplay = FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(PlayBytePosition)));
+                    }
                 }
 
                 if (!String.IsNullOrEmpty(strToDisplay))
                 {
-                    return "Time: " + strToDisplay + " / " + TimeStringTotalWaveform;
+                    return (m_RecordAfterPlayOverwriteSelection > 0 ? Tobi_Plugin_AudioPane_Lang.Countdown : "") + strToDisplay + " / " + TimeStringTotalWaveform;
                 }
 
                 return String.Empty;
@@ -1277,8 +1284,11 @@ namespace Tobi.Plugin.AudioPane
         [NotifyDependsOn("TotalDocumentAudioDurationInLocalUnits")]
         public string TotalDocumentAudioDurationString
         {
-            get { return Tobi_Plugin_AudioPane_Lang.TotalDuration
-                + FormatTimeSpan_Units(new Time(TotalDocumentAudioDurationInLocalUnits)); }
+            get
+            {
+                return Tobi_Plugin_AudioPane_Lang.TotalDuration
+                    + FormatTimeSpan_Units(new Time(TotalDocumentAudioDurationInLocalUnits));
+            }
         }
 
         private long m_TotalDocumentAudioDurationInLocalUnits;
@@ -1520,6 +1530,14 @@ namespace Tobi.Plugin.AudioPane
 
                 RaisePropertyChanged(m_RecorderCurrentDurationArgs);
                 //RaisePropertyChanged(() => RecorderCurrentDuration);
+            }
+
+            if (IsPlaying && m_RecordAfterPlayOverwriteSelection > 0)
+            {
+                if (View != null)
+                {
+                    View.TimeMessageRefresh();
+                }
             }
 
             if (e.PeakDb != null && e.PeakDb.Length > 0)

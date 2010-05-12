@@ -144,6 +144,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
 
+                    SetRecordAfterPlayOverwriteSelection(-1);
+
                     long playBytePosition = PlayBytePosition;
 
                     m_Player.Stop();
@@ -186,7 +188,8 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        if (PlayBytePosition >= State.Selection.SelectionBeginBytePosition
+                        if (false
+                            && PlayBytePosition >= State.Selection.SelectionBeginBytePosition
                                 && PlayBytePosition < State.Selection.SelectionEndBytePosition)
                         {
                             //if (verifyBeginEndPlayerValues(byteLastPlayHeadTime, byteSelectionRight))
@@ -265,6 +268,7 @@ namespace Tobi.Plugin.AudioPane
             //}
             AudioPlayer_PlayFromTo(from, to);
 
+            Debug.Assert(State.Audio.EndOffsetOfPlayStream == (left ? to : from));
             State.Audio.EndOffsetOfPlayStream = left ? to : from;
         }
 
@@ -987,14 +991,26 @@ namespace Tobi.Plugin.AudioPane
             Debugger.Break();
 #endif
         }
-        private void OnAudioPlaybackFinished_(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
+
+        private void OnAudioPlaybackFinished_RefreshStatus()
         {
-
-            //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
-
             RaisePropertyChanged(() => IsPlaying);
 
             EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackEnded); // TODO Localize PlaybackEnded
+
+            CommandManager.InvalidateRequerySuggested();
+
+            UpdatePeakMeter();
+        }
+
+        private void OnAudioPlaybackFinished_(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
+        {
+            bool gotoNext = State.Audio.EndOffsetOfPlayStream == State.Audio.DataLength
+                            && IsAutoPlay
+                            && !IsSelectionSet
+                            && m_UrakawaSession.DocumentProject != null;
+
+            //Logger.Log("AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
             if (State.Audio.HasContent)
             {
@@ -1003,15 +1019,10 @@ namespace Tobi.Plugin.AudioPane
                 //updateWaveFormPlayHead(time);
             }
 
-            CommandManager.InvalidateRequerySuggested();
-
-            UpdatePeakMeter();
-
-            if (State.Audio.EndOffsetOfPlayStream == State.Audio.DataLength
-                && IsAutoPlay
-                && !IsSelectionSet
-                && m_UrakawaSession.DocumentProject != null)
+            if (gotoNext)
             {
+                OnAudioPlaybackFinished_RefreshStatus();
+
                 Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
                 TreeNode nextNode = treeNodeSelection.Item1.GetNextSiblingWithManagedAudio();
@@ -1021,6 +1032,18 @@ namespace Tobi.Plugin.AudioPane
 
                     //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                     m_UrakawaSession.PerformTreeNodeSelection(nextNode);
+                }
+            }
+            else
+            {
+                if (m_RecordAfterPlayOverwriteSelection > 0 && State.Selection.SelectionBeginBytePosition == m_RecordAfterPlayOverwriteSelection)
+                {
+                    SetRecordAfterPlayOverwriteSelection(-1);
+                    CommandStartRecord.Execute();
+                }
+                else
+                {
+                    OnAudioPlaybackFinished_RefreshStatus();
                 }
             }
         }
@@ -1040,6 +1063,7 @@ namespace Tobi.Plugin.AudioPane
 
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
 
+            
             CommandManager.InvalidateRequerySuggested();
 
             resetPeakMeter();
