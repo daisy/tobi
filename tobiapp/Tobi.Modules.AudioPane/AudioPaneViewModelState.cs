@@ -40,12 +40,12 @@ namespace Tobi.Plugin.AudioPane
                     if (treeNodeSelection.Item1 != null)
                     {
                         Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
-                        PcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                        PcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat;
                     }
                     else if (m_viewModel.m_UrakawaSession != null && m_viewModel.m_UrakawaSession.DocumentProject != null)
                     {
                         Debug.Assert(m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                        PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                        PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
                     else
                     {

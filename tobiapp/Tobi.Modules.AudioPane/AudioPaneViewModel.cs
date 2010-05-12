@@ -116,7 +116,7 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(State.Audio.PlayStreamMarkers == null);
 
                     Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
-                    PCMFormatInfo pcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat.Copy(); 
+                    PCMFormatInfo pcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat; 
                     
                     Stopwatch stopWatch = Stopwatch.StartNew();
 

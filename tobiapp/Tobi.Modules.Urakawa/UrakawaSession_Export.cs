@@ -151,7 +151,7 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", path), Category.Debug, Priority.Medium);
 
-            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null, Settings.Default.AudioExportEncodeToMp3);
+            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null, Settings.Default.AudioExportEncodeToMp3, Settings.Default.AudioExportSampleRate);
 
             m_ShellView.RunModalCancellableProgressTask(true,
                 Tobi_Plugin_Urakawa_Lang.Exporting,
