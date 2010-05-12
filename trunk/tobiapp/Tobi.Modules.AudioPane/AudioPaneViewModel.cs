@@ -465,6 +465,8 @@ namespace Tobi.Plugin.AudioPane
         {
             if (IsAudioDeviceChanged())
             {
+                m_Player.ClearDeviceCache();
+                m_Recorder.ClearDeviceCache();
                 Console.WriteLine("Audio Device Arrived");
             }
 
@@ -479,6 +481,8 @@ namespace Tobi.Plugin.AudioPane
         {
             if (IsAudioDeviceChanged())
             {
+                m_Player.ClearDeviceCache();
+                m_Recorder.ClearDeviceCache();
                 Console.WriteLine("Audio Device Removed");
             }
 
