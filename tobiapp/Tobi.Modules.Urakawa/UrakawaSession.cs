@@ -431,6 +431,11 @@ namespace Tobi.Plugin.Urakawa
 
         public PopupModalWindow.DialogButton CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet buttonset, string role)
         {
+            if (m_ShellView != null)
+            {
+                m_ShellView.RaiseEscapeEvent();
+            }
+
             if (DocumentProject == null)
             {
                 return PopupModalWindow.DialogButton.Ok;
