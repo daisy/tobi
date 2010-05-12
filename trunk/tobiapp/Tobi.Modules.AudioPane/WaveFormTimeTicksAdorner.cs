@@ -471,7 +471,7 @@ namespace Tobi.Plugin.AudioPane
                             m_point3.Y = heightAvailable - standardTextHeight - tickHeight - tickHeight;
 
                             minW = Math.Min(formattedText.Width + horizontalMargin + horizontalMargin,
-                                                chunkWidthForText);
+                                                widthChunk - tickHeight - tickHeight - 1); //chunkWidthForText
                             if (minW > 0)
                             {
                                 m_rectRect.X = m_point3.X - horizontalMargin;
