@@ -327,6 +327,8 @@ namespace Tobi.Plugin.AudioPane
 
             public void SetSelectionBytes(long begin, long end)
             {
+                m_viewModel.SetRecordAfterPlayOverwriteSelection(-1);
+
                 if (m_viewModel.View != null && m_viewModel.State.Audio.HasContent)
                 {
                     SelectionBeginBytePosition = m_viewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(begin);
@@ -364,6 +366,8 @@ namespace Tobi.Plugin.AudioPane
 
             public void ClearSelection()
             {
+                m_viewModel.SetRecordAfterPlayOverwriteSelection(-1);
+
                 SelectionBeginBytePosition = -1;
                 SelectionEndBytePosition = -1;
                 if (m_viewModel.View != null)

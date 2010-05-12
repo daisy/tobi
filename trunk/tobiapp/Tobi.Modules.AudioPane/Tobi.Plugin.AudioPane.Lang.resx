@@ -120,6 +120,9 @@
   <data name="TotalDuration" xml:space="preserve">
     <value>Total: </value>
   </data>
+  <data name="Countdown" xml:space="preserve">
+    <value>Countdown: </value>
+  </data>
   <data name="CmdCopy_ShortDesc" xml:space="preserve">
     <value>_Copy</value>
   </data>

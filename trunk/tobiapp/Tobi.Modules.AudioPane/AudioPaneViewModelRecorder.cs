@@ -124,8 +124,12 @@ namespace Tobi.Plugin.AudioPane
 
                     IsAutoPlay = false;
 
-                    if (IsPlaying) // Punch-in
+                    SetRecordAfterPlayOverwriteSelection(-1);
+
+                    bool punchIn = false;
+                    if (IsPlaying) // Punch-in recording
                     {
+                        punchIn = true;
                         CommandPause.Execute();
                         CommandSelectRight.Execute();
                     }
@@ -149,6 +153,21 @@ namespace Tobi.Plugin.AudioPane
                         if (treeNodeSelection.Item1 == null)
                         {
                             return;
+                        }
+
+                        if (!punchIn) // let's check auto punch in/out based on audio selection
+                        {
+                            var bytesForRequiredOffsetTime =
+                                m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.
+                                    Data.ConvertTimeToBytes(150 * AudioLibPCMFormat.TIME_UNIT);
+                            if (State.Selection.SelectionBeginBytePosition > 0
+                                && PlayBytePosition >= 0
+                                && PlayBytePosition < State.Selection.SelectionBeginBytePosition - bytesForRequiredOffsetTime)
+                            {
+                                AudioPlayer_PlayFromTo(PlayBytePosition, State.Selection.SelectionBeginBytePosition);
+                                SetRecordAfterPlayOverwriteSelection(State.Selection.SelectionBeginBytePosition);
+                                return;
+                            }
                         }
 
                         Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
@@ -236,7 +255,7 @@ namespace Tobi.Plugin.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
 
                     m_Recorder.StopRecording();
-                    
+
                     //AudioCues.PlayTockTock();
 
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);// TODO Localize MonitoringStopped
@@ -251,6 +270,23 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStopMonitor);
 
             //
+        }
+
+        private long m_RecordAfterPlayOverwriteSelection = -1;
+        public void SetRecordAfterPlayOverwriteSelection(long selectionBeginBytePosition)
+        {
+            m_RecordAfterPlayOverwriteSelection = selectionBeginBytePosition;
+            if (View != null)
+            {
+                if (selectionBeginBytePosition > 0)
+                {
+                    View.TimeMessageShow();
+                }
+                else
+                {
+                    View.TimeMessageHide();
+                }
+            }
         }
 
         private AudioRecorder m_Recorder;

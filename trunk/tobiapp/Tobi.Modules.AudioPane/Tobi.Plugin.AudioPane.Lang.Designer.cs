@@ -799,6 +799,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Countdown: .
+        /// </summary>
+        public static string Countdown {
+            get {
+                return ResourceManager.GetString("Countdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading (ESC to stop).
         /// </summary>
         public static string Loading {
