@@ -1106,7 +1106,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Cancel,
                                                    PopupModalWindow.DialogButton.Cancel,
-                                                   false, 500, 150, details, 80);
+                                                   true, 500, 150, details, 80);
 
 
             var backWorker = new BackgroundWorker
@@ -1263,7 +1263,7 @@ namespace Tobi
                 else
                 {
                     actionCompleted();
-                    windowPopup.ForceClose(PopupModalWindow.DialogButton.ESC);
+                    windowPopup.ForceClose(PopupModalWindow.DialogButton.Ok);
                 }
 
                 //var result = (string)args.Result;
@@ -1284,7 +1284,8 @@ namespace Tobi
                 //throw workException;
             }
 
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel)
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel
+                || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.ESC)
             {
                 if (backWorker == null) return false;
 

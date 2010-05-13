@@ -8,6 +8,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.command;
 using urakawa.core;
+using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
@@ -326,7 +327,37 @@ namespace Tobi.Plugin.AudioPane
                 {
                     originalFilePath = filePath;
 
-                    filePath = m_AudioFormatConvertorSession.ConvertAudioFileFormat(filePath);
+                    //filePath = m_AudioFormatConvertorSession.ConvertAudioFileFormat(filePath);
+
+                    bool cancelled = false;
+
+                    var converter = new AudioClipConverter(m_AudioFormatConvertorSession, filePath);
+
+                    bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                        Tobi_Plugin_AudioPane_Lang.ProcessingAudioClip,
+                        converter,
+                        () =>
+                        {
+                            Logger.Log(@"Audio conversion CANCELLED", Category.Debug, Priority.Medium);
+                            cancelled = true;
+                        },
+                        () =>
+                        {
+                            Logger.Log(@"Audio conversion DONE", Category.Debug, Priority.Medium);
+                            cancelled = false;
+                        });
+
+                    if (cancelled)
+                    {
+                        Debug.Assert(!result);
+                        return;
+                    }
+
+                    filePath = converter.ConvertedFilePath;
+                    if (string.IsNullOrEmpty(filePath))
+                    {
+                        return;
+                    }
 
                     Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
                                Category.Debug, Priority.Medium);
@@ -396,7 +427,37 @@ namespace Tobi.Plugin.AudioPane
             {
                 string originalFilePath = filePath;
 
-                filePath = m_AudioFormatConvertorSession_NoProject.ConvertAudioFileFormat(filePath);
+                //filePath = m_AudioFormatConvertorSession_NoProject.ConvertAudioFileFormat(filePath);
+
+                bool cancelled = false;
+
+                var converter = new AudioClipConverter(m_AudioFormatConvertorSession_NoProject, filePath);
+
+                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_AudioPane_Lang.ProcessingAudioClip,
+                    converter,
+                    () =>
+                    {
+                        Logger.Log(@"Audio conversion CANCELLED", Category.Debug, Priority.Medium);
+                        cancelled = true;
+                    },
+                    () =>
+                    {
+                        Logger.Log(@"Audio conversion DONE", Category.Debug, Priority.Medium);
+                        cancelled = false;
+                    });
+
+                if (cancelled)
+                {
+                    Debug.Assert(!result);
+                    return;
+                }
+
+                filePath = converter.ConvertedFilePath;
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    return;
+                }
 
                 Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
                            Category.Debug, Priority.Medium);
